@@ -162,6 +162,8 @@ describe('the AutoFilter in xlsx files', () => {
     const xml = await partText(plain, 'xl/worksheets/sheet1.xml')
     expect(xml).toContain('</sheetData><autoFilter ref="A1:C5"/></worksheet>')
     expect(xml).not.toContain('filterMode')
+    // with its filter database, as Excel writes it when it makes an AutoFilter
+    expect(await partText(plain, 'xl/workbook.xml')).toContain('<definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Data!$A$1:$C$5</definedName></definedNames>')
     expect((await readXlsx(plain)).book.sheets[0].autoFilter).toEqual({ range: 'A1:C5' })
     const tables = [{ name: 'T', range: 'G1:G3', columns: [{ name: 'g' }] }]
     const filtered = book({ autoFilter: { range: 'A1:C5' }, filtered: true, rows: { 3: { hidden: true } }, tables })
@@ -183,13 +185,10 @@ describe('the AutoFilter in xlsx files', () => {
   })
 })
 
-/** A file with Data's AutoFilter over A1:C5 holding criteria on its second column and its filter database, as Excel saves it. */
+/** A file with Data's AutoFilter over A1:C5 holding criteria on its second column, and its filter database, as Excel saves it. */
 async function criteriaFile(): Promise<Uint8Array> {
   const data = (await writeXlsx({ book: book() })).data
-  return changed(data, [
-    ['xl/worksheets/sheet1.xml', '<autoFilter ref="A1:C5"/>', '<autoFilter ref="A1:C5"><filterColumn colId="1"><filters><filter val="2"/></filters></filterColumn></autoFilter>'],
-    ['xl/workbook.xml', '</sheets>', '</sheets><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Data!$A$1:$C$5</definedName></definedNames>'],
-  ])
+  return changed(data, [['xl/worksheets/sheet1.xml', '<autoFilter ref="A1:C5"/>', '<autoFilter ref="A1:C5"><filterColumn colId="1"><filters><filter val="2"/></filters></filterColumn></autoFilter>']])
 }
 
 /** What writeKept writes over the criteria file after `edit`: Data's `<autoFilter>` and the workbook's names. */
@@ -221,11 +220,14 @@ describe('the AutoFilter written over the file', () => {
     })
   })
 
-  it("a host's range is written from the workbook, its criteria lost; one removed goes with its filter database; one deleted is no refusal", async () => {
+  it("a host's range is written from the workbook, its criteria lost; one removed goes with its filter database; one deleted is no refusal; a new one gets one", async () => {
     expect(await keptAfter((s) => s.setLayout([{ sheet: 'Data', autoFilter: { range: 'A1:C9' } }]))).toEqual({ filter: `<autoFilter ref="A1:C9">${KEEP_ALL}</autoFilter>`, names: NAME('Data!$A$1:$C$9') })
     expect(await keptAfter((s) => s.setLayout([{ sheet: 'Data', autoFilter: null }, { sheet: 'Data', filtered: false }]))).toEqual({ filter: '', names: '' })
     expect(await keptAfter((s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 5 }))).toEqual({ filter: '', names: '' })
     // moved to another sheet, it goes; the sheet, filtered still, gets an autofilter over its cells, as writeXlsx writes it
     expect(await keptAfter((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A1:C5' }, to: { sheet: 'Other', cell: 'B2' } }))).toEqual({ filter: `<autoFilter ref="E1:E1">${KEEP_ALL}</autoFilter>`, names: '' })
+    expect((await keptAfter((s) => s.setLayout([{ sheet: 'Other', autoFilter: { range: 'A1' } }]))).names).toBe(
+      '<definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Data!$A$1:$C$5</definedName><definedName name="_xlnm._FilterDatabase" localSheetId="1" hidden="1">Other!$A$1</definedName></definedNames>',
+    )
   })
 })

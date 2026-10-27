@@ -630,6 +630,411 @@
     ],
     "breaks": {}
    }
+  },
+  "filter-insert-in": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C23"
+    }
+   }
+  },
+  "filter-insert-below": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-insert-above": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$2:$C$22"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A2:C22"
+    }
+   }
+  },
+  "filter-delete-header": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$20"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C20"
+    }
+   }
+  },
+  "filter-delete-all": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-column": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-delete-columns-all": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-insert-column": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$D$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:D21"
+    }
+   }
+  },
+  "filter-insert-column-right": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$H$3:$J$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "H3:J23"
+    }
+   }
+  },
+  "filter-move-sheet": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-move-header": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-over": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-rename": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Sales='Sales'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Sales": "A1:C21"
+    }
+   }
+  },
+  "filter-delete-sheet": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
   }
  }
 }

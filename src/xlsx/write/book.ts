@@ -32,6 +32,8 @@ import { HEAD, MAIN } from './xml.js'
 import { RICH_ERRORS } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseAddress } from '../../model.js'
+import { parseRange } from '../../structure/area.js'
+import { areaText, sheetPrefix } from '../keep/refs.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
@@ -111,10 +113,15 @@ export function nameElements(book: BookInput, issues: Issues, names: FileNames, 
 /** The prefix of the hidden names `openKept` gives the references of the parts the model does not have (`xlsx/keep`), which only `writeKept` writes back. */
 export const CARRIER_PREFIX = '_xlcalc.keep.'
 
-/** The book's names as `<definedNames>`, without the carriers of `openKept`: a file written anew holds none of their parts. */
+/** The hidden name Excel gives a sheet's AutoFilter, its filter database, as Excel writes it: of the sheet at `place`, over the range. */
+export const filterDatabase = (sheet: string, range: string, place: number) =>
+  `<definedName name="_xlnm._FilterDatabase" localSheetId="${place}" hidden="1">${escapeText(`${sheetPrefix(sheet)}!${areaText(parseRange(range)!)}`)}</definedName>`
+
+/** The book's names as `<definedNames>`, without the carriers of `openKept` (a file written anew holds none of their parts), and the sheets' filter databases. */
 function definedNames(book: BookInput, issues: Issues, names: FileNames): string {
   const own = book.names?.some((n) => n.hidden && n.name.startsWith(CARRIER_PREFIX)) ? { ...book, names: book.names.filter((n) => !(n.hidden && n.name.startsWith(CARRIER_PREFIX))) } : book
   const out = nameElements(own, issues, names).filter((x) => x !== undefined)
+  book.sheets.forEach((s, i) => s.autoFilter && out.push(filterDatabase(s.name, s.autoFilter.range, i)))
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }
 
