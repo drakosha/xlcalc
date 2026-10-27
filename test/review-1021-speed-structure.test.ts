@@ -68,10 +68,13 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       cells[`B${r}`] = { formula: `A${r}*2` }
     }
     for (let k = 1; k <= runs; k++) rows[String(2 * k)] = { hidden: true }
-    const s = createSession({ sheets: [{ name: 'S', cells, rows, filtered: true }] }, { execution, clock, display: false })
-    // the old paste rebuilt the sheet once per run: 4-5 s at 400 runs of 34,000 rows
-    const ms = timed(() => expect(s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'E1' }, to: { sheet: 'S', range: `C1:C${2 * runs}` } }).ok).toBe(true))
-    expect(ms).toBeLessThan(3000)
+    const [plain, s] = [false, true].map((filtered) => createSession({ sheets: [{ name: 'S', cells, rows, filtered }] }, { execution, clock, display: false }))
+    const paste = { op: 'copyRange' as const, from: { sheet: 'S', range: 'E1' }, to: { sheet: 'S', range: `C1:C${2 * runs}` } }
+    // against the same paste on the sheet unfiltered, in the same process, whatever the machine's load: the old paste
+    // rebuilt the sheet once per run, 33-34 times the plain one at 400 runs of 34,000 rows, the new one 2.3 times
+    const once = timed(() => expect(plain.editStructure(paste).ok).toBe(true))
+    const ms = timed(() => expect(s.editStructure(paste).ok).toBe(true))
+    expect(ms).toBeLessThan(10 * once)
     // the visible rows take the copy, the hidden ones keep what they had
     expect(s.getCell('S', 'C3')).toMatchObject({ formula: 'A3*3', value: 9 })
     expect(s.getCell('S', 'C2')?.formula).toBeUndefined()
