@@ -6,13 +6,13 @@
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
-import type { CellInput, CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
+import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
 import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
 import { listOf, lookAlone } from '../../looks/sheet.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
 import { formatAddress, MAX_COLS, parseAddress, readAddress, sortAddresses } from '../../model.js'
-import { cellCount, cellsWithin, cornersText, parseRange, type Rect } from '../../structure/area.js'
+import { cellCount, cellsWithin, cornersText, meets, parseRange, rectText, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
@@ -248,8 +248,8 @@ function hasCriteria(filter: Element | undefined): boolean {
 
 /**
  * Excel's filter mode: an autofilter with criteria, the sheet's or a table's, or the mark of an advanced filter (no
- * autofilter). The mark beside an autofilter without criteria is not taken, as Excel does not take it. The range and
- * the criteria are reported.
+ * autofilter). The mark beside an autofilter without criteria is not taken, as Excel does not take it. The criteria
+ * and the sort are reported.
  */
 function filterMode(head: string, tail: string, src: SheetSource, issues: Issues): boolean {
   const where = { sheet: src.name }
@@ -257,10 +257,21 @@ function filterMode(head: string, tail: string, src: SheetSource, issues: Issues
   const mark = flag(attributes(element(head, 'sheetPr')?.attrs ?? '').filterMode)
   const tables = src.tables.some((x) => hasCriteria(element(x, 'autoFilter')))
   const criteria = hasCriteria(own)
-  if (own) issues.add('autoFilter', { key: criteria ? 'autoFilterCriteria' : 'autoFilterPlain' }, where)
-  else if (mark && !tables) issues.add('autoFilter', { key: 'advancedFilter' }, where)
+  if (criteria) issues.add('autoFilter', { key: 'autoFilterCriteria' }, where)
+  else if (own?.body && element(own.body, 'sortState')) issues.add('autoFilter', { key: 'autoFilterPlain' }, where)
+  else if (mark && !own && !tables) issues.add('autoFilter', { key: 'advancedFilter' }, where)
   if (tables) issues.add('autoFilter', { key: 'tableFilter' }, where)
   return criteria || tables || (mark && !own)
+}
+
+/** The sheet's AutoFilter (`<autoFilter ref>`) as the model holds it: a range of cells over no table of the sheet's, else reported. */
+function autoFilter(tail: string, sheet: SheetInput, issues: Issues): AutoFilter | undefined {
+  const ref = attributes(element(tail, 'autoFilter')?.attrs ?? '').ref
+  if (ref === undefined) return undefined
+  const x = parseRange(ref)
+  if (x && !(sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, x))) return { range: rectText(x) }
+  issues.add('autoFilter', { key: 'autoFilterRange', range: ref }, { sheet: sheet.name })
+  return undefined
 }
 
 function features(head: string, tail: string, src: SheetSource, issues: Issues) {
@@ -387,6 +398,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (m) sheet.merges = m
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, added)
   if (tables.length) sheet.tables = tables
+  const filter = autoFilter(tail, sheet, ctx.issues)
+  if (filter) sheet.autoFilter = filter
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x), rename: src.formulas.rename }, read.cells, ctx.issues, added)
   // a cell of the file's an array left nothing in stays the file's when a note, a link or a header is put on it
   for (const a of dropped) added?.delete(a)

@@ -34,9 +34,9 @@ import type { Locale } from '../locale/types.js'
  * - `hidden`: hidden sheets, read as visible ones.
  * - `sheetKind`: a chart, dialog or macro sheet, left out.
  * - `cellMetadata`: a cell's rich value (`vm`: a data type, a picture in the cell), read as the value the cell stores.
- * - `autoFilter`: an AutoFilter's range, criteria and sort, a table's criteria, an advanced filter (the sheet's filter
- *   mode is read: `SheetInput.filtered`); when writing, the filter mode of a sheet whose tables have no header row,
- *   left out.
+ * - `autoFilter`: an AutoFilter's criteria and sort, a table's criteria, an advanced filter (the sheet's filter mode is
+ *   read: `SheetInput.filtered`); an AutoFilter over no range of cells or over a table, left out; when writing, the
+ *   filter mode of a sheet without an AutoFilter whose tables have no header row, left out.
  * - `dataValidation`: a rule the model cannot hold (no range on the sheet, no formula that its type requires, an
  *   unknown type), left out; cells shared by two rules, kept by the earlier one; an IME mode; a list whose items contain
  *   commas, read as split at them; when writing, a rule whose formula the file cannot hold, left out.
