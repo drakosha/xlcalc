@@ -11,6 +11,6 @@ import * as write from './xlsx/keep/book.js'
 
 export const openKept = /* @__PURE__ */ strict(open.openKept)
 export const writeKept = /* @__PURE__ */ strict(write.writeKept)
-export { KeptRefusal } from './xlsx/keep/refusals.js'
+export { KeptRefusal, type KeptRefusalCode } from './xlsx/keep/refusals.js'
 export type { WriteKeptOptions } from './xlsx/keep/types.js'
 export type { ReadXlsxOptions, XlsxIssue, XlsxIssueCode, XlsxLimits, XlsxRead, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'

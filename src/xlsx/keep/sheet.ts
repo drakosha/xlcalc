@@ -492,9 +492,9 @@ function rootTag(tag: string, qname: string): string {
   const a = attributes(tag.slice(qname.length + 1))
   const add: Record<string, string> = {}
   if (a.xmlns === undefined) add.xmlns = MAIN
-  else if (a.xmlns !== MAIN) throw new KeptRefusal(`the worksheet's default namespace is ${a.xmlns}, not SpreadsheetML's`)
+  else if (a.xmlns !== MAIN) throw new KeptRefusal(`the worksheet's default namespace is ${a.xmlns}, not SpreadsheetML's`, 'file')
   if (a['xmlns:r'] === undefined) add['xmlns:r'] = DOC_REL
-  else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal(`the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`)
+  else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal(`the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`, 'file')
   return Object.keys(add).length ? setAttrs(tag, add) : tag
 }
 

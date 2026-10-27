@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- `KeptRefusal.code` (`KeptRefusalCode`): the kind of `writeKept`'s refusal for a program, `file`, `carriers`, `unread`, `deleted`, `moved`, `links`, `font`, `threads` or `rules` ([Refusals](docs/xlsx-keep.md#refusals)).
+
+Fixed:
+
+- `writeKept` refuses (`rules`) a change of the conditional formats or the data validation of a sheet, by an edit or by rows and columns moving, where the file has rules of that sheet the workbook could not read (its `readXlsx` issues `conditionalFormat` and `dataValidation`), where it wrote the sheet's rules from the workbook and lost those. A sheet without such rules is written as before, and an edit that leaves the rules as they were keeps them.
+
 ## 0.60.1 (2026-10-27)
 
 Fixed:

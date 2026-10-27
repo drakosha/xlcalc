@@ -865,7 +865,7 @@ Types: see [Types](#types).
 class KeptRefusal extends Error
 ```
 
-[`writeKept`](#xlcalcxlsxkeep-writekept)'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells.
+[`writeKept`](#xlcalcxlsxkeep-writekept)'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells; `code` says why.
 
 ### <a id="xlcalcxlsxkeep-openkept"></a>`openKept`
 
@@ -3050,6 +3050,21 @@ Data a host keeps on a cell ([`CellInput.meta`](#cellinput)), as JSON.
 
 ```ts
 type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
+```
+
+### `KeptRefusalCode`
+
+Why [`writeKept`](#xlcalcxlsxkeep-writekept) refuses, for a program ([`KeptRefusal.code`](#xlcalcxlsxkeep-keptrefusal)): `file`, a file it does not write over (a Strict Open XML
+workbook, a sheet name Excel does not take, a worksheet in other namespaces); `carriers`, a hidden name [`openKept`](#xlcalcxlsxkeep-openkept)
+gave the workbook is gone; `unread`, a sheet whose rows, columns or name changed has a part with references writeKept
+does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
+part would move or be cut by the change, which writeKept does not write; `links`, the links to other workbooks
+changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
+the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
+could not read (its [`readXlsx`](#xlcalcxlsx-readxlsx) issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
+
+```ts
+type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 ```
 
 ### `LayoutEdit`
