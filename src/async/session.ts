@@ -134,6 +134,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     fillCellText: (sheet, range, text, co) => edit((eo) => core.fillCellText(sheet, range, text, eo), co, FILL_OPTIONS, 'fillCellText'),
     previewFillCellText: (sheet, range, text, co) => edit((eo) => core.previewFillCellText(sheet, range, text, eo), co, FILL_OPTIONS),
     setNames: (names, co) => edit((eo) => core.setNames(names, eo), co, undefined, 'setNames'),
+    setExternalBooks: (books, co) => edit((eo) => core.setExternalBooks(books, eo), co, undefined, 'setExternalBooks'),
     setClock: (next, co) => edit((eo) => core.setClock(next, eo), co, undefined, 'setClock'),
     editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co, undefined, 'editStructure'),
     // eslint-disable-next-line require-yield

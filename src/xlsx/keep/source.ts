@@ -43,6 +43,8 @@ export interface Source {
   decls: SourceDecl[]
   /** The worksheets read as the book's sheets, in its order. */
   sheets: SourceSheet[]
+  /** The parts of the links to other workbooks, by `<externalReference>` in order (the links' numbers); none where the part is missing. */
+  links: ({ part: string; xml: string } | undefined)[]
 }
 
 /** The `.rels` part of a part. */
@@ -80,7 +82,14 @@ export async function openSource(bytes: Uint8Array, limits?: XlsxLimits): Promis
     const path = relsPath(d.part)
     sheets.push({ decl: i, part: d.part, rels: await relsOf(archive, d.part), relsXml: await archive.text(path), xml })
   }
-  return { bytes, archive, types, wbPath, wb, wbRels, wbRelsXml: await archive.text(relsPath(wbPath)), decls, sheets }
+  const refs = childrenOf(wb, wbRoot).find((c) => c.local === 'externalReferences')
+  const links: Source['links'] = []
+  for (const c of refs ? childrenOf(wb, refs).filter((x) => x.local === 'externalReference') : []) {
+    const r = byId.get(attr(attrsOf(wb, c), 'id') ?? '')
+    const xml = r && !r.external ? await archive.text(r.target) : undefined
+    links.push(r && xml !== undefined ? { part: r.target, xml } : undefined)
+  }
+  return { bytes, archive, types, wbPath, wb, wbRels, wbRelsXml: await archive.text(relsPath(wbPath)), decls, sheets, links }
 }
 
 /** The content types of the file, to be edited. */

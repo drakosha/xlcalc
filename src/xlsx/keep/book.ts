@@ -26,6 +26,8 @@ import { escapeAttr, readText } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
+import { keyOf } from '../../style-table.js'
+import { externalLinkXml } from '../write/links.js'
 import { records } from './zip.js'
 import { carrierNames, carriersOf, type Edit } from './carriers.js'
 import { edited, KeptRefusal, refusals, type Identity } from './refusals.js'
@@ -34,7 +36,7 @@ import { contentTypes, openSource, relsPath, type Source, type SourceSheet } fro
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { KeptStyles } from './styles.js'
 import type { WriteKeptOptions } from './types.js'
-import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes } from './xml.js'
+import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes, type Placed } from './xml.js'
 
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const VML = 'application/vnd.openxmlformats-officedocument.vmlDrawing'
@@ -566,6 +568,7 @@ class Kept {
       edits.push({ part: src.wbPath, start: list.start, end: list.end, text: sheets })
     }
     this.names(wb, kids, place, placeOf, edits, insertAt)
+    this.links(wb, kids, edits, insertAt)
     // the active sheet, by its place now
     const views = kids.find((c) => c.local === 'bookViews')
     const view = views && childrenOf(wb, views).find((c) => c.local === 'workbookView')
@@ -595,6 +598,46 @@ class Kept {
     }
     this.parts.set(src.wbPath, edited(wb, edits))
     this.finish()
+  }
+
+  /**
+   * The links to other workbooks (the refusals keep the file's at their numbers): a link of the file whose sheets, names
+   * or stored values the book changed is written again as `writeXlsx` writes it, through the relationship it has; a new
+   * one after them gets a part of its own, its relationship to the other file, and a `<externalReference>` of the workbook.
+   * A link of the file that is no workbook's (DDE, OLE) is refused when the book changed it.
+   */
+  private links(wb: string, kids: Placed[], edits: Edit[], insertAt: (before: string[]) => number): void {
+    const [l0, l1] = [this.book0.externalBooks ?? [], this.book.externalBooks ?? []]
+    if (keyOf(l0) === keyOf(l1)) return
+    const list = kids.find((c) => c.local === 'externalReferences')
+    for (const [i, b] of l0.entries()) {
+      if (keyOf(b) === keyOf(l1[i])) continue
+      const was = this.src.links[i]
+      // the relationship by which the file's part points at the other workbook
+      const id = was && /<externalBook\b[^>]*?\sr:id="([^"]*)"/.exec(was.xml)?.[1]
+      if (!was || !id) throw new KeptRefusal(`the link [${i + 1}] to another workbook changed, and its part is missing or is not a workbook's (DDE, OLE)`, 'links')
+      this.parts.set(was.part, externalLinkXml(l1[i], i + 1, this.issues).replace(' r:id="rId1"', ` r:id="${id}"`))
+      this.changed = true
+    }
+    const added: string[] = []
+    for (let i = l0.length; i < l1.length; i++) {
+      const part = this.parts.fresh('xl/externalLinks/externalLink', '.xml')
+      this.parts.set(part, externalLinkXml(l1[i], i + 1, this.issues))
+      const rels = new Rels(undefined)
+      rels.add(REL('externalLinkPath'), l1[i].target, true)
+      this.parts.set(relsPath(part), rels.xml())
+      this.types.override(part, `${TYPE}.externalLink+xml`)
+      added.push(`<externalReference r:id="${this.wbRels.add(REL('externalLink'), relative(this.src.wbPath, part))}"/>`)
+    }
+    if (!added.length) return
+    this.changed = true
+    if (list) {
+      const close = wb.lastIndexOf('</', list.end)
+      edits.push({ part: this.src.wbPath, start: close, end: close, text: added.join('') })
+    } else {
+      const at = insertAt(['sheets', 'functionGroups'])
+      edits.push({ part: this.src.wbPath, start: at, end: at, text: `<externalReferences>${added.join('')}</externalReferences>` })
+    }
   }
 
   /** The defined names: the book's, each as the file wrote it where it did not change, and the file's the model does not take, by their sheets' places now. */

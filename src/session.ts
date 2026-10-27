@@ -17,14 +17,14 @@ import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/q
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
-import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, ExternalBook, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { InputError } from './input-error.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
+import { checkBook, checkCell, checkClock, checkEdits, checkExternalBooks, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
 import { checkBoolean, checkNumber, checkString } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
@@ -109,6 +109,7 @@ export interface SessionSteps {
   fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): Steps<FillTextResult>
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): Steps<FillTextPreview>
   setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
+  setExternalBooks(books: ExternalBook[], opts?: EditOptions): Steps<EditResult>
   setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
   editStructure(op: StructureOp, opts?: EditOptions): Steps<SessionStructureResult>
   setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
@@ -753,6 +754,17 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       keep(() => diff && bookStep('setNames', diff, book))
       return answer(next, out)
     },
+    *setExternalBooks(books: ExternalBook[], eo?: EditOptions) {
+      const old = yield* ready()
+      checkBase(eo, revision)
+      const checked = checkExternalBooks(books, 'books')
+      // links change what formulas over them read: the book is rebuilt, changes are collected over all cells (none moved)
+      const { externalBooks: _, ...rest } = old.input
+      const book: BookInput = checked.length ? { ...rest, externalBooks: checked } : rest
+      const [next, out, diff] = yield* rebuild(old, book, [], false, history.on)
+      keep(() => diff && bookStep('setExternalBooks', diff, book))
+      return answer(next, out)
+    },
     *setClock(next: Clock, eo?: EditOptions) {
       if (live) throw new InputError('clock', 'a live session takes its clock from the system: setClock is for a session opened without live')
       const s = yield* ready()
@@ -959,6 +971,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     fillCellText: (sheet, range, text, o) => subs.after('fillCellText', now(() => core.fillCellText(sheet, range, text, o))),
     previewFillCellText: (sheet, range, text, o) => now(() => core.previewFillCellText(sheet, range, text, o)),
     setNames: (names, o) => subs.after('setNames', now(() => core.setNames(names, o))),
+    setExternalBooks: (books, o) => subs.after('setExternalBooks', now(() => core.setExternalBooks(books, o))),
     setClock: (clock, o) => subs.after('setClock', now(() => core.setClock(clock, o))),
     editStructure: (op, o) => subs.after('editStructure', now(() => core.editStructure(op, o))),
     setStyles: (styles, o) => subs.after('setStyles', core.setStyles(styles, o)),

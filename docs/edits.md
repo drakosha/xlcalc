@@ -200,7 +200,7 @@ A cell that displays its row's or column's formatting without formatting of its 
 
 ## What an edit returns
 
-Every call that changes the workbook (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts`, `pasteText`, `fillCellText`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) returns an `EditResult`:
+Every call that changes the workbook (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts`, `pasteText`, `fillCellText`, `setNames`, `setExternalBooks`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) returns an `EditResult`:
 
 - `revision`: the session's revision after the call. Each such call increments it by one, `undo` and `redo` included; a rejection, a failure and an undo with nothing to undo do not.
 - `changes`: the cells whose value or displayed text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` in that case (null when the cell no longer has one), and a new number format also as a code, `numberFormatCode`: a built-in format by its code in the workbook's locale (14 is `dd.mm.yyyy` in ru-RU), as a viewport gives it. After a structure operation, also the cells whose value or formula text differs from that of the cell previously at their position: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.

@@ -9,7 +9,8 @@ on run argv
 	set out to (POSIX file q) as text
 	tell application "Microsoft Excel"
 		with timeout of 150 seconds
-			set wb to open workbook workbook file name hfs
+			-- a book with links to other workbooks opens on the values it stores, as when its prompt is answered Don't Update
+			set wb to open workbook workbook file name hfs update links do not update links
 			calculate full
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no
