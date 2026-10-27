@@ -4,13 +4,15 @@
  * entry and the cells' style and format of the line before them (`lookBefore`), merged areas grow, shrink and move as
  * ranges do and are gone when one cell or none is left, frozen panes follow the lines above their split.
  */
-import type { FrozenPanes, SheetInput } from '../contract.js'
+import type { AutoFilter, FrozenPanes, SheetInput } from '../contract.js'
 import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
 import { parseMerge } from '../layout/merges.js'
 import type { LookTable, RowsEdit } from '../looks/layer.js'
 import { hasLook } from '../looks/sheet.js'
-import { cornersText, hi, LIMIT, LINES, lo, withBounds, type Axis } from './area.js'
+import { cornersText, hi, LIMIT, LINES, lo, parseRange, rectOf, rectText, withBounds, type Area, type Axis } from './area.js'
 import { gridOf } from './grid.js'
+import { sheetKey } from '../syntax.js'
+import type { Transform } from './rewrite.js'
 
 /** Index `i` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0); `gone` for a deleted one. */
 function moved(i: number, at: number, n: number, gone: number): number {
@@ -103,6 +105,22 @@ export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: num
   if (k === undefined || at >= k) return frozen
   const next = n > 0 ? Math.min(k + n, LIMIT[axis] - 1) : Math.max(1, k - (Math.min(at - n, k) - at))
   return { ...frozen, [key]: next }
+}
+
+/**
+ * A sheet's AutoFilter after an operation whose references' transform is `t`: its range follows the cells as a range
+ * reference of its sheet does, growing with lines inserted inside it, shrinking with deleted ones and moving with the
+ * cells cut and pasted; it is gone with its cells, or moved to another sheet (the keep sets `filter-*`). The same
+ * object when it stays.
+ */
+export function filterAfter(f: AutoFilter | undefined, sheet: string, t: Transform): AutoFilter | undefined {
+  if (!f) return f
+  const x = parseRange(f.range)!
+  const bound = (i: number) => ({ i, abs: true })
+  const area: Area = { kind: 'range', r: { lo: bound(x.r1), hi: bound(x.r2) }, c: { lo: bound(x.c1), hi: bound(x.c2) } }
+  const out = t.ref({ sheet, area })
+  if (out === undefined) return f
+  return typeof out === 'object' && sheetKey(out.sheet) === sheetKey(sheet) ? { range: rectText(rectOf(out.area)) } : undefined
 }
 
 /**

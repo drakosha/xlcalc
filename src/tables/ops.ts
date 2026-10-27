@@ -72,7 +72,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
   return { ok: true, book: withTable(out, key, null), geometry: [] }
 }
 
-/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area. */
+/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table, a merged area or the sheet's AutoFilter. */
 function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   const s = sheetIndex(book, sheet)
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
@@ -84,6 +84,8 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   if (over) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
   const merge = x && (book.sheets[s].merges ?? []).find((m) => meets(parseMerge(m)!, x))
   if (merge) return { ok: false, code: 'merged', message: say(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
+  const filter = book.sheets[s].autoFilter?.range
+  if (x && filter && meets(parseRange(filter)!, x)) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverFilter', range: table.range, filter }) }
   const cells = { ...book.sheets[s].cells }
   if (x && table.headers !== false && Array.isArray(table.columns))
     table.columns.forEach((c, i) => {

@@ -19,7 +19,8 @@ import { rewriteCell, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, 
 import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 import { movedLooks } from '../looks/move.js'
-import { layerOf, withLayer } from '../looks/sheet.js'
+import { layerOf, withField, withLayer } from '../looks/sheet.js'
+import { filterAfter } from './layout.js'
 
 type Pair = [number, number]
 
@@ -182,6 +183,11 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
   Object.assign(sheets[ti].cells, moved)
+  // an AutoFilter follows its cells on its sheet, and goes with them to another
+  for (const i of new Set([fi, ti])) {
+    const f = filterAfter(sheets[i].autoFilter, sheets[i].name, t)
+    if (f !== sheets[i].autoFilter) sheets[i] = withField(sheets[i], 'autoFilter', f)
+  }
   // the looks of the cells without an entry move by rectangles, the place they land on cleared
   const [cut, onto] = [layerOf(book.sheets[fi]), layerOf(book.sheets[ti])]
   if (cut || onto) {

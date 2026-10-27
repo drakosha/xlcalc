@@ -95,7 +95,10 @@ function wideArrays(cells: Record<string, CellInput>): [Rect, string][] {
   return out
 }
 
-/** The tables of a checked book's sheets, and their names against each other and against the defined names. */
+/** Why an AutoFilter cannot lie over a table's cells. */
+export const autoFilterOverlap = (range: string, table: string) => `the AutoFilter over ${range} overlaps the table ${table} (a table has a filter of its own)`
+
+/** The tables of a checked book's sheets, and their names against each other and against the defined names; no sheet's AutoFilter over one. */
 export function checkTables(book: BookInput, path = 'book'): void {
   const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
   const taken = new Map<string, string>()
@@ -123,5 +126,7 @@ export function checkTables(book: BookInput, path = 'book'): void {
       const array = (arrays ??= wideArrays(sheet.cells)).find(([a]) => meets(a, x))
       if (array) throw new InputError(`${tp}.range`, `the array formula over ${array[1]} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
     })
+    const f = sheet.autoFilter && rects.find(([y]) => meets(parseRange(sheet.autoFilter!.range)!, y))
+    if (f) throw new InputError(`${path}.sheets[${s}].autoFilter.range`, autoFilterOverlap(sheet.autoFilter!.range, f[1]))
   })
 }
