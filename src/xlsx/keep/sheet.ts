@@ -9,12 +9,13 @@
  * elements the model does not have stay in their place, in the order of the schema; an element the model adds goes
  * where the schema puts it.
  */
-import type { CellInput, SheetInput } from '../../contract.js'
+import type { CellInput, SheetInput, SheetProtection } from '../../contract.js'
 import { colToIndex, formatAddress, parseAddress } from '../../model.js'
 import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
 import { attributes } from '../xml/scan.js'
+import { protectionAttrs } from '../protection.js'
 import { KeptRefusal, type Moved } from './refusals.js'
 import type { KeptStyles } from './styles.js'
 import { attrsOf, childrenOf, closing, DOC_REL, opening, rootOf, setAttrs, split, tagEnd, type Placed } from './xml.js'
@@ -450,6 +451,11 @@ export function spliceSheet(x: SpliceInput): Spliced {
       put('dimension', d ? setAttrs(d.text, { ref: p1.dimension }) : `<dimension ref="${p1.dimension}"/>`)
     }
   }
+  if (keyOf(x.s0.protection ?? null) !== keyOf(x.s1.protection ?? null)) {
+    changed = true
+    const e = own('sheetProtection')
+    put('sheetProtection', x.s0.protection && x.s1.protection && e ? protectionOver(e.text, x.s1.protection) : p1.protection)
+  }
   if (!!x.s0.filtered !== !!x.s1.filtered) {
     changed = true
     put('autoFilter', p1.autoFilter)
@@ -496,6 +502,13 @@ function rootTag(tag: string, qname: string): string {
   if (a['xmlns:r'] === undefined) add['xmlns:r'] = DOC_REL
   else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal(`the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`, 'file')
   return Object.keys(add).length ? setAttrs(tag, add) : tag
+}
+
+/** The file's `<sheetProtection>` with the model's protection: its attributes of what users may do set, its password kept. */
+function protectionOver(text: string, p: SheetProtection): string {
+  const e = split(text)
+  const tag = setAttrs(e.tag, protectionAttrs(p))
+  return e.body ? `${opening(tag)}${e.body}</${e.name}>` : closing(tag)
 }
 
 /** The file's `<sheetPr>` with the model's filter mode and outline settings. */

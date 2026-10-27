@@ -1,10 +1,10 @@
 /**
  * styles.xml as the model's style table: each cell format (`<xf>` of `<cellXfs>`) becomes a style of the book
- * (font, solid fill, borders, alignment; equal ones shared) and a number format, a code or a built-in format's number.
+ * (font, solid fill, borders, alignment, protection; equal ones shared) and a number format, a code or a built-in format's number.
  * What a style cannot hold (pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript,
- * protection, a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
+ * a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
-import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
+import type { AlignmentStyle, BorderLine, CellProtection, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { HORIZONTAL, LINES, VERTICAL } from '../../input/styles.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
@@ -152,6 +152,19 @@ function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: 
   return Object.keys(out).length ? { alignment: out, lost } : { lost }
 }
 
+/**
+ * A cell format's protection (`<protection>`), its fields that differ from the default (locked, not hidden); none
+ * without the element. `applyProtection` and the cell style's format (`xfId`) do not count.
+ */
+function protection(e: Element | undefined): CellProtection | undefined {
+  if (!e) return undefined
+  const a = attributes(e.attrs)
+  const out: CellProtection = {}
+  if (!flag(a.locked, true)) out.locked = false
+  if (flag(a.hidden)) out.hidden = true
+  return Object.keys(out).length ? out : undefined
+}
+
 /** A font's fields that differ from the default font: what a style leaves out is the default. */
 function relative(f: FontStyle, base: FontStyle): FontStyle | undefined {
   const out: FontStyle = { ...f }
@@ -180,15 +193,15 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     const fi = fills[Number(a.fillId ?? 0)]
     const bo = borders[Number(a.borderId ?? 0)]
     const al = alignment(e.body ? element(e.body, 'alignment') : undefined)
-    const pr = e.body ? element(e.body, 'protection') : undefined
-    const pa = pr ? attributes(pr.attrs) : {}
-    const lost: StyleLoss[] = [...(f?.lost ?? []), ...(fi?.lost ?? []), ...(bo?.lost ?? []), ...al.lost, ...(!flag(pa.locked, true) || flag(pa.hidden) ? (['protection'] as const) : [])]
+    const lost: StyleLoss[] = [...(f?.lost ?? []), ...(fi?.lost ?? []), ...(bo?.lost ?? []), ...al.lost]
     const style: CellStyle = {}
     const fs = f && relative(f.style, base)
     if (fs) style.font = fs
     if (fi?.fill) style.fill = fi.fill
     if (bo?.border) style.border = bo.border
     if (al.alignment) style.alignment = al.alignment
+    const pr = protection(e.body ? element(e.body, 'protection') : undefined)
+    if (pr) style.protection = pr
     const xf: Xf = { lost }
     if (Object.keys(style).length) {
       const key = JSON.stringify(style)

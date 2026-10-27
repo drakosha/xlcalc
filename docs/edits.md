@@ -137,8 +137,8 @@ console.log(['A1', 'B2', 'C1'].map((cell) => styles[session.getCell('S', cell).s
 //   ]
 ```
 
-- The font, the sides of the border and the alignment change field by field; the fill is replaced as a whole. `{ font: { bold: null } }` removes bold, and `{ fill: null }` the fill.
-- Equal styles share one entry in the workbook's `styles`: the session finds an equal style or appends one, and the result's `styles` is then the new table. In the workbook, styles remain indexes.
+- The font, the sides of the border, the alignment and the protection change field by field; the fill is replaced as a whole. `{ font: { bold: null } }` removes bold, `{ fill: null }` the fill, and `{ protection: { locked: false } }` unlocks the cells ([Protection](structure.md#protection)).
+- Equal styles share one entry in the workbook's `styles`: the session finds an equal style (a protection's defaults, `locked: true` and `hidden: false`, count as no field) or appends one, and the result's `styles` is then the new table. In the workbook, styles remain indexes.
 - A style given by its index (`style: 3`) replaces the cell's style entirely, as before.
 - A style left with nothing is the empty style, which keeps a cell unformatted in a formatted row or column.
 

@@ -171,13 +171,15 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const body =
       '<sheetViews><sheetView workbookViewId="0"><pane ySplit="600" topLeftCell="A2"/></sheetView></sheetViews>' +
       one(1) +
-      '<sheetProtection sheet="1"/><autoFilter ref="A1:A9"/><conditionalFormatting sqref="A1"><cfRule type="cellIs"/></conditionalFormatting><conditionalFormatting sqref="B1"/><dataValidations count="1"><dataValidation sqref="A1"/></dataValidations><pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter><drawing r:id="rId2"/><tableParts count="1"><tablePart r:id="rId3"/></tableParts><extLst><ext><x14:sparklineGroups/></ext></extLst>'
+      '<sheetProtection sheet="1"/><protectedRanges><protectedRange sqref="A1" name="R"/></protectedRanges><autoFilter ref="A1:A9"/><conditionalFormatting sqref="A1"><cfRule type="cellIs"/></conditionalFormatting><conditionalFormatting sqref="B1"/><dataValidations count="1"><dataValidation sqref="A1"/></dataValidations><pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter><drawing r:id="rId2"/><tableParts count="1"><tablePart r:id="rId3"/></tableParts><extLst><ext><x14:sparklineGroups/></ext></extLst>'
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
     // conditional formats are read: a rule without its formula is left out
     expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes', 'conditionalFormat'])
     expect(r.book.sheets[0].filtered).toBeUndefined()
+    // the protection is read, objects and scenarios not protected by the schema's defaults; its ranges reported
+    expect(r.book.sheets[0].protection).toEqual({ objects: true, scenarios: true })
     // a rule of any value with xlsx's defaults, read as the model's rule with them spelled out
     expect(r.book.sheets[0].validations).toEqual([{ range: 'A1', type: 'any', allowBlank: false, showPrompt: false, showError: false }])
   })

@@ -60,6 +60,17 @@ export interface AlignmentStyle {
 }
 
 /**
+ * A cell's protection (`CellStyle.protection`), like the Protection tab of Excel's Format Cells and xlsx `<protection>`:
+ * on a protected sheet (`SheetInput.protection`) a locked cell takes no edit, and a hidden cell's formula is not
+ * displayed. A cell is locked and not hidden by default, and a style holds only what differs: `{ locked: false }`,
+ * `{ hidden: true }`; `{ protection: { locked: true } }` is the style `{}`. A session does not enforce it: the host does.
+ */
+export interface CellProtection {
+  locked?: boolean
+  hidden?: boolean
+}
+
+/**
  * A cell style in the workbook's style table (`BookInput.styles`), like an xlsx cell format without its number format
  * (which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
  */
@@ -69,6 +80,7 @@ export interface CellStyle {
   fill?: { color: Color }
   border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
   alignment?: AlignmentStyle
+  protection?: CellProtection
 }
 
 /**
@@ -368,4 +380,5 @@ export interface StylePatch {
   fill?: { color: Color } | null
   border?: { [K in keyof NonNullable<CellStyle['border']>]?: BorderLine | null } | null
   alignment?: { [K in keyof AlignmentStyle]?: AlignmentStyle[K] | null } | null
+  protection?: { [K in keyof CellProtection]?: CellProtection[K] | null } | null
 }

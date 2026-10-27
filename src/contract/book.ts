@@ -188,6 +188,12 @@ export interface SheetInput {
    * read a hidden sheet like any other. A workbook always has at least one visible sheet.
    */
   hidden?: boolean | 'very'
+  /**
+   * The sheet is protected (Excel's Protect Sheet, xlsx `<sheetProtection>`), with what users may still do: its cells
+   * that are not locked take edits (`CellStyle.protection`). Not part of calculation or `inputHash`, and a session does
+   * not enforce it: the host does. The workbook holds no password.
+   */
+  protection?: SheetProtection
 }
 
 /**
@@ -210,6 +216,34 @@ export interface FrozenPanes {
   rows?: number
   /** 1 to 16,383. */
   columns?: number
+}
+
+/**
+ * What users may do on a protected sheet (`SheetInput.protection`), as the boxes of Excel's Protect Sheet dialog: each
+ * field true allows it. Selecting locked and unlocked cells is allowed by default, the rest is not, and a protection
+ * holds only what differs from that: `{}` is Excel's default protection, `{ formatCells: true }` also allows
+ * formatting cells, `{ selectLockedCells: false }` allows selecting only the unlocked ones.
+ */
+export interface SheetProtection {
+  selectLockedCells?: boolean
+  selectUnlockedCells?: boolean
+  formatCells?: boolean
+  formatColumns?: boolean
+  formatRows?: boolean
+  insertColumns?: boolean
+  insertRows?: boolean
+  insertHyperlinks?: boolean
+  deleteColumns?: boolean
+  deleteRows?: boolean
+  sort?: boolean
+  /** Use AutoFilter. */
+  autoFilter?: boolean
+  /** Use PivotTable and PivotChart. */
+  pivotTables?: boolean
+  /** Edit objects: drawings, charts, notes. */
+  objects?: boolean
+  /** Edit scenarios. */
+  scenarios?: boolean
 }
 
 /** A group of rows has its summary row below it (`summaryBelow`, true by default) or above it; a group of columns, to the right or to the left. */

@@ -1,6 +1,6 @@
 /** The edits of a session's book: cells set, replaced and patched, the layout changed, operations in a batch and their preview, what a call that changes the book answers and its subscribers get, undo and redo. */
 import type { CellRef, CellValue, Clock, JsonValue, RangeRef } from './values.js'
-import type { CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput } from './book.js'
+import type { CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection } from './book.js'
 import type { CellStyle, ConditionalFormat, DataValidation, StylePatch } from './looks.js'
 import type { CellDisplay, CellIssueDetail } from './results.js'
 import type { ValidationRefusal } from './typing.js'
@@ -218,6 +218,8 @@ export type LayoutEdit =
   | { sheet: string; merges: string[] }
   /** The sheet's filter mode (`SheetInput.filtered`). */
   | { sheet: string; filtered: boolean }
+  /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
+  | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */

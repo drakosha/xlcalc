@@ -2,10 +2,12 @@
  * Input as the engine takes it. A formula's leading `=` is dropped: Excel shows a formula with one in its formula bar
  * and in its boxes of names, conditional formats and data validation, and a host passes what it shows: one `=` goes
  * (`=SUM(A1:A2)` is `SUM(A1:A2)`, the same input and the same `inputHash`), a second stays and is an error of the
- * formula (`==1`). What needs none is given back as it is, what needs one as a copy: the caller's input is not changed,
+ * formula (`==1`). Protection, a style's and a sheet's, holds only what differs from Excel's defaults
+ * (`input/protection.ts`): `{ protection: { locked: true } }` is the style `{}`. What needs none is given back as it is, what needs one as a copy: the caller's input is not changed,
  * and input without one costs no copy.
  */
-import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
+import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, CellStyle, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
+import { protectionTaken, styleTaken } from './input/protection.js'
 
 /** A formula with a leading `=`. */
 export const leadingEquals = (f: unknown): f is string => typeof f === 'string' && f.charCodeAt(0) === 61
@@ -70,6 +72,8 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
   if (formats !== s.conditionalFormats) out.conditionalFormats = formats
   const rules = s.validations && validationsTaken(s.validations)
   if (rules !== s.validations) out.validations = rules
+  const protection = s.protection && protectionTaken(s.protection)
+  if (protection !== s.protection) out.protection = protection
   return Object.keys(out).length ? { ...s, ...out } : s
 }
 
@@ -77,8 +81,12 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
 export function bookTaken(book: BookInput, cells: (string[] | undefined)[]): BookInput {
   const sheets = each(book.sheets, (s, i) => sheetTaken(s, cells[i]))
   const names = book.names && namesTaken(book.names)
-  return sheets === book.sheets && names === book.names ? book : { ...book, sheets, ...(names ? { names } : {}) }
+  const styles = book.styles && stylesTaken(book.styles)
+  return sheets === book.sheets && names === book.names && styles === book.styles ? book : { ...book, sheets, ...(names ? { names } : {}), ...(styles ? { styles } : {}) }
 }
+
+/** A style table as taken: each style's protection without the defaults (`styleTaken`). */
+export const stylesTaken = (styles: CellStyle[]): CellStyle[] => each(styles, styleTaken)
 
 /** Edits of cells (`setCells`'s by fields, `replaceCells`' whole inputs) as taken. */
 export const editsTaken = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
@@ -87,7 +95,7 @@ export const editsTaken = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
     return input === e.input ? e : { ...e, input }
   })
 
-/** Layout edits as taken: the conditional formats and the rules of data validation. */
+/** Layout edits as taken: the conditional formats, the rules of data validation and a sheet's protection. */
 export const layoutTaken = (edits: LayoutEdit[]): LayoutEdit[] =>
   each(edits, (e) => {
     if ('conditionalFormats' in e) {
@@ -97,6 +105,10 @@ export const layoutTaken = (edits: LayoutEdit[]): LayoutEdit[] =>
     if ('validations' in e) {
       const validations = validationsTaken(e.validations)
       return validations === e.validations ? e : { ...e, validations }
+    }
+    if ('protection' in e && e.protection) {
+      const protection = protectionTaken(e.protection)
+      return protection === e.protection ? e : { ...e, protection }
     }
     return e
   })
