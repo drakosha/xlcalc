@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- `Session.setExternalBooks(books)`, in every kind of session: a host that read another workbook gives the links with the values it needs, a new one after the others, more values of one, values read again; the workbook is calculated again, in one step of undo, and typed text finds a new link by its file name ([External references](docs/links.md)).
+- `writeKept` writes the links a host gave: a link after the file's as a part of its own with its relationship, content type and `<externalReference>`, and a link of the file whose values or mark changed into its part, through the relationship it has (Excel for Mac opened six such files without its repair window and calculated the formulas over them) ([Writing over the original file](docs/xlsx-keep.md#links-to-other-workbooks)).
+
+Changed:
+
+- `writeKept` refuses (`links`) only a link removed, moved among the links or pointed at another file, which the file's formulas would read by another number, and a changed link of another kind (DDE, OLE), where it refused any change of the links, a formula typed over one among them.
+
 ## 0.61.0 (2026-10-27)
 
 Added:
