@@ -183,11 +183,10 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
   Object.assign(sheets[ti].cells, moved)
-  // an AutoFilter follows its cells on its sheet, and goes with them to another
-  for (const i of new Set([fi, ti])) {
-    const f = filterAfter(sheets[i].autoFilter, sheets[i].name, t)
-    if (f !== sheets[i].autoFilter) sheets[i] = withField(sheets[i], 'autoFilter', f)
-  }
+  // an AutoFilter the move takes whole follows its cells on its sheet, and goes with them to another; one it takes part
+  // of or lands on stays (the keep sets `filter-move*`)
+  const f = sheets[fi].autoFilter
+  if (f && contains(src, parseRange(f.range)!)) sheets[fi] = withField(sheets[fi], 'autoFilter', filterAfter(f, from, t))
   // the looks of the cells without an entry move by rectangles, the place they land on cleared
   const [cut, onto] = [layerOf(book.sheets[fi]), layerOf(book.sheets[ti])]
   if (cut || onto) {

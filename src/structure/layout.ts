@@ -108,10 +108,20 @@ export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: num
 }
 
 /**
- * A sheet's AutoFilter after an operation whose references' transform is `t`: its range follows the cells as a range
- * reference of its sheet does, growing with lines inserted inside it, shrinking with deleted ones and moving with the
- * cells cut and pasted; it is gone with its cells, or moved to another sheet (the keep sets `filter-*`). The same
- * object when it stays.
+ * A sheet's AutoFilter after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0), whose references'
+ * transform is `t`: its range follows the cells as a range reference of its sheet does, growing with lines inserted
+ * inside it and shrinking with deleted ones; it goes with its cells, and with its header row (the keep sets `filter-*`).
+ * The same object when it stays.
+ */
+export function shiftFilter(f: AutoFilter | undefined, sheet: string, axis: Axis, at: number, n: number, t: Transform): AutoFilter | undefined {
+  if (!f) return f
+  const head = parseRange(f.range)!.r1
+  return axis === 'r' && n < 0 && head >= at && head < at - n ? undefined : filterAfter(f, sheet, t)
+}
+
+/**
+ * A sheet's AutoFilter after an operation whose references' transform is `t`, as a range reference of its sheet; gone
+ * with its cells or to another sheet. The same object when it stays.
  */
 export function filterAfter(f: AutoFilter | undefined, sheet: string, t: Transform): AutoFilter | undefined {
   if (!f) return f

@@ -107,12 +107,13 @@ function after(op: StructureOp, sheet = 'Data', start = book()): string | undefi
   return r.book.sheets.find((s) => s.name === sheet)?.autoFilter?.range
 }
 
-describe('the structure operations move the AutoFilter as a range reference of its sheet', () => {
+describe('the structure operations move the AutoFilter as a range reference of its sheet, a move only when it takes all of it', () => {
   it.each([
     ['rows inserted inside it grow it', { op: 'insertRows', sheet: 'Data', row: 3, count: 2 }, 'A1:C7'],
     ['rows inserted right under it leave it', { op: 'insertRows', sheet: 'Data', row: 6 }, 'A1:C5'],
     ['rows inserted above its header move it', { op: 'insertRows', sheet: 'Data', row: 1 }, 'A2:C6'],
-    ['its header row deleted: the row under it is the first', { op: 'deleteRows', sheet: 'Data', row: 1 }, 'A1:C4'],
+    ['its header row deleted: gone', { op: 'deleteRows', sheet: 'Data', row: 1 }, undefined],
+    ['rows deleted under its header', { op: 'deleteRows', sheet: 'Data', row: 2, count: 2 }, 'A1:C3'],
     ['all its rows deleted: gone', { op: 'deleteRows', sheet: 'Data', row: 1, count: 5 }, undefined],
     ['a column deleted inside it', { op: 'deleteColumns', sheet: 'Data', column: 'B' }, 'A1:B5'],
     ['all its columns deleted: gone', { op: 'deleteColumns', sheet: 'Data', column: 'A', count: 3 }, undefined],
@@ -121,7 +122,8 @@ describe('the structure operations move the AutoFilter as a range reference of i
     ['moved whole on its sheet', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C5' }, to: { sheet: 'Data', cell: 'E7' } }, 'E7:G11'],
     ['moved whole to another sheet: gone from its own', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C5' }, to: { sheet: 'Other', cell: 'B2' } }, undefined],
     ['its header row moved away: left', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C1' }, to: { sheet: 'Data', cell: 'H1' } }, 'A1:C5'],
-    ['cells moved over all of it: gone', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J5' }, to: { sheet: 'Data', cell: 'A1' } }, undefined],
+    ['cells moved over all of it: left', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J5' }, to: { sheet: 'Data', cell: 'A1' } }, 'A1:C5'],
+    ['its last rows moved down: left', { op: 'moveRange', from: { sheet: 'Data', range: 'A4:C5' }, to: { sheet: 'Data', cell: 'A9' } }, 'A1:C5'],
     ['a copy over it leaves it', { op: 'copyRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Data', range: 'A3:C3' } }, 'A1:C5'],
     ['its sheet renamed', { op: 'renameSheet', sheet: 'Data', name: 'Sales' }, 'A1:C5'],
   ] as [string, StructureOp, string | undefined][])('%s', (_, op, range) => {

@@ -284,6 +284,11 @@ export const STRUCT: Struct[] = [
   filter('move-over', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J21' }, to: { sheet: 'Data', cell: 'A1' } }, ['moveRange', 'Data', 'H1:J21', 'Data', 'A1']),
   filter('rename', { op: 'renameSheet', sheet: 'Data', name: 'Sales' }, ['renameSheet', 'Data', '', 'Sales', '']),
   filter('delete-sheet', { op: 'deleteSheet', sheet: 'Data' }, ['deleteSheet', 'Data', '', '', '']),
+  // held out after the rules for the header row and for moves were fitted to the cases above
+  { ...rows('Data', 1, 2, 'deleteRows'), id: 'filter-delete-head-two', made: 'filter' },
+  filter('delete-first-column', { op: 'deleteColumns', sheet: 'Data', column: 'A' }, ['deleteColumns', 'Data', 'A1', '', '']),
+  filter('move-over-end', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J5' }, to: { sheet: 'Data', cell: 'A17' } }, ['moveRange', 'Data', 'H1:J5', 'Data', 'A17']),
+  filter('move-end-down', { op: 'moveRange', from: { sheet: 'Data', range: 'A15:C21' }, to: { sheet: 'Data', cell: 'A30' } }, ['moveRange', 'Data', 'A15:C21', 'Data', 'A30']),
 ]
 
 /**

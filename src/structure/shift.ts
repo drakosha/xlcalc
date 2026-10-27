@@ -13,7 +13,7 @@ import { hi, LINES, LIMIT, parseRange, withSpan, type Area, type Axis } from './
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { arraysOf, gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
-import { filterAfter, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
+import { openedGroup, shiftFilter, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
@@ -101,7 +101,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     // the new lines take the format of the line before them with the sheet's looks (`linesMoved`)
     madeFrom([s.cells], cells)
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
-    const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, autoFilter: filterAfter(s.autoFilter, s.name, t), frozen: shiftFrozen(s.frozen, axis, at, n), validations }
+    const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, autoFilter: shiftFilter(s.autoFilter, s.name, axis, at, n, t), frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'autoFilter', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
     // lines and merged areas all pushed off or deleted leave no field, as a paste leaves none
     for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] && !Object.keys(layout[k]).length) delete layout[k]
