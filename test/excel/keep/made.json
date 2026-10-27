@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.2",
-  "seconds": 1.9,
+  "seconds": 3.2,
   "date": "2026-10-27"
  },
  "books": {
@@ -258,6 +258,47 @@
     "breaks": 0,
     "notes": 0,
     "autoFilters": 1
+   }
+  },
+  "filter-table-in": {
+   "sent": "a05a9ae5794b04d6cf960c7d511f02a04c46d792376846f05683a82dce052778",
+   "made": [
+    "autofilter $A$1:$C$21",
+    "tablein error -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   }
+  },
+  "filter-table-around": {
+   "sent": "ab1452183b677d5636893567c1a9f8280890ec24bccab99b9b18cca302944f86",
+   "made": [
+    "autofilter $A$1:$C$21",
+    "tablearound done; autofilter mode false; tables 1"
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
    }
   }
  }

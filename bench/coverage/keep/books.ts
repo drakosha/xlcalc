@@ -206,27 +206,33 @@ export const MADE_STRUCT: Made[] = [
 /**
  * Files Excel makes to answer what it does with an AutoFilter beside a table (`excel-keep.applescript`): one asked over
  * Plain!A1:B5, where a table lies on A1:A2, and on Data, which has an AutoFilter over A1:C21, a table asked over
- * A1:C21, over B10:D12, inside the AutoFilter (A1:B10) or around it (A1:D22), each predicted after the answers before
- * it. Each line of an answer starts with the feature's name and what Excel did, `done` or `error`.
+ * A1:C21, over B10:D12, inside the AutoFilter (A1:B10), around it (A1:D22), over it and rows below (A1:C25), over its
+ * rows but the header (A2:C21), each predicted after the answers before it. Each line of an answer starts with the
+ * feature's name and what Excel did, `done` or `error`.
  */
 export const MADE_PROBES: Made[] = [
   { id: 'filter-tables', features: ['autofilter', 'overtable', 'tableover'], table: true },
   { id: 'filter-table-part', features: ['autofilter', 'tablepart'] },
   { id: 'filter-table-in', features: ['autofilter', 'tablein'] },
   { id: 'filter-table-around', features: ['autofilter', 'tablearound'] },
+  { id: 'filter-table-long', features: ['autofilter', 'tablelong'] },
+  { id: 'filter-table-low', features: ['autofilter', 'tablelow'] },
 ]
 
 /**
  * The engine's answers to the probes, each line's start: the AutoFilter made; one over a table refused (`checkTables`);
- * a table over the AutoFilter's range made, the AutoFilter gone, one over other cells of it refused (`addTable`). The
+ * a table over all of the AutoFilter's range made, the AutoFilter gone, one over part of it refused (`addTable`). The
  * engine refused every table over the AutoFilter until Excel's first answer, then took any such table in its place
- * until the second (`filter-table-part`, refused); the last two were predicted after it.
+ * until the second (`filter-table-part`, refused), then only one over its range alone until the fourth
+ * (`filter-table-around`, made); the last two were predicted after it.
  */
 export const PROBES: Record<string, string[]> = {
   'filter-tables': ['autofilter $A$1:$C$21', 'overtable error', 'tableover done; autofilter mode false; tables 1'],
   'filter-table-part': ['autofilter $A$1:$C$21', 'tablepart error'],
   'filter-table-in': ['autofilter $A$1:$C$21', 'tablein error'],
-  'filter-table-around': ['autofilter $A$1:$C$21', 'tablearound error'],
+  'filter-table-around': ['autofilter $A$1:$C$21', 'tablearound done; autofilter mode false; tables 1'],
+  'filter-table-long': ['autofilter $A$1:$C$21', 'tablelong done; autofilter mode false; tables 1'],
+  'filter-table-low': ['autofilter $A$1:$C$21', 'tablelow error'],
 }
 
 /** An operation of the structure on a made file, as the session takes it and as `excel-keep-struct.applescript` does it: op, sheet, range, target, cell. */

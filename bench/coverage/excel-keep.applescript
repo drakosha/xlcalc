@@ -1,7 +1,7 @@
 -- Open a book and give it what the workbook model does not hold, as a person does in Excel's window, then save it as
 -- xlsx under another name and close it. Arguments: the book's path and the path to save to (inside Excel's sandbox),
 -- the saved file's name, the features (a comma list: chart, chartsheet, picture, sized, floating, chartmove, rich, theme,
--- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart, tablein, tablearound) and
+-- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart, tablein, tablearound, tablelong, tablelow) and
 -- a picture's path (inside the sandbox). Answers what it made, one feature a line, or the error of one it could not.
 on run argv
 	set p to item 1 of argv
@@ -100,8 +100,9 @@ on run argv
 					set made to made & "tableover error " & k & " " & msg & linefeed
 				end try
 			end if
-			-- a table asked over part of the AutoFilter's data and the column beside it, inside its range, around it
-			repeat with probe in {{"tablepart", "B10:D12"}, {"tablein", "A1:B10"}, {"tablearound", "A1:D22"}}
+			-- a table asked over part of the AutoFilter's data and the column beside it, inside its range, around it, over it
+			-- and rows below, over its rows but the header
+			repeat with probe in {{"tablepart", "B10:D12"}, {"tablein", "A1:B10"}, {"tablearound", "A1:D22"}, {"tablelong", "A1:C25"}, {"tablelow", "A2:C21"}}
 				if feats contains (item 1 of probe) then
 					try
 						make new list object at ws with properties {range object:(range (item 2 of probe) of ws)}
