@@ -355,7 +355,7 @@ function internStyle(styles: readonly CellStyle[], style: CellStyle): { index: n
 
 A style's index in a style table, as `patchCells` finds it: the index of the first equal style and the same array, or
 a new array with a copy of the style appended and its index. Equal styles have the same fields with the same values,
-in any order. A table is read once per array: the next call, given the returned table, reads only the added style. A
+in any order, a protection's defaults aside (`{ protection: { locked: true } }` is `{}`). A table is read once per array: the next call, given the returned table, reads only the added style. A
 table changed in place (a style added, replaced or removed) is read again; a style changed in place goes unnoticed.
 
 ### <a id="xlcalc-lineskey"></a>`linesKey`
@@ -1655,6 +1655,20 @@ interface CellPosition {
 }
 ```
 
+### `CellProtection`
+
+A cell's protection ([`CellStyle.protection`](#cellstyle)), like the Protection tab of Excel's Format Cells and xlsx `<protection>`:
+on a protected sheet ([`SheetInput.protection`](#sheetinput)) a locked cell takes no edit, and a hidden cell's formula is not
+displayed. A cell is locked and not hidden by default, and a style holds only what differs: `{ locked: false }`,
+`{ hidden: true }`; `{ protection: { locked: true } }` is the style `{}`. A session does not enforce it: the host does.
+
+```ts
+interface CellProtection {
+  locked?: boolean
+  hidden?: boolean
+}
+```
+
 ### `CellReadField`
 
 A cell field that `readCells` and `findCells` return: `editText` is the text the cell opens with in edit mode, as in a viewport ([`ViewportCell.editText`](#viewportcell)).
@@ -1746,6 +1760,7 @@ interface CellStyle {
   fill?: { color: Color }
   border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
   alignment?: AlignmentStyle
+  protection?: CellProtection
 }
 ```
 
@@ -3098,6 +3113,8 @@ type LayoutEdit =
   | { sheet: string; filtered: boolean }
   /** The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. */
   | { sheet: string; autoFilter: AutoFilter | null }
+  /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
+  | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
@@ -4280,6 +4297,12 @@ interface SheetInput {
    * read a hidden sheet like any other. A workbook always has at least one visible sheet.
    */
   hidden?: boolean | 'very'
+  /**
+   * The sheet is protected (Excel's Protect Sheet, xlsx `<sheetProtection>`), with what users may still do: its cells
+   * that are not locked take edits (`CellStyle.protection`). Not part of calculation or `inputHash`, and a session does
+   * not enforce it: the host does. The workbook holds no password.
+   */
+  protection?: SheetProtection
 }
 ```
 
@@ -4315,6 +4338,37 @@ A sheet's groups ([`outlineGroups`](#xlcalc-outlinegroups)), on each axis by fir
 interface SheetOutline {
   rows: OutlineGroup[]
   columns: OutlineGroup[]
+}
+```
+
+### `SheetProtection`
+
+What users may do on a protected sheet ([`SheetInput.protection`](#sheetinput)), as the boxes of Excel's Protect Sheet dialog: each
+field true allows it. Selecting locked and unlocked cells is allowed by default, the rest is not, and a protection
+holds only what differs from that: `{}` is Excel's default protection, `{ formatCells: true }` also allows
+formatting cells, `{ selectLockedCells: false }` allows selecting only the unlocked ones.
+
+```ts
+interface SheetProtection {
+  selectLockedCells?: boolean
+  selectUnlockedCells?: boolean
+  formatCells?: boolean
+  formatColumns?: boolean
+  formatRows?: boolean
+  insertColumns?: boolean
+  insertRows?: boolean
+  insertHyperlinks?: boolean
+  deleteColumns?: boolean
+  deleteRows?: boolean
+  sort?: boolean
+  /** Use AutoFilter. */
+  autoFilter?: boolean
+  /** Use PivotTable and PivotChart. */
+  pivotTables?: boolean
+  /** Edit objects: drawings, charts, notes. */
+  objects?: boolean
+  /** Edit scenarios. */
+  scenarios?: boolean
 }
 ```
 
@@ -4501,6 +4555,7 @@ interface StylePatch {
   fill?: { color: Color } | null
   border?: { [K in keyof NonNullable<CellStyle['border']>]?: BorderLine | null } | null
   alignment?: { [K in keyof AlignmentStyle]?: AlignmentStyle[K] | null } | null
+  protection?: { [K in keyof CellProtection]?: CellProtection[K] | null } | null
 }
 ```
 

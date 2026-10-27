@@ -22,7 +22,9 @@ import { openKept, writeKept, type KeptRefusal } from '../src/xlsx-keep.js'
 
 registerLocale(ruRU)
 const root = fileURLToPath(new URL('..', import.meta.url))
-const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).sort().filter((_, i) => i % 3 === 0)
+/** The file whose rules an edit changes and which the workbook reads in part: in the sample whatever sets the folder holds. */
+const FILLS = 'test/excel/win/cond/fills-held/fills.xlsx'
+const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).sort().filter((f, i) => i % 3 === 0 || f === FILLS)
 
 /**
  * Where the file written over the original reads back otherwise than `writeXlsx`'s, as the original has it: a view's
@@ -236,7 +238,7 @@ describe('xlsx/keep over the test sets', () => {
     const r = await check(EDITS)
     expect(r.problems).toEqual([])
     // a file with rules the workbook reads in part (gradient fills), whose rules an edit changed
-    expect(r.refused).toEqual(['test/excel/win/cond/fills-held/fills.xlsx rules'])
+    expect(r.refused).toEqual([`${FILLS} rules`])
   }, 240_000)
 
   it('random operations of the structure: written as writeXlsx writes the book, or refused', async () => {

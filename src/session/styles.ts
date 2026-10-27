@@ -14,6 +14,7 @@ import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, inner, parseAddress } from '../model.js'
 import { cellCount, hasCell, LINES, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
+import { styleTaken } from '../input/protection.js'
 import { StyleTable } from '../style-table.js'
 import { edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from '../looks/layer.js'
 import { layerOf, lookAlone, hasLook } from '../looks/sheet.js'
@@ -39,18 +40,20 @@ function over<T extends object>(base: T | undefined, patch: { [K in keyof T]?: T
   return someField<T>(out) ?? undefined
 }
 
-/** A style with a patch over it, field by field: the font, the border's sides and the alignment one field at a time, the fill whole. */
+/** A style with a patch over it, field by field: the font, the border's sides, the alignment and the protection one field at a time, the fill whole. */
 export function patchStyle(base: CellStyle, p: StylePatch): CellStyle {
   const out: CellStyle = {}
   const font = over(base.font, p.font)
   const fill = p.fill === undefined ? base.fill : (p.fill ?? undefined)
   const border = over(base.border, p.border)
   const alignment = over(base.alignment, p.alignment)
+  const protection = over(base.protection, p.protection)
   if (font) out.font = font
   if (fill) out.fill = fill
   if (border) out.border = border
   if (alignment) out.alignment = alignment
-  return out
+  if (protection) out.protection = protection
+  return styleTaken(out)
 }
 
 /**

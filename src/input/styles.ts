@@ -1,6 +1,6 @@
 /**
  * The checks of input's looks: number formats, the index of a style of the book, and styles with their fonts, fills,
- * borders and alignments, as a cell's style or a conditional format's. The module needs nothing of the engine.
+ * borders, alignments and protection, as a cell's style or a conditional format's. The module needs nothing of the engine.
  */
 import type { AlignmentStyle, BorderLine, CellStyle } from '../contract.js'
 import { InputError, what } from '../input-error.js'
@@ -77,7 +77,7 @@ export function checkBorder(v: unknown, p: string, side: Given) {
 /** A style, or with `patch` the fields of one to change (`StylePatch`), where null removes a field. */
 export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   const s = object(v, p, 'a style such as { font: { bold: true } }')
-  onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
+  onlyKeys(s, p, ['font', 'fill', 'border', 'alignment', 'protection'])
   const given: Given = givenIn(patch)
   if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, true)
   if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC000')
@@ -89,6 +89,11 @@ export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
     if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, VERTICAL)
     if (given(a, 'wrap')) checkBoolean(a.wrap, `${p}.alignment.wrap`)
     if (given(a, 'indent')) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
+  }
+  if (given(s, 'protection')) {
+    const pr = object(s.protection, `${p}.protection`, 'a protection such as { locked: false }')
+    onlyKeys(pr, `${p}.protection`, ['locked', 'hidden'])
+    for (const k of ['locked', 'hidden']) if (given(pr, k)) checkBoolean(pr[k], `${p}.protection.${k}`)
   }
   return s as CellStyle
 }

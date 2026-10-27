@@ -35,6 +35,7 @@ import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
 import type { ResultCell } from './snapshot.js'
 import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
+import { protectionXml } from '../protection.js'
 
 /**
  * The default width in xlsx units (8 digits and the padding, as Excel for Mac writes it): a column that has a look
@@ -107,6 +108,7 @@ export interface SheetPieces {
   formatPr: string
   cols: string
   rows: RowWritten[]
+  protection: string
   autoFilter: string
   merges: string
   conditional: string
@@ -124,7 +126,7 @@ export function sheetXml(p: SheetPieces): string {
   return (
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
-    p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
+    p.protection + p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
     '</worksheet>'
   )
@@ -338,6 +340,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     formatPr: `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
+    protection: protectionXml(sheet.protection),
     autoFilter: filter ? (sheet.filtered ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filter}"/>`) : '',
     merges: merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '',
     conditional: cond.main,

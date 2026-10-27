@@ -1,15 +1,17 @@
 /**
- * The styles of a file written over another: styles.xml is not built again but added to. A cell format that looks as
- * one of the file's (the same style and number format, as the reader sees them) is that one, the first of them, and so
- * keeps what the model does not hold of it (theme colours, a cell style, rotation); a new one goes at the end of
- * `<cellXfs>`, with its font, fill, border and number format after the file's, its font relative to the file's default
- * one. A conditional format's differential format goes at the end of `<dxfs>`. Only what a written part uses is added.
+ * The styles of a file written over another: styles.xml is not built again but added to. A cell of the file that keeps
+ * its look (the same style and number format, as the reader sees them) keeps its own cell format (`keep`), and with it
+ * what the model does not hold of it (theme colours, a cell style, a quote prefix, rotation). A new cell, a cell whose
+ * look changed and a cell that moved (rows or columns inserted or deleted) take the file's first cell format of their
+ * look, or a new one at the end of `<cellXfs>`, with its font, fill, border and number format after the file's, its font
+ * relative to the file's default one. A conditional format's differential format goes at the end of `<dxfs>`. Only what
+ * a written part uses is added.
  */
 import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
 import { attributes, element, elements } from '../xml/scan.js'
-import { alignmentXml, borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
+import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
@@ -115,7 +117,7 @@ export class KeptStyles {
         const font = s?.font ? this.add('fonts', fontXml(s.font, this.base)) : 0
         const fill = s?.fill ? this.add('fills', fillXml(s.fill)) : 0
         const border = s?.border ? this.add('borders', borderXml(s.border)) : 0
-        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, alignmentXml(s?.alignment)))
+        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, s))
         this.byLook.set(key, i)
         return i
       },

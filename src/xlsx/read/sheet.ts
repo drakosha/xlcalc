@@ -29,6 +29,7 @@ import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
 import { readSheetView } from '../view.js'
+import { readProtection } from '../protection.js'
 
 export interface SheetSource {
   name: string
@@ -55,8 +56,7 @@ export interface SheetRead {
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
 const FEATURES: [local: string, code: XlsxIssueCode, message: XlsxMessage][] = [
-  ['sheetProtection', 'protection', { key: 'sheetProtection' }],
-  ['protectedRanges', 'protection', { key: 'sheetProtection' }],
+  ['protectedRanges', 'protection', { key: 'protectedRanges' }],
   ['drawing', 'drawing', { key: 'drawings' }],
   ['picture', 'drawing', { key: 'drawings' }],
   ['oleObjects', 'drawing', { key: 'drawings' }],
@@ -391,6 +391,10 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
+  const sp = element(tail, 'sheetProtection')
+  const sheetProtection = sp ? readProtection(attributes(sp.attrs)) : undefined
+  if (sheetProtection?.protection) sheet.protection = sheetProtection.protection
+  if (sheetProtection?.password) ctx.issues.add('protection', { key: 'sheetPassword' }, { sheet: name })
   if (cols) sheet.columns = cols
   const rows = spans<RowInput>([...read.rows].map(([r, v]) => [r - 1, r - 1, v]), 'r')
   if (rows) sheet.rows = rows

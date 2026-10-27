@@ -69,7 +69,7 @@ import { OUTLINE_FIELDS } from './structure/outline-command.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { cellValidation, hasRule, withInputs } from './validation/session.js'
-import { cellTaken, editsTaken, opTaken } from './taken.js'
+import { cellTaken, editsTaken, opTaken, stylesTaken } from './taken.js'
 import { layerOf, putInputs, putLayers, withLayer, withLooksOf } from './looks/sheet.js'
 import { FILL_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
 
@@ -817,7 +817,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       checkStylesUsed(s.input, checkStyles(styles, 'styles').length)
       const was = s.input.styles
-      s.input.styles = styles
+      s.input.styles = stylesTaken(styles)
       keep(() => stylesStep(was))
       return answer(s, { ...nothing(), styles: true })
     },

@@ -97,11 +97,11 @@ describe('xlsx styles: reading', () => {
         '<borders count="2"><border/><border diagonalUp="1"><diagonal style="thin"/></border></borders>' +
         '<cellXfs count="5"><xf/><xf fontId="1" fillId="2"><alignment textRotation="45" shrinkToFit="1"/><protection locked="0"/></xf><xf fillId="3" borderId="1"/><xf numFmtId="55"/><xf numFmtId="81"/></cellXfs>',
     })
-    expect(r.book.styles).toBeUndefined()
+    // a cell's protection is a style's
+    expect(r.book.styles).toEqual([{ protection: { locked: false } }])
     expect(r.book.sheets[0].cells.D1).toEqual({ value: 1, numberFormat: 'm/d/yy' })
     expect(r.book.sheets[0].cells.E1).toEqual({ value: 1 })
     expect(codes(r.issues)).toEqual([
-      'style A1 C1',
       'style A1 C1',
       'style A1 C1',
       'style A1 C1',
@@ -116,7 +116,6 @@ describe('xlsx styles: reading', () => {
       "a style's pattern fill is not in the model",
       "a style's text rotation is not in the model",
       "a style's shrink to fit is not in the model",
-      "a style's protection is not in the model",
       "a style's gradient fill is not in the model",
       "a style's diagonal border is not in the model",
     ])

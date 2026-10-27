@@ -42,7 +42,7 @@ const LOSSES = pack(
           '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" s="1"><v>1</v></c><c r="C1" t="e"><v>#CALC!</v></c><c r="D1" t="e"><v>#N/A</v></c>' +
           '<c r="E1"><f>_xludf.MYFN(1)</f><v>0</v></c><c r="F1"><f>1+</f><v>0</v></c><c r="G1" vm="1"><v>1</v></c></row>' +
           '<row r="2"><c r="A2"><f t="dataTable" ref="A2:A2" dt2D="0" dtr="0" r1="B2"/><v>1</v></c></row><row r="3"><c r="A1048577"><v>1</v></c></row></sheetData>' +
-          '<sheetProtection sheet="1"/><mergeCells count="2"><mergeCell ref="A5:B5"/><mergeCell ref="B5:C5"/></mergeCells>' +
+          '<sheetProtection password="CC1A" sheet="1"/><mergeCells count="2"><mergeCell ref="A5:B5"/><mergeCell ref="B5:C5"/></mergeCells>' +
           '<conditionalFormatting sqref="A1:A3"><cfRule type="heatMap" priority="1"/></conditionalFormatting>' +
           '<dataValidations count="2"><dataValidation type="regex" sqref="B1"/><dataValidation type="whole" operator="greaterThan" imeMode="on" sqref="C1"><formula1>1</formula1></dataValidation></dataValidations>' +
           '<pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter>',
@@ -85,7 +85,7 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['autoFilter', { key: 'advancedFilter' }],
   ['frozenPanes', { key: 'splitPanes' }],
   ['defaultWidth', { key: 'defaultWidth', width: 12 }],
-  ['protection', { key: 'sheetProtection' }],
+  ['protection', { key: 'sheetPassword' }],
   ['print', { key: 'printSettings' }],
   ['conditionalFormat', { key: 'condType', type: 'heatMap' }],
   ['dataValidation', { key: 'ruleType', type: 'regex' }],
