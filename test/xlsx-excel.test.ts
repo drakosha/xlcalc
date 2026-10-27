@@ -57,6 +57,7 @@ const ISSUES: Record<string, string[]> = {
   'spills-values': ['errorValue Spill A6', 'errorConstant Spill I1 N1'],
   filtered: ['autoFilter S'],
   'filtered-table': ['autoFilter S'],
+  'autofilter-filtered': ['autoFilter S'],
 }
 
 const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/xlsx/predicted.json', import.meta.url), 'utf8')) as Predicted
@@ -78,6 +79,8 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       const random = (d: Difference) => c.volatile && !Number.isNaN(Number(d.written)) && !Number.isNaN(Number(d.read))
       if (c.mode !== 'values') expect(compareCached(result, read.cached).filter((d) => !random(d))).toEqual([])
       expect(read.issues.map((i) => [i.code, i.sheet ?? i.name, ...(i.cells ?? [])].join(' '))).toEqual(ISSUES[c.id] ?? [])
+      // a book's AutoFilters are where Excel saved them
+      if (c.book.sheets.some((s) => s.autoFilter)) expect(read.book.sheets.map((s) => s.autoFilter)).toEqual(c.book.sheets.map((s) => s.autoFilter))
       // a book predicted before Excel ran: Excel stored the values predicted; the book came back as predicted, but where Excel saves otherwise
       const p = predicted.roundtrip[c.id]
       if (p) {

@@ -1,7 +1,7 @@
 -- Open a book and give it what the workbook model does not hold, as a person does in Excel's window, then save it as
 -- xlsx under another name and close it. Arguments: the book's path and the path to save to (inside Excel's sandbox),
 -- the saved file's name, the features (a comma list: chart, chartsheet, picture, sized, floating, chartmove, rich, theme,
--- print, breaks, note) and
+-- print, breaks, note, autofilter, criteria, overtable, tableover) and
 -- a picture's path (inside the sandbox). Answers what it made, one feature a line, or the error of one it could not.
 on run argv
 	set p to item 1 of argv
@@ -71,6 +71,34 @@ on run argv
 			if feats contains "note" then
 				add comment (range "C2" of ws) comment text "made in Excel"
 				set made to made & "note" & linefeed
+			end if
+			if feats contains "autofilter" then
+				-- an AutoFilter over the amounts without criteria, as Data > Filter puts it
+				autofilter range (range "A1:C21" of ws) field 1
+				set made to made & "autofilter " & (get address of (range object of (autofilter object of ws))) & linefeed
+			end if
+			if feats contains "criteria" then
+				autofilter range (range "A1:C21" of ws) field 1 criteria1 "North"
+				set made to made & "criteria" & linefeed
+			end if
+			if feats contains "overtable" then
+				-- an AutoFilter asked over Plain!A1:B5, where a table lies on A1:A2
+				set wp to worksheet "Plain" of wb
+				try
+					autofilter range (range "A1:B5" of wp) field 1
+					set made to made & "overtable done; autofilter mode " & (autofilter mode of wp) & linefeed
+				on error msg number k
+					set made to made & "overtable error " & k & " " & msg & linefeed
+				end try
+			end if
+			if feats contains "tableover" then
+				-- a table asked over the AutoFilter's range
+				try
+					make new list object at ws with properties {range object:(range "A1:C21" of ws)}
+					set made to made & "tableover done; autofilter mode " & (autofilter mode of ws) & "; tables " & (count of list objects of ws) & linefeed
+				on error msg number k
+					set made to made & "tableover error " & k & " " & msg & linefeed
+				end try
 			end if
 			calculate full
 			save workbook as wb filename out file format Excel XML file format

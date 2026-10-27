@@ -1,8 +1,9 @@
 /**
  * The files of the `keep` step: books the writer writes and Excel gives what the workbook model does not hold
  * (`MADE`: charts, a chart sheet, pictures, a pivot table, formatted runs, theme colours, the print area, page breaks,
- * a note), and the edits written over each of them by `writeKept` (`EDITS`), which Excel then opens. What a file holds
- * of those parts is counted by `partsOf`.
+ * a note, an AutoFilter with its criteria), and the edits written over each of them by `writeKept` (`EDITS`), which
+ * Excel then opens. What a file holds of those parts is counted by `partsOf`. `MADE_PROBES` asks Excel what it answers
+ * to an AutoFilter over a table and a table over an AutoFilter (`PROBES`, the engine's answers).
  */
 import type { BookInput, Session, StructureOp } from '../../../src/contract.js'
 import { compute } from '../../../src/index.js'
@@ -29,11 +30,12 @@ export function baseBook(): BookInput {
   return { sheets: [{ name: 'Data', cells }, { name: 'Pivot', cells: {} }, { name: 'Plain', cells: { A1: { value: 'plain' }, A2: { formula: 'Data!E2*2' } } }] }
 }
 
-/** A file Excel makes: the features its script adds (`excel-keep.applescript`), and whether it holds a pivot table the step writes into it. */
+/** A file Excel makes: the features its script adds (`excel-keep.applescript`), whether it holds a pivot table the step writes into it, and a table on Plain (A1:A2). */
 export interface Made {
   id: string
   features: string[]
   pivot?: boolean
+  table?: boolean
 }
 
 export const MADE: Made[] = [
@@ -43,6 +45,7 @@ export const MADE: Made[] = [
   { id: 'print', features: ['chart', 'picture', 'print', 'breaks', 'rich', 'theme'] },
   { id: 'chartsheet', features: ['chartsheet', 'note', 'rich'] },
   { id: 'all', features: ['chart', 'chartsheet', 'picture', 'rich', 'theme', 'print', 'note'], pivot: true },
+  { id: 'criteria', features: ['autofilter', 'criteria'] },
 ]
 
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
@@ -81,15 +84,17 @@ export async function withPivot(data: Uint8Array): Promise<Uint8Array> {
 /** The book's file as the step sends it to Excel to be made. */
 export async function baseFile(m: Made): Promise<Uint8Array> {
   const book = baseBook()
+  if (m.table) book.sheets[2].tables = [{ name: 'Plain', range: 'A1:A2', columns: [{ name: 'plain' }] }]
   const { data } = await writeXlsx({ book, result: compute(book) })
   return m.pivot ? withPivot(data) : data
 }
 
-/** An edit written over a made file: what it does to a session over the file's book. */
+/** An edit written over a made file: what it does to a session over the file's book; over the made files `made` alone where it names them. */
 export interface Edit {
   id: string
   what: string
   edit(s: Session): void
+  made?: string[]
 }
 
 const ok = (r: { ok?: boolean }) => {
@@ -146,9 +151,20 @@ export const EDITS: Edit[] = [
       s.setCells([{ sheet: 'Data', cell: 'A23', input: { value: 'later' } }, { sheet: 'Data', cell: 'B23', input: { value: 1 } }])
     },
   },
+  {
+    id: 'filter',
+    what: "an AutoFilter put on Data over a row more than the file's, and one on Plain",
+    edit: (s) => void s.setLayout([{ sheet: 'Data', autoFilter: { range: 'A1:C22' } }, { sheet: 'Plain', autoFilter: { range: 'A1:A2' } }]),
+  },
+  {
+    id: 'filter-off',
+    what: "the file's AutoFilter removed, its rows shown",
+    edit: (s) => void s.setLayout([{ sheet: 'Data', autoFilter: null }, { sheet: 'Data', filtered: false }, { sheet: 'Data', rows: '1:21', set: { hidden: null } }]),
+    made: ['criteria'],
+  },
 ]
 
-/** What a file holds of the parts the model does not have, counted: charts, chart sheets, drawings, pictures, pivot tables and caches, formatted strings, theme colours, the print area, page breaks, notes. */
+/** What a file holds of the parts the model does not have, counted: charts, chart sheets, drawings, pictures, pivot tables and caches, formatted strings, theme colours, the print area, page breaks, notes, and the sheets' AutoFilters where it has any. */
 export async function partsOf(data: Uint8Array): Promise<Record<string, number>> {
   const a = openArchive(data)
   const names = a.names
@@ -158,7 +174,12 @@ export async function partsOf(data: Uint8Array): Promise<Record<string, number>>
   const styles = await text('xl/styles.xml')
   const wb = await text('xl/workbook.xml')
   let breaks = 0
-  for (const n of names.filter((x) => /^xl\/worksheets\/sheet\d+\.xml$/i.test(x))) breaks += ((await text(n)).match(/<brk /g) ?? []).length
+  let filters = 0
+  for (const n of names.filter((x) => /^xl\/worksheets\/sheet\d+\.xml$/i.test(x))) {
+    const xml = await text(n)
+    breaks += (xml.match(/<brk /g) ?? []).length
+    filters += (xml.match(/<autoFilter /g) ?? []).length
+  }
   return {
     charts: count(/^xl\/charts\/chart\d+\.xml$/i),
     chartsheets: count(/^xl\/chartsheets\/sheet\d+\.xml$/i),
@@ -171,6 +192,7 @@ export async function partsOf(data: Uint8Array): Promise<Record<string, number>>
     printAreas: (wb.match(/_xlnm\.Print_Area/g) ?? []).length,
     breaks,
     notes: count(/^xl\/comments\d+\.xml$/i),
+    ...(filters ? { autoFilters: filters } : {}),
   }
 }
 
@@ -178,7 +200,18 @@ export async function partsOf(data: Uint8Array): Promise<Record<string, number>>
 export const MADE_STRUCT: Made[] = [
   { id: 'sized', features: ['chart', 'picture', 'sized', 'floating'] },
   { id: 'moving', features: ['chart', 'chartmove', 'picture'] },
+  { id: 'filter', features: ['autofilter'] },
 ]
+
+/**
+ * A file Excel makes to answer what it does with an AutoFilter beside a table (`excel-keep.applescript`): one asked over
+ * Plain!A1:B5, where a table lies on A1:A2, and on Data, which has an AutoFilter over A1:C21, a table asked over
+ * A1:C21. Each line of its answer starts with the feature's name and what Excel did, `done` or `error`.
+ */
+export const MADE_PROBES: Made[] = [{ id: 'filter-tables', features: ['autofilter', 'overtable', 'tableover'], table: true }]
+
+/** The engine's answers to the probes, each line's start: the AutoFilter made; one over a table refused (`checkTables`), and a table over the AutoFilter (`addTable`, `tableOverFilter`). */
+export const PROBES: Record<string, string[]> = { 'filter-tables': ['autofilter $A$1:$C$21', 'overtable error', 'tableover error'] }
 
 /** An operation of the structure on a made file, as the session takes it and as `excel-keep-struct.applescript` does it: op, sheet, range, target, cell. */
 export interface Struct {
@@ -189,6 +222,8 @@ export interface Struct {
 }
 
 const rows = (sheet: string, row: number, count: number, op: 'insertRows' | 'deleteRows'): Pick<Struct, 'op' | 'excel'> => ({ op: { op, sheet, row, count }, excel: [op, sheet, `A${row}:A${row + count - 1}`, '', ''] })
+
+const filter = (id: string, op: StructureOp, excel: Struct['excel']): Struct => ({ id: `filter-${id}`, made: 'filter', op, excel })
 
 export const STRUCT: Struct[] = [
   { id: 'chart-insert-in', made: 'chart', ...rows('Data', 3, 2, 'insertRows') },
@@ -211,12 +246,28 @@ export const STRUCT: Struct[] = [
   { id: 'chartsheet-rename', made: 'chartsheet', op: { op: 'renameSheet', sheet: 'Data', name: 'Amounts' }, excel: ['renameSheet', 'Data', '', 'Amounts', ''] },
   { id: 'chartsheet-source-deleted', made: 'chartsheet', op: { op: 'deleteSheet', sheet: 'Data' }, excel: ['deleteSheet', 'Data', '', '', ''] },
   { id: 'all-insert-cols', made: 'all', op: { op: 'insertColumns', sheet: 'Data', column: 'A' }, excel: ['insertColumns', 'Data', 'A1', '', ''] },
+  // the AutoFilter of Data over A1:C21
+  { ...rows('Data', 3, 2, 'insertRows'), id: 'filter-insert-in', made: 'filter' },
+  { ...rows('Data', 22, 1, 'insertRows'), id: 'filter-insert-below', made: 'filter' },
+  { ...rows('Data', 1, 1, 'insertRows'), id: 'filter-insert-above', made: 'filter' },
+  { ...rows('Data', 1, 1, 'deleteRows'), id: 'filter-delete-header', made: 'filter' },
+  { ...rows('Data', 1, 21, 'deleteRows'), id: 'filter-delete-all', made: 'filter' },
+  filter('delete-column', { op: 'deleteColumns', sheet: 'Data', column: 'B' }, ['deleteColumns', 'Data', 'B1', '', '']),
+  filter('delete-columns-all', { op: 'deleteColumns', sheet: 'Data', column: 'A', count: 3 }, ['deleteColumns', 'Data', 'A1:C1', '', '']),
+  filter('insert-column', { op: 'insertColumns', sheet: 'Data', column: 'B' }, ['insertColumns', 'Data', 'B1', '', '']),
+  filter('insert-column-right', { op: 'insertColumns', sheet: 'Data', column: 'D' }, ['insertColumns', 'Data', 'D1', '', '']),
+  filter('move', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C21' }, to: { sheet: 'Data', cell: 'H3' } }, ['moveRange', 'Data', 'A1:C21', 'Data', 'H3']),
+  filter('move-sheet', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C21' }, to: { sheet: 'Plain', cell: 'D1' } }, ['moveRange', 'Data', 'A1:C21', 'Plain', 'D1']),
+  filter('move-header', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C1' }, to: { sheet: 'Data', cell: 'H1' } }, ['moveRange', 'Data', 'A1:C1', 'Data', 'H1']),
+  filter('move-over', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J21' }, to: { sheet: 'Data', cell: 'A1' } }, ['moveRange', 'Data', 'H1:J21', 'Data', 'A1']),
+  filter('rename', { op: 'renameSheet', sheet: 'Data', name: 'Sales' }, ['renameSheet', 'Data', '', 'Sales', '']),
+  filter('delete-sheet', { op: 'deleteSheet', sheet: 'Data' }, ['deleteSheet', 'Data', '', '', '']),
 ]
 
 /**
  * What a file's parts the model does not have refer to: the series of its charts (canonical, sorted), each sheet's
  * drawing anchors (kind, `editAs`, each corner's column and row with their offsets), its pivot tables' places and their
- * caches' sources, the built-in names, each sheet's page breaks. What `keep struct` compares between Excel's file and
+ * caches' sources, the built-in names, each sheet's page breaks and, where a sheet has one, its AutoFilter's range. What `keep struct` compares between Excel's file and
  * the one `writeKept` writes.
  */
 export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>> {
@@ -231,7 +282,10 @@ export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>>
   const sheetName = (i: number) => src.decls[src.sheets[i].decl].name
   const anchors: Record<string, string[]> = {}
   const breaks: Record<string, string> = {}
+  const filters: Record<string, string> = {}
   for (const [i, s] of src.sheets.entries()) {
+    const own = attributes(element(s.xml, 'autoFilter')?.attrs ?? '').ref
+    if (own !== undefined) filters[sheetName(i)] = own
     for (const r of s.rels.filter((x) => x.kind === 'drawing' && !x.external)) {
       const xml = (await src.archive.text(r.target)) ?? ''
       const corner = (body: string, tag: string) => {
@@ -255,5 +309,5 @@ export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>>
     const a = attributes(d.attrs)
     if (/^_xlnm\./.test(a.name ?? '')) names.push(`${a.name}@${a.localSheetId === undefined ? '' : src.decls[Number(a.localSheetId)]?.name}=${canon(readText(d.body ?? ''))}`)
   }
-  return { series: series.sort(), anchors, pivots, names: names.sort(), breaks }
+  return { series: series.sort(), anchors, pivots, names: names.sort(), breaks, ...(Object.keys(filters).length ? { filters } : {}) }
 }
