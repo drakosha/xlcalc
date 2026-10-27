@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url'
 import type { CellValue } from '../../../src/contract.js'
 import { compute } from '../../../src/index.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
+// the books of ru-RU (`builtin-ru`) are read in their locale, which the package's modules register
+import '../locales.js'
 import { buildRoundTrips, XLSX_CLOCK } from './books.js'
 import { FILTER_FILES, filterFile } from './filters.js'
 
