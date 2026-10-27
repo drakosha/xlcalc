@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.2",
-  "seconds": 52.6,
+  "seconds": 5.7,
   "date": "2026-10-27"
  },
  "cases": {
@@ -609,6 +609,65 @@
     "pivots": [],
     "names": [],
     "breaks": {}
+   }
+  },
+  "filter-delete-head-two": {
+   "sent": "b48fd866f114c8a1011e2a6b9814ab8d6e12a5861af560c9ec1b4029c7b61bb9",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-first-column": {
+   "sent": "fb829f60dc09446567e7491f954a940328cb2aee8c55b95a6681c53c326b5e91",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-move-over-end": {
+   "sent": "8ccccf2f152d2658a17efa5dafa4ebb9de51b694854acf02c187ad4069c2f79a",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-end-down": {
+   "sent": "d468a4b4ac46379aadcca63142806c6d568c9942fd1fb77d77b7b5cffc6451d3",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$36"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
    }
   }
  }

@@ -28,14 +28,16 @@ const struct = JSON.parse(readFileSync(new URL('struct.json', dir), 'utf8')) as 
  * Where `writeKept` writes an operation's references otherwise than Excel, by case: what it writes. A series' category
  * or name that lost all its cells keeps `#REF!` in its place; Excel moves it to an extension of the series
  * (`c15:filteredCategoryTitle`, `c15:filteredSeriesTitle`), which no `<c:f>` holds. The filter database follows the
- * workbook's AutoFilter; Excel keeps it over the cells moved to another sheet, without the AutoFilter, and makes it
- * `#REF!` under cells moved over the AutoFilter, which stays.
+ * workbook's AutoFilter; Excel moves it as a name, so it keeps it over cells moved to another sheet without the
+ * AutoFilter, makes it `#REF!` under cells moved over the AutoFilter and stretches it over its last rows moved down, where
+ * the AutoFilter stays.
  */
 const KNOWN: Record<string, Record<string, unknown>> = {
   'chart-delete-series': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!$B$1"] },
   'chartsheet-source-deleted': { series: ['#REF!', '#REF!'] },
   'filter-move-sheet': { names: [] },
   'filter-move-over': { names: ["_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"] },
+  'filter-move-end-down': { names: ["_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"] },
 }
 /**
  * The operations `writeKept` refuses, by case: the refusal. A pivot cache whose source sheet is deleted: Excel keeps
