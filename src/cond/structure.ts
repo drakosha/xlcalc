@@ -8,7 +8,7 @@
 import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { sheetKey, tokenize } from '../syntax.js'
-import { anyMeets, cornerOf, hasCell, hi, inside, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { anyMeets, cellCount, cornerOf, hasCell, hi, inside, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { withField } from '../looks/sheet.js'
@@ -195,6 +195,13 @@ function column(xs: Rect[]): Rect | null {
   return { r1: ys[0].r1, r2: ys[ys.length - 1].r2, c1: ys[0].c1, c2: ys[0].c2 }
 }
 
+/** A rule's pieces pasted on the tiles of a copy, one rectangle where they fill the one around them, as Excel joins them (the paste set `probe`). */
+function joinedTiles(xs: Rect[]): Rect[] {
+  if (xs.length < 2) return xs
+  const around = xs.reduce((a, x) => ({ r1: Math.min(a.r1, x.r1), r2: Math.max(a.r2, x.r2), c1: Math.min(a.c1, x.c1), c2: Math.max(a.c2, x.c2) }))
+  return xs.reduce((n, x) => n + cellCount(x), 0) === cellCount(around) ? [around] : xs
+}
+
 /**
  * The rules after a copy (`p`, copy and paste or fill; `source`, the book copied from): the cells pasted on lose their
  * rules; the copied cells' rules come as new rules over the pasted cells, first in the target's order, their formulas
@@ -206,7 +213,7 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
   const target = sheetOf(out, p.to)
   const from = sheetOf(source, p.from).conditionalFormats ?? []
-  const pasted = (rule: ConditionalFormat) => p.offsets.flatMap(([dr, dc]) => inside(rectsOf(rule), p.src).map((x) => shiftRect(x, dr, dc)))
+  const pasted = (rule: ConditionalFormat) => joinedTiles(p.offsets.flatMap(([dr, dc]) => inside(rectsOf(rule), p.src).map((x) => shiftRect(x, dr, dc))))
   const own = target.conditionalFormats ?? []
   if (!own.length && !from.some((r) => anyMeets(rectsOf(r), [p.src]))) return
   const kept = own.map((rule) => ({ rule, stay: subtract(rectsOf(rule), p.area) }))

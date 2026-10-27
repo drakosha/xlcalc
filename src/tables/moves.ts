@@ -109,23 +109,30 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
   }
 }
 
+/** The book a paste over `area` of sheet `to` gave, its header cells pasted over renaming their columns. */
+export function headersPasted(book: BookInput, to: string, area: Rect, tables = tablesOf(book)): (r: Applied) => Applied {
+  const ts = sheetIndex(book, to)
+  return (r) => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, area]], () => true) } : r)
+}
+
 /**
  * A copy of `src` of sheet `from` pasted over `target` of `to`: a table the copy takes whole becomes a new table at each
  * paste, named after it with the book's count of tables and two (`Sales3` from a book of one table; refused with
  * `table_name` where Excel would not take that name), its formulas' references to the table taken to the new one; the
  * other pasted formulas that leave their source's table name it, and header cells pasted over rename their columns.
+ * Without `made` (Paste Special) no table is made.
  */
-export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: Applied): Applied } {
+export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect, made = true): { after(r: Applied): Applied } {
   const tables = tablesOf(book)
   const [fs, ts] = [sheetIndex(book, from), sheetIndex(book, to)]
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
   // the tiles of the paste and the area they cover, as copyRange lays them (the set `paste-names-held`: one copy at the
   // top-left cell of a target that is no multiple of the source, the target's other cells left as they were)
   const { offsets, area: pasted } = tiles(src, target)
-  const renamed = (r: Applied): Applied => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
+  const renamed = headersPasted(book, to, pasted, tables)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
   // the tables copied whole onto each tile
-  const whole = tables.list.filter((t) => t.s === fs && contains(src, t))
+  const whole = made ? tables.list.filter((t) => t.s === fs && contains(src, t)) : []
   const taken = tables.list.map((t) => t.name)
   const copies: { t: Table; x: Rect; name: string }[] = []
   for (const [dr, dc] of offsets)

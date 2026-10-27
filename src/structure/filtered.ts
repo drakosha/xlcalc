@@ -84,25 +84,53 @@ export function pasteRuns(book: BookInput, to: string, target: Rect): [number, n
 }
 
 /**
- * Copy and paste over filtered sheets. A source over hidden rows of a filtered sheet is copied as its visible rows,
- * packed and as values (`values` gives them). A target of several cells over hidden rows of a filtered sheet takes
- * the copy in each run of its visible rows, as a target alone; a copy that left rows out cannot be pasted over
- * several runs (Excel refuses a selection of several areas pasted onto several areas).
+ * A copy's source as the clipboard holds it: `src` of sheet `from` of `source`, which is the book itself or the book
+ * with a scratch sheet holding the source as Excel copies it (`clipped`, `turned`); `packed` when it left out rows a
+ * filter hid.
  */
-export function copyRows(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, values: ValuesIn): Applied {
-  const clip = clipped(book, from, src, values)
-  const [source, at, rect] = clip ? [clip.book, CLIP, clip.src] : [book, from, src]
+export interface Clipboard {
+  source: BookInput
+  from: string
+  src: Rect
+  packed: boolean
+}
+
+/**
+ * The clipboard of a copy of `src` of sheet `from`: a source over hidden rows of a filtered sheet is copied as its
+ * visible rows, packed and as values (`values` gives them); with `asValues` (a paste of values) every source is.
+ */
+export function clipboard(book: BookInput, from: string, src: Rect, values: ValuesIn, asValues = false): Clipboard {
+  const clip = clipped(book, from, src, values, asValues)
+  return clip ? { source: clip.book, from: CLIP, src: clip.src, packed: clip.src.r2 < src.r2 } : { source: book, from, src, packed: false }
+}
+
+/**
+ * Copy and paste over filtered sheets: the clipboard pasted at `target` of sheet `to`. A target of several cells over
+ * hidden rows of a filtered sheet takes the copy in each run of its visible rows, as a target alone; a copy that left
+ * rows out cannot be pasted over several runs (Excel refuses a selection of several areas pasted onto several areas).
+ */
+export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: Rect, withMeta: boolean, looksOnly = false): Applied {
+  const { source, from: at, src: rect } = clip
   const parts = pasteRuns(book, to, target)
-  if (!parts) return copyRange(book, at, rect, to, target, withMeta, source)
-  if (clip && parts.length > 1)
+  if (!parts) return copyRange(book, at, rect, to, target, withMeta, source, looksOnly)
+  if (clip.packed && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
   const runs = parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))
-  const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source)))
+  const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source, looksOnly)))
   if (runs.length === 1) return steps(book)
   // a run that is no whole multiple of the copy takes one copy at its top-left, which can reach past the run and the target
-  const written = runs.map((run) => tiles(rect, run).area).reduce((a, x) => ({ r1: Math.min(a.r1, x.r1), r2: Math.max(a.r2, x.r2), c1: Math.min(a.c1, x.c1), c2: Math.max(a.c2, x.c2) }))
-  return pastedOnce(book, to, written, steps)
+  return pastedOnce(book, to, pastedArea(rect, runs), steps)
 }
+
+/** A rectangle around all the cells a paste of the clipboard at `target` of sheet `to` writes, in each run of visible rows. */
+export function pasteArea(book: BookInput, clip: Clipboard, to: string, target: Rect): Rect {
+  const parts = pasteRuns(book, to, target)
+  return parts ? pastedArea(clip.src, parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))) : tiles(clip.src, target).area
+}
+
+/** A rectangle around all the copies of `rect` the runs of a paste write. */
+export const pastedArea = (rect: Rect, runs: Rect[]): Rect =>
+  runs.map((run) => tiles(rect, run).area).reduce((a, x) => ({ r1: Math.min(a.r1, x.r1), r2: Math.max(a.r2, x.r2), c1: Math.min(a.c1, x.c1), c2: Math.max(a.c2, x.c2) }))
 
 /**
  * The pastes into the runs of a target (`steps`) over the sheet `to` with only its cells of `written`, a rectangle around

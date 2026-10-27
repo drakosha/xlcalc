@@ -4,7 +4,12 @@
 
 Added:
 
+- Paste Special: `copyRange` takes `paste` (`PasteKind`: `all`, `values`, `formulas`, `formats`, `validation`) and `transpose`, in every kind of session, one step of undo each, as Excel for Mac pastes them (49 cases, three sets, the last two held out). `values` pastes each cell's value as calculated; `values` and `formulas` keep the destination's looks, merged areas, notes, hyperlinks, conditional formats and data validation, and are refused with `merged` onto a merged area the copy does not bring; `formats` pastes styles, number formats, merged areas and conditional formats and keeps the contents. With `paste`, a cell of a merged area stands for the area, as Excel's selection does. A transposed copy turns a reference into its source with the cell it points to, its `$` swapped between the axes, and one out of it without a `$` about the source's corner ([Paste Special](docs/structure.md#paste-special)). Not measured in Excel for Windows nor with the Format Painter; `formats` of a table's cells does not paste the table style's look.
 - `fn`, the function upper-case, on what reports a function the engine cannot take, so a host counts them without reading messages: on an `XlsxIssue` of code `userFunction`, which `readXlsx` now gives one per function on a sheet or a name, its `cells` the calls (one issue held all of a sheet's calls); on a `validateFormula` rejection, and a cell's issue in `diagnostics` and `Session.getCellIssue`, for `unknown_function` and `unsupported`.
+
+Changed:
+
+- A copy tiled over its destination gives a conditional format the one rectangle its tiles fill, as Excel does, where it gave a rectangle a tile.
 
 ## 0.59.1 (2026-10-26)
 

@@ -18,6 +18,7 @@ export const EDIT_MESSAGES: EditMessages = {
   writesLimit: (p) => `one edit writes ${p.size} cells, over the limit of ${p.max}`,
   moveCutsMerge: (p) => `the moved cells would split the merged area ${p.sheet}!${p.area}`,
   pasteOnMerge: (p) => `the pasted cells would cover part of the merged area ${p.sheet}!${p.area}`,
+  contentOnMerge: (p) => `values or formulas cannot be pasted onto the merged area ${p.sheet}!${p.area}`,
   filteredPaste: (p) => `the copy skips the rows a filter hid, so it cannot be pasted over the hidden rows of ${p.sheet}!${p.area}`,
   tableLands: (p) => `the table ${p.table} would overlap another table`,
   tableInsertTwo: (p) => `inserting ${p.lines} there would shift cells of the tables ${p.tables.join(' and ')} at once`,

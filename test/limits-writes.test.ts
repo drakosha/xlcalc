@@ -1,6 +1,6 @@
 /**
  * `limits.writes`: the cells one edit of a session writes with a value or a formula, counted before anything is written.
- * Each edit it bounds (a copy, from and onto a filtered sheet and over part of an array formula, a move, fillCellText,
+ * Each edit it bounds (a copy, from and onto a filtered sheet, over part of an array formula, of values and transposed, a move, fillCellText,
  * pasteText, replaceInCells, setCells, replaceCells, setCellTexts, applyChanges, and the previews) is refused one cell
  * over the limit, with the book, its revision, its history and its hash as before, and made at the limit as a session
  * without limits makes it; in a synchronous session, in the same thread and in a thread, with closures and eval. A copy
@@ -48,6 +48,8 @@ const CASES: [string, number, (s: AsyncSession) => Promise<unknown>][] = [
   // A1, A2 and A4 hold content, A3 a look alone; two tiles
   ['a copy of a range onto two tiles', 6, (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1:A4' }, to: { sheet: 'S', range: 'C1:C8' } })],
   ['a copy of part of an array formula, each cell its own array', 2, (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'M2:M3' }, to: { sheet: 'S', range: 'N1' } })],
+  ['a paste of the values of an array formula, each its own', 3, (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'M1:M3' }, to: { sheet: 'S', range: 'N1' }, paste: 'values' })],
+  ['a transposed copy onto two tiles', 6, (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1:A4' }, to: { sheet: 'S', range: 'C1:J1' }, transpose: true })],
   // rows 1 and 3 as values: the spill's anchor and its third cell, B1 and B3; not B2 and C2 of the hidden row
   ['a copy from a filtered sheet', 4, (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'F', range: 'A1:C3' }, to: { sheet: 'S', range: 'E1' } })],
   // the runs of visible rows 1 and 3:5 take one tile and three

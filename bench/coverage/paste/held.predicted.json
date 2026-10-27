@@ -1,0 +1,2167 @@
+{
+ "refs-out-transposed": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B1": {
+      "formula": "$Z$9+A$9+$A9"
+     },
+     "C1": {
+      "formula": "'T'!A1+'T'!$B$2"
+     },
+     "D1": {
+      "formula": "SUM(A:A)"
+     },
+     "F1": {
+      "value": 1
+     },
+     "G1": {
+      "formula": "nm*2"
+     },
+     "H1": {
+      "formula": "#REF!*1"
+     },
+     "A2": {
+      "formula": "nm*2"
+     },
+     "B2": {
+      "formula": "SUM(A1:A2)"
+     },
+     "C2": {
+      "formula": "Z9"
+     },
+     "D2": {
+      "formula": "SUM(5:5)"
+     },
+     "F2": {
+      "formula": "$N$26+$N1+N$1"
+     },
+     "G2": {
+      "formula": "SUM(F1:G1)"
+     },
+     "H2": {
+      "value": "b"
+     },
+     "A3": {
+      "formula": "A20000*1"
+     },
+     "B3": {
+      "value": "b"
+     },
+     "F3": {
+      "formula": "'T'!F1+'T'!$G$2"
+     },
+     "G3": {
+      "formula": "N26"
+     },
+     "F4": {
+      "formula": "SUM(#REF!)"
+     },
+     "G4": {
+      "formula": "SUM(E$1:E$16384)"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B2": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "refs-out-all-transposed": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B1": {
+      "formula": "$Z$9+A$9+$A9"
+     },
+     "C1": {
+      "formula": "'T'!A1+'T'!$B$2"
+     },
+     "D1": {
+      "formula": "SUM(A:A)"
+     },
+     "F1": {
+      "value": 1
+     },
+     "G1": {
+      "formula": "nm*2"
+     },
+     "H1": {
+      "formula": "#REF!*1"
+     },
+     "A2": {
+      "formula": "nm*2"
+     },
+     "B2": {
+      "formula": "SUM(A1:A2)"
+     },
+     "C2": {
+      "formula": "Z9"
+     },
+     "D2": {
+      "formula": "SUM(5:5)"
+     },
+     "F2": {
+      "formula": "$N$26+$N1+N$1"
+     },
+     "G2": {
+      "formula": "SUM(F1:G1)"
+     },
+     "H2": {
+      "value": "b"
+     },
+     "A3": {
+      "formula": "A20000*1"
+     },
+     "B3": {
+      "value": "b"
+     },
+     "F3": {
+      "formula": "'T'!F1+'T'!$G$2"
+     },
+     "G3": {
+      "formula": "N26"
+     },
+     "F4": {
+      "formula": "SUM(#REF!)"
+     },
+     "G4": {
+      "formula": "SUM(E$1:E$16384)"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B2": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "tiled-transposed": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B1": {
+      "formula": "$Z$9+A$9+$A9"
+     },
+     "C1": {
+      "formula": "'T'!A1+'T'!$B$2"
+     },
+     "D1": {
+      "formula": "SUM(A:A)"
+     },
+     "A2": {
+      "formula": "nm*2"
+     },
+     "B2": {
+      "formula": "SUM(A1:A2)"
+     },
+     "C2": {
+      "formula": "Z9"
+     },
+     "D2": {
+      "formula": "SUM(5:5)"
+     },
+     "A3": {
+      "formula": "A20000*1"
+     },
+     "B3": {
+      "value": "b"
+     },
+     "F10": {
+      "value": 1
+     },
+     "F11": {
+      "formula": "$N$35+$N10+N$10"
+     },
+     "F12": {
+      "value": 1
+     },
+     "F13": {
+      "formula": "$N$35+$N12+N$10"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B2": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "merged-part-all": {
+  "refused": "the pasted cells would cover part of the merged area S!F1:G1"
+ },
+ "merged-part-wide-all": {
+  "refused": "the pasted cells would cover part of the merged area S!F1:G1"
+ },
+ "merged-same-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C1": {
+      "value": 3
+     },
+     "F1": {
+      "value": 1
+     },
+     "J1": {
+      "value": "y"
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "F3": {
+      "value": "n",
+      "note": "own",
+      "link": "https://example.org/"
+     },
+     "F5": {
+      "formula": "A1:A2*1",
+      "array": "F5:F6"
+     }
+    },
+    "merges": [
+     "A1:B1",
+     "F1:G1",
+     "J1:K1"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "merged-inside-values": {
+  "refused": "values or formulas cannot be pasted onto the merged area S!F1:G1"
+ },
+ "merged-inside-formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C1": {
+      "value": 3
+     },
+     "F1": {
+      "value": "x",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "J1": {
+      "value": "y"
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "F3": {
+      "value": "n",
+      "note": "own",
+      "link": "https://example.org/"
+     },
+     "F5": {
+      "formula": "A1:A2*1",
+      "array": "F5:F6"
+     }
+    },
+    "merges": [
+     "A1:B1"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "formats-over-note": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C1": {
+      "value": 3
+     },
+     "F1": {
+      "value": "x"
+     },
+     "J1": {
+      "value": "y"
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "F3": {
+      "value": "n",
+      "note": "own",
+      "link": "https://example.org/",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "F5": {
+      "formula": "A1:A2*1",
+      "array": "F5:F6"
+     }
+    },
+    "merges": [
+     "A1:B1",
+     "F1:G1",
+     "J1:K1"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "values-over-note": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C1": {
+      "value": 3
+     },
+     "F1": {
+      "value": "x"
+     },
+     "J1": {
+      "value": "y"
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "F3": {
+      "value": 3,
+      "note": "own",
+      "link": "https://example.org/"
+     },
+     "F5": {
+      "formula": "A1:A2*1",
+      "array": "F5:F6"
+     }
+    },
+    "merges": [
+     "A1:B1",
+     "F1:G1",
+     "J1:K1"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "formats-on-array-part": {
+  "refused": "the operation would change part of the array formula S!F5 (F5:F6)"
+ },
+ "values-on-array-part": {
+  "refused": "the operation would change part of the array formula S!F5 (F5:F6)"
+ },
+ "column-formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D1": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "D10": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D11": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D12": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20,
+     "D": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ },
+ "column-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D1": {
+      "value": 4
+     },
+     "A2": {
+      "value": "q"
+     },
+     "D2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "D10": {
+      "value": "x"
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D11": {
+      "value": 1
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D12": {
+      "value": 2
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ },
+ "validation-tiled": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1 E1:E3\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ },
+ "table-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "D10": {
+      "value": "x"
+     },
+     "E10": {
+      "value": "y"
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D11": {
+      "value": 1
+     },
+     "E11": {
+      "value": 2
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D12": {
+      "value": 2
+     },
+     "E12": {
+      "value": 4
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ },
+ "table-formulas": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "H11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "H12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ },
+ "table-formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 4,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "q"
+     },
+     "A3": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A4": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A5": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A7": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A8": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A9": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A10": {
+      "value": "x",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B10": {
+      "value": "y"
+     },
+     "D10": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A11": {
+      "value": 1,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B11": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D11": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A12": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "B12": {
+      "formula": "T[[#This Row],[x]]*2"
+     },
+     "D12": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A13": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A14": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A15": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A16": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A17": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A18": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A19": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A20": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A21": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A22": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A23": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A24": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A25": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A26": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A27": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A28": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A29": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A30": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [
+     "{\"range\":\"C1\",\"type\":\"whole\",\"operator\":\"greaterThan\",\"formula1\":\"0\"}"
+    ],
+    "widths": {
+     "A": 20
+    },
+    "tables": [
+     "T A10:B12 x,y"
+    ]
+   }
+  }
+ }
+}
