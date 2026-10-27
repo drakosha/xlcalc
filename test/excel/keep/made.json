@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.2",
-  "seconds": 3.2,
+  "seconds": 3,
   "date": "2026-10-27"
  },
  "books": {
@@ -299,6 +299,47 @@
     "printAreas": 0,
     "breaks": 0,
     "notes": 0
+   }
+  },
+  "filter-table-long": {
+   "sent": "6d495a7a1ec9062852e8a0e35cd708cd7650c2039ddc6788cd2850b7af3da809",
+   "made": [
+    "autofilter $A$1:$C$21",
+    "tablelong done; autofilter mode false; tables 1"
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "filter-table-low": {
+   "sent": "4827427b9dabb20168f240daa245d661880b26bfd033b050a0801a57a7cef018",
+   "made": [
+    "autofilter $A$1:$C$21",
+    "tablelow error -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
    }
   }
  }
