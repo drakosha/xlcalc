@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.63.0 (2026-10-28)
+
+Added:
+
+- `CellStyle.protection` (`{ locked, hidden }`, Excel's Format Cells Protection tab) and `SheetInput.protection` (`SheetProtection`, what users may still do on a protected sheet, as the boxes of Excel's Protect Sheet dialog): `readXlsx` and `openKept` read them, `writeXlsx` writes them, and `setLayout` protects and unprotects a sheet in one step of undo. A cell's protection goes wherever its style goes (a copy, Paste Special Formats, inserted rows; Clear Formats takes it away). A session does not enforce protection, the host does. The workbook holds no password: `readXlsx` reports one (`sheetPassword`), `writeXlsx` writes protection without it, and `writeKept` keeps the file's password when it edits the sheet's protection in place (Excel for Mac, 31 cases predicted before it ran them) ([Protection](docs/structure.md#protection), [xlsx](docs/xlsx.md#protection)).
+- `SheetInput.autoFilter` (`{ range }`): the AutoFilter of a sheet outside a table, read by `readXlsx` and `openKept`, written by `writeXlsx` and `writeKept` with Excel's hidden `_xlnm._FilterDatabase` name, set and removed by `setLayout`. Inserting and deleting rows and columns moves it as a range reference, deleting its header row removes it, a cut moves it only when it takes all of it, a table over all of it takes its place and a table over part of it is refused (`table`). Its criteria and sort stay out of the workbook: `writeKept` keeps the file's while the range is where the file's would have moved, and writes the workbook's range without them otherwise (Excel for Mac, keep and table sets predicted before it ran them) ([The AutoFilter](docs/structure.md#the-autofilter), [Writing over the original file](docs/xlsx-keep.md#autofilters)).
+
+Changed:
+
+- `writeKept` no longer refuses (`deleted`) an AutoFilter whose cells were deleted: it is removed, as the workbook removes it.
+- `readXlsx` reports `autoFilterPlain` only for an AutoFilter's sort, `autoFilterRange` for an AutoFilter it leaves out (over a table, or not over cells), and the hidden `_xlnm._FilterDatabase` name no longer as a `builtInName`; the issue `sheetProtection` is deprecated in favour of `sheetPassword` and `protectedRanges`.
+- The `xlcalc/xlsx/keep` bundle is kept under 300 KB, where it was 290 KB.
+
 ## 0.62.0 (2026-10-27)
 
 Added:
