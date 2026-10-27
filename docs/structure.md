@@ -42,7 +42,7 @@ The operations are:
 
 Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel rejects returns `{ ok: false, code, message }`, with the message in the workbook's locale (`Нельзя изменить часть массива S!C1 (C1:C3)` in a ru-RU workbook) and one of these codes: `off_sheet` (cells or a table would be pushed off the sheet), `sheet_name` (a name Excel would not accept, including `History`, or one another sheet already has), `last_sheet` (deleting or hiding the last visible sheet), `very_hidden` (deleting or moving a very hidden sheet), `merged` (a move that cuts a merged area, or a copy that lands on part of one), `filtered` (a copy that left out rows hidden by a filter, pasted over hidden rows of a filtered sheet), `array` (part of a legacy array formula's range would change, or a merge would cover one), `table` (inserting rows or columns into two tables at once, deleting from two tables unless both are deleted entirely, deleting a header row alone, moving or copying an array formula of several cells onto a table, or merging cells of a table), `table_name`, `outline_deep` (Group on rows or columns at the deepest level), `not_grouped` (Ungroup on rows or columns in no group, or a group button where there is none) or `detail` (Show Detail on an expanded group, or Hide Detail on a collapsed one). A name whose reference is lost returns `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
 
-A workbook keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment); `style` in a cell, an index into that table; and per sheet, `columns` and `rows` (keyed by a single row or column, `C` or `5`, or a span, `B:D` or `5:9`, with a width or height, a style and a number format) and `merges` (`B2:D3`). A cell without its own style or number format displays its row's, otherwise its column's. Calculation ignores them, except that a merged area stops an array from spilling over it, as in Excel. The operations change them as Excel does: inserted rows take the format of the row above (its height, style and number format, and its cells' styles and number formats) and inserted columns that of the column to the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their formatting, and entire rows and columns take their sizes and styles along. A cell's note and hyperlink go with the cell, as its style does; frozen panes keep the rows and columns before their split; data validation rules move as references do, and rows or columns inserted immediately after a rule get it; and inserted rows and columns get the outline level of the one before them. The rules, and how they were checked against Excel on 317 workbooks and the validation sets, merging on 61 more, and the fill handle on 122 in Excel for Windows, are in [docs/structure.md](structure.md).
+A workbook keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment, protection); `style` in a cell, an index into that table; and per sheet, `columns` and `rows` (keyed by a single row or column, `C` or `5`, or a span, `B:D` or `5:9`, with a width or height, a style and a number format) and `merges` (`B2:D3`). A cell without its own style or number format displays its row's, otherwise its column's. Calculation ignores them, except that a merged area stops an array from spilling over it, as in Excel. The operations change them as Excel does: inserted rows take the format of the row above (its height, style and number format, and its cells' styles and number formats) and inserted columns that of the column to the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their formatting, and entire rows and columns take their sizes and styles along. A cell's note and hyperlink go with the cell, as its style does; frozen panes keep the rows and columns before their split; data validation rules move as references do, and rows or columns inserted immediately after a rule get it; and inserted rows and columns get the outline level of the one before them. The rules, and how they were checked against Excel on 317 workbooks and the validation sets, merging on 61 more, and the fill handle on 122 in Excel for Windows, are in [docs/structure.md](structure.md).
 
 A session applies the same operations to its workbook with `session.editStructure(op)` and recalculates, keeping the workbook's styles, so a host can hold the workbook in the session alone and save `getBook()` as a version:
 
@@ -262,7 +262,7 @@ Names' formulas change like cells' formulas: each part of a union separately, an
 
 ## Styles and layout
 
-A workbook keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style index in each cell, and per sheet the columns and rows by single row or column or by span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `numberFormat`. A cell displays its own style, otherwise its row's, otherwise its column's, and the same for the number format. Widths are in characters, as xlsx stores them, and heights in points. Calculation does not read styles, and they are not part of the values hash; `inputHash` includes them when a workbook has any.
+A workbook keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment, protection), a style index in each cell, and per sheet the columns and rows by single row or column or by span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `numberFormat`. A cell displays its own style, otherwise its row's, otherwise its column's, and the same for the number format. Widths are in characters, as xlsx stores them, and heights in points. Calculation does not read styles, and they are not part of the values hash; `inputHash` includes them when a workbook has any.
 
 Excel resolves an empty cell's style and number format together: from its row if the row has either, otherwise from its column. The two can differ only where a row with a style but no number format (or the other way round) crosses a column with the other; an xlsx reader writes such a case out explicitly on the row.
 
@@ -279,6 +279,42 @@ Merged areas inside the source go along. A copy also takes the part of a merged 
 **Rejections.** A move whose source cuts a merged area, and a copy that lands on part of one, are rejected with `merged`, as Excel rejects them. A move that lands on part of a merged area removes it, and a copy whose source cuts one copies the part.
 
 A renamed sheet keeps its layout, and a deleted sheet takes it along.
+
+## Protection
+
+A host that lets users edit only some cells of a sheet, as Excel's Protect Sheet does, finds what it needs in the workbook: whether the sheet is protected and what it still allows, and whether each cell is locked. Both come from an xlsx file and go back into one ([docs/xlsx.md](xlsx.md#protection)). The session does not enforce them: `setCells` changes a locked cell of a protected sheet as any other, and the host decides what its users may edit.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  styles: [{ protection: { locked: false } }],
+  sheets: [{ name: 'Form', cells: { A1: { value: 'Name' }, B1: { value: '', style: 0 } }, protection: {} }],
+})
+const book = session.getBook()
+const sheet = book.sheets[0]
+const editable = (cell) => {
+  const style = session.getCell('Form', cell)?.style
+  return !sheet.protection || book.styles?.[style]?.protection?.locked === false
+}
+console.log(editable('A1'), editable('B1')) // → false true
+```
+
+### Cells
+
+A cell's protection is part of its style, `CellStyle.protection`, as in the Protection tab of Excel's Format Cells: `locked`, which a protected sheet keeps from being edited, and `hidden`, a formula a protected sheet does not display. A cell is locked and not hidden by default, and a style holds only what differs: `{ protection: { locked: false } }` unlocks a cell, and `{ protection: { locked: true } }` is the style `{}`, found as `{}` by `patchCells` and `internStyle`.
+
+Since protection is part of the style, it goes wherever the style goes, as in Excel: a copy and Paste Special Formats take it along, Paste Special Values does not; rows inserted below an unlocked cell are unlocked; an entire column or row can be unlocked by its style; Clear Formats locks the cells again. `patchCells` sets and removes it field by field: `{ style: { protection: { locked: false } } }` unlocks a range, keeping each cell's font and fill.
+
+### Sheets
+
+A sheet's protection is `SheetInput.protection`: a protected sheet has one, an unprotected sheet has none. Its fields say what users may still do, as the boxes of Excel's Protect Sheet dialog: `selectLockedCells` and `selectUnlockedCells` (allowed by default), `formatCells`, `formatColumns`, `formatRows`, `insertColumns`, `insertRows`, `insertHyperlinks`, `deleteColumns`, `deleteRows`, `sort`, `autoFilter`, `pivotTables`, `objects` and `scenarios` (not allowed by default). Like a style, it holds only what differs from those defaults: `{}` is the protection Excel's dialog gives, and `{ formatCells: true }` also lets users format cells. The workbook holds no password.
+
+`setLayout` protects a sheet with `{ sheet, protection: { insertRows: true } }` and unprotects it with `{ sheet, protection: null }`, one undo step. Neither a sheet's protection nor a cell's changes a value. A cell's protection is in `inputHash` as the rest of its style is; a sheet's is not, as frozen panes and the saved view are not, so protecting a sheet leaves the hash as it was.
+
+### Checked against Excel
+
+Excel 16.114 for Mac read the protection of 31 workbooks after its own steps, each sheet's and each listed cell's, and saved them; the engine's answers were committed before it ran, and all 31 held (`test/excel/protect/`, [docs/development.md](development.md#protection)). Excel's Protect Sheet through the object model, its own copies, Paste Special, inserted rows and Clear Formats are among them; Excel's Format Painter and protection set through its dialogs by hand were not measured.
 
 ## Merging cells
 
@@ -451,6 +487,7 @@ Styles and layout change through the session, so that its workbook remains the h
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
 - hidden sheets through `editStructure`: `hideSheet` and `unhideSheet` recalculate nothing and do not rebuild the state;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
+- a sheet's protection through `setLayout`: `{ sheet, protection: {} }` protects it as Excel's dialog does, and `{ sheet, protection: null }` unprotects it ([Protection](#protection));
 - conditional formats through `setLayout`: `{ sheet, conditionalFormats: [...] }` replaces the sheet's rules;
 - data validation rules through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
 - outlines through `setLayout`: a group is the rows' or columns' `outlineLevel`, and collapsing it hides its rows or columns and marks its summary row or column `collapsed` (`{ sheet, rows: '3:5', set: { hidden: true } }`, `{ sheet, rows: '6', set: { collapsed: true } }`), while `{ sheet, outline: { summaryBelow: false } }` sets where the summaries are.

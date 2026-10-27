@@ -142,7 +142,7 @@ Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that name
 
 ### Styles and number formats
 
-Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders and alignment. Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
+Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
 
 Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors.
 
@@ -277,7 +277,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `dataTable` | a what-if data table, read as its stored values |
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
-| `style` | pattern and gradient fills, diagonal borders, rotation, shrink to fit, subscript and superscript, protection |
+| `style` | pattern and gradient fills, diagonal borders, rotation, shrink to fit, subscript and superscript |
 | `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
@@ -291,7 +291,8 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `conditionalFormat` | a rule of a kind the model does not support, a pivot table's rules, a rule without its formulas or thresholds; anything in a rule's differential format beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and standard deviations, read with equal |
 | `dataValidation` | a rule without a range on the sheet, without the formula its type needs, or of an unknown type, left out; cells a rule shares with an earlier one, which keep the earlier one; an IME mode; a list whose items contain commas (`x12ac:list`), read split at them |
 | `outline` | automatic outline styles |
-| `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
+| `protection` | workbook protection; a sheet protection's password (`sheetPassword`), the sheet read as protected without one; ranges a protected sheet allows to edit (`protectedRanges`) |
+| `drawing`, `pivotTable`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
 
@@ -433,6 +434,24 @@ When Excel formats a row or column across a formatted one, it merges their forma
 ### Checked against Excel
 
 Tested in Excel for Mac and for Windows: Excel opened the written workbooks, formatted rows, columns and cells through its object model, and displayed what the engine displays.
+
+## Protection
+
+A sheet's protection and its cells' come from the file and go back into it, so a host can show which cells its users may edit and save the file protected as it was ([Protection](structure.md#protection)).
+
+### Reading
+
+A cell format's `<protection>` is its style's `protection`: `locked="0"` is `{ locked: false }`, `hidden="1"` is `{ hidden: true }`, and a cell format without the element is locked and not hidden. Excel takes the cell format's own element whatever its `applyProtection` says, and does not take the protection of its cell style (`cellStyleXfs`), so neither does the reader.
+
+`<sheetProtection>` with `sheet="1"` is the sheet's `protection`. Its attributes say the opposite of the model's fields: `formatCells="0"` lets users format cells, `formatCells: true`. An attribute the element leaves out takes the schema's default, which leaves objects and scenarios unprotected: a file with `<sheetProtection sheet="1"/>` alone reads as `{ objects: true, scenarios: true }`, as Excel reads it, where the protection Excel's dialog gives is written `<sheetProtection sheet="1" objects="1" scenarios="1"/>`. An element without `sheet="1"` protects nothing, and the sheet reads unprotected. A password (`password`, or `algorithmName` with `hashValue`, `saltValue` and `spinCount`) is not in the model: the sheet reads as protected, and the password is reported (`protection`, `sheetPassword`). So are the ranges a protected sheet allows to edit (`protectedRanges`).
+
+### Writing
+
+`writeXlsx` writes a style's protection into its cell format with `applyProtection="1"`, and a sheet's protection after its cells, with the attributes Excel writes: `{}` becomes `<sheetProtection sheet="1" objects="1" scenarios="1"/>`, and `{ formatCells: true }` adds `formatCells="0"`. It writes no password, so a user unprotects the sheet without one. `writeKept` keeps the file's element with its password while the protection did not change, sets the attributes of what users may do in that element when it did, and removes it when the sheet is no longer protected ([docs/xlsx-keep.md](xlsx-keep.md)).
+
+### Checked against Excel
+
+Excel 16.114 for Mac opened, without its repair window, every file written for the protection sets, read the protection the engine reads and saved it as the writer writes it: files `writeXlsx` wrote, files changed by hand (`applyProtection="0"`, a cell style's protection, an element without `sheet="1"`, with `sheet="0"`, with `sheet="1"` alone, with a password), and files `writeKept` wrote over a protected one with a password ([docs/development.md](development.md#protection)).
 
 ## Conditional formats
 
