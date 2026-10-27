@@ -1,7 +1,8 @@
 /**
  * A copy from a filtered sheet over rows a filter hid (the struct set `hidden`): Excel copies the visible rows only,
  * packed one after another, and pastes them as values, as it pastes a selection of several areas. The copy is made
- * from a scratch sheet holding them so; a selection of hidden rows only is copied whole.
+ * from a scratch sheet holding them so; a selection of hidden rows only is copied whole. A paste of values (Paste
+ * Special) takes its source from such a sheet too, with every row.
  */
 import type { BookInput, CellInput, RowInput, SheetInput } from '../contract.js'
 import { entryAt, lines, toMap, type Line } from '../layout/spans.js'
@@ -21,10 +22,18 @@ export const CLIP = '\u0000clip'
 /** A computed value as a cell to paste: an error as a formula of it, as an xlsx file's error constant is read. */
 const pasted = (v: NonNullable<ReturnType<ValuesIn>[number][2]>): CellInput => (typeof v === 'object' && v !== null ? { formula: ERROR_TEXT[v.error] } : { value: v })
 
-/** The book with the scratch sheet and the copy's source on it, or null when the copy leaves out no row. */
-export function clipped(book: BookInput, from: string, src: Rect, values: ValuesIn): { book: BookInput; src: Rect } | null {
-  const visible = visibleRows(book, from, src.r1, src.r2)
-  if (!visible?.length) return null
+/** The rows of `src` from `r1` to `r2`. */
+const rowsOf = (src: Rect) => Array.from({ length: src.r2 - src.r1 + 1 }, (_, k) => src.r1 + k)
+
+/**
+ * The book with the scratch sheet and the copy's source on it as values, or null when the copy leaves out no row and
+ * not every copy is of values (`asValues`).
+ */
+export function clipped(book: BookInput, from: string, src: Rect, values: ValuesIn, asValues = false): { book: BookInput; src: Rect } | null {
+  const left = visibleRows(book, from, src.r1, src.r2)
+  // hidden rows only are copied whole
+  const visible = left?.length ? left : asValues ? rowsOf(src) : null
+  if (!visible) return null
   const sheet = sheetOf(book, from)
   const row = new Map(visible.map((r, k) => [r, src.r1 + k]))
   const cells: Record<string, CellInput> = {}
@@ -52,7 +61,9 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
     const e = entryAt(sheetRows, r)
     if (e) rows.push([at, at, e])
   }
-  const bare: SheetInput = { name: CLIP, cells, ...(rows.length ? { rows: toMap(rows, 'r') } : {}), ...(sheet.columns ? { columns: sheet.columns } : {}) }
+  // a source copied with every row keeps its merged areas, which a paste of values brings as a paste brings them
+  const merges = left?.length ? [] : (sheet.merges ?? [])
+  const bare: SheetInput = { name: CLIP, cells, ...(rows.length ? { rows: toMap(rows, 'r') } : {}), ...(sheet.columns ? { columns: sheet.columns } : {}), ...(merges.length ? { merges } : {}) }
   const clip = shown ? withLayer(bare, cells, shown.build()) : bare
   return { book: { ...book, sheets: [...book.sheets, clip] }, src: { ...src, r2: src.r1 + visible.length - 1 } }
 }

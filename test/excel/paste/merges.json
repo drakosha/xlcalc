@@ -1,0 +1,293 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 10.9
+ },
+ "books": {
+  "right": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A3": {
+       "value": "p",
+       "style": 2
+      },
+      "B3": {
+       "value": 2,
+       "style": 1
+      },
+      "E3": {
+       "value": 5,
+       "style": 2
+      },
+      "F1": {
+       "value": "x"
+      },
+      "J1": {
+       "value": "y"
+      }
+     },
+     "merges": [
+      "J1:K1"
+     ]
+    }
+   ]
+  },
+  "corner": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A3": {
+       "value": "p",
+       "style": 2
+      },
+      "B3": {
+       "value": 2,
+       "style": 1
+      },
+      "E3": {
+       "value": 5,
+       "style": 2
+      },
+      "F1": {
+       "value": "x"
+      },
+      "J1": {
+       "value": "y"
+      }
+     },
+     "merges": [
+      "F1:G1"
+     ]
+    }
+   ]
+  },
+  "both": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A3": {
+       "value": "p",
+       "style": 2
+      },
+      "B3": {
+       "value": 2,
+       "style": 1
+      },
+      "E3": {
+       "value": 5,
+       "style": 2
+      },
+      "F1": {
+       "value": "x"
+      },
+      "J1": {
+       "value": "y"
+      }
+     },
+     "merges": [
+      "F1:G1",
+      "J1:K1"
+     ]
+    }
+   ]
+  },
+  "down": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A3": {
+       "value": "p",
+       "style": 2
+      },
+      "B3": {
+       "value": 2,
+       "style": 1
+      },
+      "E3": {
+       "value": 5,
+       "style": 2
+      },
+      "F1": {
+       "value": "x"
+      },
+      "J1": {
+       "value": "y"
+      }
+     },
+     "merges": [
+      "J1:J2"
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "formats-inside",
+   "book": "right",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-corner",
+   "book": "corner",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-before",
+   "book": "both",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-part",
+   "book": "down",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "all-both",
+   "book": "both",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-inside",
+   "book": "right",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-part",
+   "book": "down",
+   "from": {
+    "sheet": "S",
+    "range": "A3:F3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all"
+  }
+ ],
+ "sent": {
+  "formats-inside": "1131c0e64d2a64680b13c04817a3c1553b8f971ce265b4bab2112c9f930f1e53",
+  "formats-corner": "9cd35af33376d41b752e6c4dee8a084488fcccbdddb00e6c4b3eb0786438fb8c",
+  "formats-before": "c2d5b361e740a89541429c13c55fbdea46506db59f2ccf1bd9e5965ba7616830",
+  "formats-part": "d1ce0edfc2fc199c33570bd3ff968434b71acc482812efdff20a6dd505f1ea30",
+  "all-both": "c2d5b361e740a89541429c13c55fbdea46506db59f2ccf1bd9e5965ba7616830",
+  "all-inside": "1131c0e64d2a64680b13c04817a3c1553b8f971ce265b4bab2112c9f930f1e53",
+  "all-part": "d1ce0edfc2fc199c33570bd3ff968434b71acc482812efdff20a6dd505f1ea30"
+ },
+ "answers": {
+  "formats-inside": {},
+  "formats-corner": {},
+  "formats-before": {},
+  "formats-part": {},
+  "all-both": {},
+  "all-inside": {},
+  "all-part": {}
+ }
+}

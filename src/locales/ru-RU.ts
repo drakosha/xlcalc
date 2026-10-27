@@ -298,6 +298,7 @@ const MESSAGES: Messages = {
   writesLimit: (p) => `Правка записывает слишком много ячеек: ${p.size} при пределе ${p.max}`,
   moveCutsMerge: (p) => `Нельзя переместить часть объединённых ячеек ${p.sheet}!${p.area}`,
   pasteOnMerge: (p) => `Нельзя вставить ячейки на часть объединённых ячеек ${p.sheet}!${p.area}`,
+  contentOnMerge: (p) => `Нельзя вставить значения или формулы в объединённые ячейки ${p.sheet}!${p.area}`,
   filteredPaste: (p) => `Копию без строк, скрытых фильтром, нельзя вставить поверх скрытых строк ${p.sheet}!${p.area}`,
   tableLands: (p) => `Таблица ${q(p.table)} легла бы на другую таблицу`,
   tableInsertTwo: (p) => `Вставка ${ofLines(p.lines)} здесь сдвинула бы ячейки сразу нескольких таблиц (${and(p.tables)})`,

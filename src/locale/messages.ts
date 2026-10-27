@@ -272,6 +272,7 @@ export interface MessageParams extends XlsxMessageParams {
   writesLimit: { size: number; max: number }
   moveCutsMerge: { sheet: string; area: string }
   pasteOnMerge: { sheet: string; area: string }
+  contentOnMerge: { sheet: string; area: string }
   filteredPaste: { sheet: string; area: string }
   tableLands: { table: string }
   tableInsertTwo: { lines: Lines; tables: string[] }
@@ -306,7 +307,7 @@ export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams>
 /** The keys of the messages only an edit of a book gives (a structure operation, typing into a cell, `explain`), whose English text stays out of `compute`'s bundle. */
 export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
-  | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
+  | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'mergeInTable' | 'arrayInTable'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'

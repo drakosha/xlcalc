@@ -33,7 +33,7 @@ console.log(last.ok, last.code) // → false last_sheet
 
 The operations are:
 - `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`);
-- `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`) and `copyRange` (`from` and `to` as `{ sheet, range }`; a destination that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`);
+- `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`) and `copyRange` (`from` and `to` as `{ sheet, range }`; a destination that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`; `paste` and `transpose` for [Paste Special](#paste-special));
 - `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`), `moveSheet` (`sheet`, `before`; Excel positions a sheet relative to the visible ones), `hideSheet` (`sheet`, `very` for a very hidden sheet) and `unhideSheet` (`sheet`);
 - for tables, `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](tables.md));
 - Excel's outline commands `group` and `ungroup` (`sheet`, `rows` or `columns`), `hideDetail` and `showDetail` (`sheet`, `row` or `column`) and `showLevels` (`sheet`, `rows`, `columns`; [docs/outline.md](outline.md));
@@ -72,7 +72,7 @@ type StructureOp =
   | { op: 'insertRows' | 'deleteRows'; sheet: string; row: number; count?: number }          // 1-based row
   | { op: 'insertColumns' | 'deleteColumns'; sheet: string; column: string; count?: number } // letters
   | { op: 'moveRange'; from: RangeRef; to: CellRef }                       // cut and paste, `to` is the top-left cell
-  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean }  // copy and paste, fill
+  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean; paste?: PasteKind; transpose?: boolean }  // copy and paste, fill, Paste Special
   | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType } // the fill handle, `to` holds `range`
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }
@@ -195,6 +195,32 @@ console.log(copyFormula('A1*2', { sheet: 'S', cell: 'B2' }, { sheet: 'S', cell: 
 ```
 
 What a copy does beyond one formula's text is specific to `copyRange`: it leaves out the rows hidden by a filter, copies part of a legacy array formula's range as separate arrays, points the formulas of an entirely copied table at the copy, and turns a formula pasted on a table's header into the header's text.
+
+## Paste Special
+
+`copyRange` with `paste` pastes part of the copy, as Excel's Paste Special does, and leaves the rest of the destination as it was; `transpose: true` turns the copy, rows into columns, with any kind. Each is one operation and one step of undo.
+
+| `paste` | what the destination takes | what it keeps |
+|---|---|---|
+| `all` (the default) | everything, as without `paste` | |
+| `values` | each cell's value as calculated: a formula's, a spilled cell's, an error as an error constant (`#N/A`) | styles, number formats, merged areas, notes, hyperlinks, conditional formats, data validation |
+| `formulas` | formulas as a copy pastes them, and constants | as for `values` |
+| `formats` | styles, number formats, merged areas, conditional formats; whole columns' and rows' widths, heights and looks | values and formulas, notes, hyperlinks, data validation |
+| `validation` | data validation | everything else |
+
+A blank cell of the source clears the cell it lands on with `values` and `formulas`, as with a whole copy. A paste of values takes the values the workbook calculates at that moment: in a session, after its edits. `values` and `formulas` are refused with `merged` onto a merged area that the copy does not bring with it at the same place; `formats` and `validation` may cover part of a legacy array formula, which a whole copy may not. No kind other than `all` makes a new table from a table it copies, and a header cell whose text changes renames its column, as with a whole copy.
+
+With `paste`, the destination is taken as Excel takes a selection: a cell of a merged area stands for the whole area. A copy of several cells is pasted at the area's top-left cell. A copy of one cell goes over the whole area, except with `all`, which pastes it into the area's top-left cell and keeps the area. `formats` and `validation` lay the copy over that area alone, cut to its size. Without `paste`, a copy onto part of a merged area is refused, as Excel's `Range.Copy` refuses it.
+
+A transposed copy is laid with its rows as columns from the destination's top-left cell, tiled when the destination is a whole multiple of the turned size, each tile turned at its own corner. A reference into the source follows the cell it points to, an absolute one too, and its `$` swap axes with it: `$A$1+A$2` in `B2`, copied with `A1:D2` to `F1`, becomes `$F$1+$G1`. A reference out of the source without any `$` is turned the same way about the source's top-left cell (`A9` in `C3` of a copy of `A1:D3` to `K1` becomes `S1`), on another sheet too; one with a `$` stays as it is. An entire column or row is turned into one that runs to the sheet's edge (`A:A` from `D1` of a copy of `A1:D3` to `F1` becomes `$F1:$XFD1`, `5:5` from `D2` becomes `J:J`). A reference turned off the sheet becomes `#REF!`. A transposed copy that does not fit is refused with `off_sheet`.
+
+```js
+import { editStructure } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*10' }, D2: { value: 5, numberFormat: '0%' } } }] }
+const r = editStructure(book, { op: 'copyRange', from: { sheet: 'S', range: 'A1:A2' }, to: { sheet: 'S', range: 'D1' }, paste: 'values' })
+console.log(r.ok && r.book.sheets[0].cells.D2) // → { value: 20, numberFormat: '0%' }
+```
 
 ## Renaming and deleting sheets
 
@@ -438,6 +464,7 @@ Tested in Excel 16 for Mac, en-US, on 317 workbooks; merging cells (61 cases) an
 ## Known differences and limits
 
 - Entire columns copied onto part of a merged area: Excel pastes them and keeps the area, while the engine rejects the copy with `merged` (two observations).
+- Paste Special was measured in Excel for Mac alone (49 cases), with its Paste Special command, not its Format Painter. `formats` of a table's cells: Excel pastes the look the table's style gives them as their formats; the engine does not draw table styles and pastes their own. Paste Special's other kinds (values and number formats, formulas and number formats, column widths, all except borders, comments), its operations and Skip Blanks are not in the engine.
 - The fill handle was not tested in Excel for Mac, nor in a ru-RU Excel (its lists of names), nor with types other than default, series and copy. Also not tested: whether a number at the end of text keeps its leading zeros beyond one width (`Item001`, here `Item002`), and a time next to a lone number (here it makes the number continue, as a date does).
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Charts are not part of a workbook. Comment threads are stored as notes in a workbook ([docs/xlsx.md](xlsx.md#threads-of-comments)).

@@ -34,11 +34,14 @@ export interface Paste {
   move: boolean
 }
 
-/** Excel's refusal of the paste, or null: a merged area it cuts or lands on part of (`merged`), else an array formula's area (`array`). */
-export function pasteRefusal(book: BookInput, p: Paste): Exclude<Applied, { ok: true }> | null {
+/**
+ * Excel's refusal of the paste, or null: a merged area it cuts or lands on part of (`merged`), else an array formula's
+ * area (`array`), which a paste of looks alone (`looksOnly`, Paste Special's Formats) may cover part of.
+ */
+export function pasteRefusal(book: BookInput, p: Paste, looksOnly = false): Exclude<Applied, { ok: true }> | null {
   const refused = mergeRefusal(book, p)
   if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
-  const part = arrayRefusal(book, p)
+  const part = looksOnly ? null : arrayRefusal(book, p)
   return part && { ok: false, code: 'array', message: say(book.locale, part) }
 }
 

@@ -1,0 +1,253 @@
+{
+ "formats-inside": {
+  "shown": {
+   "S": {
+    "cells": {
+     "F1": {
+      "value": "x",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "G1": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "J1": {
+      "value": "y",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "B3": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "E3": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "formats-corner": {
+  "shown": {
+   "S": {
+    "cells": {
+     "F1": {
+      "value": "x",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "G1": {
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "J1": {
+      "value": "y",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "B3": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "E3": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "formats-before": {
+  "refused": "the pasted cells would cover part of the merged area S!J1:K1"
+ },
+ "formats-part": {
+  "refused": "the pasted cells would cover part of the merged area S!J1:J2"
+ },
+ "all-both": {
+  "shown": {
+   "S": {
+    "cells": {
+     "F1": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "G1": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "J1": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "B3": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "E3": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "all-inside": {
+  "shown": {
+   "S": {
+    "cells": {
+     "F1": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "G1": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "J1": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "A3": {
+      "value": "p",
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     },
+     "B3": {
+      "value": 2,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "E3": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#FFFF00"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "tables": []
+   }
+  }
+ },
+ "all-part": {
+  "refused": "the pasted cells would cover part of the merged area S!J1:J2"
+ }
+}

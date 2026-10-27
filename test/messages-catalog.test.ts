@@ -95,6 +95,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   writesLimit: [{ size: 1048576, max: 100000 }],
   moveCutsMerge: [{ sheet: 'S', area: 'A1:B1' }],
   pasteOnMerge: [{ sheet: 'S', area: 'D1:E1' }],
+  contentOnMerge: [{ sheet: 'S', area: 'F1:G1' }],
   filteredPaste: [{ sheet: 'S', area: 'D1:E6' }],
   tableLands: [{ table: 'Sales' }],
   tableInsertTwo: [{ lines: 'rows', tables: ['Sales', 'Costs'] }],

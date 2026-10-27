@@ -23,17 +23,21 @@ interface PasteOp {
   ts: number
   /** A copy's target, a move's cell; null when it is no range. */
   at: Rect | null
+  /** A copy pasting values (Paste Special), and one transposed. */
+  values: boolean
+  turn: boolean
 }
 
 /** The sheets and ranges of a copy or a move, or null for another operation or a source that is no range. */
 export function pasteOf(book: BookInput, op: StructureOp): PasteOp | null {
   if (typeof op !== 'object' || op === null || (op.op !== 'copyRange' && op.op !== 'moveRange')) return null
   const o = op as unknown as Record<string, Record<string, unknown> | undefined>
+  const flags = op as unknown as Record<string, unknown>
   const index = (name: unknown) => (typeof name === 'string' ? sheetIndex(book, name) : -1)
   const range = (v: unknown) => (typeof v === 'string' ? parseRange(v) : null)
   const copy = op.op === 'copyRange'
   const src = range(o.from?.range)
-  return src && { copy, fs: index(o.from?.sheet), src, ts: index(o.to?.sheet), at: range(copy ? o.to?.range : o.to?.cell) }
+  return src && { copy, fs: index(o.from?.sheet), src, ts: index(o.to?.sheet), at: range(copy ? o.to?.range : o.to?.cell), values: copy && flags.paste === 'values', turn: copy && flags.transpose === true }
 }
 
 /** The cells of `x` a copy or a move writes with a value or a formula: those that hold one, and each cell of an array formula's area it takes part of (`copiedCells`). */
@@ -48,12 +52,17 @@ function contentIn(sheet: SheetInput, x: Rect): number {
   return n
 }
 
-/** The cells a copy writes: its source's cells with content, from the clip of a filtered sheet's visible rows, times its tiles; a fill handle's copy (`whole`) the source's own over every row. */
+/**
+ * The cells a copy writes: its source's cells with content, from the clip of a filtered sheet's visible rows or of a
+ * paste of values, times its tiles (turned with a transposed copy); a fill handle's copy (`whole`) the source's own over
+ * every row.
+ */
 function copyWrites(book: BookInput, p: PasteOp, target: Rect, values: ValuesIn, whole: boolean): number {
-  const clip = whole ? null : clipped(book, book.sheets[p.fs].name, p.src, values)
+  const clip = whole ? null : clipped(book, book.sheets[p.fs].name, p.src, values, p.values)
   const [sheet, src] = clip ? [clip.book.sheets.at(-1)!, clip.src] : [book.sheets[p.fs], p.src]
+  const laidOf = p.turn ? { r1: src.r1, c1: src.c1, r2: src.r1 + src.c2 - src.c1, c2: src.c1 + src.r2 - src.r1 } : src
   const runs = whole ? null : pasteRuns(book, book.sheets[p.ts].name, target)
-  const laid = runs ? runs.reduce((n, [r1, r2]) => n + tileCount(src, { ...target, r1, r2 }), 0) : tileCount(src, target)
+  const laid = runs ? runs.reduce((n, [r1, r2]) => n + tileCount(laidOf, { ...target, r1, r2 }), 0) : tileCount(laidOf, target)
   return contentIn(sheet, src) * laid
 }
 

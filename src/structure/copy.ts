@@ -60,14 +60,15 @@ const pastedCell = (cell: CellInput, withMeta: boolean): CellInput => {
 
 /**
  * Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. The source is read
- * from `source`, the book as it was copied (the clipboard), when pastes follow one another.
+ * from `source`, the book as it was copied (the clipboard), when pastes follow one another. A copy of which a paste
+ * takes the looks alone (`looksOnly`) may cover part of an array formula.
  */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): Applied {
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book, looksOnly = false): Applied {
   const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
-  const refusal = pasteRefusal(book, paste)
+  const refusal = pasteRefusal(book, paste, looksOnly)
   if (refusal) return refusal
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const ti = sheetIndex(book, to)

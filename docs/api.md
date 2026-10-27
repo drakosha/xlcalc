@@ -3472,6 +3472,20 @@ interface PageOptions extends EditOptions {
 }
 ```
 
+### `PasteKind`
+
+What a copy pastes of its source ([`StructureOp`](#structureop) `copyRange`), as Excel's Paste Special. `all`, the default, pastes
+everything. `values`: each cell's value as computed, a formula's and a spilled cell's too, an error as an error
+constant; `formulas`: the formulas as a copy pastes them and the constants. Both leave the target's styles, number
+formats, merged areas, notes, hyperlinks, conditional formats and data validation, a blank of the source clears the
+target's cell, and both are refused onto a merged area the copy does not bring. `formats`: styles, number formats,
+merged areas and conditional formats, the target's contents, notes, hyperlinks and data validation left.
+`validation`: the data validation alone.
+
+```ts
+type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation'
+```
+
 ### `PasteTextPreview`
 
 What [`Session.pasteText`](#session) would do ([`Session.previewPasteText`](#session)): the range, and the input and value of each of its cells, without changing anything.
@@ -4296,9 +4310,10 @@ type StructureOp =
   /**
    * Copy and paste: the range is pasted at `to`; a target that is a whole multiple of the source's size is
    * tiled with copies (fill down and fill right are copies of the first row or column). Copies have no
-   * `meta` unless `withMeta`.
+   * `meta` unless `withMeta`. `paste` pastes part of the copy, as Excel's Paste Special (`PasteKind`), and `transpose`
+   * turns it, rows into columns (`docs/structure.md` "Paste Special").
    */
-  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean }
+  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean; paste?: PasteKind; transpose?: boolean }
   /** A new name that follows Excel's rules (see `BookInput.sheets`) and is not used by another sheet. */
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }

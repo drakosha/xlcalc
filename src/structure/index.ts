@@ -2,7 +2,7 @@
  * `editStructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
-import type { BookInput, CellRef, FillType, StructureResult, StructureOp } from '../contract.js'
+import type { BookInput, CellRef, FillType, PasteKind, StructureResult, StructureOp } from '../contract.js'
 import { checkBook, checkSheetOf } from '../input.js'
 import { InputError } from '../input-error.js'
 import { checkOneOf, checkString, integer, isObject, onlyKeys } from '../input/basic.js'
@@ -23,7 +23,8 @@ import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry
 import { withGrids } from './grid.js'
 import { arrayInTable } from './arrays.js'
 import { copyRange } from './copy.js'
-import { copyRows, deleteRows, insertRows } from './filtered.js'
+import { deleteRows, insertRows } from './filtered.js'
+import { pasteCopy } from './special.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
 import { sheetIndex } from './rewrite.js'
@@ -50,7 +51,7 @@ const FIELDS: Record<string, string[]> = {
   insertColumns: ['sheet', 'column', 'count'],
   deleteColumns: ['sheet', 'column', 'count'],
   moveRange: ['from', 'to'],
-  copyRange: ['from', 'to', 'withMeta'],
+  copyRange: ['from', 'to', 'withMeta', 'paste', 'transpose'],
   renameSheet: ['sheet', 'name'],
   deleteSheet: ['sheet'],
   insertSheet: ['name', 'before'],
@@ -68,6 +69,8 @@ const FIELDS: Record<string, string[]> = {
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
+
+const PASTE_KINDS: readonly PasteKind[] = ['all', 'values', 'formulas', 'formats', 'validation']
 
 /**
  * Restructures a workbook; the input workbook is not modified. A copy that pastes values (from a filtered sheet)
@@ -173,8 +176,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       if (o.op === 'copyRange') {
         const target = checkRange(to.range, 'op.to.range')
         const withMeta = o.withMeta === true
-        pasted = whole ? copyRange(book, fromSheet, src, toSheet, target, withMeta) : copyRows(book, fromSheet, src, toSheet, target, withMeta, values)
-        r = copyTables(book, fromSheet, src, toSheet, target).after(pasted)
+        if (o.paste !== undefined) checkOneOf(o.paste, 'op.paste', PASTE_KINDS)
+        if (o.transpose !== undefined && typeof o.transpose !== 'boolean') throw new InputError('op.transpose', `expected a boolean, got ${JSON.stringify(o.transpose)}`)
+        const kind = (o.paste ?? 'all') as PasteKind
+        if (whole) {
+          pasted = copyRange(book, fromSheet, src, toSheet, target, withMeta)
+          r = copyTables(book, fromSheet, src, toSheet, target).after(pasted)
+        } else ({ pasted, r } = pasteCopy(book, fromSheet, src, toSheet, target, { kind, transpose: o.transpose === true, withMeta, special: o.paste !== undefined }, values))
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
