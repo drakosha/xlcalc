@@ -1093,6 +1093,17 @@ type AsyncSessionOptions = SessionOptions & CalcOptions
 type AsyncStructureResult = SessionStructureResult
 ```
 
+### `AutoFilter`
+
+A sheet's AutoFilter ([`SheetInput.autoFilter`](#sheetinput)).
+
+```ts
+interface AutoFilter {
+  /** The filtered cells with the header row first: a range from its top-left cell to its bottom-right one (`A1:D20`), or a cell (`A1`). */
+  range: string
+}
+```
+
 ### `AutoSumGuess`
 
 Excel's AutoSum at a cell ([`Session.getAutoSum`](#session)): the range it offers to sum and the formula it enters.
@@ -3085,6 +3096,8 @@ type LayoutEdit =
   | { sheet: string; merges: string[] }
   /** The sheet's filter mode (`SheetInput.filtered`). */
   | { sheet: string; filtered: boolean }
+  /** The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. */
+  | { sheet: string; autoFilter: AutoFilter | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
@@ -4233,6 +4246,12 @@ interface SheetInput {
    * whatever hid the row.
    */
   filtered?: boolean
+  /**
+   * The sheet's AutoFilter (Excel's Filter over cells outside a table, xlsx `<autoFilter>`): the filter buttons on the
+   * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Its criteria and
+   * sort are not in the model: whether a filter hid rows is `filtered`. Not part of calculation or inputHash.
+   */
+  autoFilter?: AutoFilter
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
   /**
@@ -5066,9 +5085,9 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
 - `hidden`: hidden sheets, read as visible ones.
 - `sheetKind`: a chart, dialog or macro sheet, left out.
 - `cellMetadata`: a cell's rich value (`vm`: a data type, a picture in the cell), read as the value the cell stores.
-- `autoFilter`: an AutoFilter's range, criteria and sort, a table's criteria, an advanced filter (the sheet's filter
-  mode is read: [`SheetInput.filtered`](#sheetinput)); when writing, the filter mode of a sheet whose tables have no header row,
-  left out.
+- `autoFilter`: an AutoFilter's criteria and sort, a table's criteria, an advanced filter (the sheet's filter mode is
+  read: [`SheetInput.filtered`](#sheetinput)); an AutoFilter over no range of cells or over a table, left out; when writing, the
+  filter mode of a sheet without an AutoFilter whose tables have no header row, left out.
 - `dataValidation`: a rule the model cannot hold (no range on the sheet, no formula that its type requires, an
   unknown type), left out; cells shared by two rules, kept by the earlier one; an IME mode; a list whose items contain
   commas, read as split at them; when writing, a rule whose formula the file cannot hold, left out.

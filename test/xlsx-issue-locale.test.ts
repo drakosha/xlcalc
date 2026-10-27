@@ -146,7 +146,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
 
   it('the files Excel saved that have issues: in ru-RU each message is Russian, with the same code, sheet, cells and name', async () => {
     const files = await excelFiles()
-    expect(files.length).toBeGreaterThanOrEqual(14)
+    expect(files.length).toBeGreaterThanOrEqual(15)
     for (const [name, data] of files) {
       const [en, ru] = await Promise.all([readXlsx(data), readXlsx(data, { locale: 'ru-RU' })])
       expect(ru.issues.map(place), name).toEqual(en.issues.map(place))

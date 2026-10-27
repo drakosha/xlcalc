@@ -66,7 +66,7 @@ What follows the cells this way:
 - the anchors of drawings (charts, pictures, shapes, slicers) by how each follows the cells. One that moves and sizes with them (`editAs="twoCell"`, the default) follows by both corners; a corner whose row or column was deleted lands where the deleted lines were, its offset 0; with all its rows or all its columns deleted the drawing is deleted, with the chart or picture only it shows, as Excel deletes it. One that moves without sizing (`oneCell`, and a one-cell anchor) follows by its top left corner and keeps its size, its bottom right corner counted again from the rows' heights and the columns' widths. One that is fixed (`absolute`) stays;
 - the place of a pivot table, and the source of its cache: cells, or a table or a name, which takes a table's new name;
 - sparklines, their data and their cells;
-- a sheet's AutoFilter and its sort, whose sort goes when its cells are deleted;
+- the criteria and sort of a sheet's AutoFilter, and a sheet's sort, which goes when its cells are deleted ([AutoFilters](#autofilters));
 - the names the workbook does not take: the print area and titles (`_xlnm.Print_Area`, `_xlnm.Print_Titles`), a filter's database (`_xlnm._FilterDatabase`) and the other built-in names;
 - page breaks, a break going with the row or column it comes before; protected ranges;
 - a pivot chart's pivot table, by its sheet's new name;
@@ -80,12 +80,25 @@ The carriers' names follow the file's parts in order, so a workbook takes `write
 
 A link the workbook has after the file's (one a host added with `setExternalBooks`, or in `BookInput.externalBooks` before it opened the session) is written as `writeXlsx` writes it, in a part of its own (`xl/externalLinks/externalLinkN.xml`) with its relationship to the other file, its content type and an `<externalReference>` of the workbook after the file's. A link of the file whose sheets, names or stored values changed (more values from a host, or the mark Excel and a session put on a link a formula is typed over) is written again from the workbook into its part, through the relationship the part has; a link that did not change keeps its part as the file has it. The links keep their numbers, which the file's formulas read them by: a link removed, moved or pointed at another file is refused. Excel 16.114 for Mac opened, without its repair window, each of six files written over files it had made with a link added and a formula typed over it, kept the link and calculated the formula from the stored values; as with any of its workbooks, it saved the link's target as an absolute path and only the values formulas refer to.
 
+## AutoFilters
+
+`openKept` reads a sheet's AutoFilter into `autoFilter` with its range, as `readXlsx` does; its criteria and sort stay in the file. `writeKept` keeps the file's `<autoFilter>`, criteria and sort included, wherever the workbook's AutoFilter is where the file's moved with the operations: rows inserted inside it, say, move both. Where a host put the AutoFilter on another range, it is written from the workbook, without criteria, as a changed table is. Where a host removed it, or an operation took it away, it goes, with its filter database. A sheet that gets an AutoFilter the file did not have gets its filter database too, as `writeXlsx` writes it.
+
+```js
+const read = await openKept(file)            // Data's AutoFilter over A1:C21, criteria on Region
+const s = createSession(read.book, { cached: read.cached })
+s.editStructure({ op: 'insertRows', sheet: 'Data', row: 5 })
+await writeKept(file, s.getSnapshot())       // <autoFilter ref="A1:C22"> with the criteria on Region
+s.setLayout([{ sheet: 'Data', autoFilter: { range: 'A1:D22' } }])
+await writeKept(file, s.getSnapshot())       // <autoFilter ref="A1:D22">, the file's criteria lost: the sheet, filtered, gets the writer's
+```
+
 ## Refusals
 
 `writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does or lose what it holds. Its `code` (`KeptRefusalCode`) gives the kind for a program, in brackets:
 
 - a range moved over a drawing (its cells move and its lines do not), or a change that would cut a pivot table, which Excel refuses (`moved`); a part that moves in a way `writeKept` does not write (`moved`);
-- a drawing whose cells were deleted with all the rows below or the columns beside it; the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know), or in cells deleted; a sparkline's cell deleted, an AutoFilter whose range was deleted (`deleted`);
+- a drawing whose cells were deleted with all the rows below or the columns beside it; the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know), or in cells deleted; a sparkline's cell deleted (`deleted`);
 - a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from; a sheet or a table deleted with parts of its own the workbook does not have (a pivot table, a slicer) (`deleted`);
 - the cells of comment threads moved, or notes changed on a sheet with comment threads, which the workbook reads as notes (`threads`);
 - rows or columns inserted or deleted on a sheet with parts whose references are not read, or such a sheet renamed or deleted (`unread`);
@@ -95,7 +108,7 @@ A link the workbook has after the file's (one a host added with `setExternalBook
 - a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped (`carriers`);
 - a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed; a worksheet in other namespaces (`file`).
 
-Everything the workbook holds moves with these operations on its own: formulas, names, conditional formats, data validation, merged areas, tables, notes, hyperlinks, frozen panes.
+Everything the workbook holds moves with these operations on its own: formulas, names, conditional formats, data validation, merged areas, tables, AutoFilters, notes, hyperlinks, frozen panes.
 
 ## Known differences
 
@@ -103,7 +116,8 @@ Everything the workbook holds moves with these operations on its own: formulas, 
 - A drawing that moves without sizing keeps its size by the rows' heights and the columns' widths the workbook has; Excel's answers were taken for rows of the default height. A drawing goes with all its columns deleted by the rule Excel showed for rows.
 - The formats and strings no cell uses any more stay in `styles.xml` and `sharedStrings.xml`; Excel drops them when it saves.
 - A cell that moved is the file's own only on its sheet: one moved by a range to another sheet is written from the workbook.
-- A table the workbook changed is written from the workbook: the criteria and sort of its AutoFilter are lost, as when `writeXlsx` writes it.
+- A table the workbook changed is written from the workbook: the criteria and sort of its AutoFilter are lost, as when `writeXlsx` writes it. So is a sheet's AutoFilter a host put on another range, as when `writeXlsx` writes it, and one removed goes with its filter database (`_xlnm._FilterDatabase`).
+- The filter database follows the workbook's AutoFilter. Excel moves it as a name: it keeps it over cells moved to another sheet, where the AutoFilter goes, makes it `#REF!` under cells moved over the AutoFilter and stretches it over the AutoFilter's last rows moved down, where the AutoFilter stays.
 - When a sheet's conditional formats change, its rules are written from the workbook; a sheet with rules the workbook could not read is refused (`rules`) rather than written without them. So with data validation.
 - A row the workbook did not change keeps the collapsed mark the file has, where `writeXlsx` writes the mark as Excel keeps it.
 - The ignored errors of a sheet with rows or columns inserted or deleted are left out: no carrier holds their cells.
@@ -111,4 +125,4 @@ Everything the workbook holds moves with these operations on its own: formulas, 
 
 ## Checked against Excel
 
-Excel 16.113 for Mac opened, without its repair window, each of 30 files written over files it had made with charts, a chart sheet, pictures, pivot tables, formatted runs, theme colours, the print area, a page break and notes, after edits of values, formulas, styles, merged areas, rules, validation, hyperlinks, notes, and rows and sheets where no part refers; it saved every one of those parts again and the values written. For 20 operations of the structure over such files (rows and columns inserted and deleted in and around a chart's data, under pictures of each `editAs`, around a pivot table and its source, the print area and a page break; a range moved; sheets renamed and deleted), Excel 16.114 did each operation itself and saved the file, and `writeKept` writes the references Excel saved, but for a lost category or series name, which Excel moves to an extension, and the one change it refuses (a pivot cache's sheet deleted). Excel opened each file `writeKept` wrote for them without its repair window and kept its parts and references. Without edits, each file of the test sets and files of real workbooks from other sources is written back as its own bytes; after random edits and operations of the structure, a file reads back as `writeXlsx` writes the same workbook, with the parts no edit concerns unchanged, or the change is refused. Excel for Windows was not run. [docs/development.md](development.md#writing-over-the-original-file) has the details.
+Excel 16.113 for Mac opened, without its repair window, each of 30 files written over files it had made with charts, a chart sheet, pictures, pivot tables, formatted runs, theme colours, the print area, a page break and notes, after edits of values, formulas, styles, merged areas, rules, validation, hyperlinks, notes, and rows and sheets where no part refers; it saved every one of those parts again and the values written. For 20 operations of the structure over such files (rows and columns inserted and deleted in and around a chart's data, under pictures of each `editAs`, around a pivot table and its source, the print area and a page break; a range moved; sheets renamed and deleted), Excel 16.114 did each operation itself and saved the file, and `writeKept` writes the references Excel saved, but for a lost category or series name, which Excel moves to an extension, and the one change it refuses (a pivot cache's sheet deleted). Excel opened each file `writeKept` wrote for them without its repair window and kept its parts and references. Without edits, each file of the test sets and files of real workbooks from other sources is written back as its own bytes; after random edits and operations of the structure, a file reads back as `writeXlsx` writes the same workbook, with the parts no edit concerns unchanged, or the change is refused. For 19 operations over a file with an AutoFilter, Excel 16.114 moved or removed the AutoFilter as the workbook does, and opened each file `writeKept` wrote for them without its repair window, with the AutoFilter where the workbook has it; so for 14 files written after edits that put, moved or removed an AutoFilter, or kept one with its criteria. Excel for Windows was not run. [docs/development.md](development.md#writing-over-the-original-file) has the details.
