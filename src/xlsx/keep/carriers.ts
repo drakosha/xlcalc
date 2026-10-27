@@ -15,6 +15,7 @@
 import type { BookInput, NameInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
 import { ADDR, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
+import type { KeptRefusalCode } from './refusals.js'
 import type { Rect } from '../../structure/area.js'
 import type { Ast } from '../../syntax/ast.js'
 import { FormulaError } from '../../syntax/ast.js'
@@ -50,7 +51,7 @@ export interface Edit {
 }
 
 /** What writing an item's carriers back gives: the edits, or why the file cannot take the change. */
-export type Fix = { edits: Edit[] } | { refuse: string }
+export type Fix = { edits: Edit[] } | { refuse: string; code: KeptRefusalCode }
 
 /** The size of a sheet's rows and columns as the book written has them, in EMUs (a drawing's offsets count in them). */
 export interface Geometry {
@@ -364,10 +365,10 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
             // keep/struct); the parts only it points at go with it (`writeKept`). Its cells lost under a range moved over
             // them, its lines stay: so does it.
             if (sized && !r && ((r1 === undefined && r2 === undefined) || (c1 === undefined && c2 === undefined)))
-              return children.has(e.start) ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted, in alternate content, which writeKept does not delete` }
+              return children.has(e.start) ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted, in alternate content, which writeKept does not delete`, code: 'deleted' }
             // a range moved over the drawing moves its rectangle and not its lines: the drawing would stay behind
-            if (r && r1 !== undefined && c1 !== undefined && (r.r1 !== r1 || r.c1 !== c1)) return { refuse: `${what} lies in a range that moved, which writeKept does not move a drawing with` }
-            if (!p) return { refuse: `${what} lies in cells deleted with all those below or beside it` }
+            if (r && r1 !== undefined && c1 !== undefined && (r.r1 !== r1 || r.c1 !== c1)) return { refuse: `${what} lies in a range that moved, which writeKept does not move a drawing with`, code: 'moved' }
+            if (!p) return { refuse: `${what} lies in cells deleted with all those below or beside it`, code: 'deleted' }
             // where a corner of a deleted line lands: the first line after the deleted ones
             const top = r1 ?? (r ? r.r1 : p.r1)
             const left = c1 ?? (r ? r.c1 : p.c1)
@@ -416,7 +417,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
       carriers: [place(i, was)],
       fix([now]) {
         const x = rectsNow(now)?.[0]
-        if (!x || x.r2 - x.r1 !== was.r2 - was.r1 || x.c2 - x.c1 !== was.c2 - was.c1) return { refuse: `${what} would be cut by the change, which Excel refuses` }
+        if (!x || x.r2 - x.r1 !== was.r2 - was.r1 || x.c2 - x.c1 !== was.c2 - was.c1) return { refuse: `${what} would be cut by the change, which Excel refuses`, code: 'moved' }
         return { edits: [{ part, start: span[0], end: span[1], text: plainArea(x) }] }
       },
     })
@@ -441,11 +442,11 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
           carriers: [carrier(`${quoteSheet(readText(xml.slice(...sheet)))}!${absText(rects[0])}`, 'ref')],
           fix([now]) {
             const area = areasOf(now)?.[0]
-            if (!area) return { refuse: `${what} is no reference after the change` }
+            if (!area) return { refuse: `${what} is no reference after the change`, code: 'deleted' }
             // its sheet deleted, Excel makes the source a link to the file by its path (`r:id` of an external link path,
             // the set keep/struct), which writeKept does not know, and does not open the source left as it was (keep
             // struct-open); its cells deleted is not measured
-            if ('lost' in area) return { refuse: area.sheet === undefined ? `${what} is on a sheet the change deleted, which Excel makes a link to the file by its path` : `${what} lies in cells the change deleted` }
+            if ('lost' in area) return { refuse: area.sheet === undefined ? `${what} is on a sheet the change deleted, which Excel makes a link to the file by its path` : `${what} lies in cells the change deleted`, code: 'deleted' }
             return { edits: [{ part, start: ref[0], end: ref[1], text: plainArea(area.rect) }, { part, start: sheet[0], end: sheet[1], text: escapeAttr(area.sheet) }] }
           },
         })
@@ -477,7 +478,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
       carriers: [place(i, range), ...columns.map(({ colId }) => place(i, { ...range, c1: range.c1 + colId, c2: range.c1 + colId })), ...sorts.map((s) => place(i, s.rects![0])), ...(sortWas ? [place(i, sortWas[0])] : [])],
       fix([rangeNow, ...rest]) {
         const now = rectsNow(rangeNow)?.[0]
-        if (!now) return own === 'sort' ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted` }
+        if (!now) return own === 'sort' ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted`, code: 'deleted' }
         const edits: Edit[] = [{ part, start: span[0], end: span[1], text: plainArea(now) }]
         columns.forEach(({ c, at }, k) => {
           const x = rectsNow(rest[k])?.[0]
@@ -559,7 +560,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
         carriers: [carrier(ref, 'place')],
         fix([now]) {
           const xs = rectsNow(now)
-          if (!xs || xs.some((x) => x === null)) return { refuse: `a sparkline's cell on '${names[i]}' was deleted` }
+          if (!xs || xs.some((x) => x === null)) return { refuse: `a sparkline's cell on '${names[i]}' was deleted`, code: 'deleted' }
           return { edits: [{ part, start: q.open, end: q.close, text: (xs as Rect[]).map(plainArea).join(' ') }] }
         },
       })
@@ -575,7 +576,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
         out.unparsed[i].push(what)
         continue
       }
-      out.items.push({ what, on: i, carriers: [carrier(ref, 'place')], fix: () => ({ refuse: `${what} (${part}) would move, which writeKept does not write` }) })
+      out.items.push({ what, on: i, carriers: [carrier(ref, 'place')], fix: () => ({ refuse: `${what} (${part}) would move, which writeKept does not write`, code: 'moved' }) })
     }
   }
 }

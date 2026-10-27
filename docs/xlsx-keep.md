@@ -31,7 +31,7 @@ console.log(same.data === original) // → true
 | `locale` | the language of the issues' messages, as for `writeXlsx` |
 | `limits` | how large the original file's parts may be once inflated, as for `readXlsx` |
 
-A change the file cannot take without pointing a part at other cells is refused: `writeKept` throws `KeptRefusal`, exported by the subpath, with the reason in its message, and writes no file ([Refusals](#refusals)).
+A change the file cannot take without pointing a part at other cells is refused: `writeKept` throws `KeptRefusal`, exported by the subpath, with the reason in its message and its kind in `code`, and writes no file ([Refusals](#refusals)).
 
 ## What is written and what stays
 
@@ -78,20 +78,18 @@ The carriers' names follow the file's parts in order, so a workbook takes `write
 
 ## Refusals
 
-`writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does:
+`writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does or lose what it holds. Its `code` (`KeptRefusalCode`) gives the kind for a program, in brackets:
 
-- a range moved over a drawing (its cells move and its lines do not), or a drawing whose cells were deleted with all the rows below or the columns beside it;
-- a change that would cut a pivot table, which Excel refuses;
-- the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know), or in cells deleted;
-- a sparkline's cell deleted, an AutoFilter whose range was deleted;
-- the cells of comment threads moved, or notes changed on a sheet with comment threads, which the workbook reads as notes;
-- rows or columns inserted or deleted on a sheet with parts whose references are not read, or such a sheet renamed or deleted;
-- a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from;
-- a sheet deleted with parts of its own the workbook does not have (a pivot table, a slicer);
-- the links to other workbooks changed;
-- the workbook's default font (`font`) changed, which every cell without a font of its own would show;
-- a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped;
-- a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed.
+- a range moved over a drawing (its cells move and its lines do not), or a change that would cut a pivot table, which Excel refuses (`moved`); a part that moves in a way `writeKept` does not write (`moved`);
+- a drawing whose cells were deleted with all the rows below or the columns beside it; the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know), or in cells deleted; a sparkline's cell deleted, an AutoFilter whose range was deleted (`deleted`);
+- a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from; a sheet or a table deleted with parts of its own the workbook does not have (a pivot table, a slicer) (`deleted`);
+- the cells of comment threads moved, or notes changed on a sheet with comment threads, which the workbook reads as notes (`threads`);
+- rows or columns inserted or deleted on a sheet with parts whose references are not read, or such a sheet renamed or deleted (`unread`);
+- the conditional formats or the data validation of a sheet changed, by an edit or by rows and columns moving, where the file has rules of that sheet the workbook could not read (those `readXlsx` reports as `conditionalFormat` and `dataValidation` issues): written again from the workbook, they would be lost (`rules`);
+- the links to other workbooks changed (`links`);
+- the workbook's default font (`font`) changed, which every cell without a font of its own would show (`font`);
+- a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped (`carriers`);
+- a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed; a worksheet in other namespaces (`file`).
 
 Everything the workbook holds moves with these operations on its own: formulas, names, conditional formats, data validation, merged areas, tables, notes, hyperlinks, frozen panes.
 
@@ -102,7 +100,7 @@ Everything the workbook holds moves with these operations on its own: formulas, 
 - The formats and strings no cell uses any more stay in `styles.xml` and `sharedStrings.xml`; Excel drops them when it saves.
 - A cell that moved is the file's own only on its sheet: one moved by a range to another sheet is written from the workbook.
 - A table the workbook changed is written from the workbook: the criteria and sort of its AutoFilter are lost, as when `writeXlsx` writes it.
-- When a sheet's conditional formats change, its rules are written from the workbook, and the rules the workbook could not read are lost; so with data validation.
+- When a sheet's conditional formats change, its rules are written from the workbook; a sheet with rules the workbook could not read is refused (`rules`) rather than written without them. So with data validation.
 - A row the workbook did not change keeps the collapsed mark the file has, where `writeXlsx` writes the mark as Excel keeps it.
 - The ignored errors of a sheet with rows or columns inserted or deleted are left out: no carrier holds their cells.
 - `docProps/app.xml`, which lists the sheets' names for file browsers, stays as it was.

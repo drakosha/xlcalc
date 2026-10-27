@@ -160,20 +160,23 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   // the book as written: its names without the carriers
   const carried = new Set(carrierNames(carriers).map((n) => caseKey(n.name)))
   const book: BookInput = given.names ? { ...given, names: given.names.filter((n) => n.scope !== undefined || !carried.has(caseKey(n.name))) } : given
-  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits))
+  // the sheets whose rules the reader could not all take, which writing them again from the workbook would lose
+  const unread = (code: string) => new Set(read.issues.flatMap((x) => (x.code === code && x.sheet !== undefined ? [x.sheet] : [])))
+  const lost = { conditional: unread('conditionalFormat'), validation: unread('dataValidation') }
+  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits), lost)
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
     k.write()
   } catch (e) {
     // a Strict file's sheets are in other namespaces than the model's elements
-    throw strict ? new KeptRefusal(STRICT_FILE) : e
+    throw strict ? new KeptRefusal(STRICT_FILE, 'file') : e
   }
   if (!k.changed) return { data: bytes, issues: [] }
-  if (strict) throw new KeptRefusal(STRICT_FILE)
+  if (strict) throw new KeptRefusal(STRICT_FILE, 'file')
   // a sheet the reader read under another name than the file's: the file's formulas name it as the file does
   const repaired = src.sheets.findIndex((s, i) => src.decls[s.decl].name !== read.book.sheets[i].name)
-  if (repaired >= 0) throw new KeptRefusal(`the file names a sheet '${src.decls[src.sheets[repaired].decl].name}', which Excel does not take (it was read as '${read.book.sheets[repaired].name}')`)
+  if (repaired >= 0) throw new KeptRefusal(`the file names a sheet '${src.decls[src.sheets[repaired].decl].name}', which Excel does not take (it was read as '${read.book.sheets[repaired].name}')`, 'file')
   if (k.formulas && unasked) k.issues.add('noCachedValues', { key: 'noResult' })
   // a sheet with more cells that hold what only the file holds than have carriers, whose rows or columns moved
   for (const [i, count] of carriers.uncarried.entries()) {
@@ -210,6 +213,8 @@ class Kept {
     readonly cached: Record<string, ResultCell>[] | undefined,
     readonly id: Identity,
     readonly setup: Setup,
+    /** By name, the sheets of the file with conditional formats, and with data validation, the reader could not all take. */
+    readonly lost: { conditional: Set<string>; validation: Set<string> },
   ) {
     this.parts = new Parts(src)
     this.types = contentTypes(src)
@@ -249,7 +254,7 @@ class Kept {
   write(): void {
     const { src, book0, book } = this
     // the file's first font is the default its styles are written against: another one would change every cell's look
-    if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal('the default font changed, which writeKept does not write')
+    if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal('the default font changed, which writeKept does not write', 'font')
     const emptied = this.others()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
@@ -264,6 +269,12 @@ class Kept {
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
       const p0 = sheetPieces(s0, k, this.context(book0, this.w0, k, this.cached?.[k], new Issues()))
       const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
+      // rules the workbook does not hold would go with a sheet's rules written again: refused, never lost
+      const name = book0.sheets[k].name
+      if (this.lost.conditional.has(name) && p0.conditional + p0.ext !== p1.conditional + p1.ext)
+        throw new KeptRefusal(`the conditional formats of '${name}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`, 'rules')
+      if (this.lost.validation.has(name) && p0.validations !== p1.validations)
+        throw new KeptRefusal(`the data validation of '${name}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`, 'rules')
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
       // the references of the sheet's own parts (an AutoFilter, page breaks, sparklines) written back first
@@ -374,7 +385,7 @@ class Kept {
   private notes(ss: SourceSheet, p0: SheetPieces, p1: SheetPieces, rels: Rels): string | undefined {
     if (p0.notes?.comments === p1.notes?.comments) return undefined
     const name = this.book0.sheets[this.src.sheets.indexOf(ss)].name
-    if (ss.rels.some((r) => r.kind === 'threadedComment')) throw new KeptRefusal(`the notes of '${name}' changed, and it has comment threads, which writeKept does not write`)
+    if (ss.rels.some((r) => r.kind === 'threadedComment')) throw new KeptRefusal(`the notes of '${name}' changed, and it has comment threads, which writeKept does not write`, 'threads')
     this.changed = true
     const comments = ss.rels.find((r) => r.kind === 'comments' && !r.external)
     const legacy = /<(?:[\w.-]+:)?legacyDrawing\b[^>]*?\bid="([^"]+)"/.exec(ss.xml)?.[1]
@@ -427,7 +438,7 @@ class Kept {
       const t1 = t0 && take(t0)
       if (!t0) list.push(r.id)
       else if (!t1) {
-        if (this.parts.has(relsPath(r.target))) throw new KeptRefusal(`the table ${t0.name} was deleted, and it has parts the workbook does not hold (${relsPath(r.target)})`)
+        if (this.parts.has(relsPath(r.target))) throw new KeptRefusal(`the table ${t0.name} was deleted, and it has parts the workbook does not hold (${relsPath(r.target)})`, 'deleted')
         this.changed = listChanged = true
         this.parts.remove(r.target)
         this.types.remove(r.target)

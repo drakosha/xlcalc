@@ -18,7 +18,7 @@ import { readXlsx, writeXlsx, type XlsxRead } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { relsOf } from '../src/xlsx/read/package.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { openKept, writeKept } from '../src/xlsx-keep.js'
+import { openKept, writeKept, type KeptRefusal } from '../src/xlsx-keep.js'
 
 registerLocale(ruRU)
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -172,8 +172,8 @@ const refsOut = (xml: string) => xml.replace(/<(\w+:)?f(\s[^>]*)?>[^<]*<\/(\w+:)
 const PARTS_OF_BOOK = /^(\[content_types\]\.xml|xl\/workbook\.xml|xl\/_rels\/workbook\.xml\.rels|xl\/styles\.xml|xl\/calcchain\.xml|xl\/metadata\.xml|xl\/richdata\/.*)$/i
 
 /** Each file edited by `kinds`, written over its original; what differs from writeXlsx's, and the parts that changed unasked. */
-async function check(kinds: readonly string[]): Promise<{ written: number; refused: number; problems: string[] }> {
-  const out = { written: 0, refused: 0, problems: [] as string[] }
+async function check(kinds: readonly string[]): Promise<{ written: number; refused: string[]; problems: string[] }> {
+  const out = { written: 0, refused: [] as string[], problems: [] as string[] }
   for (const f of files) {
     const data = readFileSync(`${root}/${f}`)
     const read = await openKept(data)
@@ -183,7 +183,7 @@ async function check(kinds: readonly string[]): Promise<{ written: number; refus
       w = await writeKept(data, snap)
     } catch (e) {
       if ((e as Error).name !== 'KeptRefusal') throw new Error(`${f}: ${(e as Error).stack}`)
-      out.refused++
+      out.refused.push(`${f} ${(e as KeptRefusal).code}`)
       continue
     }
     out.written++
@@ -233,12 +233,13 @@ describe('xlsx/keep over the test sets', () => {
   it('random edits: read back as writeXlsx writes the book, the other parts as they were', async () => {
     const r = await check(EDITS)
     expect(r.problems).toEqual([])
-    expect(r.refused).toBe(0)
+    // a file with rules the workbook reads in part (gradient fills), whose rules an edit changed
+    expect(r.refused).toEqual(['test/excel/win/cond/fills-held/fills.xlsx rules'])
   }, 240_000)
 
   it('random operations of the structure: written as writeXlsx writes the book, or refused', async () => {
     const r = await check(STRUCTURE)
     expect(r.problems).toEqual([])
-    expect(r.written).toBeGreaterThan(r.refused * 20)
+    expect(r.written).toBeGreaterThan(r.refused.length * 20)
   }, 240_000)
 })

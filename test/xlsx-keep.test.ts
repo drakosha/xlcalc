@@ -10,6 +10,8 @@ import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
 import { KEPT_CELLS } from '../src/xlsx/keep/carriers.js'
 import { changedParts, partsOf, withParts } from './keep-files.js'
+import { openArchive } from '../src/xlsx/zip/read.js'
+import { zip } from '../src/xlsx/zip/write.js'
 
 const book = (): BookInput => ({
   sheets: [
@@ -254,7 +256,7 @@ async function moved(edit: (s: ReturnType<typeof createSession>) => void, extra 
   edit(session)
   return writeKept(data, session.getSnapshot()).then(
     async (w) => partsOf(w.data),
-    (e: Error) => (e instanceof KeptRefusal ? e.message : `${e.name}: ${e.message}`),
+    (e: Error) => (e instanceof KeptRefusal ? `${e.code}: ${e.message}` : `${e.name}: ${e.message}`),
   )
 }
 
@@ -297,7 +299,7 @@ describe('writeKept moves the references of the parts the model does not have', 
   })
 
   it('a range moved over a drawing is refused; a sheet with drawings deleted takes them with it', async () => {
-    expect(await moved((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'H1:M6' }, to: { sheet: 'Other', cell: 'H20' } }))).toBe("xlsx/keep: a drawing on 'Other' (xl/drawings/drawing1.xml) lies in a range that moved, which writeKept does not move a drawing with")
+    expect(await moved((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'H1:M6' }, to: { sheet: 'Other', cell: 'H20' } }))).toBe("moved: xlsx/keep: a drawing on 'Other' (xl/drawings/drawing1.xml) lies in a range that moved, which writeKept does not move a drawing with")
     // a range moved onto all the chart's cells: the chart stays where it is
     const over = (await moved((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'A20:F25' }, to: { sheet: 'Other', cell: 'H1' } }))) as Map<string, string>
     expect(anchors(over)).toEqual(['from 7+1000 0+2000', 'to 12+1000 5+2000', 'from 7+1000 9+2000', 'to 9+1000 13+2000'])
@@ -325,9 +327,9 @@ describe('writeKept moves the references of the parts the model does not have', 
     expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 1 })))).toEqual(['D4:E6', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     expect(pivots(await plain(pivot, (s) => { s.editStructure({ op: 'insertRows', sheet: 'Data', row: 3 }); s.editStructure({ op: 'renameSheet', sheet: 'Data', name: 'Raw' }) }))).toEqual(['D3:E5', '<worksheetSource ref="A1:B5" sheet="Raw"/>'])
     // the source's sheet deleted: Excel makes the source a link to the file by its path, refused; its cells deleted: refused
-    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' }))).toBe('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path')
-    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 }))).toBe('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml lies in cells the change deleted')
-    expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
+    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' }))).toBe('deleted: xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path')
+    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 }))).toBe('deleted: xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml lies in cells the change deleted')
+    expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("moved: xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
     const table: BookInput = { sheets: [{ name: 'Data', cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 'x' }, B2: { value: 1 } }, tables: [{ name: 'Sales', range: 'A1:B2', columns: [{ name: 'k' }, { name: 'v' }] }] }, { name: 'Other', cells: {} }] }
     const data = await withParts(table, { pivot: { sheet: 1, location: 'A3:B5', source: { name: 'Sales' } } })
     const r = await openKept(data)
@@ -335,12 +337,14 @@ describe('writeKept moves the references of the parts the model does not have', 
     s.editStructure({ op: 'renameTable', table: 'Sales', name: 'Orders' })
     expect((await partsOf((await writeKept(data, s.getSnapshot())).data)).get('xl/pivotCache/pivotCacheDefinition1.xml')).toContain('<worksheetSource name="Orders"/>')
     s.editStructure({ op: 'deleteTable', table: 'Orders' })
+    await expect(writeKept(data, s.getSnapshot())).rejects.toMatchObject({ code: 'deleted' })
     await expect(writeKept(data, s.getSnapshot())).rejects.toThrow('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is the table or name Sales, which the workbook no longer has')
   })
 
   it('a book without the carriers of a file with charts: open it with openKept', async () => {
     const { data } = await charted()
     const r = await readXlsx(data)
+    await expect(writeKept(data, { book: r.book, result: r.cached })).rejects.toMatchObject({ code: 'carriers' })
     await expect(writeKept(data, { book: r.book, result: r.cached })).rejects.toThrow(/^xlsx\/keep: the workbook has no name _xlcalc\.keep\.\d+, which holds a reference of .*: open the file with openKept and keep the hidden names it adds$/)
   })
 })
@@ -389,7 +393,7 @@ describe("the workbook's default font", () => {
     expect(opened.book.font).toEqual(book.font)
     expect(Buffer.from((await writeKept(data, { book: opened.book })).data).equals(Buffer.from(data))).toBe(true)
     for (const font of [{ name: 'Arial', size: 12 }, undefined])
-      await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toThrow(new KeptRefusal('the default font changed, which writeKept does not write'))
+      await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'font', message: 'xlsx/keep: the default font changed, which writeKept does not write' })
   })
 })
 
@@ -401,5 +405,52 @@ describe('the carriers outside writeKept', () => {
     const file = await writeXlsx({ book: opened.book }, { values: 'omit' })
     expect(file.issues).toEqual([])
     expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'rate', ref: "'S'!$A$1" }])
+  })
+})
+
+describe('rules the workbook could not read are refused, never lost', () => {
+  /** S with a rule of each kind the workbook reads, and the file given a conditional format and a validation rule it does not; T without. */
+  async function unread(): Promise<Uint8Array> {
+    const book: BookInput = {
+      sheets: [
+        { name: 'S', cells: { A1: { value: 1 }, B1: { value: 2 } }, conditionalFormats: [{ type: 'cellIs', ranges: ['A1:A3'], operator: 'greaterThan', formulas: ['0'], style: { font: { bold: true } } }], validations: [{ range: 'B1', type: 'whole', operator: 'greaterThan', formula1: '0' }] },
+        { name: 'T', cells: { A1: { value: 3 } }, conditionalFormats: [{ type: 'cellIs', ranges: ['A1'], operator: 'greaterThan', formulas: ['0'], style: { font: { bold: true } } }] },
+      ],
+    }
+    const archive = openArchive((await writeXlsx({ book })).data)
+    const parts = new Map<string, string | Uint8Array>()
+    for (const name of archive.names) parts.set(name, (await archive.text(name))!)
+    const sheet = parts.get('xl/worksheets/sheet1.xml') as string
+    // a rule of a type the workbook does not have, and a rule's IME mode, which it does not keep
+    const cf = '<conditionalFormatting sqref="C1:C3"><cfRule type="unknownKind" priority="9"/></conditionalFormatting>'
+    const at = sheet.indexOf('<dataValidations')
+    parts.set('xl/worksheets/sheet1.xml', (sheet.slice(0, at) + cf + sheet.slice(at)).replace('<dataValidation ', '<dataValidation imeMode="hiragana" '))
+    return zip([...parts].map(([name, data]) => ({ name, data: typeof data === 'string' ? new TextEncoder().encode(data) : data })))
+  }
+
+  it("the sheet's rules changed, or moved by its rows, are refused with rules; a value or another sheet's rules are written", async () => {
+    const data = await unread()
+    expect((await readXlsx(data)).issues.map((x) => [x.code, x.sheet])).toEqual(expect.arrayContaining([['conditionalFormat', 'S'], ['dataValidation', 'S']]))
+    const open = async () => createSession((await openKept(data)).book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
+    const rule = { type: 'cellIs' as const, ranges: ['B1'], operator: 'lessThan' as const, formulas: ['9'], style: { font: { italic: true } } }
+    for (const edit of [
+      (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'S', conditionalFormats: [...s.getBook().sheets[0].conditionalFormats!, rule] }]),
+      (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'S', validations: [] }]),
+      (s: ReturnType<typeof createSession>) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 }),
+    ]) {
+      const s = await open()
+      edit(s)
+      await expect(writeKept(data, s.getSnapshot())).rejects.toMatchObject({ name: 'KeptRefusal', code: 'rules' })
+    }
+    for (const edit of [
+      (s: ReturnType<typeof createSession>) => s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 5 } }]),
+      (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'T', conditionalFormats: [rule] }]),
+    ]) {
+      const s = await open()
+      edit(s)
+      const parts = await partsOf((await writeKept(data, s.getSnapshot())).data)
+      expect(parts.get('xl/worksheets/sheet1.xml')).toContain('type="unknownKind"')
+      expect(parts.get('xl/worksheets/sheet1.xml')).toContain('imeMode="hiragana"')
+    }
   })
 })

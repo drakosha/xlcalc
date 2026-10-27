@@ -20,10 +20,25 @@ import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } fro
 import { areasOf } from './refs.js'
 import type { Source } from './source.js'
 
-/** `writeKept`'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells. */
+/**
+ * Why `writeKept` refuses, for a program (`KeptRefusal.code`): `file`, a file it does not write over (a Strict Open XML
+ * workbook, a sheet name Excel does not take, a worksheet in other namespaces); `carriers`, a hidden name `openKept`
+ * gave the workbook is gone; `unread`, a sheet whose rows, columns or name changed has a part with references writeKept
+ * does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
+ * part would move or be cut by the change, which writeKept does not write; `links`, the links to other workbooks
+ * changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
+ * the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
+ * could not read (its `readXlsx` issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
+ */
+export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
+
+/** `writeKept`'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells; `code` says why. */
 export class KeptRefusal extends Error {
   override readonly name = 'KeptRefusal'
-  constructor(why: string) {
+  constructor(
+    why: string,
+    readonly code: KeptRefusalCode,
+  ) {
     super(`xlsx/keep: ${why}`)
   }
 }
@@ -71,17 +86,17 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     const renamed = j === undefined || book1.sheets[j].name !== was
     const changed = renamed || out.lines[k]
     const unread = [...c.unparsed[k], ...c.anywhere]
-    if (!n && (unread.length || c.named[k].length)) throw new KeptRefusal(`the workbook has no name ${carrier.name}, which tells what became of the sheet '${was}': ${OPEN_KEPT}`)
-    if (changed && unread.length) throw new KeptRefusal(`the sheet '${was}' had rows or columns inserted or deleted, or was renamed or deleted, and ${unread[0]} holds references writeKept does not read`)
+    if (!n && (unread.length || c.named[k].length)) throw new KeptRefusal(`the workbook has no name ${carrier.name}, which tells what became of the sheet '${was}': ${OPEN_KEPT}`, 'carriers')
+    if (changed && unread.length) throw new KeptRefusal(`the sheet '${was}' had rows or columns inserted or deleted, or was renamed or deleted, and ${unread[0]} holds references writeKept does not read`, 'unread')
     for (const p of renamed ? c.named[k] : []) {
-      if (j === undefined) throw new KeptRefusal(`the sheet '${was}' was deleted, and ${p.what} names it`)
+      if (j === undefined) throw new KeptRefusal(`the sheet '${was}' was deleted, and ${p.what} names it`, 'deleted')
       // a pivot chart's table by its sheet's new name, quoted as Excel quotes it
       const name = book1.sheets[j].name
       out.edits.push({ part: p.part, start: p.at[0], end: p.at[1], text: escapeText(`${plain(name) ? p.prefix + name : quoteSheet(p.prefix + name)}!${p.rest}`) })
     }
     if (j === undefined) {
       const own = src.sheets[k].rels.find((r) => !DELETABLE.has(r.kind))
-      if (own) throw new KeptRefusal(`the sheet '${was}' was deleted, and it has a part the workbook does not hold (${own.kind} ${own.target})`)
+      if (own) throw new KeptRefusal(`the sheet '${was}' was deleted, and it has a part the workbook does not hold (${own.kind} ${own.target})`, 'deleted')
     }
   }
   // the cells with what only the file holds: where each went on its sheet (one moved to another sheet, or deleted, leaves it)
@@ -91,7 +106,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     const moved: Moved = { to: new Map(), left: new Set() }
     for (const cell of list) {
       const n = names.get(caseKey(cell.carrier.name))
-      if (!n) throw new KeptRefusal(`the workbook has no name ${cell.carrier.name}, which tells where the cell ${cell.addr} of '${book0.sheets[k].name}' went: ${OPEN_KEPT}`)
+      if (!n) throw new KeptRefusal(`the workbook has no name ${cell.carrier.name}, which tells where the cell ${cell.addr} of '${book0.sheets[k].name}' went: ${OPEN_KEPT}`, 'carriers')
       const area = areasOf(n.ref)?.[0]
       const at = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(book1.sheets[j].name) ? formatAddress(area.rect.r1, area.rect.c1) : undefined
       if (at === cell.addr) continue
@@ -123,12 +138,12 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     if (item.on !== undefined && !out.target.has(item.on)) continue
     const now = item.carriers.map((x) => {
       const n = names.get(caseKey(x.name))
-      if (!n) throw new KeptRefusal(`the workbook has no name ${x.name}, which holds a reference of ${item.what}: ${OPEN_KEPT}`)
+      if (!n) throw new KeptRefusal(`the workbook has no name ${x.name}, which holds a reference of ${item.what}: ${OPEN_KEPT}`, 'carriers')
       return n.ref
     })
     if (item.carriers.every((x, k) => compared(now[k], x.kind) === compared(x.ref, x.kind))) continue
     const fix = item.fix(now, geometry(item.on))
-    if ('refuse' in fix) throw new KeptRefusal(fix.refuse)
+    if ('refuse' in fix) throw new KeptRefusal(fix.refuse, fix.code)
     out.edits.push(...fix.edits)
   }
   // a pivot cache's source by the name of a table: a table renamed (the same range of the same sheet) takes the new name
@@ -139,10 +154,10 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     const was = k < 0 ? undefined : book0.sheets[k].tables!.find((t) => caseKey(t.name) === caseKey(b.name))!
     const j = k < 0 ? undefined : out.target.get(k)
     const now = was && j !== undefined ? book1.sheets[j].tables?.find((t) => t.range === was.range && !book0.sheets[k].tables!.some((x) => caseKey(x.name) === caseKey(t.name))) : undefined
-    if (!now) throw new KeptRefusal(`${b.what} is the table or name ${b.name}, which the workbook no longer has`)
+    if (!now) throw new KeptRefusal(`${b.what} is the table or name ${b.name}, which the workbook no longer has`, 'deleted')
     out.edits.push({ part: b.part, start: b.at[0], end: b.at[1], text: escapeAttr(now.name) })
   }
-  if (keyOf(book0.externalBooks ?? []) !== keyOf(book1.externalBooks ?? [])) throw new KeptRefusal('the links to other workbooks changed, which writeKept does not write')
+  if (keyOf(book0.externalBooks ?? []) !== keyOf(book1.externalBooks ?? [])) throw new KeptRefusal('the links to other workbooks changed, which writeKept does not write', 'links')
   return out
 }
 
