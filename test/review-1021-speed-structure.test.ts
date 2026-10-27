@@ -48,11 +48,18 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       cells[`B${r}`] = { formula: `A${r}*2` }
     }
     for (let k = 1; k <= runs; k++) rows[String(2 * k)] = { hidden: true }
-    const book: BookInput = { sheets: [{ name: 'S', cells, rows, filtered: true }, { name: 'T', cells: { A1: { formula: `S!A${n}+S!A3` } } }] }
-    const s = createSession(book, { execution, clock, display: false })
-    // the old delete rebuilt the book once per run: 8-10 s at 800 runs of 6,000 rows, twice that at 1,600; 3 s under CI's load at 800
-    const ms = timed(() => expect(s.editStructure({ op: 'deleteRows', sheet: 'S', row: 1, count: 2 * runs }).ok).toBe(true))
-    expect(ms).toBeLessThan(8000)
+    const book = (filtered: boolean): BookInput => ({ sheets: [{ name: 'S', cells, rows, filtered }, { name: 'T', cells: { A1: { formula: `S!A${n}+S!A3` } } }] })
+    const remove = { op: 'deleteRows' as const, sheet: 'S', row: 1, count: 2 * runs }
+    // against the same delete on the sheet unfiltered (the median of three), in the same process, whatever the machine's
+    // load: the old delete rebuilt the book once per run, some 400 times the plain one at 1,600 runs of 6,000 rows (11.6 s
+    // against 29 ms), the new one 25 times (0.8 s)
+    const plain = [0, 1, 2].map(() => {
+      const p = createSession(book(false), { execution, clock, display: false })
+      return timed(() => expect(p.editStructure(remove).ok).toBe(true))
+    })
+    const s = createSession(book(true), { execution, clock, display: false })
+    const ms = timed(() => expect(s.editStructure(remove).ok).toBe(true))
+    expect(ms).toBeLessThan(100 * plain.sort((x, y) => x - y)[1])
     // the hidden rows stay, the visible ones above the end go
     expect(s.getCell('S', 'A1')).toMatchObject({ value: 2 })
     expect(s.getCell('S', 'B2')).toMatchObject({ formula: 'A2*2', value: 8 })
