@@ -39,17 +39,18 @@ describe('xlsx filters: reading the filter mode', () => {
     expect(await filtered({ before: mark, after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).toEqual({
       filtered: true,
       values: SKIPPED,
-      issues: ["an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, and the rows it hid as hidden"],
+      issues: ["an AutoFilter's criteria and sort are not in the model: the sheet is read as filtered, and the rows they hid as hidden"],
     })
     expect((await filtered({ after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).values).toEqual(SKIPPED)
   })
 
-  it('an autofilter without criteria leaves the sheet unfiltered, the mark beside it too; a column with buttons alone has no criteria', async () => {
+  it('an autofilter without criteria leaves the sheet unfiltered, the mark beside it too; a column with buttons alone has no criteria; a sort is reported', async () => {
     expect(await filtered({ before: '<sheetPr filterMode="1"/>', after: '<autoFilter ref="A1:B6"/>' })).toEqual({
       filtered: false,
       values: COUNTED,
-      issues: ['an autofilter without criteria (its buttons and sort) is not in the model'],
+      issues: [],
     })
+    expect((await filtered({ after: '<autoFilter ref="A1:B6"><sortState ref="A2:B6"><sortCondition ref="A2:A6"/></sortState></autoFilter>' })).issues).toEqual(["an AutoFilter's sort is not in the model"])
     expect((await filtered({ after: '<autoFilter ref="A1:B6"><filterColumn colId="0" hiddenButton="1"/><filterColumn colId="1" showButton="0"></filterColumn></autoFilter>' })).filtered).toBe(false)
   })
 
@@ -114,7 +115,8 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(xml).toMatch(/^<\?xml[^>]*>\n<worksheet [^>]*><sheetPr filterMode="1"\/><dimension /)
     expect(xml).toContain(`</sheetData><autoFilter ref="B1:D12">${KEEP_ALL}</autoFilter></worksheet>`)
     const r = await readXlsx(data)
-    expect(withoutView(r.book)).toEqual(book)
+    // the autofilter over its cells reads back as the sheet's AutoFilter
+    expect(withoutView(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], autoFilter: { range: 'B1:D12' } }] })
     expect(codes(r.issues)).toEqual(['autoFilter'])
     const values = compute(r.book).sheets[0].cells
     expect([values.D1.value, values.D2.value, values.D3.value]).toEqual([61, 61, 61])

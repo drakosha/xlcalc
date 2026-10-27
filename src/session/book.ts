@@ -6,7 +6,8 @@ import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { lines, parseSpan, patchIn, toMap, type Line } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { parseMerge } from '../layout/merges.js'
-import { meets } from '../structure/area.js'
+import { meets, parseRange, type Rect } from '../structure/area.js'
+import { autoFilterOverlap } from '../tables/check.js'
 import { tablesOf } from '../tables/model.js'
 
 /** A scalar as JSON writes it: a number's -0 as 0, NaN and the infinities as null. */
@@ -83,15 +84,20 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
 }
 
-/** Merged areas of checked layout edits refused over a table, as `checkBook` refuses them in a book. */
-export function checkMergesOutsideTables(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number): void {
+/** Merged areas and AutoFilters of checked layout edits refused over a table, as `checkBook` refuses them in a book. */
+export function checkOutsideTables(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number): void {
   const tables = tablesOf(book).list
   if (!tables.length) return
   edits.forEach((e, i) => {
-    if (!('merges' in e)) return
     const s = sheetIndex(e.sheet)
+    const over = (x: Rect) => tables.find((t) => t.s === s && meets(x, t))
+    if ('autoFilter' in e && e.autoFilter) {
+      const t = over(parseRange(e.autoFilter.range)!)
+      if (t) throw new InputError(`edits[${i}].autoFilter.range`, autoFilterOverlap(e.autoFilter.range, t.name))
+    }
+    if (!('merges' in e)) return
     e.merges.forEach((m, j) => {
-      const t = tables.find((x) => x.s === s && meets(parseMerge(m)!, x))
+      const t = over(parseMerge(m)!)
       if (t) throw new InputError(`edits[${i}].merges[${j}]`, `the merged area ${m} overlaps the table ${t.name} (Excel does not allow merged cells in tables)`)
     })
   })
@@ -117,6 +123,7 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
     if ('merges' in e) sheet.merges = [...e.merges]
     else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('frozen' in e) sheet.frozen = e.frozen ? { ...e.frozen } : undefined
+    else if ('autoFilter' in e) sheet.autoFilter = e.autoFilter ? { range: e.autoFilter.range } : undefined
     else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
@@ -132,7 +139,7 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
-    for (const k of ['frozen', 'outline', 'conditionalFormats', 'protection'] as const) if (sheet[k] === undefined) delete sheet[k]
+    for (const k of ['frozen', 'autoFilter', 'outline', 'conditionalFormats', 'protection'] as const) if (sheet[k] === undefined) delete sheet[k]
     book.sheets[i] = sheet
   }
   return changed

@@ -15,6 +15,7 @@ import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
 import { attributes } from '../xml/scan.js'
+import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
 import { KeptRefusal, type Moved } from './refusals.js'
 import type { KeptStyles } from './styles.js'
@@ -384,6 +385,15 @@ function find(xml: string, local: string, from = 0, to = xml.length): Placed | u
   return root && { ...root, start: root.start + m.index, open: root.open + m.index, end: root.end + m.index }
 }
 
+/** An attribute of an element's text, undefined without the element. */
+const attrOf = (text: string | undefined, name: string) => (text === undefined ? undefined : attributes(text.slice(text.indexOf(' ') + 1, tagEnd(text, 0)))[name])
+
+/** Whether two ranges are the same cells (`A:C` and `A1:C1048576`), or both are none. */
+const sameRange = (a: string | undefined, b: string | undefined) => {
+  const [x, y] = [a, b].map((t) => (t === undefined ? null : parseRange(t)))
+  return x === null || y === null ? x === y && a === b : x.r1 === y.r1 && x.r2 === y.r2 && x.c1 === y.c1 && x.c2 === y.c2
+}
+
 export function spliceSheet(x: SpliceInput): Spliced {
   const { xml, p0, p1 } = x
   const root = rootOf(xml)!
@@ -456,7 +466,9 @@ export function spliceSheet(x: SpliceInput): Spliced {
     const e = own('sheetProtection')
     put('sheetProtection', x.s0.protection && x.s1.protection && e ? protectionOver(e.text, x.s1.protection) : p1.protection)
   }
-  if (!!x.s0.filtered !== !!x.s1.filtered) {
+  // the file's AutoFilter, its criteria and sort, as its carrier moved it where the workbook has it there; written from the
+  // workbook where the filter mode changed or a host put the AutoFilter elsewhere or removed it
+  if (!!x.s0.filtered !== !!x.s1.filtered || ((x.s0.autoFilter || x.s1.autoFilter) && !sameRange(attrOf(own('autoFilter')?.text, 'ref'), x.s1.autoFilter?.range))) {
     changed = true
     put('autoFilter', p1.autoFilter)
   }

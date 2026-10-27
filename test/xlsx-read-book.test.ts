@@ -111,8 +111,7 @@ describe('xlsx reader: names', () => {
       { name: 'ext', ref: '[1]Data!$A$1' },
     ])
     expect(r.issues.map((i) => `${i.code} ${i.name}: ${i.message.split(':')[0]}`)).toEqual([
-      'name _xlnm.Print_Area: a built-in name (a print area, print titles, a filter range) is not in the model',
-      'name _xlnm._FilterDatabase: a built-in name (a print area, print titles, a filter range) is not in the model',
+      'name _xlnm.Print_Area: a built-in name (a print area, print titles) is not in the model',
       'externalLink ext: a reference to another workbook that is not one of the links the file holds, or that the engine does not parse',
     ])
   })
@@ -176,8 +175,9 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
     // conditional formats are read: a rule without its formula is left out
-    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes', 'conditionalFormat'])
+    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'frozenPanes', 'conditionalFormat'])
     expect(r.book.sheets[0].filtered).toBeUndefined()
+    expect(r.book.sheets[0].autoFilter).toEqual({ range: 'A1:A9' })
     // the protection is read, objects and scenarios not protected by the schema's defaults; its ranges reported
     expect(r.book.sheets[0].protection).toEqual({ objects: true, scenarios: true })
     // a rule of any value with xlsx's defaults, read as the model's rule with them spelled out

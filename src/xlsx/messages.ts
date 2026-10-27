@@ -39,7 +39,7 @@ const stylePart = (x: StyleLoss) => (typeof x === 'string' ? STYLE_PARTS[x] : `b
 export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: XlsxMessageParams[K]) => string } = {
   // reading: the workbook
   localeUnknown: (p) => `the locale ${JSON.stringify(p.tag)} is not one of the package's locales and is left out`,
-  builtInName: () => 'a built-in name (a print area, print titles, a filter range) is not in the model',
+  builtInName: () => 'a built-in name (a print area, print titles) is not in the model',
   nameOfSheetLeftOut: () => 'a name scoped to a sheet that was left out is left out too',
   hiddenName: () => 'a hidden name is read as a visible one',
   manualCalculation: () => 'the manual calculation mode is not kept',
@@ -64,8 +64,9 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   sharedCopy: () => 'a copy of a shared formula that pasting could not produce is left out',
   outlineStyles: () => 'automatic styles of an outline are not kept',
   mergeOverlap: () => 'a merged area that overlaps another is left out',
-  autoFilterCriteria: () => "an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, and the rows it hid as hidden",
-  autoFilterPlain: () => 'an autofilter without criteria (its buttons and sort) is not in the model',
+  autoFilterCriteria: () => "an AutoFilter's criteria and sort are not in the model: the sheet is read as filtered, and the rows they hid as hidden",
+  autoFilterPlain: () => "an AutoFilter's sort is not in the model",
+  autoFilterRange: (p) => `an AutoFilter over ${p.range}, which is no range of cells of the sheet or overlaps a table, is left out`,
   advancedFilter: () => 'an advanced filter is not in the model: the sheet is read as filtered, and the rows it hid as hidden',
   tableFilter: () => "a table's filter criteria are not in the model: the sheet is read as filtered, and the rows they hid as hidden",
   sheetProtection: () => 'sheet protection is not in the model',

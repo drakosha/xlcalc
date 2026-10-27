@@ -141,7 +141,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     ])
     // the hidden name is read hidden, without an issue; the built-in one is left out
     expect(ru.book.names).toEqual([{ name: 'ставка', ref: '0.1', hidden: true }])
-    expect(ru.issues.filter((i) => i.code === 'name').map((i) => [i.name, i.message])).toEqual([['_xlnm.Print_Area', 'Встроенное имя (область печати, печатаемые заголовки, диапазон фильтра) не поддерживается']])
+    expect(ru.issues.filter((i) => i.code === 'name').map((i) => [i.name, i.message])).toEqual([['_xlnm.Print_Area', 'Встроенное имя (область печати, печатаемые заголовки) не поддерживается']])
   })
 
   it('the files Excel saved that have issues: in ru-RU each message is Russian, with the same code, sheet, cells and name', async () => {

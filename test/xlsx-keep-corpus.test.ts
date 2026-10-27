@@ -28,9 +28,11 @@ const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 
 
 /**
  * Where the file written over the original reads back otherwise than `writeXlsx`'s, as the original has it: a view's
- * selection the writer fills in, collapsed marks the writer writes as Excel keeps them, a formula the writer cannot write.
+ * selection the writer fills in, collapsed marks the writer writes as Excel keeps them, a formula the writer cannot write,
+ * an advanced filter's mark the writer writes as an AutoFilter over the sheet's cells.
  */
 const KNOWN: Record<string, string> = {
+  'advanced.xlsx': '.autoFilter',
   'made-frozen.xlsx': '.view',
   'hand-3.xlsx': '.rows',
   'let-1.xlsx': '.formula',

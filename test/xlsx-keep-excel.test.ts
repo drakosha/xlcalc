@@ -6,16 +6,18 @@
  * predicted (`bench/coverage/keep/open.predicted.json`), and the file it saved holds the same parts and the edit's values.
  * For the operations of the structure Excel did over the made files (`test/excel/keep/struct.json`, `struct/`), the
  * references `writeKept` writes are the ones Excel saved; Excel opened the files `writeKept` wrote for them without its
- * repair window and kept their parts and references, as predicted (`struct-open.json`, `struct-open/`).
+ * repair window and kept their parts and references, as predicted (`struct-open.json`, `struct-open/`). Excel answered
+ * an AutoFilter over a table and a table over an AutoFilter as the engine does (`made.json`, `PROBES`), and the
+ * workbook's AutoFilter after each operation is the one Excel saved.
  */
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { readXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
-import { createSession } from '../src/index.js'
-import { MADE, partsOf, refsOf, STRUCT } from '../bench/coverage/keep/books.js'
-import { structFiles, structWritten, written, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
+import { createSession, InputError } from '../src/index.js'
+import { baseBook, MADE, MADE_PROBES, partsOf, PROBES, refsOf, STRUCT } from '../bench/coverage/keep/books.js'
+import { structFiles, structWritten, written, type MadeRun, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { partsOf as textsOf } from './keep-files.js'
 
@@ -25,11 +27,17 @@ const struct = JSON.parse(readFileSync(new URL('struct.json', dir), 'utf8')) as 
 /**
  * Where `writeKept` writes an operation's references otherwise than Excel, by case: what it writes. A series' category
  * or name that lost all its cells keeps `#REF!` in its place; Excel moves it to an extension of the series
- * (`c15:filteredCategoryTitle`, `c15:filteredSeriesTitle`), which no `<c:f>` holds.
+ * (`c15:filteredCategoryTitle`, `c15:filteredSeriesTitle`), which no `<c:f>` holds. The filter database follows the
+ * workbook's AutoFilter; Excel moves it as a name, so it keeps it over cells moved to another sheet without the
+ * AutoFilter, makes it `#REF!` under cells moved over the AutoFilter and stretches it over its last rows moved down, where
+ * the AutoFilter stays.
  */
 const KNOWN: Record<string, Record<string, unknown>> = {
   'chart-delete-series': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!$B$1"] },
   'chartsheet-source-deleted': { series: ['#REF!', '#REF!'] },
+  'filter-move-sheet': { names: [] },
+  'filter-move-over': { names: ["_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"] },
+  'filter-move-end-down': { names: ["_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"] },
 }
 /**
  * The operations `writeKept` refuses, by case: the refusal. A pivot cache whose source sheet is deleted: Excel keeps
@@ -102,6 +110,38 @@ describe('xlsx/keep in Excel', () => {
     expect(/<worksheetSource ref="A1:C21" sheet="Data" r:id="rId1"\/>/.test(saved.get('xl/pivotCache/pivotCacheDefinition1.xml')!)).toBe(true)
     expect(saved.get('xl/pivotCache/_rels/pivotCacheDefinition1.xml.rels')).toContain('relationships/externalLinkPath" Target="book.xlsx" TargetMode="External"')
   }, 60_000)
+
+  it('Excel answers an AutoFilter over a table and a table over an AutoFilter as the engine does: it refuses the first, and the second but over all of the AutoFilter, where it takes its place', () => {
+    const made = JSON.parse(readFileSync(new URL('made.json', dir), 'utf8')) as MadeRun
+    for (const m of MADE_PROBES) {
+      const answer = made.books[m.id]?.made
+      expect(answer, `${m.id}: no Excel answer: run the keep made step`).toBeDefined()
+      expect(answer.map((line, i) => line.slice(0, PROBES[m.id][i]?.length)), m.id).toEqual(PROBES[m.id])
+    }
+    // the engine's answers: the AutoFilter over the table an input error, a table over all of the AutoFilter in its place, over part of it refused
+    const book = baseBook()
+    book.sheets[2].tables = [{ name: 'Plain', range: 'A1:A2', columns: [{ name: 'plain' }] }]
+    book.sheets[0].autoFilter = { range: 'A1:C21' }
+    expect(() => createSession(book).setLayout([{ sheet: 'Plain', autoFilter: { range: 'A1:B5' } }])).toThrow(InputError)
+    for (const [range, width, made] of [['A1:C21', 3, true], ['B10:D12', 3, false], ['A1:B10', 2, false], ['A1:D22', 4, true], ['A1:C25', 3, true], ['A2:C21', 3, false]] as const) {
+      const s = createSession(book)
+      const columns = Array.from({ length: width }, (_, i) => ({ name: `c${i}` }))
+      expect(s.editStructure({ op: 'addTable', sheet: 'Data', table: { name: 'T', range, columns } }).ok, range).toBe(made)
+      expect(s.getBook().sheets[0].autoFilter === undefined, range).toBe(made)
+      s.close()
+    }
+  })
+
+  it("the workbook's AutoFilter after each operation of the structure is the one Excel saved", async () => {
+    for (const c of STRUCT.filter((x) => x.made === 'filter')) {
+      const read = await openKept(readFileSync(new URL(`made/${c.made}.xlsx`, dir)))
+      const s = createSession(read.book, { cached: read.cached })
+      expect(s.editStructure(c.op).ok, c.id).toBe(true)
+      const ours = Object.fromEntries(s.getBook().sheets.flatMap((x) => (x.autoFilter ? [[x.name, x.autoFilter.range]] : [])))
+      expect(ours, c.id).toEqual(struct.cases[c.id].refs?.filters ?? {})
+      s.close()
+    }
+  })
 
   it('Excel opened every file writeKept wrote for the operations of the structure, and kept its parts and their references', async () => {
     const files = await structFiles()

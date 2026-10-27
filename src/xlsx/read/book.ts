@@ -71,7 +71,8 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
     // Excel's placeholders for functions newer than the file's readers: not names of the book
     if (/^_xlfn\./i.test(name)) continue
     if (/^_xlnm\./i.test(name)) {
-      issues.add('name', { key: 'builtInName' }, { name })
+      // a filter's range is the sheet's AutoFilter, or an advanced filter's, reported with its sheet
+      if (!/^_xlnm\._FilterDatabase$/i.test(name)) issues.add('name', { key: 'builtInName' }, { name })
       continue
     }
     const scope = a.localSheetId === undefined ? undefined : decls[Number(a.localSheetId)]?.name

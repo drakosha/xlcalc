@@ -456,7 +456,8 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
   /**
    * A sheet's AutoFilter or sort (`e`): its range, the column of each criterion (`colId` counts from the range's first
    * column; a criterion whose column was deleted goes) and the range of each sort condition (one deleted goes); its
-   * range deleted, a sort goes and an AutoFilter is refused.
+   * range deleted, it goes, as the workbook's AutoFilter goes (the keep sets `filter-*`); the sheet's writing compares
+   * the AutoFilter with the workbook's (`spliceSheet`).
    */
   function filter(xml: string, e: Span & { local: string }, i: number, part: string) {
     const own = e.local === 'autoFilter' ? 'AutoFilter' : 'sort'
@@ -478,7 +479,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
       carriers: [place(i, range), ...columns.map(({ colId }) => place(i, { ...range, c1: range.c1 + colId, c2: range.c1 + colId })), ...sorts.map((s) => place(i, s.rects![0])), ...(sortWas ? [place(i, sortWas[0])] : [])],
       fix([rangeNow, ...rest]) {
         const now = rectsNow(rangeNow)?.[0]
-        if (!now) return own === 'sort' ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted`, code: 'deleted' }
+        if (!now) return { edits: [{ part, start: e.start, end: e.end, text: '' }] }
         const edits: Edit[] = [{ part, start: span[0], end: span[1], text: plainArea(now) }]
         columns.forEach(({ c, at }, k) => {
           const x = rectsNow(rest[k])?.[0]

@@ -9,7 +9,7 @@ import { formatAddress } from '../model.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameRule } from '../syntax.js'
-import { meets, parseRange, rectCells } from '../structure/area.js'
+import { contains, meets, parseRange, rectCells } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
 import { withField } from '../looks/sheet.js'
@@ -72,7 +72,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
   return { ok: true, book: withTable(out, key, null), geometry: [] }
 }
 
-/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area. */
+/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table, a merged area or part of the sheet's AutoFilter; over all of the AutoFilter, it replaces it. */
 function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   const s = sheetIndex(book, sheet)
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
@@ -84,7 +84,12 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   if (over) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
   const merge = x && (book.sheets[s].merges ?? []).find((m) => meets(parseMerge(m)!, x))
   if (merge) return { ok: false, code: 'merged', message: say(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
-  const cells = { ...book.sheets[s].cells }
+  // a table over all of the sheet's AutoFilter takes its place, one over part of it is refused, as in Excel (the keep probes `filter-table*`)
+  const filter = book.sheets[s].autoFilter
+  const f = filter && parseRange(filter.range)!
+  if (x && f && meets(f, x) && !contains(x, f)) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverFilter', range: table.range, filter: filter!.range }) }
+  const own = x && f && meets(f, x) ? withField(book.sheets[s], 'autoFilter', undefined) : book.sheets[s]
+  const cells = { ...own.cells }
   if (x && table.headers !== false && Array.isArray(table.columns))
     table.columns.forEach((c, i) => {
       // a column without a name is left to checkTables, which refuses it
@@ -94,8 +99,8 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
       cells[addr] = { ...rest, value: c.name }
     })
   // a malformed table (its fields, range, columns) is an input error, as in a book
-  checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...book.sheets[s], cells, tables: [table] }] }, 'op')
+  checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...own, cells, tables: [table] }] }, 'op')
   const sheets = [...book.sheets]
-  sheets[s] = { ...sheets[s], cells, tables: [...(sheets[s].tables ?? []), table] }
+  sheets[s] = { ...own, cells, tables: [...(own.tables ?? []), table] }
   return { ok: true, book: { ...book, sheets }, geometry: [] }
 }

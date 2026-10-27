@@ -7,8 +7,9 @@
  * come from the result: a formula's value, and the cells its array spilled into; a formula a circular reference stops
  * stores its `held` where the result gives no value for it, as Excel opens it again holding that. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table, a column or a link to another workbook the book does not have) is written
- * as its value. A filtered sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row,
- * else on an autofilter of its own over its cells, with Excel's filter mark. Every cell is written with the whole look it
+ * as its value. The sheet's AutoFilter is written over its range. A filtered sheet gets criteria that every row meets
+ * (`KEEP_ALL`): on its AutoFilter, else on its first table with a header row, else on an autofilter of its own over its
+ * cells, with Excel's filter mark. Every cell is written with the whole look it
  * shows (its own style and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own
  * cell format alone, and so are the empty cells where a row crosses a column that Excel would otherwise show by the row's
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
@@ -300,9 +301,11 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   })
   const merges = sheet.merges ?? []
   const used = any ? { r1: rowLo, r2: rowHi, c1: minCol, c2: maxCol } : undefined
-  let filter = sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined
-  // an autofilter of the sheet cannot meet a table: only tables without a header row (no filter of their own) are left
-  const area = filter && parseRange(filter)!
+  // the sheet's AutoFilter, else a filtered sheet's own over its cells, which cannot meet a table: only tables without a
+  // header row (no filter of their own) are left
+  const own = sheet.autoFilter?.range
+  let filter = own ?? (sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined)
+  const area = !own && filter && parseRange(filter)!
   if (area && (sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, area))) {
     issues.add('autoFilter', { key: 'filterModeOut' }, { sheet: sheet.name })
     filter = undefined
@@ -330,7 +333,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     return n ? ` ${attr}="${n}"` : ''
   }
   return {
-    sheetPr: filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '',
+    sheetPr: (filter && sheet.filtered) || outlinePr ? `<sheetPr${filter && sheet.filtered ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '',
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
@@ -338,7 +341,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),
-    autoFilter: filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '',
+    autoFilter: filter ? (sheet.filtered ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filter}"/>`) : '',
     merges: merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '',
     conditional: cond.main,
     validations: validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }),

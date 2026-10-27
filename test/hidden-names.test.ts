@@ -55,7 +55,7 @@ describe.each(['closures', 'eval'] as const)('hidden names calculate as any name
 })
 
 describe('hidden names in xlsx files', () => {
-  it('a hidden name is read hidden, global or local, without an issue; a built-in hidden name is left out as before', async () => {
+  it('a hidden name is read hidden, global or local, without an issue; a built-in hidden name is left out, a filter range without an issue', async () => {
     const r = await read({
       sheets: [{ name: 'Data', body: '<sheetData><row r="1"><c r="A1"><v>2</v></c></row></sheetData>' }],
       workbook: {
@@ -65,7 +65,7 @@ describe('hidden names in xlsx files', () => {
       },
     })
     expect(r.book.names).toEqual([{ name: 'secret', ref: 'Data!$A$1', hidden: true }, { name: 'own', ref: 'Data!$A$1*2', scope: 'Data', hidden: true }, { name: 'open', ref: '1' }])
-    expect(r.issues.map((i) => `${i.code} ${i.name}`)).toEqual(['name _xlnm._FilterDatabase'])
+    expect(r.issues).toEqual([])
   })
 
   it('the writer writes hidden="1" after the scope, as Excel does, and the name reads back hidden; false writes nothing', async () => {

@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.114.1",
-  "seconds": 2.7,
-  "date": "2026-10-25"
+  "version": "16.114.2",
+  "seconds": 5.7,
+  "date": "2026-10-27"
  },
  "cases": {
   "chart-insert-in": {
@@ -392,6 +392,282 @@
      "_xlnm.Print_Area@Data='Data'!$B$1:$D$21"
     ],
     "breaks": {}
+   }
+  },
+  "filter-insert-in": {
+   "sent": "a65c4e2aa07149e67a110aa89d23b4483c52c635135209feed941665a8e58116",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C23"
+    }
+   }
+  },
+  "filter-insert-below": {
+   "sent": "785daf216b34b6c5d5624f331513a3b55819cbff071509335424a7cfe758fc25",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-insert-above": {
+   "sent": "4a83ad7505677e00621558c459e2c002f84dcf585401f96baf806f931bf54718",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$2:$C$22"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A2:C22"
+    }
+   }
+  },
+  "filter-delete-header": {
+   "sent": "72c546ec2e2f92ef19731cd38b263afac9016e18099e6097c153dcd8990894ea",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-all": {
+   "sent": "2c4570bd1584faed91e97fff856b26f8d76e52d6328b99c5d55b03ee6019bd56",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-column": {
+   "sent": "fc5aea9dc0990c995f0c026d3025a17c6e1ab96fc956b752d196c31440619b6b",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-delete-columns-all": {
+   "sent": "5488581d780c2f8c20d61daefbc1388ce1e96139fbdfa67124f252b1e5fd2aab",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-insert-column": {
+   "sent": "6b3342f4898fe7f4171779f2fc9514a7b0211eca08e0f29c530eb147339a0947",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$D$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:D21"
+    }
+   }
+  },
+  "filter-insert-column-right": {
+   "sent": "e8d0bfa7256f6cd425544192f88d4b16deec1de9b04b83acfc7d688010422484",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move": {
+   "sent": "74859b9ca5a5118dba8dfd1e6b495c275286f9021c7e02c4a68c40439c82a70a",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$H$3:$J$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "H3:J23"
+    }
+   }
+  },
+  "filter-move-sheet": {
+   "sent": "5531e0788bc401d8fa66c249c28a7f9a138760a47984cce45ffb7a81b5da0a50",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Plain'!$D$1:$F$21"
+    ],
+    "breaks": {}
+   }
+  },
+  "filter-move-header": {
+   "sent": "3230a4908bc373d5f54f4fd263c860fa3a0eceefee41c298696dc0e693424d74",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-over": {
+   "sent": "be45aca26f426939818b9353b1ce17d722505c8c28dc3d942d39f37670182933",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!#REF!"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-rename": {
+   "sent": "a0cab03e4fa3480fdacbf81b7bea216933481714f8a21ff39a45b2addbe18c72",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Sales='Sales'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Sales": "A1:C21"
+    }
+   }
+  },
+  "filter-delete-sheet": {
+   "sent": "ee3eb2b8a29b5261be39916b8c5fa5b511b6cededd754b47fe18144528968b77",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-head-two": {
+   "sent": "b48fd866f114c8a1011e2a6b9814ab8d6e12a5861af560c9ec1b4029c7b61bb9",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-first-column": {
+   "sent": "fb829f60dc09446567e7491f954a940328cb2aee8c55b95a6681c53c326b5e91",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-move-over-end": {
+   "sent": "8ccccf2f152d2658a17efa5dafa4ebb9de51b694854acf02c187ad4069c2f79a",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-end-down": {
+   "sent": "d468a4b4ac46379aadcca63142806c6d568c9942fd1fb77d77b7b5cffc6451d3",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$36"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
    }
   }
  }

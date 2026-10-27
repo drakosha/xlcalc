@@ -12,7 +12,8 @@
  * `keep struct-open-predict` writes what Excel is predicted to do with each of those files `writeKept` wrote
  * (`keep/struct-open.predicted.json`: it opens it without its repair window, keeps every part counted and what they
  * refer to), before `keep struct-open` has Excel open, compute and save them (`test/excel/keep/struct-open.json`,
- * `struct-open/<case>.xlsx`). Test: `test/xlsx-keep-excel.test.ts`.
+ * `struct-open/<case>.xlsx`). `keep made` also asks Excel what it does with an AutoFilter beside a table (`MADE_PROBES`),
+ * its answer in `made.json` beside the engine's committed before it ran (`PROBES`). Test: `test/xlsx-keep-excel.test.ts`.
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -22,7 +23,7 @@ import { join } from 'node:path'
 import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
 import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
-import { baseFile, EDITS, MADE, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
+import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -32,7 +33,7 @@ const DATA = join(ROOT, 'test/excel/keep')
 const ONLY = process.env.FKEEP_ONLY?.split(',').filter(Boolean)
 
 /** A file Excel made: the hash of what was sent, what its script answered, the parts its file holds. */
-interface MadeRun {
+export interface MadeRun {
   meta: Record<string, string | number>
   books: Record<string, { sent: string; made: string[]; parts: Record<string, number> }>
 }
@@ -58,7 +59,7 @@ async function made(): Promise<void> {
   const t0 = Date.now()
   await ensureExcel('en-US')
   const png = picture()
-  for (const m of [...MADE, ...MADE_STRUCT]) {
+  for (const m of [...MADE, ...MADE_STRUCT, ...MADE_PROBES]) {
     if (ONLY && !ONLY.includes(m.id)) continue
     const base = await baseFile(m)
     const sent = createHash('sha256').update(JSON.stringify(m)).update(await partsHash(base)).digest('hex')
@@ -79,6 +80,7 @@ export async function written(): Promise<{ id: string; data: Uint8Array }[]> {
   for (const m of MADE) {
     const original = new Uint8Array(readFileSync(join(DATA, 'made', `${m.id}.xlsx`)))
     for (const e of EDITS) {
+      if (e.made && !e.made.includes(m.id)) continue
       const read = await openKept(original)
       const s = createSession(read.book, { cached: read.cached })
       e.edit(s)

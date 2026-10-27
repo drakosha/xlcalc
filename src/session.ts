@@ -29,7 +29,7 @@ import { checkBoolean, checkNumber, checkString } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
-import { applyLayout, bookLayout, checkMergesOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
+import { applyLayout, bookLayout, checkOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
 import { pastedHeights, patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
@@ -826,7 +826,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       // AutoFit becomes the widths it sets
       const taken = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
-      checkMergesOutsideTables(s.input, taken, (name) => sheetIndex(s)(name)!)
+      checkOutsideTables(s.input, taken, (name) => sheetIndex(s)(name)!)
       const checked = fitEdits(s, taken)
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
       // the new sheets, put into the book by `relayout`

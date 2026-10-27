@@ -13,6 +13,9 @@ import type { TableSet } from '../tables/cases.js'
 import { filterBook, Y_ROWS } from './filters.js'
 import { formulaCell as f, takenBook, valueCell as v } from '../stored.js'
 
+/** The book with an AutoFilter over the data of its sheet S. */
+const withFilter = (b: BookInput): BookInput => ({ ...b, sheets: [{ ...b.sheets[0], autoFilter: { range: 'A1:B11' } }, ...b.sheets.slice(1)] })
+
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
 
@@ -224,6 +227,8 @@ function ownBooks(): RoundTrip[] {
     { id: 'zero-sizes', what: 'a row of height 0 and a column of width 0, not marked hidden', book: filterBook({ rows: { 3: { height: 0 } }, columns: { E: { width: 0 } } }) },
     { id: 'filtered', what: 'a filtered sheet: its hidden rows taken as rows a filter hid', book: filterBook({ rows: Y_ROWS, filtered: true }) },
     { id: 'filtered-table', what: "a filtered sheet with a table, which holds the sheet's filter mode", book: filterBook({ rows: Y_ROWS, filtered: true, table: true }) },
+    { id: 'autofilter', what: "a sheet's AutoFilter without the filter mode", book: withFilter(filterBook({})) },
+    { id: 'autofilter-filtered', what: "a filtered sheet's AutoFilter, which holds the sheet's filter mode", book: withFilter(filterBook({ rows: Y_ROWS, filtered: true })) },
     { id: 'date1904', what: 'the 1904 date system: dates typed in and computed, negative ones', book: date1904 },
     { id: 'iteration', what: 'iterative calculation with a count and a change of its own over cycles that settle', book: cycles({ maxIterations: 7, maxChange: 0.5 }) },
     { id: 'iteration-default', what: "iterative calculation with Excel's defaults", book: cycles({}) },

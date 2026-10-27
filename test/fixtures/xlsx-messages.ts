@@ -29,6 +29,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   mergeOverlap: [{}],
   autoFilterCriteria: [{}],
   autoFilterPlain: [{}],
+  autoFilterRange: [{ range: 'A:C' }],
   advancedFilter: [{}],
   tableFilter: [{}],
   sheetProtection: [{}],

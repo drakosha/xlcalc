@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, merging and unmerging cells, and renaming, deleting, inserting, moving, hiding and unhiding sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, data validation rules and outline levels. This is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, merging and unmerging cells, and renaming, deleting, inserting, moving, hiding and unhiding sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, AutoFilters, notes, hyperlinks, frozen panes, conditional formats, data validation rules and outline levels. This is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were verified in Excel 16 for Mac (en-US), and those for merging cells in Excel for Windows.
 
@@ -401,6 +401,20 @@ A series that continues over a table's header cells renames their columns to the
 
 `mapCell` of a fill is the same as for a copy: the cells it overwrites are cleared, and the others stay.
 
+## The AutoFilter
+
+A sheet's AutoFilter (`autoFilter: { range: 'A1:C21' }`) is the filter buttons on the first row of its range, outside a table; a host counts where the sheet's data ends with it. The operations move it as Excel moves it:
+
+- Rows or columns inserted inside it grow it: rows inserted at row 3 of `A1:C21` make `A1:C23`. Rows inserted right under it, or columns right of it, leave it, and rows inserted at its header row or above move it down.
+- Rows or columns deleted inside it shrink it: column B deleted from `A1:C21` leaves `A1:B21`, and so does column A. Deleting its header row removes it, whatever rows go with it, and so does deleting all its rows or all its columns.
+- A move that takes all of it carries it: `A1:C21` cut and pasted at H3 is `H3:J23`. Moved to another sheet, it goes, and the other sheet gets none. A move of part of it, its header row or its last rows, leaves it where it was, and so do cells moved over it.
+- A copy, a renamed sheet and a moved sheet leave it; a deleted sheet takes it along.
+- `addTable` over all of it, its range or more, makes the table and removes the AutoFilter, which the table's own filter replaces. A table over part of it is rejected with `table`, as Excel rejects it, and an AutoFilter set over a table is an input error.
+
+The filter mode (`filtered`) stays as it is when the AutoFilter goes: a host that removes it as Excel's Filter button does also sets `filtered: false` and shows the rows.
+
+The keep sets `filter-*` checked these rules in Excel for Mac, each case predicted before Excel ran it ([docs/development.md](development.md#writing-over-the-original-file)).
+
 ## Notes, hyperlinks and frozen panes
 
 A cell's `note` and `link` go with the cell, as its style does:
@@ -485,6 +499,7 @@ Styles and layout change through the session, so that its workbook remains the h
 - the style table through `setStyles(styles)`; every style in use must remain in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each row or column (`null` removes a field, and spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
+- the AutoFilter through `setLayout`: `{ sheet, autoFilter: { range: 'A1:D20' } }`, and `{ sheet, autoFilter: null }` removes it;
 - hidden sheets through `editStructure`: `hideSheet` and `unhideSheet` recalculate nothing and do not rebuild the state;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
 - a sheet's protection through `setLayout`: `{ sheet, protection: {} }` protects it as Excel's dialog does, and `{ sheet, protection: null }` unprotects it ([Protection](#protection));
@@ -498,7 +513,7 @@ Only two of these recalculate values. A merged area added or removed over an arr
 
 ## Checked against Excel
 
-Tested in Excel 16 for Mac, en-US, on 317 workbooks; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; and the fill handle in Excel for Mac and with a ru-RU Excel's lists.
+Tested in Excel 16 for Mac, en-US, on 317 workbooks, and the AutoFilter on 19 operations and 6 tables; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists; and the AutoFilter under a copy, a moved sheet and the operations on a filtered sheet, and in Excel for Windows.
 
 ## Known differences and limits
 

@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.114.1",
-  "seconds": 2.9,
-  "date": "2026-10-25"
+  "version": "16.114.2",
+  "seconds": 7.9,
+  "date": "2026-10-27"
  },
  "cases": {
   "chart-insert-in": {
@@ -606,6 +606,521 @@
     "pivots": [],
     "names": [],
     "breaks": {}
+   }
+  },
+  "filter-insert-in": {
+   "sent": "6385b11e97cf72532a26c120876b8e251f745a5ab884e502244ae69f29c1fb47",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C23"
+    }
+   }
+  },
+  "filter-insert-below": {
+   "sent": "bd6efed972ad41ad5ecc1e9f16195134c382e7a72fbaa193933f6c096eb4c1bb",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-insert-above": {
+   "sent": "2e95d4c64c892c5b1ee70540877389f95c3b7f373d0c46e1d6ef387b85c5667d",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$2:$C$22"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A2:C22"
+    }
+   }
+  },
+  "filter-delete-header": {
+   "sent": "f12e17ceecc0808b1b16120fe215c24ffdd18c801e3eb6a65176379b65839e55",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-all": {
+   "sent": "07d9a409033f712f53aab56fe81e493b9d4e47f4e934a3a4f5d3e87de0350417",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-column": {
+   "sent": "16ee0589107cbe1dc8c5c3ad597cdf855b28506ca6e4c41e218d21dda828b049",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-delete-columns-all": {
+   "sent": "2650a5c0d48d8575e5cf7c43b75e6ca9ae4219426d6c1ced61464d75e48107e6",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-insert-column": {
+   "sent": "650d87c6f3f78ba56c96bd33c9ca2e4695912cdf5c8eb301be2fe2ec51bb43e0",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$D$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:D21"
+    }
+   }
+  },
+  "filter-insert-column-right": {
+   "sent": "f51146a0c15e9ff9285da44ec293e0742ddda7d2941a8459e2d63a4477afe626",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move": {
+   "sent": "3aceab4509e80160efc7b04fbd051ec5e77e6885c740377c2e30c421d19f8dba",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$H$3:$J$23"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "H3:J23"
+    }
+   }
+  },
+  "filter-move-sheet": {
+   "sent": "c5376ed92e471c366f3f9fab3cec251124dcfd4ea16fd6a0a4e33004ecf41268",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-move-header": {
+   "sent": "c267dd056ec4ec62241cced8152fefc286a363934c68dfd579b85b262e82d8cc",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-over": {
+   "sent": "b1808ba619595db83fd9f809b44ab34facced571047cf16ce985e4069e085a41",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-rename": {
+   "sent": "f7691307d633e5d7659df4a3cb349d508dafa76acc33a67e878c64db12db5ad3",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Sales='Sales'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Sales": "A1:C21"
+    }
+   }
+  },
+  "filter-delete-sheet": {
+   "sent": "d51c488a2e974fde938506415768056c5a45d19c98443b8626c942c2cc845e29",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-head-two": {
+   "sent": "badc36c7d5a62883743ab0f7f41aa98801432e41271a92723262bb9b20a4d5c4",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "filter-delete-first-column": {
+   "sent": "78d85d58913010b4bf76d35c5671b11c485a1fe0e6b161643a06e683bf431061",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$B$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:B21"
+    }
+   }
+  },
+  "filter-move-over-end": {
+   "sent": "c5679207dd46ec096c8510ccef4d4b6eec944424b7115ade110780be84e779c4",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
+   }
+  },
+  "filter-move-end-down": {
+   "sent": "ab14f937ee0d0c301f354975d8ba967c0d5d0ca38fa98ff9d6c0bf7f2eac07e2",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [
+     "_xlnm._FilterDatabase@Data='Data'!$A$1:$C$21"
+    ],
+    "breaks": {},
+    "filters": {
+     "Data": "A1:C21"
+    }
    }
   }
  }

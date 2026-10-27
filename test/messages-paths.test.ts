@@ -169,6 +169,7 @@ const REFUSED: [string, () => Pick<BookInput, 'sheets' | 'names'>, StructureOp, 
   ['a defined name', () => ({ sheets: [tables()], names: [{ name: 'ставка', ref: '1' }] }), { op: 'renameTable', table: 'Т1', name: 'Ставка' }, { key: 'tableNameDefined', name: 'Ставка' }],
   ['a table over a table', () => ({ sheets: [tables()] }), { op: 'addTable', sheet: 'Лист', table: table('Т3', 'B2:C4', ['В', 'Г']) }, { key: 'tableOverTable', range: 'B2:C4', table: 'Т1' }],
   ['a table over a merged area', () => ({ sheets: [{ ...tables(), merges: ['G1:H1'] }] }), { op: 'addTable', sheet: 'Лист', table: table('Т3', 'G1:H3', ['В', 'Г']) }, { key: 'tableOverMerge', range: 'G1:H3', area: 'G1:H1' }],
+  ['a table over part of the AutoFilter', () => ({ sheets: [{ ...tables(), autoFilter: { range: 'G1:H9' } }] }), { op: 'addTable', sheet: 'Лист', table: table('Т3', 'H2:I3', ['В', 'Г']) }, { key: 'tableOverFilter', range: 'H2:I3', filter: 'G1:H9' }],
   ['cells of a table merged', () => ({ sheets: [tables()] }), { op: 'mergeCells', sheet: 'Лист', range: 'B2:C2' }, { key: 'mergeInTable', range: 'B2:C2', table: 'Т1' }],
   ['an array formula onto a table', () => ({ sheets: [{ ...tables(), cells: { ...tables().cells, G1: { formula: '{1,2}', array: 'G1:H1' } } }] }), { op: 'copyRange', from: { sheet: 'Лист', range: 'G1:H1' }, to: { sheet: 'Лист', range: 'D3' } }, { key: 'arrayInTable', area: 'D3:E3', table: 'Т2' }],
 ]

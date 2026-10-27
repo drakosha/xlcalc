@@ -16,13 +16,15 @@ import { partText, relsOf, type Rel } from '../read/package.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
-import { bookWriting, iterationAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
+import { bookWriting, filterDatabase, iterationAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
 import { nextBlock } from '../write/parts.js'
 import { sheetPieces, sheetXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
 import { tableXml } from '../write/tables.js'
 import { attr, attributes, element } from '../xml/scan.js'
 import { escapeAttr, readText } from '../xml/text.js'
+import { parseRange } from '../../structure/area.js'
+import { areasOf } from './refs.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
@@ -656,6 +658,8 @@ class Kept {
     const fileText = new Map<string, string>()
     const foreign: string[] = []
     let foreignChanged = false
+    // the worksheets of the file with a filter database, by `<sheet>`
+    const filtered = new Set<number>()
     for (const e of el ? childrenOf(wb, el).filter((c) => c.local === 'definedName') : []) {
       const a = attrsOf(wb, e)
       const local = a.localSheetId === undefined ? undefined : Number(a.localSheetId)
@@ -666,12 +670,26 @@ class Kept {
         continue
       }
       if (local === undefined) foreign.push(text)
-      else {
+      else if (/^_xlnm\._FilterDatabase$/i.test(a.name ?? '') && this.filterHeld(local)) {
+        // an AutoFilter's range, as the workbook has the AutoFilter: gone with it, written again where a host moved it
+        filtered.add(local)
+        const at = placeOf.get(local)
+        const next = at === undefined ? undefined : this.filterName(text, local, at)
+        if (next !== text) foreignChanged = true
+        if (next !== undefined) foreign.push(next)
+      } else {
         // a name the model does not take keeps its sheet by the sheet's place now; it goes with its sheet
         const at = placeOf.get(local)
         if (at !== local) foreignChanged = true
         if (at !== undefined) foreign.push(at === local ? text : setAttrs(text.slice(0, text.indexOf('>') + 1), { localSheetId: String(at) }) + text.slice(text.indexOf('>') + 1))
       }
+    }
+    // a sheet's AutoFilter where the file has none gets its filter database, as writeXlsx writes it
+    for (const [j, s] of book.sheets.entries()) {
+      const k = this.id.source[j]
+      if (!s.autoFilter || (k !== undefined && (filtered.has(src.sheets[k].decl) || book0.sheets[k].autoFilter))) continue
+      foreign.push(filterDatabase(s.name, s.autoFilter.range, place.get(sheetKey(s.name))!))
+      foreignChanged = true
     }
     const ours = (book.names ?? []).flatMap((n, i) => {
       const x = x1[i]
@@ -690,6 +708,24 @@ class Kept {
       const at = insertAt(BEFORE_NAMES)
       edits.push({ part: src.wbPath, start: at, end: at, text })
     }
+  }
+
+  /** Whether the file's `<sheet>` `d` is a worksheet whose AutoFilter the workbook holds, before or after the change. */
+  private filterHeld(d: number): boolean {
+    const k = this.src.decls[d]?.sheet
+    const j = k === undefined ? undefined : this.id.target.get(k)
+    return k !== undefined && (this.book0.sheets[k].autoFilter !== undefined || (j !== undefined && this.book.sheets[j].autoFilter !== undefined))
+  }
+
+  /** A `_xlnm._FilterDatabase` of the file's `<sheet>` `d` (`text`, its reference moved) at place `at`: none without the workbook's AutoFilter, the file's over its range, else as writeXlsx writes it. */
+  private filterName(text: string, d: number, at: number): string | undefined {
+    const s = this.book.sheets[this.id.target.get(this.src.decls[d].sheet!)!]
+    if (!s.autoFilter) return undefined
+    const head = text.slice(0, text.indexOf('>') + 1)
+    const area = areasOf(readText(text.slice(head.length, text.lastIndexOf('<'))))?.[0]
+    const x = parseRange(s.autoFilter.range)!
+    const same = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(s.name) && area.rect.r1 === x.r1 && area.rect.r2 === x.r2 && area.rect.c1 === x.c1 && area.rect.c2 === x.c2
+    return same && at === d ? text : filterDatabase(s.name, s.autoFilter.range, at)
   }
 
   /** The parts of the book as a whole: styles, metadata, the calculation chain, relationships and content types. */

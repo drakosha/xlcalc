@@ -10,7 +10,7 @@ import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
 import { checkBookLocale, optionalLocale } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
-import { LINES, type Axis } from './structure/area.js'
+import { cornersText, LINES, parseRange, rectText, type Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
@@ -182,6 +182,15 @@ function checkFrozen(v: unknown, path: string) {
   if (f.columns !== undefined) checkNumber(f.columns, `${path}.columns`, 1, MAX_COLS - 1, true)
 }
 
+/** A sheet's AutoFilter: `{ range }`, a cell or a range from its top-left cell to its bottom-right one. */
+function checkAutoFilter(v: unknown, path: string) {
+  const f = object(v, path, 'an AutoFilter such as { range: "A1:D20" }')
+  onlyKeys(f, path, ['range'])
+  const x = typeof f.range === 'string' ? parseRange(f.range) : null
+  if (!x || (f.range !== rectText(x) && f.range !== cornersText(x)))
+    throw new InputError(`${path}.range`, `expected a cell or a range from its top-left cell to its bottom-right one such as "A1:D20", got ${what(f.range)}`)
+}
+
 /** Iterative calculation's bounds (`BookInput.iteration`): 1 to 32,767 rounds, as Excel takes them, a change from 0. */
 export const ITERATION = { maxIterations: [1, 32_767], maxChange: [0, Number.MAX_VALUE] } as const
 
@@ -193,7 +202,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
 
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
- * by A1 address, their looks, columns, rows, merged areas, frozen panes, data validation and outline settings, names,
+ * by A1 address, their looks, columns, rows, merged areas, AutoFilters, frozen panes, data validation and outline settings, names,
  * styles. It is returned as the engine takes it: its formulas without a leading `=`, its number formats by the name
  * `numberFormat` (a copy of what needs it, `taken.ts`), the entries of a look alone in its sheets' looks (`looksTaken`);
  * with `looked`, those of the sheets that have looks only (a writer keeps a sheet without looks as it is given). `keys`
@@ -225,7 +234,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -252,6 +261,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
+    if (sheet.autoFilter !== undefined) checkAutoFilter(sheet.autoFilter, `${p}.autoFilter`)
     if (sheet.view !== undefined) checkSheetView(sheet.view, `${p}.view`)
     if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
@@ -458,8 +468,8 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
 }
 
 /**
- * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen
- * panes, rules of data validation, outline settings or protection; as the engine takes them (`taken.ts`).
+ * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, an
+ * AutoFilter, frozen panes, rules of data validation, outline settings or protection; as the engine takes them (`taken.ts`).
  */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
   const edits = array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
@@ -474,6 +484,11 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     if (o.filtered !== undefined) {
       onlyKeys(o, p, ['sheet', 'filtered'])
       checkBoolean(o.filtered, `${p}.filtered`)
+      return o as unknown as LayoutEdit
+    }
+    if ('autoFilter' in o) {
+      onlyKeys(o, p, ['sheet', 'autoFilter'])
+      if (o.autoFilter !== null) checkAutoFilter(o.autoFilter, `${p}.autoFilter`)
       return o as unknown as LayoutEdit
     }
     if ('protection' in o) {
@@ -507,7 +522,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = LINES[axis]
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations, outline or protection)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, autoFilter, frozen, conditionalFormats, validations, outline or protection)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
