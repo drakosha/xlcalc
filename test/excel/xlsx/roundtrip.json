@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.113.4",
-  "seconds": 1.8,
-  "date": "2026-10-08"
+  "version": "16.114.2",
+  "seconds": 3.3,
+  "date": "2026-10-27"
  },
  "books": {
   "values": {
@@ -550,6 +550,12 @@
   },
   "lost-sheet": {
    "sent": "0e66d04d4dee2579afb23f0411efd78a6c15ceeafd9c9464beb5af1c2d52ddd0"
+  },
+  "autofilter": {
+   "sent": "08f64b1572f9a7713ee0a8e9051a7d110561ba252222ee977e7216027c23a14a"
+  },
+  "autofilter-filtered": {
+   "sent": "8d1c32647140f05862543143a054e98e231ac2627b155ad6c853e564d9b14b70"
   }
  }
 }
