@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.60.0 (2026-10-27)
+
+Paste Special for a grid's Paste Special box, and the function an issue reports as a field of its own. Values and hashes of the synthetic workbook are as in 0.59.1.
 
 Added:
 
