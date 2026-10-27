@@ -20,6 +20,7 @@ import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, ob
 import { checkAddress, checkRange } from './input/range.js'
 import { checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
+import { checkSheetProtection } from './input/protection.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
@@ -224,7 +225,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -256,6 +257,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
     if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
+    if (sheet.protection !== undefined) checkSheetProtection(sheet.protection, `${p}.protection`)
     if (sheet.hidden !== undefined && sheet.hidden !== false && !SHEET_STATES.has(sheet.hidden as true)) throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
   // Excel keeps one visible sheet at least
@@ -457,7 +459,7 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
 
 /**
  * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen
- * panes, rules of data validation or outline settings; as the engine takes them (`taken.ts`).
+ * panes, rules of data validation, outline settings or protection; as the engine takes them (`taken.ts`).
  */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
   const edits = array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
@@ -472,6 +474,11 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     if (o.filtered !== undefined) {
       onlyKeys(o, p, ['sheet', 'filtered'])
       checkBoolean(o.filtered, `${p}.filtered`)
+      return o as unknown as LayoutEdit
+    }
+    if ('protection' in o) {
+      onlyKeys(o, p, ['sheet', 'protection'])
+      if (o.protection !== null) checkSheetProtection(o.protection, `${p}.protection`)
       return o as unknown as LayoutEdit
     }
     if ('frozen' in o) {
@@ -500,7 +507,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = LINES[axis]
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations, outline or protection)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
