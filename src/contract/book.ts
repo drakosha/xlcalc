@@ -160,6 +160,12 @@ export interface SheetInput {
    * whatever hid the row.
    */
   filtered?: boolean
+  /**
+   * The sheet's AutoFilter (Excel's Filter over cells outside a table, xlsx `<autoFilter>`): the filter buttons on the
+   * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Its criteria and
+   * sort are not in the model: whether a filter hid rows is `filtered`. Not part of calculation or inputHash.
+   */
+  autoFilter?: AutoFilter
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
   /**
@@ -202,6 +208,12 @@ export interface LookRange {
   /** An index into the workbook's `styles`. */
   style?: number
   numberFormat?: NumberFormat
+}
+
+/** A sheet's AutoFilter (`SheetInput.autoFilter`). */
+export interface AutoFilter {
+  /** The filtered cells with the header row first: a range from its top-left cell to its bottom-right one (`A1:D20`), or a cell (`A1`). */
+  range: string
 }
 
 /** A sheet's frozen panes (`SheetInput.frozen`, Excel's Freeze Panes): the rows above the split and the columns to the left of it. */
