@@ -24,14 +24,14 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (27.10.2026, 0.60.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 310 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (27.10.2026, 0.60.1), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 310 KB.
 
 | import | for | size |
 |---|---|---:|
 | `compute` from `xlcalc` | calculating a workbook | 303 KB (116) |
 | `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 536 KB (202) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 605 KB (225) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 606 KB (225) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 223 KB (83) |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 276 KB (102) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 25 KB (9), its worker 656 KB (224) |
