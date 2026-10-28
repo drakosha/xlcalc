@@ -1,0 +1,400 @@
+{
+ "cases": {
+  "add": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread",
+    "cellIs B2:B21 =150 stop"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  },
+  "delete-1": {
+   "opens": true,
+   "rules": [
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "delete-3": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "delete-6": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "first-6": {
+   "opens": true,
+   "rules": [
+    "dataBar F2:F21 bar F2:F21",
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "last-1": {
+   "opens": true,
+   "rules": [
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread",
+    "cellIs A2:A21 =100"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "italic-3": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "insert-row-1": {
+   "opens": true,
+   "rules": [
+    "cellIs A3:A22 =100",
+    "colorScale B3:B22 =$G$3 unread",
+    "expression C3:C22 =C3>$G$2",
+    "expression D3:D22 =MOD(D3,2)=0 gradient",
+    "dataBar E3:E22 =0 bar E3:E22",
+    "dataBar F3:F22 bar F3:F22",
+    "x14 colorScale H3:H22 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "insert-row-10": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A23 =100",
+    "colorScale B2:B23 =$G$2 unread",
+    "expression C2:C23 =C2>$G$1",
+    "expression D2:D23 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E23 =0 bar E2:E23",
+    "dataBar F2:F23 bar F2:F23",
+    "x14 colorScale H2:H23 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "insert-row-22": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A23 =100",
+    "colorScale B2:B23 =$G$2 unread",
+    "expression C2:C23 =C2>$G$1",
+    "expression D2:D23 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E23 =0 bar E2:E23",
+    "dataBar F2:F23 bar F2:F23",
+    "x14 colorScale H2:H23 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "delete-rows-5": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A19 =100",
+    "expression C2:C19 =C2>$G$1",
+    "expression D2:D19 =MOD(D2,2)=0 gradient",
+    "colorScale B2:B19 =$G$2 unread",
+    "dataBar E2:E19 =0 bar E2:E19",
+    "dataBar F2:F19 bar F2:F19",
+    "x14 colorScale H2:H19 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "delete-row-2": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A20 =100",
+    "expression C2:C20 =C2>$G$1",
+    "expression D2:D20 =MOD(D2,2)=0 gradient",
+    "colorScale B2:B20 =#REF! unread",
+    "dataBar E2:E20 =0 bar E2:E20",
+    "dataBar F2:F20 bar F2:F20",
+    "x14 colorScale H2:H20 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "delete-rows-all": {
+   "opens": true,
+   "rules": [],
+   "priorities": []
+  },
+  "insert-col-b": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:B21 =100",
+    "colorScale C2:C21 =$H$2 unread",
+    "expression D2:D21 =D2>$H$1",
+    "expression E2:E21 =MOD(E2,2)=0 gradient",
+    "dataBar F2:F21 =0 bar F2:F21",
+    "dataBar G2:G21 bar G2:G21",
+    "x14 colorScale I2:I21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "delete-col-b": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "expression B2:B21 =B2>$F$1",
+    "expression C2:C21 =MOD(C2,2)=0 gradient",
+    "dataBar D2:D21 =0 bar D2:D21",
+    "dataBar E2:E21 bar E2:E21",
+    "x14 colorScale G2:G21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "delete-col-h": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "insert-row-p": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$2 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "rename-p": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='Q 2'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "delete-sheet-p": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 =#REF! unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "move-b": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale J2:J21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ }
+}
