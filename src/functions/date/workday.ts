@@ -4,7 +4,7 @@ import type { Rules } from '../../locale/rules.js'
 import { MAX_SERIAL } from '../../dates.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { readsClock } from '../../locale/rules/data.js'
-import { keptWith, VALUE_BYTES } from '../../range-cache.js'
+import { keepAlong, KEPT_RANGE } from '../../range-cache.js'
 import { lowerBound } from '../../sorted.js'
 import { atp } from './atp.js'
 import { weekday } from './calendar.js'
@@ -52,19 +52,15 @@ function holidayList(x: Segment | undefined, rules: Rules): Float64Array | CErr 
 }
 
 // Range arrays are immutable and replaced on invalidation: a long holidays range filled down a column is read once.
-const kept = new WeakMap<readonly V[], { rules: Rules; holidays: Float64Array | CErr }>()
-const KEPT_LENGTH = 256
+const kept = new WeakMap<readonly unknown[], { rules: Rules; holidays: Float64Array | CErr }>()
 
 /** `holidayList`, kept with a long range's values unless reading them took the clock's year (date text without one). */
 function holidaysOf(x: Segment | undefined, rules: Rules): Float64Array | CErr {
-  if (!Array.isArray(x) || x.length < KEPT_LENGTH) return holidayList(x, rules)
+  if (!Array.isArray(x) || x.length < KEPT_RANGE) return holidayList(x, rules)
   const hit = kept.get(x)
   if (hit?.rules === rules) return hit.holidays
   const [holidays, clocked] = readsClock(rules.clock, () => holidayList(x, rules))
-  if (!clocked) {
-    kept.set(x, { rules, holidays })
-    keptWith(x, 64 + (isErr(holidays) ? 0 : holidays.length * VALUE_BYTES))
-  }
+  if (!clocked) keepAlong(kept, x, { rules, holidays }, isErr(holidays) ? 0 : holidays.length)
   return holidays
 }
 

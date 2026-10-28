@@ -14,10 +14,10 @@ import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritCo
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
-import { rankInRange } from './functions/statistical/rank-index.js'
+import { rankInRange } from './functions/statistical/rank.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
-import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
+import { KEPT_RANGE, KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
 import { keepSelection, keptSelection, keyOf, type Selections } from './runtime/selection.js'
 import type { Index as LookupIndex } from './functions/lookup/exact.js'
 import type { Line } from './functions/lookup/search.js'
@@ -67,8 +67,9 @@ export interface RuntimeContext {
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
 
-const BIG_RANGE = 256
-/** RANK filled down over one long range: by its sorted numbers (`rank-index.ts`). */
+/** Whether SUBTOTAL and AGGREGATE skip a sheet's hidden rows by their rule: all of them, or those of a filtered sheet. */
+const skips = (rows: HiddenRows, hidden: HiddenRule) => hidden === 'all' || (hidden === 'filtered' && rows.filtered)
+/** RANK filled down over one long range: by its sorted numbers (`functions/statistical/rank.ts`). */
 const RANKS = ['RANK', 'RANK.EQ', 'RANK.AVG']
 const AGGREGATES = ['SUM', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'AVERAGE']
 /** SUBTOTAL's and AGGREGATE's codes of the range summaries. */
@@ -121,7 +122,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.get(b.r1 + r) ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
-    if (out.length >= BIG_RANGE && ctx.flat.admits(g.key)) {
+    if (out.length >= KEPT_RANGE && ctx.flat.admits(g.key)) {
       shapes.set(out, b)
       ctx.flat.set(g.key, out, out.length * VALUE_BYTES)
       ctx.flat.carries(g.key, out)
@@ -133,7 +134,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   const counted = (g: Rng, nested: boolean, hidden: HiddenRule): readonly V[] => {
     const marks = nested ? ctx.nested.get(g.s) : undefined
     const rows = ctx.hidden.get(g.s)
-    const skipRows = rows && (hidden === 'all' || (hidden === 'filtered' && rows.filtered))
+    const skipRows = rows && skips(rows, hidden)
     if (!marks?.size && !skipRows) return flat(g)
     const b = bounds(g)
     let out: V[] | undefined
@@ -358,7 +359,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (!name || !(range instanceof Rng)) return undefined
     if (nested && ctx.nested.get(range.s)?.inColumns(range.c1, range.c2)) return undefined
     const rows = ctx.hidden.get(range.s)
-    if (rows && (hidden === 'all' || (hidden === 'filtered' && rows.filtered)) && rows.spans.some(([lo, hi]) => lo <= range.r2 && hi >= range.r1)) return undefined
+    if (rows && skips(rows, hidden) && rows.spans.some(([lo, hi]) => lo <= range.r2 && hi >= range.r1)) return undefined
     return ctx.aggregates.read(name, range, () => bounds(range), cell)
   }
   /** A number argument as kind `n` reads it, or undefined for an error or one left out (the caller answers those). */
@@ -373,7 +374,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       return (...args) => (args.length === 1 && args[0] instanceof Rng ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
     if (name === 'COUNTIF' || name === 'COUNTIFS')
       return (...args) => (args.length === 2 && args[0] instanceof Rng ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
-    if (RANKS.includes(name)) return (...args) => rankInRange(cx, name === 'RANK.AVG', args) ?? caller(...args)
+    if (RANKS.includes(name)) return (...args) => (args.length <= 3 ? rankInRange(cx, name === 'RANK.AVG', number(args[0]), args[1], args[2]) : undefined) ?? caller(...args)
     // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them; AGGREGATE's options 0, 1, 4 and 5
     // keep errors: below 4 they skip SUBTOTAL and AGGREGATE, odd ones hidden rows
     if (name === 'SUBTOTAL' || name === 'AGGREGATE')

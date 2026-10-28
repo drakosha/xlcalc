@@ -12,6 +12,7 @@ import { max, min, NEWER_MAX_ARGS, sum, sumZeroed } from '../common.js'
 import { functions as trig } from '../math/trig.js'
 import { areaNumbers, devsq, interpolate, mean, stdev, variance } from './common.js'
 import { orderAt, sortedNumbers } from './order-stats.js'
+import { rankAvg, rankEq } from './rank.js'
 
 function median(xs: number[]): number {
   const m = xs.length >> 1
@@ -84,27 +85,6 @@ function percentRank(xs: number[], x: number, digits = 3, exclusive: boolean): V
 const percentRankInc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, false)
 const percentRankExc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, true)
 
-/** RANK's order: a number or a boolean; text, even "0", is #VALUE!. */
-function descending(order: V): boolean | V {
-  if (typeof order === 'string') return E.VALUE
-  return !order
-}
-
-function rank(x: number, xs: number[], order: V | undefined, average: boolean): V {
-  const desc = descending(order ?? 0)
-  if (typeof desc !== 'boolean') return desc
-  let before = 0
-  let equal = 0
-  for (const v of xs) {
-    if (v === x) equal++
-    else if (desc ? v > x : v < x) before++
-  }
-  if (!equal) return E.NA
-  return average ? before + (equal + 1) / 2 : before + 1
-}
-
-const rankEq = (x: number, xs: number[], order?: V) => rank(x, xs, order, false)
-const rankAvg = (x: number, xs: number[], order?: V) => rank(x, xs, order, true)
 
 /**
  * MODE: the most frequent numbers (seen more than once), in the order they first occur; text and booleans are

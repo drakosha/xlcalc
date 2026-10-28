@@ -2,7 +2,7 @@
 import { spend } from '../../exec/budget.js'
 import type { V } from '../../values.js'
 import type { Compare, Key, Line } from './search.js'
-import { KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
+import { KEPT_RANGE, KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
 
 interface Positions { first: number; last: number }
 interface TextPosition extends Positions { value: string }
@@ -35,7 +35,6 @@ function counted(line: Line, index: Index): void {
 
 // Range arrays are immutable and replaced on invalidation; their indexes disappear with them.
 const caches = new WeakMap<readonly V[], WeakMap<Compare, Map<string, Index>>>()
-const MIN_LENGTH = 256
 const STRIDE = 0xffff
 
 function indexFor(line: Line, compare: Compare): Index {
@@ -62,7 +61,7 @@ function indexFor(line: Line, compare: Compare): Index {
 
 /** Remember actual scan work: several hits at the start of a long range should not trigger a full index build. */
 export function scannedExact(line: Line, key: Key, compare: Compare, work: number): void {
-  if (line.filled < MIN_LENGTH || (typeof key === 'number' && !Number.isFinite(key))) return
+  if (line.filled < KEPT_RANGE || (typeof key === 'number' && !Number.isFinite(key))) return
   const index = indexFor(line, compare)
   if (typeof key === 'string') index.textWork += work
   else index.scalarWork += work
@@ -71,7 +70,7 @@ export function scannedExact(line: Line, key: Key, compare: Compare, work: numbe
 /** Undefined means the caller scans; -1 is an indexed miss. `stride` uses the stored grid width, not its referenced width. */
 export function indexedExact(line: Line, key: Key, compare: Compare, last: boolean): number | undefined {
   const length = line.filled
-  if (length < MIN_LENGTH || (typeof key === 'number' && !Number.isFinite(key))) return undefined
+  if (length < KEPT_RANGE || (typeof key === 'number' && !Number.isFinite(key))) return undefined
   const index = indexFor(line, compare)
   let position: Positions | undefined
   if (typeof key === 'string') {
