@@ -36,16 +36,36 @@ export function moneyFormat(c: Rules['currency'], decimals: boolean): string {
   return c.negative === '()' ? `${pos}_);[Red]\\(${pos}\\)` : `${pos};[Red]\\-${pos}`
 }
 
+/** The patterns of a locale's separators that typed text is read by: a decimal separator, digits grouped, scientific form. */
+interface Patterns {
+  decimal: RegExp
+  grouped: RegExp
+  scientific: RegExp
+}
+
+/** Patterns by the rules, which are kept per locale (`rulesFor`): built once, not for each entry. */
+const PATTERNS = new WeakMap<Rules, Patterns>()
+
+function patternsOf(r: Rules): Patterns {
+  let p = PATTERNS.get(r)
+  if (!p) {
+    const decimal = literal(r.decimal)
+    p = { decimal: new RegExp(`\\d*${decimal}`), grouped: new RegExp(`\\d${literal(r.group)}\\d`), scientific: new RegExp(`^ *[+-]?(\\d*(?:${decimal}\\d*)?)[eE]([+-]?\\d+) *$`) }
+    PATTERNS.set(r, p)
+  }
+  return p
+}
+
 /** The format of a number's form: money, scientific, percent, a fraction, grouping; two decimals where a decimal separator or a fraction was typed. */
 function numberForm(text: string, r: Rules): { form: Form; format?: NumberFormat } {
   const s = trimSpaces(text)
   const frac = /\d \d+\/(\d+)/.exec(s)
-  const decimals = frac !== null || new RegExp(`\\d*${literal(r.decimal)}`).test(s.replace(/[eE][+-]?\d+$/, ''))
+  const decimals = frac !== null || patternsOf(r).decimal.test(s.replace(/[eE][+-]?\d+$/, ''))
   if (s.includes(r.currency.symbol)) return { form: 'currency', format: moneyFormat(r.currency, decimals) }
   if (/\d[eE][+-]?\d/.test(s)) return { form: 'scientific', format: 11 }
   if (s.includes('%')) return { form: 'percent', format: decimals ? 10 : 9 }
   if (frac) return { form: 'fraction', format: frac[1].length > 1 ? 13 : 12 }
-  if (new RegExp(`\\d${literal(r.group)}\\d`).test(s)) return { form: 'grouped', format: decimals ? 4 : 3 }
+  if (patternsOf(r).grouped.test(s)) return { form: 'grouped', format: decimals ? 4 : 3 }
   return { form: 'plain' }
 }
 
@@ -88,7 +108,7 @@ function fractionPercent(text: string): number | null {
  * 0 (`1E-330`).
  */
 function outOfRange(text: string, n: number | null, r: Rules): boolean {
-  const m = new RegExp(`^ *[+-]?(\\d*(?:${literal(r.decimal)}\\d*)?)[eE]([+-]?\\d+) *$`).exec(text)
+  const m = patternsOf(r).scientific.exec(text)
   if (!m || !/\d/.test(m[1])) return false
   const e = Number(m[2])
   return e > 308 || e < -324 || n === null || Math.abs(n) >= 1e308 || (n === 0 && /[1-9]/.test(m[1]))
