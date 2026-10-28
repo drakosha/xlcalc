@@ -3,8 +3,9 @@
  * it (`p0`) and as the book written has it (`p1`), and where the two agree the file's XML stays: an element of the
  * sheet the model has, a row, a cell. Where they differ the model's XML goes in, except what the file has and the model
  * does not: a cell whose formula did not change keeps its `<f>` (a shared formula, a data table, a formula the engine
- * does not parse) and takes the new value; a cell or a row keeps a cell format of the file that looks the same, and a
- * row the attributes the model does not have. A cell with what only the file holds that moved (rows or columns
+ * does not parse) and takes the new value; a cell, a row or a column keeps a cell format of the file that looks the
+ * same, where rows or columns moved the format of the block it lies in now (`formats.ts`), and a row the attributes the
+ * model does not have. A cell with what only the file holds that moved (rows or columns
  * inserted or deleted, a range moved) takes the file's XML at its new address where the model has it as it was. The
  * elements the model does not have stay in their place, in the order of the schema; an element the model adds goes
  * where the schema puts it.
@@ -18,6 +19,7 @@ import { attributes } from '../xml/scan.js'
 import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
 import { KeptRefusal, type Moved } from './refusals.js'
+import type { Formats } from './formats.js'
 import type { KeptStyles } from './styles.js'
 import { attrsOf, childrenOf, closing, DOC_REL, opening, rootOf, setAttrs, split, tagEnd, type Placed } from './xml.js'
 
@@ -49,6 +51,8 @@ export interface SpliceInput {
   lines: boolean
   /** The file's cells with what only it holds that moved (`refusals.ts`). */
   moved?: Moved
+  /** The rectangles of the file's cell formats that look as earlier ones where they lie now (`formats.ts`); none past their limit. */
+  formats?: Formats
 }
 
 export interface Spliced {
@@ -194,6 +198,18 @@ function patched(src: Src, g: Gen, s: number): string {
   return `${open}${src.f ?? ''}${g.value}</${name}>`
 }
 
+/** A file's cell with cell format `s` in place of its own. */
+function withFormat(src: Src, s: number): string {
+  const end = tagEnd(src.text, 0)
+  return setAttrs(src.text.slice(0, end), { s: s ? String(s) : null }) + src.text.slice(end)
+}
+
+/** A row's cell format as the file gives it (`s` counts with `customFormat`), 0 for none. */
+const rowFormat = (tag: string) => {
+  const a = attributes(tag.slice(tag.search(/\s/)))
+  return a.customFormat === '1' || a.customFormat === 'true' ? Number(a.s) || 0 : 0
+}
+
 /** A cell input as it counts for whether the model changed it: its value, formula and look, not its note, link or meta. */
 const inputKey = (c: CellInput | undefined) => (c ? keyOf({ value: c.value, formula: c.formula, array: c.array, style: c.style, numberFormat: c.numberFormat }) : '')
 
@@ -245,6 +261,8 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
     if (!own || !was || own.si !== undefined || was.text.replace(GEN_ADDR, '') !== g.text.replace(GEN_ADDR, '')) return undefined
     return own.text.replace(SRC_ADDR, `$1${at}"`)
   }
+  // with rows or columns inserted or deleted, a cell or row takes the format of the rectangle it lies in now, not the file's at its address
+  const placed = x.lines && x.formats ? x.formats.index(all) : undefined
   // the rows a cell with what only the file holds left or came to
   const touched = new Set([...(x.moved?.left ?? []), ...(x.moved?.to.keys() ?? [])].map((a) => parseAddress(a).row))
   const merge = (r: number): string => {
@@ -253,6 +271,7 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
     const sc = s ? cellsOf(s) : new Map<number, Src>()
     const [c0, c1] = [a ? genCells(a.cells) : new Map<number, Gen>(), b ? genCells(b.cells) : new Map<number, Gen>()]
     const cols = [...new Set([...sc.keys(), ...c0.keys(), ...c1.keys()])].sort((p, q) => p - q)
+    const xfOf = (own: Src | undefined, col: number, xf: number) => (placed ? placed.cell(r, col, xf) : x.styles.keep(own?.s, xf))
     let body = ''
     let rowChanged = false
     for (const col of cols) {
@@ -276,8 +295,14 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
       const forced = gone || (own?.si !== undefined && !own.master && broken.has(own.si))
       if (x0?.text === x1?.text && !forced) {
         // a cell of the file the model has not (one that looks as its row or column) means nothing where lines moved
-        if (own && (x0 || !x.lines)) body += own.text
-        else if (own) rowChanged = true
+        const s1 = placed && own && x1 ? placed.cell(r, col, x1.s) : (own?.s ?? 0)
+        if (own && (x0 || !x.lines) && s1 === (own.s ?? 0)) body += own.text
+        else if (own && x0) {
+          // the file's cell where another moved to it, with the format of the one that moved
+          x.styles.use('cellXfs', s1)
+          body += withFormat(own, s1)
+          rowChanged = changed = true
+        } else if (own) rowChanged = true
         continue
       }
       rowChanged = true
@@ -293,7 +318,7 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
       cells.add(addr!)
       // the same formula keeps the file's formula element, a value or a look of its own changes alone
       if (own && x0 && x0.f === x1.f && !forced) {
-        const s1 = x.styles.keep(own.s, x1.s)
+        const s1 = xfOf(own, col, x1.s)
         if (s1 !== own.s) x.styles.use('cellXfs', s1)
         changed ||= inputs || s1 !== (own.s ?? 0)
         body += patched(own, x1, s1)
@@ -301,15 +326,18 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
       }
       changed = true
       if (own?.master) broken.add(own.si!)
-      const s1 = x.styles.keep(own?.s, x1.s)
+      const s1 = xfOf(own, col, x1.s)
       x.styles.use('cellXfs', s1)
       body += s1 === x1.s ? x1.text : x1.text.replace(/^(<c r="\w+")(?: s="\d+")?/, s1 ? `$1 s="${s1}"` : '$1')
     }
     const attrsChanged = (a?.attrs ?? '') !== (b?.attrs ?? '')
-    if (!rowChanged && !attrsChanged && s) return xml.slice(s.start, s.end)
-    if (attrsChanged) changed = true
+    // the row's format where rows or columns moved: that of the rows it lies in now
+    const format = placed && b ? placed.row(r, Number(/ s="(\d+)"/.exec(b.attrs)?.[1] ?? 0)) : undefined
+    const reformat = format !== undefined && format !== (s ? rowFormat(s.tag) : 0)
+    if (!rowChanged && !attrsChanged && !reformat && s) return xml.slice(s.start, s.end)
+    if (attrsChanged || reformat) changed = true
     // a row the model no longer has, its cells gone, goes
-    return !b && !body ? '' : rowXml(s, a, b, body, x)
+    return !b && !body ? '' : rowXml(s, a, b, body, x, reformat ? format : undefined)
   }
   try {
     // with rows or columns inserted or deleted, every row is looked at for the file's cells the model has not
@@ -341,19 +369,24 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
 
 const OUT_OF_ORDER = Symbol('out of order')
 
-/** A row written from the model's cells (`body`): the file's tag where its attributes did not change, else the model's with what the file's has that the model does not. */
-function rowXml(s: SrcRow | undefined, a: RowWritten | undefined, b: RowWritten | undefined, body: string, x: SpliceInput): string {
+/**
+ * A row written from the model's cells (`body`): the file's tag where its attributes did not change, else the model's
+ * with what the file's has that the model does not; `format`, the cell format it takes in place of the one it has.
+ */
+function rowXml(s: SrcRow | undefined, a: RowWritten | undefined, b: RowWritten | undefined, body: string, x: SpliceInput, format?: number): string {
   let tag: string
-  if (s && (a?.attrs ?? '') === (b?.attrs ?? '')) tag = setAttrs(s.tag, { spans: null })
+  if (format !== undefined) x.styles.use('cellXfs', format)
+  const formatted = (s: number) => (s ? { s: String(s), customFormat: '1' } : { s: null, customFormat: null })
+  if (s && (a?.attrs ?? '') === (b?.attrs ?? '')) tag = setAttrs(s.tag, { spans: null, ...(format === undefined ? {} : formatted(format)) })
   else {
     const own = s ? attributes(s.tag.slice(s.tag.search(/\s/))) : {}
     let attrs = b?.attrs ?? ''
     const sm = / s="(\d+)"/.exec(attrs)
     if (sm) {
-      const kept = x.styles.keep(own.s === undefined ? undefined : Number(own.s), Number(sm[1]))
+      const kept = format ?? x.styles.keep(own.s === undefined ? undefined : Number(own.s), Number(sm[1]))
       x.styles.use('cellXfs', kept)
       attrs = attrs.replace(sm[0], ` s="${kept}"`)
-    }
+    } else if (format) attrs += ` s="${format}" customFormat="1"`
     const rest = ROW_KEPT.filter((k) => own[k] !== undefined).map((k) => ` ${k}="${own[k]}"`).join('')
     const name = s ? /^<([\w.:-]+)/.exec(s.tag)![1] : 'row'
     const r = (s?.r ?? a?.row ?? b?.row)! + 1
@@ -441,8 +474,9 @@ export function spliceSheet(x: SpliceInput): Spliced {
   }
   if (p0.cols !== p1.cols) {
     changed = true
-    for (const m of p1.cols.matchAll(/ style="(\d+)"/g)) x.styles.use('cellXfs', Number(m[1]))
-    put('cols', p1.cols)
+    const cols = x.formats ? x.formats.cols(p1.cols) : p1.cols
+    for (const m of cols.matchAll(/ style="(\d+)"/g)) x.styles.use('cellXfs', Number(m[1]))
+    put('cols', cols)
   }
   const data = kids.find((c) => c.local === 'sheetData')
   const rowsSame = p0.rows.length === p1.rows.length && p0.rows.every((r, i) => r.row === p1.rows[i].row && r.attrs === p1.rows[i].attrs && r.cells === p1.rows[i].cells)

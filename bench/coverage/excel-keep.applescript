@@ -1,7 +1,8 @@
 -- Open a book and give it what the workbook model does not hold, as a person does in Excel's window, then save it as
 -- xlsx under another name and close it. Arguments: the book's path and the path to save to (inside Excel's sandbox),
 -- the saved file's name, the features (a comma list: chart, chartsheet, picture, sized, floating, chartmove, rich, theme,
--- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart, tablein, tablearound, tablelong, tablelow) and
+-- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart, tablein, tablearound, tablelong, tablelow,
+-- formats) and
 -- a picture's path (inside the sandbox). Answers what it made, one feature a line, or the error of one it could not.
 on run argv
 	set p to item 1 of argv
@@ -112,6 +113,32 @@ on run argv
 					end try
 				end if
 			end repeat
+			if feats contains "formats" then
+				-- formats the workbook does not tell apart: text with a quote prefix (A6:A9), the first accent as a theme colour
+				-- (B10:C11) and as its colour (B12:C13), a cell style of its own (C14:C16), a pattern fill (B17:C18), a row and a
+				-- column of each colour (rows 23 and 25, columns G and H)
+				repeat with k from 6 to 9
+					set c to range ("A" & k) of ws
+					set value of c to "'" & (value of c)
+				end repeat
+				set theme color of font object of range "B10:C11" of ws to first accent theme color
+				-- the first accent of the theme Excel 16 gives a new workbook, #156082
+				set deepBlue to {21, 96, 130}
+				set color of font object of range "B12:C13" of ws to deepBlue
+				try
+					make new style at wb with properties {name:"Kept"}
+					set style object of range "C14:C16" of ws to style "Kept" of wb
+					set made to made & "style done" & linefeed
+				on error msg number k
+					set made to made & "style error " & k & " " & msg & linefeed
+				end try
+				set pattern of interior object of range "B17:C18" of ws to pattern gray 50
+				set theme color of font object of (entire row of range "A23" of ws) to first accent theme color
+				set color of font object of (entire row of range "A25" of ws) to deepBlue
+				set theme color of font object of (entire column of range "G1" of ws) to first accent theme color
+				set color of font object of (entire column of range "H1" of ws) to deepBlue
+				set made to made & "formats " & (prefix character of range "A6" of ws) & linefeed
+			end if
 			calculate full
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no

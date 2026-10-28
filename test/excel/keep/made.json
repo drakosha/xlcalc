@@ -341,6 +341,26 @@
     "notes": 0,
     "autoFilters": 1
    }
+  },
+  "formats": {
+   "sent": "fe87c162b2a36d95f121422fec099474f26c125342db456310bf67e4f266a411",
+   "made": [
+    "style done",
+    "formats '"
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 1,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
   }
  }
 }

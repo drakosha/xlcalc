@@ -3,17 +3,19 @@
  * hidden names that hold the references of the parts the model does not have (`carriers.ts`).
  */
 import { object } from '../../input/basic.js'
-import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
+import { checkLimits, fileBytes, readStyled } from '../read/book.js'
 import type { ReadXlsxOptions, XlsxRead } from '../types.js'
 import { carrierNames, carriersOf } from './carriers.js'
 import { openSource } from './source.js'
+import { KeptStyles } from './styles.js'
 
 /** Reads an xlsx file into a workbook as `readXlsx` does, its carriers added to the names for `writeKept`. */
 export async function openKept(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
   const bytes = fileBytes(data)
-  const read = await readXlsx(bytes, opts)
+  const { read, stylesXml, table } = await readStyled(bytes, opts)
   const limits = opts === undefined ? undefined : object(opts, 'opts', "options such as { locale: 'ru-RU' }").limits
-  const carriers = await carriersOf(await openSource(bytes, limits === undefined ? undefined : checkLimits(limits)), read.book)
+  const src = await openSource(bytes, limits === undefined ? undefined : checkLimits(limits))
+  const carriers = await carriersOf(src, read.book, new KeptStyles(stylesXml, table))
   read.book.names = [...(read.book.names ?? []), ...carrierNames(carriers)]
   return read
 }

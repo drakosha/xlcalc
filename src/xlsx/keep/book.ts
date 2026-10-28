@@ -11,10 +11,8 @@ import { SHEET_STATES } from '../../input.js'
 import { object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
-import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
+import { checkLimits, fileBytes, readStyled } from '../read/book.js'
 import { partText, relsOf, type Rel } from '../read/package.js'
-import { palette } from '../styles/color.js'
-import { readStyles } from '../styles/read.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
 import { bookWriting, filterDatabase, iterationAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
 import { nextBlock } from '../write/parts.js'
@@ -36,6 +34,7 @@ import { edited, KeptRefusal, refusals, type Identity } from './refusals.js'
 import { spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
+import { Formats } from './formats.js'
 import { KeptStyles } from './styles.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes, type Placed } from './xml.js'
@@ -108,9 +107,9 @@ interface Setup {
 /** The relationship kinds of the cell metadata and the rich values of errors. */
 const META = ['sheetMetadata', 'rdRichValue', 'rdRichValueStructure'] as const
 
-async function setup(src: Source, edits: Edit[]): Promise<Setup> {
+async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Setup> {
   const part = (kind: string) => partText(src.archive, src.wbRels, kind)
-  const [stylesXml, themeXml, metaXml, richValues, richStructures] = await Promise.all(['styles', 'theme', ...META].map(part))
+  const [metaXml, richValues, richStructures] = await Promise.all(META.map(part))
   let block = 1
   // the notes' VML shape ids go in blocks past those the file's drawings take
   for (const name of src.archive.names)
@@ -137,7 +136,7 @@ async function setup(src: Source, edits: Edit[]): Promise<Setup> {
   return {
     rels,
     texts,
-    styles: new KeptStyles(stylesXml, readStyles(stylesXml, palette(themeXml, stylesXml))),
+    styles,
     meta: planMeta(metaXml, richValues, richStructures),
     metaParts: { sheetMetadata: metaXml, rdRichValue: richValues, rdRichValueStructure: richStructures },
     block,
@@ -158,8 +157,9 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   const limits = o.limits === undefined ? undefined : checkLimits(o.limits)
   const { book: given, cells, locale, unasked } = writeArgs(snapshot, { ...(o.values !== undefined ? { values: o.values } : {}), ...(o.locale !== undefined ? { locale: o.locale } : {}) })
   const src = await openSource(bytes, limits)
-  const read = await readXlsx(bytes, limits ? { limits } : undefined)
-  const carriers = await carriersOf(src, read.book)
+  const { read, stylesXml, table } = await readStyled(bytes, limits ? { limits } : undefined)
+  const styles = new KeptStyles(stylesXml, table)
+  const carriers = await carriersOf(src, read.book, styles)
   const identity = refusals(src, read.book, given, carriers)
   // the book as written: its names without the carriers
   const carried = new Set(carrierNames(carriers).map((n) => caseKey(n.name)))
@@ -167,7 +167,7 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   // the sheets whose rules the reader could not all take, which writing them again from the workbook would lose
   const unread = (code: string) => new Set(read.issues.flatMap((x) => (x.code === code && x.sheet !== undefined ? [x.sheet] : [])))
   const lost = { conditional: unread('conditionalFormat'), validation: unread('dataValidation') }
-  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits), lost)
+  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits, styles), lost)
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
@@ -186,6 +186,11 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   for (const [i, count] of carriers.uncarried.entries()) {
     const j = identity.target.get(i)
     if (count && j !== undefined && identity.lines[i]) k.issues.add('richText', { key: 'keptCells', count }, { sheet: book.sheets[j].name })
+  }
+  // a sheet with more rectangles of cell formats that look as earlier ones than have carriers, whose rows or columns moved
+  for (const [i, count] of carriers.unformatted.entries()) {
+    const j = identity.target.get(i)
+    if (count && j !== undefined && identity.lines[i]) k.issues.add('style', { key: 'keptFormats', count }, { sheet: book.sheets[j].name })
   }
   return { data: await k.zip(), issues: k.issues.list(locale) }
 }
@@ -292,7 +297,8 @@ class Kept {
         this.unlink(ss.part, drawing.target)
       }
       const moved = this.id.cells.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}) })
+      const formats = this.id.formats.get(k)
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
