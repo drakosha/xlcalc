@@ -10,10 +10,12 @@ import { CELL_IS, ICON_SETS, PERIODS, STYLED, VALUE_TYPES, WITH_VALUE } from '..
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { areaText } from '../../structure/area.js'
-import type { Issues, XlsxMessage } from '../issues.js'
+import type { XlsxMessage } from '../issues.js'
+import type { XlsxIssueCode } from '../types.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
+import { Issues, type Where } from '../issues.js'
+import { attributes, element, elements, flag, ownEntry, placed, type Element, type Placed } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
@@ -220,47 +222,118 @@ function joinBar(base: Extract<ConditionalFormat, { type: 'dataBar' }>, x: Eleme
 }
 
 /**
- * The sheet's conditional formats in priority order, from its tail (the worksheet after `<sheetData>`, without its own
- * extension list, whose content is `ext`: Excel 2010's rules are there).
+ * A rule of the file as the reader met it (`readConditional`'s `sources`): where its `cfRule` and its block lie in the
+ * text read (`x14`: the extension list's, else the worksheet's tail), its priority, and what became of it.
  */
-export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions): ConditionalFormat[] | undefined {
-  const ctx: Context = { sheet, dxfs, palette, issues, formulas }
+export interface RuleSource {
+  x14: boolean
+  start: number
+  end: number
+  block: { start: number; end: number; sqref: string }
+  priority: number
+  /** Its place in the list of rules read, undefined for a rule the model does not have; a 2010 part of a data bar, its 2007 rule's. */
+  index?: number
+  /** A data bar's id that joins its 2007 rule and its 2010 part. */
+  id?: string
+  /** The 2010 part of a data bar, laid over its 2007 rule, or beside it where neither is read. */
+  joined?: boolean
+  /** A pivot table's block (`pivot="1"`). */
+  pivot?: boolean
+  /** What the reader reported of it (`conditionalFormat` issues by key): a rule read with some lost, or not read. */
+  lost: string[]
+}
+
+/** Issues passed on, the keys of the conditional formats' noted: what each rule loses. */
+class Noted extends Issues {
+  keys: string[] = []
+  constructor(private readonly to: Issues) {
+    super()
+  }
+  override add(code: XlsxIssueCode, message: XlsxMessage, where?: Where): void {
+    if (code === 'conditionalFormat') this.keys.push(message.key)
+    this.to.add(code, message, where)
+  }
+}
+
+/**
+ * The sheet's conditional formats in priority order, from its tail (the worksheet after `<sheetData>`, without its own
+ * extension list, whose content is `ext`: Excel 2010's rules are there). `sources` gets every rule of the file, read or
+ * not, in the order of the rules read.
+ */
+export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions, sources?: RuleSource[]): ConditionalFormat[] | undefined {
+  const noted = sources ? new Noted(issues) : undefined
+  const ctx: Context = { sheet, dxfs, palette, issues: noted ?? issues, formulas }
+  const met: (RuleSource & { read?: Read; order: number })[] = []
+  /** The keys noted since `from`. */
+  const since = (from: number) => noted?.keys.slice(from) ?? []
+  const at = () => noted?.keys.length ?? 0
+  const note = (s: Omit<RuleSource, 'lost'>, lost: string[], read: Read | null) => {
+    if (sources) met.push({ ...s, lost, order: met.length, ...(read ? { read } : {}) })
+  }
   // 2007's blocks, with whatever prefix the file gives SpreadsheetML (2010's are in the extension list)
-  const blocks = elements(tail, 'conditionalFormatting')
   const found: Read[] = []
-  for (const b of blocks) {
+  /** The ids of the data bars of 2007 the model does not have. */
+  const lostBars = new Set<string>()
+  for (const b of placed(tail, 'conditionalFormatting')) {
     const a = attributes(b.attrs)
+    const k0 = at()
     const sqref = ranges(a.sqref ?? '', ctx)
-    if (flag(a.pivot)) {
-      issues.add('conditionalFormat', { key: 'condPivot' }, { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
-      continue
-    }
-    if (!sqref.length) continue
-    for (const e of elements(b.body ?? '', 'cfRule')) {
-      const r = rule(e, sqref, false, ctx)
+    const own = since(k0)
+    const pivot = flag(a.pivot)
+    if (pivot) issues.add('conditionalFormat', { key: 'condPivot' }, { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
+    const body = b.body ?? ''
+    const inner = bodyAt(tail, b)
+    const block = { start: b.start, end: b.end, sqref: a.sqref ?? '' }
+    for (const e of placed(body, 'cfRule')) {
+      const k = at()
+      const r = pivot || !sqref.length ? null : rule(e, sqref, false, ctx)
       if (r) found.push(r)
+      const id = element(e.body ?? '', 'id')?.body?.trim()
+      if (!r && id) lostBars.add(id)
+      note({ x14: false, start: inner + e.start, end: inner + e.end, block, priority: Number(attributes(e.attrs).priority ?? 0), ...(id ? { id } : {}), ...(pivot ? { pivot } : {}) }, [...own, ...since(k)], r)
     }
   }
   // Excel 2010's rules: in their extension of the sheet's own extension list
-  const x14 = elements(ext, 'ext').find((e) => attributes(e.attrs).uri?.toUpperCase() === X14_CF.toUpperCase())
-  for (const b of elements(x14?.body ?? '', 'conditionalFormatting')) {
+  const x14 = placed(ext, 'ext').find((e) => attributes(e.attrs).uri?.toUpperCase() === X14_CF.toUpperCase())
+  const x14Body = x14?.body ?? ''
+  const x14At = x14 ? bodyAt(ext, x14) : 0
+  for (const b of placed(x14Body, 'conditionalFormatting')) {
     const body = b.body ?? ''
-    const sqref = ranges(readText(element(body, 'sqref')?.body ?? ''), ctx)
-    if (!sqref.length) continue
-    for (const e of elements(body, 'cfRule')) {
+    const raw = readText(element(body, 'sqref')?.body ?? '')
+    const k0 = at()
+    const sqref = ranges(raw, ctx)
+    const own = since(k0)
+    const inner = x14At + bodyAt(x14Body, b)
+    const block = { start: x14At + b.start, end: x14At + b.end, sqref: raw }
+    for (const e of placed(body, 'cfRule')) {
+      const k = at()
       const id = attributes(e.attrs).id
-      const bar = id === undefined ? undefined : found.find((x) => x.id === id && x.rule.type === 'dataBar')
+      const where = { x14: true, start: inner + e.start, end: inner + e.end, block, priority: Number(attributes(e.attrs).priority ?? 0), ...(id ? { id } : {}) }
+      const bar = id === undefined || !sqref.length ? undefined : found.find((x) => x.id === id && x.rule.type === 'dataBar')
       if (bar) {
         bar.rule = joinBar(bar.rule as Extract<ConditionalFormat, { type: 'dataBar' }>, e, ctx)
+        note({ ...where, joined: true }, [...own, ...since(k)], bar)
         continue
       }
-      const r = rule(e, sqref, true, ctx)
+      const r = sqref.length ? rule(e, sqref, true, ctx) : null
       if (r) found.push(r)
+      note({ ...where, ...(!r && id !== undefined && lostBars.has(id) ? { joined: true } : {}) }, [...own, ...since(k)], r)
     }
   }
   found.forEach((x, i) => (x.order = i))
   found.sort((a, b) => a.priority - b.priority || a.order - b.order)
+  if (sources) {
+    // the rules in the order of their priority, the 2010 parts of data bars after them
+    const index = new Map(found.map((x, i) => [x, i]))
+    met.sort((a, b) => Number(!!a.joined) - Number(!!b.joined) || a.priority - b.priority || a.order - b.order)
+    for (const { read, order: _, ...s } of met) sources.push(read ? { ...s, index: index.get(read)! } : s)
+  }
   return found.length ? found.map((x) => plain(x.rule)) : undefined
+}
+
+/** Where the content of an element `placed` gave lies in its text. */
+function bodyAt(xml: string, p: Placed): number {
+  return xml.lastIndexOf('</', p.end - 1) - (p.body ?? '').length
 }
 
 /** A rule without a formula that is the one Excel writes for it (`defaultFormula`), which the model makes itself. */
