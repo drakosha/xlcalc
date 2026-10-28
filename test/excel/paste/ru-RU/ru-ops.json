@@ -1,0 +1,332 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "ru-RU",
+  "seconds": 16.3
+ },
+ "books": {
+  "ru": {
+   "locale": "ru-RU",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1234.5,
+       "numberFormat": "#,##0.00"
+      },
+      "A2": {
+       "value": 0.5
+      },
+      "A3": {
+       "formula": "IF(B1>1,B1*1.5,0)"
+      },
+      "A4": {
+       "value": 0.125,
+       "numberFormat": "0.0%"
+      },
+      "A5": {
+       "value": 46037,
+       "numberFormat": "dd/mm/yyyy"
+      },
+      "A6": {
+       "value": "текст"
+      },
+      "B1": {
+       "value": 2
+      },
+      "C1": {
+       "value": 10
+      },
+      "C2": {
+       "formula": "SUM(B1:B2)"
+      },
+      "C3": {
+       "value": 2.5
+      },
+      "C4": {
+       "formula": "B1/4"
+      },
+      "C5": {
+       "value": 1
+      },
+      "C6": {
+       "formula": "ROUND(B1,1)"
+      },
+      "E1": {
+       "value": 1001,
+       "numberFormat": "#,##0.000"
+      },
+      "E2": {
+       "value": 1002,
+       "numberFormat": "#,##0.000"
+      },
+      "E3": {
+       "value": 1003,
+       "numberFormat": "#,##0.000"
+      },
+      "E4": {
+       "value": 1004,
+       "numberFormat": "#,##0.000"
+      },
+      "E5": {
+       "value": 1005,
+       "numberFormat": "#,##0.000"
+      },
+      "E6": {
+       "value": 1006,
+       "numberFormat": "#,##0.000"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "formulas-add",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "operation": "add",
+   "local": [
+    "C2",
+    "C3",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "formulas-subtract",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "operation": "subtract",
+   "local": [
+    "C2",
+    "C3",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "formulas-multiply",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "operation": "multiply",
+   "local": [
+    "C2",
+    "C3",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "formulas-divide",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "operation": "divide",
+   "local": [
+    "C2",
+    "C3",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "values-add",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "add",
+   "local": [
+    "C2",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "all-add",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "all",
+   "operation": "add",
+   "local": [
+    "C2",
+    "C3",
+    "C4",
+    "C6"
+   ]
+  },
+  {
+   "id": "values-number-formats",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "valuesAndNumberFormats"
+  },
+  {
+   "id": "formats",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "values-add-formats",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "valuesAndNumberFormats",
+   "operation": "add"
+  },
+  {
+   "id": "formulas-number-formats-multiply",
+   "book": "ru",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "formulasAndNumberFormats",
+   "operation": "multiply",
+   "local": [
+    "E3"
+   ]
+  }
+ ],
+ "sent": {
+  "formulas-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "formulas-subtract": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "formulas-multiply": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "formulas-divide": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "values-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "all-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "values-number-formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "values-add-formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
+  "formulas-number-formats-multiply": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c"
+ },
+ "answers": {
+  "formulas-add": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))+0,5",
+    "C3": "=2,5+(ЕСЛИ(D1>1;D1*1,5;0))",
+    "C4": "=(B1/4)+0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "formulas-subtract": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))-0,5",
+    "C3": "=2,5-(ЕСЛИ(D1>1;D1*1,5;0))",
+    "C4": "=(B1/4)-0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "formulas-multiply": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))*0,5",
+    "C3": "=2,5*(ЕСЛИ(D1>1;D1*1,5;0))",
+    "C4": "=(B1/4)*0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "formulas-divide": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))/0,5",
+    "C3": "=2,5/(ЕСЛИ(D1>1;D1*1,5;0))",
+    "C4": "=(B1/4)/0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "values-add": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))+0,5",
+    "C4": "=(B1/4)+0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "all-add": {
+   "local": {
+    "C2": "=(СУММ(B1:B2))+0,5",
+    "C3": "=2,5+(ЕСЛИ(D1>1;D1*1,5;0))",
+    "C4": "=(B1/4)+0,125",
+    "C6": "=ОКРУГЛ(B1;1)"
+   }
+  },
+  "values-number-formats": {},
+  "formats": {},
+  "values-add-formats": {},
+  "formulas-number-formats-multiply": {
+   "local": {
+    "E3": "=1003*(ЕСЛИ(F1>1;F1*1,5;0))"
+   }
+  }
+ }
+}

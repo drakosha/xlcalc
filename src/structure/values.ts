@@ -4,14 +4,23 @@ import { spend } from '../exec/budget.js'
 import { valueAt, type EngineState } from '../engine.js'
 import { outCell } from '../result.js'
 import { sheetKey } from '../syntax.js'
-import type { Rect } from './area.js'
+import { meets, type Rect } from './area.js'
 
-/** The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included: [row, column, value]. */
-export type ValuesIn = (sheet: string, rect: Rect) => [number, number, CellValue][]
+/**
+ * The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included:
+ * [row, column, value]; and the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`).
+ */
+export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { spills?: (sheet: string, rect: Rect) => Rect[] }
+
+/** The spilled arrays of a computed state over more than one cell that meet `x` on `sheet`. */
+function spillsOf(state: EngineState, sheet: string, x: Rect): Rect[] {
+  const s = state.sheetIdx.get(sheetKey(sheet))!
+  return [...state.spills.on.values()].filter((a) => a.s === s && (a.r1 !== a.r2 || a.c1 !== a.c2) && meets(a, x))
+}
 
 /** The values of a computed state. */
 export function stateValues(state: EngineState): ValuesIn {
-  return (sheet, x) => {
+  const values = (sheet: string, x: Rect) => {
     const s = state.sheetIdx.get(sheetKey(sheet))!
     const sh = state.ctx.sheets[s]
     const out: [number, number, CellValue][] = []
@@ -36,4 +45,5 @@ export function stateValues(state: EngineState): ValuesIn {
     }
     return out
   }
+  return Object.assign(values, { spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x) })
 }

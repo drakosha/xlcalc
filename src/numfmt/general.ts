@@ -119,7 +119,8 @@ export function generalFit(n: number, space: number): string {
       const t = strip(roundHalfUp(a, d))
       if (t !== '0' && t.length <= cells) return sign + t
     }
-  for (let m = 5; m >= 0; m--) {
+  // more decimals of the mantissa than the room left by its digit, the point and the exponent cannot fit
+  for (let m = Math.max(0, Math.min(5, cells - 2 - (Math.abs(e) < 100 ? 4 : 5))); m >= 0; m--) {
     const t = sci(a, m)
     if (t.length <= cells) return sign + t
   }
