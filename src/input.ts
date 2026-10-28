@@ -482,7 +482,6 @@ const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; n
   validations: { check: checkValidations },
   outline: { check: checkOutline, nullable: true },
 }
-const EDITED = Object.keys(SHEET_EDITS)
 
 /**
  * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, an
@@ -494,7 +493,8 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     const o = object(e, p, 'a layout edit such as { sheet: "Sheet1", columns: "C", set: { width: 20 } }')
     checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
     // an edit of one field of the sheet, checked by the field's check; null removes a field that may go
-    const field = EDITED.find((k) => o[k] !== undefined || (SHEET_EDITS[k].nullable && k in o))
+    const edited = Object.keys(SHEET_EDITS)
+    const field = edited.find((k) => o[k] !== undefined || (SHEET_EDITS[k].nullable && k in o))
     if (field) {
       onlyKeys(o, p, ['sheet', field])
       if (o[field] !== null || !SHEET_EDITS[field].nullable) SHEET_EDITS[field].check(o[field], `${p}.${field}`)
@@ -509,7 +509,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = LINES[axis]
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ` (one of columns, rows, ${EDITED.slice(0, -1).join(', ')} or ${EDITED.at(-1)})` : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ` (one of columns, rows, ${edited.slice(0, -1).join(', ')} or ${edited.at(-1)})` : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
