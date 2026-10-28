@@ -11,17 +11,14 @@ import { sheetLines } from '../layout/lines.js'
 import { showFormula } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { numberFormatCategory } from '../numfmt/category.js'
+import { showsDate } from '../numfmt/category.js'
 import { cellValue } from '../result.js'
 
 export function autoSumOf(state: EngineState, s: number, r: number, c: number): AutoSumGuess {
   const sheet = state.input.sheets[s]
   const lines = sheetLines(sheet, state)
   const isNumber = (row: number, col: number) => {
-    if (typeof cellValue(state, s, row, col) !== 'number') return false
-    const format = lines.format(row, col)
-    const kind = format === undefined ? 'general' : numberFormatCategory(format, state.input.locale).category
-    return kind !== 'date' && kind !== 'time'
+    return typeof cellValue(state, s, row, col) === 'number' && !showsDate(lines.format(row, col), state.input.locale)
   }
   // from `from` toward the edge by `by` ([row, column]): the cells skipped, then the run of numbers; null without one
   const run = (by: [number, number]): [number, number][] | null => {

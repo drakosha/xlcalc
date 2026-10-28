@@ -46,6 +46,13 @@ const CHOICES: readonly [FormatChoiceKey, NumberFormat | undefined][] = [
 
 const namesOf = (loc: Locale | undefined): FormatNames => loc?.regional?.formats ?? EN_NAMES
 
+/** A cell's number format (none: General) shows a date or a time, in `locale` (`numberFormatCategory`). */
+export function showsDate(format: NumberFormat | undefined, locale?: string | Locale): boolean {
+  if (format === undefined) return false
+  const { category } = numberFormatCategory(format, locale)
+  return category === 'date' || category === 'time'
+}
+
 /**
  * The category of a number format in `locale` (a loaded locale's tag or a locale object; en-US without one), as the
  * ribbon's Number Format box displays it, with the category's name there: for a format code as stored in an xlsx file,
