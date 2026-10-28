@@ -21,68 +21,81 @@ export interface FormatArea {
   rect: Rect
 }
 
-const TAG = /<(?:[\w.-]+:)?(row|c|col)(?=[\s/>])([^>]*)>/g
+/** The attributes of a column. */
+const COL = /<(?:[\w.-]+:)?col(?=[\s/>])([^>]*)>/g
 const attr = (name: string) => new RegExp(`\\s${name}\\s*=\\s*["']([^"']*)["']`)
-const [S, R, STYLE, CUSTOM, MIN, MAX] = ['s', 'r', 'style', 'customFormat', 'min', 'max'].map(attr)
-const CELL_REF = /^([A-Za-z]{1,3})(\d+)$/
+const [R, STYLE, CUSTOM, MIN, MAX] = ['r', 'style', 'customFormat', 'min', 'max'].map(attr)
 
 /**
- * A sheet's rectangles of cell formats that look as earlier ones (`twin`), in the order of the file (cells, then rows,
- * then columns), and how many cells they hold. A run of a row extends the rectangle of the same run of the row above.
+ * A sheet's rectangles of cell formats that look as earlier ones (`twin`), cells first, and how many cells they hold. A
+ * run of a row extends the rectangle of the same run of the row above. Only the cell formats are looked for, so a sheet
+ * of other formats costs one search of its text.
  */
 export function formatAreas(xml: string, data: Placed | undefined, cols: Placed | undefined, twin: (s: number) => boolean): { areas: FormatArea[]; cells: number } {
   const cells: FormatArea[] = []
   const lines: FormatArea[] = []
-  const open = new Map<string, Rect>()
-  const add = (kind: FormatKind, s: number, r: number, c1: number, c2: number) => {
-    const key = `${kind}:${s}:${c1}:${c2}`
-    const x = open.get(key)
+  // the last rectangle of each run, by its format and columns, of cells and of rows
+  const open = { cells: new Map<number, Rect>(), rows: new Map<number, Rect>() }
+  const add = (kind: 'cells' | 'rows', s: number, r: number, c1: number, c2: number) => {
+    const key = (s * MAX_COLS + c1) * MAX_COLS + c2
+    const x = open[kind].get(key)
     if (x && x.r2 === r - 1) x.r2 = r
     else {
       const rect = { r1: r, r2: r, c1, c2 }
-      open.set(key, rect)
+      open[kind].set(key, rect)
       ;(kind === 'cells' ? cells : lines).push({ kind, s, rect })
     }
   }
   let count = 0
   let run: { s: number; r: number; c1: number; c2: number } | undefined
-  const flush = () => run && add('cells', run.s, run.r, run.c1, run.c2)
-  let row = -1
-  for (const p of [data, cols]) {
-    if (!p) continue
-    TAG.lastIndex = p.open
-    for (let m = TAG.exec(xml); m && m.index < p.end; m = TAG.exec(xml)) {
-      const a = m[2]
-      if (m[1] === 'row') {
-        const r = R.exec(a)?.[1]
-        row = r !== undefined && /^\d+$/.test(r) ? Number(r) - 1 : row + 1
-        const s = Number(S.exec(a)?.[1])
-        if (twin(s) && /^(1|true)$/.test(CUSTOM.exec(a)?.[1] ?? '')) add('rows', s, row, 0, MAX_COLS - 1)
+  // a cell's or a row's format as writers write it, ` s="3"`: one written otherwise keeps its format only where it stays
+  for (let i = data ? xml.indexOf(' s="', data.open) : -1; data && i >= 0 && i < data.end; i = xml.indexOf(' s="', i)) {
+    const from = i
+    let s = 0
+    for (let ch = xml.charCodeAt((i += 4)); ch >= 48 && ch <= 57; ch = xml.charCodeAt(++i)) s = s * 10 + ch - 48
+    if (i === from + 4 || xml.charCodeAt(i) !== 34 || !twin(s)) continue
+    const at = xml.lastIndexOf('<', from)
+    // a cell as writers write it, `<c r="B7"`, read at once; others by their attributes
+    let [row, col] = xml.startsWith('<c r="', at) ? cellAt(xml, at + 6) : [-1, -1]
+    if (row < 0) {
+      const tag = xml.slice(at, xml.indexOf('>', from))
+      const name = /^<(?:[\w.-]+:)?(\w+)/.exec(tag)?.[1]
+      const r = R.exec(tag)?.[1]
+      if (name === 'row') {
+        // a row without its number keeps its format only where it stays
+        if (r && /^\d+$/.test(r) && /^(1|true)$/.test(CUSTOM.exec(tag)?.[1] ?? '')) add('rows', s, Number(r) - 1, 0, MAX_COLS - 1)
         continue
       }
-      if (m[1] === 'col') {
-        const [s, lo, hi] = [STYLE, MIN, MAX].map((x) => Number(x.exec(a)?.[1]))
-        if (!twin(s) || !(lo >= 1 && hi >= lo && hi <= MAX_COLS)) continue
-        const last = lines.at(-1)
-        if (last?.kind === 'cols' && last.s === s && last.rect.c2 === lo - 2) last.rect.c2 = hi - 1
-        else lines.push({ kind: 'cols', s, rect: { r1: 0, r2: MAX_ROWS - 1, c1: lo - 1, c2: hi - 1 } })
-        continue
-      }
-      const sm = S.exec(a)
-      // a cell without its address keeps its format only where it stays
-      const ref = sm && twin(Number(sm[1])) ? CELL_REF.exec(R.exec(a)?.[1] ?? '') : null
+      const ref = name === 'c' && r ? /^([A-Za-z]{1,3})(\d+)$/.exec(r) : null
       if (!ref) continue
-      const [s, r, c] = [Number(sm![1]), Number(ref[2]) - 1, colToIndex(ref[1].toUpperCase())]
-      count++
-      if (run && run.s === s && run.r === r && run.c2 === c - 1) run.c2 = c
-      else {
-        flush()
-        run = { s, r, c1: c, c2: c }
-      }
+      ;[row, col] = [Number(ref[2]) - 1, colToIndex(ref[1].toUpperCase())]
+    }
+    count++
+    if (run && run.s === s && run.r === row && run.c2 === col - 1) run.c2 = col
+    else {
+      if (run) add('cells', run.s, run.r, run.c1, run.c2)
+      run = { s, r: row, c1: col, c2: col }
     }
   }
-  flush()
+  if (run) add('cells', run.s, run.r, run.c1, run.c2)
+  for (const m of cols ? xml.slice(cols.open, cols.end).matchAll(COL) : []) {
+    const [s, lo, hi] = [STYLE, MIN, MAX].map((x) => Number(x.exec(m[1])?.[1]))
+    if (!twin(s) || !(lo >= 1 && hi >= lo && hi <= MAX_COLS)) continue
+    const last = lines.at(-1)
+    if (last?.kind === 'cols' && last.s === s && last.rect.c2 === lo - 2) last.rect.c2 = hi - 1
+    else lines.push({ kind: 'cols', s, rect: { r1: 0, r2: MAX_ROWS - 1, c1: lo - 1, c2: hi - 1 } })
+  }
   return { areas: [...cells, ...lines], cells: count }
+}
+
+/** The row and column of a cell's address at `i` of a text, ended by a quote (`B7"`); -1 for another text. */
+function cellAt(xml: string, i: number): [number, number] {
+  let [col, row] = [0, 0]
+  let k = i
+  for (let ch = xml.charCodeAt(k); ch >= 65 && ch <= 90 && k - i < 3; ch = xml.charCodeAt(++k)) col = col * 26 + ch - 64
+  const digits = k
+  for (let ch = xml.charCodeAt(k); ch >= 48 && ch <= 57; ch = xml.charCodeAt(++k)) row = row * 10 + ch - 48
+  return k > digits && digits > i && xml.charCodeAt(k) === 34 && row >= 1 && row <= MAX_ROWS && col <= MAX_COLS ? [row - 1, col - 1] : [-1, -1]
 }
 
 /** The formats of a sheet's rectangles where they lie now: what a cell, row or column written takes. */

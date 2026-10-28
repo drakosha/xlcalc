@@ -11,7 +11,7 @@ import { SHEET_STATES } from '../../input.js'
 import { object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
-import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
+import { checkLimits, fileBytes, readStyled } from '../read/book.js'
 import { partText, relsOf, type Rel } from '../read/package.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
 import { bookWriting, filterDatabase, iterationAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
@@ -35,7 +35,7 @@ import { spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
-import { keptStyles, type KeptStyles } from './styles.js'
+import { KeptStyles } from './styles.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes, type Placed } from './xml.js'
 
@@ -157,8 +157,8 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   const limits = o.limits === undefined ? undefined : checkLimits(o.limits)
   const { book: given, cells, locale, unasked } = writeArgs(snapshot, { ...(o.values !== undefined ? { values: o.values } : {}), ...(o.locale !== undefined ? { locale: o.locale } : {}) })
   const src = await openSource(bytes, limits)
-  const read = await readXlsx(bytes, limits ? { limits } : undefined)
-  const styles = await keptStyles(src)
+  const { read, stylesXml, table } = await readStyled(bytes, limits ? { limits } : undefined)
+  const styles = new KeptStyles(stylesXml, table)
   const carriers = await carriersOf(src, read.book, styles)
   const identity = refusals(src, read.book, given, carriers)
   // the book as written: its names without the carriers

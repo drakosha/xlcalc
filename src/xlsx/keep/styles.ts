@@ -9,13 +9,10 @@
  */
 import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
-import { partText } from '../read/package.js'
-import { palette } from '../styles/color.js'
-import { readStyles, type StyleTable } from '../styles/read.js'
+import type { StyleTable } from '../styles/read.js'
 import { attributes, element, elements } from '../xml/scan.js'
 import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
-import type { Source } from './source.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
 /** The lists of styles.xml added to, in the order of the schema, with the elements that come before each when it is missing. */
@@ -179,12 +176,6 @@ export class KeptStyles {
     }
     return out + this.xml.slice(from)
   }
-}
-
-/** The file's styles, as `writeKept` adds to them. */
-export async function keptStyles(src: Source): Promise<KeptStyles> {
-  const [xml, theme] = await Promise.all(['styles', 'theme'].map((kind) => partText(src.archive, src.wbRels, kind)))
-  return new KeptStyles(xml, readStyles(xml, palette(theme, xml)))
 }
 
 /** An element of a local name in a text, as written; undefined without one. */
