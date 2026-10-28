@@ -1,8 +1,10 @@
 /**
  * Characters for the regular expressions of match mode 3, as PCRE2 reads them with UTF and UCP on (Excel for Mac):
- * code points of a UTF-16 text, Unicode properties, `\d \w \s \h \v` and the POSIX classes by Unicode properties,
- * caseless matching by case folding, and the characters that end a line.
+ * code points of a UTF-16 text, tests of `\d \w \s \h \v`, the POSIX classes and `\p{…}` made from JavaScript's classes
+ * (`classes.ts`, shared with the translation), caseless matching by case folding, and the characters that end a line.
  */
+import { typeClass } from '../functions/lookup/regex-syntax.js'
+import { ASCII_POSIX, H, POSIX, property, V } from './classes.js'
 
 /** A test of one code point. */
 export type CharTest = (c: number) => boolean
@@ -44,36 +46,21 @@ export function remembered(t: CharTest): CharTest {
   }
 }
 
-/** A Unicode property as JavaScript writes it (`L`, `Script_Extensions=Greek`), a test of a code point, or null if unknown. */
-function jsProperty(name: string): CharTest | null {
-  let re: RegExp
-  try {
-    re = new RegExp(`\\p{${name}}`, 'u')
-  } catch {
-    return null
+/** A test of a JavaScript class (`classes.ts`), remembered for the BMP; memoized by the class. */
+const tests = new Map<string, CharTest>()
+function classOf(js: string): CharTest {
+  let t = tests.get(js)
+  if (!t) {
+    const re = new RegExp(js, 'v')
+    t = remembered((c) => re.test(String.fromCodePoint(c)))
+    tests.set(js, t)
   }
-  return remembered((c) => re.test(String.fromCodePoint(c)))
+  return t
 }
-
-const memo = new Map<string, CharTest | null>()
-const property = (name: string): CharTest | null => {
-  if (!memo.has(name)) memo.set(name, jsProperty(name))
-  return memo.get(name)!
-}
-
-const L = (c: number) => property('L')!(c)
-const N = (c: number) => property('N')!(c)
-const H = new Set([0x09, 0x20, 0xa0, 0x1680, 0x180e, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200a, 0x202f, 0x205f, 0x3000])
-const V = new Set([0x0a, 0x0b, 0x0c, 0x0d, 0x85, 0x2028, 0x2029])
 
 /** `\h` and `\v`. */
-export const horizontal: CharTest = (c) => H.has(c)
-export const vertical: CharTest = (c) => V.has(c)
-const space: CharTest = /* @__PURE__ */ remembered((c) => (c < 128 ? c === 0x20 || (c >= 9 && c <= 13) : V.has(c) || property('Z')!(c)))
-const word: CharTest = /* @__PURE__ */ remembered((c) => (c < 128 ? (c >= 48 && c <= 57) || ((c | 32) >= 97 && (c | 32) <= 122) || c === 95 : L(c) || N(c) || property('Mn')!(c) || property('Pc')!(c)))
-const asciiDigit: CharTest = (c) => c >= 48 && c <= 57
-const asciiWord: CharTest = (c) => asciiDigit(c) || ((c | 32) >= 97 && (c | 32) <= 122) || c === 95
-const asciiSpace: CharTest = (c) => c === 0x20 || (c >= 9 && c <= 13)
+export const horizontal: CharTest = (c) => classOf(H)(c)
+export const vertical: CharTest = (c) => classOf(V)(c)
 
 /** ASCII restrictions of `(?aD)`, `(?aS)`, `(?aW)`, `(?aP)`, `(?aT)`. */
 export interface Ascii {
@@ -85,111 +72,22 @@ export interface Ascii {
 }
 
 /** `\d`, `\s` and `\w` (Unicode under UCP, ASCII under their restriction). */
-export function typeTest(k: 'd' | 's' | 'w', a: Ascii): CharTest {
-  if (k === 'd') return a.aD ? asciiDigit : (c) => (c < 128 ? asciiDigit(c) : property('Nd')!(c))
-  if (k === 's') return a.aS ? asciiSpace : space
-  return a.aW ? asciiWord : word
-}
+export const typeTest = (k: 'd' | 's' | 'w', a: Ascii): CharTest => classOf(typeClass(k, { d: a.aD, s: a.aS, w: a.aW })!)
 
 /** A word character for `\b` and `\B`. */
-export const wordTest = (a: Ascii): CharTest => (a.aW ? asciiWord : word)
-
-const POSIX_ASCII: Record<string, CharTest> = {
-  alpha: (c) => (c | 32) >= 97 && (c | 32) <= 122,
-  lower: (c) => c >= 97 && c <= 122,
-  upper: (c) => c >= 65 && c <= 90,
-  alnum: (c) => asciiDigit(c) || ((c | 32) >= 97 && (c | 32) <= 122),
-  digit: asciiDigit,
-  xdigit: (c) => asciiDigit(c) || ((c | 32) >= 97 && (c | 32) <= 102),
-  space: asciiSpace,
-  blank: (c) => c === 0x20 || c === 9,
-  cntrl: (c) => c < 32 || c === 127,
-  graph: (c) => c > 32 && c < 127,
-  print: (c) => c >= 32 && c < 127,
-  punct: (c) => c > 32 && c < 127 && !asciiDigit(c) && !((c | 32) >= 97 && (c | 32) <= 122),
-  word: asciiWord,
-  ascii: (c) => c < 128,
-}
-
-const graph: CharTest = (c) => c !== 0x61c && c !== 0x180e && !(c >= 0x2066 && c <= 0x2069) && (property('L')!(c) || property('M')!(c) || N(c) || property('P')!(c) || property('S')!(c) || property('Cf')!(c))
-
-/** The POSIX classes under UCP (`pcre2pattern`, "POSIX character classes"): `[:digit:]` follows `\d`, `[:xdigit:]` stays ASCII. */
-const POSIX_UCP: Record<string, CharTest> = {
-  alpha: L,
-  lower: (c) => property('Ll')!(c),
-  upper: (c) => property('Lu')!(c),
-  alnum: (c) => L(c) || N(c),
-  space,
-  blank: horizontal,
-  cntrl: (c) => property('Cc')!(c),
-  graph,
-  print: (c) => graph(c) || (property('Zs')!(c) && c !== 0x180e),
-  punct: (c) => property('P')!(c) || (c < 256 && property('S')!(c)),
-  word,
-}
+export const wordTest = (a: Ascii): CharTest => typeTest('w', a)
 
 /** A POSIX class by name (`alpha`), or null if there is none; `caseless` makes `lower` and `upper` any cased letter. */
 export function posixTest(name: string, a: Ascii, caseless: boolean): CharTest | null {
-  if (!(name in POSIX_ASCII)) return null
-  if (caseless && (name === 'lower' || name === 'upper')) return a.aP ? POSIX_ASCII.alpha : (c) => property('LC')!(c)
-  if (name === 'digit') return a.aP || a.aT ? asciiDigit : typeTest('d', { ...a, aD: false })
-  return a.aP || !(name in POSIX_UCP) ? POSIX_ASCII[name] : POSIX_UCP[name]
+  const ascii = a.aP || (a.aT && name === 'digit')
+  const js = caseless && !ascii && (name === 'lower' || name === 'upper') ? '\\p{LC}' : (ascii && ASCII_POSIX[name]) || POSIX[name]
+  return js ? classOf(js) : null
 }
 
-const loose = (s: string) => s.replace(/[\s_-]/g, '').toLowerCase()
-
-/** General categories by their long names, loosely (`uppercaseletter` is `Lu`). */
-const CATEGORY_NAMES =
-  'C Other Cc Control Cf Format Cn Unassigned Co Private_Use Cs Surrogate L Letter Ll Lowercase_Letter Lm Modifier_Letter Lo Other_Letter Lt Titlecase_Letter Lu Uppercase_Letter LC Cased_Letter M Mark Mc Spacing_Mark Me Enclosing_Mark Mn Nonspacing_Mark N Number Nd Decimal_Number Nl Letter_Number No Other_Number P Punctuation Pc Connector_Punctuation Pd Dash_Punctuation Pe Close_Punctuation Pf Final_Punctuation Pi Initial_Punctuation Po Other_Punctuation Ps Open_Punctuation S Symbol Sc Currency_Symbol Sk Modifier_Symbol Sm Math_Symbol So Other_Symbol Z Separator Zl Line_Separator Zp Paragraph_Separator Zs Space_Separator'.split(' ')
-const CATEGORIES = new Map<string, string>()
-for (let i = 0; i < CATEGORY_NAMES.length; i += 2) {
-  CATEGORIES.set(loose(CATEGORY_NAMES[i]), CATEGORY_NAMES[i])
-  CATEGORIES.set(loose(CATEGORY_NAMES[i + 1]), CATEGORY_NAMES[i])
-}
-CATEGORIES.set('l&', 'LC')
-
-/** PCRE2's special properties (`Xan`, `Xwd`…). */
-const SPECIAL: Record<string, CharTest> = {
-  any: () => true,
-  xan: (c) => L(c) || N(c),
-  xps: space,
-  xsp: space,
-  xwd: (c) => L(c) || N(c) || c === 95,
-  xuc: (c) => c === 0x24 || c === 0x40 || c === 0x60 || (c >= 0xa0 && !(c >= 0xd800 && c <= 0xdfff)),
-}
-
-/** Words of a loose name in Title_Case, as JavaScript names scripts and binary properties (`old italic` is `Old_Italic`). */
-const titled = (s: string) => s.trim().split(/[\s_-]+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('_')
-
-/** A value of a script or binary property as JavaScript knows it: as written, in Title_Case, in capitals. */
-function known(prefix: string, value: string): CharTest | null {
-  for (const v of [value.trim(), titled(value), value.trim().toUpperCase()]) {
-    const t = property(prefix + v)
-    if (t) return t
-  }
-  return null
-}
-
-/**
- * `\p{name}` (`name` as written between the braces or the one letter of `\pL`): a general category, a script (its
- * extensions, as a bare name), `sc:`/`scx:` with a script, a binary property or a special one; null if unknown.
- * `caseless` makes `Lu`, `Ll` and `Lt` any cased letter, as PCRE2 10.43 does.
- */
+/** `\p{name}` (`name` as written between the braces or the one letter of `\pL`), or null if unknown; `caseless` makes `Lu`, `Ll` and `Lt` any cased letter. */
 export function propertyTest(name: string, caseless: boolean): CharTest | null {
-  const at = name.search(/[:=]/)
-  if (at >= 0) {
-    const key = loose(name.slice(0, at))
-    const value = name.slice(at + 1)
-    if (key === 'sc' || key === 'script') return known('Script=', value)
-    if (key === 'scx' || key === 'scriptextensions') return known('Script_Extensions=', value)
-    if (key === 'gc' || key === 'generalcategory') return propertyTest(value, caseless)
-    return null
-  }
-  const k = loose(name)
-  const gc = CATEGORIES.get(k)
-  if (gc) return property(caseless && (gc === 'Lu' || gc === 'Ll' || gc === 'Lt') ? 'LC' : gc)
-  if (k in SPECIAL) return SPECIAL[k]
-  return known('Script_Extensions=', name) ?? known('', name)
+  const js = property(name, false, caseless)
+  return js ? classOf(js) : null
 }
 
 const ONE = /^[\s\S]$/u
