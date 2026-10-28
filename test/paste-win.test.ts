@@ -2,10 +2,10 @@
 import type { NumberFormat } from '../src/contract.js'
 import { enCode } from '../src/numfmt/builtin.js'
 import type { Shown } from '../bench/coverage/paste/shown.js'
-import { PASTE_KNOWN, PASTE_SETS, pasteSets } from './paste-sets.js'
+import { INTO_MERGED, PASTE_KNOWN, PASTE_SETS, pasteSets } from './paste-sets.js'
 
-/** Where the engine pastes otherwise than Excel for Windows, by set and case: the Mac's, as both Excels paste alike. */
-const WIN_KNOWN: Record<string, string> = { ...PASTE_KNOWN }
+/** Where the engine pastes otherwise than Excel for Windows, by set and case: the Mac's, as both Excels paste alike, and All Merging Conditional Formats, which Windows alone has. */
+const WIN_KNOWN: Record<string, string> = { ...PASTE_KNOWN, 'merging-held/into-merged': INTO_MERGED }
 
 /** A row's height on Excel for Windows's grid of whole pixels at 96 dpi, 0.75 pt: it saves a row fitted to 26 pt as 26.25. */
 const onGrid = (h: number) => Math.round(h / 0.75) * 0.75

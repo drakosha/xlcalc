@@ -156,3 +156,39 @@ describe.each(['closures', 'eval'] as const)('operations, Skip Blanks and the ot
     })
   })
 })
+
+describe.each(KINDS)('All Merging Conditional Formats in %s', (kind) => {
+  /** S: A1:A2 under a rule, D1:D3 under one of its own. */
+  const rulesBook = (): BookInput => ({
+    sheets: [
+      {
+        name: 'S',
+        cells: { A1: { value: 2 }, A2: { value: 3 }, D1: { value: 1 } },
+        conditionalFormats: [
+          { type: 'cellIs', ranges: ['A1:A2'], operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } },
+          { type: 'cellIs', ranges: ['D1:D3'], operator: 'lessThan', formulas: ['5'], style: { font: { italic: true } } },
+        ],
+      },
+    ],
+  })
+  const ranges = async (s: { getBook(): Promise<BookInput> | BookInput }) => (await s.getBook()).sheets[0].conditionalFormats?.map((r) => r.ranges)
+
+  it('keeps the rules of the cells it lands on and grows a rule it pastes beside its own cells; one step of undo; the same book and hash as a synchronous session', async () => {
+    const s = await (await opener(kind))(rulesBook(), { clock })
+    expect((await s.editStructure(copy('A1:A2', 'D1', { paste: 'allMergingConditionalFormats' }))).ok).toBe(true)
+    expect(await ranges(s)).toEqual([['D1:D2'], ['A1:A2'], ['D1:D3']])
+    await s.editStructure(copy('A1:A2', 'A3', { paste: 'allMergingConditionalFormats' }))
+    expect(await ranges(s)).toEqual([['D1:D2'], ['A1:A4'], ['D1:D3']])
+    // with Skip Blanks Excel pastes as all
+    await s.editStructure(copy('A1:A2', 'D2', { paste: 'allMergingConditionalFormats', skipBlanks: true }))
+    expect(await ranges(s)).toEqual([['D2:D3'], ['D1'], ['A1:A4'], ['D1']])
+    expect(s.history).toEqual({ undo: 3, redo: 0 })
+    await s.undo()
+    await s.undo()
+    expect(await ranges(s)).toEqual([['D1:D2'], ['A1:A2'], ['D1:D3']])
+    const sync = await (await opener('a synchronous session'))(rulesBook(), { clock })
+    await sync.editStructure(copy('A1:A2', 'D1', { paste: 'allMergingConditionalFormats' }))
+    expect([await s.getBook(), await s.getHash()]).toEqual([await sync.getBook(), await sync.getHash()])
+    await Promise.all([s.close(), sync.close()])
+  })
+})

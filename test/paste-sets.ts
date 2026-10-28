@@ -12,7 +12,7 @@ import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste
 import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held']
 
 /** An operation onto a dynamic array formula. */
 const DYNAMIC =
@@ -21,12 +21,16 @@ const DYNAMIC =
 /** Values or formulas and number formats of whole columns. */
 const COLUMNS = "Excel gives each cell of the column within the sheet's used range the number format of the source's column; the engine pastes the cells' own"
 
+/** One cell with a look and a rule pasted with all into a merged area. */
+export const INTO_MERGED = "Excel pastes one cell into a merged area with its value alone, without the cell's look and rule (measured once); the engine pastes the cell whole"
+
 /** Where the engine pastes otherwise than Excel for Mac, by set and case. */
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'held/table-formats': "Excel pastes the look a table's style gives its cells as their formats; the engine does not draw table styles",
   'kinds/allExceptBorders-column': 'a whole column that cuts a merged area (A5:B5): Excel leaves out the merged cell, the engine pastes it',
   ...Object.fromEntries(['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [`ops/${id}`, DYNAMIC])),
   'ops-held/number-add-spill': DYNAMIC,
+  'merging-held/all-into-merged': INTO_MERGED,
   'kinds-held/valuesAndNumberFormats-column': COLUMNS,
   'kinds-held/formulasAndNumberFormats-column': COLUMNS,
 }
