@@ -1,7 +1,8 @@
 /**
  * `loadLocale(tag)`: one of the package's locales loaded by its tag, its module imported as a thread of the pool
  * imports it (`modules.ts`) and loaded as `registerLocale` loads it, so a pool sends it to its threads. It needs
- * neither the engine nor the checks of `registerLocale`, the package's modules being its own: `xlcalc/xlsx` gives it too.
+ * neither the engine nor the checks of `registerLocale`, the package's modules being its own: the subpath `xlcalc/locales`
+ * gives it, so that no other bundle takes the modules it imports.
  */
 import { InputError } from '../input-error.js'
 import { checkString } from '../input/basic.js'

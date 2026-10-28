@@ -9,11 +9,8 @@
 import { strict } from './strict-args.js'
 import * as read from './xlsx/read/book.js'
 import * as write from './xlsx/write/book.js'
-import { loadLocale as load } from './locale/package.js'
 
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export const readXlsx = /* @__PURE__ */ strict(read.readXlsx)
 export const writeXlsx = /* @__PURE__ */ strict(write.writeXlsx)
-// the root's, so that a host that writes files without the engine loads the workbook's locale first
-export const loadLocale = /* @__PURE__ */ strict(load)
 export type { ReadXlsxOptions, WriteXlsxOptions, XlsxCached, XlsxCachedCell, XlsxIssue, XlsxIssueCode, XlsxLimits, XlsxRead, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'

@@ -13,7 +13,6 @@ import * as inline from './async/inline.js'
 import * as live from './live.js'
 import * as locales from './locale/index.js'
 import * as load from './locale/load.js'
-import * as packaged from './locale/package.js'
 import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
 import * as fit from './layout/fit.js'
@@ -63,7 +62,6 @@ export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)
 export const validateLocalFormula = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(locales.validateLocalFormula))
 export const registerLocale = /* @__PURE__ */ strict(load.registerLocale)
-export const loadLocale = /* @__PURE__ */ strict(packaged.loadLocale)
 // a locale not loaded is refused with the module to import, where registerLocale is at hand
 load.rootLoaded()
 export const editStructure = /* @__PURE__ */ strict(structure.editStructure)
