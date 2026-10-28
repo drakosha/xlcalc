@@ -59,8 +59,9 @@ export type StructureOp =
    * tiled with copies (fill down and fill right are copies of the first row or column). Copies have no
    * `meta` unless `withMeta`. `paste` pastes part of the copy, as Excel's Paste Special (`PasteKind`), `transpose`
    * turns it, rows into columns, `operation` combines the copy's numbers with the destination's, and `skipBlanks`
-   * leaves the destination's cells under blank cells of the copy as they were (`docs/structure.md` "Paste Special");
-   * `operation` or `skipBlanks` without `paste` is Paste Special's `all`.
+   * leaves the contents and look of the destination's cells under blank cells of the copy, and their notes under cells
+   * without a note (`docs/structure.md` "Paste Special"); `operation` or `skipBlanks` without `paste` is Paste
+   * Special's `all`.
    */
   | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean; paste?: PasteKind; transpose?: boolean; operation?: PasteOperation; skipBlanks?: boolean }
   /** A new name that follows Excel's rules (see `BookInput.sheets`) and is not used by another sheet. */
@@ -164,7 +165,7 @@ export type FillType = 'default' | 'series' | 'copy'
  * `validation`: the data validation alone. `valuesAndNumberFormats` and `formulasAndNumberFormats`: as `values` and
  * `formulas` with the copy's number formats, and not refused onto merged areas. `columnWidths`: the widths of the
  * copy's columns alone. `allExceptBorders`: as `all`, each cell keeping the destination's borders. `notes`: the copy's
- * notes alone, a cell without one clearing the destination's (Excel's Comments).
+ * notes alone, a cell without one clearing the destination's (Excel's Comments). Excel's Format Painter is `formats`.
  */
 export type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'valuesAndNumberFormats' | 'formulasAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes'
 
