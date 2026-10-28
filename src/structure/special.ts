@@ -71,6 +71,7 @@ const PARTS: Record<PasteKind, Parts> = {
   columnWidths: { ...NONE_TAKEN, widths: true },
   allExceptBorders: { ...ALL, style: 'borders' },
   notes: { ...NONE_TAKEN, notes: true },
+  allMergingConditionalFormats: ALL,
 }
 
 /** Whether a kind of paste pastes the cells' contents as values (from a clipboard of values, `clipped`). */
@@ -371,12 +372,13 @@ function mergedAt(book: BookInput, to: string, target: Rect): Rect | undefined {
  * copy of one cell over the whole area, but for `all`, which pastes it into the area's top-left cell and keeps the area.
  * A paste that writes no contents lays its source over the area alone, cut to the area's size (the set `merges`).
  */
-export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, target: Rect, o: PasteOptions, values: ValuesIn): { pasted: Applied; r: Applied } {
+export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, target: Rect, o: PasteOptions, values: ValuesIn, source = book): { pasted: Applied; r: Applied } {
+  if (o.kind === 'allMergingConditionalFormats') return mergingRules(book, from, src, to, target, o, values)
   const merged = o.special ? mergedAt(book, to, target) : undefined
   const one = src.r1 === src.r2 && src.c1 === src.c2
   if (merged) {
     const corner = { r1: merged.r1, c1: merged.c1, r2: merged.r1, c2: merged.c1 }
-    if (one && o.kind === 'all') return intoMerged(book, from, src, to, corner, merged, o, values)
+    if (one && o.kind === 'all') return intoMerged(book, from, src, to, corner, merged, o, values, source)
     if (!writesContent(o.kind)) {
       // turned, the source's rows lie along the area's columns
       const [h, w] = o.transpose ? [src.c2 - src.c1, src.r2 - src.r1] : [src.r2 - src.r1, src.c2 - src.c1]
@@ -387,7 +389,7 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
   }
   const looksOnly = !writesContent(o.kind)
   // the source as the clipboard holds it: of values for a paste of values, turned for a transposed one
-  const held = clipboard(book, from, src, values, ofValues(o.kind))
+  const held = clipboard(source, from, src, values, ofValues(o.kind))
   const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, looksOnly) : null
   const pasted = turn ? turn.pasted : pasteClip(book, held, to, target, o.withMeta, looksOnly)
   const area = turn ? turn.area : pasteArea(book, held, to, target)
@@ -406,11 +408,27 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
 }
 
 /** A copy of one cell pasted into the top-left cell (`corner`) of the merged area `merged`, which stays. */
-function intoMerged(book: BookInput, from: string, src: Rect, to: string, corner: Rect, merged: Rect, o: PasteOptions, values: ValuesIn): { pasted: Applied; r: Applied } {
+function intoMerged(book: BookInput, from: string, src: Rect, to: string, corner: Rect, merged: Rect, o: PasteOptions, values: ValuesIn, source: BookInput): { pasted: Applied; r: Applied } {
   const ti = sheetIndex(book, to)
   const text = cornersText(merged)
   const without = { ...book, sheets: book.sheets.map((s, i) => (i === ti ? withField(s, 'merges', s.merges?.filter((m) => cornersText(parseMerge(m)!) !== text)) : s)) }
   const kept = (x: Applied): Applied => (x.ok ? { ...x, book: { ...x.book, sheets: x.book.sheets.map((s, i) => (i === ti ? { ...s, merges: [...(s.merges ?? []), text] } : s)) } } : x)
-  const { pasted, r } = pasteCopy(without, from, src, to, corner, { ...o, special: false }, values)
+  const { pasted, r } = pasteCopy(without, from, src, to, corner, { ...o, special: false }, values, source === book ? without : source)
   return { pasted: kept(pasted), r: kept(r) }
+}
+
+/**
+ * All Merging Conditional Formats (the paste set `merging`): `all` over a destination without its conditional formats,
+ * the copy read from the book as it was, and the destination's rules put back whole after the copy's, none joined to
+ * another; with Skip Blanks Excel pastes as `all`.
+ */
+function mergingRules(book: BookInput, from: string, src: Rect, to: string, target: Rect, o: PasteOptions, values: ValuesIn): { pasted: Applied; r: Applied } {
+  const all: PasteOptions = { ...o, kind: 'all' }
+  const ti = sheetIndex(book, to)
+  const own = book.sheets[ti].conditionalFormats
+  if (o.skipBlanks || !own?.length) return pasteCopy(book, from, src, to, target, all, values)
+  const bare = { ...book, sheets: book.sheets.map((s, i) => (i === ti ? withField(s, 'conditionalFormats', undefined) : s)) }
+  const back = (x: Applied): Applied => (x.ok ? { ...x, book: { ...x.book, sheets: x.book.sheets.map((s, i) => (i === ti ? { ...s, conditionalFormats: [...(s.conditionalFormats ?? []), ...own] } : s)) } } : x)
+  const { pasted, r } = pasteCopy(bare, from, src, to, target, all, values, book)
+  return { pasted: back(pasted), r: back(r) }
 }

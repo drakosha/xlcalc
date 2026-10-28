@@ -70,7 +70,7 @@ const FIELDS: Record<string, string[]> = {
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
-const PASTE_KINDS: readonly PasteKind[] = ['all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes']
+const PASTE_KINDS: readonly PasteKind[] = ['all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'allMergingConditionalFormats']
 
 const PASTE_OPERATIONS: readonly PasteOperation[] = ['add', 'subtract', 'multiply', 'divide']
 
