@@ -564,7 +564,9 @@ function Step($xl, $wb, $s) {
       try {
         $rg = Rg $wb $s.sheet $s.range
         $found = if ([int]$s.values) { $rg.SpecialCells([int]$s.type, [int]$s.values) } else { $rg.SpecialCells([int]$s.type) }
-        '{"areas":' + (List ($found.Areas | ForEach-Object { Str $_.Address($false, $false) })) + '}'
+        # by index: a range in a pipeline is unrolled into its cells
+        $areas = for ($k = 1; $k -le $found.Areas.Count; $k++) { Str $found.Areas.Item($k).Address($false, $false) }
+        '{"areas":' + (List $areas) + '}'
       } catch {
         if ($_.Exception.Message -match 'No cells were found') { '{"areas":[]}' } else { Err $_ }
       }

@@ -8,7 +8,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { BookInput, CellInput, CellStyle, ColumnInput, RowInput, SelectionLabels, SpecialCells } from '../../../src/contract.js'
-import { parseRange, rectCells } from '../../../src/structure/area.js'
+import { cellCount, parseRange, rectCells } from '../../../src/structure/area.js'
 import { createSession, validateFormula } from '../../../src/index.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
@@ -40,8 +40,12 @@ export const selectFile = (set: string) => join(ROOT, 'test/excel/win/select', `
 /** The book as Excel and the engine get it. */
 export const selectBook = (b: SelectBook): BookInput => ({ ...(b.styles ? { styles: b.styles } : {}), sheets: [{ name: 'S', cells: b.cells, ...(b.rows ? { rows: b.rows } : {}), ...(b.columns ? { columns: b.columns } : {}) }] })
 
-/** The cells of rectangles as they compare, sorted, beside the rectangles; none for Excel's "no cells were found". */
-export const cellsAnswer = (areas: string[]): SelectAnswer => ({ cells: areas.flatMap((a) => [...rectCells(parseRange(a)!)]).sort(), areas })
+/** The cells of rectangles as they compare, sorted, beside the rectangles (their count past 10,000); none for Excel's "no cells were found". */
+export function cellsAnswer(areas: string[]): SelectAnswer {
+  const rects = areas.map((a) => parseRange(a)!)
+  const count = rects.reduce((n, x) => n + cellCount(x), 0)
+  return { cells: count > 10_000 ? [`${count} cells`] : rects.flatMap((x) => [...rectCells(x)]).sort(), areas }
+}
 
 /** A reference as it compares: canonical where it parses. */
 function canon(ref: string): string {

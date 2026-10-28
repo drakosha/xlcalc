@@ -1,7 +1,8 @@
 /**
  * Go To Special (`Range.SpecialCells`), predicted by the engine before Excel ran it (`special.predicted.json`): blanks,
- * constants and formulas of each kind of value and of several, and visible cells, over a range of one cell (the used
- * range, which a formatted empty cell and a spill reach, and which starts past A1) and over larger ranges, entire
+ * constants and formulas of each kind of value and of several over a range of one cell (the used range, which a
+ * formatted empty cell and a spill reach, and which starts past A1) and over larger ranges, and visible cells over
+ * ranges (over one cell, the whole sheet's, Excel took past two minutes), entire
  * columns among them; a formula answering empty text, a spill's cells, an error as a formula, hidden rows and columns.
  */
 import type { SpecialCells } from '../../../src/contract.js'
@@ -43,7 +44,7 @@ export function buildSelectCases(): SelectCase[] {
     S({ type: 'formulas', values: ['text'] }, 'A1', 'formulas-text'),
     S({ type: 'formulas', values: ['errors', 'logicals'] }, 'B2:F8', 'formulas-errors-logicals'),
     S({ type: 'formulas', values: ['errors'] }, 'B4:D4', 'formulas-none'),
-    S({ type: 'visible' }, 'A1', 'visible-used'),
+    S({ type: 'visible' }, 'A1:K12', 'visible-wide'),
     S({ type: 'visible' }, 'D4:F6', 'visible-range'),
     S({ type: 'constants' }, 'H2:H4', 'constants-spill'),
     S({ type: 'blanks' }, 'H2:H5', 'blanks-spill'),
