@@ -50,8 +50,9 @@ export function sheetExtent(state: EngineState, s: number): SheetExtent {
 
 /**
  * Excel's used range of a sheet: from the first row and column to the last ones of its cells (values, formulas, input
- * cells without a value), its spills and its layout (`sheetExtent`), where a row of its own (hidden, a height, a style)
- * starts it at column A and a column of its own at row 1 (the set `select/special`); null for an empty sheet.
+ * cells without a value), its spills and its layout (`sheetExtent`), where the rows of their own (hidden, a height, a
+ * style) reach it with column A and the columns of their own with row 1 (the sets `select/special`, `special-held`);
+ * null for an empty sheet.
  */
 export function usedArea(state: EngineState, s: number): Rect | null {
   const { rows, columns } = sheetExtent(state, s)
@@ -61,6 +62,8 @@ export function usedArea(state: EngineState, s: number): Rect | null {
   const reach = (r: number, c: number) => {
     if (r < x.r1) x.r1 = r
     if (c < x.c1) x.c1 = c
+    if (r > x.r2) x.r2 = r
+    if (c > x.c2) x.c2 = c
   }
   const at = { r: 0, c: 0 }
   for (const a of Object.keys(sheet.cells)) {
@@ -69,7 +72,13 @@ export function usedArea(state: EngineState, s: number): Rect | null {
   }
   for (const y of state.spills.on.values()) if (y.s === s) reach(y.r1, y.c1)
   reachLayout(sheet, state.tables, s, (y) => reach(y.r1, y.c1))
-  for (const [r] of lines(sheet.rows, 'r')) reach(r, 0)
-  for (const [c] of lines(sheet.columns, 'c')) reach(0, c)
+  for (const [r1, r2] of lines(sheet.rows, 'r')) {
+    reach(r1, 0)
+    reach(r2, 0)
+  }
+  for (const [c1, c2] of lines(sheet.columns, 'c')) {
+    reach(0, c1)
+    reach(0, c2)
+  }
   return x
 }
