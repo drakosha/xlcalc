@@ -375,6 +375,17 @@ function liveBook(session: Session): LiveBook
 The live workbook of a synchronous session ([`LiveBook`](#livebook)): the same object for the same session. An asynchronous
 session throws [`InputError`](#xlcalc-inputerror): its writes cannot return what they calculated.
 
+### <a id="xlcalc-loadlocale"></a>`loadLocale`
+
+```ts
+function loadLocale(tag: string): Promise<Locale>
+```
+
+Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
+`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
+[`InputError`](#xlcalc-inputerror) (tags are compared as written).
+
 ### <a id="xlcalc-locales"></a>`LOCALES`
 
 ```ts
@@ -837,6 +848,17 @@ becomes `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name d
 returns, so the workbook's names are needed for formulas that use names. A formula the engine cannot parse is
 returned as is. The API function (`strict-args.ts`), from `xlcalc/xlsx`.
 
+### <a id="xlcalcxlsx-loadlocale"></a>`loadLocale`
+
+```ts
+function loadLocale(tag: string): Promise<Locale>
+```
+
+Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
+`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
+[`InputError`](#xlcalc-inputerror) (tags are compared as written).
+
 ### <a id="xlcalcxlsx-readxlsx"></a>`readXlsx`
 
 ```ts
@@ -1038,7 +1060,7 @@ interface AsyncSession {
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
-  /** The session's workbook; from a thread, a copy. */
+  /** The session's workbook; from a thread, a copy. The order of its objects' keys is not part of it (`Session.getBook`). */
   getBook(): Promise<Book>
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
@@ -4044,7 +4066,9 @@ interface Session {
   setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
    * The session's workbook with every change so far: what a host saves as a version. Its objects belong to the
-   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved.
+   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved. The order
+   * of its objects' keys (a sheet's fields, a sheet's cells) is not part of the workbook: it can differ between kinds
+   * of session and after undo and redo, while the hash, the values and a file written from it do not.
    */
   getBook(): Book
   /**
