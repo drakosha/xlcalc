@@ -1,0 +1,1496 @@
+{
+ "number-add-all": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text",
+      "numberFormat": 9
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)+5",
+      "numberFormat": 9
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())+5",
+      "numberFormat": 9
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46042,
+      "numberFormat": 9
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true,
+      "numberFormat": 9
+     },
+     "D7": {
+      "value": 15,
+      "numberFormat": 9
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))+5",
+      "numberFormat": 9
+     },
+     "D9": {
+      "value": 6.5,
+      "numberFormat": 9
+     },
+     "D10": {
+      "value": 2,
+      "numberFormat": 9
+     },
+     "D11": {
+      "value": 5.1,
+      "numberFormat": 9
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-add-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": 5
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)+5"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())+5"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46042,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 15,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))+5"
+     },
+     "D9": {
+      "value": 6.5
+     },
+     "D10": {
+      "value": 2
+     },
+     "D11": {
+      "value": 5.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-divide-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": 0
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)/5"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())/5"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 9207.4,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 2,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))/5"
+     },
+     "D9": {
+      "value": 0.3
+     },
+     "D10": {
+      "value": -0.6
+     },
+     "D11": {
+      "value": 0.02
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formula-add-formulas": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "formula": "0+(A1*2)"
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)+(A2*2)"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())+(A3*2)"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "formula": "46037+(A4*2)",
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "formula": "10+(A6*2)",
+      "note": "n"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))+(A7*2)"
+     },
+     "D9": {
+      "formula": "1.5+(A8*2)"
+     },
+     "D10": {
+      "formula": "-3+(A9*2)"
+     },
+     "D11": {
+      "formula": "0.1+(A10*2)"
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formula-multiply-all": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "formula": "0*(A1*2)"
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)*(A2*2)"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())*(A3*2)"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "formula": "46037*(A4*2)"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "formula": "10*(A6*2)"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))*(A7*2)"
+     },
+     "D9": {
+      "formula": "1.5*(A8*2)"
+     },
+     "D10": {
+      "formula": "-3*(A9*2)"
+     },
+     "D11": {
+      "formula": "0.1*(A10*2)"
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formula-subtract-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": -6
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)-6"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())-6"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46031,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 4,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))-6"
+     },
+     "D9": {
+      "value": -4.5
+     },
+     "D10": {
+      "value": -9
+     },
+     "D11": {
+      "value": -5.9
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "decimal-add-values": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": 0.2
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "(B1+1)+0.2"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "(NA())+0.2"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037.2,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10.2,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "(SUM(B1:B2))+0.2"
+     },
+     "D9": {
+      "value": 1.7
+     },
+     "D10": {
+      "value": -2.8
+     },
+     "D11": {
+      "value": 0.30000000000000004
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "blank-multiply-blank": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "blank-divide-blank": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-subtract-blank": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "D2": {
+      "value": -5
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-add-spill": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "(SEQUENCE(2))+5"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-add-other-sheet": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 12
+     },
+     "A2": {
+      "formula": "(A1*3)+(#REF!*2)"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "number-add-merged": {
+  "refused": "the pasted cells would cover part of the merged area S!F20:G20"
+ },
+ "text-add-all": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": 1.5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "empty-text-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "formula": "\"\""
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "empty-text-values-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "B1": {
+      "value": 3
+     },
+     "D1": {
+      "value": "text"
+     },
+     "E1": {
+      "value": 5,
+      "numberFormat": 9
+     },
+     "B2": {
+      "value": 4
+     },
+     "E2": {
+      "formula": "B1*2"
+     },
+     "D3": {
+      "formula": "B1+1"
+     },
+     "E3": {
+      "value": 0.2
+     },
+     "D4": {
+      "formula": "NA()"
+     },
+     "E4": {
+      "value": "txt",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "D5": {
+      "value": 46037,
+      "numberFormat": "m/d/yyyy"
+     },
+     "E5": {
+      "formula": "\"\""
+     },
+     "D6": {
+      "value": true
+     },
+     "D7": {
+      "value": 10,
+      "note": "n"
+     },
+     "D8": {
+      "formula": "SUM(B1:B2)"
+     },
+     "D9": {
+      "value": ""
+     },
+     "D10": {
+      "value": -3
+     },
+     "D11": {
+      "value": 0.1
+     },
+     "D12": {
+      "formula": "SEQUENCE(2)"
+     },
+     "F20": {
+      "value": 1
+     }
+    },
+    "merges": [
+     "F20:G20"
+    ],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 7
+     },
+     "A2": {
+      "formula": "A1*3"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}

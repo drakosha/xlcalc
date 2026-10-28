@@ -1,0 +1,693 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 26
+ },
+ "books": {
+  "ops": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 2
+      },
+      "A2": {
+       "value": "txt"
+      },
+      "A4": {
+       "formula": "1/0"
+      },
+      "A5": {
+       "formula": "B1*2",
+       "style": 1
+      },
+      "A6": {
+       "value": 46037,
+       "numberFormat": "m/d/yyyy"
+      },
+      "A7": {
+       "value": 0
+      },
+      "A8": {
+       "value": true
+      },
+      "A9": {
+       "style": 1
+      },
+      "B1": {
+       "value": 3
+      },
+      "B2": {
+       "value": 4
+      },
+      "D1": {
+       "value": "text"
+      },
+      "D3": {
+       "formula": "B1+1"
+      },
+      "D4": {
+       "formula": "1/0"
+      },
+      "D5": {
+       "value": 46037,
+       "numberFormat": "m/d/yyyy"
+      },
+      "D6": {
+       "value": true
+      },
+      "D7": {
+       "value": 10,
+       "note": {
+        "text": "n"
+       }
+      },
+      "D8": {
+       "formula": "SUM(B1:B2)"
+      },
+      "E1": {
+       "value": 5,
+       "numberFormat": "0%"
+      },
+      "E2": {
+       "formula": "B1*2"
+      },
+      "E3": {
+       "value": "txt"
+      },
+      "G1": {
+       "value": 10
+      },
+      "I1": {
+       "value": 2
+      },
+      "C1": {
+       "value": 10,
+       "numberFormat": "0.0"
+      },
+      "C2": {
+       "value": 10
+      },
+      "C3": {
+       "value": 10
+      },
+      "C4": {
+       "value": 10
+      },
+      "C5": {
+       "value": 10
+      },
+      "C6": {
+       "value": 10
+      },
+      "C7": {
+       "value": 10
+      },
+      "C8": {
+       "value": 10
+      },
+      "C9": {
+       "value": 10
+      },
+      "L1": {
+       "value": 10
+      },
+      "M1": {
+       "value": 10
+      },
+      "N1": {
+       "value": 10
+      },
+      "O1": {
+       "value": 10
+      },
+      "P1": {
+       "value": 10
+      },
+      "Q1": {
+       "value": 10
+      },
+      "R1": {
+       "value": 10
+      },
+      "S1": {
+       "value": 10
+      }
+     },
+     "merges": [
+      "G1:H1",
+      "I1:J1"
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "add-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "subtract-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "subtract"
+  },
+  {
+   "id": "multiply-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "multiply"
+  },
+  {
+   "id": "divide-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "divide"
+  },
+  {
+   "id": "add-all",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "add-formulas",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "divide-all",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "all",
+   "operation": "divide"
+  },
+  {
+   "id": "number-add-all",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "number-add-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "formula-add-formulas",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "formula-add-all",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "formula-subtract-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "values",
+   "operation": "subtract"
+  },
+  {
+   "id": "text-add-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "E3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D8"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "add-formats",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formats",
+   "operation": "add"
+  },
+  {
+   "id": "add-validation",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "validation",
+   "operation": "add"
+  },
+  {
+   "id": "add-notes",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "notes",
+   "operation": "add"
+  },
+  {
+   "id": "add-columnWidths",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "columnWidths",
+   "operation": "add"
+  },
+  {
+   "id": "add-valuesAndNumberFormats",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "valuesAndNumberFormats",
+   "operation": "add"
+  },
+  {
+   "id": "add-formulasAndNumberFormats",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulasAndNumberFormats",
+   "operation": "add"
+  },
+  {
+   "id": "add-allExceptBorders",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "allExceptBorders",
+   "operation": "add"
+  },
+  {
+   "id": "add-transposed",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L1"
+   },
+   "what": "values",
+   "operation": "add",
+   "transpose": true
+  },
+  {
+   "id": "add-merged",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "I1:J1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "add-merged-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "I1:J1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "skip-all",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-values",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-formulas",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formulas",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-formats",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formats",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-notes",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "notes",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-allExceptBorders",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "allExceptBorders",
+   "skipBlanks": true
+  },
+  {
+   "id": "skip-add",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "skipBlanks": true,
+   "operation": "add"
+  },
+  {
+   "id": "skip-transposed",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A9"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L1"
+   },
+   "what": "all",
+   "skipBlanks": true,
+   "transpose": true
+  },
+  {
+   "id": "skip-onto-blank",
+   "book": "ops",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "all",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "subtract-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "multiply-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "divide-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "divide-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "number-add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "number-add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "formula-add-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "formula-add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "formula-subtract-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "text-add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-formats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-validation": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-notes": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-columnWidths": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-valuesAndNumberFormats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-formulasAndNumberFormats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-allExceptBorders": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-transposed": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-merged": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "add-merged-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-formats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-notes": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-allExceptBorders": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-add": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-transposed": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
+  "skip-onto-blank": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af"
+ },
+ "answers": {
+  "add-values": {},
+  "subtract-values": {},
+  "multiply-values": {},
+  "divide-values": {},
+  "add-all": {},
+  "add-formulas": {},
+  "divide-all": {},
+  "number-add-all": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "number-add-values": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "formula-add-formulas": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "formula-add-all": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "formula-subtract-values": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "text-add-values": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "add-formats": {},
+  "add-validation": {},
+  "add-notes": {},
+  "add-columnWidths": {},
+  "add-valuesAndNumberFormats": {},
+  "add-formulasAndNumberFormats": {},
+  "add-allExceptBorders": {},
+  "add-transposed": {},
+  "add-merged": {},
+  "add-merged-values": {},
+  "skip-all": {},
+  "skip-values": {},
+  "skip-formulas": {},
+  "skip-formats": {},
+  "skip-notes": {},
+  "skip-allExceptBorders": {},
+  "skip-add": {},
+  "skip-transposed": {},
+  "skip-onto-blank": {}
+ }
+}

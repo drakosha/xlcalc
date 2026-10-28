@@ -26,6 +26,8 @@ export interface PasteCase {
 export interface PasteCases {
   books: Record<string, BookInput>
   cases: PasteCase[]
+  /** By book, the cells (on any sheet) whose formulas go to Excel as it saves a formula typed into a cell, not as dynamic array formulas. */
+  plain?: Record<string, string[]>
 }
 
 /** What Excel answered: the error of a paste it refused (its saved file is the book as it was). */

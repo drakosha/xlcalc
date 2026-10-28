@@ -12,7 +12,7 @@ import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { pasteArgs, type PasteAnswer, type PasteCase, type PasteCases, type PasteSet } from './paste/cases.js'
 import { fileAnswers, runFileCases, secondsSince, setModule, writePrediction } from './stored.js'
 import { engineHas, engineOutcome } from './paste/shown.js'
-import { caseFiles } from './xlsx/sent.js'
+import { caseFiles, editParts } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 
 const SCRIPT = join(HERE, 'excel-paste.applescript')
@@ -20,10 +20,21 @@ const SCRIPT = join(HERE, 'excel-paste.applescript')
 /** Where a set's answers go. */
 export const pasteFile = (set: string) => join(ROOT, 'test/excel/paste', `${set}.json`)
 
+/** The formulas of `cells` on each sheet as Excel saves a formula typed into a cell: `<f>`, without the dynamic array's metadata. */
+const plainFormulas = (cells: string[]) => (name: string, xml: string) =>
+  name.startsWith('xl/worksheets/') ? xml.replace(/<c r="([A-Z]+\d+)"([^>]*?) cm="1"><f t="array" ref="\1">/g, (all, at: string, rest: string) => (cells.includes(at) ? `<c r="${at}"${rest}><f>` : all)) : undefined
+
 /** The set's cases, the file of each case and what identifies it. */
 export async function pasteSet(set: string): Promise<{ built: PasteCases; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   const built = (await setModule<PasteSet>('paste', set)).buildPasteCases()
-  return { built, ...(await caseFiles(built.cases, async (c) => (await writeXlsx({ book: built.books[c.book] })).data)) }
+  return {
+    built,
+    ...(await caseFiles(built.cases, async (c) => {
+      const { data } = await writeXlsx({ book: built.books[c.book] })
+      const plain = built.plain?.[c.book]
+      return plain ? editParts(data, plainFormulas(plain)) : data
+    })),
+  }
 }
 
 /** One case in Excel: its answer and the saved file, or the repair window's text. */
