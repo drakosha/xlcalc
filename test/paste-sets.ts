@@ -12,7 +12,7 @@ import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste
 import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held']
 
 /** An operation onto a dynamic array formula. */
 const DYNAMIC =
