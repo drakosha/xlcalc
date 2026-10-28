@@ -23,11 +23,13 @@ const mixed: SelectBook = {
   columns: { E: { hidden: true } },
 }
 
-const S = (special: SpecialCells, range: string, id: string): SelectCase => ({ id, book: 'mixed', range, special })
+/** The book four times over, four cases a book: Excel takes seconds over a case it finds no cells for, past a job's time for one book. */
+export const BOOKS: Record<string, SelectBook> = { mixed, 'mixed-2': mixed, 'mixed-3': mixed, 'mixed-4': mixed }
 
-export const BOOKS: Record<string, SelectBook> = { mixed }
+const S = (special: SpecialCells, range: string, id: string): Omit<SelectCase, 'book'> & { special: SpecialCells } => ({ id, range, special })
 
 export function buildSelectCases(): SelectCase[] {
+  const books = Object.keys(BOOKS)
   return [
     S({ type: 'blanks' }, 'A1', 'blanks-used'),
     S({ type: 'blanks' }, 'B2:F8', 'blanks-range'),
@@ -45,5 +47,5 @@ export function buildSelectCases(): SelectCase[] {
     S({ type: 'visible' }, 'D4:F6', 'visible-range'),
     S({ type: 'constants' }, 'H2:H4', 'constants-spill'),
     S({ type: 'blanks' }, 'H2:H5', 'blanks-spill'),
-  ]
+  ].map((c, i) => ({ ...c, book: books[i % books.length] }))
 }
