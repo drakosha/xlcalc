@@ -13,7 +13,7 @@ import { say } from '../locale/messages.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockOptions } from '../result.js'
-import { areaText } from './area.js'
+import { areaText, type Rect } from './area.js'
 import { layerOf, looksTaken, withLayer } from '../looks/sheet.js'
 import { emptyLayer } from '../looks/layer.js'
 import { withLooseLooks } from './paste.js'
@@ -109,13 +109,8 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
 /** The values of a book computed when first asked for, at the current moment. */
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
-  return (sheet, rect) => {
-    if (!values) {
-      const clock = currentClock()
-      values = stateValues(createState(book, clockOptions(clock)))
-    }
-    return values(sheet, rect)
-  }
+  const computed = () => (values ??= stateValues(createState(book, clockOptions(currentClock()))))
+  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect) })
 }
 
 /**

@@ -408,6 +408,9 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind, { operation: o.operation, skipBlanks: o.skipBlanks, widths }), geometry: writesContent(o.kind) ? r.geometry : [] }
     r = writesContent(o.kind) ? headersPasted(book, to, area)(part) : part
   }
+  // an operation onto a spilled array is refused, as Excel refuses it onto a dynamic array formula (the paste sets `ops-held`, `spill-ops`)
+  const spill = r.ok && area && o.operation && writesContent(o.kind) ? values.spills?.(to, area)[0] : undefined
+  if (spill) r = { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
   // the looks the copy laid, over the rows a session fits to their fonts
   if (r.ok && area && PARTS[o.kind].style !== 'target') r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }
