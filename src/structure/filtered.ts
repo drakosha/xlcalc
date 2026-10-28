@@ -111,7 +111,7 @@ export function clipboard(book: BookInput, from: string, src: Rect, values: Valu
  */
 export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: Rect, withMeta: boolean, how: PasteHow = {}): Applied {
   const { source, from: at, src: rect } = clip
-  const parts = pasteRuns(book, to, target)
+  const parts = how.whole ? null : pasteRuns(book, to, target)
   if (!parts) return copyRange(book, at, rect, to, target, withMeta, source, how)
   if (clip.packed && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
@@ -122,9 +122,9 @@ export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: 
   return pastedOnce(book, to, pastedArea(rect, runs), steps)
 }
 
-/** A rectangle around all the cells a paste of the clipboard at `target` of sheet `to` writes, in each run of visible rows. */
-export function pasteArea(book: BookInput, clip: Clipboard, to: string, target: Rect): Rect {
-  const parts = pasteRuns(book, to, target)
+/** A rectangle around all the cells a paste of the clipboard at `target` of sheet `to` writes, in each run of visible rows unless `whole`. */
+export function pasteArea(book: BookInput, clip: Clipboard, to: string, target: Rect, whole = false): Rect {
+  const parts = whole ? null : pasteRuns(book, to, target)
   return parts ? pastedArea(clip.src, parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))) : tiles(clip.src, target).area
 }
 

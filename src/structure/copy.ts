@@ -58,10 +58,14 @@ const pastedCell = (cell: CellInput, withMeta: boolean): CellInput => {
   return withMeta && meta !== undefined ? { ...rest, meta } : rest
 }
 
-/** How a paste lays a copy: of which it takes the looks alone (`looksOnly`), and keeping the destination's conditional formats (`mergeRules`). */
+/**
+ * How a paste lays a copy: of which it takes the looks alone (`looksOnly`), keeping the destination's conditional
+ * formats (`mergeRules`), over the target whole, its rows a filter hid too (`whole`).
+ */
 export interface PasteHow {
   looksOnly?: boolean
   mergeRules?: boolean
+  whole?: boolean
 }
 
 /**

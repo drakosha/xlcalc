@@ -192,7 +192,7 @@ export function pasteTurned(book: BookInput, held: Clipboard, to: string, target
     return 'ok' in clip ? clip : pasteClip(b, clip, to, at, withMeta, how)
   }
   const pasted = offsets.length === 1 ? pasteClip(book, first, to, target, withMeta, how) : chain(book, offsets.map(tile))
-  return { pasted, area: pasteArea(book, first, to, target) }
+  return { pasted, area: pasteArea(book, first, to, target, how.whole) }
 }
 
 /** Why Excel refuses to paste contents onto a merged area of the target that the copy does not bring there (the paste set `probe`). */
@@ -393,10 +393,12 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
   const looksOnly = !writesContent(o.kind)
   // the source as the clipboard holds it: of values for a paste of values, turned for a transposed one
   const held = clipboard(book, from, src, values, ofValues(o.kind))
-  const how: PasteHow = { looksOnly, mergeRules: o.mergeRules }
+  // Paste Special of a copy that left out rows a filter hid lays it over the target whole, hidden rows too, and skips no blank (the paste set `lines-ops`)
+  if (o.special && held.packed) o = { ...o, skipBlanks: false }
+  const how: PasteHow = { looksOnly, mergeRules: o.mergeRules, whole: o.special && held.packed }
   const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, how) : null
   const pasted = turn ? turn.pasted : pasteClip(book, held, to, target, o.withMeta, how)
-  const area = turn ? turn.area : pasteArea(book, held, to, target)
+  const area = turn ? turn.area : pasteArea(book, held, to, target, how.whole)
   // a transposed copy's cells are not where its source's tables would read them: it renames header cells alone
   let r = turn ? (area ? headersPasted(book, to, area)(pasted) : pasted) : copyTables(book, from, src, to, target, o.kind === 'all').after(pasted)
   // `all` is laid cell by cell only with an operation or Skip Blanks
