@@ -114,7 +114,8 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues, walk: boole
   for (const addr of walk ? Object.keys(read.cells) : read.formulas) {
     const cell = read.cells[addr]
     if (cell.formula === undefined) continue
-    const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr }, src.formulas)
+    // the tree of a formula of the old kind, which is converted
+    const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr }, src.formulas, read.old.has(addr))
     const dynamic = f.ast && read.old.has(addr) ? src.legacy(f.ast, src.name) : undefined
     cell.formula = dynamic ? canonical(dynamic) : f.formula
     out.set(addr, f)

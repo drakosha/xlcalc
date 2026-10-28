@@ -1,13 +1,17 @@
 /**
  * Whether a file can hold a formula of the book, and its tree when it can: what the sheet, table, conditional format and
- * data validation writers share before a formula is printed in a file's spelling (`formulas/to-file.ts`).
+ * data validation writers share before a formula is printed in a file's spelling (`formulas/to-file.ts`). The formulas
+ * of a book's cells of one shape (`syntax/shape.ts`), a formula copied down a column, are checked and printed once.
  */
-import type { ExternalBook } from '../../contract.js'
+import { MAX_FORMULA_LENGTH, type ExternalBook } from '../../contract.js'
 import { FormulaError, type Ast } from '../../syntax/ast.js'
-import { parse } from '../../syntax/parse.js'
+import { parseTokens } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
 import { bindTables } from '../../syntax/check.js'
 import { bindLinks } from '../../syntax/links.js'
+import { filled, instanceText, ready, shapeOf, type Hole, type Template } from '../../syntax/shape.js'
+import { tokenize, type Tok } from '../../syntax/tokens.js'
+import { FILE_PRINT, toFile } from '../formulas/to-file.js'
 
 /** What a formula of the book may name in its file. */
 export interface FileNames {
@@ -23,12 +27,13 @@ export interface FileNames {
  * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
  * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
  * and its references to other workbooks the book's links and their sheets. A defined name's ref (`opts.anySheet`) keeps
- * a reference to a sheet the book does not have, and binds its links without the walk that looks for them.
+ * a reference to a sheet the book does not have, and binds its links without the walk that looks for them. `opts.toks`
+ * are the formula's tokens where they were read already.
  */
-export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean } = {}): Ast | null {
+export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean; toks?: Tok[] } = {}): Ast | null {
   let ast: Ast
   try {
-    ast = parse(formula, opts)
+    ast = parseTokens(formula, opts.toks ?? null, opts)
   } catch (e) {
     if (e instanceof FormulaError) return null
     throw e
@@ -49,4 +54,47 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   if (!ok || !linked) return ok ? ast : null
   const links = bindLinks(ast, names.externalBooks, [...names.sheets])
   return links.ok ? links.ast : null
+}
+
+/** The shapes of a book's formulas written, by the table they are in and their key: a template, or null for a shape written formula by formula. */
+export type FileShapes = Map<string, Template | null>
+
+/** At most this many shapes are kept for a book, as the engine keeps (`prepare.ts`). */
+const SHAPES = 4096
+
+/** A hole as a file spells it: a number with an upper-case exponent (`toFile`). */
+const fileHole = (h: Hole) => (typeof h === 'number' ? String(h).toUpperCase() : filled(h))
+
+/**
+ * A formula of a cell in a file's spelling (`toFile` of its `fileTree`), null when the file cannot hold it; through its
+ * shape's template where a formula of the shape in the same table (`enclosing`) was written before (`shapes`, a book's).
+ */
+export function fileText(formula: string, names: FileNames, enclosing: string | undefined, shapes?: FileShapes): string | null {
+  const own = (toks?: Tok[]) => {
+    const tree = fileTree(formula, names, enclosing, toks ? { toks } : {})
+    return tree && toFile(tree)
+  }
+  // a text too long or empty fails before it is read
+  if (!shapes || formula.length > MAX_FORMULA_LENGTH || formula.trim() === '') return own()
+  let toks: Tok[]
+  try {
+    toks = tokenize(formula)
+  } catch (e) {
+    if (e instanceof FormulaError) return null
+    throw e
+  }
+  const shape = shapeOf(toks)
+  // a spill reference is written as ANCHORARRAY, which its shape does not tell
+  if (!shape || shape.holes.some((h) => typeof h !== 'number' && h.spill)) return own(toks)
+  const key = `${enclosing === undefined ? '-' : `${enclosing.length}:${enclosing}`}:${shape.key}`
+  const t = shapes.get(key)
+  if (t && (t.at || ready(t, FILE_PRINT, fileHole))) return instanceText(t, shape.holes)
+  if (t !== undefined) {
+    // a shape the file cannot hold, or a template whose tree or text cannot take holes in
+    shapes.set(key, null)
+    return own(toks)
+  }
+  const tree = fileTree(formula, names, enclosing, { toks })
+  if (shapes.size < SHAPES) shapes.set(key, tree ? { ast: tree, holes: shape.holes } : null)
+  return tree && toFile(tree)
 }
