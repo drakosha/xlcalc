@@ -6,7 +6,7 @@
  * `test/paste-win.test.ts` reads them.
  */
 import { pasteSet } from '../coverage/paste.js'
-import type { PasteAnswer, PasteCase, PasteWhat } from '../coverage/paste/cases.js'
+import type { PasteAnswer, PasteCase, PasteOperation, PasteWhat } from '../coverage/paste/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
 import { fileJobs } from './books.js'
 import { winFile } from './functions.js'
@@ -23,7 +23,11 @@ const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy'>, number> = {
   columnWidths: 8,
   formulasAndNumberFormats: 11,
   valuesAndNumberFormats: 12,
+  notes: -4144,
 }
+
+/** Excel's `XlPasteSpecialOperation` of each operation. */
+const OPERATION: Record<PasteOperation, number> = { add: 2, subtract: 3, multiply: 4, divide: 5 }
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await pasteSet(set)
@@ -36,7 +40,7 @@ export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<vo
     store,
     files,
     (c) => [
-      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what] }), transpose: !!c.transpose },
+      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose },
       { do: 'saveAs' },
     ],
     (_, a) => {

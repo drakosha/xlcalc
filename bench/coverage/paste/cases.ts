@@ -1,8 +1,14 @@
 /** The cases of the step `paste`: a book, a range copied and pasted with Paste Special at a target. */
 import type { BookInput, RangeRef } from '../../../src/contract.js'
 
-/** What Paste Special pastes, as the harness names Excel's `XlPasteType`; `copy`, a plain copy (`Range.Copy` with a destination). */
-export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders'
+/**
+ * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`); `copy`, a plain
+ * copy (`Range.Copy` with a destination).
+ */
+export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes'
+
+/** Paste Special's operation (`XlPasteSpecialOperation`), none when left out. */
+export type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'
 
 export interface PasteCase {
   id: string
@@ -13,6 +19,8 @@ export interface PasteCase {
   to: RangeRef
   what: PasteWhat
   transpose?: boolean
+  operation?: PasteOperation
+  skipBlanks?: boolean
 }
 
 export interface PasteCases {
@@ -30,4 +38,4 @@ export interface PasteSet {
 }
 
 /** The paste as the script takes it. */
-export const pasteArgs = (c: PasteCase): string => JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, c.to.range, c.what, c.transpose ? '1' : '0'])
+export const pasteArgs = (c: PasteCase): string => JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, c.to.range, c.what, c.transpose ? '1' : '0', c.operation ?? 'none', c.skipBlanks ? '1' : '0'])

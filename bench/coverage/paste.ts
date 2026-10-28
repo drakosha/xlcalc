@@ -11,7 +11,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { pasteArgs, type PasteAnswer, type PasteCase, type PasteCases, type PasteSet } from './paste/cases.js'
 import { fileAnswers, runFileCases, secondsSince, setModule, writePrediction } from './stored.js'
-import { ENGINE_KINDS, engineOutcome } from './paste/shown.js'
+import { engineHas, engineOutcome } from './paste/shown.js'
 import { caseFiles } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 
@@ -49,7 +49,7 @@ export async function stepPaste(set: string): Promise<void> {
 export async function stepPastePredict(set: string): Promise<void> {
   const { cases, books } = (await setModule<PasteSet>('paste', set)).buildPasteCases()
   const out: Record<string, unknown> = {}
-  for (const c of cases) if (ENGINE_KINDS.includes(c.what)) out[c.id] = await engineOutcome(books[c.book], c)
+  for (const c of cases) if (engineHas(c)) out[c.id] = await engineOutcome(books[c.book], c)
   writePrediction(new URL('./paste/x.ts', import.meta.url).href, set, out)
   console.log(`paste ${set}: ${Object.keys(out).length} predicted`)
 }

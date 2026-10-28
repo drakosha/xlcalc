@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { writeXlsx } from '../src/xlsx.js'
 import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste/cases.js'
-import { ENGINE_KINDS, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
+import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 
 /** The paste sets with answers of Excel. */
 export const PASTE_SETS = ['probe', 'held', 'merges', 'fit']
@@ -27,7 +27,7 @@ export function pasteSets(excel: string, dir: string, sets: readonly string[], k
   const stored = sets.filter((set) => existsSync(new URL(`./excel/${dir}/${set}.json`, import.meta.url)))
   describe.each(stored)(`paste set %s against ${excel}`, (set) => {
     const s = JSON.parse(readFileSync(new URL(`./excel/${dir}/${set}.json`, import.meta.url), 'utf8')) as PasteCases & { answers: Record<string, PasteAnswer> }
-    const cases = s.cases.filter((c) => ENGINE_KINDS.includes(c.what))
+    const cases = s.cases.filter((c) => engineHas(c))
     it.each(cases.map((c) => [c.id, c] as [string, PasteCase]))('%s', async (_, c) => {
       const book = s.books[c.book]
       const saved = as(await shownFile(new Uint8Array(readFileSync(new URL(`./excel/${dir}/${set}/${c.id}.xlsx`, import.meta.url)))))

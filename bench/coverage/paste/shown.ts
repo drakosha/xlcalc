@@ -16,6 +16,9 @@ import type { PasteCase } from './cases.js'
 /** The kinds of paste the engine has. */
 export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation'] satisfies (PasteKind | 'copy')[]
 
+/** Whether the engine has a case's paste: its kind, with no operation or Skip Blanks. */
+export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what) && !c.operation && !c.skipBlanks
+
 const WINDOW = { rows: 30, cols: 20 }
 
 /** A formula in one spelling: Excel saves `T!A1` where the writer writes `'T'!A1`. */
