@@ -105,12 +105,13 @@ function formulasOf(rule: ConditionalFormat): string[] {
 }
 
 /**
- * What deleted lines did to a rule: whether they were rows and on its sheet (`here`); its cells cut, or all where they
- * were; its formulas changed beyond moving with its first cell, or a reference of theirs lost.
+ * What deleted lines did to a rule: whether they were on its sheet (`here`); its cells cut, or all where they were;
+ * whether the cut lines were its last ones (`end`, unknown where undefined); its formulas changed beyond moving with its
+ * first cell, or a reference of theirs lost.
  */
 export interface Deleted {
-  rows: boolean
   here: boolean
+  end?: boolean
   cut: boolean
   stayed: boolean
   changed: boolean
@@ -119,14 +120,15 @@ export interface Deleted {
 
 /**
  * Whether Excel puts a rule of `type` after the others when deleted lines changed it (the sets `cond/order`,
- * `order-held`, `struct-held`, `held`, keep `rules-held-2`): a rule that lost cells goes when it is over the statistics
- * of its cells (a colour scale, a data bar, an icon set, a top rule; average and duplicate rules taken as these) or,
- * losing rows, when its formulas changed; a rule whose cells stayed goes when a reference of its became `#REF!`, and a
- * colour scale or an icon set of the sheet with the lines also when a threshold's reference moved; a rule whose cells
- * moved stays.
+ * `order-held`, `order-held-2`, `struct-held`, `held`, keep `rules-held-2`): a rule that lost cells goes when it is over
+ * the statistics of its cells (a colour scale, a data bar, an icon set, a top rule; average and duplicate rules taken as
+ * these), when a reference of its became `#REF!`, or when its formulas changed and it lost other lines than its last
+ * ones; a rule whose cells stayed goes when a reference of its became `#REF!`, and a colour scale or an icon set of the
+ * sheet with the lines also when a threshold's reference moved; a rule whose cells moved stays. Undefined where it
+ * turns on `end` and that is unknown.
  */
-export function lateBy(type: string, d: Deleted): boolean {
-  if (d.cut) return GRADED.has(type) || (d.rows && d.changed)
+export function lateBy(type: string, d: Deleted): boolean | undefined {
+  if (d.cut) return GRADED.has(type) || d.lost || (d.changed && (d.end === undefined ? undefined : !d.end))
   return d.stayed && (d.lost || (d.here && d.changed && SCALES.has(type)))
 }
 
@@ -134,7 +136,7 @@ export function lateBy(type: string, d: Deleted): boolean {
 export const lostRefs = (xs: string[]) => xs.reduce((n, x) => n + x.split('#REF!').length - 1, 0)
 
 /** `lateBy` for a rule of `sheet` that deleted lines made from `before` into `after`. */
-export function lateAfterDeletion(before: ConditionalFormat, after: ConditionalFormat, sheet: string, names: Map<string, string>, how: Pick<Deleted, 'rows' | 'here'>): boolean {
+export function lateAfterDeletion(before: ConditionalFormat, after: ConditionalFormat, sheet: string, names: Map<string, string>, how: Pick<Deleted, 'here' | 'end'>): boolean | undefined {
   const [a, b] = [rectsOf(before), rectsOf(after)]
   const cells = (xs: Rect[]) => xs.reduce((n, x) => n + cellCount(x), 0)
   // the formulas as they were, copied to the new first cell: what moving with it alone gives
@@ -154,6 +156,11 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
   const count = Math.abs(n)
   // a line of the sheet after the operation where it was before
   const back = (i: number) => (n > 0 ? (i >= at + count ? i - count : i) : i >= at ? i + count : i)
+  // the deleted lines took a rule's last ones and no other
+  const cutAtEnd = (rule: ConditionalFormat) => {
+    const xs = rectsOf(rule)
+    return Math.min(...xs.map((x) => lo(x, axis))) < at && Math.max(...xs.map((x) => hi(x, axis))) < at + count
+  }
   return sheets.map((s) => {
     const list = s.conditionalFormats
     if (!list?.length) return s
@@ -175,7 +182,7 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
       const from = !own ? top : axis === 'r' ? { r: back(top.r), c: top.c } : { r: top.r, c: back(top.c) }
       const p = placed(rule, own ? next : rectsOf(rule), from, s.name, s.name, t, names)
       changed ||= p.rule !== rule
-      out.push({ rule: p.rule, late: n < 0 && lateAfterDeletion(rule, p.rule, s.name, names, { rows: axis === 'r', here: own }) })
+      out.push({ rule: p.rule, late: n < 0 && !!lateAfterDeletion(rule, p.rule, s.name, names, { here: own, end: own && cutAtEnd(rule) }) })
     }
     return changed ? withRules(s, lastLate(out)) : s
   })

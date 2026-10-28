@@ -280,8 +280,8 @@ export interface KeptRulesInput {
   sources: RuleSource[]
   /** The edits of the sheet's part. */
   edits: Edit[]
-  /** The lines deleted on the sheet where none were inserted: rows (`r`), or columns alone (`c`). */
-  deleted?: 'r' | 'c'
+  /** Rows or columns were deleted on the sheet, and none inserted. */
+  deleted: boolean
   r0: ConditionalFormat[]
   r1: ConditionalFormat[]
   /** The workbook's rules written with these priorities. */
@@ -326,9 +326,14 @@ export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
     return { s, text, was, ranges: (moved ? readText(moved.text) : was).split(/\s+/).filter(Boolean), at: 0 }
   }
   const area = (ranges: string[]) => cells(ranges.join(' '))
-  const how = { rows: x.deleted === 'r', here: true }
-  // the workbook's rules Excel put after the others (`shiftConditional`): after deleted lines as `lateAfterDeletion` says, else those over the statistics of their cells that lost some
-  const late = r0.map((r, i) => to[i] >= 0 && (x.deleted ? lateAfterDeletion(r, r1[to[i]], sheet, new Map(), how) : GRADED.has(r.type) && area(r1[to[i]].ranges) < area(r.ranges)))
+  // the workbook's rules Excel put after the others (`shiftConditional`): after deleted lines as `lateAfterDeletion` says
+  // (where that turns on where the lines were, by whether a rule after it now comes before it), else those over the
+  // statistics of their cells that lost some
+  const late = r0.map((r, i) => {
+    if (to[i] < 0) return false
+    if (!x.deleted) return GRADED.has(r.type) && area(r1[to[i]].ranges) < area(r.ranges)
+    return lateAfterDeletion(r, r1[to[i]], sheet, new Map(), { here: true }) ?? to.some((j, k) => k > i && j >= 0 && j < to[i])
+  })
   /** A carried rule that goes after the others: before the first of those after it in the file. */
   const lastAt = (p: number) => {
     for (let k = p; k < r0.length; k++) if (late[k]) return to[k] - 0.5
@@ -349,11 +354,12 @@ export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
     if (others.some((o) => o.index !== undefined)) throw refuse({ key: 'keptRulesBar', sheet, range: s.block.sqref })
     const part = others.find((o) => o.joined && o.x14)
     if (part) c.partner = carry(part)
-    // a rule goes after the others as the workbook's would (its formulas without relative references, or with its first cell kept, compare as written)
+    // a rule goes after the others as the workbook's would (its formulas without relative references, or with its first
+    // cell kept, compare as written), and where that turns on where the lines were, which no carrier tells, it goes
     const type = attributes(text.slice(0, tagEnd(text, 0))).type ?? ''
     const cut = cells(c.ranges.join(' ')) < cells(c.was)
-    const d = { ...how, cut, stayed: c.ranges.join(' ') === c.was, changed: c.text !== text, lost: lostRefs([c.text]) > lostRefs([text]) }
-    c.at = (x.deleted ? lateBy(type, d) : GRADED.has(type) && cut) ? lastAt(p) : place(p, to, late, r1.length)
+    const d = { here: true, cut, stayed: c.ranges.join(' ') === c.was, changed: c.text !== text, lost: lostRefs([c.text]) > lostRefs([text]) }
+    c.at = (x.deleted ? (lateBy(type, d) ?? true) : GRADED.has(type) && cut) ? lastAt(p) : place(p, to, late, r1.length)
     carried.push(c)
   }
   // the rules in their order: the workbook's at their places, the carried ones between them

@@ -65,8 +65,8 @@ export interface Identity {
   target: Map<number, number>
   /** By sheet of the book read: rows or columns were inserted or deleted on it. */
   lines: boolean[]
-  /** By sheet of the book read: the lines deleted on it where none were inserted, rows (`r`) or columns alone (`c`). */
-  deleted: ('r' | 'c' | undefined)[]
+  /** By sheet of the book read: rows or columns were deleted on it, and none inserted. */
+  deleted: boolean[]
   /** The edits that write the moved references back to the parts. */
   edits: Edit[]
   /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
@@ -100,7 +100,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       out.target.set(k, j)
     }
     out.lines[k] = !!at?.moved
-    out.deleted[k] = at ? at.deleted : undefined
+    out.deleted[k] = !!at?.deleted
     const renamed = j === undefined || book1.sheets[j].name !== was
     const changed = renamed || out.lines[k]
     const unread = [...c.unparsed[k], ...c.anywhere]
