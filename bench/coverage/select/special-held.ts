@@ -2,7 +2,7 @@
  * Held out after the set special fitted Go To Special: where rows and columns of their own start and end the used range
  * (a styled row above the cells and one below them, a column of a width left of them and a styled one right of them),
  * a date and empty text among constants and formulas, a formula answering an error that is not a formula's own, and
- * visible cells with rows hidden (over an entire column Excel took past two minutes). Predicted before Excel ran it (`special-held.predicted.json`).
+ * visible cells with rows hidden. Predicted before Excel ran it (`special-held.predicted.json`).
  */
 import type { SpecialCells } from '../../../src/contract.js'
 import type { SelectBook, SelectCase } from './cases.js'

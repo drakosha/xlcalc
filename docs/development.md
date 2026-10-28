@@ -319,8 +319,9 @@ The step `select` (above) also calls `Range.SpecialCells` with Excel's `XlCellTy
 |---|---|---|
 | `special` | 16 | blanks, constants and formulas of each kind of value and of several over one cell and over ranges, an entire column among them; visible cells over ranges with a hidden row and column; a spill's cells, a formula answering empty text |
 | `special-held` | 8 | held out: rows and columns of their own above, below, left and right of the cells, a date and empty text, an error a formula answers, visible cells with rows hidden, entire rows and columns |
+| `special-held-2` | 2 | held out: visible cells over one cell and over an entire column |
 
-`special` held in 13 of 16: Excel's used range started at A1, where the sheet's cells started at B2, as its hidden row and column reach it at column A and row 1; and visible cells are the range's own, not those of the used range. `special-held`, predicted after the fit, held in 6 of 8: rows and columns of their own reach the used range at its far ends too (a styled row below the cells, a styled column right of them). Excel did not answer within two minutes for visible cells over one cell or an entire column (the whole sheet's); the engine gives the sheet's rectangles without hidden rows and columns there, not checked.
+`special` held in 13 of 16: Excel's used range started at A1, where the sheet's cells started at B2, as its hidden row and column reach it at column A and row 1; and visible cells are the range's own, not those of the used range. `special-held`, predicted after the fit, held in 6 of 8: rows and columns of their own reach the used range at its far ends too (a styled row below the cells, a styled column right of them). `special-held-2` (visible cells over one cell, the whole sheet's, and over an entire column) held in 2 of 2.
 ### Editing a grid
 
 From [Editing a grid](edits.md).

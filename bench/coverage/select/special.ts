@@ -2,8 +2,7 @@
  * Go To Special (`Range.SpecialCells`), predicted by the engine before Excel ran it (`special.predicted.json`): blanks,
  * constants and formulas of each kind of value and of several over a range of one cell (the used range, which a
  * formatted empty cell and a spill reach, and which starts past A1) and over larger ranges, and visible cells over
- * ranges (over one cell, the whole sheet's, Excel took past two minutes), entire
- * columns among them; a formula answering empty text, a spill's cells, an error as a formula, hidden rows and columns.
+ * ranges, entire columns among them; a formula answering empty text, a spill's cells, an error as a formula, hidden rows and columns.
  */
 import type { SpecialCells } from '../../../src/contract.js'
 import type { SelectBook, SelectCase } from './cases.js'
