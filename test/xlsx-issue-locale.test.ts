@@ -64,7 +64,6 @@ const LOSSES = pack(
 
 const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['defaultFont', { key: 'defaultFont', name: 'Arial', size: 12 }],
-  ['calculation', { key: 'manualCalculation' }],
   ['calculation', { key: 'precisionAsDisplayed' }],
   ['calculation', { key: 'iterationCount', count: '0' }],
   ['calculation', { key: 'iterationChange', change: '-1' }],

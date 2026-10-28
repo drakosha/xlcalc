@@ -581,6 +581,8 @@ function Step($xl, $wb, $s) {
       [void]$wb.Worksheets.Item(1).Activate()
       $all
     }
+    # the calculation option Excel took from the book it opened first (XlCalculation: -4105 automatic, -4135 manual, 2 semiautomatic)
+    'calcMode' { Cell ([double]$xl.Calculation) }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }

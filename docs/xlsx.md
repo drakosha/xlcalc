@@ -243,7 +243,7 @@ A file with `workbookPr date1904` gives a workbook with `dateSystem: 1904`. Numb
 iteration: { maxIterations: 7, maxChange: 0.5 }
 ```
 
-The manual calculation mode, "automatic except for data tables" and precision as displayed are reported.
+The calculation option is kept as `calculation`: `manual`, or `autoNoTable` (automatic except for data tables), and `writeXlsx` and `writeKept` write it; the engine calculates every edit whatever it says, and a host that offers manual calculation keeps the values it showed until the user calculates. Excel 16.0.20430 for Windows took each value from a file `writeXlsx` wrote and from files `writeKept` wrote setting and removing it, and saved it so (`bench/windows/run.ts fields book`). Precision as displayed is reported.
 
 ### Names
 

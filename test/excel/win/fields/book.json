@@ -1,0 +1,174 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 77.3
+ },
+ "cases": [
+  {
+   "id": "manual",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ],
+    "calculation": "manual"
+   }
+  },
+  {
+   "id": "auto-no-table",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ],
+    "calculation": "autoNoTable"
+   }
+  },
+  {
+   "id": "automatic",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept-manual",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "calculation": "manual"
+   }
+  },
+  {
+   "id": "kept-automatic",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ],
+    "calculation": "manual",
+    "iteration": {
+     "maxIterations": 50
+    }
+   },
+   "kept": {
+    "calculation": null
+   }
+  }
+ ],
+ "answers": {
+  "manual": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "manual"
+  },
+  "auto-no-table": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "autoNoTable"
+  },
+  "automatic": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic"
+  },
+  "kept-manual": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "manual"
+  },
+  "kept-automatic": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic"
+  }
+ }
+}

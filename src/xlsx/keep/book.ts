@@ -14,7 +14,7 @@ import { Issues } from '../issues.js'
 import { checkLimits, fileBytes, readStyled } from '../read/book.js'
 import { partText, relsOf, type Rel } from '../read/package.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
-import { bookWriting, filterDatabase, iterationAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
+import { bookWriting, filterDatabase, calcAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
 import { nextBlock } from '../write/parts.js'
 import { sheetPieces, sheetXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
@@ -619,14 +619,14 @@ class Kept {
         edits.push({ part: src.wbPath, start: view.start, end: view.open, text: next })
       }
     }
-    // iterative calculation as the book has it, and a full calculation on loading: Excel computes the values again
+    // the calculation option and iterative calculation as the book has them, and a full calculation on loading: Excel computes the values again
     const calc = kids.find((c) => c.local === 'calcPr')
-    const it1 = iterationAttrs(book.iteration)
-    if (iterationAttrs(book0.iteration) !== it1) this.changed = true
+    const it1 = calcAttrs(book)
+    if (calcAttrs(book0) !== it1) this.changed = true
     if (!this.changed) return
     const a = attributes(it1)
     const full = this.formulas || book.sheets.some((s) => Object.values(s.cells).some((c) => c.formula !== undefined))
-    const set: Record<string, string | null> = { iterate: a.iterate ?? null, iterateCount: a.iterateCount ?? null, iterateDelta: a.iterateDelta ?? null, ...(full ? { fullCalcOnLoad: '1' } : {}) }
+    const set: Record<string, string | null> = { calcMode: a.calcMode ?? null, iterate: a.iterate ?? null, iterateCount: a.iterateCount ?? null, iterateDelta: a.iterateDelta ?? null, ...(full ? { fullCalcOnLoad: '1' } : {}) }
     if (calc) edits.push({ part: src.wbPath, start: calc.start, end: calc.open, text: setAttrs(wb.slice(calc.start, calc.open), set) })
     else {
       const at = insertAt(BEFORE_CALC)

@@ -42,8 +42,6 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   builtInName: () => 'a built-in name (a print area, print titles) is not in the model',
   nameOfSheetLeftOut: () => 'a name scoped to a sheet that was left out is left out too',
   hiddenName: () => 'a hidden name is read as a visible one',
-  manualCalculation: () => 'the manual calculation mode is not kept',
-  autoNoTable: () => 'the calculation mode "automatic except for data tables" is not kept',
   precisionAsDisplayed: () => 'the engine does not support precision as displayed: values keep their full precision',
   iterationCount: (p) => `the maximum number of iterations ${JSON.stringify(p.count)} is not between 1 and 32,767: the default, 100, is used`,
   iterationChange: (p) => `the maximum change of iterations ${JSON.stringify(p.change)} is not a number of 0 or more: the default, 0.001, is used`,

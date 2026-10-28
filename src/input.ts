@@ -210,7 +210,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet', 'font'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.font !== undefined) {
     const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
@@ -219,6 +219,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     checkNumber(f.size, `${path}.font.size`, 1, 409)
   }
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
+  if (book.calculation !== undefined) checkOneOf(book.calculation, `${path}.calculation`, ['manual', 'autoNoTable'])
   if (book.iteration !== undefined) {
     const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
     onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])

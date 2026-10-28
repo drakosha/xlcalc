@@ -6,8 +6,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   builtInName: [{}],
   nameOfSheetLeftOut: [{}],
   hiddenName: [{}],
-  manualCalculation: [{}],
-  autoNoTable: [{}],
   precisionAsDisplayed: [{}],
   iterationCount: [{ count: '0' }],
   iterationChange: [{ change: '-1' }],

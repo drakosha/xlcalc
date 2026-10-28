@@ -70,8 +70,6 @@ export interface XlsxMessageParams {
   nameOfSheetLeftOut: object
   /** @deprecated Never given: `readXlsx` reads a hidden name hidden (`NameInput.hidden`). */
   hiddenName: object
-  manualCalculation: object
-  autoNoTable: object
   precisionAsDisplayed: object
   iterationCount: { count: string }
   iterationChange: { change: string }
@@ -377,7 +375,7 @@ export type CoreKey = Exclude<EngineKey, EditKey>
  * both); their English text is the subpath's, out of the bundles that read no files.
  */
 export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
-  localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, manualCalculation: 0, autoNoTable: 0, precisionAsDisplayed: 0,
+  localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, precisionAsDisplayed: 0,
   iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, macros: 0, connections: 0, defaultFont: 0,
   sheetKind: 0, sheetPartMissing: 0, sheetNameRepaired: 0, stringsOpen: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
   mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, autoFilterRange: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, sheetPassword: 0, protectedRanges: 0, drawings: 0, sparklines: 0,

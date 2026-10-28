@@ -43,3 +43,17 @@ describe('files', () => {
     expect((await readXlsx(kept.data)).book.sheets[0]).toMatchObject({ tabColor: '#0070C0', view: { headings: false } })
   })
 })
+
+describe("the book's calculation option", () => {
+  it('is checked, left out of the hash, written, read and kept over the file', async () => {
+    const b: BookInput = { calculation: 'manual', sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }
+    expect(compute(b).hash).toBe(compute({ sheets: b.sheets }).hash)
+    expect(() => compute({ ...b, calculation: 'auto' as never })).toThrow(new InputError('book.calculation', 'expected one of "manual", "autoNoTable", got the string "auto"'))
+    const data = (await writeXlsx({ book: b })).data
+    expect((await readXlsx(data)).book.calculation).toBe('manual')
+    const read = await openKept(data)
+    const { calculation: _, ...auto } = read.book
+    expect((await readXlsx((await writeKept(data, { book: { ...auto, calculation: 'autoNoTable' } })).data)).book.calculation).toBe('autoNoTable')
+    expect((await readXlsx((await writeKept(data, { book: auto })).data)).book.calculation).toBeUndefined()
+  })
+})
