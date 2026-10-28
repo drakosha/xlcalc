@@ -24,22 +24,25 @@ const forty = book('(a+)+$', 1, 'a'.repeat(40) + 'b')
 const heavy = book('(a+)+$', 2000, 'a'.repeat(18) + 'b')
 const fails = (p: Promise<unknown>) => p.then(() => null, (e: unknown) => e as CalcError)
 
-/** Duplicate group names, which `pcreSyntax` needs for `(?|…)` with a back reference and for `(?J)`: Node 23 and later. */
-const DUPLICATE_NAMES = (() => {
+const takes = (re: string) => {
   try {
-    return new RegExp('(?<x>a)|(?<x>b)', 'v') && true
+    return new RegExp(re, 'v') && true
   } catch {
     return false
   }
-})()
+}
+/** What JavaScript takes from Node 23: duplicate group names (`pcreSyntax` needs them for `(?|…)` with a back reference and for `(?J)`) and modifiers (`(?i:…)`). */
+const DUPLICATE_NAMES = takes('(?<x>a)|(?<x>b)')
+const MODIFIERS = takes('(?i:a)')
 
 const ids = (bySet: Record<string, string>) => Object.entries(bySet).flatMap(([set, cases]) => cases.split(' ').map((c) => `${set}:${c}`)).sort()
 
 /** The cases of each level that differ from Excel, by set. */
 const KNOWN = {
-  // JavaScript's syntax: PCRE2's constructs it lacks or reads otherwise are #VALUE! or another answer, no match limit
+  // JavaScript's syntax: PCRE2's constructs it lacks or reads otherwise are #VALUE! or another answer, no match limit;
+  // duplicate group names and modifiers as the Node running the tests takes them
   builtin: ids({
-    'xmatch-regex-syntax': 'class#3 class#4 class#8 class#13 class#15 class#17 class#19 class#20 class#21 class#22 anchor#4 anchor#6 anchor#8 anchor#9 anchor#10 anchor#11 dot#2 dot#5 dot#6 dot#9 dot#11 quant#5 quant#6 quant#8 quant#10 quant#13 quant#14 group#3 group#4 group#5 group#6 group#7 group#8 group#10 group#11 group#14 look#6 option#1 option#3 option#7 option#8 option#9 option#10 option#11 option#12 option#13 option#14 option#15 option#16 option#17 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#1 verb#2 verb#3 verb#4 verb#5 verb#6 verb#7 verb#8 bad#4 backtrack#2 backtrack#3 backtrack#4',
+    'xmatch-regex-syntax': `${DUPLICATE_NAMES ? 'group#10 ' : ''}${MODIFIERS ? '' : 'option#2 '}class#3 class#4 class#8 class#13 class#15 class#17 class#19 class#20 class#21 class#22 anchor#4 anchor#6 anchor#8 anchor#9 anchor#10 anchor#11 dot#2 dot#5 dot#6 dot#9 dot#11 quant#5 quant#6 quant#8 quant#10 quant#13 quant#14 group#3 group#4 group#5 group#6 group#7 group#8 group#11 group#14 look#6 option#1 option#3 option#7 option#8 option#9 option#10 option#11 option#12 option#13 option#14 option#15 option#16 option#17 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#1 verb#2 verb#3 verb#4 verb#5 verb#6 verb#7 verb#8 bad#4 backtrack#2 backtrack#3 backtrack#4`,
     'xmatch-regex-syntax-2': 'line#2 line#3 line#4 line#5 line#8 line#9 line#10 line#11 line#12 class#6 class#7 class#9 class#10 class#11 class#12 class#13 option#1 option#2 option#4 option#5 option#6 recurse#1 recurse#2 recurse#3 bad#2 bad#4 backtrack#3 backtrack#5 backtrack#6 backtrack#8 backtrack#11 limit#3 limit#4 limit#5 limit#6',
     'xmatch-regex-own-held': 'class#1 look#2 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#3 group#4 group#6 group#7',
     'xmatch-regex-own-held-2': 'line#1 line#2 line#3',
@@ -50,7 +53,7 @@ const KNOWN = {
     'xmatch-regex-syntax': `${DUPLICATE_NAMES ? '' : 'group#8 group#11 '}dot#11 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#2 verb#3 verb#4 verb#5 verb#6 backtrack#2 backtrack#3 backtrack#4`,
     'xmatch-regex-syntax-2': 'class#13 option#3 recurse#1 recurse#2 recurse#3 bad#2 backtrack#3 backtrack#5 backtrack#6 backtrack#8 backtrack#11 limit#1 limit#2',
     // and a back reference to a group not set matches empty text in JavaScript
-    'xmatch-regex-own-held': 'class#1 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#6 group#7',
+    'xmatch-regex-own-held': `${DUPLICATE_NAMES ? '' : 'group#3 '}class#1 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#6 group#7`,
   }),
   // JavaScript has no Bidi_Class property; the engine counts PCRE2's work approximately (a group without capture)
   pcreEngine: ['xmatch-regex-own-held-2:limit#6', 'xmatch-regex-syntax-2:class#13'],
