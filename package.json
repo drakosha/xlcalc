@@ -86,6 +86,10 @@
       "types": "./dist/locales/ru-RU.d.ts",
       "default": "./dist/locales/ru-RU.js"
     },
+    "./regex": {
+      "types": "./dist/regex/index.d.ts",
+      "default": "./dist/regex/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",

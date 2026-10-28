@@ -19,7 +19,9 @@ import { heapCaches } from '../range-cache.js'
 import type { HistoryData } from '../session/undo.js'
 import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
-import { LOCALE_MODULES } from './locales.js'
+import { LOCALE_MODULES, REGEX_MODULE } from './locales.js'
+import { setRegexLevel } from '../regex-level.js'
+import type { RegexLevel } from '../contract.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackCached, unpackData, type Sent } from './pack.js'
 
@@ -41,9 +43,9 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'cancel' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'cancel' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
-/** The locales the pool sent, loaded before the next task. */
+/** The locales and the engine the pool sent, loaded before the next task. */
 let loading: Promise<void> = Promise.resolve()
 
 /** Loads locales the pool sent: a package's from its own module, with its messages; another, or one whose module did not load, as sent. */
@@ -53,6 +55,11 @@ function load(list: Locale[]) {
       for (const sent of list) if (!LOCALES.has(sent.tag)) registerLocale((await LOCALE_MODULES[sent.tag]?.().catch(() => undefined)) ?? sent)
     })
     .catch(() => {})
+}
+
+/** Loads the level of match mode 3 the pool has registered, before the next task. */
+function loadRegex(kind: RegexLevel['kind']) {
+  loading = loading.then(async () => setRegexLevel(await REGEX_MODULE(kind))).catch(() => {})
 }
 
 /** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
@@ -243,8 +250,11 @@ function receive(m: ToThread) {
     // the thread's sessions and computations share its heap, and so one budget of their caches
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
     if (m.locales) load(m.locales)
+    if (m.regex) loadRegex(m.regex)
   } else if (m.t === 'locales') {
     load(m.locales)
+  } else if (m.t === 'regex') {
+    loadRegex(m.kind)
   } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort('cancelled by the pool')
   } else {

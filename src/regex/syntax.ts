@@ -7,15 +7,16 @@
  * the verbs but `(*FAIL)` and `(*MARK)`, callouts, `\C`, `\X`, `(*NOTEMPTY)` and a lookbehind of unbounded length are
  * not: null, as is a pattern that is none.
  */
+import { boundary, braces, END, S_IN, START, textEnd, typeClass, W_IN } from '../functions/lookup/regex-syntax.js'
 
 const hex = (c: number) => `\\u{${c.toString(16)}}`
 /** A literal character: letters and digits as they are, any other by its code. */
 const lit = (c: number) => (/[\p{L}\p{N}]/u.test(String.fromCodePoint(c)) ? String.fromCodePoint(c) : hex(c))
 
-const W = '[\\p{L}\\p{N}\\p{Mn}\\p{Pc}]'
+const W = `[${W_IN}]`
 const H = '[\\t \\xa0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000]'
 const V = '[\\n-\\r\\x85\\u2028\\u2029]'
-const S = '[\\p{Z}\\t-\\r\\x85\\u180e]'
+const S = `[${S_IN}]`
 const POSIX: Record<string, string> = {
   alpha: '\\p{L}', lower: '\\p{Ll}', upper: '\\p{Lu}', alnum: '[\\p{L}\\p{N}]', digit: '\\p{Nd}', xdigit: '[0-9A-Fa-f]', space: S,
   blank: H, cntrl: '\\p{Cc}', graph: '[\\p{L}\\p{M}\\p{N}\\p{P}\\p{S}\\p{Cf}]', print: '[\\p{L}\\p{M}\\p{N}\\p{P}\\p{S}\\p{Cf}\\p{Zs}]',
@@ -133,7 +134,7 @@ function translate(p: string, whole: boolean): RegExp {
   const used = new Set<string>()
   /** Where the last item that a quantifier may follow starts in `out`, -1 when none. */
   let atom = -1
-  const eol = (multi: boolean) => (multi ? `(?=\\r\\n|[${nl}]|(?![\\s\\S]))` : `(?=(?:\\r\\n|[${nl}])?(?![\\s\\S]))`)
+  const eol = (multi: boolean) => textEnd(nl, multi)
   const word = () => (top().f.aW ? '[0-9A-Za-z_]' : W)
 
   /** A class escape (`d`, `W`, `p`…) as a JavaScript class, or null for another letter. */
@@ -141,10 +142,8 @@ function translate(p: string, whole: boolean): RegExp {
     const f = top().f
     const lower = c.toLowerCase()
     let t: string | null = null
-    if (lower === 'd') t = f.aD ? '[0-9]' : '\\p{Nd}'
-    else if (lower === 's') t = f.aS ? '[\\t-\\r ]' : S
-    else if (lower === 'w') t = word()
-    else if (lower === 'h') t = H
+    if (lower === 'd' || lower === 's' || lower === 'w') return typeClass(c, { d: f.aD, s: f.aS, w: f.aW })
+    if (lower === 'h') t = H
     else if (lower === 'v') t = V
     else if (lower === 'p') {
       let name = p[i++] ?? no()
@@ -298,11 +297,11 @@ function translate(p: string, whole: boolean): RegExp {
   const quantifier = (): string | null => {
     const c = p[i]
     if (c === '*' || c === '+' || c === '?') return (i++, c)
-    const m = /^\{\s*(\d*)\s*(?:(,)\s*(\d*)\s*)?\}/.exec(p.slice(i))
-    if (c !== '{' || !m || (m[1] === '' && (m[2] === undefined || m[3] === ''))) return null
-    i += m[0].length
-    if (Number(m[1]) > 65535 || Number(m[3] || 0) > 65535) no()
-    return `{${m[1] || 0}${m[2] ?? ''}${m[3] ?? ''}}`
+    const q = c === '{' ? braces(p, i) : null
+    if (!q) return null
+    i += q[1]
+    if (q[0].split(/[{,}]/).some((n) => Number(n) > 65535)) no()
+    return q[0]
   }
 
   while (i < p.length) {
@@ -391,10 +390,9 @@ function translate(p: string, whole: boolean): RegExp {
       }
       atom = -1
       const w = word()
-      if (e === 'b') out += `(?:(?<=${w})(?!${w})|(?<!${w})(?=${w}))`
-      else if (e === 'B') out += `(?:(?<=${w})(?=${w})|(?<!${w})(?!${w}))`
-      else if (e === 'A' || e === 'G') out += '(?<![\\s\\S])'
-      else if (e === 'z') out += '(?![\\s\\S])'
+      if (e === 'b' || e === 'B') out += boundary(w, e === 'B')
+      else if (e === 'A' || e === 'G') out += START
+      else if (e === 'z') out += END
       else if (e === 'Z') out += eol(false)
       else if (e === 'K' || e === 'E') out += ''
       else if (e === 'R') ((atom = at), (out += `(?:\\r\\n|${anyR ? V : '[\\n\\r]'})`))
