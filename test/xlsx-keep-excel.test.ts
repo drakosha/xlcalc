@@ -8,7 +8,9 @@
  * references `writeKept` writes are the ones Excel saved; Excel opened the files `writeKept` wrote for them without its
  * repair window and kept their parts and references, as predicted (`struct-open.json`, `struct-open/`). Excel answered
  * an AutoFilter over a table and a table over an AutoFilter as the engine does (`made.json`, `PROBES`), and the
- * workbook's AutoFilter after each operation is the one Excel saved.
+ * workbook's AutoFilter after each operation is the one Excel saved. After the operations of `FORMATS` over a file with
+ * formats the workbook does not tell apart (`formats.json`), each cell, row and column that moved has the cell format
+ * Excel gave it, and Excel opened the files `writeKept` wrote and kept their formats.
  */
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -17,7 +19,8 @@ import { readXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { createSession, InputError } from '../src/index.js'
 import { baseBook, MADE, MADE_PROBES, partsOf, PROBES, refsOf, STRUCT } from '../bench/coverage/keep/books.js'
-import { structFiles, structWritten, written, type MadeRun, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
+import { formatsFiles, structFiles, structWritten, written, type FormatsRun, type MadeRun, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
+import { FORMATS, formatsOf } from '../bench/coverage/keep/formats.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { partsOf as textsOf } from './keep-files.js'
 
@@ -163,4 +166,52 @@ describe('xlsx/keep in Excel', () => {
       expect(await refsOf(saved), f.id).toEqual(c.refs)
     }
   }, 60_000)
+
+  it('the cells, rows and columns that moved have the cell formats Excel gave them, and Excel kept them in the files writeKept wrote', async () => {
+    const answers = JSON.parse(readFileSync(new URL('formats.json', dir), 'utf8')) as FormatsRun
+    const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/keep/formats.predicted.json', import.meta.url), 'utf8')) as { cases: Record<string, { formats: Awaited<ReturnType<typeof formatsOf>> }> }
+    const made = new Uint8Array(readFileSync(new URL('made/formats.xlsx', dir)))
+    const files = await formatsFiles()
+    expect(files.map((f) => f.id)).toEqual(FORMATS.map((c) => c.id))
+    for (const f of files) {
+      const c = answers.cases[f.id]
+      const id = FORMATS.find((x) => x.id === f.id)!
+      expect(c?.sent, `${f.id}: the case changed since Excel did it: run the keep formats step`).toBe(createHash('sha256').update(JSON.stringify(id.excel)).update(await partsHash(made)).digest('hex'))
+      expect(c.open.sent, `${f.id}: writeKept changed since Excel saw its file: run the keep formats step`).toBe(await partsHash(f.data))
+      const ours = await formatsOf(f.data)
+      expect(ours, f.id).toEqual(predicted.cases[f.id].formats)
+      const differ = [...new Set([...Object.keys(ours.at), ...Object.keys(c.formats.at)])].filter((a) => ours.at[a] !== c.formats.at[a]).sort()
+      expect(differ, f.id).toEqual([...(FORMATS_KNOWN[f.id] ?? [])].sort())
+      // each format as content, the same in both files
+      for (const a of Object.keys(ours.at)) if (c.formats.at[a] === ours.at[a]) expect(ours.formats[ours.at[a]]).toBe(c.formats.formats[ours.at[a]])
+      expect(c.open.rejected, f.id).toBeUndefined()
+      expect(c.open.formats, f.id).toEqual(ours)
+      expect(await formatsOf(readFileSync(new URL(`formats-open/${f.id}.xlsx`, dir))), f.id).toEqual(ours)
+      expect(await formatsOf(readFileSync(new URL(`formats/${f.id}.xlsx`, dir))), f.id).toEqual(c.formats)
+    }
+  }, 60_000)
 })
+
+/**
+ * Where `writeKept` gives cells, rows and columns other formats than Excel after an operation of `FORMATS`, by case.
+ * Excel gives a cell, row or column it inserts the format of the line before it, the same cell format; `writeKept` gives
+ * a new cell inside a block of a format that format, but a cell of a plain look (a quote prefix, a cell style, a pattern
+ * fill) is not written (A8, B6:B9, C17:C18), and a row or column inserted after a block takes the first format of its
+ * look (row 26, column 9, B14:C14). A cell that looks as its row and its column (G25, H23 of the made file) is left out
+ * where rows or columns moved, kept as the file has it where the workbook's rows are the same.
+ */
+const FORMATS_KNOWN: Record<string, string[]> = {
+  'formats-insert-above': ['G27', 'H25'],
+  'formats-insert-in': ['A8', 'G26', 'H24'],
+  'formats-delete-in': ['G23', 'H21'],
+  'formats-insert-column': ['B6', 'B7', 'B8', 'B9', 'H25', 'I23'],
+  'formats-delete-column': ['F25', 'G23'],
+  'formats-insert-at-row': ['G26', 'H23'],
+  'formats-insert-below-row': ['G25', 'G26', 'H23', 'row 26'],
+  'formats-insert-after-column': ['I23', 'column 9'],
+  'formats-insert-in-colour': ['G26', 'H24'],
+  'formats-insert-in-blocks': ['C17', 'C18', 'H25', 'I23'],
+  'formats-delete-across': ['G23', 'H21'],
+  'formats-insert-below-block': ['B14', 'C14', 'G26', 'H24'],
+  'formats-delete-colour-column': ['H23'],
+}

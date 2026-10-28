@@ -1,0 +1,487 @@
+{
+ "cases": {
+  "formats-insert-above": {
+   "formats": {
+    "at": {
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "A10": "bf04301c32",
+     "A11": "bf04301c32",
+     "B12": "f112b36831",
+     "C12": "f112b36831",
+     "B13": "f112b36831",
+     "C13": "f112b36831",
+     "B14": "2f8eccb049",
+     "C14": "2f8eccb049",
+     "B15": "2f8eccb049",
+     "C15": "2f8eccb049",
+     "C16": "36b1126589",
+     "C17": "36b1126589",
+     "C18": "36b1126589",
+     "B19": "a3a895b386",
+     "C19": "a3a895b386",
+     "B20": "a3a895b386",
+     "C20": "a3a895b386",
+     "row 25": "f112b36831",
+     "row 27": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-in": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A9": "bf04301c32",
+     "A10": "bf04301c32",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "f112b36831",
+     "C12": "f112b36831",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "B14": "2f8eccb049",
+     "C14": "2f8eccb049",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "C17": "36b1126589",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "B19": "a3a895b386",
+     "C19": "a3a895b386",
+     "row 24": "f112b36831",
+     "row 26": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-delete-in": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "B8": "f112b36831",
+     "C8": "f112b36831",
+     "B9": "f112b36831",
+     "C9": "f112b36831",
+     "B10": "2f8eccb049",
+     "C10": "2f8eccb049",
+     "B11": "2f8eccb049",
+     "C11": "2f8eccb049",
+     "C12": "36b1126589",
+     "C13": "36b1126589",
+     "C14": "36b1126589",
+     "B15": "a3a895b386",
+     "C15": "a3a895b386",
+     "B16": "a3a895b386",
+     "C16": "a3a895b386",
+     "row 21": "f112b36831",
+     "row 23": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-column": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "C10": "f112b36831",
+     "D10": "f112b36831",
+     "C11": "f112b36831",
+     "D11": "f112b36831",
+     "C12": "2f8eccb049",
+     "D12": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "D13": "2f8eccb049",
+     "D14": "36b1126589",
+     "D15": "36b1126589",
+     "D16": "36b1126589",
+     "C17": "a3a895b386",
+     "D17": "a3a895b386",
+     "C18": "a3a895b386",
+     "D18": "a3a895b386",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "column 8": "f112b36831",
+     "column 9": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-delete-column": {
+   "formats": {
+    "at": {
+     "A10": "f112b36831",
+     "B10": "f112b36831",
+     "A11": "f112b36831",
+     "B11": "f112b36831",
+     "A12": "2f8eccb049",
+     "B12": "2f8eccb049",
+     "A13": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "B14": "36b1126589",
+     "B15": "36b1126589",
+     "B16": "36b1126589",
+     "A17": "a3a895b386",
+     "B17": "a3a895b386",
+     "A18": "a3a895b386",
+     "B18": "a3a895b386",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "column 6": "f112b36831",
+     "column 7": "2f8eccb049"
+    },
+    "formats": {
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-at-row": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "C14": "36b1126589",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "B17": "a3a895b386",
+     "C17": "a3a895b386",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "row 23": "f112b36831",
+     "row 26": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-below-row": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "C14": "36b1126589",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "B17": "a3a895b386",
+     "C17": "a3a895b386",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "row 26": "f112b36831",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-after-column": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "C14": "36b1126589",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "B17": "a3a895b386",
+     "C17": "a3a895b386",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "H23": "2f8eccb049",
+     "G25": "f112b36831",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049",
+     "column 9": "f112b36831"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-in-colour": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "B14": "2f8eccb049",
+     "C14": "2f8eccb049",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "C17": "36b1126589",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "B19": "a3a895b386",
+     "C19": "a3a895b386",
+     "row 24": "f112b36831",
+     "row 26": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-in-blocks": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "D10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "D11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "D12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "D13": "2f8eccb049",
+     "D14": "36b1126589",
+     "D15": "36b1126589",
+     "D16": "36b1126589",
+     "B17": "a3a895b386",
+     "D17": "a3a895b386",
+     "B18": "a3a895b386",
+     "D18": "a3a895b386",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "column 8": "f112b36831",
+     "column 9": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-delete-across": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "2f8eccb049",
+     "C11": "2f8eccb049",
+     "C12": "36b1126589",
+     "C13": "36b1126589",
+     "C14": "36b1126589",
+     "B15": "a3a895b386",
+     "C15": "a3a895b386",
+     "B16": "a3a895b386",
+     "C16": "a3a895b386",
+     "row 21": "f112b36831",
+     "row 23": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-insert-below-block": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "B14": "f112b36831",
+     "C14": "f112b36831",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "C17": "36b1126589",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "B19": "a3a895b386",
+     "C19": "a3a895b386",
+     "row 24": "f112b36831",
+     "row 26": "2f8eccb049",
+     "column 7": "f112b36831",
+     "column 8": "2f8eccb049"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  },
+  "formats-delete-colour-column": {
+   "formats": {
+    "at": {
+     "A6": "bf04301c32",
+     "A7": "bf04301c32",
+     "A8": "bf04301c32",
+     "A9": "bf04301c32",
+     "B10": "f112b36831",
+     "C10": "f112b36831",
+     "B11": "f112b36831",
+     "C11": "f112b36831",
+     "B12": "2f8eccb049",
+     "C12": "2f8eccb049",
+     "B13": "2f8eccb049",
+     "C13": "2f8eccb049",
+     "C14": "36b1126589",
+     "C15": "36b1126589",
+     "C16": "36b1126589",
+     "B17": "a3a895b386",
+     "C17": "a3a895b386",
+     "B18": "a3a895b386",
+     "C18": "a3a895b386",
+     "H23": "2f8eccb049",
+     "G25": "f112b36831",
+     "row 23": "f112b36831",
+     "row 25": "2f8eccb049",
+     "column 7": "f112b36831"
+    },
+    "formats": {
+     "bf04301c32": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal quotePrefix=1 ",
+     "f112b36831": "numFmt 0 <font><sz val=\"11\"/><color theme=\"4\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "2f8eccb049": "numFmt 0 <font><sz val=\"11\"/><color rgb=\"FF156082\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFont=1 ",
+     "36b1126589": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/><family val=\"2\"/></font> <fill><patternFill patternType=\"none\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Kept ",
+     "a3a895b386": "numFmt 0 <font><sz val=\"11\"/><name val=\"Calibri\"/></font> <fill><patternFill patternType=\"mediumGray\"/></fill> <border><left/><right/><top/><bottom/><diagonal/></border> style Normal applyFill=1 "
+    }
+   },
+   "opens": true
+  }
+ }
+}

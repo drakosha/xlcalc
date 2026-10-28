@@ -13,7 +13,11 @@
  * (`keep/struct-open.predicted.json`: it opens it without its repair window, keeps every part counted and what they
  * refer to), before `keep struct-open` has Excel open, compute and save them (`test/excel/keep/struct-open.json`,
  * `struct-open/<case>.xlsx`). `keep made` also asks Excel what it does with an AutoFilter beside a table (`MADE_PROBES`),
- * its answer in `made.json` beside the engine's committed before it ran (`PROBES`). Test: `test/xlsx-keep-excel.test.ts`.
+ * its answer in `made.json` beside the engine's committed before it ran (`PROBES`). `keep formats-predict` writes the
+ * cell formats `writeKept` gives the cells, rows and columns of the made file `formats` after each operation of `FORMATS`
+ * (`keep/formats.predicted.json`), before `keep formats` has Excel do each operation and open the file `writeKept` wrote
+ * for it, and records what both files Excel saved give them (`test/excel/keep/formats.json`, `formats/<case>.xlsx`,
+ * `formats-open/<case>.xlsx`). Test: `test/xlsx-keep-excel.test.ts`.
  * The conditional formats the model does not read (`keep/rules.ts`): `keep rules-made-predict` and `keep rules-predict`
  * write what Excel for Windows is predicted to save (`bench/windows/run.ts keep rules-made|rules`; `rules-held-predict`
  * and `rules-held-2-predict` for the held-out sets, `keep rules-held`, `keep rules-held-2`), `keep
@@ -30,6 +34,7 @@ import { openKept, writeKept } from '../../src/xlsx-keep.js'
 import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
 import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { RULES_BOOKS, RULES_SETS, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
+import { FORMATS, formatsOf, MADE_FORMATS } from './keep/formats.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -65,7 +70,7 @@ async function made(): Promise<void> {
   const t0 = Date.now()
   await ensureExcel('en-US')
   const png = picture()
-  for (const m of [...MADE, ...MADE_STRUCT, ...MADE_PROBES]) {
+  for (const m of [...MADE, ...MADE_STRUCT, ...MADE_PROBES, ...MADE_FORMATS]) {
     if (ONLY && !ONLY.includes(m.id)) continue
     const base = await baseFile(m)
     const sent = createHash('sha256').update(JSON.stringify(m)).update(await partsHash(base)).digest('hex')
@@ -306,6 +311,61 @@ async function rulesOpen(): Promise<void> {
   }
 }
 
+/** A case of `FORMATS`: what Excel did and what its file gives, and whether it opened the file `writeKept` wrote and what the file it saved gives. */
+export interface FormatsRun {
+  meta: Record<string, string | number>
+  cases: Record<string, { sent: string; out: string; formats: Awaited<ReturnType<typeof formatsOf>>; open: { sent: string; rejected?: string; formats?: Awaited<ReturnType<typeof formatsOf>> } }>
+}
+
+/** Each operation of `FORMATS` written over the made file by `writeKept`. */
+export async function formatsFiles(): Promise<{ id: string; data: Uint8Array }[]> {
+  const original = new Uint8Array(readFileSync(join(DATA, 'made', 'formats.xlsx')))
+  const out: { id: string; data: Uint8Array }[] = []
+  for (const c of FORMATS) {
+    const read = await openKept(original)
+    const s = createSession(read.book, { cached: read.cached })
+    const r = s.editStructure(c.op)
+    if (r.ok === false) throw new Error(`${c.id}: the session refused the operation: ${r.message}`)
+    out.push({ id: c.id, data: (await writeKept(original, s.getSnapshot())).data })
+    s.close()
+  }
+  return out
+}
+
+/** The prediction, written before `formats` runs: Excel gives the cells, rows and columns the formats `writeKept` gives them, opens its file and keeps them. */
+async function formatsPredict(): Promise<void> {
+  const cases: Record<string, { formats: Awaited<ReturnType<typeof formatsOf>>; opens: true }> = {}
+  for (const f of await formatsFiles()) cases[f.id] = { formats: await formatsOf(f.data), opens: true }
+  writePrediction(new URL('./keep/formats.ts', import.meta.url).href, 'formats', { cases })
+}
+
+/** The operations of `FORMATS` in Excel over the made file, and the files `writeKept` wrote for them opened and saved by Excel. */
+async function formats(): Promise<void> {
+  const file = join(DATA, 'formats.json')
+  const run = loadStored<FormatsRun>(file) ?? { meta: {}, cases: {} }
+  for (const d of ['formats', 'formats-open']) mkdirSync(join(DATA, d), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  const data = new Uint8Array(readFileSync(join(DATA, 'made', 'formats.xlsx')))
+  const ours = new Map((await formatsFiles()).map((f) => [f.id, f.data]))
+  for (const c of FORMATS) {
+    if (ONLY && !ONLY.includes(c.id)) continue
+    const sent = createHash('sha256').update(JSON.stringify(c.excel)).update(await partsHash(data)).digest('hex')
+    const written = ours.get(c.id)!
+    const openSent = await partsHash(written)
+    if (run.cases[c.id]?.sent === sent && run.cases[c.id].open.sent === openSent) continue
+    const r = await throughExcel(c.id, 'excel-keep-struct.applescript', data, c.excel)
+    if ('rejected' in r) throw new Error(`${c.id}: Excel refused the made file: ${r.rejected}`)
+    writeFileSync(join(DATA, 'formats', `${c.id}.xlsx`), r.saved)
+    const o = await throughExcel(`${c.id}-open`, 'excel-save.applescript', written, [])
+    if (!('rejected' in o)) writeFileSync(join(DATA, 'formats-open', `${c.id}.xlsx`), o.saved)
+    run.cases[c.id] = { sent, out: r.out, formats: await formatsOf(r.saved), open: { sent: openSent, ...('rejected' in o ? { rejected: o.rejected } : { formats: await formatsOf(o.saved) }) } }
+    console.log(`${c.id}: ${r.out}; ${JSON.stringify(run.cases[c.id].formats.at)}; ${'rejected' in o ? `refused: ${o.rejected}` : 'opened'}`)
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
 export async function stepKeep(what: string | undefined): Promise<void> {
   const rules = what?.match(/^(rules(?:-[a-z0-9-]+)?)-predict$/)?.[1]
   if (rules && (rules === 'rules-made' || rules === 'rules-open' || RULES_SETS[rules])) return rulesPredict(rules)
@@ -317,5 +377,7 @@ export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'struct') return struct()
   if (what === 'struct-open-predict') return structOpenPredict()
   if (what === 'struct-open') return structOpen()
-  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
+  if (what === 'formats-predict') return formatsPredict()
+  if (what === 'formats') return formats()
+  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
 }

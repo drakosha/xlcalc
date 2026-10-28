@@ -16,7 +16,7 @@ import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
 import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
-import { readStyles } from '../styles/read.js'
+import { readStyles, type StyleTable } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
 import type { ReadXlsxOptions, XlsxLimits, XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml/scan.js'
@@ -138,6 +138,11 @@ export function checkLimits(v: unknown): XlsxLimits {
  * with messages in `opts.locale` (en-US by default).
  */
 export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
+  return (await readStyled(data, opts)).read
+}
+
+/** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
+export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
@@ -252,7 +257,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     if (e instanceof InputError) throw new Error(`xlsx: the file's workbook is not valid: ${e.message}`)
     throw e
   }
-  return { book, cached, issues: issues.list(language) }
+  return { read: { book, cached, issues: issues.list(language) }, stylesXml, table }
 }
 
 /** The header cells of a sheet's tables, which the check of its tables reads. */
