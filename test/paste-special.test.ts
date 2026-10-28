@@ -192,3 +192,14 @@ describe.each(KINDS)('All Merging Conditional Formats in %s', (kind) => {
     await Promise.all([s.close(), sync.close()])
   })
 })
+
+describe.each(KINDS)('an operation onto a spilled array in %s', (kind) => {
+  it('is refused with array, the book as it was; a paste of values without one is not', async () => {
+    const s = await (await opener(kind))({ sheets: [{ name: 'S', cells: { A1: { value: 5 }, D1: { formula: 'SEQUENCE(3)' } } }] }, { clock })
+    const r = await s.editStructure(copy('A1', 'D2', { paste: 'values', operation: 'add' }))
+    expect(r.ok ? null : r.code).toBe('array')
+    expect([(await s.getBook()).sheets[0].cells.D1, s.history]).toEqual([{ formula: 'SEQUENCE(3)' }, { undo: 0, redo: 0 }])
+    expect((await s.editStructure(copy('A1', 'D2', { paste: 'values' }))).ok).toBe(true)
+    await s.close()
+  })
+})
