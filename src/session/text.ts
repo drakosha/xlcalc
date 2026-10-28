@@ -79,14 +79,21 @@ export function textRefusal(s: EngineState, edit: CellReplace): Refusal<CellText
  * one it fitted, for a number typed into it (`entryWidth`); undefined when it keeps its width, and for a hidden column
  * or a cell merged across columns, which the measurements leave out.
  */
-export function columnWidening(s: EngineState, i: number, r: number, c: number): number | undefined {
+export function columnWidening(s: EngineState, i: number, r: number, c: number, memo?: Map<string, number | undefined>): number | undefined {
   const sh = s.input.sheets[i]
   const lines = sheetLines(sh, s)
   const column = lines.column(c)
   if (column?.hidden || column?.width === 0) return undefined
   if (mergedOf(sh, s).rects.some((x) => x.c2 > x.c1 && hasCell(x, r, c))) return undefined
   const { locale, dateSystem } = s.input
-  return entryWidth(cellValue(s, i, r, c), { numberFormat: lines.format(r, c), locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
+  const value = cellValue(s, i, r, c)
+  const numberFormat = lines.format(r, c)
+  // a column's cells of one value and format take one width (a fill of a constant): measured once in a call that passes `memo`
+  const k = memo && JSON.stringify([i, c, numberFormat ?? null, value])
+  if (k !== undefined && memo!.has(k)) return memo!.get(k)
+  const width = entryWidth(value, { numberFormat, locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
+  if (k !== undefined) memo!.set(k, width)
+  return width
 }
 
 /** A rule's alert: its style (stop by default) and its message, the rule's own or else the library's in the book's locale. */

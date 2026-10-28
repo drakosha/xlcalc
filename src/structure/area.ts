@@ -118,6 +118,9 @@ export function grown(x: Rect, merges: Rect[]): Rect {
 /** Whether the cell at row `r`, column `c` lies in the rectangle. */
 export const hasCell = (x: Rect, r: number, c: number) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2
 
+/** The rectangle of the one cell at row `r`, column `c`. */
+export const oneCell = (r: number, c: number): Rect => ({ r1: r, c1: c, r2: r, c2: c })
+
 /** The number of a rectangle's cells. */
 export const cellCount = (x: Rect) => (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
 

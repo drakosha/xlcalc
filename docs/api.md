@@ -2417,7 +2417,7 @@ interface DependentsOptions extends PageOptions {
 
 ### `DependentsResult`
 
-What `getDependents` returns: a page of the cells whose formulas refer to the ranges.
+What `getDependents` returns: a page of the cells whose formulas refer to the ranges, sheet by sheet in the workbook's order, each sheet's by rows and in a row by columns.
 
 ```ts
 interface DependentsResult extends QueryPage { dependents: DependentCell[] }

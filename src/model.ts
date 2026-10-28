@@ -153,6 +153,9 @@ export const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) *
 export const rowOf = (place: number) => Math.floor(place / MAX_COLS)
 export const colOf = (place: number) => place - rowOf(place) * MAX_COLS
 
+/** Cells in order by sheet, then by row, then by column. */
+export const byPlace = (a: { s: number; r: number; c: number }, b: { s: number; r: number; c: number }) => a.s - b.s || a.r - b.r || a.c - b.c
+
 /** The value `outer` keeps at `key` (a `Map` or a `WeakMap`), made by `make` where it kept none: the get-or-create of an inner container. */
 export function inner<K, V>(outer: { get(key: K): V | undefined; set(key: K, value: V): unknown }, key: K, make: () => V): V {
   let v = outer.get(key)
