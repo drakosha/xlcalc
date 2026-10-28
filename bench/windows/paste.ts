@@ -4,13 +4,15 @@
  * `XlPasteType`, operation, Skip Blanks and Transpose; a plain copy is `Range.Copy` with a destination), and the book
  * saved. The Format Painter's cases need a session on the screen (`screen.ts`): `painter.ps1` runs them there, the
  * source selected, the painter turned on and the target selected with the keyboard as on the Mac; without a session on
- * the screen they wait. Answers go to `test/excel/win/paste/<set>.json` in the Mac's shape, the saved files beside
+ * the screen they wait. The formula of each cell a case names (`local`) is read in the user's language
+ * (`FormulaLocal`). Answers go to `test/excel/win/paste/[<tag>/]<set>.json` in the Mac's shape, the saved files beside
  * them; `test/paste-win.test.ts` reads them.
  */
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { pasteSet } from '../coverage/paste.js'
+import { localeDir } from '../coverage/locales.js'
+import { pasteAnswer, pasteSet } from '../coverage/paste.js'
 import { painterSelection, type PasteAnswer, type PasteCase, type PasteOperation, type PasteWhat } from '../coverage/paste/cases.js'
 import { fileAnswers, secondsSince, type FileAnswers } from '../coverage/stored.js'
 import { fileJobs } from './books.js'
@@ -64,7 +66,7 @@ async function paintOnScreen(cases: PasteCase[], files: Map<string, Uint8Array>,
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await pasteSet(set)
-  const store = fileAnswers<PasteCase, PasteAnswer>(winFile(`paste/${set}.json`), built.cases, sent)
+  const store = fileAnswers<PasteCase, PasteAnswer>(winFile(`paste/${localeDir(tag)}${set}.json`), built.cases, sent)
   const t0 = Date.now()
   const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
   const painted = store.todo.filter((c) => c.what === 'painter')
@@ -75,12 +77,10 @@ export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<vo
     files,
     (c) => [
       { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what as keyof typeof PASTE_TYPE] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose },
+      ...(c.local ?? []).map((cell) => ({ do: 'formulasLocal', sheet: c.to.sheet, range: cell })),
       { do: 'saveAs' },
     ],
-    (_, a) => {
-      const x = a.answers[0] as { error?: string } | null
-      return x?.error ? { error: x.error } : {}
-    },
+    (c, a) => pasteAnswer(c, (a.answers[0] as { error?: string } | null)?.error, a.answers.slice(1, 1 + (c.local?.length ?? 0)).map((x) => String((x as unknown[][])[0][0]))),
     save,
   )
   if (!painted.length) return

@@ -27,7 +27,7 @@
  *   npx tsx bench/windows/run.ts replace <name> [L]    Replace over a replace set's books, a book a case, into replace/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts outline <name> [L]    outline commands over an outline set's books, into outline/[<tag>/]<name>.json and outline/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts end <name> [L]        Range.End from cells of an end set's books, into end/[<tag>/]<name>.json
- *   npx tsx bench/windows/run.ts paste <name>          Paste Special over a paste set's books (en-US), into paste/<name>.json and paste/<name>/
+ *   npx tsx bench/windows/run.ts paste <name> [L]      Paste Special over a paste set's books, into paste/[<tag>/]<name>.json and paste/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books L               the books the Mac has answers for in that locale (display, spill, ...)
  *   npx tsx bench/windows/run.ts all L                 both
@@ -71,7 +71,7 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** The sets with Mac answers, by their files in `test/excel/<dir>`; none where the directory is not there. */
 const macSets = (dir: string) => (existsSync(join(ROOT, 'test/excel', dir)) ? readdirSync(join(ROOT, 'test/excel', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [])
 
-const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks, sort: stepSort, paste: stepPasteWin, keep: stepKeepRules } as const
+const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks, sort: stepSort, keep: stepKeepRules } as const
 /** The parts sets: every set of `bench/coverage/parts/`, `threads` among them, which Windows alone runs. */
 const PARTS_SETS = readdirSync(join(ROOT, 'bench/coverage/parts')).filter((f) => f.endsWith('.ts') && f !== 'cases.ts' && f !== 'predict.ts').map((f) => f.slice(0, -3))
 
@@ -82,12 +82,13 @@ async function functions(tag: Tag, e: WinEnv) {
   await stepFunctions(['measurement', ...(en ? ['probes', ...legacy] : []), ...macSets(`cases/${localeDir(tag)}`)], tag, e)
 }
 
-/** The books with Mac answers in a locale: what cells show, tables, data validation, and in en-US the spill, workbook, struct, parts, hidden, lines, sort and paste sets and the xlsx filters. */
+/** The books with Mac answers in a locale: what cells show, tables, data validation, Paste Special, and in en-US the spill, workbook, struct, parts, hidden, lines and sort sets and the xlsx filters. */
 async function books(tag: Tag, e: WinEnv) {
   const en = tag === 'en-US'
   for (const s of macSets(`display/${localeDir(tag)}`)) await stepDisplay(s, tag, e)
   for (const s of macSets(`tables/${localeDir(tag)}`)) await stepTables(s, tag, e)
   for (const s of macSets(`valid/${localeDir(tag)}`)) await stepValid(s, tag, e)
+  for (const s of macSets(`paste/${localeDir(tag)}`)) await stepPasteWin(s, tag, e)
   if (!en) return
   // the order runs file keeps every order Excel gave: it is no set
   for (const s of macSets('spill').filter((s) => s !== 'order-runs')) await stepSpill(s, tag, e)
@@ -97,7 +98,6 @@ async function books(tag: Tag, e: WinEnv) {
   for (const s of macSets('hidden')) await stepHidden(s, tag, e)
   for (const s of macSets('lines')) await stepLines(s, tag, e)
   for (const s of macSets('sort')) await stepSort(s, tag, e)
-  for (const s of macSets('paste')) await stepPasteWin(s, tag, e)
   await stepXlsxFilters(tag, e)
 }
 
@@ -110,6 +110,7 @@ else if (step === 'set' && a) await withWindowsExcel(parseTag(b), (e) => stepFun
 else if (step === 'legacy' && a) await withWindowsExcel('en-US', (e) => stepFunctions([`legacy/${a}`], 'en-US', e))
 else if (step === 'display' && a) await withWindowsExcel(parseTag(b), (e) => stepDisplay(a, parseTag(b), e))
 else if (step === 'tables' && a) await withWindowsExcel(parseTag(b), (e) => stepTables(a, parseTag(b), e))
+else if (step === 'paste' && a) await withWindowsExcel(parseTag(b), (e) => stepPasteWin(a, parseTag(b), e))
 else if (step in BOOK_STEPS && a) await withWindowsExcel('en-US', (e) => BOOK_STEPS[step as keyof typeof BOOK_STEPS](a, 'en-US', e))
 else if (step === 'xlsx' && a === 'filters') await withWindowsExcel('en-US', (e) => stepXlsxFilters('en-US', e))
 else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(parseTag(b), (e) => stepXlsxFormats(parseTag(b), e))
@@ -133,7 +134,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|paste|keep <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|keep <name> | paste <name> [locale] | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

@@ -26,6 +26,8 @@ export interface PasteCase {
   transpose?: boolean
   operation?: PasteOperation
   skipBlanks?: boolean
+  /** Cells of the target's sheet whose formula Excel reads after the paste in the user's language (`FormulaLocal`). */
+  local?: string[]
 }
 
 export interface PasteCases {
@@ -35,9 +37,10 @@ export interface PasteCases {
   plain?: Record<string, string[]>
 }
 
-/** What Excel answered: the error of a paste it refused (its saved file is the book as it was). */
+/** What Excel answered: the error of a paste it refused (its saved file is the book as it was); the formulas of `local` by cell, in the user's language. */
 export interface PasteAnswer {
   error?: string
+  local?: Record<string, string>
 }
 
 export interface PasteSet {
@@ -60,5 +63,5 @@ export function painterSelection(range: string): { select: string; key: 'left' |
 /** The paste as the script takes it; the Format Painter's target as it selects it and the key. */
 export function pasteArgs(c: PasteCase): string {
   const p = c.what === 'painter' ? painterSelection(c.to.range) : null
-  return JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, p ? p.select : c.to.range, c.what, c.transpose ? '1' : '0', c.operation ?? 'none', c.skipBlanks ? '1' : '0', p ? p.key : ''])
+  return JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, p ? p.select : c.to.range, c.what, c.transpose ? '1' : '0', c.operation ?? 'none', c.skipBlanks ? '1' : '0', p ? p.key : '', (c.local ?? []).join(',')])
 }
