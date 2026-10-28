@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.9
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#9BC2E6"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "note": {
+        "text": "na"
+       }
+      },
+      "B1": {
+       "style": 1,
+       "note": {
+        "text": "nb"
+       }
+      },
+      "A2": {
+       "value": 2
+      },
+      "F1": {
+       "value": "f1",
+       "style": 2,
+       "note": {
+        "text": "own-f1"
+       }
+      },
+      "G1": {
+       "value": "g1",
+       "style": 2,
+       "note": {
+        "text": "own-g1"
+       }
+      },
+      "F2": {
+       "value": "f2",
+       "style": 2,
+       "note": {
+        "text": "own-f2"
+       }
+      },
+      "G2": {
+       "value": "g2",
+       "style": 2,
+       "note": {
+        "text": "own-g2"
+       }
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "all-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "allExceptBorders-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "allExceptBorders",
+   "skipBlanks": true
+  },
+  {
+   "id": "notes-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "notes",
+   "skipBlanks": true
+  },
+  {
+   "id": "formats-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats",
+   "skipBlanks": true
+  },
+  {
+   "id": "values-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "values",
+   "skipBlanks": true
+  },
+  {
+   "id": "all-skip-transposed",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all",
+   "skipBlanks": true,
+   "transpose": true
+  },
+  {
+   "id": "all",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all"
+  }
+ ],
+ "sent": {
+  "all-skip": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "allExceptBorders-skip": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "notes-skip": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "formats-skip": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "values-skip": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "all-skip-transposed": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e",
+  "all": "5186de152aad87904a6a503ccd5cd7d92f980a0b118425ad4122cc5dc99e384e"
+ },
+ "answers": {
+  "all-skip": {},
+  "allExceptBorders-skip": {},
+  "notes-skip": {},
+  "formats-skip": {},
+  "values-skip": {},
+  "all-skip-transposed": {},
+  "all": {}
+ }
+}

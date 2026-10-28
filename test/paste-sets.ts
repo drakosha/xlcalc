@@ -12,18 +12,23 @@ import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste
 import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4']
+
+/** An operation onto a dynamic array formula. */
+const DYNAMIC =
+  'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula and as a spill is; the engine combines it as Excel combines a formula of the ordinary kind (the set ops-held)'
+
+/** Values or formulas and number formats of whole columns. */
+const COLUMNS = "Excel gives each cell of the column within the sheet's used range the number format of the source's column; the engine pastes the cells' own"
 
 /** Where the engine pastes otherwise than Excel for Mac, by set and case. */
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'held/table-formats': "Excel pastes the look a table's style gives its cells as their formats; the engine does not draw table styles",
   'kinds/allExceptBorders-column': 'a whole column that cuts a merged area (A5:B5): Excel leaves out the merged cell, the engine pastes it',
-  ...Object.fromEntries(
-    ['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [
-      `ops/${id}`,
-      'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula; the engine combines it as Excel combines a formula of the ordinary kind (the set ops-held)',
-    ]),
-  ),
+  ...Object.fromEntries(['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [`ops/${id}`, DYNAMIC])),
+  'ops-held/number-add-spill': DYNAMIC,
+  'kinds-held/valuesAndNumberFormats-column': COLUMNS,
+  'kinds-held/formulasAndNumberFormats-column': COLUMNS,
 }
 
 /**
