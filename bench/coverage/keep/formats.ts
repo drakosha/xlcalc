@@ -33,6 +33,13 @@ export const FORMATS: Struct[] = [
   rows('insert-at-row', 25, 1, 'insertRows'),
   rows('insert-below-row', 26, 1, 'insertRows'),
   columns('insert-after-column', 'I', 1, 'insertColumns'),
+  // held out after the cases above were measured: rows and a column inserted inside the blocks, rows deleted across two,
+  // a row inserted below a block, the column of a colour deleted
+  rows('insert-in-colour', 13, 1, 'insertRows'),
+  columns('insert-in-blocks', 'C', 1, 'insertColumns'),
+  rows('delete-across', 11, 2, 'deleteRows'),
+  rows('insert-below-block', 14, 1, 'insertRows'),
+  columns('delete-colour-column', 'H', 1, 'deleteColumns'),
 ]
 
 /** A cell format's content: its number format, font, fill and border as written, its cell style by name, its other attributes and its children. */
