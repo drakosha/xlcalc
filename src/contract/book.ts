@@ -55,6 +55,8 @@ export interface CellInput {
 export interface CellNote {
   author?: string
   text: string
+  /** Shown all the time (Excel's Show/Hide Note, xlsx `<x:Visible/>`), not only while the pointer rests on its cell. */
+  shown?: boolean
 }
 
 /**
