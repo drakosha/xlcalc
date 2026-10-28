@@ -1,8 +1,8 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
 import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
-import { sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { sheetIndexOf, toCellValue, valueAt, type EngineState, type Formula } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
-import { referencesOf } from '../graph.js'
+import { readersOf, referencesOf } from '../graph.js'
 import { checkSheet } from '../input.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkString, object, onlyKeys } from '../input/basic.js'
@@ -175,22 +175,26 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
   const max = o.maxReferences ?? 64
   checkNumber(max, 'opts.maxReferences', 1, 1000, true)
   const page = new Page<DependentCell>(revision, clock, JSON.stringify(['dependents', refs, max]), o)
-  // the cells before the cursor are passed over, by their count
-  const from = page.from?.[0] ?? 0
-  let at = 0
-  scan: for (let i = 0; i < s.input.sheets.length; i++)
-    for (const addr in s.input.sheets[i].cells) {
-      if (paced(1)) yield
-      if (++at <= from || s.input.sheets[i].cells[addr].formula === undefined) continue
-      const { row, col } = parseAddress(addr),
-        id = s.at.get(placeOf(i, row, col)),
-        f = id === undefined ? undefined : s.formulas[id]
-      if (!f) continue
-      const matches = referencesOf(s, f).filter((g) => refs.some((x) => x.s === g.s && meets(x, g)))
-      if (!matches.length) continue
-      if (page.wanted([at])) page.items.push({ sheet: s.sheetNames[f.s], cell: formatAddress(f.r, f.c), references: matches.slice(0, max).map((g) => ({ sheet: s.sheetNames[g.s], range: rectText(g) })), ...(matches.length > max ? { referencesTruncated: true } : {}) })
-      if (page.done) break scan
-    }
+  if (page.from && page.from.length !== 2) throw new InputError('opts.cursor', 'expected a cursor returned by this query')
+  // the formulas the graph's index of references names, in the book's order of sheets, then by rows: a cursor keeps the sheet and place of the last
+  const ids = new Set<number>()
+  for (const x of refs) readersOf(s, x, ids)
+  const found: Formula[] = []
+  for (const id of ids) {
+    const f = s.formulas[id]
+    if (f && s.input.sheets[f.s]?.cells[formatAddress(f.r, f.c)]?.formula !== undefined && s.at.get(placeOf(f.s, f.r, f.c)) === id) found.push(f)
+  }
+  found.sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+  const [fs, fm] = page.from ?? [-1, -1]
+  for (const f of found) {
+    if (paced(1)) yield
+    const m = f.r * MAX_COLS + f.c
+    if (f.s < fs || (f.s === fs && m <= fm)) continue
+    const matches = referencesOf(s, f).filter((g) => refs.some((x) => x.s === g.s && meets(x, g)))
+    if (!matches.length) continue
+    if (page.wanted([f.s, m])) page.items.push({ sheet: s.sheetNames[f.s], cell: formatAddress(f.r, f.c), references: matches.slice(0, max).map((g) => ({ sheet: s.sheetNames[g.s], range: rectText(g) })), ...(matches.length > max ? { referencesTruncated: true } : {}) })
+    if (page.done) break
+  }
   return { ...page.result(), dependents: page.items }
 }
 
