@@ -7,8 +7,8 @@ import type { RegexLevel } from './contract.js'
 import { rewrite } from './functions/lookup/regex-syntax.js'
 import { InputError } from './input-error.js'
 
-/** A pattern's test of a text, as `RegexLevel.compile` gives it. */
-export type RegexTest = (text: string) => boolean | 'limit'
+/** A pattern's test of a text, as `RegexLevel.compile` gives it (a regular expression is one). */
+export type RegexTest = { test(text: string): boolean | 'limit' }
 
 export const REGEX_KINDS: readonly RegexLevel['kind'][] = ['xlcalc-pcre-syntax', 'xlcalc-pcre-engine']
 
@@ -48,8 +48,7 @@ export function onRegexLevel(f: () => void): () => void {
 export function regexTest(pattern: string): RegexTest | null {
   let t = cache.get(pattern)
   if (t === undefined) {
-    const p = level ? level.compile(pattern) : rewrite(pattern)
-    t = p && ((s) => p.test(s))
+    t = level ? level.compile(pattern) : rewrite(pattern)
     if (cache.size >= CACHED) cache.clear()
     cache.set(pattern, t)
   }

@@ -34,10 +34,12 @@ export const width = (c: number) => (c > 0xffff ? 2 : 1)
 
 /** `t` remembered for the characters of the BMP it was asked about: a property's regular expression runs once a character. */
 export function remembered(t: CharTest): CharTest {
-  let seen: Uint8Array | null = null
+  // ASCII in a small table, the rest of the BMP in one made at its first character
+  const ascii = new Uint8Array(128)
+  let bmp: Uint8Array | null = null
   return (c) => {
     if (c > 0xffff) return t(c)
-    seen ??= new Uint8Array(0x10000)
+    const seen = c < 128 ? ascii : (bmp ??= new Uint8Array(0x10000))
     const v = seen[c]
     if (v !== 0) return v === 2
     const r = t(c)

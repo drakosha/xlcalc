@@ -16,19 +16,19 @@ const SEARCH_MODES = [1, -1, 2, -2]
  */
 function regex(cx: Cx, k: Key | null, look: Grid, searchMode: number): number | CErr {
   if (Math.abs(searchMode) === 2) return E.VALUE
-  const test = regexTest(k === null ? '' : (cx.rules.toText(k) as string))
-  if (!test) return E.VALUE
+  const re = regexTest(k === null ? '' : (cx.rules.toText(k) as string))
+  if (!re) return E.VALUE
   const n = look.v.length
   const size = look.rows * look.cols
   // a blank is empty text, past the occupied part too (`^$` finds the first blank)
-  const blanks = test('')
+  const blanks = re.test('')
   if (blanks === 'limit') return E.VALUE
   if (blanks && searchMode < 0 && size > n) return size - 1
   for (let j = 0; j < n; j++) {
     const i = searchMode > 0 ? j : n - 1 - j
     const v = look.v[i]
     if (isErr(v)) continue
-    const hit = test(v === null ? '' : typeof v === 'string' ? v : (cx.rules.toText(v) as string))
+    const hit = re.test(v === null ? '' : typeof v === 'string' ? v : (cx.rules.toText(v) as string))
     if (hit === 'limit') return E.VALUE
     if (hit) return i
   }
