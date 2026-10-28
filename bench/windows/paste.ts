@@ -3,7 +3,7 @@
  * (`writeXlsx`), its range copied (`Range.Copy`) and pasted at the target (`Range.PasteSpecial` with the case's
  * `XlPasteType`, operation, Skip Blanks and Transpose; a plain copy is `Range.Copy` with a destination), and the book
  * saved. Answers go to `test/excel/win/paste/<set>.json` in the Mac's shape, the saved files beside them;
- * `test/paste-win.test.ts` reads them.
+ * `test/paste-win.test.ts` reads them. The Format Painter's cases are the Mac's alone.
  */
 import { pasteSet } from '../coverage/paste.js'
 import type { PasteAnswer, PasteCase, PasteOperation, PasteWhat } from '../coverage/paste/cases.js'
@@ -13,7 +13,7 @@ import { winFile } from './functions.js'
 import { metaOf, type Tag, type WinEnv } from './remote.js'
 
 /** Excel's `XlPasteType` of each kind the harness pastes. */
-const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy'>, number> = {
+const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy' | 'painter'>, number> = {
   all: -4104,
   values: -4163,
   formulas: -4123,
@@ -30,7 +30,10 @@ const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy'>, number> = {
 const OPERATION: Record<PasteOperation, number> = { add: 2, subtract: 3, multiply: 4, divide: 5 }
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const { built, files, sent } = await pasteSet(set)
+  const { built: all, files, sent } = await pasteSet(set)
+  // the Format Painter takes a session on a screen, which the step does not have: the Mac's alone
+  const built = { ...all, cases: all.cases.filter((c) => c.what !== 'painter') }
+  if (!built.cases.length) return void console.log(`paste ${set}: no case for Excel for Windows`)
   const store = fileAnswers<PasteCase, PasteAnswer>(winFile(`paste/${set}.json`), built.cases, sent)
   const t0 = Date.now()
   const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
@@ -40,7 +43,7 @@ export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<vo
     store,
     files,
     (c) => [
-      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose },
+      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what as keyof typeof PASTE_TYPE] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose },
       { do: 'saveAs' },
     ],
     (_, a) => {

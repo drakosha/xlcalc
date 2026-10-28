@@ -14,7 +14,7 @@ import { formatAddress } from '../../../src/model.js'
 import type { PasteCase } from './cases.js'
 
 /** The kinds of paste the engine has. */
-export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes'] satisfies (PasteKind | 'copy')[]
+export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
 
 /** Whether the engine has a case's paste. */
 export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what)
@@ -74,8 +74,9 @@ export const shownFile = async (data: Uint8Array) => shownBook((await readXlsx(d
  * its book shows after the paste, written and read back, or why it is refused.
  */
 export async function engineOutcome(book: BookInput, c: PasteCase): Promise<{ refused: string } | { shown: ReturnType<typeof shownBook> }> {
-  // the harness pastes with Paste Special, `all` too; `copy` is a copy without it
-  const op = { op: 'copyRange' as const, from: c.from, to: c.to, ...(c.what === 'copy' ? {} : { paste: c.what as PasteKind }), ...(c.transpose ? { transpose: true } : {}), ...(c.operation ? { operation: c.operation } : {}), ...(c.skipBlanks ? { skipBlanks: true } : {}) }
+  // the harness pastes with Paste Special, `all` too; `copy` is a copy without it; the Format Painter is a paste of formats
+  const paste = c.what === 'painter' ? 'formats' : (c.what as PasteKind)
+  const op = { op: 'copyRange' as const, from: c.from, to: c.to, ...(c.what === 'copy' ? {} : { paste }), ...(c.transpose ? { transpose: true } : {}), ...(c.operation ? { operation: c.operation } : {}), ...(c.skipBlanks ? { skipBlanks: true } : {}) }
   const s = createSession(book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
   const r = s.editStructure(op)
   return r.ok ? { shown: await shownFile((await writeXlsx({ book: s.getBook() })).data) } : { refused: r.message }
