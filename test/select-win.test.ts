@@ -15,7 +15,7 @@ afterAll(closeCalcs)
 /** Ranges Excel refuses ("This selection isn't valid"), where the engine gives no names: labels and nothing past them. */
 const REFUSED: Record<string, string> = { 'names:labels-alone': 'a range of labels alone, nothing past them' }
 
-describe.each(['names', 'names-held', 'special', 'special-held'])('the set %s', (set) => {
+describe.each(['names', 'names-held', 'special', 'special-held', 'special-held-2'])('the set %s', (set) => {
   const stored = JSON.parse(readFileSync(selectFile(set), 'utf8')) as { answers: Record<string, SelectAnswer> }
   it('names what Excel named and selects the cells Excel selected', async () => {
     const { BOOKS, buildSelectCases } = (await import(`../bench/coverage/select/${set}.ts`)) as SelectSet
