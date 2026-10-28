@@ -166,7 +166,8 @@ export type FillType = 'default' | 'series' | 'copy'
  * `formulas` with the copy's number formats, and not refused onto merged areas. `columnWidths`: the widths of the
  * copy's columns alone. `allExceptBorders`: as `all`, each cell keeping the destination's borders. `notes`: the copy's
  * notes alone, a cell without one clearing the destination's (Excel's Comments). `allMergingConditionalFormats`: as
- * `all`, the destination's conditional formats kept whole after the copy's, none joined; with `skipBlanks` it is `all`.
+ * `all`, the destination's conditional formats kept whole after the copy's, a rule copied on its own sheet growing
+ * where it makes one rectangle with the pasted cells; with `skipBlanks` it is `all`.
  * Excel's Format Painter is `formats`; its All Using Source Theme is `all` within one workbook.
  */
 export type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'valuesAndNumberFormats' | 'formulasAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'allMergingConditionalFormats'
@@ -175,7 +176,8 @@ export type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation'
  * Paste Special's operation (`StructureOp` `copyRange`): each number of the copy is added to, subtracted from,
  * multiplied into or divided into the destination cell's, a blank counting as 0; a formula on either side makes a
  * formula of both (`10+(A1*2)`). Text, booleans and errors of the copy leave the destination's cell. It applies to the
- * kinds that paste contents and is ignored by the others.
+ * kinds that paste contents and is ignored by the others; onto an array spilled over more than one cell it is refused
+ * (`array`).
  */
 export type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'
 
@@ -193,7 +195,7 @@ export type StructureRefusal =
   | 'merged'
   /** A copy that skips rows hidden by a filter, pasted over hidden rows of a filtered sheet (multiple areas onto multiple areas). */
   | 'filtered'
-  /** The operation would change part of a legacy array formula's range (`CellInput.array`). */
+  /** The operation would change part of a legacy array formula's range (`CellInput.array`), or Paste Special's operation a spilled array. */
   | 'array'
   /**
    * The operation would shift or split part of a table in a way Excel rejects: rows or columns inserted into or deleted
