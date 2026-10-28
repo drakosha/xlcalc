@@ -13,7 +13,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { pasteArgs, WINDOWS_ONLY, type PasteAnswer, type PasteCase, type PasteCases, type PasteSet } from './paste/cases.js'
 import { fileAnswers, runFileCases, secondsSince, setModule, writePrediction } from './stored.js'
-import { engineHas, engineOutcome } from './paste/shown.js'
+import { engineHas, engineOutcome, localFormulas } from './paste/shown.js'
 import { caseFiles, editParts } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 import { localeDir } from './locales.js'
@@ -71,7 +71,11 @@ export async function stepPaste(set: string, tag = 'en-US'): Promise<void> {
 export async function stepPastePredict(set: string): Promise<void> {
   const { cases, books } = (await setModule<PasteSet>('paste', set)).buildPasteCases()
   const out: Record<string, unknown> = {}
-  for (const c of cases) if (engineHas(c)) out[c.id] = await engineOutcome(books[c.book], c)
+  for (const c of cases) {
+    if (!engineHas(c)) continue
+    const r = await engineOutcome(books[c.book], c)
+    out[c.id] = c.local?.length && 'shown' in r ? { ...r, local: localFormulas(r.shown, c, books[c.book].locale ?? 'en-US') } : r
+  }
   writePrediction(new URL('./paste/x.ts', import.meta.url).href, set, out)
   console.log(`paste ${set}: ${Object.keys(out).length} predicted`)
 }
