@@ -6,10 +6,10 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { bookCalculation, bookFields, bookNotes, caseBook, fieldsFile, savedDir, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
+import { bookCalculation, bookFields, bookNotes, bookTurned, caseBook, fieldsFile, savedDir, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
 import { readXlsx } from '../src/xlsx.js'
 
-describe.each(['sheets', 'book', 'notes'])('the set %s', (set) => {
+describe.each(['sheets', 'book', 'notes', 'rotation'])('the set %s', (set) => {
   const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { answers: Record<string, FieldsAnswer> }
   it('Excel reads what the workbook holds, and saves it so', async () => {
     const cases = ((await import(`../bench/coverage/fields/${set}.ts`)) as FieldsSet).buildFieldsCases()
@@ -25,6 +25,9 @@ describe.each(['sheets', 'book', 'notes'])('the set %s', (set) => {
       // the notes, read since the set notes
       const notes = stored.answers[c.id].notes
       if (notes !== undefined) expect([notes, bookNotes(saved.book)], c.id).toEqual([bookNotes(caseBook(c)), notes])
+      // the turned cells, read since the set rotation
+      const turned = stored.answers[c.id].turned
+      if (turned !== undefined) expect([turned, bookTurned(saved.book)], c.id).toEqual([bookTurned(caseBook(c)), turned])
     }
   })
 })

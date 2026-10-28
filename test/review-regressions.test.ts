@@ -145,7 +145,7 @@ it('reports a calculated column formula that cannot be written to xlsx', async (
 it.each(['row', 'column'] as const)('reports properties lost from a %s style', async (kind) => {
   const data = '<c r="A1"><v>42</v></c>'
   const body = kind === 'row' ? `<sheetData><row r="1" s="1" customFormat="1">${data}</row></sheetData>` : `<cols><col min="1" max="1" style="1" width="12" customWidth="1"/></cols><sheetData><row r="1">${data}</row></sheetData>`
-  const r = await read({ sheets: [{ name: 'S', body }], styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="0" applyAlignment="1"><alignment textRotation="45"/></xf></cellXfs>' })
+  const r = await read({ sheets: [{ name: 'S', body }], styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="0" applyAlignment="1"><alignment shrinkToFit="1"/></xf></cellXfs>' })
   expect(r.issues).toContainEqual(expect.objectContaining({ code: 'style', sheet: 'S', cells: [kind === 'row' ? '1:1' : 'A:A'] }))
 })
 

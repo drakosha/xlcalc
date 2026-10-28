@@ -52,7 +52,7 @@ const LOSSES = pack(
     styles:
       '<fonts count="2"><font><sz val="12"/><name val="Arial"/></font><font><vertAlign val="superscript"/><sz val="12"/><name val="Arial"/></font></fonts>' +
       '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="darkGray"><fgColor rgb="FF00FF00"/></patternFill></fill></fills>' +
-      '<borders count="1"><border/></borders><cellXfs count="2"><xf/><xf fontId="1" fillId="2"><alignment textRotation="45"/></xf></cellXfs>',
+      '<borders count="1"><border/></borders><cellXfs count="2"><xf/><xf fontId="1" fillId="2"><alignment shrinkToFit="1"/></xf></cellXfs>',
     workbook: {
       before: '<workbookProtection lockStructure="1"/>',
       after:
@@ -72,7 +72,7 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['richText', { key: 'richText' }],
   ['style', { key: 'styleLost', part: 'superscript' }],
   ['style', { key: 'styleLost', part: 'patternFill' }],
-  ['style', { key: 'styleLost', part: 'textRotation' }],
+  ['style', { key: 'styleLost', part: 'shrinkToFit' }],
   ['errorValue', { key: 'errorUnspelled' }],
   ['errorConstant', { key: 'errorTyped' }],
   ['userFunction', { key: 'userFunction' }],
@@ -136,7 +136,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     expect(ru.issues.filter((i) => i.code === 'style').map((i) => [i.message, i.cells])).toEqual([
       ['Надстрочный шрифт в стиле не поддерживается', ['B1']],
       ['Заливка узором в стиле не поддерживается', ['B1']],
-      ['Поворот текста в стиле не поддерживается', ['B1']],
+      ['Автоподбор ширины в стиле не поддерживается', ['B1']],
     ])
     // the hidden name is read hidden, without an issue; the built-in one is left out
     expect(ru.book.names).toEqual([{ name: 'ставка', ref: '0.1', hidden: true }])

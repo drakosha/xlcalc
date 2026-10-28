@@ -585,6 +585,13 @@ function Step($xl, $wb, $s) {
     'notesShown' {
       List ($wb.Worksheets | ForEach-Object { $ws = $_; $ws.Comments | ForEach-Object { List @((Str $ws.Name), (Str $_.Parent.Address($false, $false)), (Cell $_.Visible)) } })
     }
+    # each worksheet's cells of its used range whose text is turned, [sheet, cell, Range.Orientation]
+    'orientations' {
+      List ($wb.Worksheets | ForEach-Object {
+          $ws = $_
+          foreach ($c in $ws.UsedRange.Cells) { $o = [double]$c.Orientation; if ($o -ne -4128 -and $o -ne 0) { List @((Str $ws.Name), (Str $c.Address($false, $false)), (Cell $o)) } }
+        })
+    }
     # the calculation option Excel took from the book it opened first (XlCalculation: -4105 automatic, -4135 manual, 2 semiautomatic)
     'calcMode' { Cell ([double]$xl.Calculation) }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx

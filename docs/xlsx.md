@@ -142,7 +142,7 @@ Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that name
 
 ### Styles and number formats
 
-Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
+Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Its alignment holds the text's orientation too, `rotation`: degrees from -90 to 90, up for positive ones, or `vertical`, the letters one above the other (xlsx `textRotation`, 91 to 180 for the degrees down, 255 for the letters); Excel 16.0.20430 for Windows read each kind from files `writeXlsx` and `writeKept` wrote as the style holds it and saved it so (`bench/windows/run.ts fields rotation`). The engine fits widths and heights as for level text. Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
 
 Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors.
 
@@ -279,7 +279,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `dataTable` | a what-if data table, read as its stored values |
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
-| `style` | pattern and gradient fills, diagonal borders, rotation, shrink to fit, subscript and superscript |
+| `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
 | `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
@@ -307,7 +307,7 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 | code | en-US | ru-RU |
 |---|---|---|
 | `richText` | formatted runs of text are read as plain text | Форматированный текст прочитан как простой |
-| `style` | a style's text rotation is not in the model | Поворот текста в стиле не поддерживается |
+| `style` | a style's shrink to fit is not in the model | Автоподбор ширины в стиле не поддерживается |
 | `calculation` | the maximum number of iterations "0" is not between 1 and 32,767: the default, 100, is used | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
 | `noCachedValues` | no result was passed: the file stores no formula values, and Excel calculates them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |
 

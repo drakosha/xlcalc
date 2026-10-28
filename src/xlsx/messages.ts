@@ -25,7 +25,6 @@ const STYLE_PARTS: Record<StylePart, string> = {
   patternFill: 'pattern fill',
   fillRemoved: 'removed fill',
   fillWithoutColor: 'fill without its color',
-  textRotation: 'text rotation',
   shrinkToFit: 'shrink to fit',
   readingOrder: 'reading order',
   justifyLastLine: 'justify last line',

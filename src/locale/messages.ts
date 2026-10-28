@@ -49,7 +49,6 @@ export type StylePart =
   | 'patternFill'
   | 'fillRemoved'
   | 'fillWithoutColor'
-  | 'textRotation'
   | 'shrinkToFit'
   | 'readingOrder'
   | 'justifyLastLine'

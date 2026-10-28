@@ -7,7 +7,7 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, CellEdit, LayoutEdit, SheetView } from '../../../src/contract.js'
+import type { BookInput, CellEdit, CellPatch, LayoutEdit, SheetView } from '../../../src/contract.js'
 import { withField } from '../../../src/looks/sheet.js'
 import { createSession } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
@@ -20,7 +20,7 @@ export interface FieldsCase {
   id: string
   book: BookInput
   /** Layout edits a session makes over the book read by `openKept`, and views a host sets by sheet (null removes one), written over its file by `writeKept`. */
-  kept?: { layout?: LayoutEdit[]; views?: Record<string, SheetView | null>; calculation?: BookInput['calculation'] | null; cells?: CellEdit[] }
+  kept?: { layout?: LayoutEdit[]; views?: Record<string, SheetView | null>; calculation?: BookInput['calculation'] | null; cells?: CellEdit[]; patches?: CellPatch[] }
 }
 
 /** What Excel read of each sheet: its tab colour (`#RRGGBB`, null for none), whether it shows gridlines and headings. */
@@ -29,11 +29,15 @@ export type SheetFields = [name: string, tab: string | null, gridlines: boolean,
 /** A note as Excel read it: its sheet and cell, and whether it is shown all the time. */
 export type NoteShown = [sheet: string, cell: string, shown: boolean]
 
-/** What Excel read: the sheets' fields, the calculation option (`automatic`, `manual`, `autoNoTable`) since the set `book`, the notes since `notes`. */
+/** A cell whose text is turned: its sheet and cell, and the rotation. */
+export type Turned = [sheet: string, cell: string, rotation: number | 'vertical']
+
+/** What Excel read: the sheets' fields, the calculation option (`automatic`, `manual`, `autoNoTable`) since the set `book`, the notes since `notes`, the turned cells since `rotation`. */
 export interface FieldsAnswer {
   sheets: SheetFields[]
   calculation?: string
   notes?: NoteShown[]
+  turned?: Turned[]
 }
 
 export interface FieldsSet {
@@ -56,6 +60,7 @@ export function caseBook(c: FieldsCase): BookInput {
   const s = createSession(c.book)
   s.setLayout(c.kept.layout ?? [])
   if (c.kept.cells) s.setCells(c.kept.cells)
+  if (c.kept.patches) s.patchCells(c.kept.patches)
   const out = hostSet(s.getBook(), c.kept)
   s.close()
   return out
@@ -69,6 +74,7 @@ export async function fieldsFileOf(c: FieldsCase): Promise<Uint8Array> {
   const s = createSession(read.book, { cached: read.cached })
   s.setLayout(c.kept.layout ?? [])
   if (c.kept.cells) s.setCells(c.kept.cells)
+  if (c.kept.patches) s.patchCells(c.kept.patches)
   const snap = s.getSnapshot()
   const out = (await writeKept(data, { ...snap, book: hostSet(snap.book, c.kept) })).data
   s.close()
@@ -80,6 +86,17 @@ export const bookNotes = (b: BookInput): NoteShown[] =>
   b.sheets.flatMap((s) =>
     Object.entries(s.cells)
       .flatMap(([a, c]): NoteShown[] => (c.note ? [[s.name, a, c.note.shown === true]] : []))
+      .sort((x, y) => { const [p, q] = [parseAddress(x[1]), parseAddress(y[1])]; return p.row - q.row || p.col - q.col }),
+  )
+
+/** The cells of a book whose text is turned, by their styles, in Excel's order: by sheet, by row and column. */
+export const bookTurned = (b: BookInput): Turned[] =>
+  b.sheets.flatMap((s) =>
+    Object.entries(s.cells)
+      .flatMap(([a, c]): Turned[] => {
+        const r = c.style === undefined ? undefined : b.styles?.[c.style]?.alignment?.rotation
+        return r ? [[s.name, a, r]] : []
+      })
       .sort((x, y) => { const [p, q] = [parseAddress(x[1]), parseAddress(y[1])]; return p.row - q.row || p.col - q.col }),
   )
 

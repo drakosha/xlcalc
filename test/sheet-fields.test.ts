@@ -70,3 +70,11 @@ describe('a note shown all the time', () => {
     expect((await readXlsx(kept.data)).book.sheets[0].cells).toEqual(cells)
   })
 })
+
+describe("a text's rotation", () => {
+  it('is checked, written, read and patched', async () => {
+    expect(() => compute({ styles: [{ alignment: { rotation: 91 } }], sheets: [{ name: 'S', cells: {} }] })).toThrow(new InputError('book.styles[0].alignment.rotation', 'expected an integer from -90 to 90, got number 91'))
+    const b: BookInput = { styles: [{ alignment: { rotation: -45 } }, { alignment: { rotation: 'vertical' } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0 }, B1: { value: 2, style: 1 } } }] }
+    expect((await readXlsx((await writeXlsx({ book: b })).data)).book.styles).toEqual(b.styles)
+  })
+})

@@ -204,7 +204,6 @@ const STYLE_PARTS: Record<StylePart, string> = {
   patternFill: 'заливка узором',
   fillRemoved: 'снятая заливка',
   fillWithoutColor: 'заливка без цвета',
-  textRotation: 'поворот текста',
   shrinkToFit: 'автоподбор ширины',
   readingOrder: 'направление текста',
   justifyLastLine: 'выравнивание последней строки',

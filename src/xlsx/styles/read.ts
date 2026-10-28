@@ -145,7 +145,10 @@ function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: 
   if (flag(a.wrapText)) out.wrap = true
   const indent = Number(a.indent ?? 0)
   if (indent > 0) out.indent = Math.min(250, Math.round(indent))
-  if (Number(a.textRotation ?? 0)) lost.push('textRotation')
+  // 1 to 90 degrees up, 91 to 180 down from 1 to 90, 255 the letters one above the other
+  const turn = Number(a.textRotation ?? 0)
+  if (turn === 255) out.rotation = 'vertical'
+  else if (Number.isInteger(turn) && turn > 0 && turn <= 180) out.rotation = turn <= 90 ? turn : 90 - turn
   if (flag(a.shrinkToFit)) lost.push('shrinkToFit')
   if (Number(a.readingOrder ?? 0)) lost.push('readingOrder')
   if (flag(a.justifyLastLine)) lost.push('justifyLastLine')
