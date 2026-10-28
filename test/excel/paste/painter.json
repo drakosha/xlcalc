@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.114.2",
   "locale": "en-US",
-  "seconds": 49.1
+  "seconds": 7.3
  },
  "books": {
   "painter": {
@@ -236,7 +236,7 @@
    },
    "to": {
     "sheet": "S",
-    "range": "H14"
+    "range": "H14:I14"
    },
    "what": "painter"
   },
@@ -249,7 +249,7 @@
    },
    "to": {
     "sheet": "S",
-    "range": "H14"
+    "range": "H14:I14"
    },
    "what": "formats"
   },
