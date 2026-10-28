@@ -10,6 +10,7 @@ import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
 import { KEPT_CELLS } from '../src/xlsx/keep/carriers.js'
 import { changedParts, partsOf, withParts } from './keep-files.js'
+import { ruRU } from './locales.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
@@ -394,6 +395,16 @@ describe("the workbook's default font", () => {
     expect(Buffer.from((await writeKept(data, { book: opened.book })).data).equals(Buffer.from(data))).toBe(true)
     for (const font of [{ name: 'Arial', size: 12 }, undefined])
       await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'font', message: 'xlsx/keep: the default font changed, which writeKept does not write' })
+  })
+})
+
+describe("a refusal's message", () => {
+  it("is in the language of writeKept's locale, a loaded locale's tag or a locale object, en-US by default", async () => {
+    const data = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } }, { values: 'omit' })).data
+    const book = { ...(await openKept(data)).book, font: { name: 'Arial', size: 12 } }
+    const ru = 'xlsx/keep: Изменился шрифт по умолчанию, а writeKept его не записывает'
+    for (const locale of ['ru-RU', ruRU]) await expect(writeKept(data, { book }, { locale })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'font', message: ru })
+    await expect(writeKept(data, { book }, { locale: 'en-US' })).rejects.toMatchObject({ message: 'xlsx/keep: the default font changed, which writeKept does not write' })
   })
 })
 

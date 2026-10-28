@@ -28,6 +28,8 @@ import { attributes, placed } from '../xml/scan.js'
 import { escapeAttr, escapeText, readText } from '../xml/text.js'
 import type { Carrier, Edit, Item } from './carriers.js'
 import { absText, areasOf, areaText, dollarsOf, lastCell, plainArea, sqrefCarrier, sqrefRects, type Dollars } from './refs.js'
+import type { KeptPart } from '../../locale/messages.js'
+import type { KeptMessage } from './messages.js'
 import { edited, KeptRefusal } from './refusals.js'
 import { setAttrs, tagEnd, valueAt } from './xml.js'
 
@@ -130,9 +132,9 @@ function sqrefAt(xml: string, s: RuleSource): [number, number] | undefined {
 }
 
 /** The items of the sheet's rules the model does not have, a block of the file each, and the reasons a rule's references cannot be read. */
-export function ruleItems(xml: string, sources: RuleSource[], sheet: string, on: number, part: string, carrier: (ref: string, kind: Carrier['kind']) => Carrier): { items: Item[]; unparsed: string[] } {
+export function ruleItems(xml: string, sources: RuleSource[], sheet: string, on: number, part: string, carrier: (ref: string, kind: Carrier['kind']) => Carrier): { items: Item[]; unparsed: KeptPart[] } {
   const items: Item[] = []
-  const unparsed: string[] = []
+  const unparsed: KeptPart[] = []
   const blocks = new Map<number, RuleSource[]>()
   for (const s of sources) if (unread(s)) (blocks.get(s.block.start) ?? blocks.set(s.block.start, []).get(s.block.start)!).push(s)
   for (const rules of blocks.values()) {
@@ -140,7 +142,7 @@ export function ruleItems(xml: string, sources: RuleSource[], sheet: string, on:
     const span = sqrefAt(xml, first)
     const sqref = span ? readText(xml.slice(...span)) : first.block.sqref
     const rects = span ? sqrefRects(sqref) : null
-    const what = `an unread conditional format of '${sheet}' (${sqref})`
+    const what: KeptPart = { part: 'unreadRule', sheet, range: sqref }
     const formulas = rules.flatMap((s) => formulasOf(xml, s.start, s.end).map((f) => ({ ...f, carried: formulaCarrier(f.text, sheet) })))
     if (!rects || formulas.some((f) => f.carried === null)) {
       unparsed.push(what)
@@ -167,8 +169,8 @@ export function ruleItems(xml: string, sources: RuleSource[], sheet: string, on:
       fix([areasNow, belowNow, besideNow, sheetNow, originNow, ...formulasNow]) {
         const own = areasOf(sheetNow)?.[0]?.sheet
         const areas = areasOf(areasNow)
-        if (!areas || own === undefined) return { refuse: `${what} is no reference after the change`, code: 'rules' }
-        if (areas.some((a) => 'rect' in a && sheetKey(a.sheet) !== sheetKey(own))) return { refuse: `${what} moved to another sheet, which writeKept does not write`, code: 'moved' }
+        if (!areas || own === undefined) return { refuse: { key: 'keptNoRef', what }, code: 'rules' }
+        if (areas.some((a) => 'rect' in a && sheetKey(a.sheet) !== sheetKey(own))) return { refuse: { key: 'keptMovedSheet', what }, code: 'moved' }
         const now = areas.map((a) => ('rect' in a ? { ...a.rect } : null))
         // lines inserted right after a range join it, as Excel joins them; a range ending on the sheet's last line keeps ending there
         const join = (text: string, list: { i: number }[], axis: 'r' | 'c') =>
@@ -194,11 +196,11 @@ export function ruleItems(xml: string, sources: RuleSource[], sheet: string, on:
         const o = areasOf(originNow)?.[0]
         const corner = cornerOf(left)
         if (relative && (!o || !('rect' in o) || o.rect.r1 !== corner.r || o.rect.c1 !== corner.c))
-          return { refuse: `${what} lost its first cell, and its formulas have relative references, which writeKept does not make for the new first cell`, code: 'rules' }
+          return { refuse: { key: 'keptFirstCell', what }, code: 'rules' }
         for (const [k, f] of plans.entries()) {
           if (formulasNow[k] === f.carried.ref) continue
           const back = formulaBack(formulasNow[k], f.carried.plan, own)
-          if (back === null) return { refuse: `${what} has a formula whose references the change took apart`, code: 'rules' }
+          if (back === null) return { refuse: { key: 'keptTakenApart', what }, code: 'rules' }
           edits.push({ part, start: f.at[0], end: f.at[1], text: f.attr ? escapeAttr(back) : escapeText(back) })
         }
         return { edits }
@@ -304,17 +306,17 @@ const BAR_ID = /\{[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0
  */
 export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
   const { xml, sheet, sources, r0, r1 } = x
-  const refuse = (why: string) => new KeptRefusal(`the conditional formats of '${sheet}' changed, and ${why}`, 'rules')
-  if (sources.some((s) => s.pivot)) throw refuse("the file has a pivot table's rules, which the pivot table names by priority")
+  const refuse = (m: KeptMessage) => new KeptRefusal(m, 'rules')
+  if (sources.some((s) => s.pivot)) throw refuse({ key: 'keptRulesPivot', sheet })
   for (const s of sources) {
     const lost = s.lost.find((k) => !KEPT_LOSSES.has(k))
-    if (s.index !== undefined && lost) throw refuse(`the workbook read a rule over ${s.block.sqref} without what it holds (${lost})`)
+    if (s.index !== undefined && lost) throw refuse({ key: 'keptRulesPart', sheet, range: s.block.sqref, lost })
   }
   const { to, same } = align(r0, r1)
   const cells = (t: string) => (sqrefRects(t) ?? []).reduce((n, r) => n + cellCount(r), 0)
   /** A rule of the file as carried, its edits made; undefined for one whose cells were all deleted. */
   const carry = (s: RuleSource): (Carried & { was: string }) | undefined => {
-    if (s.x14 && [...xml.slice(s.start, s.end).matchAll(/<\/?([\w.-]+):/g)].some((m) => m[1] !== 'x14' && m[1] !== 'xm')) throw refuse(`a rule of Excel 2010 over ${s.block.sqref} is in prefixes of its own`)
+    if (s.x14 && [...xml.slice(s.start, s.end).matchAll(/<\/?([\w.-]+):/g)].some((m) => m[1] !== 'x14' && m[1] !== 'xm')) throw refuse({ key: 'keptRulesPrefixes', sheet, range: s.block.sqref })
     const own = x.edits.filter((e) => e.start >= s.start && e.end <= s.end)
     if (own.some((e) => e.start === s.start && e.end === s.end)) return undefined
     const span = sqrefAt(xml, s)
@@ -344,7 +346,7 @@ export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
     const c = carry(s)
     if (!c) continue
     const others = s.id === undefined ? [] : sources.filter((o) => o !== s && o.id === s.id)
-    if (others.some((o) => o.index !== undefined)) throw refuse(`the workbook read the Excel 2010 part of a data bar over ${s.block.sqref} without its rule`)
+    if (others.some((o) => o.index !== undefined)) throw refuse({ key: 'keptRulesBar', sheet, range: s.block.sqref })
     const part = others.find((o) => o.joined && o.x14)
     if (part) c.partner = carry(part)
     // a rule goes after the others as the workbook's would (its formulas without relative references, or with its first cell kept, compare as written)

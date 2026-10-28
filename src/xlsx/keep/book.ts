@@ -32,7 +32,7 @@ import { records } from './zip.js'
 import { carrierNames, carriersOf, type Carriers, type Edit } from './carriers.js'
 import { keptRules } from './rules.js'
 import { conditionalXml } from '../write/conditional.js'
-import { edited, KeptRefusal, refusals, type Identity } from './refusals.js'
+import { edited, KeptRefusal, refusalIn, refusals, type Identity } from './refusals.js'
 import { spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
@@ -44,7 +44,6 @@ import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const VML = 'application/vnd.openxmlformats-officedocument.vmlDrawing'
 const STRICT = 'http://purl.oclc.org/ooxml/spreadsheetml/main'
-const STRICT_FILE = 'the file is a Strict Open XML workbook, which writeKept does not write over'
 const REL = (kind: string) => `${DOC_REL}/${kind}`
 /** The children of a workbook the schema puts before its names, and before its calculation settings. */
 const BEFORE_NAMES = ['fileVersion', 'fileSharing', 'workbookPr', 'workbookProtection', 'bookViews', 'sheets', 'functionGroups', 'externalReferences']
@@ -149,10 +148,20 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
 
 /**
  * Writes a book over the xlsx file it was read from (`openKept`): what the book changed is written, the rest is the
- * file's as it was, the parts the model does not have among it. Refuses (`KeptRefusal`) a change that would leave
- * references the model does not hold pointing at other cells.
+ * file's as it was, the parts the model does not have among it. Refuses (`KeptRefusal`, its message in the language of
+ * `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
  */
 export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
+  try {
+    return await writeOver(original, snapshot, opts)
+  } catch (e) {
+    // a refusal comes once the options are checked: in the language of their locale
+    throw e instanceof KeptRefusal ? refusalIn(e, opts?.locale) : e
+  }
+}
+
+/** `writeKept`'s writing, its refusals in English. */
+async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
   const bytes = fileBytes(original)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
   onlyOptions(o, 'opts', ['values', 'locale', 'limits'])
@@ -176,13 +185,13 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
     k.write()
   } catch (e) {
     // a Strict file's sheets are in other namespaces than the model's elements
-    throw strict ? new KeptRefusal(STRICT_FILE, 'file') : e
+    throw strict ? new KeptRefusal({ key: 'keptStrict' }, 'file') : e
   }
   if (!k.changed) return { data: bytes, issues: [] }
-  if (strict) throw new KeptRefusal(STRICT_FILE, 'file')
+  if (strict) throw new KeptRefusal({ key: 'keptStrict' }, 'file')
   // a sheet the reader read under another name than the file's: the file's formulas name it as the file does
   const repaired = src.sheets.findIndex((s, i) => src.decls[s.decl].name !== read.book.sheets[i].name)
-  if (repaired >= 0) throw new KeptRefusal(`the file names a sheet '${src.decls[src.sheets[repaired].decl].name}', which Excel does not take (it was read as '${read.book.sheets[repaired].name}')`, 'file')
+  if (repaired >= 0) throw new KeptRefusal({ key: 'keptSheetName', name: src.decls[src.sheets[repaired].decl].name, sheet: read.book.sheets[repaired].name }, 'file')
   if (k.formulas && unasked) k.issues.add('noCachedValues', { key: 'noResult' })
   // a sheet with more cells that hold what only the file holds than have carriers, whose rows or columns moved
   for (const [i, count] of carriers.uncarried.entries()) {
@@ -267,7 +276,7 @@ class Kept {
   write(): void {
     const { src, book0, book } = this
     // the file's first font is the default its styles are written against: another one would change every cell's look
-    if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal('the default font changed, which writeKept does not write', 'font')
+    if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal({ key: 'keptFont' }, 'font')
     const emptied = this.others()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
@@ -286,7 +295,7 @@ class Kept {
       const name = book0.sheets[k].name
       const conditional = this.lost.conditional.has(name) ? this.rules(k, j, p0, p1) : undefined
       if (this.lost.validation.has(name) && p0.validations !== p1.validations)
-        throw new KeptRefusal(`the data validation of '${name}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`, 'rules')
+        throw new KeptRefusal({ key: 'keptValidation', sheet: name }, 'rules')
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
       // the references of the sheet's own parts (an AutoFilter, page breaks, sparklines) written back first
@@ -414,7 +423,7 @@ class Kept {
   private notes(ss: SourceSheet, p0: SheetPieces, p1: SheetPieces, rels: Rels): string | undefined {
     if (p0.notes?.comments === p1.notes?.comments) return undefined
     const name = this.book0.sheets[this.src.sheets.indexOf(ss)].name
-    if (ss.rels.some((r) => r.kind === 'threadedComment')) throw new KeptRefusal(`the notes of '${name}' changed, and it has comment threads, which writeKept does not write`, 'threads')
+    if (ss.rels.some((r) => r.kind === 'threadedComment')) throw new KeptRefusal({ key: 'keptThreads', sheet: name }, 'threads')
     this.changed = true
     const comments = ss.rels.find((r) => r.kind === 'comments' && !r.external)
     const legacy = /<(?:[\w.-]+:)?legacyDrawing\b[^>]*?\bid="([^"]+)"/.exec(ss.xml)?.[1]
@@ -467,7 +476,7 @@ class Kept {
       const t1 = t0 && take(t0)
       if (!t0) list.push(r.id)
       else if (!t1) {
-        if (this.parts.has(relsPath(r.target))) throw new KeptRefusal(`the table ${t0.name} was deleted, and it has parts the workbook does not hold (${relsPath(r.target)})`, 'deleted')
+        if (this.parts.has(relsPath(r.target))) throw new KeptRefusal({ key: 'keptTableParts', table: t0.name, path: relsPath(r.target) }, 'deleted')
         this.changed = listChanged = true
         this.parts.remove(r.target)
         this.types.remove(r.target)
@@ -642,7 +651,7 @@ class Kept {
       const was = this.src.links[i]
       // the relationship by which the file's part points at the other workbook
       const id = was && /<externalBook\b[^>]*?\sr:id="([^"]*)"/.exec(was.xml)?.[1]
-      if (!was || !id) throw new KeptRefusal(`the link [${i + 1}] to another workbook changed, and its part is missing or is not a workbook's (DDE, OLE)`, 'links')
+      if (!was || !id) throw new KeptRefusal({ key: 'keptLinkKind', link: i + 1 }, 'links')
       this.parts.set(was.part, externalLinkXml(l1[i], i + 1, this.issues).replace(' r:id="rId1"', ` r:id="${id}"`))
       this.changed = true
     }
