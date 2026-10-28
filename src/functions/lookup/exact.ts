@@ -6,8 +6,10 @@ import { KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
 
 interface Positions { first: number; last: number }
 interface TextPosition extends Positions { value: string }
+/** A key's first position, and its last only where it repeats: a lookup column's keys are mostly unique. */
+interface ScalarIndex { first: Map<number | boolean, number>; last: Map<number | boolean, number> }
 export interface Index {
-  scalar?: Map<number | boolean, Positions> | false
+  scalar?: ScalarIndex | false
   text?: TextPosition[]
   scalarWork: number
   textWork: number
@@ -20,7 +22,7 @@ export interface ExactStore {
   write(index: Index, bytes: number): void
 }
 
-export const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
+export const storedBytes = (index: Index) => 128 + (index.scalar ? (index.scalar.first.size + index.scalar.last.size) * KEY_BYTES : 0)
   + (index.text?.reduce((n, x) => n + KEY_BYTES + POSITION_BYTES + x.value.length * 2, 0) ?? 0)
 
 /** A built index counted in the budget: in its range's store, or with the values it is over, which it goes with. */
@@ -91,21 +93,21 @@ export function indexedExact(line: Line, key: Key, compare: Compare, last: boole
   } else {
     if (index.scalar === undefined) {
       if (index.scalarWork < length) return undefined
-      const map = new Map<number | boolean, Positions>()
+      const map: ScalarIndex = { first: new Map(), last: new Map() }
       for (let i = 0; i < length; i++) {
         if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, length - i))
         const value = line.at(i)
         if (value === undefined || (typeof value === 'number' && !Number.isFinite(value))) { index.scalar = false; break }
         if (typeof value !== 'number' && typeof value !== 'boolean') continue
-        const found = map.get(value)
-        if (found) found.last = i
-        else map.set(value, { first: i, last: i })
+        if (map.first.has(value)) map.last.set(value, i)
+        else map.first.set(value, i)
       }
       index.scalar ??= map
       counted(line, index)
     }
     if (index.scalar === false) return undefined
-    position = index.scalar.get(key)
+    const first = index.scalar.first.get(key)
+    return first === undefined ? -1 : last ? (index.scalar.last.get(key) ?? first) : first
   }
   return position ? (last ? position.last : position.first) : -1
 }
