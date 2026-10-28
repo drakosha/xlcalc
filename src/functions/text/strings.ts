@@ -37,11 +37,20 @@ function proper(s: string): string {
   return out
 }
 
+// A pattern filled down a column is compiled once; the matchers keep no state between finds.
+const patterns = new Map<string, Wildcard>()
+
 /** Wildcards as in the criteria (`src/criteria.ts`); a `~` alone is an escape too. */
 function search(find: string, within: string, start = 1): V {
   if (start < 1 || start > within.length) return E.VALUE
   if (find === '') return start
-  const m = new Wildcard(find, 'iu').find(within.slice(start - 1))
+  let w = patterns.get(find)
+  if (!w) {
+    if (patterns.size >= 256) patterns.clear()
+    patterns.set(find, (w = new Wildcard(find, 'iu')))
+  }
+  // the slice, not a start inside the text: under `u` a start inside a surrogate pair would step back to its lead
+  const m = w.find(within.slice(start - 1))
   return m ? m[0] + start : E.VALUE
 }
 
