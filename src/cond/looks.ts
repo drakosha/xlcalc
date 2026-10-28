@@ -9,7 +9,7 @@ import type { BarLook, CellInput, CellValue, Color, ConditionalFormat, Condition
 import type { EngineState } from '../engine.js'
 import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { inner, MAX_COLS } from '../model.js'
+import { colOf, inner, MAX_COLS, rowOf } from '../model.js'
 import { enCode } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
 import { cellCount, hasCell, inside, type Rect } from '../structure/area.js'
@@ -281,8 +281,8 @@ export function* windowLooks(state: EngineState, s: number, x: Rect | Rect[], on
     if (only && only.size * parts.length < parts.reduce((n, p) => n + cellCount(p), 0)) {
       for (const k of only) {
         if (paced(1)) yield
-        const r = Math.floor(k / MAX_COLS)
-        const c = k - r * MAX_COLS
+        const r = rowOf(k)
+        const c = colOf(k)
         if (parts.some((p) => hasCell(p, r, c))) visit(k, r, c)
       }
       continue

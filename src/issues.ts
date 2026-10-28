@@ -7,7 +7,7 @@ import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
 import { canAllot } from './exec/budget.js'
 import { stopped } from './held.js'
-import { formatAddress, placeOf } from './model.js'
+import { byPlace, formatAddress, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { fillBounds } from './spill/fill.js'
 import { ownerOf } from './spill/place.js'
@@ -102,7 +102,7 @@ export function issues(state: EngineState): Issue[] {
         const v = valueAt(state, x.s, r, c)
         if (isErr(v) && (r !== x.r1 || c !== x.c1)) out.push(spilledIssue(state, x, r, c, v.code))
       }
-  return out.sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+  return out.sort(byPlace)
 }
 
 /** The issue of one cell, as `issues` lists it (a cell of a large spill's unstored rest too); null for a cell without an error. */

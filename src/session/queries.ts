@@ -8,9 +8,9 @@ import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
 import { issueDetail } from '../issues.js'
-import { colOf, formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf, rowOf } from '../model.js'
+import { byPlace, colOf, formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf, rowOf } from '../model.js'
 import { cellsAt, outValue } from '../result.js'
-import { hasCell, rectText, meets } from '../structure/area.js'
+import { rectText, meets } from '../structure/area.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { inputIn } from '../looks/sheet.js'
@@ -18,7 +18,7 @@ import { cellValue } from './looks.js'
 import { checkLineNumbers, sessionEditTexts } from './viewport.js'
 import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
 import { finderOf, type Finder, type Ref } from './find.js'
-import { firstIn, nextIn, readOrder } from './read-order.js'
+import { earlierOf, firstIn, nextIn, readOrder, spillsIn } from './read-order.js'
 import { textsOf } from './search.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
@@ -200,7 +200,7 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
     const f = s.formulas[id]
     if (f && s.input.sheets[f.s]?.cells[formatAddress(f.r, f.c)]?.formula !== undefined && s.at.get(placeOf(f.s, f.r, f.c)) === id) found.push(f)
   }
-  found.sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+  found.sort(byPlace)
   const [fs, fm] = page.from ?? [-1, -1]
   for (const f of found) {
     if (paced(1)) yield
@@ -232,8 +232,8 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
   const refs = refsOf(s, given)
   const rows = o.rows?.map((n) => n - 1) ?? null
   for (const [n, x] of refs.entries()) {
-    const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
-    if ([...s.spills.on.values()].some((y) => y.s === x.s && meets(y, x))) {
+    const earlier = earlierOf(refs, n)
+    if (spillsIn(s, x).length) {
       // spilled cells among the range's: read in readCells' order, this range's cells alone
       for (const at of readOrder(s, refs, rows, [n, -1], false)) {
         if (!at) yield
@@ -248,7 +248,7 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
       if (paced(1)) yield
       const r = rowOf(at[j])
       const c = colOf(at[j])
-      if (!(earlier.length && earlier.some((y) => hasCell(y, r, c)))) add(cellValue(s, x.s, r, c))
+      if (!earlier(r, c)) add(cellValue(s, x.s, r, c))
     }
   }
   out.sum = Number.isFinite(sum.value) ? sum.value : { error: 'NUM' }

@@ -15,7 +15,7 @@ import { colOf, formatAddress, MAX_COLS, MAX_ROWS, placeOf, rowOf } from '../mod
 import { cellValue } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
-import { hasCell, meets, type Rect } from '../structure/area.js'
+import { hasCell, type Rect } from '../structure/area.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { folded, matcher } from '../find-text.js'
 import { lowerBound } from '../sorted.js'
@@ -23,6 +23,7 @@ import { FIND_OPTIONS } from '../strict-args.js'
 import { inputIn } from '../looks/sheet.js'
 import { sessionEditTexts } from './viewport.js'
 import { byColumns, kindOf, textsOf, type SheetTexts } from './search.js'
+import { earlierOf } from './read-order.js'
 
 const WHERE = ['text', 'edit', 'formula', 'value'] as const
 
@@ -134,12 +135,12 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     const x = refs[n]
     const { rows: hr, cols: hc } = linesOf(x.s)
     const skip = skips(x.s) && (hr.any || hc.any)
-    const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
+    const earlier = earlierOf(refs, n)
     let ix: number[] = []
     let places: number[] = []
     const take = (i: number, place: number, r: number, c: number) => {
       if (skip && (hr.at(r)[0] || hc.at(c)[0])) return false
-      if (earlier.length && earlier.some((y) => hasCell(y, r, c))) return false
+      if (earlier(r, c)) return false
       ix.push(i)
       places.push(place)
       return ix.length === CHUNK
@@ -155,9 +156,8 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
         if (paced(1)) yield
         const k = at[j]
         // the row and column of the place, without a pair made for each cell
-        const q = Math.floor(k / (cols ? MAX_ROWS : MAX_COLS))
-        const r = cols ? k - q * MAX_ROWS : q
-        const c = cols ? q : k - q * MAX_COLS
+        const r = cols ? k % MAX_ROWS : rowOf(k)
+        const c = cols ? Math.floor(k / MAX_ROWS) : colOf(k)
         if (r < x.r1 || r > x.r2 || c < x.c1 || c > x.c2 || (only && !only.has(r)) || !take(cols ? cols.ix[j] : j, k, r, c)) continue
         yield [ix, places]
         ix = []

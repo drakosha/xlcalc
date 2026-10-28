@@ -6,7 +6,7 @@ import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { addressOrder, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import { addressOrder, byPlace, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
 import type { V } from './values.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
@@ -15,7 +15,7 @@ import { NONE, type Layer } from './looks/layer.js'
 import { inputIn, layerOf } from './looks/sheet.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
-import { cellCount, cornersText, meets, type Rect } from './structure/area.js'
+import { cellCount, cornersText, meets, oneCell, type Rect } from './structure/area.js'
 
 
 /** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
@@ -177,8 +177,9 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
  * cells, and in the conditional formats' tests.
  */
 export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean, whole = false): Steps<CellView | undefined> {
-  const cond = state.input.sheets[s].conditionalFormats?.length ? yield* windowLooks(state, s, { r1: r, c1: c, r2: r, c2: c }) : null
-  return viewAt(state, s, r, c, display ? cellLooks(state) : null, formatCodeIn(state.input.locale), cond, yield* spillAt(state, s, r, c, whole))
+  const cond = state.input.sheets[s].conditionalFormats?.length ? yield* windowLooks(state, s, oneCell(r, c)) : null
+  const spillOf = state.spills.on.size ? yield* spillAt(state, s, r, c, whole) : undefined
+  return viewAt(state, s, r, c, display ? cellLooks(state) : null, (format) => formatCodeIn(state.input.locale)(format), cond, spillOf)
 }
 
 /**
@@ -190,15 +191,15 @@ export function* cellsAt(state: EngineState, cells: [s: number, r: number, c: nu
   const code = formatCodeIn(state.input.locale)
   const conds = new Map<number, Map<number, ConditionalAppearance>>()
   for (const s of new Set(cells.map((x) => x[0])))
-    if (state.input.sheets[s].conditionalFormats?.length) conds.set(s, yield* windowLooks(state, s, cells.filter((x) => x[0] === s).map(([, r, c]) => ({ r1: r, c1: c, r2: r, c2: c }))))
+    if (state.input.sheets[s].conditionalFormats?.length) conds.set(s, yield* windowLooks(state, s, cells.filter((x) => x[0] === s).map(([, r, c]) => oneCell(r, c))))
   const out: (CellView | undefined)[] = []
   for (const [s, r, c] of cells) out.push(viewAt(state, s, r, c, look, code, conds.get(s) ?? null, state.spills.on.size ? yield* spillAt(state, s, r, c, whole) : undefined))
   return out
 }
 
-/** The formula the cell at row `r` and column `c` of sheet `s` spilled from, as `spilled` takes it; undefined for none. */
+/** The formula the cell at row `r` and column `c` of sheet `s` spilled from, as `spilled` takes it; undefined for none. Its callers ask only where arrays spill, with no steps for a cell otherwise. */
 function* spillAt(state: EngineState, s: number, r: number, c: number, whole: boolean): Steps<string | undefined> {
-  return state.spills.on.size ? (yield* spilled(state, s, { r1: r, c1: c, r2: r, c2: c }, whole)).get(formatAddress(r, c)) : undefined
+  return (yield* spilled(state, s, oneCell(r, c), whole)).get(formatAddress(r, c))
 }
 
 /** `cellAt`'s view by looks `look`, codes `code`, the appearances `cond` of the sheet's conditional formats (null without any) and the formula `spillOf` it spilled from. */
@@ -294,7 +295,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
   const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
-    .sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+    .sort(byPlace)
     .map((f) => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
   return {
     sheets,

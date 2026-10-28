@@ -17,6 +17,17 @@ import { textsOf } from './search.js'
 /** A cell of a query: its sheet, row and column, the range it comes in, and its address. */
 export type Read = [s: number, r: number, c: number, n: number, addr: string]
 
+/** Whether a cell of range `n` of `refs` is in a range before it on its sheet, where the query took it already. */
+export function earlierOf(refs: Ref[], n: number): (r: number, c: number) => boolean {
+  const x = refs[n]
+  const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
+  return earlier.length ? (r, c) => earlier.some((y) => hasCell(y, r, c)) : () => false
+}
+
+/** The parts of the arrays spilled in a range of a query, the range's own. */
+export const spillsIn = (state: EngineState, x: Ref): Rect[] =>
+  [...state.spills.on.values()].filter((y) => y.s === x.s && meets(y, x)).map((y) => ({ r1: Math.max(y.r1, x.r1), r2: Math.min(y.r2, x.r2), c1: Math.max(y.c1, x.c1), c2: Math.min(y.c2, x.c2) }))
+
 /** The rows of `rows` (ascending) from row `r` on, as the index of the first; all rows without `rows`. */
 const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(rows, r)] ?? Infinity) : r)
 
@@ -73,8 +84,8 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
     const start = from && n === from[0] ? from[1] + 1 : 0
     const sheet = state.input.sheets[x.s]
     const { cells } = sheet
-    const spills = [...state.spills.on.values()].filter((y) => y.s === x.s && meets(y, x)).map((y) => ({ r1: Math.max(y.r1, x.r1), r2: Math.min(y.r2, x.r2), c1: Math.max(y.c1, x.c1), c2: Math.min(y.c2, x.c2) }))
-    const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
+    const spills = spillsIn(state, x)
+    const earlier = earlierOf(refs, n)
     const layer = looks ? layerOf(sheet) : undefined
     const pieces = layer ? [...layer.pieces(x)] : []
     const { at } = yield* textsOf(state, x.s)
@@ -85,7 +96,7 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
         const r = Math.floor(at[j] / MAX_COLS)
         const c = at[j] - r * MAX_COLS
         const addr = formatAddress(r, c)
-        if (addr in cells && !(earlier.length && earlier.some((y) => hasCell(y, r, c)))) yield [x.s, r, c, n, addr]
+        if (addr in cells && !earlier(r, c)) yield [x.s, r, c, n, addr]
       }
       continue
     }
@@ -102,7 +113,7 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
       const c = colOf(m)
       const addr = formatAddress(r, c)
       // an input cell from the index alone, a spilled cell from its spill alone, a look's cell where neither is
-      if ((k === 0) !== (addr in cells) || (k === 2 && spills.some((y) => hasCell(y, r, c))) || (earlier.length && earlier.some((y) => hasCell(y, r, c)))) continue
+      if ((k === 0) !== (addr in cells) || (k === 2 && spills.some((y) => hasCell(y, r, c))) || earlier(r, c)) continue
       yield [x.s, r, c, n, addr]
     }
   }
