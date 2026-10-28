@@ -16,7 +16,7 @@
  * its answer in `made.json` beside the engine's committed before it ran (`PROBES`). Test: `test/xlsx-keep-excel.test.ts`.
  * The conditional formats the model does not read (`keep/rules.ts`): `keep rules-made-predict` and `keep rules-predict`
  * write what Excel for Windows is predicted to save (`bench/windows/run.ts keep rules-made|rules`; `rules-held-predict`
- * for the held-out cases, `keep rules-held`), `keep
+ * and `rules-held-2-predict` for the held-out sets, `keep rules-held`, `keep rules-held-2`), `keep
  * rules-open-predict` and `keep rules-open` what Excel for Mac does with the files `writeKept` wrote for the cases
  * (`test/excel/keep/rules-open.json`, `rules-open/<case>.xlsx`). Test: `test/xlsx-keep-rules-excel.test.ts`.
  */
@@ -29,7 +29,7 @@ import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
 import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
 import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
-import { RULES_BOOKS, RULES_CASES, RULES_HELD, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
+import { RULES_BOOKS, RULES_SETS, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -262,8 +262,8 @@ async function structOpen(): Promise<void> {
 /** The saved `mixed` of Excel for Windows (`bench/windows/run.ts keep rules-made`), the file the rules' cases are written over. */
 const rulesMixed = () => new Uint8Array(readFileSync(join(ROOT, 'test/excel/win/keep/rules-made/mixed.xlsx')))
 
-/** Each case of `RULES_CASES` and `RULES_HELD` (or of `cases`) written by `writeKept` over the saved `mixed`: the file, or the refusal. */
-export async function rulesFiles(cases = [...RULES_CASES, ...RULES_HELD]): Promise<{ id: string; written: { data: Uint8Array } | { refused: string } }[]> {
+/** Each case of `RULES_SETS` (or of `cases`) written by `writeKept` over the saved `mixed`: the file, or the refusal. */
+export async function rulesFiles(cases = Object.values(RULES_SETS).flat()): Promise<{ id: string; written: { data: Uint8Array } | { refused: string } }[]> {
   const data = rulesMixed()
   return Promise.all(cases.map(async (c) => ({ id: c.id, written: await rulesWritten(data, c) })))
 }
@@ -277,7 +277,7 @@ export async function rulesFiles(cases = [...RULES_CASES, ...RULES_HELD]): Promi
 async function rulesPredict(what: string): Promise<void> {
   const cases: Record<string, unknown> = {}
   if (what === 'rules-made') for (const id of Object.keys(RULES_BOOKS)) cases[id] = { opens: true, ...(await rulesOf(await rulesFile(id))) }
-  else for (const f of await rulesFiles(what === 'rules' ? RULES_CASES : what === 'rules-held' ? RULES_HELD : undefined)) cases[f.id] = 'data' in f.written ? { ...(what === 'rules-open' ? { opens: true } : {}), ...(await rulesOf(f.written.data)) } : f.written
+  else for (const f of await rulesFiles(RULES_SETS[what])) cases[f.id] = 'data' in f.written ? { ...(what === 'rules-open' ? { opens: true } : {}), ...(await rulesOf(f.written.data)) } : f.written
   writePrediction(new URL('./keep/rules.ts', import.meta.url).href, what, { cases })
 }
 
@@ -307,7 +307,8 @@ async function rulesOpen(): Promise<void> {
 }
 
 export async function stepKeep(what: string | undefined): Promise<void> {
-  if (what === 'rules-made-predict' || what === 'rules-predict' || what === 'rules-held-predict' || what === 'rules-open-predict') return rulesPredict(what.slice(0, -'-predict'.length))
+  const rules = what?.match(/^(rules(?:-[a-z0-9-]+)?)-predict$/)?.[1]
+  if (rules && (rules === 'rules-made' || rules === 'rules-open' || RULES_SETS[rules])) return rulesPredict(rules)
   if (what === 'rules-open') return rulesOpen()
   if (what === 'made') return made()
   if (what === 'predict') return predict()
@@ -316,5 +317,5 @@ export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'struct') return struct()
   if (what === 'struct-open-predict') return structOpenPredict()
   if (what === 'struct-open') return structOpen()
-  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | rules-made-predict | rules-predict | rules-held-predict | rules-open-predict | rules-open')
+  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
 }

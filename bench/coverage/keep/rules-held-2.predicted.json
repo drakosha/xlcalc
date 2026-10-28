@@ -1,0 +1,120 @@
+{
+ "cases": {
+  "held2-first-6": {
+   "rules": [
+    "dataBar F2:F21 bar F2:F21",
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held2-last-3": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread",
+    "expression C2:C21 =C2>$G$1"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held2-first-4": {
+   "rules": [
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held2-delete-cols-c": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$E$2 unread",
+    "dataBar C2:C21 =0 bar C2:C21",
+    "dataBar D2:D21 bar D2:D21",
+    "x14 colorScale F2:F21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "held2-insert-row-21": {
+   "rules": [
+    "cellIs A2:A24 =100",
+    "colorScale B2:B24 =$G$2 unread",
+    "expression C2:C24 =C2>$G$1",
+    "expression D2:D24 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E24 =0 bar E2:E24",
+    "dataBar F2:F24 bar F2:F24",
+    "x14 colorScale H2:H24 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held2-delete-row-21": {
+   "rules": [
+    "cellIs A2:A20 =100",
+    "expression C2:C20 =C2>$G$1",
+    "expression D2:D20 =MOD(D2,2)=0 gradient",
+    "colorScale B2:B20 =$G$2 unread",
+    "dataBar E2:E20 =0 bar E2:E20",
+    "dataBar F2:F20 bar F2:F20",
+    "x14 colorScale H2:H20 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ }
+}

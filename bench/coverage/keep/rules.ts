@@ -3,10 +3,10 @@
  * (`bench/windows/run.ts keep rules-made|rules`). Each book of `RULES_BOOKS` is written with rules the model reads and
  * rules it does not (a colour scale with an automatic colour, Excel 2010's colour scale over another sheet, a data bar
  * whose thresholds lack their values with its 2010 part, and a rule whose fill is a gradient), and Excel opens and saves
- * it (`rules-made`). Over the saved `mixed` each case of `RULES_CASES` is done twice: by Excel through COM (a rule
+ * it (`rules-made`). Over the saved `mixed` each case of `RULES_SETS` is done twice: by Excel through COM (a rule
  * added, deleted, given another priority or another look, or an operation of the structure) and by a host in a session
  * whose book `writeKept` writes over the same file; `rulesOf` gives what both files hold of the rules, in priority
- * order. `RULES_HELD` was held out, predicted after the answers to `RULES_CASES` (`keep rules-held`). `keep rules-open`
+ * order. The sets `rules-held` and `rules-held-2` were held out, each predicted after the answers before it. `keep rules-open`
  * (`keep.ts`) has Excel for Mac open each file `writeKept` wrote. Test:
  * `test/xlsx-keep-rules-excel.test.ts`.
  */
@@ -105,7 +105,7 @@ export interface RulesCase {
 
 const rows = (op: 'insertRows' | 'deleteRows', row: number, count = 1, sheet = 'S'): StructureOp => ({ op, sheet, row, count })
 
-export const RULES_CASES: RulesCase[] = [
+const CASES: RulesCase[] = [
   { id: 'add', edit: { add: true } },
   { id: 'delete-1', edit: { remove: 1 } },
   { id: 'delete-3', edit: { remove: 3 } },
@@ -128,8 +128,8 @@ export const RULES_CASES: RulesCase[] = [
   { id: 'move-b', op: { op: 'moveRange', from: { sheet: 'S', range: 'B2:B21' }, to: { sheet: 'S', cell: 'J2' } } },
 ]
 
-/** Held out, predicted after the answers to `RULES_CASES`: other moves of rules and other operations. */
-export const RULES_HELD: RulesCase[] = [
+/** Held out, predicted after the answers to `CASES`: other moves of rules and other operations. */
+const HELD: RulesCase[] = [
   { id: 'held-last-1', edit: { last: 1 } },
   { id: 'held-first-3', edit: { first: 3 } },
   { id: 'held-priority-4', edit: { priority: [4, 2] } },
@@ -140,6 +140,19 @@ export const RULES_HELD: RulesCase[] = [
   { id: 'held-move-h-other', op: { op: 'moveRange', from: { sheet: 'S', range: 'H2:H21' }, to: { sheet: 'P', cell: 'A5' } } },
   { id: 'held-move-part-b', op: { op: 'moveRange', from: { sheet: 'S', range: 'B5:B6' }, to: { sheet: 'S', cell: 'J5' } } },
 ]
+
+/** Held out after the rule of moved rules was fitted to `HELD` (a rule moved to an end of the list is the one that moved). */
+const HELD_2: RulesCase[] = [
+  { id: 'held2-first-6', edit: { first: 6 } },
+  { id: 'held2-last-3', edit: { last: 3 } },
+  { id: 'held2-first-4', edit: { first: 4 } },
+  { id: 'held2-delete-cols-c', op: { op: 'deleteColumns', sheet: 'S', column: 'C', count: 2 } },
+  { id: 'held2-insert-row-21', op: rows('insertRows', 21, 3) },
+  { id: 'held2-delete-row-21', op: rows('deleteRows', 21) },
+]
+
+/** The sets of cases by the name of their step: `rules`, then `rules-held` and `rules-held-2`, each predicted before its run. */
+export const RULES_SETS: Record<string, RulesCase[]> = { rules: CASES, 'rules-held': HELD, 'rules-held-2': HELD_2 }
 
 /** Excel's added rule as the host adds it: last, with the red style and stop if true. */
 const ADDED: ConditionalFormat = { type: 'cellIs', ranges: ['B2:B21'], operator: 'greaterThan', formulas: ['150'], style: { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: true } }, stopIfTrue: true }

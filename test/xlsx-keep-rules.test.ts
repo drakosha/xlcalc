@@ -10,12 +10,12 @@ import { createSession, type BookInput, type StructureOp } from '../src/index.js
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { RULES_CASES, rulesFile, rulesOf, rulesWritten } from '../bench/coverage/keep/rules.js'
+import { RULES_SETS, rulesFile, rulesOf, rulesWritten } from '../bench/coverage/keep/rules.js'
 import { editParts } from '../bench/coverage/xlsx/sent.js'
 
 const sheetXml = async (data: Uint8Array) => (await openArchive(data).text('xl/worksheets/sheet1.xml'))!
 const written = async (data: Uint8Array, id: string) => {
-  const w = await rulesWritten(data, RULES_CASES.find((c) => c.id === id)!)
+  const w = await rulesWritten(data, RULES_SETS.rules.find((c) => c.id === id)!)
   if (!('data' in w)) throw new Error(w.refused)
   return w.data
 }
