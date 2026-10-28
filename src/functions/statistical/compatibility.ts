@@ -39,7 +39,7 @@ export const functions: Record<string, FnDef> = {
   NEGBINOMDIST: { args: 'i i n', fn: (f: number, s: number, p: number) => negbinomDist(f, s, p, false) },
   NORMDIST: distributions['NORM.DIST'],
   NORMINV: inverse['NORM.INV'],
-  NORMSDIST: { args: 'n', fn: (z: number) => normCdf(z)[0] },
+  NORMSDIST: { args: 'n', fn: (z: number) => normCdf(z) },
   NORMSINV: inverse['NORM.S.INV'],
   PERCENTILE: descriptive['PERCENTILE.INC'],
   PERCENTRANK: descriptive['PERCENTRANK.INC'],

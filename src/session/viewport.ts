@@ -22,7 +22,7 @@ import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { cellResult, cellValue, spilled } from '../result.js'
+import { cellValue, resultAt, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { lowerBound } from '../sorted.js'
 import { rectText, type Rect } from '../structure/area.js'
@@ -283,7 +283,7 @@ function* sessionSource(state: EngineState, s: number, w: WindowLines, display: 
     cell(r, c, addr, own, styled) {
       const from = spill.get(addr)
       if (!own && from === undefined && !styled && !cond.has(r * MAX_COLS + c)) return undefined
-      return cellResult(state, s, addr, look, from, false) as ViewportCell
+      return resultAt(state, s, addr, r, c, look, from, false) as ViewportCell
     },
     appearance: appearanceOf(cond, look, s),
     issue: (r, c, origins) => issueDetail(state, s, r, c, origins),

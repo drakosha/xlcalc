@@ -19,10 +19,17 @@ export function areasOf(range: string): Rect[] | null {
 
 export const rangeText = (xs: Rect[]): string => xs.map(areaText).join(' ')
 
+/** Each rule's rectangles as `ruleAt` last read them, by the range they were read from: a lookup per cell need not parse every rule's range again. */
+const read = new WeakMap<DataValidation, { range: string; rects: Rect[] | null }>()
+
 /** The rule over a cell, by its index among the sheet's rules, or -1. */
 export function ruleAt(rules: DataValidation[] | undefined, r: number, c: number): number {
   if (!rules) return -1
-  return rules.findIndex((v) => areasOf(v.range)?.some((x) => hasCell(x, r, c)))
+  return rules.findIndex((v) => {
+    let x = read.get(v)
+    if (x?.range !== v.range) read.set(v, (x = { range: v.range, rects: areasOf(v.range) }))
+    return x.rects?.some((y) => hasCell(y, r, c))
+  })
 }
 
 /**

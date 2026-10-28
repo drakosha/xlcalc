@@ -117,6 +117,24 @@ Replace was tested the same way (`Range.Replace` with Look in: Formulas and dyna
 
 The Sort command's order (`compareValues`, `valueComparator`) was tested in Excel 16.114 for Mac (AppleScript's `sort`) and 16.0.20430 for Windows (`Range.Sort`), the `sort` step of `bench/coverage` and `bench/windows`, on the `errors-held` set (6 columns, results in `test/excel/sort/` and `test/excel/win/sort/`, test `test/sort-command-excel.test.ts`): eight errors in the order of the numbers ERROR.TYPE returns and in reverse, and errors among numbers, text, booleans and a blank, ascending and descending. Predicted before Excel ran it from Microsoft's statement that all errors are equal, it was confirmed in all 6 cases on both platforms: the Sort command keeps errors in their original order in either direction, whereas the SORT function orders them by the number ERROR.TYPE returns (`refs-ironcalc-held`).
 
+The reads of a session were timed against 0.65.0 in one process: the two builds in turn, the order changed each round, 15 rounds, the median of the per-round ratios, with closures and with eval alike; the same run against a second build of 0.65.0 gave the noise, within 2 % on most lines and up to 14 % on the shortest calls. The times are the medians with closures:
+
+| read | workbook | before | after |
+|---|---|---:|---:|
+| `getCells` of `A1:Z100000` | 1,000 scattered cells, one `cellIs` rule over the window (three rules) | 55 ms (163 ms) | 1.1 ms (1.5 ms) |
+| a first `findCells` with text | the same cells, one rule over `A:Z` | 67 ms | 5.8 ms |
+| `readCells` of 2,000 cells with `text` | one `cellIs` rule (none) | 4.2 ms (2.7 ms) | 3.4 ms (2.6 ms) |
+| `findCells` of 2,000 cells with `text` | one `cellIs` rule | 2.2 ms | 1.6 ms |
+| a repeated `findCells` over 200,000 cells | wildcards, counted, by rows | 24 ms | 16 ms |
+| `getDependents` of `D5` and of `C100:C200` | synthetic, 34,000 rows | 162 ms | 2.3 ms |
+| `summarizeRanges` of `A1:O34001` (of `A:A`) | synthetic, 34,000 rows | 205 ms (22 ms) | 26 ms (7.1 ms) |
+| `getResult` | 500 `#N/A` lookups over `$A$1:$B$34000` | 170 ms | 89 ms |
+| `previewCellTexts` of 5,000 cells | 200 rules of data validation | 119 ms | 40 ms |
+| `fillCellText` of one number over `C1:C50000` | | 214 ms | 188 ms |
+| `getViewport` of 6,000 cells with display, in separate processes | two rules | 6.5 ms | 6.0 ms |
+
+Every read gave the answer of 0.65.0 on random workbooks with conditional formats, data validation, merged areas, spills and errors, and on the synthetic workbook, in all three kinds of session, except the order of `getDependents`, which is now by position: its cells as a set are the same.
+
 ### Cell entry
 
 From [Cell entry](entry.md).

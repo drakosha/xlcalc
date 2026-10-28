@@ -14,7 +14,8 @@ describe.each(['closures', 'eval'] as const)('live query recovery, %s', (executi
       const second = await s.getDependents(refs, { maxCells: 1, cursor: first.cursor })
       const cells = [...first.dependents, ...second.dependents].map((c) => c.cell)
       expect(new Set(cells).size).toBe(2)
-      expect(cells).toEqual(['C1', 'B1'])
+      // by position, not by the order the cells were entered in (B1 was cleared and entered again after C1)
+      expect(cells).toEqual(['B1', 'C1'])
     } finally {
       await s.close()
       await p.calc.close()

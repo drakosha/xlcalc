@@ -1,15 +1,15 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
-import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
-import { sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
+import type { CellReadField, CellValue, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
+import { sheetIndexOf, toCellValue, valueAt, type EngineState, type Formula } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
-import { referencesOf } from '../graph.js'
+import { readersOf, referencesOf } from '../graph.js'
 import { checkSheet } from '../input.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
 import { issueDetail } from '../issues.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
-import { cellAt, outValue } from '../result.js'
+import { byPlace, colOf, formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf, rowOf } from '../model.js'
+import { cellsAt, outValue } from '../result.js'
 import { rectText, meets } from '../structure/area.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
@@ -18,7 +18,8 @@ import { cellValue } from './looks.js'
 import { checkLineNumbers, sessionEditTexts } from './viewport.js'
 import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
 import { finderOf, type Finder, type Ref } from './find.js'
-import { readOrder } from './read-order.js'
+import { earlierOf, firstIn, nextIn, readOrder, spillsIn } from './read-order.js'
+import { textsOf } from './search.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue']
@@ -43,6 +44,8 @@ class Page<T> {
   readonly from: number[] | null = null
   readonly total: number | null = null
   matched = 0
+  /** The results the page takes, which its items hold once made. */
+  taken = 0
   more = false
   /** The position of the last result of the page. */
   last: number[] = []
@@ -74,7 +77,8 @@ class Page<T> {
   /** A result at `position` of the query's order: whether it goes on the page, or the page is full. */
   wanted(position: number[]): boolean {
     this.matched++
-    if (this.items.length < this.max) {
+    if (this.taken < this.max) {
+      this.taken++
       this.last = position
       return true
     }
@@ -86,7 +90,7 @@ class Page<T> {
   }
   result(): QueryPage {
     const total = this.total ?? (this.count ? this.offset + this.matched : -1)
-    return { revision: this.revision, clock: { ...this.clock }, truncated: this.more, ...(this.more ? { cursor: JSON.stringify([this.revision, this.offset + this.items.length, this.signature, total, ...this.last]) } : {}), ...(this.count ? { total } : {}) }
+    return { revision: this.revision, clock: { ...this.clock }, truncated: this.more, ...(this.more ? { cursor: JSON.stringify([this.revision, this.offset + this.taken, this.signature, total, ...this.last]) } : {}), ...(this.count ? { total } : {}) }
   }
 }
 
@@ -115,6 +119,15 @@ function projected(s: EngineState, i: number, r: number, c: number, addr: string
   return out
 }
 
+/** A cell of a page: its sheet, row, column and address. */
+type Cell = [s: number, r: number, c: number, addr: string]
+
+/** The fields `fields` of a page's cells (`projected`); with `text`, their views made together (`cellsAt`). */
+function* projectedAll(s: EngineState, cells: Cell[], fields: CellReadField[], edit: ReturnType<typeof sessionEditTexts> | null): Steps<ReadCell[]> {
+  const views = fields.includes('text') ? yield* cellsAt(s, cells, true) : null
+  return cells.map(([i, r, c, addr], k) => projected(s, i, r, c, addr, fields, edit, views ? views[k] : null))
+}
+
 /** A query's ranges, fields and rows checked, and its page; `key`, what else makes the query the one a cursor belongs to. */
 function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef[], o: ReadCellsOptions, key: unknown[]) {
   const refs = refsOf(s, given)
@@ -128,16 +141,17 @@ function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef
 
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: ReadCellsOptions): Steps<ReadCellsResult> {
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, checkBase<ReadCellsOptions>(eo, revision, READ_OPTIONS), [])
-  const shown = fields.includes('text')
+  const cells: Cell[] = []
   for (const cell of readOrder(s, refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
     }
     const [i, r, c, n, addr] = cell
-    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(projected(s, i, r, c, addr, fields, edit, shown ? yield* cellAt(s, i, r, c, true, true) : null))
+    if (page.wanted([n, r * MAX_COLS + c])) cells.push([i, r, c, addr])
     if (page.done) break
   }
+  page.items.push(...(yield* projectedAll(s, cells, fields, edit)))
   return { ...page.result(), cells: page.items }
 }
 
@@ -157,15 +171,17 @@ export function* findQuery(s: EngineState, revision: number, clock: Clock, given
   const finder = finderOf(s, checkString(query, 'query'), o, clock.now)
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, o, [...finder.key, o.after ?? null])
   const start = o.after === undefined ? null : startOf(s, refs, finder, o.after)
+  const cells: Cell[] = []
   for (const cell of start ? finder.around(refs, rows, start, page.from) : finder.found(refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
     }
     const [i, r, c, position] = cell
-    if (page.wanted(position)) page.items.push(projected(s, i, r, c, formatAddress(r, c), fields, edit, fields.includes('text') ? yield* cellAt(s, i, r, c, true, true) : null))
+    if (page.wanted(position)) cells.push([i, r, c, formatAddress(r, c)])
     if (page.done) break
   }
+  page.items.push(...(yield* projectedAll(s, cells, fields, edit)))
   return { ...page.result(), cells: page.items }
 }
 
@@ -175,22 +191,26 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
   const max = o.maxReferences ?? 64
   checkNumber(max, 'opts.maxReferences', 1, 1000, true)
   const page = new Page<DependentCell>(revision, clock, JSON.stringify(['dependents', refs, max]), o)
-  // the cells before the cursor are passed over, by their count
-  const from = page.from?.[0] ?? 0
-  let at = 0
-  scan: for (let i = 0; i < s.input.sheets.length; i++)
-    for (const addr in s.input.sheets[i].cells) {
-      if (paced(1)) yield
-      if (++at <= from || s.input.sheets[i].cells[addr].formula === undefined) continue
-      const { row, col } = parseAddress(addr),
-        id = s.at.get(placeOf(i, row, col)),
-        f = id === undefined ? undefined : s.formulas[id]
-      if (!f) continue
-      const matches = referencesOf(s, f).filter((g) => refs.some((x) => x.s === g.s && meets(x, g)))
-      if (!matches.length) continue
-      if (page.wanted([at])) page.items.push({ sheet: s.sheetNames[f.s], cell: formatAddress(f.r, f.c), references: matches.slice(0, max).map((g) => ({ sheet: s.sheetNames[g.s], range: rectText(g) })), ...(matches.length > max ? { referencesTruncated: true } : {}) })
-      if (page.done) break scan
-    }
+  if (page.from && page.from.length !== 2) throw new InputError('opts.cursor', 'expected a cursor returned by this query')
+  // the formulas the graph's index of references names, in the book's order of sheets, then by rows: a cursor keeps the sheet and place of the last
+  const ids = new Set<number>()
+  for (const x of refs) readersOf(s, x, ids)
+  const found: Formula[] = []
+  for (const id of ids) {
+    const f = s.formulas[id]
+    if (f && s.input.sheets[f.s]?.cells[formatAddress(f.r, f.c)]?.formula !== undefined && s.at.get(placeOf(f.s, f.r, f.c)) === id) found.push(f)
+  }
+  found.sort(byPlace)
+  const [fs, fm] = page.from ?? [-1, -1]
+  for (const f of found) {
+    if (paced(1)) yield
+    const m = f.r * MAX_COLS + f.c
+    if (f.s < fs || (f.s === fs && m <= fm)) continue
+    const matches = referencesOf(s, f).filter((g) => refs.some((x) => x.s === g.s && meets(x, g)))
+    if (!matches.length) continue
+    if (page.wanted([f.s, m])) page.items.push({ sheet: s.sheetNames[f.s], cell: formatAddress(f.r, f.c), references: matches.slice(0, max).map((g) => ({ sheet: s.sheetNames[g.s], range: rectText(g) })), ...(matches.length > max ? { referencesTruncated: true } : {}) })
+    if (page.done) break
+  }
   return { ...page.result(), dependents: page.items }
 }
 
@@ -199,13 +219,8 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
   if (o.rows !== undefined) checkLineNumbers(o.rows, 'opts.rows', MAX_ROWS)
   const out: RangeSummary = { revision, clock: { ...clock }, cells: 0, numbers: 0, errors: 0, sum: 0, min: null, max: null },
     sum = new CompensatedSum()
-  for (const at of readOrder(s, refsOf(s, given), o.rows?.map((n) => n - 1) ?? null, null, false)) {
-    if (!at) {
-      yield
-      continue
-    }
-    const v = cellValue(s, at[0], at[1], at[2])
-    if (v === null || v === '') continue
+  const add = (v: CellValue) => {
+    if (v === null || v === '') return
     out.cells++
     if (typeof v === 'number') {
       out.numbers++
@@ -213,6 +228,28 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
       out.min = out.min === null ? v : Math.min(out.min, v)
       out.max = out.max === null ? v : Math.max(out.max, v)
     } else if (typeof v === 'object') out.errors++
+  }
+  const refs = refsOf(s, given)
+  const rows = o.rows?.map((n) => n - 1) ?? null
+  for (const [n, x] of refs.entries()) {
+    const earlier = earlierOf(refs, n)
+    if (spillsIn(s, x).length) {
+      // spilled cells among the range's: read in readCells' order, this range's cells alone
+      for (const at of readOrder(s, refs, rows, [n, -1], false)) {
+        if (!at) yield
+        else if (at[3] !== n) break
+        else add(cellValue(s, at[0], at[1], at[2]))
+      }
+      continue
+    }
+    // no spill: the values of the index's places by rows, read from the columns; a place whose cell is gone holds none
+    const { at } = yield* textsOf(s, x.s)
+    for (let j = firstIn(at, x, rows, 0); j < at.length; j = nextIn(at, x, rows, 0, j + 1)) {
+      if (paced(1)) yield
+      const r = rowOf(at[j])
+      const c = colOf(at[j])
+      if (!earlier(r, c)) add(cellValue(s, x.s, r, c))
+    }
   }
   out.sum = Number.isFinite(sum.value) ? sum.value : { error: 'NUM' }
   return out

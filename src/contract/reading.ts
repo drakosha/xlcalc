@@ -144,7 +144,7 @@ export interface DependentsOptions extends PageOptions {
   /** Maximum matching source references per dependent, 64 by default, at most 1000. */
   maxReferences?: number
 }
-/** What `getDependents` returns: a page of the cells whose formulas refer to the ranges. */
+/** What `getDependents` returns: a page of the cells whose formulas refer to the ranges, sheet by sheet in the workbook's order, each sheet's by rows and in a row by columns. */
 export interface DependentsResult extends QueryPage { dependents: DependentCell[] }
 /** Options of `summarizeRanges`: only the cells in these rows (the rows a host's filter displays), as in `ReadCellsOptions.rows`. */
 export interface SummaryOptions extends EditOptions {
