@@ -18,7 +18,7 @@ const lineCount = (a: Arr, byCol: boolean) => (a.fill === null ? (byCol ? a.w : 
 /** Lines sorted by keys: `key(line, k)` is the k-th key value, `desc[k]` its direction; the rest of the lines (blank) last. */
 function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, desc: readonly boolean[], rules: Rules): Arr {
   const n = lineCount(a, byCol)
-  const lines = Array.from({ length: n }, (_, i) => i).sort((x, y) => {
+  const lines = (desc.length === 1 && numberSort(n, (line) => key(line, 0), desc[0])) || Array.from({ length: n }, (_, i) => i).sort((x, y) => {
     for (let k = 0; k < desc.length; k++) {
       const c = sortOrder(key(x, k), key(y, k), desc[k], rules.compare, true)
       if (c) return c
@@ -29,6 +29,55 @@ function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, 
   const out = lineArr(a, lines, byCol)
   return byCol ? new Arr(a.rows, a.cols, a.rows, n, out.v, a.fill) : new Arr(a.rows, a.cols, n, a.cols, out.v, a.fill)
 }
+
+/**
+ * The stable order of `n` lines by one key that is a number in every line, or undefined for another key: a radix sort
+ * over the numbers' bits (16 at a time), the order the comparator sort gives (-0 equal to 0, ties in line order) at a
+ * fraction of its cost on a long column. Short ones keep the comparator.
+ */
+function numberSort(n: number, key: (line: number) => V, desc: boolean): number[] | undefined {
+  if (n < RADIX_LINES) return undefined
+  const value = new Float64Array(n)
+  for (let i = 0; i < n; i++) {
+    const v = key(i)
+    if (typeof v !== 'number') return undefined
+    // -0 sorts as 0
+    value[i] = v + 0
+  }
+  // the bits as unsigned 16-bit digits (little-endian, as every JS host) that order as the numbers do, reversed when
+  // descending; least significant first
+  const bits = new Uint16Array(value.buffer)
+  for (let i = 0; i < n; i++) {
+    const neg = bits[i * 4 + 3] & 0x8000
+    for (let d = 0; d < 4; d++) {
+      let x = neg ? ~bits[i * 4 + d] & 0xffff : d === 3 ? bits[i * 4 + d] ^ 0x8000 : bits[i * 4 + d]
+      if (desc) x = ~x & 0xffff
+      bits[i * 4 + d] = x
+    }
+  }
+  let order = new Uint32Array(n)
+  for (let i = 0; i < n; i++) order[i] = i
+  let next = new Uint32Array(n)
+  const count = new Uint32Array(0x10000)
+  for (let d = 0; d < 4; d++) {
+    count.fill(0)
+    for (let i = 0; i < n; i++) count[bits[i * 4 + d]]++
+    // a digit the same in every line moves nothing
+    if (count[bits[d]] === n) continue
+    for (let x = 0, at = 0; x < 0x10000; x++) {
+      const c = count[x]
+      count[x] = at
+      at += c
+    }
+    for (let i = 0; i < n; i++) {
+      const line = order[i]
+      next[count[bits[line * 4 + d]]++] = line
+    }
+    ;[order, next] = [next, order]
+  }
+  return Array.from(order)
+}
+const RADIX_LINES = 256
 
 /** The given rows (columns `byCol`) of an array, in that order; within `limits.cells` (FILTER can keep every row of a whole column). */
 function lineArr(a: Arr, lines: readonly number[], byCol: boolean): Arr {
