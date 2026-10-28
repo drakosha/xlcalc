@@ -7,13 +7,15 @@ import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
 import type { ReadXlsxOptions, XlsxRead } from '../types.js'
 import { carrierNames, carriersOf } from './carriers.js'
 import { openSource } from './source.js'
+import { keptStyles } from './styles.js'
 
 /** Reads an xlsx file into a workbook as `readXlsx` does, its carriers added to the names for `writeKept`. */
 export async function openKept(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
   const bytes = fileBytes(data)
   const read = await readXlsx(bytes, opts)
   const limits = opts === undefined ? undefined : object(opts, 'opts', "options such as { locale: 'ru-RU' }").limits
-  const carriers = await carriersOf(await openSource(bytes, limits === undefined ? undefined : checkLimits(limits)), read.book)
+  const src = await openSource(bytes, limits === undefined ? undefined : checkLimits(limits))
+  const carriers = await carriersOf(src, read.book, await keptStyles(src))
   read.book.names = [...(read.book.names ?? []), ...carrierNames(carriers)]
   return read
 }

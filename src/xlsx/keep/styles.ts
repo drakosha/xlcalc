@@ -9,10 +9,13 @@
  */
 import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
-import type { StyleTable } from '../styles/read.js'
+import { partText } from '../read/package.js'
+import { palette } from '../styles/color.js'
+import { readStyles, type StyleTable } from '../styles/read.js'
 import { attributes, element, elements } from '../xml/scan.js'
 import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
+import type { Source } from './source.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
 /** The lists of styles.xml added to, in the order of the schema, with the elements that come before each when it is missing. */
@@ -49,6 +52,8 @@ export class KeptStyles {
   private used = { cellXfs: 0, dxfs: 0 }
   /** Whether the file has a styles part: without one the writer adds it. */
   readonly present: boolean
+  /** Whether a cell format of the file looks as an earlier one (`twin`). */
+  readonly twins: boolean
 
   constructor(xml: string | undefined, table: StyleTable) {
     this.present = xml !== undefined
@@ -72,6 +77,7 @@ export class KeptStyles {
       if (!this.byLook.has(key)) this.byLook.set(key, i)
       this.first.push(this.byLook.get(key)!)
     }
+    this.twins = this.first.some((f, i) => f !== i)
     // the default font a style's font is relative to: the file's first, its colour and theme scheme as written
     const font = elements(this.listText('fonts'), 'font')[0]?.body ?? ''
     const val = (local: string) => attributes(element(font, local)?.attrs ?? '').val
@@ -131,6 +137,12 @@ export class KeptStyles {
     return own !== undefined && this.first[own] === xf ? own : xf
   }
 
+  /** Whether the file's cell format `s` looks as an earlier one: a cell of it that moves keeps it by a carrier (`formats.ts`). */
+  twin(s: number): boolean {
+    const f = this.first[s]
+    return f !== undefined && f !== s
+  }
+
   /** A cell format or dxf a written part uses. */
   use(kind: 'cellXfs' | 'dxfs', i: number): void {
     const k = i - this.counts[kind] + 1
@@ -167,6 +179,12 @@ export class KeptStyles {
     }
     return out + this.xml.slice(from)
   }
+}
+
+/** The file's styles, as `writeKept` adds to them. */
+export async function keptStyles(src: Source): Promise<KeptStyles> {
+  const [xml, theme] = await Promise.all(['styles', 'theme'].map((kind) => partText(src.archive, src.wbRels, kind)))
+  return new KeptStyles(xml, readStyles(xml, palette(theme, xml)))
 }
 
 /** An element of a local name in a text, as written; undefined without one. */
