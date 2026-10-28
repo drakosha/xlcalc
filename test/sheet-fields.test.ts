@@ -57,3 +57,16 @@ describe("the book's calculation option", () => {
     expect((await readXlsx((await writeKept(data, { book: auto })).data)).book.calculation).toBeUndefined()
   })
 })
+
+describe('a note shown all the time', () => {
+  it('is checked, written, read and kept over the file where it alone changed', async () => {
+    expect(() => compute({ sheets: [{ name: 'S', cells: { A1: { note: { text: 'x', shown: 1 as never } } } }] })).toThrow(new InputError('book.sheets[0].cells["A1"].note.shown', 'expected a boolean, got number 1'))
+    const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { note: { text: 'x', shown: true } }, B1: { note: { text: 'y' } } } }] }
+    const data = (await writeXlsx({ book: b })).data
+    expect((await readXlsx(data)).book.sheets[0].cells).toEqual(b.sheets[0].cells)
+    const read = await openKept(data)
+    const cells = { A1: { note: { text: 'x' } }, B1: { note: { text: 'y', shown: true } } }
+    const kept = await writeKept(data, { book: { ...read.book, sheets: [{ ...read.book.sheets[0], cells }] } })
+    expect((await readXlsx(kept.data)).book.sheets[0].cells).toEqual(cells)
+  })
+})

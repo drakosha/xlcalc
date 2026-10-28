@@ -6,10 +6,10 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { bookCalculation, bookFields, caseBook, fieldsFile, savedDir, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
+import { bookCalculation, bookFields, bookNotes, caseBook, fieldsFile, savedDir, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
 import { readXlsx } from '../src/xlsx.js'
 
-describe.each(['sheets', 'book'])('the set %s', (set) => {
+describe.each(['sheets', 'book', 'notes'])('the set %s', (set) => {
   const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { answers: Record<string, FieldsAnswer> }
   it('Excel reads what the workbook holds, and saves it so', async () => {
     const cases = ((await import(`../bench/coverage/fields/${set}.ts`)) as FieldsSet).buildFieldsCases()
@@ -22,6 +22,9 @@ describe.each(['sheets', 'book'])('the set %s', (set) => {
       // the calculation option, read since the set book
       const calc = stored.answers[c.id].calculation
       if (calc !== undefined) expect([calc, bookCalculation(saved.book)], c.id).toEqual([bookCalculation(caseBook(c)), calc])
+      // the notes, read since the set notes
+      const notes = stored.answers[c.id].notes
+      if (notes !== undefined) expect([notes, bookNotes(saved.book)], c.id).toEqual([bookNotes(caseBook(c)), notes])
     }
   })
 })

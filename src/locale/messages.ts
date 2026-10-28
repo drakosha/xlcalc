@@ -163,7 +163,6 @@ export interface XlsxMessageParams {
   noteCell: object
   noteThread: object
   noteFormatted: object
-  noteShown: object
   linkAddress: object
   linkCells: object
   // writing
@@ -384,7 +383,7 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   tablePartBad: 0, tableLeftOut: 0, headerGiven: 0, tableStyleCustom: 0, condRangeOutside: 0, condStyleLost: 0, condOperator: 0, condNoFormulas: 0, condNoFormula: 0,
   condPeriod: 0, condAverage: 0, condColorScale: 0, condDataBar: 0, condIconSet: 0, condIcons: 0, condType: 0, condPivot: 0, ruleListCommas: 0,
   ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, splitPanes: 0, frozenScrolled: 0, noteCell: 0,
-  noteThread: 0, noteFormatted: 0, noteShown: 0, linkAddress: 0, linkCells: 0, nameNotTaken: 0, nameNoSheet: 0, nameTwice: 0, nameBadRef: 0,
+  noteThread: 0, noteFormatted: 0, linkAddress: 0, linkCells: 0, nameNotTaken: 0, nameNoSheet: 0, nameTwice: 0, nameBadRef: 0,
   noResult: 0, formulaNoValue: 0, formulaEmpty: 0, formulaAsValue: 0, formulaLeftOut: 0, tableFormulaOut: 0, cycleZero: 0, errorNull: 0, cellMeta: 0, textCut: 0, noteCut: 0,
   tooltipCut: 0, ruleTextCut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0, keptCells: 0, keptFormats: 0,
 }

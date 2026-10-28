@@ -421,7 +421,7 @@ class Kept {
 
   /** The sheet's notes where they changed: its comments part and VML drawing written, added or removed, and its `<legacyDrawing>` when it changes. */
   private notes(ss: SourceSheet, p0: SheetPieces, p1: SheetPieces, rels: Rels): string | undefined {
-    if (p0.notes?.comments === p1.notes?.comments) return undefined
+    if (p0.notes?.comments === p1.notes?.comments && p0.notes?.shown === p1.notes?.shown) return undefined
     const name = this.book0.sheets[this.src.sheets.indexOf(ss)].name
     if (ss.rels.some((r) => r.kind === 'threadedComment')) throw new KeptRefusal({ key: 'keptThreads', sheet: name }, 'threads')
     this.changed = true

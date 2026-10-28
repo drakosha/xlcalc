@@ -53,12 +53,13 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   return c as CellInput
 }
 
-/** A cell's note: its text and author. */
+/** A cell's note: its text and author, and whether it is shown all the time. */
 function checkNote(v: unknown, path: string) {
   const n = object(v, path, 'a note such as { author: "Ann", text: "Checked" }')
-  onlyKeys(n, path, ['author', 'text'])
+  onlyKeys(n, path, ['author', 'text', 'shown'])
   checkString(n.text, `${path}.text`)
   if (n.author !== undefined) checkString(n.author, `${path}.author`)
+  if (n.shown !== undefined) checkBoolean(n.shown, `${path}.shown`)
 }
 
 /** A cell's hyperlink: a url, a location or both, and a tooltip. */

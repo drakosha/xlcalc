@@ -133,7 +133,6 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   noteCell: () => 'a note or a comment thread whose cell is not a single cell of the sheet is left out',
   noteThread: () => "a comment thread is read as a note: its first comment's author, every comment's text with the replies' authors; dates, mentions and the thread's state are not kept",
   noteFormatted: () => "a note's formatted text is read as its plain text",
-  noteShown: () => 'a note that is always shown is read as one shown when the pointer rests on its cell',
   linkAddress: () => "a hyperlink whose address is not an external relationship of the sheet is left out",
   linkCells: () => 'a hyperlink over more than 4,096 cells is read on the cells of its range that hold something',
   // writing

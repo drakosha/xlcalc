@@ -90,7 +90,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   noteCell: [{}],
   noteThread: [{}],
   noteFormatted: [{}],
-  noteShown: [{}],
   linkAddress: [{}],
   linkCells: [{}],
   nameNotTaken: [{}],

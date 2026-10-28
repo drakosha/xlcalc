@@ -104,8 +104,8 @@ export interface SheetPieces {
   formulas: boolean
   /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
   rels: SheetRel[]
-  /** The comments part and VML drawing of the sheet's notes, and their count. */
-  notes?: { comments: string; vml: string; count: number }
+  /** The comments part and VML drawing of the sheet's notes, their count, and the cells of those shown all the time. */
+  notes?: { comments: string; vml: string; count: number; shown: string }
   sheetPr: string
   dimension: string
   views: string
@@ -356,7 +356,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     ext: cond.ext,
     formulas,
     rels,
-    ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}),
+    ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size, shown: [...notes].flatMap(([a, n]) => (n.shown ? [a] : [])).join(' ') } } : {}),
   }
 }
 

@@ -287,7 +287,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `autoFilter` | an AutoFilter's criteria and sort, a table's criteria, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture, or among a link's stored values |
-| `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text; a note shown all the time, read as one shown on hover |
+| `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text |
 | `hyperlink` | a hyperlink whose address is not an external relationship of the sheet; one over more than 4,096 cells, read on its cells that contain something |
 | `frozenPanes` | split panes that are not frozen; panes frozen on a sheet scrolled down or right, read from the first row and column |
 | `conditionalFormat` | a rule of a kind the model does not support, a pivot table's rules, a rule without its formulas or thresholds; anything in a rule's differential format beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and standard deviations, read with equal |
@@ -479,7 +479,7 @@ A cell's note and hyperlink and a sheet's frozen panes round-trip, so a grid can
 
 ### Notes
 
-A note has its author and its text, with lines separated by `\n`. Excel keeps notes in a comments part with a VML drawing that displays them, and the reader takes the comments part. The text is read as plain text: a note created in Excel's window has its author's name in bold at the start, and such formatting is reported. A note shown all the time comes back as one shown when the pointer hovers over its cell, which is also reported. The size and position of a note's box are not kept. A note's cell is read as Excel reads it: `A01`, `$A$1`, `a1` and `A1:A1` all mean A1; a note on a range of cells is left out and reported, since Excel does not open such a file.
+A note has its author and its text, with lines separated by `\n`. Excel keeps notes in a comments part with a VML drawing that displays them, and the reader takes the comments part. The text is read as plain text: a note created in Excel's window has its author's name in bold at the start, and such formatting is reported. A note shown all the time (Review > Notes > Show/Hide Note, `<x:Visible/>` in the drawing) has `shown: true`, and the writer writes it so; Excel 16.0.20430 for Windows read each note `writeXlsx` and `writeKept` wrote as shown or not as the workbook holds it, and saved it so (`bench/windows/run.ts fields notes`). The size and position of a note's box are not kept. A note's cell is read as Excel reads it: `A01`, `$A$1`, `a1` and `A1:A1` all mean A1; a note on a range of cells is left out and reported, since Excel does not open such a file.
 
 The writer writes both parts, as Excel writes them: each note gets a hidden box next to its cell. A note without an author is written with an empty one, as Excel keeps it.
 

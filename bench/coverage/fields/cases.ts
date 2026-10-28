@@ -7,10 +7,11 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, LayoutEdit, SheetView } from '../../../src/contract.js'
+import type { BookInput, CellEdit, LayoutEdit, SheetView } from '../../../src/contract.js'
 import { withField } from '../../../src/looks/sheet.js'
 import { createSession } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
+import { parseAddress } from '../../../src/model.js'
 import { openKept, writeKept } from '../../../src/xlsx-keep.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
@@ -19,16 +20,20 @@ export interface FieldsCase {
   id: string
   book: BookInput
   /** Layout edits a session makes over the book read by `openKept`, and views a host sets by sheet (null removes one), written over its file by `writeKept`. */
-  kept?: { layout?: LayoutEdit[]; views?: Record<string, SheetView | null>; calculation?: BookInput['calculation'] | null }
+  kept?: { layout?: LayoutEdit[]; views?: Record<string, SheetView | null>; calculation?: BookInput['calculation'] | null; cells?: CellEdit[] }
 }
 
 /** What Excel read of each sheet: its tab colour (`#RRGGBB`, null for none), whether it shows gridlines and headings. */
 export type SheetFields = [name: string, tab: string | null, gridlines: boolean, headings: boolean]
 
-/** What Excel read: the sheets' fields, and the calculation option (`automatic`, `manual`, `autoNoTable`), read since the set `book`. */
+/** A note as Excel read it: its sheet and cell, and whether it is shown all the time. */
+export type NoteShown = [sheet: string, cell: string, shown: boolean]
+
+/** What Excel read: the sheets' fields, the calculation option (`automatic`, `manual`, `autoNoTable`) since the set `book`, the notes since `notes`. */
 export interface FieldsAnswer {
   sheets: SheetFields[]
   calculation?: string
+  notes?: NoteShown[]
 }
 
 export interface FieldsSet {
@@ -50,6 +55,7 @@ export function caseBook(c: FieldsCase): BookInput {
   if (!c.kept) return c.book
   const s = createSession(c.book)
   s.setLayout(c.kept.layout ?? [])
+  if (c.kept.cells) s.setCells(c.kept.cells)
   const out = hostSet(s.getBook(), c.kept)
   s.close()
   return out
@@ -62,11 +68,20 @@ export async function fieldsFileOf(c: FieldsCase): Promise<Uint8Array> {
   const read = await openKept(data)
   const s = createSession(read.book, { cached: read.cached })
   s.setLayout(c.kept.layout ?? [])
+  if (c.kept.cells) s.setCells(c.kept.cells)
   const snap = s.getSnapshot()
   const out = (await writeKept(data, { ...snap, book: hostSet(snap.book, c.kept) })).data
   s.close()
   return out
 }
+
+/** The notes of a book, each shown all the time or not, in Excel's order: by sheet, by row and column. */
+export const bookNotes = (b: BookInput): NoteShown[] =>
+  b.sheets.flatMap((s) =>
+    Object.entries(s.cells)
+      .flatMap(([a, c]): NoteShown[] => (c.note ? [[s.name, a, c.note.shown === true]] : []))
+      .sort((x, y) => { const [p, q] = [parseAddress(x[1]), parseAddress(y[1])]; return p.row - q.row || p.col - q.col }),
+  )
 
 /** The calculation option of a book, as Excel names it. */
 export const bookCalculation = (b: BookInput): string => b.calculation ?? 'automatic'

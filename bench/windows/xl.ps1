@@ -581,6 +581,10 @@ function Step($xl, $wb, $s) {
       [void]$wb.Worksheets.Item(1).Activate()
       $all
     }
+    # each worksheet's notes, [sheet, cell, shown all the time] (Comment.Visible)
+    'notesShown' {
+      List ($wb.Worksheets | ForEach-Object { $ws = $_; $ws.Comments | ForEach-Object { List @((Str $ws.Name), (Str $_.Parent.Address($false, $false)), (Cell $_.Visible)) } })
+    }
     # the calculation option Excel took from the book it opened first (XlCalculation: -4105 automatic, -4135 manual, 2 semiautomatic)
     'calcMode' { Cell ([double]$xl.Calculation) }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
