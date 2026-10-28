@@ -60,6 +60,9 @@ function shownSheet(book: BookInput, sheet: SheetInput) {
 /** A book as a file shows it: every sheet by name. */
 export const shownBook = (book: BookInput) => Object.fromEntries(book.sheets.map((s) => [s.name, shownSheet(book, s)]))
 
+/** What a book shows (`shownBook`). */
+export type Shown = ReturnType<typeof shownBook>
+
 /** What the file of a book shows, written and read back. */
 export const shownFile = async (data: Uint8Array) => shownBook((await readXlsx(data)).book)
 
