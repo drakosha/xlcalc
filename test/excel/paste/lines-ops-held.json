@@ -1,0 +1,405 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 26.5
+ },
+ "books": {
+  "ops": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 2
+      },
+      "A2": {
+       "value": 3,
+       "style": 1
+      },
+      "A4": {
+       "value": "a"
+      },
+      "A5": {
+       "formula": "B1*2"
+      },
+      "A6": {
+       "value": 0.5
+      },
+      "B1": {
+       "value": 4
+      },
+      "B2": {
+       "value": -1
+      },
+      "B6": {
+       "value": 1
+      },
+      "C1": {
+       "value": 10
+      },
+      "C2": {
+       "formula": "B2+1"
+      },
+      "C3": {
+       "value": 10
+      },
+      "C4": {
+       "value": 10
+      },
+      "C6": {
+       "value": "c"
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 1
+      },
+      "F1": {
+       "value": 1
+      },
+      "F3": {
+       "formula": "E1*3"
+      },
+      "F6": {
+       "value": 2
+      },
+      "A8": {
+       "value": 1
+      },
+      "A9": {
+       "value": 10
+      },
+      "B8": {
+       "value": 2
+      },
+      "B9": {
+       "value": 10
+      },
+      "C8": {
+       "value": 3
+      },
+      "C9": {
+       "value": 10
+      },
+      "D9": {
+       "value": 10
+      },
+      "E8": {
+       "value": 5
+      },
+      "E9": {
+       "value": 10
+      },
+      "F8": {
+       "value": 6
+      },
+      "F9": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": "x"
+      },
+      "B1": {
+       "value": "y"
+      },
+      "C1": {
+       "value": "z"
+      },
+      "E1": {
+       "value": 5
+      },
+      "E2": {
+       "value": 6
+      },
+      "E4": {
+       "value": 7
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": 20
+      },
+      "C2": {
+       "formula": "T[@x]*2"
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": 30
+      },
+      "C3": {
+       "formula": "T[@x]*2"
+      },
+      "A4": {
+       "value": 4
+      },
+      "C4": {
+       "formula": "T[@x]*2"
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": 50
+      },
+      "C5": {
+       "formula": "T[@x]*2"
+      }
+     },
+     "tables": [
+      {
+       "name": "T",
+       "range": "A1:C5",
+       "columns": [
+        {
+         "name": "x"
+        },
+        {
+         "name": "y"
+        },
+        {
+         "name": "z",
+         "formula": "T[@x]*2"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "F",
+     "cells": {
+      "A1": {
+       "value": "n"
+      },
+      "B1": {
+       "value": "k"
+      },
+      "C1": {
+       "value": "c"
+      },
+      "D2": {
+       "formula": "C2*2"
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": "x"
+      },
+      "C2": {
+       "value": 100
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": "y"
+      },
+      "C3": {
+       "value": 100
+      },
+      "B4": {
+       "value": "x"
+      },
+      "C4": {
+       "value": 100
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": "y"
+      },
+      "C5": {
+       "value": 100
+      },
+      "A6": {
+       "value": 6
+      },
+      "B6": {
+       "value": "x"
+      },
+      "C6": {
+       "value": 100
+      },
+      "A7": {
+       "value": 7
+      },
+      "B7": {
+       "value": "x"
+      },
+      "C7": {
+       "value": 100
+      },
+      "A8": {
+       "value": 8
+      },
+      "B8": {
+       "value": "x"
+      },
+      "C8": {
+       "value": 100
+      }
+     },
+     "rows": {
+      "3": {
+       "hidden": true
+      },
+      "5": {
+       "hidden": true
+      }
+     },
+     "filtered": true
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "values-over-hidden",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A4"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "C2:C7"
+   },
+   "what": "values"
+  },
+  {
+   "id": "formats-over-hidden",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A4"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "C2:C7"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "all-over-hidden",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A4"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "C2:C7"
+   },
+   "what": "all"
+  },
+  {
+   "id": "copy-over-hidden",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A4"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "C2:C7"
+   },
+   "what": "copy"
+  },
+  {
+   "id": "values-transposed",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "H1"
+   },
+   "what": "values",
+   "transpose": true
+  },
+  {
+   "id": "values-skip",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A8"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C2"
+   },
+   "what": "values",
+   "skipBlanks": true
+  },
+  {
+   "id": "values-one-cell",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A2:A8"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "E2"
+   },
+   "what": "values"
+  },
+  {
+   "id": "column-skip",
+   "book": "ops",
+   "from": {
+    "sheet": "F",
+    "range": "A:A"
+   },
+   "to": {
+    "sheet": "F",
+    "range": "C:C"
+   },
+   "what": "all",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "values-over-hidden": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "formats-over-hidden": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "all-over-hidden": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "copy-over-hidden": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "values-transposed": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "values-skip": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "values-one-cell": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7",
+  "column-skip": "06329387c9facdfbe81a3d89757d15c75773fabf0c3e7671c8f4eb77e69555a7"
+ },
+ "answers": {
+  "values-over-hidden": {},
+  "formats-over-hidden": {},
+  "all-over-hidden": {},
+  "copy-over-hidden": {
+   "error": "paste: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+  },
+  "values-transposed": {},
+  "values-skip": {},
+  "values-one-cell": {},
+  "column-skip": {}
+ }
+}
