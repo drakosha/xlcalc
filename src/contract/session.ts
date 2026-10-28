@@ -174,7 +174,9 @@ export interface Session {
   setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
    * The session's workbook with every change so far: what a host saves as a version. Its objects belong to the
-   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved.
+   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved. The order
+   * of its objects' keys (a sheet's fields, a sheet's cells) is not part of the workbook: it can differ between kinds
+   * of session and after undo and redo, while the hash, the values and a file written from it do not.
    */
   getBook(): Book
   /**
@@ -464,7 +466,7 @@ export interface AsyncSession {
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
-  /** The session's workbook; from a thread, a copy. */
+  /** The session's workbook; from a thread, a copy. The order of its objects' keys is not part of it (`Session.getBook`). */
   getBook(): Promise<Book>
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
