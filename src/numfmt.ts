@@ -131,7 +131,9 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
     // text without a text section shows as it is, whatever the width
     if (!sec && typeof value === 'string') return { text: value }
     const word = typeof value === 'boolean' ? style.bool(value) : value
-    const text = fitted(sec ? asText(sec, word, style) : word, space, typeof value === 'string')
+    const out = sec ? asText(sec, word, style) : word
+    // text without a fill overflows as it is, whatever its width
+    const text = typeof value === 'string' && !out.includes(FILL) ? out : fitted(out, space, typeof value === 'string')
     return sec?.color ? { text, color: sec.color } : { text }
   }
   const { text, general, sec } = byFormat(value, secs, style)
