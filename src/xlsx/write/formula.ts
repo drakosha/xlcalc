@@ -3,14 +3,14 @@
  * data validation writers share before a formula is printed in a file's spelling (`formulas/to-file.ts`). The formulas
  * of a book's cells of one shape (`syntax/shape.ts`), a formula copied down a column, are checked and printed once.
  */
-import { MAX_FORMULA_LENGTH, type ExternalBook } from '../../contract.js'
+import type { ExternalBook } from '../../contract.js'
 import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parseTokens } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
 import { bindTables } from '../../syntax/check.js'
 import { bindLinks } from '../../syntax/links.js'
-import { filled, instanceText, ready, shapeOf, type Hole, type Template } from '../../syntax/shape.js'
-import { tokenize, type Tok } from '../../syntax/tokens.js'
+import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
+import type { Tok } from '../../syntax/tokens.js'
 import { FILE_PRINT, toFile } from '../formulas/to-file.js'
 
 /** What a formula of the book may name in its file. */
@@ -59,9 +59,6 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
 /** The shapes of a book's formulas written, by the table they are in and their key: a template, or null for a shape written formula by formula. */
 export type FileShapes = Map<string, Template | null>
 
-/** At most this many shapes are kept for a book, as the engine keeps (`prepare.ts`). */
-const SHAPES = 4096
-
 /** A hole as a file spells it: a number with an upper-case exponent (`toFile`). */
 const fileHole = (h: Hole) => (typeof h === 'number' ? String(h).toUpperCase() : filled(h))
 
@@ -74,19 +71,14 @@ export function fileText(formula: string, names: FileNames, enclosing: string | 
     const tree = fileTree(formula, names, enclosing, toks ? { toks } : {})
     return tree && toFile(tree)
   }
-  // a text too long or empty fails before it is read
-  if (!shapes || formula.length > MAX_FORMULA_LENGTH || formula.trim() === '') return own()
-  let toks: Tok[]
-  try {
-    toks = tokenize(formula)
-  } catch (e) {
-    if (e instanceof FormulaError) return null
-    throw e
-  }
-  const shape = shapeOf(toks)
+  if (!shapes) return own()
+  const read = shaped(formula)
+  if (read === null) return own()
+  if (read === 'unread') return null
+  const { toks, shape } = read
   // a spill reference is written as ANCHORARRAY, which its shape does not tell
   if (!shape || shape.holes.some((h) => typeof h !== 'number' && h.spill)) return own(toks)
-  const key = `${enclosing === undefined ? '-' : `${enclosing.length}:${enclosing}`}:${shape.key}`
+  const key = tableShapeKey(enclosing, shape.key)
   const t = shapes.get(key)
   if (t && (t.at || ready(t, FILE_PRINT, fileHole))) return instanceText(t, shape.holes)
   if (t !== undefined) {

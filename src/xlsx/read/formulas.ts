@@ -2,11 +2,10 @@
  * Formulas of a file in the engine's spelling, with what the engine cannot take reported on their cell or name. Of the
  * formulas of one shape (`syntax/shape.ts`), a formula copied down a column, one is parsed for a file.
  */
-import { MAX_FORMULA_LENGTH } from '../../contract.js'
 import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parseTokens } from '../../syntax/parse.js'
-import { shapeOf } from '../../syntax/shape.js'
-import { tokenize, type Tok } from '../../syntax/tokens.js'
+import { shaped, SHAPES } from '../../syntax/shape.js'
+import type { Tok } from '../../syntax/tokens.js'
 import { fromFile, type Found } from '../formulas/from-file.js'
 import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
@@ -57,9 +56,6 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
 /** The shapes of the formulas read with one options object, a file's: true for one that parsed, false for one parsed formula by formula. */
 const shapesOf = new WeakMap<FormulaOptions, Map<string, boolean>>()
 
-/** At most this many shapes are kept for a file, as the engine keeps (`prepare.ts`). */
-const SHAPES = 4096
-
 /**
  * Whether the formula parses, and its tree where `tree` asks for it: a formula of a shape a formula of the same file
  * (`opts`) parsed before parses too, and is not parsed again.
@@ -73,16 +69,12 @@ function parsed(text: string, opts: FormulaOptions | undefined, tree: boolean): 
       throw e
     }
   }
-  // a name's formula, and a text too long or empty, which fails before it is read
-  if (tree || !opts || opts.union || text.length > MAX_FORMULA_LENGTH || text.trim() === '') return own(null)
-  let toks: Tok[]
-  try {
-    toks = tokenize(text)
-  } catch (e) {
-    if (e instanceof FormulaError) return { ok: false }
-    throw e
-  }
-  const shape = shapeOf(toks)
+  // a name's formula, and a text too long or blank, which fails before it is read
+  if (tree || !opts || opts.union) return own(null)
+  const read = shaped(text)
+  if (read === null) return own(null)
+  if (read === 'unread') return { ok: false }
+  const { toks, shape } = read
   if (!shape) return own(toks)
   let shapes = shapesOf.get(opts)
   if (!shapes) shapesOf.set(opts, (shapes = new Map()))

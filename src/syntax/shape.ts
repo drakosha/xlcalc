@@ -5,9 +5,10 @@
  * points or what a number is, and both print as written (a number as Excel prints it). The numbers of an array constant
  * stay in the key, as one literal with a sign; a LET has no shape, since a cell's word in it may be a name.
  */
-import type { Ast, RangeRef } from './ast.js'
+import { MAX_FORMULA_LENGTH } from '../contract.js'
+import { FormulaError, type Ast, type RangeRef } from './ast.js'
 import { mapAst, printFormula, walk, type PrintOptions } from './print.js'
-import type { Tok } from './tokens.js'
+import { tokenize, type Tok } from './tokens.js'
 
 /** What a formula of a shape puts in its template: its references, and its numbers outside array constants. */
 export type Hole = RangeRef | number
@@ -27,6 +28,28 @@ export interface Template {
 
 const sized = (x: string) => `${x.length}:${x}`
 const bookText = (b: number | string) => (typeof b === 'number' ? `#${b}` : sized(b))
+
+/** At most this many shapes are kept by a cache of shapes: a workbook of formulas that share none keeps no more. */
+export const SHAPES = 4096
+
+/** A shape's key within a table (`-` outside one), as its formulas read and print alike only in the same table. */
+export const tableShapeKey = (table: string | undefined, key: string) => `${table === undefined ? '-' : sized(table)}:${key}`
+
+/**
+ * A formula's tokens and shape, for a cache of shapes: `null` for a text too long or blank, which fails before it is
+ * read and is taken on its own; `'unread'` for one that does not tokenize; `shape` null for a LET.
+ */
+export function shaped(text: string): { toks: Tok[]; shape: ReturnType<typeof shapeOf> } | 'unread' | null {
+  if (text.length > MAX_FORMULA_LENGTH || text.trim() === '') return null
+  let toks: Tok[]
+  try {
+    toks = tokenize(text)
+  } catch (e) {
+    if (e instanceof FormulaError) return 'unread'
+    throw e
+  }
+  return { toks, shape: shapeOf(toks) }
+}
 
 /** A formula's shape by its tokens: a key every token but a hole is spelled into, and the holes in the text's order; null for a LET. */
 export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
