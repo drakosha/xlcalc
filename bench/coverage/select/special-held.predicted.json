@@ -1,0 +1,123 @@
+{
+ "blanks-used": {
+  "cells": [
+   "A1",
+   "A2",
+   "A3",
+   "A4",
+   "A5",
+   "A6",
+   "A7",
+   "B1",
+   "B2",
+   "B3",
+   "B4",
+   "B5",
+   "B6",
+   "B7",
+   "C1",
+   "C2",
+   "C3",
+   "C4",
+   "C5",
+   "C6",
+   "C7",
+   "D1",
+   "D2",
+   "D3",
+   "D4",
+   "E1",
+   "E2",
+   "E3",
+   "E4",
+   "E6",
+   "F1",
+   "F2",
+   "F3",
+   "F4",
+   "F7"
+  ],
+  "areas": [
+   "A1:F4",
+   "A5:C7",
+   "E6",
+   "F7"
+  ]
+ },
+ "formulas-errors": {
+  "cells": [
+   "F6"
+  ],
+  "areas": [
+   "F6"
+  ]
+ },
+ "blanks-range": {
+  "cells": [
+   "C4",
+   "C5",
+   "C6",
+   "C7",
+   "D4",
+   "E4",
+   "E6",
+   "F4",
+   "F7"
+  ],
+  "areas": [
+   "C4:F4",
+   "C5:C7",
+   "E6",
+   "F7"
+  ]
+ },
+ "constants": {
+  "cells": [
+   "D5",
+   "D6",
+   "E7"
+  ],
+  "areas": [
+   "D5:D6",
+   "E7"
+  ]
+ },
+ "formulas-numbers-columns": {
+  "cells": [
+   "E5"
+  ],
+  "areas": [
+   "E5"
+  ]
+ },
+ "constants-rows": {
+  "cells": [
+   "D5",
+   "E7"
+  ],
+  "areas": [
+   "D5",
+   "E7"
+  ]
+ },
+ "formulas-text": {
+  "cells": [
+   "D7",
+   "F5"
+  ],
+  "areas": [
+   "F5",
+   "D7"
+  ]
+ },
+ "visible-column": {
+  "cells": [
+   "1048574 cells"
+  ],
+  "areas": [
+   "D1:D5",
+   "D7:D8",
+   "D10:D1048576"
+  ]
+ }
+}
