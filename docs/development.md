@@ -310,6 +310,17 @@ LET names were tested as text typed into cells (the entry sets `names-held`, `le
 | `names-held` | 3 | held out: spaces at the ends and inside, a tab, R1C1 references of each form, a time and a percentage, text that reads as a number, formulas, a function's name, a range's address, ru-RU's boolean, a name twice in a column, 255 and 256 characters |
 
 `names` held in 7 of 9: a number, a boolean and an error make no name, where the engine had made `_2024` and `_N_A`; a date is named by the text it shows (`_3_15_2023`), spaces at a label's ends are left out (`lead`), and `_` goes before an R1C1 reference with a number (`_R2C3`) but after a cell's address (`Q1_`); and Excel refuses a range of labels alone, where the engine gives no names. `names-held`, predicted after the fit, held in 2 of 3: a time of day makes no name either.
+
+### Go To Special
+
+The step `select` (above) also calls `Range.SpecialCells` with Excel's `XlCellType` and `XlSpecialCellsValue` over a case's range and reads the areas Excel selected; `test/select-win.test.ts` compares their cells with `getSpecialCells`.
+
+| set | cases | what |
+|---|---|---|
+| `special` | 16 | blanks, constants and formulas of each kind of value and of several over one cell and over ranges, an entire column among them; visible cells over ranges with a hidden row and column; a spill's cells, a formula answering empty text |
+| `special-held` | 8 | held out: rows and columns of their own above, below, left and right of the cells, a date and empty text, an error a formula answers, visible cells with rows hidden, entire rows and columns |
+
+`special` held in 13 of 16: Excel's used range started at A1, where the sheet's cells started at B2, as its hidden row and column reach it at column A and row 1; and visible cells are the range's own, not those of the used range. `special-held`, predicted after the fit, held in 6 of 8: rows and columns of their own reach the used range at its far ends too (a styled row below the cells, a styled column right of them). Excel did not answer within two minutes for visible cells over one cell or an entire column (the whole sheet's); the engine gives the sheet's rectangles without hidden rows and columns there, not checked.
 ### Editing a grid
 
 From [Editing a grid](edits.md).
