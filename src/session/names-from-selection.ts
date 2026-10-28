@@ -4,8 +4,8 @@
  * labels, the label in their corner names all of those cells. A label's text, its spaces at the ends left out, is made
  * a name: each character a name does not take becomes `_`, `_` goes before a first character a name cannot start with
  * and before an R1C1 reference (`_R2C3`), and after a cell's address, `R`, `C` or a boolean (`Q1_`, `TRUE_`). A text
- * label and a date or a time, by the text it shows, make names; a number, a boolean and an error make none, nor a
- * label without text. Each name refers to its cells absolutely, with its sheet.
+ * label and a date, by the text it shows, make names; a number, a time of day, a boolean and an error make none, nor a
+ * label without text (the set `names-held`). Each name refers to its cells absolutely, with its sheet.
  */
 import type { NameInput, SelectionLabels } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -49,13 +49,13 @@ export function labelName(label: string, booleans: readonly string[]): string | 
   return [...name].slice(0, 255).join('')
 }
 
-/** A cell's value as a label's text: text as it is, a date or a time as it shows; none for a number, a boolean or an error. */
+/** A cell's value as a label's text: text as it is, a date as it shows; none for a number, a time of day, a boolean or an error. */
 function labelText(state: EngineState, s: number, r: number, c: number, formats: SheetLines): string {
   const v = cellValue(state, s, r, c)
   if (typeof v === 'string') return v
   if (typeof v !== 'number') return ''
   const format = formats.format(r, c)
-  return shownAs(format) === 'number' ? '' : state.ctx.rules.display(v, format, Infinity).text
+  return shownAs(format) === 'date' ? state.ctx.rules.display(v, format, Infinity).text : ''
 }
 
 /** An absolute reference to a rectangle of the sheet, with the sheet. */
