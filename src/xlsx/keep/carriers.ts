@@ -651,10 +651,11 @@ export function compared(text: string, kind: Carrier['kind']): string | null {
 }
 
 /**
- * The sheet a sheet's carrier names now, whether its cell is still the last one, and whether lines were only deleted (its
- * cell came off the last one but is on the sheet; an inserted line pushes it off); undefined when the sheet is gone.
+ * The sheet a sheet's carrier names now, whether its cell is still the last one, and the lines deleted where none were
+ * inserted (its cell came off the last row or column but is on the sheet, which an inserted line pushes it off): rows
+ * (`r`), or columns alone (`c`); undefined when the sheet is gone.
  */
-export function sheetOfCarrier(text: string): { sheet: string; moved: boolean; deleted: boolean } | undefined {
+export function sheetOfCarrier(text: string): { sheet: string; moved: boolean; deleted?: 'r' | 'c' } | undefined {
   let ast: Ast
   try {
     ast = parse(text)
@@ -663,9 +664,9 @@ export function sheetOfCarrier(text: string): { sheet: string; moved: boolean; d
     throw e
   }
   if (ast.k === 'ref' && ast.sheet !== null) {
-    const moved = ast.ref.r1 !== MAX_ROWS - 1 || ast.ref.c1 !== MAX_COLS - 1
-    return { sheet: ast.sheet, moved, deleted: moved }
+    const [rows, cols] = [ast.ref.r1 !== MAX_ROWS - 1, ast.ref.c1 !== MAX_COLS - 1]
+    return { sheet: ast.sheet, moved: rows || cols, ...(rows || cols ? { deleted: rows ? 'r' : 'c' } : {}) }
   }
-  if (ast.k === 'err' && ast.sheet !== undefined && ast.book === undefined) return { sheet: ast.sheet, moved: true, deleted: false }
+  if (ast.k === 'err' && ast.sheet !== undefined && ast.book === undefined) return { sheet: ast.sheet, moved: true }
   return undefined
 }

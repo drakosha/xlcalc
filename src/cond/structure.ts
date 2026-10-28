@@ -104,8 +104,13 @@ function formulasOf(rule: ConditionalFormat): string[] {
   return out
 }
 
-/** What deleted lines did to a rule: its cells cut, or all where they were; its formulas changed beyond moving with its first cell, or a reference of theirs lost. */
+/**
+ * What deleted lines did to a rule: whether they were rows and on its sheet (`here`); its cells cut, or all where they
+ * were; its formulas changed beyond moving with its first cell, or a reference of theirs lost.
+ */
 export interface Deleted {
+  rows: boolean
+  here: boolean
   cut: boolean
   stayed: boolean
   changed: boolean
@@ -113,28 +118,29 @@ export interface Deleted {
 }
 
 /**
- * Whether Excel puts a rule of `type` after the others when lines deleted on its sheet changed it (the sets `cond/order`,
- * `struct-held`, `held`, keep `rules-held-2`): a rule that lost cells goes when it is over the statistics of its cells (a
- * colour scale, a data bar, an icon set, a top rule; average and duplicate rules taken as these) or when its formulas
- * changed; a rule whose cells stayed goes when a reference of its became `#REF!`, and a colour scale or an icon set also
- * when a threshold's reference moved; a rule whose cells moved stays.
+ * Whether Excel puts a rule of `type` after the others when deleted lines changed it (the sets `cond/order`,
+ * `order-held`, `struct-held`, `held`, keep `rules-held-2`): a rule that lost cells goes when it is over the statistics
+ * of its cells (a colour scale, a data bar, an icon set, a top rule; average and duplicate rules taken as these) or,
+ * losing rows, when its formulas changed; a rule whose cells stayed goes when a reference of its became `#REF!`, and a
+ * colour scale or an icon set of the sheet with the lines also when a threshold's reference moved; a rule whose cells
+ * moved stays.
  */
 export function lateBy(type: string, d: Deleted): boolean {
-  if (d.cut) return GRADED.has(type) || d.changed
-  return d.stayed && (d.lost || (d.changed && SCALES.has(type)))
+  if (d.cut) return GRADED.has(type) || (d.rows && d.changed)
+  return d.stayed && (d.lost || (d.here && d.changed && SCALES.has(type)))
 }
 
 /** The count of `#REF!` in formulas. */
 export const lostRefs = (xs: string[]) => xs.reduce((n, x) => n + x.split('#REF!').length - 1, 0)
 
-/** `lateBy` for a rule that deleted lines made from `before` into `after`. */
-export function lateAfterDeletion(before: ConditionalFormat, after: ConditionalFormat, sheet: string, names: Map<string, string>): boolean {
+/** `lateBy` for a rule of `sheet` that deleted lines made from `before` into `after`. */
+export function lateAfterDeletion(before: ConditionalFormat, after: ConditionalFormat, sheet: string, names: Map<string, string>, how: Pick<Deleted, 'rows' | 'here'>): boolean {
   const [a, b] = [rectsOf(before), rectsOf(after)]
   const cells = (xs: Rect[]) => xs.reduce((n, x) => n + cellCount(x), 0)
   // the formulas as they were, copied to the new first cell: what moving with it alone gives
   const was = formulasOf(mapFormulas(before, (text) => formulaAt(text, sheet, originOf(before), originOf(after), names, true)))
   const now = formulasOf(after)
-  return lateBy(before.type, { cut: cells(b) < cells(a), stayed: JSON.stringify(a) === JSON.stringify(b), changed: was.join('\n') !== now.join('\n'), lost: lostRefs(now) > lostRefs(was) })
+  return lateBy(before.type, { ...how, cut: cells(b) < cells(a), stayed: JSON.stringify(a) === JSON.stringify(b), changed: was.join('\n') !== now.join('\n'), lost: lostRefs(now) > lostRefs(was) })
 }
 
 /**
@@ -169,7 +175,7 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
       const from = !own ? top : axis === 'r' ? { r: back(top.r), c: top.c } : { r: top.r, c: back(top.c) }
       const p = placed(rule, own ? next : rectsOf(rule), from, s.name, s.name, t, names)
       changed ||= p.rule !== rule
-      out.push({ rule: p.rule, late: n < 0 && own && lateAfterDeletion(rule, p.rule, s.name, names) })
+      out.push({ rule: p.rule, late: n < 0 && lateAfterDeletion(rule, p.rule, s.name, names, { rows: axis === 'r', here: own }) })
     }
     return changed ? withRules(s, lastLate(out)) : s
   })
