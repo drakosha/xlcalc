@@ -230,10 +230,13 @@ function unique(g: Grid, byCol = false, once = false): V | Arr {
   const a = fromGrid(g)
   const total = byCol ? a.cols : a.rows
   const n = lineCount(a, byCol)
-  const seen = new Map<string, { line: number; count: number }>()
+  const seen = new Map<V, { line: number; count: number }>()
+  // a line of one value is told by the value: a number, boolean or blank as it is (0 and -0 one key), else tagged text
+  const single = (byCol ? a.rows : a.cols) === 1
   // the lines past the occupied part are all the same blank line
   for (let i = 0; i < Math.min(total, n + 1); i++) {
-    const k = lineKey(a, i, byCol)
+    const v = single ? (byCol ? a.at(0, i) : a.at(i, 0)) : null
+    const k = !single ? lineKey(a, i, byCol) : isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${textKey(v)}` : v
     const s = seen.get(k)
     const count = i === n ? total - n : 1
     if (s) s.count += count
