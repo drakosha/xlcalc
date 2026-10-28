@@ -7,8 +7,26 @@ import { positional, roundHalfUp, sig15 } from './general.js'
 import type { Ph, Tok } from './parse.js'
 import { BLANK, blank, plain, type Style } from './style.js'
 
-/** Digits, decimals and literals of a section by its placeholders. */
-function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): string {
+/** What the digits of a section's tokens give whatever the value (`formatDigits`). */
+interface Digits {
+  dot: number
+  intEnd: number
+  /** The powers of 1000 its commas scale by. */
+  scale: number
+  grouping: boolean
+  pct: number
+  fracPh: Ph[]
+  /** The integer part's `0` placeholders. */
+  zeros: number
+  firstPh: number
+}
+
+/** Plans by a section's tokens, or by the parts of them a fraction and scientific notation keep (`Plan`). */
+const DIGITS = new WeakMap<Tok[], Digits>()
+
+function digitsOf(toks: Tok[]): Digits {
+  let p = DIGITS.get(toks)
+  if (p) return p
   const dot = toks.findIndex((t) => t.t === 'dot')
   const intEnd = dot < 0 ? toks.length : dot
   let scale = 0
@@ -22,22 +40,34 @@ function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): st
   }
   // commas after the decimal digits scale too (`0.0,,` shows millions)
   for (let i = intEnd + 1; i < toks.length; i++) if (toks[i].t === 'comma' && !toks.slice(i + 1).some((t) => t.t === 'ph')) scale++
-  const pct = toks.filter((t) => t.t === 'pct').length
+  p = {
+    dot,
+    intEnd,
+    scale,
+    grouping,
+    pct: toks.filter((t) => t.t === 'pct').length,
+    fracPh: dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Ph => t.t === 'ph'),
+    zeros: toks.slice(0, intEnd).filter((t) => t.t === 'ph' && t.c === '0').length,
+    firstPh: toks.findIndex((t, i) => i < intEnd && t.t === 'ph'),
+  }
+  DIGITS.set(toks, p)
+  return p
+}
+
+/** Digits, decimals and literals of a section by its placeholders. */
+function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): string {
+  const { dot, intEnd, scale, grouping, pct, fracPh, zeros, firstPh } = digitsOf(toks)
   // a percent or a scale is applied to 15 significant digits, as Excel shows the product (0.285 is 29%)
   let x = pct || scale ? Number(((Math.abs(v) * Math.pow(100, pct)) / Math.pow(1000, scale)).toPrecision(15)) : Math.abs(v)
-  const fracPh = dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Ph => t.t === 'ph')
-  const intPh = toks.slice(0, intEnd).filter((t): t is Ph => t.t === 'ph')
   const fixed = positional(x, fracPh.length)
   x = Number(fixed)
   let [ip, fp = ''] = fixed.split('.')
-  const zeros = intPh.filter((p) => p.c === '0').length
   if (ip === '0' && zeros === 0) ip = ''
   ip = ip.padStart(zeros, '0')
   if (grouping) ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, style.group)
   // integer part: right to left over digit placeholders, leftover digits go before the first one
   let out = ''
   let rest = ip
-  const firstPh = toks.findIndex((t, i) => i < intEnd && t.t === 'ph')
   for (let i = intEnd - 1; i >= 0; i--) {
     const t = toks[i]
     if (t.t === 'ph') {
@@ -54,7 +84,8 @@ function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): st
     for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? blank(style) : ''
     let k = 0
     out += style.decimal
-    for (const t of toks.slice(dot + 1)) {
+    for (let i = dot + 1; i < toks.length; i++) {
+      const t = toks[i]
       if (t.t === 'ph') out += digits[k++] ?? ''
       else if (t.t !== 'comma') out += plain(t, style)
     }
@@ -112,18 +143,24 @@ export function closestFraction(x: number, max: number): [number, number] {
   return [num, den]
 }
 
-/**
- * A fraction: placeholders right before `/` are the numerator, placeholders before them (if any) the integer
- * part; after `/` either placeholders (the denominator has at most that many digits, the closest fraction is
- * taken) or a fixed denominator (`?/8`). With an integer part a negative number keeps its minus even when it
- * shows 0, and a whole 0 shows `0` in a `#` place (`-0    `).
- */
-function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, style: Style): string | null {
+/** A fraction's parts by a section's tokens (`formatFraction`); null where it has no numerator or no denominator. */
+interface Fraction {
+  numPh: Ph[]
+  /** The tokens before the numerator, and the same with a `0` for their last placeholder (a whole 0). */
+  intToks: Tok[]
+  intZero: Tok[]
+  hasInt: boolean
+  /** A fixed denominator (`?/8`), else 0 and the denominator's placeholders. */
+  fixed: number
+  denPh: Ph[]
+  tail: Tok[]
+}
+
+function fractionOf(toks: Tok[], slash: number): Fraction | null {
   let i = slash - 1
   while (i >= 0 && toks[i].t === 'ph') i--
   const numPh = toks.slice(i + 1, slash) as Ph[]
   const intToks = toks.slice(0, i + 1)
-  const hasInt = intToks.some((t) => t.t === 'ph')
   let j = slash + 1
   let fixed = 0
   const denPh: Ph[] = []
@@ -133,6 +170,19 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
     fixed = Number(digits)
   } else for (; j < toks.length && toks[j].t === 'ph'; j++) denPh.push(toks[j] as Ph)
   if (!numPh.length || (!fixed && !denPh.length)) return null
+  const last = intToks.findLastIndex((t) => t.t === 'ph')
+  const intZero = intToks.map((t, k): Tok => (k === last ? { t: 'ph', c: '0' } : t))
+  return { numPh, intToks, intZero, hasInt: last >= 0, fixed, denPh, tail: toks.slice(j) }
+}
+
+/**
+ * A fraction: placeholders right before `/` are the numerator, placeholders before them (if any) the integer
+ * part; after `/` either placeholders (the denominator has at most that many digits, the closest fraction is
+ * taken) or a fixed denominator (`?/8`). With an integer part a negative number keeps its minus even when it
+ * shows 0, and a whole 0 shows `0` in a `#` place (`-0    `).
+ */
+function formatFraction(v: number, f: Fraction, signed: boolean, style: Style): string | null {
+  const { numPh, intToks, intZero, hasInt, fixed, denPh } = f
   const x = Math.abs(v)
   let ip = hasInt ? Math.floor(x) : 0
   const frac = x - ip
@@ -149,18 +199,43 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
     const spaces = blank(style).repeat(free.filter((t) => t.c === '?').length)
     return left ? spaces + zeros + s : zeros + s + spaces
   }
-  const last = intToks.findLastIndex((t) => t.t === 'ph')
   const wholeZero = ip === 0 && num === 0
-  const intPart = hasInt ? formatDigits(ip, wholeZero ? intToks.map((t, k): Tok => (k === last ? { t: 'ph', c: '0' } : t)) : intToks, false, style) : intToks.map((t) => plain(t, style)).join('')
+  const intPart = hasInt ? formatDigits(ip, wholeZero ? intZero : intToks, false, style) : intToks.map((t) => plain(t, style)).join('')
   const denText = fixed ? String(fixed) : pad(String(den), denPh, false)
   const fracText = pad(String(num), numPh, true) + '/' + denText
-  const tail = toks
-    .slice(j)
-    .map((t) => plain(t, style))
-    .join('')
+  const tail = f.tail.map((t) => plain(t, style)).join('')
   // a whole number: the fraction's place is blank (laid out for AutoFit, its digits' room and its slash)
   const body = hasInt && num === 0 ? intPart + (style.layout ? fracText.replace(/[^/]/g, BLANK) : ' '.repeat(fracText.length)) : intPart + fracText
   return (signed && v < 0 && (hasInt || num !== 0) ? '-' : '') + body + tail
+}
+
+/** Scientific notation's parts by a section's tokens (`formatExponent`). */
+interface Exponent {
+  /** The mantissa's tokens, and the same with each placeholder a `0` (zero shows them so). */
+  mant: Tok[]
+  mantZero: Tok[]
+  /** The mantissa's integer placeholders (one at least) and decimals. */
+  width: number
+  decimals: number
+  plus: boolean
+  /** The exponent's placeholders, and the tokens after it that are none. */
+  places: number
+  rest: Tok[]
+}
+
+function exponentOf(toks: Tok[], ex: number): Exponent {
+  const mant = toks.slice(0, ex)
+  const dot = mant.findIndex((t) => t.t === 'dot')
+  const after = toks.slice(ex + 1)
+  return {
+    mant,
+    mantZero: mant.map((t): Tok => (t.t === 'ph' ? { t: 'ph', c: '0' } : t)),
+    width: Math.max(1, mant.slice(0, dot < 0 ? mant.length : dot).filter((t) => t.t === 'ph').length),
+    decimals: dot < 0 ? 0 : mant.slice(dot + 1).filter((t) => t.t === 'ph').length,
+    plus: (toks[ex] as Extract<Tok, { t: 'exp' }>).plus,
+    places: after.filter((t) => t.t === 'ph').length,
+    rest: after.filter((t) => t.t !== 'ph'),
+  }
 }
 
 /**
@@ -168,11 +243,8 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
  * is a multiple of their count (`##0.0E+0` shows 500.0E-3), padded to its placeholders; zero shows every
  * integer placeholder as 0.
  */
-function formatExponent(v: number, toks: Tok[], ex: number, signed: boolean, style: Style): string {
-  const mant = toks.slice(0, ex)
-  const dot = mant.findIndex((t) => t.t === 'dot')
-  const width = Math.max(1, mant.slice(0, dot < 0 ? mant.length : dot).filter((t) => t.t === 'ph').length)
-  const decimals = dot < 0 ? 0 : mant.slice(dot + 1).filter((t) => t.t === 'ph').length
+function formatExponent(v: number, x: Exponent, signed: boolean, style: Style): string {
+  const { width, decimals } = x
   const a = Math.abs(v)
   let e = 0
   let m = 0
@@ -182,20 +254,32 @@ function formatExponent(v: number, toks: Tok[], ex: number, signed: boolean, sty
     m = Number(`${d}e${e0 - e}`)
     if (Number(roundHalfUp(m, decimals)) >= 10 ** width) [e, m] = [e + width, Number(`${d}e${e0 - e - width}`)]
   }
-  const body = formatDigits(m, a === 0 ? mant.map((t): Tok => (t.t === 'ph' ? { t: 'ph', c: '0' } : t)) : mant, false, style)
-  const plus = (toks[ex] as Extract<Tok, { t: 'exp' }>).plus
-  const after = toks.slice(ex + 1)
-  const places = after.filter((t) => t.t === 'ph').length
-  const digits = String(Math.abs(e)).padStart(places, '0')
-  const rest = after.filter((t) => t.t !== 'ph').map((t) => plain(t, style))
-  return (signed && v < 0 ? '-' : '') + body + 'E' + (e < 0 ? '-' : plus ? '+' : '') + digits + rest.join('')
+  const body = formatDigits(m, a === 0 ? x.mantZero : x.mant, false, style)
+  const digits = String(Math.abs(e)).padStart(x.places, '0')
+  const rest = x.rest.map((t) => plain(t, style))
+  return (signed && v < 0 ? '-' : '') + body + 'E' + (e < 0 ? '-' : x.plus ? '+' : '') + digits + rest.join('')
+}
+
+/** What a section of a number is, its parts kept: the token arrays a fraction and scientific notation pass on are then the same each time, and their digits' plans are found again. */
+type Plan = { exponent: Exponent } | { fraction: Fraction | null } | null
+
+/** Plans by a section's tokens, which `parseFormat` keeps one array of per code. */
+const PLANS = new WeakMap<Tok[], Plan>()
+
+function planOf(toks: Tok[]): Plan {
+  let p = PLANS.get(toks)
+  if (p !== undefined) return p
+  const ex = toks.findIndex((t) => t.t === 'exp')
+  const slash = toks.findIndex((t, i) => t.t === 'slash' && toks[i - 1]?.t === 'ph')
+  p = ex >= 0 ? { exponent: exponentOf(toks, ex) } : slash >= 0 ? { fraction: fractionOf(toks, slash) } : null
+  PLANS.set(toks, p)
+  return p
 }
 
 /** A number by a section of digits, a fraction or scientific notation; null when it cannot be shown. */
 export function formatNumber(v: number, toks: Tok[], signed: boolean, style: Style): string | null {
-  const ex = toks.findIndex((t) => t.t === 'exp')
-  if (ex >= 0) return formatExponent(v, toks, ex, signed, style)
-  const slash = toks.findIndex((t, i) => t.t === 'slash' && toks[i - 1]?.t === 'ph')
-  if (slash >= 0) return formatFraction(v, toks, slash, signed, style)
-  return formatDigits(v, toks, signed, style)
+  const p = planOf(toks)
+  if (!p) return formatDigits(v, toks, signed, style)
+  if ('exponent' in p) return formatExponent(v, p.exponent, signed, style)
+  return p.fraction && formatFraction(v, p.fraction, signed, style)
 }
