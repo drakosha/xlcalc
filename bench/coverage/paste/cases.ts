@@ -5,12 +5,11 @@ import { colToIndex, formatAddress } from '../../../src/model.js'
 /**
  * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`,
  * `allMergingConditionalFormats` Excel for Windows alone, which the Mac's AppleScript does not name); `copy`, a plain copy
- * (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab (Excel for Mac alone).
+ * (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab.
  */
 export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'allMergingConditionalFormats' | 'allUsingSourceTheme' | 'painter'
 
-/** The kinds one Excel alone pastes: the Format Painter the Mac's, All Merging Conditional Formats Windows's. */
-export const MAC_ONLY: readonly PasteWhat[] = ['painter']
+/** The kinds Excel for Windows alone pastes: All Merging Conditional Formats. */
 export const WINDOWS_ONLY: readonly PasteWhat[] = ['allMergingConditionalFormats']
 
 /** Paste Special's operation (`XlPasteSpecialOperation`), none when left out. */

@@ -1,0 +1,365 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 36.6
+ },
+ "books": {
+  "painter": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     },
+     "fill": {
+      "color": "#FFFF00"
+     },
+     "border": {
+      "bottom": {
+       "style": "thin"
+      }
+     }
+    },
+    {
+     "font": {
+      "italic": true
+     },
+     "protection": {
+      "locked": false
+     }
+    },
+    {
+     "fill": {
+      "color": "#9BC2E6"
+     }
+    },
+    {
+     "font": {
+      "size": 16
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 1,
+       "numberFormat": "0.00"
+      },
+      "B1": {
+       "value": 2,
+       "style": 2
+      },
+      "A2": {
+       "value": 3,
+       "numberFormat": "0%"
+      },
+      "B2": {
+       "value": 4,
+       "style": 2
+      },
+      "A4": {
+       "value": "m",
+       "style": 3
+      },
+      "A6": {
+       "value": "row"
+      },
+      "D8": {
+       "value": "col"
+      },
+      "F3": {
+       "value": "x"
+      },
+      "G4": {
+       "value": "y",
+       "style": 3
+      },
+      "F10": {
+       "value": "z"
+      },
+      "F12": {
+       "value": "w"
+      },
+      "H14": {
+       "value": "v"
+      },
+      "J2": {
+       "value": "j"
+      },
+      "A8": {
+       "value": "r8"
+      }
+     },
+     "merges": [
+      "A4:B4",
+      "H14:I14"
+     ],
+     "rows": {
+      "6": {
+       "height": 30,
+       "style": 4
+      }
+     },
+     "columns": {
+      "D": {
+       "width": 25,
+       "style": 3
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:B2"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      }
+     ],
+     "validations": [
+      {
+       "range": "A1:B2",
+       "type": "whole",
+       "operator": "between",
+       "formula1": "0",
+       "formula2": "10"
+      }
+     ]
+    },
+    {
+     "name": "T",
+     "cells": {
+      "B2": {
+       "value": "t"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "cell-to-range-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F3:H5"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "cell-to-range-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F3:H5"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "range-to-cell-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "range-to-cell-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "merged-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A4:B4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F12"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "merged-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A4:B4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F12"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "onto-merged-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "H14:I14"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "onto-merged-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "H14:I14"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "row-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "6:6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "8:8"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "row-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "6:6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "8:8"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "column-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "D:D"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J:J"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "column-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "D:D"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J:J"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "other-sheet-painter",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "painter"
+  },
+  {
+   "id": "other-sheet-formats",
+   "book": "painter",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "formats"
+  }
+ ],
+ "sent": {
+  "cell-to-range-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "cell-to-range-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "range-to-cell-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "range-to-cell-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "merged-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "merged-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "onto-merged-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "onto-merged-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "row-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "row-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "column-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "column-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "other-sheet-painter": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a",
+  "other-sheet-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a"
+ },
+ "answers": {
+  "cell-to-range-formats": {},
+  "range-to-cell-formats": {},
+  "merged-formats": {},
+  "onto-merged-formats": {},
+  "row-formats": {},
+  "column-formats": {},
+  "other-sheet-formats": {}
+ }
+}
