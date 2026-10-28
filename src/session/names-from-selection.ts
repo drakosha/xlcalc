@@ -13,7 +13,7 @@ import { InputError } from '../input-error.js'
 import { checkBoolean, object, onlyKeys } from '../input/basic.js'
 import { localeBooleans } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { showsDate } from '../numfmt/category.js'
+import { shownAs } from '../numfmt/shown-as.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { cellValue } from '../result.js'
 import type { Rect } from '../structure/area.js'
@@ -55,7 +55,7 @@ function labelText(state: EngineState, s: number, r: number, c: number, formats:
   if (typeof v === 'string') return v
   if (typeof v !== 'number') return ''
   const format = formats.format(r, c)
-  return showsDate(format, state.input.locale) ? state.ctx.rules.display(v, format, Infinity).text : ''
+  return shownAs(format) === 'number' ? '' : state.ctx.rules.display(v, format, Infinity).text
 }
 
 /** An absolute reference to a rectangle of the sheet, with the sheet. */

@@ -16,10 +16,8 @@ import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress, inner } from '../model.js'
-import { dayOrTime } from '../numfmt/date.js'
+import { shownAs } from '../numfmt/shown-as.js'
 import { sheetLines } from '../layout/lines.js'
-import { enCode } from '../numfmt/builtin.js'
-import { EN_CODES, parseFormat } from '../numfmt/parse.js'
 import { EN_NAMES } from '../numfmt/style.js'
 import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import { chain, type Applied } from './geometry.js'
@@ -213,12 +211,6 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
     return { k: 'text', key: `suffix ${head}`, y: Number(m[2]), make: (n) => head + digits(n, width) }
   }
   return { k: 'other' }
-}
-
-/** What a number's format shows it as, by its first section: a date (a day, a month or a year in it), a time of day alone, or a number. */
-function shownAs(format: CellInput['numberFormat']): 'date' | 'time' | 'number' {
-  if (format === undefined) return 'number'
-  return dayOrTime(parseFormat(enCode(format), EN_CODES)?.[0]?.toks ?? []) ?? 'number'
 }
 
 /** A date's serial number in the book's system, or null for one out of it. */
