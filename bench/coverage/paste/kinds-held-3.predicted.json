@@ -1,0 +1,125 @@
+{
+ "all-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "C1": {
+      "note": "alone"
+     },
+     "F1": {
+      "value": 1
+     },
+     "G1": {
+      "value": "g",
+      "note": "own-g",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "H1": {
+      "value": "h",
+      "note": "alone",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "allExceptBorders-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "C1": {
+      "note": "alone"
+     },
+     "F1": {
+      "value": 1
+     },
+     "G1": {
+      "value": "g",
+      "note": "own-g",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "H1": {
+      "value": "h",
+      "note": "alone",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "notes-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "C1": {
+      "note": "alone"
+     },
+     "F1": {
+      "value": "f"
+     },
+     "G1": {
+      "value": "g",
+      "note": "own-g",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "H1": {
+      "value": "h",
+      "note": "alone",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}

@@ -1,0 +1,396 @@
+{
+ "all-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": 1,
+      "note": "na"
+     },
+     "G1": {
+      "value": "g1",
+      "note": "nb",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": 2,
+      "note": "own-f2"
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "allExceptBorders-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": 1,
+      "note": "na"
+     },
+     "G1": {
+      "value": "g1",
+      "note": "nb",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": 2,
+      "note": "own-f2"
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "notes-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": "f1",
+      "note": "na",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G1": {
+      "value": "g1",
+      "note": "nb",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": "f2",
+      "note": "own-f2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formats-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": "f1",
+      "note": "own-f1"
+     },
+     "G1": {
+      "value": "g1",
+      "note": "own-g1",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": "f2",
+      "note": "own-f2"
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "values-skip": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": 1,
+      "note": "own-f1",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G1": {
+      "value": "g1",
+      "note": "own-g1",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": 2,
+      "note": "own-f2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-skip-transposed": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": 1,
+      "note": "na"
+     },
+     "G1": {
+      "value": 2,
+      "note": "own-g1"
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": "f2",
+      "note": "nb",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G2": {
+      "value": "g2",
+      "note": "own-g2",
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1,
+      "note": "na"
+     },
+     "B1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "F1": {
+      "value": 1,
+      "note": "na"
+     },
+     "G1": {
+      "note": "nb",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": 2
+     },
+     "F2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}

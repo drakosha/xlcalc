@@ -1,0 +1,602 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 22.4
+ },
+ "books": {
+  "source": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     },
+     "fill": {
+      "color": "#FFFF00"
+     }
+    },
+    {
+     "font": {
+      "italic": true
+     },
+     "border": {
+      "bottom": {
+       "style": "thin"
+      }
+     }
+    },
+    {
+     "fill": {
+      "color": "#9BC2E6"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 1,
+       "numberFormat": "0.00"
+      },
+      "B1": {
+       "formula": "A1*2",
+       "style": 2
+      },
+      "C1": {
+       "formula": "$A$1+A2"
+      },
+      "D1": {
+       "value": "link",
+       "link": {
+        "url": "https://example.com/"
+       }
+      },
+      "A2": {
+       "value": 3,
+       "note": {
+        "text": "n"
+       }
+      },
+      "B2": {
+       "formula": "SEQUENCE(2)"
+      },
+      "C2": {
+       "value": "m"
+      },
+      "A3": {
+       "value": 46037,
+       "numberFormat": "m/d/yyyy"
+      },
+      "C3": {
+       "formula": "A9"
+      },
+      "D3": {
+       "formula": "NA()"
+      },
+      "F1": {
+       "value": "old",
+       "style": 3
+      },
+      "G2": {
+       "value": 9,
+       "numberFormat": "0%"
+      },
+      "H3": {
+       "formula": "G2+1"
+      }
+     },
+     "merges": [
+      "C2:D2"
+     ],
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:B3"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "F1:I3"
+       ],
+       "formula": "F1=9",
+       "style": {
+        "font": {
+         "italic": true
+        }
+       }
+      }
+     ],
+     "validations": [
+      {
+       "range": "A1:A3",
+       "type": "whole",
+       "operator": "between",
+       "formula1": "0",
+       "formula2": "10"
+      },
+      {
+       "range": "F1:F3",
+       "type": "list",
+       "formula1": "\"a,b\""
+      }
+     ],
+     "columns": {
+      "A": {
+       "width": 20
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "B2": {
+       "value": "own",
+       "style": 3
+      },
+      "C3": {
+       "value": 5
+      }
+     }
+    }
+   ]
+  },
+  "transpose": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B1": {
+       "formula": "A1*2"
+      },
+      "C1": {
+       "formula": "$A1+B$1"
+      },
+      "D1": {
+       "formula": "A5+SUM(A1:B1)"
+      },
+      "A2": {
+       "formula": "B1+1"
+      },
+      "B2": {
+       "formula": "$A$1+A$2"
+      },
+      "C2": {
+       "value": 7
+      },
+      "D2": {
+       "formula": "C2:C3*1"
+      }
+     }
+    }
+   ]
+  },
+  "merged": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 1
+      },
+      "B1": {
+       "value": 2
+      },
+      "F1": {
+       "value": "x"
+      }
+     },
+     "merges": [
+      "F1:G1"
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "all-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "values-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "values"
+  },
+  {
+   "id": "formulas-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formulas"
+  },
+  {
+   "id": "formats-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "validation-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "validation"
+  },
+  {
+   "id": "formulasAndNumberFormats-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formulasAndNumberFormats"
+  },
+  {
+   "id": "valuesAndNumberFormats-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "valuesAndNumberFormats"
+  },
+  {
+   "id": "columnWidths-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "columnWidths"
+  },
+  {
+   "id": "allExceptBorders-F1",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "values-T",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "values"
+  },
+  {
+   "id": "formulas-T",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "formulas"
+  },
+  {
+   "id": "formats-T",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-tiled",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10:I11"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "values-tiled",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10:G11"
+   },
+   "what": "values"
+  },
+  {
+   "id": "all-transposed",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "all",
+   "transpose": true
+  },
+  {
+   "id": "values-transposed",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "values",
+   "transpose": true
+  },
+  {
+   "id": "formulas-transposed",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "formulas",
+   "transpose": true
+  },
+  {
+   "id": "formats-transposed",
+   "book": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "formats",
+   "transpose": true
+  },
+  {
+   "id": "refs-transposed",
+   "book": "transpose",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formulas",
+   "transpose": true
+  },
+  {
+   "id": "refs-all-transposed",
+   "book": "transpose",
+   "from": {
+    "sheet": "S",
+    "range": "A1:D2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all",
+   "transpose": true
+  },
+  {
+   "id": "merged-values",
+   "book": "merged",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "values"
+  },
+  {
+   "id": "merged-formats",
+   "book": "merged",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "merged-part-values",
+   "book": "merged",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "values"
+  },
+  {
+   "id": "merged-part-formats",
+   "book": "merged",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "formats"
+  }
+ ],
+ "sent": {
+  "all-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "values-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formulas-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formats-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "validation-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formulasAndNumberFormats-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "valuesAndNumberFormats-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "columnWidths-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "allExceptBorders-F1": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "values-T": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formulas-T": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formats-T": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formats-tiled": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "values-tiled": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "all-transposed": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "values-transposed": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formulas-transposed": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "formats-transposed": "0cebe47a11bc670c6ccd0581d7564c3fa8a4b400ef1b0fb05b8a596d8698bb9e",
+  "refs-transposed": "167b8cc4c2ec4604f37b7628fca4237b0f285a3f5f14521b26fc7c6f722d5794",
+  "refs-all-transposed": "167b8cc4c2ec4604f37b7628fca4237b0f285a3f5f14521b26fc7c6f722d5794",
+  "merged-values": "61274a180c475a0793f947250ea0bb9b5031f9ae2c2d92f11d090d18f74a81d0",
+  "merged-formats": "61274a180c475a0793f947250ea0bb9b5031f9ae2c2d92f11d090d18f74a81d0",
+  "merged-part-values": "61274a180c475a0793f947250ea0bb9b5031f9ae2c2d92f11d090d18f74a81d0",
+  "merged-part-formats": "61274a180c475a0793f947250ea0bb9b5031f9ae2c2d92f11d090d18f74a81d0"
+ },
+ "answers": {
+  "all-F1": {},
+  "values-F1": {},
+  "formulas-F1": {},
+  "formats-F1": {},
+  "validation-F1": {},
+  "formulasAndNumberFormats-F1": {},
+  "valuesAndNumberFormats-F1": {},
+  "columnWidths-F1": {},
+  "allExceptBorders-F1": {},
+  "values-T": {},
+  "formulas-T": {},
+  "formats-T": {},
+  "formats-tiled": {},
+  "values-tiled": {},
+  "all-transposed": {},
+  "values-transposed": {},
+  "formulas-transposed": {},
+  "formats-transposed": {},
+  "refs-transposed": {},
+  "refs-all-transposed": {},
+  "merged-values": {
+   "error": "-2146827284 To do this, all the merged cells need to be the same size."
+  },
+  "merged-formats": {},
+  "merged-part-values": {
+   "error": "-2146827284 To do this, all the merged cells need to be the same size."
+  },
+  "merged-part-formats": {}
+ }
+}

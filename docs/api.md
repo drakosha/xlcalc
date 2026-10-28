@@ -3530,10 +3530,24 @@ constant; `formulas`: the formulas as a copy pastes them and the constants. Both
 formats, merged areas, notes, hyperlinks, conditional formats and data validation, a blank of the source clears the
 target's cell, and both are refused onto a merged area the copy does not bring. `formats`: styles, number formats,
 merged areas and conditional formats, the target's contents, notes, hyperlinks and data validation left.
-`validation`: the data validation alone.
+`validation`: the data validation alone. `valuesAndNumberFormats` and `formulasAndNumberFormats`: as `values` and
+`formulas` with the copy's number formats, and not refused onto merged areas. `columnWidths`: the widths of the
+copy's columns alone. `allExceptBorders`: as `all`, each cell keeping the destination's borders. `notes`: the copy's
+notes alone, a cell without one clearing the destination's (Excel's Comments). Excel's Format Painter is `formats`.
 
 ```ts
-type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation'
+type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'valuesAndNumberFormats' | 'formulasAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes'
+```
+
+### `PasteOperation`
+
+Paste Special's operation ([`StructureOp`](#structureop) `copyRange`): each number of the copy is added to, subtracted from,
+multiplied into or divided into the destination cell's, a blank counting as 0; a formula on either side makes a
+formula of both (`10+(A1*2)`). Text, booleans and errors of the copy leave the destination's cell. It applies to the
+kinds that paste contents and is ignored by the others.
+
+```ts
+type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'
 ```
 
 ### `PasteTextPreview`
@@ -4410,10 +4424,13 @@ type StructureOp =
   /**
    * Copy and paste: the range is pasted at `to`; a target that is a whole multiple of the source's size is
    * tiled with copies (fill down and fill right are copies of the first row or column). Copies have no
-   * `meta` unless `withMeta`. `paste` pastes part of the copy, as Excel's Paste Special (`PasteKind`), and `transpose`
-   * turns it, rows into columns (`docs/structure.md` "Paste Special").
+   * `meta` unless `withMeta`. `paste` pastes part of the copy, as Excel's Paste Special (`PasteKind`), `transpose`
+   * turns it, rows into columns, `operation` combines the copy's numbers with the destination's, and `skipBlanks`
+   * leaves the contents and look of the destination's cells under blank cells of the copy, and their notes under cells
+   * without a note (`docs/structure.md` "Paste Special"); `operation` or `skipBlanks` without `paste` is Paste
+   * Special's `all`.
    */
-  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean; paste?: PasteKind; transpose?: boolean }
+  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean; paste?: PasteKind; transpose?: boolean; operation?: PasteOperation; skipBlanks?: boolean }
   /** A new name that follows Excel's rules (see `BookInput.sheets`) and is not used by another sheet. */
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }

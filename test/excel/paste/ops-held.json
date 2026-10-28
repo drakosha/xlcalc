@@ -1,0 +1,365 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 20.4
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 3
+      },
+      "B2": {
+       "value": 4
+      },
+      "D1": {
+       "value": "text"
+      },
+      "D3": {
+       "formula": "B1+1"
+      },
+      "D4": {
+       "formula": "NA()"
+      },
+      "D5": {
+       "value": 46037,
+       "numberFormat": "m/d/yyyy"
+      },
+      "D6": {
+       "value": true
+      },
+      "D7": {
+       "value": 10,
+       "note": {
+        "text": "n"
+       }
+      },
+      "D8": {
+       "formula": "SUM(B1:B2)"
+      },
+      "D9": {
+       "value": 1.5
+      },
+      "D10": {
+       "value": -3
+      },
+      "D11": {
+       "value": 0.1
+      },
+      "D12": {
+       "formula": "SEQUENCE(2)"
+      },
+      "E1": {
+       "value": 5,
+       "numberFormat": "0%"
+      },
+      "E2": {
+       "formula": "B1*2"
+      },
+      "E3": {
+       "value": 0.2
+      },
+      "E4": {
+       "value": "txt",
+       "style": 1
+      },
+      "E5": {
+       "formula": "\"\""
+      },
+      "F20": {
+       "value": 1
+      }
+     },
+     "merges": [
+      "F20:G20"
+     ]
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": 7
+      },
+      "A2": {
+       "formula": "A1*3"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "number-add-all",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "number-add-values",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "number-divide-values",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "values",
+   "operation": "divide"
+  },
+  {
+   "id": "formula-add-formulas",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "formula-multiply-all",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "all",
+   "operation": "multiply"
+  },
+  {
+   "id": "formula-subtract-values",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "values",
+   "operation": "subtract"
+  },
+  {
+   "id": "decimal-add-values",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:D11"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "blank-multiply-blank",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "values",
+   "operation": "multiply"
+  },
+  {
+   "id": "blank-divide-blank",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "all",
+   "operation": "divide"
+  },
+  {
+   "id": "number-subtract-blank",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "values",
+   "operation": "subtract"
+  },
+  {
+   "id": "number-add-spill",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D12"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "number-add-other-sheet",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1:E2"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "A1"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "number-add-merged",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E1:E2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F20"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "text-add-all",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D9"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "empty-text-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E5"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D9"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "empty-text-values-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E5"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D9"
+   },
+   "what": "values",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "number-add-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-add-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-divide-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "formula-add-formulas": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "formula-multiply-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "formula-subtract-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "decimal-add-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "blank-multiply-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "blank-divide-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-subtract-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-add-spill": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-add-other-sheet": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "number-add-merged": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "text-add-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "empty-text-skip": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
+  "empty-text-values-skip": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34"
+ },
+ "answers": {
+  "number-add-all": {},
+  "number-add-values": {},
+  "number-divide-values": {},
+  "formula-add-formulas": {},
+  "formula-multiply-all": {},
+  "formula-subtract-values": {},
+  "decimal-add-values": {},
+  "blank-multiply-blank": {},
+  "blank-divide-blank": {},
+  "number-subtract-blank": {},
+  "number-add-spill": {},
+  "number-add-other-sheet": {},
+  "number-add-merged": {},
+  "text-add-all": {},
+  "empty-text-skip": {},
+  "empty-text-values-skip": {}
+ }
+}
