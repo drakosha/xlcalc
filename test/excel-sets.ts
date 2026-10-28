@@ -17,6 +17,9 @@ export interface StoredSet {
 
 export const SETS: StoredSet[] = storedSets<Omit<StoredSet, 'name'>>('cases')
 
+/** The sets of match mode 3's syntax, which each level of `xlcalc/regex` answers differently: `regex-levels.test.ts` checks them. */
+export const LEVELED_SETS: ReadonlySet<string> = new Set(['xmatch-regex-syntax', 'xmatch-regex-syntax-2'])
+
 /** Functions that some set has cases for (`fn` of its cases). */
 export const SET_FUNCTIONS: ReadonlySet<string> = new Set(SETS.flatMap((s) => s.cases.flatMap((c) => (c.fn ? [c.fn] : []))))
 
