@@ -3,13 +3,13 @@
  * canonical text, its AST with linked workbooks' names put in their place (`expandLinkNames`). While a workbook's state
  * is built, the formulas of one shape (`syntax/shape.ts`) are prepared once.
  */
-import { MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode } from './contract.js'
+import type { CheckCode, ErrorCode } from './contract.js'
 import type { EngineState, Invalid } from './engine.js'
 import { expandLinkNames } from './links.js'
 import { nameFor } from './names.js'
-import { FormulaError, printFormula, sheetKey, tokenize, type Ast, type PrintOptions, type Tok } from './syntax.js'
+import { printFormula, sheetKey, type Ast, type PrintOptions, type Tok } from './syntax.js'
 import { validateTokens } from './syntax/check.js'
-import { instance, ready, shapeOf, type Template } from './syntax/shape.js'
+import { instance, ready, shaped, SHAPES, tableShapeKey, type Template } from './syntax/shape.js'
 import { tableAt, tableNames } from './tables/model.js'
 
 export type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
@@ -64,24 +64,15 @@ export function prepare(state: EngineState, s: number, row: number, col: number,
 /** The shapes of one build of a state, by their key: a template, or null for a shape prepared formula by formula. */
 export type Shapes = Map<string, Template | null>
 
-/** At most this many shapes are kept for a build: a workbook of formulas that share none keeps no more. */
-const SHAPES = 4096
-
 /** `prepare` through the formula's shape: the shape's template taken when `shapes` holds it, else the formula prepared and its shape kept. */
 export function prepareShaped(state: EngineState, shapes: Shapes, s: number, row: number, col: number, text: string): Prepared {
-  // a text too long fails before it is read; a text that does not read fails as on its own
-  if (text.length > MAX_FORMULA_LENGTH) return prepare(state, s, row, col, text)
-  let toks: Tok[]
-  try {
-    toks = tokenize(text)
-  } catch (e) {
-    if (e instanceof FormulaError) return prepare(state, s, row, col, text)
-    throw e
-  }
-  const shape = shapeOf(toks)
+  // a text too long, blank or not read fails as on its own
+  const read = shaped(text)
+  if (read === null || read === 'unread') return prepare(state, s, row, col, text)
+  const { toks, shape } = read
   if (!shape) return prepare(state, s, row, col, text, toks)
   const table = tableAt(state.tables, s, row, col)?.name
-  const key = `${s}:${table === undefined ? '-' : `${table.length}:${table}`}:${shape.key}`
+  const key = `${s}:${tableShapeKey(table, shape.key)}`
   const t = shapes.get(key)
   if (t && (t.at || ready(t, spelling(state, namedFrom(state, s))))) {
     const x = instance(t, shape.holes)
