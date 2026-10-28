@@ -20,7 +20,7 @@ import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from '../validation/rules.js'
 import { withFormulas } from '../validation/structure.js'
-import { cellCount, contains, cornerOf, cornersText, inside, isFull, LIMIT, meets, parseRange, rectText, shiftRect, span, type Area, type Axis, type Rect, type Span } from './area.js'
+import { cellCount, contains, cornerOf, cornersText, hasCell, inside, isFull, LIMIT, meets, parseRange, rectText, shiftRect, span, type Area, type Axis, type Rect, type Span } from './area.js'
 import { clipboard, pasteArea, pasteClip, type Clipboard } from './filtered.js'
 import { copyTables, headersPasted } from '../tables/moves.js'
 import type { ValuesIn } from './values.js'
@@ -235,7 +235,8 @@ function withBorders(lay: Laying, copy: number | undefined, target: number | und
  */
 function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: string | undefined, r: number, c: number, lay: Laying): CellInput | undefined {
   const [t, x] = [a === undefined ? undefined : target.cells[a], b === undefined ? undefined : copy.cells[b]]
-  const parts = lay.skipBlanks && isBlank(x) ? NONE_TAKEN : lay.parts
+  // a cell holding a note alone is no blank to a paste of notes, and is to a paste of values (the paste set `kinds-held`)
+  const parts = lay.skipBlanks && isBlank(x) && !(lay.parts.notes && x?.note !== undefined) ? NONE_TAKEN : lay.parts
   const out: Record<string, unknown> = {}
   const both = parts.content && lay.operation ? combined(lay.operation, t, x) : null
   if (both) Object.assign(out, both, t?.meta !== undefined ? { meta: t.meta } : {})
@@ -255,16 +256,34 @@ function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: st
   return Object.keys(out).length ? (out as CellInput) : undefined
 }
 
-/** The cells of `area` that merged areas of `sheet` cover but their top-left ones, which hold no note. */
-function coveredIn(sheet: SheetInput, area: Rect): Set<string> {
-  const out = new Set<string>()
-  for (const m of mergesOf(sheet))
-    for (let r = Math.max(m.r1, area.r1); r <= Math.min(m.r2, area.r2); r++)
-      for (let c = Math.max(m.c1, area.c1); c <= Math.min(m.c2, area.c2); c++) if (r !== m.r1 || c !== m.c1) out.add(formatAddress(r, c))
-  return out
+/**
+ * The notes a paste of notes lays over merged areas of `sheet` (the paste sets `kinds`, `kinds-held`): an area whose
+ * top-left cell is in `area` takes there the first note laid over it, row by row, and its other cells hold none.
+ */
+function notesOnMerges(sheet: SheetInput, area: Rect, cells: Record<string, CellInput>): void {
+  const put = (addr: string, note: CellInput['note']) => {
+    const { note: _, ...rest } = cells[addr] ?? {}
+    const cell: CellInput = note === undefined ? rest : { ...rest, note }
+    if (Object.keys(cell).length) cells[addr] = cell
+    else delete cells[addr]
+  }
+  for (const m of mergesOf(sheet)) {
+    if (!hasCell(area, m.r1, m.c1)) continue
+    let first: CellInput['note']
+    for (let r = m.r1; r <= Math.min(m.r2, area.r2); r++)
+      for (let c = m.c1; c <= Math.min(m.c2, area.c2); c++) {
+        const addr = formatAddress(r, c)
+        first ??= cells[addr]?.note
+        if (r !== m.r1 || c !== m.c1) put(addr, undefined)
+      }
+    put(formatAddress(m.r1, m.c1), first)
+  }
 }
 
-/** The columns of `area` on `sheet` with the widths of the columns `src` of `from`, tiled. */
+/**
+ * The columns of `area` on `sheet` with the widths of the columns `src` of `from`, tiled from the area's first column;
+ * a transposed paste's area is the turned one, its columns tiled the same (the paste sets `kinds`, `kinds-held`).
+ */
 function withWidths(sheet: SheetInput, from: SheetInput, src: Rect, area: Rect): SheetInput {
   const cols = lines(from.columns, 'c')
   const n = src.c2 - src.c1 + 1
@@ -289,7 +308,7 @@ export interface PartOptions {
  * paste of values. Its cells in the area are laid from both (`laid`); a paste of looks takes the copy's sheet (its looks,
  * lines, merged areas and conditional formats), the others the target's; data validation from the copy for `all` and a
  * paste of validation; a paste of formulas takes the names and links the copy brought; notes leave the cells merged
- * areas cover; column widths come from the source's columns.
+ * areas cover (`notesOnMerges`); column widths come from the source's columns.
  */
 export function pastedPart(book: BookInput, full: BookInput, to: string, area: Rect, kind: PasteKind, o: PartOptions): BookInput {
   const parts = PARTS[kind]
@@ -308,19 +327,15 @@ export function pastedPart(book: BookInput, full: BookInput, to: string, area: R
   const gb = parts.layout ? h : g
   for (let i = 0; i < gb.addr.length; i++) if (!taken.has(gb.addr[i])) cells[gb.addr[i]] = gb.cell[i]
   const lay: Laying = { parts, operation: o.operation, skipBlanks: o.skipBlanks, styles: full.styles ?? [] }
-  const covered = kind === 'notes' ? coveredIn(base, area) : null
   // where the base's entry or look is gone, no look of the sheet's own: the entry showed its lines' look, not the one kept under it
   const bare: [number, number, number][] = []
   for (const [addr, [r, c, a, b]] of taken) {
     spend(1)
-    let cell = laid(target, copy, a, b, r, c, lay)
-    if (cell?.note !== undefined && covered?.has(addr)) {
-      const { note: _, ...rest } = cell
-      cell = Object.keys(rest).length ? rest : undefined
-    }
+    const cell = laid(target, copy, a, b, r, c, lay)
     if (cell) cells[addr] = cell
     else if ((parts.layout ? b : a) !== undefined || lookIn(base, r, c)) bare.push([r, c, NONE])
   }
+  if (kind === 'notes') notesOnMerges(base, area, cells)
   const layer = layerOf(base)
   let sheet = layer ? withLayer(base, cells, bare.length ? edited(layer, cellEdits(bare), new LookTable(layer.looks)) : layer) : { ...base, cells }
   if (parts.layout || parts.validation) sheet = withField(sheet, 'validations', (parts.validation ? copy : target).validations)
@@ -371,8 +386,6 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     } else target = one ? merged : corner
   }
   const looksOnly = !writesContent(o.kind)
-  // column widths come from the source's columns as they stand, not turned
-  if (o.kind === 'columnWidths') o = { ...o, transpose: false }
   // the source as the clipboard holds it: of values for a paste of values, turned for a transposed one
   const held = clipboard(book, from, src, values, ofValues(o.kind))
   const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, looksOnly) : null
