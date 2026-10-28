@@ -52,4 +52,15 @@ describe.each(['closures', 'eval'] as const)('function caches, %s', (execution) 
       { sheet: 'S', cell: 'H7', input: { value: 45031 } },
     ], execution)
   })
+
+  it('RANK.EQ and RANK.AVG over a long range follow edits in it: numbers, text skipped, the first error', () => {
+    const cells = column(300, (r) => ({ value: (r * 37) % 101 }), (r) => `RANK.${r % 2 ? 'EQ' : 'AVG'}(H${r},$H$1:$H$300${r % 3 ? '' : ',1'})`)
+    follows(cells, 'B1:B300', [
+      { sheet: 'S', cell: 'H5', input: { value: 1000 } },
+      { sheet: 'S', cell: 'H6', input: { value: 'x' } },
+      { sheet: 'S', cell: 'H9', input: { formula: '1/0' } },
+      { sheet: 'S', cell: 'H9', input: { value: -0 } },
+      { sheet: 'S', cell: 'H200', input: { value: 0 } },
+    ], execution)
+  })
 })

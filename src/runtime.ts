@@ -14,6 +14,7 @@ import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritCo
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
+import { rankInRange } from './functions/statistical/rank-index.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
 import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
@@ -66,6 +67,8 @@ export interface RuntimeContext {
 }
 
 const BIG_RANGE = 256
+/** RANK filled down over one long range: by its sorted numbers (`rank-index.ts`). */
+const RANKS = ['RANK', 'RANK.EQ', 'RANK.AVG']
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
@@ -352,7 +355,9 @@ export function makeRuntime(ctx: RuntimeContext) {
         ? (...args: Arg[]) => args.length === 2 && args[0] instanceof Rng
           ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) ?? caller(...args)
           : caller(...args)
-        : caller
+        : RANKS.includes(name)
+          ? (...args: Arg[]) => rankInRange(cx, name === 'RANK.AVG', args) ?? caller(...args)
+          : caller
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */
