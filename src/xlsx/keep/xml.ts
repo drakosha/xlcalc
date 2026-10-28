@@ -215,3 +215,10 @@ export class ContentTypes {
     return `${this.head}${this.items.map((x) => x.xml).join('')}</Types>`
   }
 }
+
+/** Where the value of an attribute of the element at `e` (from its opening tag) lies in its opening tag; undefined without it. */
+export function valueAt(xml: string, e: { start: number }, name: string): [number, number] | undefined {
+  const tag = xml.slice(e.start, xml.indexOf('>', e.start) + 1)
+  const m = new RegExp(`\\s${name.replace(/[.:]/g, '\\$&')}\\s*=\\s*(["'])([^"']*)\\1`).exec(tag)
+  return m ? [e.start + m.index + m[0].length - 1 - m[2].length, e.start + m.index + m[0].length - 1] : undefined
+}

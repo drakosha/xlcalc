@@ -92,7 +92,7 @@ function withRules(s: SheetInput, list: ConditionalFormat[]): SheetInput {
 const lastLate = (xs: { rule: ConditionalFormat; late: boolean }[]) => [...xs.filter((x) => !x.late), ...xs.filter((x) => x.late)].map((x) => x.rule)
 
 /** Rules over the statistics of their cells. */
-const GRADED = new Set(['colorScale', 'dataBar', 'iconSet', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues'])
+export const GRADED = new Set(['colorScale', 'dataBar', 'iconSet', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues'])
 
 /**
  * The rules of the book's sheets after `n` lines are inserted (`n` > 0) or deleted at `at` of `target` (`t`, the

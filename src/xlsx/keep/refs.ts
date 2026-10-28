@@ -65,6 +65,18 @@ export function areaText(x: Rect, d: Dollars = ABSOLUTE): string {
 /** An area without `$`s, as an `sqref` and a pivot table's place write it. */
 export const plainArea = (x: Rect) => areaText(x, RELATIVE)
 
+/** A rectangle as an absolute reference: `$B$3`, `$B$3:$E$10`, `$C:$D`, `$3:$5`. */
+export const absText = (x: Rect) => areaText(x, ABSOLUTE)
+
+/** A sheet's carrier: its last cell. */
+export const lastCell = (sheet: string) => `${quoteSheet(sheet)}!$XFD$1048576`
+
+/** The rectangles of an `sqref` in a carrier: a union on the sheet; null when one is none. */
+export const sqrefCarrier = (sheet: string, rects: Rect[] | null): string | null => (rects?.length ? rects.map((x) => `${quoteSheet(sheet)}!${absText(x)}`).join(',') : null)
+
+/** The rectangles a carrier's text holds now: each, or null where lost; null when it is no union of references. */
+export const rectsNow = (text: string): (Rect | null)[] | null => areasOf(text)?.map((a) => ('rect' in a ? a.rect : null)) ?? null
+
 /** A sheet's name before `!`, quoted where Excel quotes it. */
 export const sheetPrefix = (sheet: string) => (plain(sheet) ? sheet : quoteSheet(sheet))
 
