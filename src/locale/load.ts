@@ -98,9 +98,9 @@ function checkLocaleObject(locale: unknown, path: string): Locale {
 /** A package's locale by name, as its module exports it (`ruRU`). */
 const nameOf = (tag: string) => tag.replace('-', '')
 
-/** How the root loads a package's locale: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)`. */
+/** How the root loads a package's locale: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)`, or `loadLocale('ru-RU')`. */
 function howToLoad(tag: string): string {
-  return `import { ${nameOf(tag)} } from 'xlcalc/locales/${tag}' and call registerLocale(${nameOf(tag)})`
+  return `import { ${nameOf(tag)} } from 'xlcalc/locales/${tag}' and call registerLocale(${nameOf(tag)}), or await loadLocale('${tag}')`
 }
 
 /**

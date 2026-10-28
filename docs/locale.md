@@ -19,6 +19,16 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здес�
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
+A host that knows a locale only by its tag, from a file or a user's choice, loads it with `loadLocale`, in the root and in `xlcalc/xlsx`, which imports the package's module of that tag and loads it as `registerLocale` does; a bundler puts the module into a chunk of its own, which comes only when it is loaded. A locale loaded already comes back without importing its module again, and a tag that is not one of the package's locales is an `InputError`:
+
+```js
+import { loadLocale, readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const read = await readXlsx(data)
+if (read.book.locale) await loadLocale(read.book.locale)
+await writeXlsx({ book: read.book })
+```
+
 `LOCALES` lists the loaded locales by tag. Every function that accepts a locale accepts the tag of a loaded locale or the locale object, and an object needs no loading where no workbook is involved: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. A workbook's `locale` is a tag, and a workbook in a locale that is not loaded causes an `InputError` that says what to import, wherever the workbook goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A thread pool loads in its threads the locales loaded where it runs, including those loaded later. A locale is a plain object (the `Locale` type), so formula text in another language is just another object of the same shape; one without calculation rules parses and displays values as en-US does. Adding a locale to the package takes one module ([docs/locale.md](locale.md#adding-a-locale)).
 
 ```js
@@ -27,7 +37,7 @@ import { compute } from 'xlcalc'
 try {
   compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
 } catch (e) {
-  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)
+  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)
 }
 ```
 
@@ -83,7 +93,7 @@ console.log(compute(book).sheets[0].cells.A1.value, [...LOCALES.keys()])
 ```
 
 - `LOCALES` lists the loaded locales by tag: `en-US`, then each registered locale.
-- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
+- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
 - Every function that accepts a locale accepts the tag of a loaded locale or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. An object needs no loading there, since no workbook is calculated: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
 - Importing the module has no effect by itself, so a bundler leaves it out of a bundle that does not use it. Loading the same object again does nothing; another object with an already loaded tag causes an `InputError`, as does a locale without the rules a workbook calculates by.
 - `readXlsx` keeps a file's locale (`ru-RU`) as it reads it, loaded or not; calculating or writing the workbook requires the locale to be loaded.
@@ -208,7 +218,7 @@ A locale added to the package lets workbooks in it calculate as Excel does in th
 
 - the module `src/locales/xx-YY.ts`, which holds everything the engine knows about the locale and exports it as `xxYY`, the tag without its hyphen;
 - its tag in `PACKAGE_LOCALES` (`src/locale/registry.ts`), which names the module in the message about a workbook in that locale that is not loaded, and lets `readXlsx` keep it;
-- its import in `LOCALE_MODULES` (`src/worker/locales.ts`), through which a pool's thread gets its messages, and through which the tests and harnesses load every locale of the package;
+- its import in `LOCALE_MODULES` (`src/locale/modules.ts`), through which `loadLocale` loads it and a pool's thread gets its messages, and through which the tests and harnesses load every locale of the package;
 - its subpath in `package.json`, `"./locales/xx-YY"`, like ru-RU's.
 
 `test/locale-modules.test.ts` checks that the four agree. No engine code changes, as long as the locale's rules are ones the engine reads from data ([What the data cannot express](#what-the-data-cannot-express)), and neither do the tests and harnesses that compare it with Excel ([Tests and harnesses](#tests-and-harnesses)).
