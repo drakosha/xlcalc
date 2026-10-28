@@ -18,7 +18,7 @@ import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
-import { checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
+import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
 import { checkConditionalFormats } from './cond/check.js'
@@ -234,7 +234,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -263,6 +263,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
     if (sheet.autoFilter !== undefined) checkAutoFilter(sheet.autoFilter, `${p}.autoFilter`)
     if (sheet.view !== undefined) checkSheetView(sheet.view, `${p}.view`)
+    if (sheet.tabColor !== undefined) checkColor(sheet.tabColor, `${p}.tabColor`)
     if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
@@ -467,6 +468,21 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
   return editsTaken(checkEditList(v, sheetIndex, path, 'a cell object, or null to clear the cell', (input, p) => checkCell(input, p, styles)))
 }
 
+/** The fields of a sheet a layout edit sets, in the order an edit is read by, with their checks; those that may be null, which removes them. */
+const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; nullable?: true }> = {
+  merges: { check: checkMerges },
+  filtered: { check: checkBoolean },
+  autoFilter: { check: checkAutoFilter, nullable: true },
+  protection: { check: checkSheetProtection, nullable: true },
+  frozen: { check: checkFrozen, nullable: true },
+  view: { check: checkSheetView, nullable: true },
+  tabColor: { check: checkColor, nullable: true },
+  conditionalFormats: { check: checkConditionalFormats },
+  validations: { check: checkValidations },
+  outline: { check: checkOutline, nullable: true },
+}
+const EDITED = Object.keys(SHEET_EDITS)
+
 /**
  * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, an
  * AutoFilter, frozen panes, rules of data validation, outline settings or protection; as the engine takes them (`taken.ts`).
@@ -476,41 +492,11 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     const p = `${path}[${i}]`
     const o = object(e, p, 'a layout edit such as { sheet: "Sheet1", columns: "C", set: { width: 20 } }')
     checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
-    if (o.merges !== undefined) {
-      onlyKeys(o, p, ['sheet', 'merges'])
-      checkMerges(o.merges, `${p}.merges`)
-      return o as unknown as LayoutEdit
-    }
-    if (o.filtered !== undefined) {
-      onlyKeys(o, p, ['sheet', 'filtered'])
-      checkBoolean(o.filtered, `${p}.filtered`)
-      return o as unknown as LayoutEdit
-    }
-    if ('autoFilter' in o) {
-      onlyKeys(o, p, ['sheet', 'autoFilter'])
-      if (o.autoFilter !== null) checkAutoFilter(o.autoFilter, `${p}.autoFilter`)
-      return o as unknown as LayoutEdit
-    }
-    if ('protection' in o) {
-      onlyKeys(o, p, ['sheet', 'protection'])
-      if (o.protection !== null) checkSheetProtection(o.protection, `${p}.protection`)
-      return o as unknown as LayoutEdit
-    }
-    if ('frozen' in o) {
-      onlyKeys(o, p, ['sheet', 'frozen'])
-      if (o.frozen !== null) checkFrozen(o.frozen, `${p}.frozen`)
-      return o as unknown as LayoutEdit
-    }
-    if ('conditionalFormats' in o) {
-      onlyKeys(o, p, ['sheet', 'conditionalFormats'])
-      checkConditionalFormats(o.conditionalFormats, `${p}.conditionalFormats`)
-      return o as unknown as LayoutEdit
-    }
-    if ('validations' in o || 'outline' in o) {
-      const k = 'validations' in o ? 'validations' : 'outline'
-      onlyKeys(o, p, ['sheet', k])
-      if (k === 'validations') checkValidations(o.validations, `${p}.validations`)
-      else if (o.outline !== null) checkOutline(o.outline, `${p}.outline`)
+    // an edit of one field of the sheet, checked by the field's check; null removes a field that may go
+    const field = EDITED.find((k) => o[k] !== undefined || (SHEET_EDITS[k].nullable && k in o))
+    if (field) {
+      onlyKeys(o, p, ['sheet', field])
+      if (o[field] !== null || !SHEET_EDITS[field].nullable) SHEET_EDITS[field].check(o[field], `${p}.${field}`)
       return o as unknown as LayoutEdit
     }
     if (o.fit !== undefined) {
@@ -522,7 +508,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = LINES[axis]
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, autoFilter, frozen, conditionalFormats, validations, outline or protection)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ` (one of columns, rows, ${EDITED.slice(0, -1).join(', ')} or ${EDITED.at(-1)})` : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit

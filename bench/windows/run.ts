@@ -28,6 +28,7 @@
  *   npx tsx bench/windows/run.ts outline <name> [L]    outline commands over an outline set's books, into outline/[<tag>/]<name>.json and outline/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts end <name> [L]        Range.End from cells of an end set's books, into end/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts select <name>         Create Names from Selection over ranges of a select set's books, into select/<name>.json
+ *   npx tsx bench/windows/run.ts fields <name>         a fields set's files opened, their sheets' fields read and saved, into fields/<name>.json and fields/<name>/
  *   npx tsx bench/windows/run.ts paste <name> [L]      Paste Special over a paste set's books, into paste/[<tag>/]<name>.json and paste/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books L               the books the Mac has answers for in that locale (display, spill, ...)
@@ -64,6 +65,7 @@ import { stepReplace } from './replace.js'
 import { stepOutline } from './outline.js'
 import { stepEnd } from './end.js'
 import { stepSelect } from './select.js'
+import { stepFields } from './fields.js'
 import { stepPasteWin } from './paste.js'
 import { stepIronCalc } from './ironcalc.js'
 import { stepSort } from './sort.js'
@@ -132,12 +134,13 @@ else if (step === 'replace' && a) await withWindowsExcel(parseTag(b), (e) => ste
 else if (step === 'outline' && a) await withWindowsExcel(parseTag(b), (e) => stepOutline(a, parseTag(b), e))
 else if (step === 'end' && a) await withWindowsExcel(parseTag(b), (e) => stepEnd(a, parseTag(b), e))
 else if (step === 'select' && a) await withWindowsExcel('en-US', (e) => stepSelect(a, e))
+else if (step === 'fields' && a) await withWindowsExcel('en-US', (e) => stepFields(a, e))
 else if (step === 'ironcalc') await withWindowsExcel(parseTag(a), (e) => stepIronCalc(parseTag(a), e))
 else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functions(parseTag(a), e))
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|keep <name> | paste <name> [locale] | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | select <name> | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|keep <name> | paste <name> [locale] | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | select <name> | fields <name> | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

@@ -571,6 +571,16 @@ function Step($xl, $wb, $s) {
         if ($_.Exception.Message -match 'No cells were found') { '{"areas":[]}' } else { Err $_ }
       }
     }
+    # each worksheet's tab colour (BGR, null for none), gridlines and headings, the sheet active (bench/windows/fields.ts)
+    'sheetFields' {
+      $all = List ($wb.Worksheets | ForEach-Object {
+          [void]$_.Activate()
+          $tab = if ($_.Tab.ColorIndex -eq -4142) { 'null' } else { Cell ([double]$_.Tab.Color) }
+          List @((Str $_.Name), $tab, (Cell $xl.ActiveWindow.DisplayGridlines), (Cell $xl.ActiveWindow.DisplayHeadings))
+        })
+      [void]$wb.Worksheets.Item(1).Activate()
+      $all
+    }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }
