@@ -3,8 +3,9 @@
  * it (`p0`) and as the book written has it (`p1`), and where the two agree the file's XML stays: an element of the
  * sheet the model has, a row, a cell. Where they differ the model's XML goes in, except what the file has and the model
  * does not: a cell whose formula did not change keeps its `<f>` (a shared formula, a data table, a formula the engine
- * does not parse) and takes the new value; a cell or a row keeps a cell format of the file that looks the same, and a
- * row the attributes the model does not have. A cell with what only the file holds that moved (rows or columns
+ * does not parse) and takes the new value; a cell, a row or a column keeps a cell format of the file that looks the
+ * same, where rows or columns moved the format of the block it lies in now (`formats.ts`), and a row the attributes the
+ * model does not have. A cell with what only the file holds that moved (rows or columns
  * inserted or deleted, a range moved) takes the file's XML at its new address where the model has it as it was. The
  * elements the model does not have stay in their place, in the order of the schema; an element the model adds goes
  * where the schema puts it.
