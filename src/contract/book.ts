@@ -480,13 +480,14 @@ export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
 
 /**
- * The PCRE2 engine of match mode 3 (`XLOOKUP`, `XMATCH`): the `pcre2` export of `xlcalc/regex`, which
- * `registerRegexEngine` loads. Without it, match mode 3 uses JavaScript's regular expressions in JavaScript's syntax.
- * With it, patterns take Excel's syntax, Excel's match limit is `#VALUE!`, and a call's `timeoutMs` and `signal` stop
- * a pattern that backtracks heavily.
+ * A level of match mode 3 (`XLOOKUP`, `XMATCH`) beyond the one built in, which `registerRegex` loads: `pcreSyntax`
+ * of `xlcalc/regex`, Excel's syntax translated into JavaScript's regular expressions, or `pcreEngine`, a PCRE2 engine
+ * of the package's own with Excel's match limit (`#VALUE!`), stopped by a call's `timeoutMs`. Without one, match
+ * mode 3 uses JavaScript's regular expressions in JavaScript's syntax, Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}`
+ * and a leading `(?i)` as PCRE2 takes them.
  */
-export interface RegexEngine {
-  readonly kind: 'xlcalc-pcre2'
-  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern Excel refuses. */
+export interface RegexLevel {
+  readonly kind: 'xlcalc-pcre-syntax' | 'xlcalc-pcre-engine'
+  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern refused (`#VALUE!`). */
   compile(pattern: string): { test(text: string): boolean | 'limit' } | null
 }
