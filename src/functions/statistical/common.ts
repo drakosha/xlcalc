@@ -4,7 +4,6 @@ import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { momentValue, stableMean } from './moments.js'
 
 export const mean = stableMean
-export const sorted = (xs: readonly number[]) => [...xs].sort((a, b) => a - b)
 
 /** The mean of the numbers a function selected, #DIV/0! without any (AVERAGEIF, AVERAGEIFS, DAVERAGE). */
 export const meanOrDiv0 = (xs: readonly number[]) => (xs.length ? mean(xs) : E.DIV0)

@@ -96,14 +96,13 @@ function xfind(k: Key | null, look: Grid, matchMode: number, searchMode: number,
     const i = searchMode > 0 ? j : n - 1 - j
     const v = look.v[i]
     if (!present(v)) continue
-    if (compare(v, k) === 0) {
+    // one comparison with the key: below it is a candidate for −1, above it for 1
+    const c = compare(v, k)
+    if (c === 0) {
       pos = i
       break
     }
-    if (matchMode === -1 && compare(v, k) < 0 && (pos < 0 || compare(v, best) > 0)) {
-      pos = i
-      best = v
-    } else if (matchMode === 1 && compare(v, k) > 0 && (pos < 0 || compare(v, best) < 0)) {
+    if (matchMode === -1 ? c < 0 && (pos < 0 || compare(v, best) > 0) : c > 0 && (pos < 0 || compare(v, best) < 0)) {
       pos = i
       best = v
     }

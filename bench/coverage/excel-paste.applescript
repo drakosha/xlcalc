@@ -5,10 +5,11 @@
 -- applies at a change of the selection by the keyboard, not by the object model.
 -- Arguments: the book's path and the path to save to (inside Excel's sandbox), the saved file's name, the paste as JSON
 -- ([source sheet, source range, target sheet, target range, what (all, values, formulas, formats, validation,
--- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes; copy: a plain copy to the
--- target, Range.Copy with a destination; painter: the Format Painter), transpose "1" or "0", the operation (none, add,
--- subtract, multiply, divide), skip blanks "1" or "0", the painter's key (left or up)]).
--- Output: JSON {"error": text}.
+-- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes, allUsingSourceTheme; copy: a
+-- plain copy to the target, Range.Copy with a destination; painter: the Format Painter), transpose "1" or "0", the
+-- operation (none, add, subtract, multiply, divide), skip blanks "1" or "0", the painter's key (left or up), cells of
+-- the target sheet whose formula local is read after the paste, separated by commas]).
+-- Output: JSON {"error": text, "local": [formula local of each cell]}.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -29,6 +30,7 @@ on pasteType(t)
 		if t is "columnWidths" then return paste column widths
 		if t is "allExceptBorders" then return paste all except borders
 		if t is "notes" then return paste comments
+		if t is "allUsingSourceTheme" then return paste all using source theme
 		if t is "all" then return paste all
 	end tell
 	error "no paste type " & t
@@ -128,13 +130,22 @@ on run argv
 				set opError to stage & ": " & (k as text) & " " & msg
 			end try
 			set cut copy mode to false
+			set locals to {}
+			if (item 10 of op) is not "" then
+				set AppleScript's text item delimiters to ","
+				set cellNames to text items of (item 10 of op)
+				set AppleScript's text item delimiters to ""
+				repeat with a in cellNames
+					set end of locals to (formula local of range (a as text) of worksheet (item 3 of op) of wb) as text
+				end repeat
+			end if
 			activate object (worksheet 1 of wb)
 			select range "A1" of (worksheet 1 of wb)
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no
 		end timeout
 	end tell
-	set d0 to current application's NSDictionary's dictionaryWithObjects:{opError} forKeys:{"error"}
+	set d0 to current application's NSDictionary's dictionaryWithObjects:{opError, locals} forKeys:{"error", "local"}
 	set {d, e} to current application's NSJSONSerialization's dataWithJSONObject:d0 options:0 |error|:(reference)
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text

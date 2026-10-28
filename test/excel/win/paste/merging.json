@@ -1,0 +1,655 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 22.3
+ },
+ "books": {
+  "merging": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#9BC2E6"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5,
+       "style": 1,
+       "numberFormat": "0.00"
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": "a",
+       "note": {
+        "text": "n"
+       }
+      },
+      "B1": {
+       "formula": "A1*2"
+      },
+      "B2": {
+       "value": -1,
+       "style": 2
+      },
+      "P1": {
+       "value": 7
+      },
+      "P2": {
+       "value": 8,
+       "style": 2
+      },
+      "D1": {
+       "value": 3
+      },
+      "E1": {
+       "value": 3
+      },
+      "D2": {
+       "value": 3
+      },
+      "E2": {
+       "value": 3
+      },
+      "D3": {
+       "value": 3
+      },
+      "E3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 3
+      },
+      "G1": {
+       "value": 3
+      },
+      "G2": {
+       "value": 3
+      },
+      "L1": {
+       "value": 3
+      },
+      "L5": {
+       "value": 3
+      },
+      "N1": {
+       "value": 3
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A3"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:B3"
+       ],
+       "formula": "B1<0",
+       "style": {
+        "font": {
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "D1:E5"
+       ],
+       "operator": "lessThan",
+       "formulas": [
+        "10"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "G1:G3"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "L1:L5"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "N1:N3"
+       ],
+       "formula": "N1<0",
+       "style": {
+        "font": {
+         "italic": true
+        }
+       }
+      }
+     ],
+     "validations": [
+      {
+       "range": "A1:A3",
+       "type": "whole",
+       "operator": "between",
+       "formula1": "0",
+       "formula2": "10"
+      }
+     ]
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:B3"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "2"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "all-over",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-same",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-inside",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L2"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-relative",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "B1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "N1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-plain",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "P1:P2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-other-sheet",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "A1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-empty",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "allMergingConditionalFormats-over",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-same",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-inside",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L2"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-relative",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "B1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "N1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-plain",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "P1:P2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-other-sheet",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "A1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allMergingConditionalFormats-empty",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J1"
+   },
+   "what": "allMergingConditionalFormats"
+  },
+  {
+   "id": "allUsingSourceTheme-over",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-same",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-inside",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L2"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-relative",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "B1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "N1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-plain",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "P1:P2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-other-sheet",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "A1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allUsingSourceTheme-empty",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "allMergingConditionalFormats-transposed",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allMergingConditionalFormats",
+   "transpose": true
+  },
+  {
+   "id": "allMergingConditionalFormats-skip",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allMergingConditionalFormats",
+   "skipBlanks": true
+  },
+  {
+   "id": "allMergingConditionalFormats-add",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allMergingConditionalFormats",
+   "operation": "add"
+  },
+  {
+   "id": "allUsingSourceTheme-transposed",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allUsingSourceTheme",
+   "transpose": true
+  },
+  {
+   "id": "allUsingSourceTheme-skip",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allUsingSourceTheme",
+   "skipBlanks": true
+  },
+  {
+   "id": "allUsingSourceTheme-add",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "allUsingSourceTheme",
+   "operation": "add"
+  },
+  {
+   "id": "allMergingConditionalFormats-tiled",
+   "book": "merging",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L1:L6"
+   },
+   "what": "allMergingConditionalFormats"
+  }
+ ],
+ "sent": {
+  "all-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "all-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-transposed": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-skip": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-add": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-transposed": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-skip": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allUsingSourceTheme-add": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-tiled": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4"
+ },
+ "answers": {
+  "all-over": {},
+  "all-same": {},
+  "all-inside": {},
+  "all-relative": {},
+  "all-plain": {},
+  "all-other-sheet": {},
+  "all-empty": {},
+  "allMergingConditionalFormats-over": {},
+  "allMergingConditionalFormats-same": {},
+  "allMergingConditionalFormats-inside": {},
+  "allMergingConditionalFormats-relative": {},
+  "allMergingConditionalFormats-plain": {},
+  "allMergingConditionalFormats-other-sheet": {},
+  "allMergingConditionalFormats-empty": {},
+  "allUsingSourceTheme-over": {},
+  "allUsingSourceTheme-same": {},
+  "allUsingSourceTheme-inside": {},
+  "allUsingSourceTheme-relative": {},
+  "allUsingSourceTheme-plain": {},
+  "allUsingSourceTheme-other-sheet": {},
+  "allUsingSourceTheme-empty": {},
+  "allMergingConditionalFormats-transposed": {},
+  "allMergingConditionalFormats-skip": {},
+  "allMergingConditionalFormats-add": {},
+  "allUsingSourceTheme-transposed": {},
+  "allUsingSourceTheme-skip": {},
+  "allUsingSourceTheme-add": {},
+  "allMergingConditionalFormats-tiled": {}
+ }
+}

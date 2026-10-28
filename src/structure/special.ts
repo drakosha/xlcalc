@@ -25,7 +25,7 @@ import { clipboard, pasteArea, pasteClip, type Clipboard } from './filtered.js'
 import { copyTables, headersPasted } from '../tables/moves.js'
 import type { ValuesIn } from './values.js'
 import { chain, type Applied } from './geometry.js'
-import { tiles } from './copy.js'
+import { tiles, type PasteHow } from './copy.js'
 import { cellsIn, gridOf } from './grid.js'
 import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
 import { formulaAt } from './transform.js'
@@ -71,6 +71,7 @@ const PARTS: Record<PasteKind, Parts> = {
   columnWidths: { ...NONE_TAKEN, widths: true },
   allExceptBorders: { ...ALL, style: 'borders' },
   notes: { ...NONE_TAKEN, notes: true },
+  allMergingConditionalFormats: ALL,
 }
 
 /** Whether a kind of paste pastes the cells' contents as values (from a clipboard of values, `clipped`). */
@@ -181,17 +182,17 @@ export function turned(book: BookInput, clip: Clipboard, to: string, target: Rec
  * paste set `held`: a reference with a `$` out of the source stays in every tile), and the area the tiles cover; no area
  * when the turn is refused.
  */
-export function pasteTurned(book: BookInput, held: Clipboard, to: string, target: Rect, withMeta: boolean, looksOnly: boolean): { pasted: Applied; area: Rect | null } {
+export function pasteTurned(book: BookInput, held: Clipboard, to: string, target: Rect, withMeta: boolean, how: PasteHow): { pasted: Applied; area: Rect | null } {
   const first = turned(book, held, to, target)
   if ('ok' in first) return { pasted: first, area: null }
   const { offsets } = tiles(first.src, target)
   const tile = ([dr, dc]: [number, number]) => (b: BookInput) => {
     const at = shiftRect(first.src, dr, dc)
     const clip = turned(b, held, to, at)
-    return 'ok' in clip ? clip : pasteClip(b, clip, to, at, withMeta, looksOnly)
+    return 'ok' in clip ? clip : pasteClip(b, clip, to, at, withMeta, how)
   }
-  const pasted = offsets.length === 1 ? pasteClip(book, first, to, target, withMeta, looksOnly) : chain(book, offsets.map(tile))
-  return { pasted, area: pasteArea(book, first, to, target) }
+  const pasted = offsets.length === 1 ? pasteClip(book, first, to, target, withMeta, how) : chain(book, offsets.map(tile))
+  return { pasted, area: pasteArea(book, first, to, target, how.whole) }
 }
 
 /** Why Excel refuses to paste contents onto a merged area of the target that the copy does not bring there (the paste set `probe`). */
@@ -356,6 +357,8 @@ export interface PasteOptions {
   special: boolean
   operation?: PasteOperation
   skipBlanks: boolean
+  /** All Merging Conditional Formats, pasted as `all` keeping the destination's rules. */
+  mergeRules?: boolean
 }
 
 /** The merged area of sheet `to` a target of one cell lies in, or undefined. */
@@ -372,6 +375,8 @@ function mergedAt(book: BookInput, to: string, target: Rect): Rect | undefined {
  * A paste that writes no contents lays its source over the area alone, cut to the area's size (the set `merges`).
  */
 export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, target: Rect, o: PasteOptions, values: ValuesIn): { pasted: Applied; r: Applied } {
+  // All Merging Conditional Formats is `all` keeping the destination's rules; with Skip Blanks, `all` (the paste sets `merging`, `merging-held`)
+  if (o.kind === 'allMergingConditionalFormats') o = { ...o, kind: 'all', mergeRules: !o.skipBlanks }
   const merged = o.special ? mergedAt(book, to, target) : undefined
   const one = src.r1 === src.r2 && src.c1 === src.c2
   if (merged) {
@@ -388,9 +393,12 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
   const looksOnly = !writesContent(o.kind)
   // the source as the clipboard holds it: of values for a paste of values, turned for a transposed one
   const held = clipboard(book, from, src, values, ofValues(o.kind))
-  const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, looksOnly) : null
-  const pasted = turn ? turn.pasted : pasteClip(book, held, to, target, o.withMeta, looksOnly)
-  const area = turn ? turn.area : pasteArea(book, held, to, target)
+  // Paste Special of a copy that left out rows a filter hid lays it over the target whole, hidden rows too, and skips no blank (the paste set `lines-ops`)
+  if (o.special && held.packed) o = { ...o, skipBlanks: false }
+  const how: PasteHow = { looksOnly, mergeRules: o.mergeRules, whole: o.special && held.packed }
+  const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, how) : null
+  const pasted = turn ? turn.pasted : pasteClip(book, held, to, target, o.withMeta, how)
+  const area = turn ? turn.area : pasteArea(book, held, to, target, how.whole)
   // a transposed copy's cells are not where its source's tables would read them: it renames header cells alone
   let r = turn ? (area ? headersPasted(book, to, area)(pasted) : pasted) : copyTables(book, from, src, to, target, o.kind === 'all').after(pasted)
   // `all` is laid cell by cell only with an operation or Skip Blanks
@@ -400,6 +408,9 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind, { operation: o.operation, skipBlanks: o.skipBlanks, widths }), geometry: writesContent(o.kind) ? r.geometry : [] }
     r = writesContent(o.kind) ? headersPasted(book, to, area)(part) : part
   }
+  // an operation onto a spilled array is refused, as Excel refuses it onto a dynamic array formula (the paste sets `ops-held`, `spill-ops`)
+  const spill = r.ok && area && o.operation && writesContent(o.kind) ? values.spills?.(to, area)[0] : undefined
+  if (spill) r = { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
   // the looks the copy laid, over the rows a session fits to their fonts
   if (r.ok && area && PARTS[o.kind].style !== 'target') r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }
@@ -414,3 +425,4 @@ function intoMerged(book: BookInput, from: string, src: Rect, to: string, corner
   const { pasted, r } = pasteCopy(without, from, src, to, corner, { ...o, special: false }, values)
   return { pasted: kept(pasted), r: kept(r) }
 }
+

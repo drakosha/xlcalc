@@ -6,15 +6,21 @@ import { atp, need } from '../date/atp.js'
 import { freqAt, euro360, us360, validBasis, validFreq } from '../date/daycount.js'
 import { badCoupon, bondDays, cmp, coupons, normalDays, serialOfYmd, type Ymd } from './coupon.js'
 
-/** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
-function price(settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis: number): number {
+/** What a price depends on besides the yield: the coupons left and the days of the settlement's period. */
+interface Schedule { n: number; e: number; a: number; dsc: number }
+
+function schedule(settlement: number, maturity: number, freq: number, basis: number): Schedule {
   const c = coupons(settlement, maturity, freq)
-  const { e, a, dsc } = bondDays(c, basis, freq)
+  return { n: c.n, ...bondDays(c, basis, freq) }
+}
+
+/** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
+function price({ n, e, a, dsc }: Schedule, rate: number, yld: number, redemption: number, freq: number): number {
   const coupon = (100 * rate) / freq
-  if (c.n === 1) return (redemption + coupon) / (1 + ((dsc / e) * yld) / freq) - (coupon * a) / e
+  if (n === 1) return (redemption + coupon) / (1 + ((dsc / e) * yld) / freq) - (coupon * a) / e
   const v = 1 + yld / freq
-  let p = redemption / Math.pow(v, c.n - 1 + dsc / e)
-  for (let k = 1; k <= c.n; k++) p += coupon / Math.pow(v, k - 1 + dsc / e)
+  let p = redemption / Math.pow(v, n - 1 + dsc / e)
+  for (let k = 1; k <= n; k++) p += coupon / Math.pow(v, k - 1 + dsc / e)
   return p - (coupon * a) / e
 }
 
@@ -110,17 +116,18 @@ export const functions: Record<string, FnDef> = {
   FREQ_READ),
   // a previous coupon date before 1900 leaves no coupons, as COUPNUM finds none
   PRICE: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>
-    badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 || redemption <= 0 || coupons(settlement, maturity, freq).early ? E.NUM : price(settlement, maturity, rate, yld, redemption, freq, basis),
+    badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 || redemption <= 0 || coupons(settlement, maturity, freq).early ? E.NUM : price(schedule(settlement, maturity, freq, basis), rate, yld, redemption, freq),
   PRICE_READ),
   // one coupon left: Excel's closed form; else the yield at which PRICE gives `pr`
   YIELD: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, pr: number, redemption: number, freq: number, basis = 0) => {
     if (badCoupon(settlement, maturity, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
-    const c = coupons(settlement, maturity, freq)
-    if (c.n === 1) {
-      const { e, a, dsc } = bondDays(c, basis, freq)
+    const s = schedule(settlement, maturity, freq, basis)
+    if (s.n === 1) {
+      const { e, a, dsc } = s
       const paid = pr / 100 + ((a / e) * rate) / freq
       return ((redemption / 100 + rate / freq - paid) / paid) * ((freq * e) / dsc)
     }
-    return solveDecreasing((y) => price(settlement, maturity, rate, y, redemption, freq, basis) - pr, rate || 0.05, -freq + 1e-9) ?? E.NUM
+    // the schedule does not depend on the yield: made once for all the solver's prices
+    return solveDecreasing((y) => price(s, rate, y, redemption, freq) - pr, rate || 0.05, -freq + 1e-9) ?? E.NUM
   }, PRICE_READ),
 }

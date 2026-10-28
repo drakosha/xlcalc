@@ -4,6 +4,7 @@
  */
 import { directError, eachValue, type Cx, type FnDef, type Segment } from '../../args.js'
 import { Wildcard } from '../../wildcards.js'
+import { remembered } from '../../memo.js'
 import { E, isErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'
@@ -25,23 +26,34 @@ function upper(s: string): string {
   return out
 }
 
-/** Excel capitalizes every letter that follows a non-letter, in any alphabet ("2-way" → "2-Way"). */
+/**
+ * Excel capitalizes every letter that follows a non-letter, in any alphabet ("2-way" → "2-Way"). A run of letters is
+ * lowered whole when that keeps its length (no lowering is shorter, so each letter kept its own) and it has no Σ,
+ * whose whole-text lowering at a word's end is ς; else letter by letter.
+ */
 function proper(s: string): string {
-  let out = ''
-  let inWord = false
-  for (const ch of s) {
-    const letter = /\p{L}/u.test(ch)
-    out += letter ? caseOf(ch, !inWord) : ch
-    inWord = letter
-  }
-  return out
+  return s.replace(/\p{L}+/gu, (run) => {
+    const n = run.codePointAt(0)! > 0xffff ? 2 : 1
+    const head = caseOf(run.slice(0, n), true)
+    const rest = run.slice(n)
+    const low = rest.toLowerCase()
+    if (low.length === rest.length && !rest.includes('Σ')) return head + low
+    let out = head
+    for (const ch of rest) out += caseOf(ch, false)
+    return out
+  })
 }
+
+// A pattern filled down a column is compiled once; the matchers keep no state between finds.
+const patterns = new Map<string, Wildcard>()
 
 /** Wildcards as in the criteria (`src/criteria.ts`); a `~` alone is an escape too. */
 function search(find: string, within: string, start = 1): V {
   if (start < 1 || start > within.length) return E.VALUE
   if (find === '') return start
-  const m = new Wildcard(find, 'iu').find(within.slice(start - 1))
+  const w = remembered(patterns, find, 256, () => new Wildcard(find, 'iu'))
+  // the slice, not a start inside the text: under `u` a start inside a surrogate pair would step back to its lead
+  const m = w.find(within.slice(start - 1))
   return m ? m[0] + start : E.VALUE
 }
 

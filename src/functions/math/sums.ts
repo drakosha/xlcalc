@@ -41,12 +41,21 @@ function sumproduct(cx: Cx, xs: Arg[]): V {
   const num = (v: V) => (typeof v === 'number' ? v : 0)
   const end = Math.max(...arrs.map(occupied))
   let acc = 0
-  for (let i = 0; i < end; i++) {
-    const r = Math.floor(i / first.cols)
-    let p = 1
-    for (const a of arrs) p *= num(a.at(r, i - r * first.cols))
-    acc += p
-  }
+  if (arrs.every((a) => a.w === a.cols || a.h === 0)) {
+    // each stored in its whole width: position i is v[i] in the stored rows, the fill past them
+    const stored = arrs.map((a) => a.h * a.w)
+    for (let i = 0; i < end; i++) {
+      let p = 1
+      for (let k = 0; k < arrs.length; k++) p *= num(i < stored[k] ? arrs[k].v[i] : arrs[k].fill)
+      acc += p
+    }
+  } else
+    for (let i = 0; i < end; i++) {
+      const r = Math.floor(i / first.cols)
+      let p = 1
+      for (const a of arrs) p *= num(a.at(r, i - r * first.cols))
+      acc += p
+    }
   const rest = first.rows * first.cols - end
   return rest > 0 ? acc + rest * arrs.reduce((p, a) => p * num(a.fill), 1) : acc
 }

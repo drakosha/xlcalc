@@ -5,7 +5,7 @@
  * compares it, written and read back.
  */
 import type { BookInput, PasteKind, SheetInput } from '../../../src/contract.js'
-import { createSession, validateFormula } from '../../../src/index.js'
+import { createSession, toLocal, validateFormula } from '../../../src/index.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { lookOf } from '../../../src/layout/lines.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
@@ -14,7 +14,7 @@ import { formatAddress } from '../../../src/model.js'
 import type { PasteCase } from './cases.js'
 
 /** The kinds of paste the engine has. */
-export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
+export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'allMergingConditionalFormats', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
 
 /** Whether the engine has a case's paste. */
 export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what)
@@ -80,4 +80,14 @@ export async function engineOutcome(book: BookInput, c: PasteCase): Promise<{ re
   const s = createSession(book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
   const r = s.editStructure(op)
   return r.ok ? { shown: await shownFile((await writeXlsx({ book: s.getBook() })).data) } : { refused: r.message }
+}
+
+/** The formulas of a case's `local` cells in a book that shows them, as Excel reads them in the book's language (`FormulaLocal`). */
+export function localFormulas(shown: Shown, c: PasteCase, locale: string): Record<string, string> {
+  const cells = shown[c.to.sheet].cells as Record<string, { formula?: string }>
+  return Object.fromEntries((c.local ?? []).map((a) => {
+    const f = cells[a]?.formula
+    const t = f === undefined ? null : toLocal(f, locale)
+    return [a, t?.ok ? `=${t.formula}` : '']
+  }))
 }

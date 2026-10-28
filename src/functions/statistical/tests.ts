@@ -4,7 +4,7 @@
  * tails, test types and errors follow Excel (formula.js returned the F statistic for F.TEST, ignored the
  * tails and type of T.TEST and rounded CHISQ.TEST to six digits).
  */
-import { gammaPQ, normCdf } from './special.js'
+import { gammaPQ, normUpper } from './special.js'
 import { fCdf, tCdf } from './distributions.js'
 import type { FnDef, Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
@@ -84,7 +84,7 @@ function zTest(xs: number[], x: number, sigma?: number): V {
   if (n < 2) return E.DIV0
   const s = sigma ?? Math.sqrt(devsq(xs) / (n - 1))
   if (s === 0) return E.DIV0
-  return normCdf((mean(xs) - x) / (s / Math.sqrt(n)))[1]
+  return normUpper((mean(xs) - x) / (s / Math.sqrt(n)))
 }
 
 export const functions: Record<string, FnDef> = {

@@ -11,6 +11,8 @@ import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
 import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
+import { remembered } from '../memo.js'
+import { inner } from '../model.js'
 import { checkLocaleArg } from './load.js'
 import { say } from './messages.js'
 import { sides, translate, type Fail, type Sides, type Translated } from './translate.js'
@@ -54,11 +56,23 @@ export function toLocal(formula: string, where: string | Locale, opts?: Translat
   return localText(checkString(formula, 'formula'), sides, table, externalBooks)
 }
 
+/** What `showFormula` gave, by the locale's tables, the book's links (`NO_LINKS` for none) and the formula's table and text. */
+const SHOWN = new WeakMap<Sides, WeakMap<object, Map<string, Translation>>>()
+const NO_LINKS = {}
+
 /**
  * `toLocal` for the package's own calls, which give it a checked book's table and links, without checking them: a
- * window and an explanation show each formula of a book whose links can hold thousands of sheets.
+ * window and an explanation show each formula of a book whose links can hold thousands of sheets. Kept between calls (a
+ * window shown again shows the same formulas), up to 4,096 per locale and links; the package changes a book's links by
+ * a new list, never in place.
  */
-export const showFormula = (formula: string, where: string | Locale, table?: string, externalBooks?: ExternalBook[]): Translation => localText(formula, localeSides(where), table, externalBooks)
+export function showFormula(formula: string, where: string | Locale, table?: string, externalBooks?: ExternalBook[]): Translation {
+  const sides = localeSides(where)
+  const shown = inner(inner(SHOWN, sides[1], () => new WeakMap()), externalBooks ?? NO_LINKS, () => new Map())
+  // a table's name holds no line break
+  const k = `${table ?? ''}\n${formula}`
+  return remembered(shown, k, 4096, () => localText(formula, sides, table, externalBooks))
+}
 
 function localText(formula: string, [locale, s]: [Locale, Sides], table: string | undefined, externalBooks: ExternalBook[] | undefined): Translation {
   const shown = showLinks(shownTables(formula, table, s.local.syn.list), externalBooks ?? [])
@@ -132,18 +146,22 @@ export function toInvariant(text: string, where: string | Locale, opts?: Transla
 export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
   const sides = localeSides(where)
   checkString(text, 'text')
-  return validatedText(text, sides, checkValidateContext(ctx))
+  const r = checkedText(text, sides, checkValidateContext(ctx))
+  if (!r.ok) return r
+  const { ast: _ast, ...rest } = r
+  return rest
 }
 
-/** `validateLocalFormula` for the package's own calls, which give it a checked context: typed text checks a book's links for each formula. */
-export const validateTyped = (text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult => validatedText(text, localeSides(where), ctx)
+/**
+ * `validateLocalFormula` for the package's own calls, which give it a checked context, with the parsed formula kept: typed
+ * text checks a book's links for each formula, and an entry reads its format from the tree.
+ */
+export const validateTyped = (text: string, where: string | Locale, ctx?: ValidateContext): ReturnType<typeof validate> => checkedText(text, localeSides(where), ctx)
 
-function validatedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ValidateResult {
+function checkedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ReturnType<typeof validate> {
   const eq = text.startsWith('=') ? 1 : 0
   const t = translate(text.slice(eq), s.local, s.invariant, eq)
   if (!t.ok) return refusal(t, locale)
   const r = validate(t.formula, { ...c, say: (m) => say(locale, m) })
-  if (!r.ok) return { ...r, at: t.back(r.at) }
-  const { ast: _ast, ...rest } = r
-  return rest
+  return r.ok ? r : { ...r, at: t.back(r.at) }
 }

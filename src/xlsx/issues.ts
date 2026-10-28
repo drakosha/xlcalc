@@ -25,13 +25,29 @@ export interface Gathered {
   cells?: string[]
 }
 
+/** Two places of one issue: the same sheet, name and function, a missing one as an empty one. */
+const same = (a: Where, b: Where) => (a.sheet ?? '') === (b.sheet ?? '') && (a.name ?? '') === (b.name ?? '') && (a.fn ?? '') === (b.fn ?? '')
+
 export class Issues {
   protected readonly byKey = new Map<string, Gathered>()
+  /** The issues a message object was added to, by its code and place: a caller that adds one message for many cells builds no key for each. */
+  private readonly byMessage = new WeakMap<XlsxMessage, Gathered[]>()
 
   add(code: XlsxIssueCode, message: XlsxMessage, where: Where = {}): void {
-    const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${where.fn ?? ''}\n${JSON.stringify(message)}`
-    let issue = this.byKey.get(key)
-    if (!issue) this.byKey.set(key, (issue = { code, message, where }))
+    let seen = this.byMessage.get(message)
+    let issue: Gathered | undefined
+    for (const g of seen ?? [])
+      if (g.code === code && same(g.where, where)) {
+        issue = g
+        break
+      }
+    if (!issue) {
+      const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${where.fn ?? ''}\n${JSON.stringify(message)}`
+      issue = this.byKey.get(key)
+      if (!issue) this.byKey.set(key, (issue = { code, message, where }))
+      if (!seen) this.byMessage.set(message, (seen = []))
+      seen.push(issue)
+    }
     if (where.cell !== undefined) (issue.cells ??= []).push(where.cell)
   }
 

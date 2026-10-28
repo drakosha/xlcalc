@@ -59,16 +59,27 @@ const pastedCell = (cell: CellInput, withMeta: boolean): CellInput => {
 }
 
 /**
+ * How a paste lays a copy: of which it takes the looks alone (`looksOnly`), keeping the destination's conditional
+ * formats (`mergeRules`), over the target whole, its rows a filter hid too (`whole`).
+ */
+export interface PasteHow {
+  looksOnly?: boolean
+  mergeRules?: boolean
+  whole?: boolean
+}
+
+/**
  * Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. The source is read
  * from `source`, the book as it was copied (the clipboard), when pastes follow one another. A copy of which a paste
- * takes the looks alone (`looksOnly`) may cover part of an array formula.
+ * takes the looks alone (`looksOnly`) may cover part of an array formula; `mergeRules` keeps the destination's rules
+ * (`copyConditional`).
  */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book, looksOnly = false): Applied {
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book, how: PasteHow = {}): Applied {
   const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
-  const refusal = pasteRefusal(book, paste, looksOnly)
+  const refusal = pasteRefusal(book, paste, how.looksOnly)
   if (refusal) return refusal
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const ti = sheetIndex(book, to)
@@ -126,7 +137,7 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   }
   pasteValidations(source, out, paste, null, names)
   pasteLayout(source, out, paste)
-  copyConditional(source, out, paste, names)
+  copyConditional(source, out, paste, names, how.mergeRules)
   return { ok: true, book: out, geometry }
 }
 

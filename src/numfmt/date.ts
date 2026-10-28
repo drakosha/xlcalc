@@ -58,19 +58,50 @@ export function dayOrTime(toks: Tok[]): 'date' | 'time' | undefined {
   return toks.some(day) ? 'date' : toks.some((t) => t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm') ? 'time' : undefined
 }
 
-export function formatDate(v: number, sec: Section, style: Style, names: Names): string | null {
-  const { toks } = sec
-  const epoch = style.epoch ?? 0
-  const elapsedOnly = !toks.some((t) => t.t === 'date' || t.t === 'ampm')
-  // the 1904 date system shows a negative date or time as its size with a minus (the workbook set date1904)
-  if (v < 0 && !elapsedOnly && !epoch) return null
-  // the precision of the time: whole seconds, or the most decimals of a second the code shows
+/** What a date section's tokens give whatever the value: read once per section, as a column of dates shows one section. */
+interface Plan {
+  /** Elapsed time alone, which has no calendar's end. */
+  elapsedOnly: boolean
+  /** The second's decimals (`subseconds`). */
+  subs: Map<number, number>
+  /** A digit placeholder, a percent or an exponent where a date's code has no place for one. */
+  invalid: boolean
+  /** The most decimals of a second shown. */
+  k: number
+  ampm: boolean
+  /** By token, whether it is an `m` or `mm` of minutes. */
+  minutes: boolean[]
+}
+
+/** Plans by a section's tokens, which `parseFormat` keeps one array of per code. */
+const PLANS = new WeakMap<Tok[], Plan>()
+
+function planOf(toks: Tok[]): Plan {
+  let p = PLANS.get(toks)
+  if (p) return p
   const subs = subseconds(toks)
   // a digit placeholder other than the second's decimals, a percent or an exponent has no place in a date's code
   // (`NFDateTime`), which is then invalid: TEXT(1,"mm###") is #VALUE!, and so is a fourth zero of decimals
   const decimal = (i: number) => [...subs].some(([at, n]) => i > at && i <= at + Math.min(3, n))
-  if (toks.some((t, i) => (t.t === 'ph' && !decimal(i)) || t.t === 'pct' || t.t === 'exp')) return null
-  const k = Math.max(0, ...[...subs.values()].map((n) => Math.min(3, n)))
+  p = {
+    elapsedOnly: !toks.some((t) => t.t === 'date' || t.t === 'ampm'),
+    subs,
+    invalid: toks.some((t, i) => (t.t === 'ph' && !decimal(i)) || t.t === 'pct' || t.t === 'exp'),
+    // the precision of the time: whole seconds, or the most decimals of a second the code shows
+    k: Math.max(0, ...[...subs.values()].map((n) => Math.min(3, n))),
+    ampm: toks.some((t) => t.t === 'ampm'),
+    minutes: toks.map((t, i) => t.t === 'date' && t.s[0] === 'm' && t.s.length <= 2 && minutes(toks, i)),
+  }
+  PLANS.set(toks, p)
+  return p
+}
+
+export function formatDate(v: number, sec: Section, style: Style, names: Names): string | null {
+  const { toks } = sec
+  const epoch = style.epoch ?? 0
+  const { elapsedOnly, subs, invalid, k, ampm, minutes: mins } = planOf(toks)
+  // the 1904 date system shows a negative date or time as its size with a minus (the workbook set date1904)
+  if ((v < 0 && !elapsedOnly && !epoch) || invalid) return null
   const a = Math.abs(v)
   const unit = 86_400 * 10 ** k
   // whole seconds as Excel reads a moment (`momentOf`); decimals of a second round the day's fraction to their unit (TEXT's
@@ -79,7 +110,6 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
   if (ticks >= unit) [day, ticks] = [day + 1, ticks - unit]
   if (day + epoch >= END && !elapsedOnly) return null
   const secs = Math.floor(ticks / 10 ** k)
-  const ampm = toks.some((t) => t.t === 'ampm')
   // Excel's calendar: day 0 is 1900-01-00, day 60 the phantom 1900-02-29, day 1 a Sunday; a 1904 book's day 0 is 1462
   const { y: Y, m, d: D } = sec.hijri ? hijri(day + epoch) : ymd(day + epoch)
   const W = (day + epoch + 6) % 7
@@ -103,7 +133,7 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
         const hh = ampm ? h % 12 || 12 : h
         out += n === 1 ? String(hh) : two(hh)
       } else if (c === 's') out += n === 1 ? String(sc) : two(sc)
-      else if (c === 'n' || (n <= 2 && minutes(toks, i))) out += n === 1 ? String(mi) : two(mi)
+      else if (c === 'n' || mins[i]) out += n === 1 ? String(mi) : two(mi)
       else out += n === 1 ? String(m) : n === 2 ? two(m) : n === 3 ? names.monthsShort[m - 1] : n === 4 ? names.months[m - 1] : names.months[m - 1][0]
     } else if (subs.has(i)) {
       // each point shows the second's decimals to its own zeros, of the moment rounded to the most of them

@@ -14,17 +14,19 @@ import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritCo
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
+import { rankInRange } from './functions/statistical/rank.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
-import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
+import { KEPT_RANGE, KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
 import { keepSelection, keptSelection, keyOf, type Selections } from './runtime/selection.js'
 import type { Index as LookupIndex } from './functions/lookup/exact.js'
 import type { Line } from './functions/lookup/search.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
+import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, type CErr, type V } from './values.js'
+import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, whole, type CErr, type V } from './values.js'
 import type { Column } from './column.js'
 
 export interface SheetData {
@@ -51,7 +53,7 @@ export interface RuntimeContext {
   /** Cache of large ranges (flat arrays) and criteria indexes, from their second read; invalidated by edits. */
   flat: RangeCache<V[]>
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
-  nested: Map<number, Set<number>>
+  nested: Map<number, NestedMarks>
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
   index: RangeCache<CritIndex>
@@ -65,7 +67,13 @@ export interface RuntimeContext {
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
 
-const BIG_RANGE = 256
+/** Whether SUBTOTAL and AGGREGATE skip a sheet's hidden rows by their rule: all of them, or those of a filtered sheet. */
+const skips = (rows: HiddenRows, hidden: HiddenRule) => hidden === 'all' || (hidden === 'filtered' && rows.filtered)
+/** RANK filled down over one long range: by its sorted numbers (`functions/statistical/rank.ts`). */
+const RANKS = ['RANK', 'RANK.EQ', 'RANK.AVG']
+const AGGREGATES = ['SUM', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'AVERAGE']
+/** SUBTOTAL's and AGGREGATE's codes of the range summaries. */
+const SUMMARIZED: Record<number, AggregateName> = { 1: 'AVERAGE', 2: 'COUNT', 3: 'COUNTA', 4: 'MAX', 5: 'MIN', 9: 'SUM' }
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
@@ -114,7 +122,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.get(b.r1 + r) ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
-    if (out.length >= BIG_RANGE && ctx.flat.admits(g.key)) {
+    if (out.length >= KEPT_RANGE && ctx.flat.admits(g.key)) {
       shapes.set(out, b)
       ctx.flat.set(g.key, out, out.length * VALUE_BYTES)
       ctx.flat.carries(g.key, out)
@@ -126,7 +134,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   const counted = (g: Rng, nested: boolean, hidden: HiddenRule): readonly V[] => {
     const marks = nested ? ctx.nested.get(g.s) : undefined
     const rows = ctx.hidden.get(g.s)
-    const skipRows = rows && (hidden === 'all' || (hidden === 'filtered' && rows.filtered))
+    const skipRows = rows && skips(rows, hidden)
     if (!marks?.size && !skipRows) return flat(g)
     const b = bounds(g)
     let out: V[] | undefined
@@ -341,18 +349,46 @@ export function makeRuntime(ctx: RuntimeContext) {
   const F: Record<string, (...a: any[]) => Arg> = {}
   /** The callers that lift a call over arrays in one-value arguments (non-lazy functions). */
   const FL: Record<string, (...a: any[]) => Arg> = {}
-  for (const [name, def] of Object.entries(DEFS)) {
-    const caller = makeCaller(def, cx)
+  /**
+   * SUBTOTAL(code, range) and AGGREGATE(code, option, range) by the range summaries, as SUM over one range: the codes
+   * of AVERAGE, COUNT, COUNTA, MAX, MIN and SUM, errors not skipped, and only where they read every cell (no SUBTOTAL
+   * or AGGREGATE in the range's columns when those are skipped, no row they skip hidden in it); undefined otherwise.
+   */
+  const summarized = (code: number, range: Arg | undefined, nested: boolean, hidden: HiddenRule): V | undefined => {
+    const name = SUMMARIZED[code]
+    if (!name || !(range instanceof Rng)) return undefined
+    if (nested && ctx.nested.get(range.s)?.inColumns(range.c1, range.c2)) return undefined
+    const rows = ctx.hidden.get(range.s)
+    if (rows && skips(rows, hidden) && rows.spans.some(([lo, hi]) => lo <= range.r2 && hi >= range.r1)) return undefined
+    return ctx.aggregates.read(name, range, () => bounds(range), cell)
+  }
+  /** A number argument as kind `n` reads it, or undefined for an error or one left out (the caller answers those). */
+  const number = (x: Arg | undefined): number | undefined => {
+    const n = x === undefined ? x : rules.toNum(scalar(x))
+    return typeof n === 'number' ? n : undefined
+  }
+  /** A function's call in this runtime: its caller, or a quicker way for some arguments that answers the same. */
+  const route = (name: string, caller: (...a: Arg[]) => Arg): ((...a: Arg[]) => Arg) => {
     // one range is read cell by cell, never made whole, so `limits.cells` does not bound it
-    F[name] = ['SUM', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'AVERAGE'].includes(name)
-      ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng
-        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell) ?? caller(...args)
-        : caller(...args)
-      : name === 'COUNTIF' || name === 'COUNTIFS'
-        ? (...args: Arg[]) => args.length === 2 && args[0] instanceof Rng
-          ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) ?? caller(...args)
-          : caller(...args)
-        : caller
+    if (AGGREGATES.includes(name))
+      return (...args) => (args.length === 1 && args[0] instanceof Rng ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
+    if (name === 'COUNTIF' || name === 'COUNTIFS')
+      return (...args) => (args.length === 2 && args[0] instanceof Rng ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
+    if (RANKS.includes(name)) return (...args) => (args.length <= 3 ? rankInRange(cx, name === 'RANK.AVG', number(args[0]), args[1], args[2]) : undefined) ?? caller(...args)
+    // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them; AGGREGATE's options 0, 1, 4 and 5
+    // keep errors: below 4 they skip SUBTOTAL and AGGREGATE, odd ones hidden rows
+    if (name === 'SUBTOTAL' || name === 'AGGREGATE')
+      return (...args) => {
+        const sub = name === 'SUBTOTAL'
+        const t = args.length === (sub ? 2 : 3) ? number(args[0]) : undefined
+        const c = t === undefined ? 0 : whole(t)
+        const o = sub ? 0 : Math.trunc(number(args[1]) ?? -1)
+        return (!c || ![0, 1, 4, 5].includes(o) ? undefined : sub ? summarized(c > 100 ? c - 100 : c, args[1], true, c > 100 ? 'all' : 'filtered') : summarized(c, args[2], o < 4, o % 2 ? 'all' : 'none')) ?? caller(...args)
+      }
+    return caller
+  }
+  for (const [name, def] of Object.entries(DEFS)) {
+    F[name] = route(name, makeCaller(def, cx))
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */
