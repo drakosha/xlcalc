@@ -6,7 +6,7 @@ import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOp
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
 import type { CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, FillTextOptions, FillTextPreview, FillTextResult, PasteTextPreview, PasteTextResult } from './typing.js'
 import type { SessionStructureResult, StructureOp } from './structure.js'
-import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, SelectionLabels, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
+import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, SelectionLabels, SpecialCells, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
 
 /**
  * Session options. A session keeps a single clock, `clock` or by default the time it was opened and a random
@@ -219,6 +219,12 @@ export interface Session {
    * `setNames`, asking first, as Excel does, about a name the workbook already has.
    */
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): NameInput[]
+  /**
+   * The cells of a kind (`SpecialCells`) Excel's Go To Special selects in a range, as rectangles (`B2:C9`, `E4`); none
+   * where Excel says no cells were found. A range of one cell stands for the sheet's used range, as in Excel, and a
+   * larger one is taken within it.
+   */
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -482,6 +488,7 @@ export interface AsyncSession {
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>

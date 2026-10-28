@@ -358,6 +358,16 @@ export interface SelectionLabels {
   right?: boolean
 }
 
+/** What a cell holds by the kinds of Excel's Go To Special: a number, text, a boolean, an error (`SpecialCells.values`). */
+export type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
+
+/**
+ * The cells Excel's Go To Special (Home > Editing > Find & Select) selects (`Session.getSpecialCells`): blank cells,
+ * constants or formulas (of the kinds in `values`, every kind without it; a formula by the value it answers), or the
+ * visible cells, those of no hidden row or column.
+ */
+export type SpecialCells = { type: 'blanks' } | { type: 'constants' | 'formulas'; values?: SpecialValue[] } | { type: 'visible' }
+
 /** Excel's AutoSum at a cell (`Session.getAutoSum`): the range it offers to sum and the formula it enters. */
 export interface AutoSumGuess {
   /**
