@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.64.0 (2026-10-28)
+
+Changed:
+
+- `writeKept` keeps the cell format (`s`) of a cell, row or column that rows or columns inserted or deleted moved, where its look did not change: a quote prefix, a theme color beside the same color as RGB, a cell style and a pattern fill no longer turn into the file's first format of the same look, and a cell no longer takes the format of the one that had its address. Columns written again (`<cols>`) keep theirs too. A sheet whose such formats lie in more than 5,000 blocks (`KEPT_FORMATS`) reports `keptFormats` (`style`) when its rows or columns move (Excel for Mac, 13 operations predicted before it ran them) ([Writing over the original file](docs/xlsx-keep.md#structure-operations)).
+- `writeKept` no longer refuses (`rules`) a change of a sheet's conditional formats where the file has rules the workbook does not read (`conditionalFormat` issues): it writes the workbook's rules and puts the file's other rules back among them as the file has them, Excel 2010's too, each after the rule it came after, their ranges and formulas moved with rows and columns as Excel moves them. A rule that read without part of its look keeps the file's differential format while its look in the workbook stays. `rules` remains for what cannot go as Excel would (a pivot table's rules, a rule read over part of its ranges, a relative rule whose first cell was deleted) and for data validation the workbook reads in part; a rule whose cells moved to another sheet is refused (`moved`) (Excel for Windows, 35 cases predicted before it ran them, 29 the same and the others named; Excel for Mac opened each file) ([Conditional formats the workbook does not read](docs/xlsx-keep.md#conditional-formats-the-workbook-does-not-read)).
+- The `xlcalc/xlsx/keep` bundle is kept under 320 KB, where it was 300 KB.
+
 ## 0.63.0 (2026-10-28)
 
 Added:
