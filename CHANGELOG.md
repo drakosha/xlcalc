@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.65.0 (2026-10-28)
+
+Added:
+
+- Paste Special's other kinds as `copyRange`'s `paste`: `valuesAndNumberFormats` and `formulasAndNumberFormats` (as `values` and `formulas` with the copy's number formats, not refused onto merged areas), `columnWidths`, `allExceptBorders` and `notes` (Excel's Comments) ([Paste Special](docs/structure.md#paste-special)).
+- `copyRange`'s `operation` (`add`, `subtract`, `multiply`, `divide`): the copy's numbers combined with the destination's, a blank counting as 0 and a formula on either side making a formula of both (`10+(A1*2)`); and `skipBlanks`, which leaves the destination's cells under blank cells of the copy, and their notes under cells without a note. Either without `paste` is Paste Special's `all` ([Operations](docs/structure.md#operations), [Skip Blanks](docs/structure.md#skip-blanks)).
+- Excel's Format Painter is `paste: 'formats'`: Excel for Mac's painted as Paste Special Formats in 14 cases ([The Format Painter](docs/structure.md#the-format-painter)).
+
+Paste Special is now checked against Excel for Windows as well as Excel for Mac: 178 cases on both, the same in each, with the engine's predictions committed before the held-out sets ran; the known differences (an operation on a dynamic array formula, number formats of entire columns, Formats of a table's cells) are listed with their reasons.
+
 ## 0.64.0 (2026-10-28)
 
 Changed:
