@@ -25,11 +25,10 @@ import { NONE, type Layer } from '../../looks/layer.js'
 import { hasLook, inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
-import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileText, type FileNames, type FileShapes } from './formula.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
@@ -61,6 +60,8 @@ export interface SheetContext extends FileNames {
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when the file stores values of formulas. */
   result?: Record<string, ResultCell>
+  /** The book's formulas written by their shape (`fileText`), shared by its sheets. */
+  shapes?: FileShapes
   /** The addresses of the sheet's cells and of its result's (`Object.keys`), where the checks listed them already. */
   keys?: readonly string[]
   resultKeys?: readonly string[]
@@ -238,20 +239,20 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     // the book's table holding the cell, looked up once for its name and its totals row
     const table = mode === 'formulas' ? ctx.tableAt(row, col) : undefined
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, table?.name) : null
+    const text = mode === 'formulas' ? fileText(c.formula, ctx, table?.name, ctx.shapes) : null
     // without a value (no result), the cell is written empty
-    if (mode === 'formulas' && !tree) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
-    if (!tree) {
+    if (mode === 'formulas' && text === null) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
+    if (text === null) {
       put(row, col, cellXml(addr, row, col, c, value))
       continue
     }
     formulas = true
     if (table?.totals && c.array === undefined) {
-      put(row, col, cellXml(addr, row, col, c, value, `<f>${escapeText(toFile(tree))}</f>`, false))
+      put(row, col, cellXml(addr, row, col, c, value, `<f>${escapeText(text)}</f>`, false))
       continue
     }
     const ref = c.array ?? res?.spill ?? addr
-    put(row, col, cellXml(addr, row, col, c, value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
+    put(row, col, cellXml(addr, row, col, c, value, `<f t="array" ref="${ref}">${escapeText(text)}</f>`, c.array === undefined))
   }
   // the cells arrays spilled into, with the look their own cells give them (a result's addresses are not checked: parsed)
   const spilled = (addr: string, v: CellValue) => {

@@ -9,7 +9,7 @@
 import type { Ast } from '../../syntax/ast.js'
 import { ERROR_TEXT } from '../../syntax/errors.js'
 import { plain } from '../../syntax/links.js'
-import { linkedSheet, printFormula, quoteSheet } from '../../syntax/print.js'
+import { linkedSheet, printFormula, quoteSheet, type PrintOptions } from '../../syntax/print.js'
 import { specText } from '../../syntax/table.js'
 import { XLFN, XLWS } from './prefixes.js'
 
@@ -54,6 +54,9 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
   return undefined
 }
 
+/** The printing of a file's spelling. */
+export const FILE_PRINT: PrintOptions = { node: fileNode }
+
 export function toFile(ast: Ast): string {
-  return printFormula(ast, { node: fileNode })
+  return printFormula(ast, FILE_PRINT)
 }

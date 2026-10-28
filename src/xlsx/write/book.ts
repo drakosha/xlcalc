@@ -23,7 +23,7 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileTree, type FileNames, type FileShapes } from './formula.js'
 import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
@@ -184,6 +184,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
+  const shapes: FileShapes = new Map()
   const sheets = book.sheets.map((s, i) => {
     const w = sheetPieces(s, i, {
       styles,
@@ -192,6 +193,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       ...names,
       mode,
       result: cells?.[i],
+      shapes,
       keys: keys[i],
       ...(resultKeys ? { resultKeys: resultKeys[i] } : {}),
       richError,
