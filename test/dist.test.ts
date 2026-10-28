@@ -58,6 +58,7 @@ describe('built package', () => {
     expect(out.xlsx).toBe(out.hash)
     // and in a thread of the pool, which an open pool does not keep the process alive for
     expect(out.threads).toEqual({ hash: out.hash, edited: out.edited })
+    expect(out.loaded).toEqual({ tag: 'ru-RU', same: true, read: 'ru-RU', thread: 4 })
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.removed).toEqual([])

@@ -19,7 +19,7 @@ import { heapCaches } from '../range-cache.js'
 import type { HistoryData } from '../session/undo.js'
 import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
-import { LOCALE_MODULES } from './locales.js'
+import { LOCALE_MODULES } from '../locale/modules.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackCached, unpackData, type Sent } from './pack.js'
 
