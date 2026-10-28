@@ -42,3 +42,9 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldGroups(CASES.map(([g, f, v]) => [g, 'XMATCH', f, v]))
+
+/**
+ * The prediction Excel for Mac did not confirm: `(?:a+)+$` over 19 letters stays under Excel's limit, where the
+ * engine counts it as `(a+)+$`, which Excel stops (a known difference: the engine counts PCRE2's work approximately).
+ */
+export const MISSED: readonly string[] = ['limit#6']

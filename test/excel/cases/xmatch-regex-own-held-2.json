@@ -1,0 +1,172 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.862,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "limit#1",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|a)+$\",Rk!A1,3)"
+  },
+  {
+   "id": "limit#2",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|a)+$\",Rk!A2,3)"
+  },
+  {
+   "id": "limit#3",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(\\d+)*$\",Rk!A3,3)"
+  },
+  {
+   "id": "limit#4",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(\\d+)*$\",Rk!A4,3)"
+  },
+  {
+   "id": "limit#5",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?:a+)+$\",Rk!A2,3)"
+  },
+  {
+   "id": "limit#6",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?:a+)+$\",Rk!A5,3)"
+  },
+  {
+   "id": "limit#7",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+?)+$\",Rk!A2,3)"
+  },
+  {
+   "id": "limit#8",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+?)+$\",Rk!A5,3)"
+  },
+  {
+   "id": "limit#9",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|b|ab)+$\",Rk!A6,3)"
+  },
+  {
+   "id": "limit#10",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|b|ab)+$\",Rk!A7,3)"
+  },
+  {
+   "id": "required#1",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rk!A8,3)"
+  },
+  {
+   "id": "case#1",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)İ\",Rk!A10,3)"
+  },
+  {
+   "id": "case#2",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)i\",Rk!A9,3)"
+  },
+  {
+   "id": "line#1",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)^$\",Rk!A11,3)"
+  },
+  {
+   "id": "line#2",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)a$\",Rk!A12,3)"
+  },
+  {
+   "id": "line#3",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)^$\",Rk!A12,3)"
+  }
+ ],
+ "values": {
+  "limit#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#3": {
+   "t": "n",
+   "v": 1
+  },
+  "limit#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#7": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#9": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "required#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "case#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "case#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "line#1": {
+   "t": "n",
+   "v": 1
+  },
+  "line#2": {
+   "t": "n",
+   "v": 1
+  },
+  "line#3": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}
