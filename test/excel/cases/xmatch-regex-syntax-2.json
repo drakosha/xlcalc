@@ -1,0 +1,692 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.148,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "line#1",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a.b\",Rq!A1,3)"
+  },
+  {
+   "id": "line#2",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)a$\",Rq!A1,3)"
+  },
+  {
+   "id": "line#3",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a\\Rb\",Rq!A1,3)"
+  },
+  {
+   "id": "line#4",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a.b\",Rq!A2,3)"
+  },
+  {
+   "id": "line#5",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)a$\",Rq!A2,3)"
+  },
+  {
+   "id": "line#6",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a.b\",Rq!A3,3)"
+  },
+  {
+   "id": "line#7",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a.b\",Rq!A4,3)"
+  },
+  {
+   "id": "line#8",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"b$\",Rq!A11,3)"
+  },
+  {
+   "id": "line#9",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a$\",Rq!A23,3)"
+  },
+  {
+   "id": "line#10",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a\\vb\",Rq!A1,3)"
+  },
+  {
+   "id": "line#11",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LF)a.b\",Rq!A1,3)"
+  },
+  {
+   "id": "line#12",
+   "group": "line",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*ANYCRLF)a.b\",Rq!A1,3)"
+  },
+  {
+   "id": "look#1",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a{1,3})b\",Rq!A5,3)"
+  },
+  {
+   "id": "look#2",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a|bc)c\",Rq!A5,3)"
+  },
+  {
+   "id": "look#3",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=(a)|b)c\",Rq!A5,3)"
+  },
+  {
+   "id": "class#1",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^e\\w$\",Rq!A6,3)"
+  },
+  {
+   "id": "class#2",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^a\\wb$\",Rq!A7,3)"
+  },
+  {
+   "id": "class#3",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\d\",Rq!A8,3)"
+  },
+  {
+   "id": "class#4",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a\\sb\",Rq!A2,3)"
+  },
+  {
+   "id": "class#5",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^\\w+$\",Rq!A24,3)"
+  },
+  {
+   "id": "class#6",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"[[:punct:]]\",Rq!A7,3)"
+  },
+  {
+   "id": "class#7",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{Xan}\",Rq!A8,3)"
+  },
+  {
+   "id": "class#8",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{sc=Cyrl}\",Rq!A5,3)"
+  },
+  {
+   "id": "class#9",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{L&}\",Rq!A9,3)"
+  },
+  {
+   "id": "class#10",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{Greek}\",Rq!A9,3)"
+  },
+  {
+   "id": "class#11",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{ greek }\",Rq!A9,3)"
+  },
+  {
+   "id": "class#12",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\pL\",Rq!A9,3)"
+  },
+  {
+   "id": "class#13",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{Bidi_Class:L}\",Rq!A9,3)"
+  },
+  {
+   "id": "case#1",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)σ\",Rq!A9,3)"
+  },
+  {
+   "id": "case#2",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)(a)\\1\",Rq!A10,3)"
+  },
+  {
+   "id": "case#3",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)[^a]\",Rq!A10,3)"
+  },
+  {
+   "id": "case#4",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)\\p{Lu}\",Rq!A12,3)"
+  },
+  {
+   "id": "case#5",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)[A-Z]\",Rq!A12,3)"
+  },
+  {
+   "id": "option#1",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)(?^)A\",Rq!A12,3)"
+  },
+  {
+   "id": "option#2",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?aD)\\d\",Rq!A13,3)"
+  },
+  {
+   "id": "option#3",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=100)(a+)+$\",Rq!A14,3)"
+  },
+  {
+   "id": "option#4",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*NO_AUTO_POSSESS)a+b\",Rq!A5,3)"
+  },
+  {
+   "id": "option#5",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*UTF)(*UCP)abc\",Rq!A5,3)"
+  },
+  {
+   "id": "option#6",
+   "group": "option",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?-x)a\",Rq!A5,3)"
+  },
+  {
+   "id": "recurse#1",
+   "group": "recurse",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(\\((?:[^()]|(?-1))*\\))$\",Rq!A21,3)"
+  },
+  {
+   "id": "recurse#2",
+   "group": "recurse",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(?+1)(\\((?:[^()]|(?1))*\\))$\",Rq!A21,3)"
+  },
+  {
+   "id": "recurse#3",
+   "group": "recurse",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(a|b(?1))$\",Rq!A22,3)"
+  },
+  {
+   "id": "bad#1",
+   "group": "bad",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\x{D800}\",Rq!A5,3)"
+  },
+  {
+   "id": "bad#2",
+   "group": "bad",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a(*ACCEPT))\",Rq!A5,3)"
+  },
+  {
+   "id": "bad#3",
+   "group": "bad",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\p{Nope}\",Rq!A5,3)"
+  },
+  {
+   "id": "bad#4",
+   "group": "bad",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a{65536}\",Rq!A5,3)"
+  },
+  {
+   "id": "bad#5",
+   "group": "bad",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?\",Rq!A5,3)"
+  },
+  {
+   "id": "backtrack#1",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rq!A14,3)"
+  },
+  {
+   "id": "backtrack#2",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "backtrack#3",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rq!A16,3)"
+  },
+  {
+   "id": "backtrack#4",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A17,3)"
+  },
+  {
+   "id": "backtrack#5",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A18,3)"
+  },
+  {
+   "id": "backtrack#6",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A19,3)"
+  },
+  {
+   "id": "backtrack#7",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rq!A20,3)"
+  },
+  {
+   "id": "backtrack#8",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(a+)+$\",Rq!A16,3)"
+  },
+  {
+   "id": "backtrack#9",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A25,3)"
+  },
+  {
+   "id": "backtrack#10",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A26,3)"
+  },
+  {
+   "id": "backtrack#11",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|aa)+$\",Rq!A27,3)"
+  },
+  {
+   "id": "backtrack#12",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rq!A28,3)"
+  },
+  {
+   "id": "backtrack#13",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rq!A29,3)"
+  },
+  {
+   "id": "backtrack#14",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rq!A30,3)"
+  },
+  {
+   "id": "backtrack#15",
+   "group": "backtrack",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rq!A31,3)"
+  },
+  {
+   "id": "limit#1",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=200000)(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "limit#2",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=500000)(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "limit#3",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=1000000)(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "limit#4",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=2000000)(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "limit#5",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=5000000)(a+)+$\",Rq!A15,3)"
+  },
+  {
+   "id": "limit#6",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*LIMIT_MATCH=10000000)(a+)+$\",Rq!A15,3)"
+  }
+ ],
+ "values": {
+  "line#1": {
+   "t": "n",
+   "v": 1
+  },
+  "line#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "line#3": {
+   "t": "n",
+   "v": 1
+  },
+  "line#4": {
+   "t": "n",
+   "v": 1
+  },
+  "line#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "line#6": {
+   "t": "n",
+   "v": 1
+  },
+  "line#7": {
+   "t": "n",
+   "v": 1
+  },
+  "line#8": {
+   "t": "n",
+   "v": 1
+  },
+  "line#9": {
+   "t": "n",
+   "v": 1
+  },
+  "line#10": {
+   "t": "n",
+   "v": 1
+  },
+  "line#11": {
+   "t": "n",
+   "v": 1
+  },
+  "line#12": {
+   "t": "n",
+   "v": 1
+  },
+  "look#1": {
+   "t": "n",
+   "v": 1
+  },
+  "look#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "look#3": {
+   "t": "n",
+   "v": 1
+  },
+  "class#1": {
+   "t": "n",
+   "v": 1
+  },
+  "class#2": {
+   "t": "n",
+   "v": 1
+  },
+  "class#3": {
+   "t": "n",
+   "v": 1
+  },
+  "class#4": {
+   "t": "n",
+   "v": 1
+  },
+  "class#5": {
+   "t": "n",
+   "v": 1
+  },
+  "class#6": {
+   "t": "n",
+   "v": 1
+  },
+  "class#7": {
+   "t": "n",
+   "v": 1
+  },
+  "class#8": {
+   "t": "e",
+   "v": "NA"
+  },
+  "class#9": {
+   "t": "n",
+   "v": 1
+  },
+  "class#10": {
+   "t": "n",
+   "v": 1
+  },
+  "class#11": {
+   "t": "n",
+   "v": 1
+  },
+  "class#12": {
+   "t": "n",
+   "v": 1
+  },
+  "class#13": {
+   "t": "n",
+   "v": 1
+  },
+  "case#1": {
+   "t": "n",
+   "v": 1
+  },
+  "case#2": {
+   "t": "n",
+   "v": 1
+  },
+  "case#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "case#4": {
+   "t": "n",
+   "v": 1
+  },
+  "case#5": {
+   "t": "n",
+   "v": 1
+  },
+  "option#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "option#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "option#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "option#4": {
+   "t": "n",
+   "v": 1
+  },
+  "option#5": {
+   "t": "n",
+   "v": 1
+  },
+  "option#6": {
+   "t": "n",
+   "v": 1
+  },
+  "recurse#1": {
+   "t": "n",
+   "v": 1
+  },
+  "recurse#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "recurse#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "bad#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "bad#2": {
+   "t": "n",
+   "v": 1
+  },
+  "bad#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "bad#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "bad#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#7": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#9": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#10": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "backtrack#12": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#13": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#14": {
+   "t": "e",
+   "v": "NA"
+  },
+  "backtrack#15": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#6": {
+   "t": "e",
+   "v": "NA"
+  }
+ }
+}
