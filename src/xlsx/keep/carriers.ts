@@ -650,8 +650,11 @@ export function compared(text: string, kind: Carrier['kind']): string | null {
   return kind === 'ref' ? canonical(ast) : canonical(ast, () => '')
 }
 
-/** The sheet a sheet's carrier names now, and whether its cell is still the last one; undefined when the sheet is gone. */
-export function sheetOfCarrier(text: string): { sheet: string; moved: boolean } | undefined {
+/**
+ * The sheet a sheet's carrier names now, whether its cell is still the last one, and whether lines were only deleted (its
+ * cell came off the last one but is on the sheet; an inserted line pushes it off); undefined when the sheet is gone.
+ */
+export function sheetOfCarrier(text: string): { sheet: string; moved: boolean; deleted: boolean } | undefined {
   let ast: Ast
   try {
     ast = parse(text)
@@ -659,7 +662,10 @@ export function sheetOfCarrier(text: string): { sheet: string; moved: boolean } 
     if (e instanceof FormulaError) return undefined
     throw e
   }
-  if (ast.k === 'ref' && ast.sheet !== null) return { sheet: ast.sheet, moved: ast.ref.r1 !== MAX_ROWS - 1 || ast.ref.c1 !== MAX_COLS - 1 }
-  if (ast.k === 'err' && ast.sheet !== undefined && ast.book === undefined) return { sheet: ast.sheet, moved: true }
+  if (ast.k === 'ref' && ast.sheet !== null) {
+    const moved = ast.ref.r1 !== MAX_ROWS - 1 || ast.ref.c1 !== MAX_COLS - 1
+    return { sheet: ast.sheet, moved, deleted: moved }
+  }
+  if (ast.k === 'err' && ast.sheet !== undefined && ast.book === undefined) return { sheet: ast.sheet, moved: true, deleted: false }
   return undefined
 }

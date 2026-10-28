@@ -43,9 +43,9 @@ describe('conditional formats under structure operations', () => {
     expect(rules({ op: 'insertColumns', sheet: 'S', column: 'D' }).S[2]).toBe('C1:D10 colorScale')
   })
 
-  it('deleted lines shrink ranges; a colour scale that lost some goes after the others; a rule with nothing left goes; the first cell moves on', () => {
+  it('deleted lines shrink ranges; a colour scale that lost some, or a rule that lost some and a reference, goes after the others; a rule with nothing left goes; the first cell moves on', () => {
     expect(rules({ op: 'deleteRows', sheet: 'S', row: 5 }).S).toEqual(['B2:B9 $Z$2', 'D2:D9 F2:F4 $A2>3', "H2:H4 H2>'T'!$A$1", 'C1:C9 colorScale'])
-    expect(rules({ op: 'deleteRows', sheet: 'S', row: 2 }).S).toEqual(['B2:B9 #REF!', 'D2:D9 F2:F3 $A2>3', "H2:H4 H2>'T'!$A$1", 'C1:C9 colorScale'])
+    expect(rules({ op: 'deleteRows', sheet: 'S', row: 2 }).S).toEqual(['D2:D9 F2:F3 $A2>3', "H2:H4 H2>'T'!$A$1", 'B2:B9 #REF!', 'C1:C9 colorScale'])
     expect(rules({ op: 'deleteColumns', sheet: 'S', column: 'B' }).S[0]).toBe('C2:C10 E2:E4 $A2>3')
     expect(rules({ op: 'deleteColumns', sheet: 'S', column: 'A' }).S[1]).toBe('C2:C10 E2:E4 #REF!>3')
     expect(rules({ op: 'deleteRows', sheet: 'S', row: 1, count: 10 }).S).toEqual([])

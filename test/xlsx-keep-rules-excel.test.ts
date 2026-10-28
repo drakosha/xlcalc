@@ -17,10 +17,11 @@ const mixed = file(`${WIN}/rules-made/mixed.xlsx`)
 const KNOWN: Record<string, string> = {
   'last-1': "Excel's Priority puts the rule before the carried rule that had that priority; the workbook's list cannot say which side of a carried rule a rule goes, and the carried rule stays after the rule it came after",
   'held-priority-4': 'as last-1',
-  'held-delete-rows-top': "a formula rule whose reference the deletion lost goes after the others in Excel, where the engine keeps its place (docs/conditional-formats.md); the carried rules follow the engine's order",
-  'held2-delete-cols-c': 'Excel put a colour scale whose threshold a column deletion moved after the others; the engine moves a statistics rule only when it loses cells',
   'held-move-part-b': "part of a carried rule's cells moved: no carrier sees it, the rule keeps its cells, where Excel takes the moved ones along",
 }
+
+/** The cases whose rules `writeKept` writes in another order since Excel for Mac opened its files (the order of rules after deleted lines, `cond/order`): their rules compare without their order. */
+const REORDERED = new Set(['held-delete-rows-top', 'held2-delete-cols-c'])
 
 /** The cases `writeKept` refuses, by the code of the refusal: a carried rule moved to another sheet, which Excel moves there. */
 const REFUSED: Record<string, string> = { 'held-move-h-other': 'moved' }
@@ -61,7 +62,12 @@ describe('the files writeKept wrote, opened by Excel for Mac', () => {
       if (!('data' in w)) throw new Error(w.refused)
       const ours = (await rulesOf(w.data)).rules.map((r) => (c.id === 'delete-sheet-p' ? r.replace('x14 colorScale', 'colorScale') : r))
       expect(opened.cases[c.id].rejected, c.id).toBeUndefined()
-      expect(opened.cases[c.id].refs?.rules, c.id).toEqual(ours)
+      const saved = opened.cases[c.id].refs?.rules
+      if (!REORDERED.has(c.id)) expect(saved, c.id).toEqual(ours)
+      else {
+        expect(saved, c.id).not.toEqual(ours)
+        expect([...(saved ?? [])].sort(), c.id).toEqual([...ours].sort())
+      }
     }
   })
 })

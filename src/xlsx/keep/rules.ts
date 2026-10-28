@@ -8,7 +8,7 @@
  * format while the workbook's look of it is the same. What cannot go as Excel would is refused (`rules`).
  */
 import type { ConditionalFormat } from '../../contract.js'
-import { GRADED } from '../../cond/structure.js'
+import { GRADED, lateAfterDeletion, lateBy, lostRefs } from '../../cond/structure.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { cellCount, cornerOf, type Rect } from '../../structure/area.js'
 import type { Ast } from '../../syntax/ast.js'
@@ -278,6 +278,8 @@ export interface KeptRulesInput {
   sources: RuleSource[]
   /** The edits of the sheet's part. */
   edits: Edit[]
+  /** Rows or columns were deleted on the sheet, and none inserted. */
+  deleted: boolean
   r0: ConditionalFormat[]
   r1: ConditionalFormat[]
   /** The workbook's rules written with these priorities. */
@@ -322,8 +324,8 @@ export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
     return { s, text, was, ranges: (moved ? readText(moved.text) : was).split(/\s+/).filter(Boolean), at: 0 }
   }
   const area = (ranges: string[]) => cells(ranges.join(' '))
-  // the workbook's rules over the statistics of their cells that lost some: Excel put them after the others (`shiftConditional`)
-  const late = r0.map((r, i) => to[i] >= 0 && GRADED.has(r.type) && area(r1[to[i]].ranges) < area(r.ranges))
+  // the workbook's rules Excel put after the others (`shiftConditional`): after deleted lines as `lateAfterDeletion` says, else those over the statistics of their cells that lost some
+  const late = r0.map((r, i) => to[i] >= 0 && (x.deleted ? lateAfterDeletion(r, r1[to[i]], sheet, new Map()) : GRADED.has(r.type) && area(r1[to[i]].ranges) < area(r.ranges)))
   /** A carried rule that goes after the others: before the first of those after it in the file. */
   const lastAt = (p: number) => {
     for (let k = p; k < r0.length; k++) if (late[k]) return to[k] - 0.5
@@ -344,9 +346,11 @@ export function keptRules(x: KeptRulesInput): { main: string; ext: string } {
     if (others.some((o) => o.index !== undefined)) throw refuse(`the workbook read the Excel 2010 part of a data bar over ${s.block.sqref} without its rule`)
     const part = others.find((o) => o.joined && o.x14)
     if (part) c.partner = carry(part)
-    // a rule over the statistics of its cells that lost some goes after the others, as Excel puts it back
+    // a rule goes after the others as the workbook's would (its formulas without relative references, or with its first cell kept, compare as written)
     const type = attributes(text.slice(0, tagEnd(text, 0))).type ?? ''
-    c.at = GRADED.has(type) && cells(c.ranges.join(' ')) < cells(c.was) ? lastAt(p) : place(p, to, late, r1.length)
+    const cut = cells(c.ranges.join(' ')) < cells(c.was)
+    const d = { cut, stayed: c.ranges.join(' ') === c.was, changed: c.text !== text, lost: lostRefs([c.text]) > lostRefs([text]) }
+    c.at = (x.deleted ? lateBy(type, d) : GRADED.has(type) && cut) ? lastAt(p) : place(p, to, late, r1.length)
     carried.push(c)
   }
   // the rules in their order: the workbook's at their places, the carried ones between them

@@ -326,7 +326,7 @@ class Kept {
     if (p0.conditional + p0.ext === p1.conditional + p1.ext && !edits.length) return undefined
     const [s0, s1] = [this.book0.sheets[k], this.book.sheets[j]]
     const ctx = this.context(this.book, this.w1, j, this.cells?.[j], new Issues())
-    return keptRules({ xml: ss.xml, sheet: s0.name, sources, edits, r0: s0.conditionalFormats ?? [], r1: s1.conditionalFormats ?? [], write: (priority) => conditionalXml(s1, k, { ...ctx, priority }) })
+    return keptRules({ xml: ss.xml, sheet: s0.name, sources, edits, deleted: this.id.deleted[k], r0: s0.conditionalFormats ?? [], r1: s1.conditionalFormats ?? [], write: (priority) => conditionalXml(s1, k, { ...ctx, priority }) })
   }
 
   /**
