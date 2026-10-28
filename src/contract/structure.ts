@@ -165,9 +165,11 @@ export type FillType = 'default' | 'series' | 'copy'
  * `validation`: the data validation alone. `valuesAndNumberFormats` and `formulasAndNumberFormats`: as `values` and
  * `formulas` with the copy's number formats, and not refused onto merged areas. `columnWidths`: the widths of the
  * copy's columns alone. `allExceptBorders`: as `all`, each cell keeping the destination's borders. `notes`: the copy's
- * notes alone, a cell without one clearing the destination's (Excel's Comments). Excel's Format Painter is `formats`.
+ * notes alone, a cell without one clearing the destination's (Excel's Comments). `allMergingConditionalFormats`: as
+ * `all`, the destination's conditional formats kept whole after the copy's, none joined; with `skipBlanks` it is `all`.
+ * Excel's Format Painter is `formats`; its All Using Source Theme is `all` within one workbook.
  */
-export type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'valuesAndNumberFormats' | 'formulasAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes'
+export type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'valuesAndNumberFormats' | 'formulasAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'allMergingConditionalFormats'
 
 /**
  * Paste Special's operation (`StructureOp` `copyRange`): each number of the copy is added to, subtracted from,
