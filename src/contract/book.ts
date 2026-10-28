@@ -410,6 +410,12 @@ export interface BookInput {
    */
   iteration?: { maxIterations?: number; maxChange?: number }
   /**
+   * Excel's calculation option (Formulas > Calculation Options, xlsx `calcPr calcMode`): `manual`, or `autoNoTable`,
+   * automatic except for data tables; automatic without it. The engine calculates every edit whatever it says: a host
+   * that offers manual calculation keeps showing the values it showed until the user calculates. Not part of inputHash.
+   */
+  calculation?: 'manual' | 'autoNoTable'
+  /**
    * The other workbooks that the workbook's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`):
    * element `i` is `[i+1]`. References to them use the values stored here, as Excel calculates a file it opens without
    * updating its links; the other workbook itself is never read. The list is included in `inputHash` when it is not
