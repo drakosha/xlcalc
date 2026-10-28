@@ -7,14 +7,14 @@ import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
 import { canAllot } from './exec/budget.js'
 import { stopped } from './held.js'
-import { formatAddress, placeOf } from './model.js'
+import { byPlace, formatAddress, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { fillBounds } from './spill/fill.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
 import type { Place } from './structure/geometry.js'
 import { quoteSheet } from './syntax.js'
-import { isErr } from './values.js'
+import { isErr, type Rng } from './values.js'
 
 const GENERIC: Record<ErrorCode, string> = {
   DIV0: 'division by zero',
@@ -53,13 +53,13 @@ const HELD = 'circular reference: not calculated, the value is held'
 /** The issue of a formula a circular reference stops, whatever value it holds. */
 const heldIssue = (f: Formula): Issue => ({ s: f.s, r: f.r, c: f.c, error: 'CYCLE', reason: HELD })
 
-/** The issue of a formula whose value is the error `code`. */
-function formulaIssue(state: EngineState, f: Formula, code: ErrorCode): Issue {
+/** The issue of a formula whose value is the error `code`; `memo` as `errorSource`'s. */
+function formulaIssue(state: EngineState, f: Formula, code: ErrorCode, memo?: Map<string, Place | null>): Issue {
   const why = state.spills.why.get(f.id)
   if (code === 'SPILL' && why) return { s: f.s, r: f.r, c: f.c, error: code, reason: why }
   let reason = GENERIC[code]
   if (code !== 'CYCLE') {
-    const from = errorSource(state, f, code)
+    const from = errorSource(state, f, code, memo)
     if (from) reason = `${GENERIC[code]}, from ${placeText(state, from)}`
     else if (code === 'NA' && f.external) reason = 'value not found (or no value for an external call)'
   }
@@ -81,6 +81,7 @@ export function reasonSource(reason: string): CellRef | null {
 /** Cells with an error and the reason. */
 export function issues(state: EngineState): Issue[] {
   const out: Issue[] = []
+  const memo = new Map<string, Place | null>()
   for (const [k, inv] of state.invalid) {
     const [s, r, c] = k.split(':').map(Number)
     out.push({ s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at, ...(inv.fn !== undefined ? { fn: inv.fn } : {}) })
@@ -92,7 +93,7 @@ export function issues(state: EngineState): Issue[] {
       continue
     }
     const v = valueAt(state, f.s, f.r, f.c)
-    if (isErr(v)) out.push(formulaIssue(state, f, v.code))
+    if (isErr(v)) out.push(formulaIssue(state, f, v.code, memo))
   }
   // the stored cells of spilled arrays (the unstored rest of a large one is its formula's)
   for (const x of state.spills.on.values())
@@ -101,7 +102,7 @@ export function issues(state: EngineState): Issue[] {
         const v = valueAt(state, x.s, r, c)
         if (isErr(v) && (r !== x.r1 || c !== x.c1)) out.push(spilledIssue(state, x, r, c, v.code))
       }
-  return out.sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+  return out.sort(byPlace)
 }
 
 /** The issue of one cell, as `issues` lists it (a cell of a large spill's unstored rest too); null for a cell without an error. */
@@ -117,27 +118,41 @@ function cellIssue(state: EngineState, s: number, r: number, c: number): Issue |
   return x ? spilledIssue(state, x, r, c, v.code) : null
 }
 
-/** The first cell among a formula's references holding the error `code`, the one its reason names, with the index of its reference. */
-function errorSource(state: EngineState, f: Formula, code: ErrorCode): (Place & { ref: number }) | null {
+/**
+ * The first cell among a formula's references holding the error `code`, the one its reason names, with the index of its
+ * reference. `memo` keeps each range's first cell of a code (null for none), which every formula reading it shares.
+ */
+function errorSource(state: EngineState, f: Formula, code: ErrorCode, memo?: Map<string, Place | null>): (Place & { ref: number }) | null {
   for (let k = 0; k < f.refs.length; k++) {
     const g = f.refs[k]
-    const b = state.rt.bounds(g)
-    // a range over limits.cells is scanned cell by cell, over its occupied rows: the formula may have read one cell of it
-    if (!canAllot(b.h * b.w)) {
-      const sh = state.ctx.sheets[g.s]
-      const [r2] = fillBounds(sh.fills, g, Math.min(b.r2, Math.max(sh.rows - 1, g.r1)), b.c2)
-      for (let r = b.r1; r <= r2; r++)
-        for (let c = b.c1; c <= b.c2; c++) {
-          const v = state.rt.cell(g.s, r, c)
-          if (isErr(v) && v.code === code) return { s: g.s, r, c, ref: k }
-        }
-      continue
+    let p = memo?.get(`${code}:${g.key}`)
+    if (p === undefined) {
+      p = firstError(state, g, code)
+      memo?.set(`${code}:${g.key}`, p)
     }
-    const flat = state.rt.flat(g)
-    for (let i = 0; i < flat.length; i++) {
-      const v = flat[i]
-      if (isErr(v) && v.code === code) return { s: g.s, r: b.r1 + Math.floor(i / b.w), c: b.c1 + (i % b.w), ref: k }
-    }
+    if (p) return { ...p, ref: k }
+  }
+  return null
+}
+
+/** The first cell of range `g` holding the error `code`, by rows, or null. */
+function firstError(state: EngineState, g: Rng, code: ErrorCode): Place | null {
+  const b = state.rt.bounds(g)
+  // a range over limits.cells is scanned cell by cell, over its occupied rows: the formula may have read one cell of it
+  if (!canAllot(b.h * b.w)) {
+    const sh = state.ctx.sheets[g.s]
+    const [r2] = fillBounds(sh.fills, g, Math.min(b.r2, Math.max(sh.rows - 1, g.r1)), b.c2)
+    for (let r = b.r1; r <= r2; r++)
+      for (let c = b.c1; c <= b.c2; c++) {
+        const v = state.rt.cell(g.s, r, c)
+        if (isErr(v) && v.code === code) return { s: g.s, r, c }
+      }
+    return null
+  }
+  const flat = state.rt.flat(g)
+  for (let i = 0; i < flat.length; i++) {
+    const v = flat[i]
+    if (isErr(v) && v.code === code) return { s: g.s, r: b.r1 + Math.floor(i / b.w), c: b.c1 + (i % b.w) }
   }
   return null
 }

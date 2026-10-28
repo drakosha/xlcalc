@@ -154,8 +154,9 @@ export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c
 /** The width each column of the cells takes for the values they hold now, the largest of its cells' (`columnWidening`); none for a column that keeps its width. */
 export function textWidths(s: EngineState, cells: Iterable<{ i: number; r: number; c: number }>): ColumnWidth[] {
   const out = new Map<string, ColumnWidth>()
+  const memo = new Map<string, number | undefined>()
   for (const { i, r, c } of cells) {
-    const width = columnWidening(s, i, r, c)
+    const width = columnWidening(s, i, r, c, memo)
     if (width === undefined) continue
     const x = out.get(`${i}:${c}`)
     if (!x) out.set(`${i}:${c}`, { sheet: s.sheetNames[i], column: indexToCol(c), width })

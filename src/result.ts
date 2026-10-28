@@ -6,7 +6,7 @@ import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { addressOrder, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import { addressOrder, byPlace, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
 import type { V } from './values.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
@@ -15,7 +15,7 @@ import { NONE, type Layer } from './looks/layer.js'
 import { inputIn, layerOf } from './looks/sheet.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
-import { cellCount, cornersText, meets, type Rect } from './structure/area.js'
+import { cellCount, cornersText, meets, oneCell, type Rect } from './structure/area.js'
 
 
 /** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
@@ -79,7 +79,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 }
 
 /** `cellResult` of the cell at `addr`, row `row` and column `col`: for callers that have both, without reading the address again. */
-function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
+export function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
   const value = cellValue(state, s, row, col)
   const id = state.at.get(placeOf(s, row, col))
@@ -177,15 +177,39 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
  * cells, and in the conditional formats' tests.
  */
 export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean, whole = false): Steps<CellView | undefined> {
+  const cond = state.input.sheets[s].conditionalFormats?.length ? yield* windowLooks(state, s, oneCell(r, c)) : null
+  const spillOf = state.spills.on.size ? yield* spillAt(state, s, r, c, whole) : undefined
+  return viewAt(state, s, r, c, display ? cellLooks(state) : null, (format) => formatCodeIn(state.input.locale)(format), cond, spillOf)
+}
+
+/**
+ * `cellAt` (display on) of each cell of `cells` (sheet, row, column) in turn, the looks and each sheet's conditional
+ * formats made once for them all (`readCells`, `findCells`): over the cells' own rectangles, not the box around them.
+ */
+export function* cellsAt(state: EngineState, cells: [s: number, r: number, c: number, ...rest: unknown[]][], whole: boolean): Steps<(CellView | undefined)[]> {
+  const look = cellLooks(state)
+  const code = formatCodeIn(state.input.locale)
+  const conds = new Map<number, Map<number, ConditionalAppearance>>()
+  for (const s of new Set(cells.map((x) => x[0])))
+    if (state.input.sheets[s].conditionalFormats?.length) conds.set(s, yield* windowLooks(state, s, cells.filter((x) => x[0] === s).map(([, r, c]) => oneCell(r, c))))
+  const out: (CellView | undefined)[] = []
+  for (const [s, r, c] of cells) out.push(viewAt(state, s, r, c, look, code, conds.get(s) ?? null, state.spills.on.size ? yield* spillAt(state, s, r, c, whole) : undefined))
+  return out
+}
+
+/** The formula the cell at row `r` and column `c` of sheet `s` spilled from, as `spilled` takes it; undefined for none. Its callers ask only where arrays spill, with no steps for a cell otherwise. */
+function* spillAt(state: EngineState, s: number, r: number, c: number, whole: boolean): Steps<string | undefined> {
+  return (yield* spilled(state, s, oneCell(r, c), whole)).get(formatAddress(r, c))
+}
+
+/** `cellAt`'s view by looks `look`, codes `code`, the appearances `cond` of the sheet's conditional formats (null without any) and the formula `spillOf` it spilled from. */
+function viewAt(state: EngineState, s: number, r: number, c: number, look: Looks | null, code: (format: NumberFormat) => string, cond: Map<number, ConditionalAppearance> | null, spillOf: string | undefined): CellView | undefined {
   const sheet = state.input.sheets[s]
   const addr = formatAddress(r, c)
   const layer = layerOf(sheet)
-  const one = { r1: r, c1: c, r2: r, c2: c }
-  const spillOf = state.spills.on.size ? (yield* spilled(state, s, one, whole)).get(addr) : undefined
-  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, one) : null
   const k = r * MAX_COLS + c
   if (spillOf === undefined && !cond?.has(k) && !(addr in sheet.cells) && !(layer && layer.idAt(r, c) !== NONE)) return undefined
-  return viewOf(state, s, addr, r, c, layer, display ? cellLooks(state) : null, spillOf, cond?.get(k), (format) => formatCodeIn(state.input.locale)(format))
+  return viewOf(state, s, addr, r, c, layer, look, spillOf, cond?.get(k), code)
 }
 
 /**
@@ -271,7 +295,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
   const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
-    .sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
+    .sort(byPlace)
     .map((f) => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
   return {
     sheets,

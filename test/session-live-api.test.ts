@@ -241,5 +241,32 @@ describe.each(['closures', 'eval'] as const)('live workbook additions, %s', (exe
         await s.close()
       }
     })
+    it('returns dependents by sheets in the workbook order, then by rows and columns, in pages without gaps or repeats', async () => {
+      // entered out of order, on two sheets, the second sheet's first
+      const cells = (sheet: string) => ({ C2: { formula: `${sheet}A1*3` }, A3: { formula: `SUM(${sheet}A1:A2)` }, B1: { formula: `${sheet}A1+1` }, D9: { value: 1 }, A2: { formula: `${sheet}A1*2` } })
+      const s = await open({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, ...cells('') } }, { name: 'T', cells: cells('S!') }] }, { clock, execution, display: false })
+      const order = ['S!B1', 'S!A2', 'S!C2', 'S!A3', 'T!B1', 'T!A2', 'T!C2', 'T!A3']
+      const name = (d: { sheet: string; cell: string }) => `${d.sheet}!${d.cell}`
+      try {
+        const refs = [{ sheet: 'S', range: 'A1' }]
+        expect((await s.getDependents(refs, { count: true })).dependents.map(name)).toEqual(order)
+        const got: string[] = []
+        let cursor: string | undefined
+        do {
+          const p = await s.getDependents(refs, { maxCells: 3, cursor, count: true })
+          expect(p.total).toBe(order.length)
+          got.push(...p.dependents.map(name))
+          cursor = p.cursor
+        } while (cursor)
+        expect(got).toEqual(order)
+        // a cell entered again goes on in its place; a page's cursor is of its revision
+        const first = await s.getDependents(refs, { maxCells: 2 })
+        await s.setCells([{ sheet: 'S', cell: 'B1', input: null }, { sheet: 'S', cell: 'B1', input: { formula: 'A1+5' } }])
+        await expect(s.getDependents(refs, { maxCells: 2, cursor: first.cursor })).rejects.toMatchObject({ code: 'stale_revision' })
+        expect((await s.getDependents(refs)).dependents.map(name)).toEqual(order)
+      } finally {
+        await s.close()
+      }
+    })
   })
 })

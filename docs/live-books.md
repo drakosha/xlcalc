@@ -195,7 +195,7 @@ It reads the cells of the row or column it moves along, up to where its values e
 
 ## Reverse dependencies
 
-`getDependents(ranges, options?)` returns the formulas that directly read the ranges, and their matching source references. A reference to a large range remains a rectangle; no helper vertices or expanded million-cell lists escape the engine. The same page options apply. `maxReferences` defaults to 64 and is bounded by 1000; a truncated reference list is marked separately.
+`getDependents(ranges, options?)` returns the formulas that directly read the ranges, and their matching source references. A reference to a large range remains a rectangle; no helper vertices or expanded million-cell lists escape the engine. The cells come sheet by sheet in the workbook's order, each sheet's by rows and in a row by columns: formulas in `B1`, `A2` and `C1` come as `B1`, `C1`, `A2`, whatever order they were entered in. The same page options apply. `maxReferences` defaults to 64 and is bounded by 1000; a truncated reference list is marked separately.
 
 Use `explain` for the sources of a result, `getDependents` for possible consequences, and `previewChanges` for the actual value changes of a proposal. Dependencies are static: an IF branch can be a dependency even when the branch is not currently selected.
 
