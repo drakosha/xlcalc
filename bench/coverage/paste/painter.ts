@@ -59,7 +59,8 @@ export function buildPasteCases(): PasteCases {
   add('cell-to-range', 'A1', 'F3:H5')
   add('range-to-cell', 'A1:B2', 'F10')
   add('merged', 'A4:B4', 'F12')
-  add('onto-merged', 'A1', 'H14')
+  // the merged area whole: the painter's selection with one more column shrinks onto it, where from H14 it grew to G14
+  add('onto-merged', 'A1', 'H14:I14')
   add('row', '6:6', '8:8')
   add('column', 'D:D', 'J:J')
   add('other-sheet', 'A1:B2', 'B2', 'T')
