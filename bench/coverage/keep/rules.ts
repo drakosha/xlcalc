@@ -6,7 +6,8 @@
  * it (`rules-made`). Over the saved `mixed` each case of `RULES_CASES` is done twice: by Excel through COM (a rule
  * added, deleted, given another priority or another look, or an operation of the structure) and by a host in a session
  * whose book `writeKept` writes over the same file; `rulesOf` gives what both files hold of the rules, in priority
- * order. `keep rules-open` (`keep.ts`) has Excel for Mac open each file `writeKept` wrote. Test:
+ * order. `RULES_HELD` was held out, predicted after the answers to `RULES_CASES` (`keep rules-held`). `keep rules-open`
+ * (`keep.ts`) has Excel for Mac open each file `writeKept` wrote. Test:
  * `test/xlsx-keep-rules-excel.test.ts`.
  */
 import type { ConditionalFormat, Session, StructureOp } from '../../../src/contract.js'
@@ -92,9 +93,9 @@ export async function rulesFile(id: string): Promise<Uint8Array> {
 /**
  * What a case does to the rules of S, by priority among all the sheet's rules in the saved `mixed`: a cell value rule
  * over B2:B21 added (Excel's `FormatConditions.Add`, last, with the red style and stop if true as COM gives it), a rule
- * deleted, a rule given another priority, a rule's font made italic.
+ * deleted, a rule given another priority (`Priority`, `SetFirstPriority`, `SetLastPriority`), a rule's font made italic.
  */
-export type RulesEdit = { add: true } | { remove: number } | { priority: [from: number, to: number] } | { italic: number }
+export type RulesEdit = { add: true } | { remove: number } | { priority: [from: number, to: number] } | { first: number } | { last: number } | { italic: number }
 
 export interface RulesCase {
   id: string
@@ -127,6 +128,19 @@ export const RULES_CASES: RulesCase[] = [
   { id: 'move-b', op: { op: 'moveRange', from: { sheet: 'S', range: 'B2:B21' }, to: { sheet: 'S', cell: 'J2' } } },
 ]
 
+/** Held out, predicted after the answers to `RULES_CASES`: other moves of rules and other operations. */
+export const RULES_HELD: RulesCase[] = [
+  { id: 'held-last-1', edit: { last: 1 } },
+  { id: 'held-first-3', edit: { first: 3 } },
+  { id: 'held-priority-4', edit: { priority: [4, 2] } },
+  { id: 'held-delete-rows-top', op: rows('deleteRows', 1, 2) },
+  { id: 'held-insert-col-i', op: { op: 'insertColumns', sheet: 'S', column: 'I' } },
+  { id: 'held-delete-cols-b', op: { op: 'deleteColumns', sheet: 'S', column: 'B', count: 2 } },
+  { id: 'held-delete-rows-end', op: rows('deleteRows', 20, 5) },
+  { id: 'held-move-h-other', op: { op: 'moveRange', from: { sheet: 'S', range: 'H2:H21' }, to: { sheet: 'P', cell: 'A5' } } },
+  { id: 'held-move-part-b', op: { op: 'moveRange', from: { sheet: 'S', range: 'B5:B6' }, to: { sheet: 'S', cell: 'J5' } } },
+]
+
 /** Excel's added rule as the host adds it: last, with the red style and stop if true. */
 const ADDED: ConditionalFormat = { type: 'cellIs', ranges: ['B2:B21'], operator: 'greaterThan', formulas: ['150'], style: { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: true } }, stopIfTrue: true }
 
@@ -156,6 +170,8 @@ export async function hostEdit(s: Session, data: Uint8Array, c: RulesCase): Prom
   let next = list
   if ('add' in e) next = [...list, ADDED]
   else if ('remove' in e) next = list.filter((_, i) => i !== model(e.remove))
+  else if ('first' in e) next = [list[model(e.first)], ...list.filter((_, i) => i !== model(e.first))]
+  else if ('last' in e) next = [...list.filter((_, i) => i !== model(e.last)), list[model(e.last)]]
   else if ('italic' in e) next = list.map((r, i) => (i === model(e.italic) && 'style' in r ? { ...r, style: { ...r.style, font: { ...r.style?.font, italic: true } } } : r))
   else {
     // Excel's order with the rule moved, of the model's rules
@@ -190,6 +206,8 @@ export function rulesSteps(c: RulesCase, struct: (op: StructureOp) => Record<str
   if ('add' in e) return [...steps, { do: 'cond', kind: 'make', sheet: 'S', range: 'B2:B21', add: 'cellIs', operator: 5, f1: '150' }]
   if ('remove' in e) return [...steps, { do: 'cond', kind: 'pick', pick: 'delete', sheet: 'S', priority: e.remove }]
   if ('italic' in e) return [...steps, { do: 'cond', kind: 'pick', pick: 'italic', sheet: 'S', priority: e.italic }]
+  if ('first' in e) return [...steps, { do: 'cond', kind: 'pick', pick: 'first', sheet: 'S', priority: e.first }]
+  if ('last' in e) return [...steps, { do: 'cond', kind: 'pick', pick: 'last', sheet: 'S', priority: e.last }]
   return [...steps, { do: 'cond', kind: 'pick', pick: 'priority', sheet: 'S', priority: e.priority[0], to: e.priority[1] }]
 }
 

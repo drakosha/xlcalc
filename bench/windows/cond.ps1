@@ -70,7 +70,7 @@ function CondRules($wb) {
     })
 }
 
-# the sheet's rule of priority $s.priority (bench/windows/keep.ts): deleted, given the priority $s.to, or its font made italic
+# the sheet's rule of priority $s.priority (bench/windows/keep.ts): deleted, given the priority $s.to, the first or the last, or its font made italic
 function CondPick($wb, $s) {
   $fc = $null
   foreach ($x in $wb.Worksheets.Item($s.sheet).Cells.FormatConditions) { if ($x.Priority -eq [int]$s.priority) { $fc = $x; break } }
@@ -79,6 +79,8 @@ function CondPick($wb, $s) {
     'delete' { $fc.Delete() }
     'priority' { $fc.Priority = [int]$s.to }
     'italic' { $fc.Font.Italic = $true }
+    'first' { $fc.SetFirstPriority() }
+    'last' { $fc.SetLastPriority() }
     default { throw "unknown pick $($s.pick)" }
   }
 }

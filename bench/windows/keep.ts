@@ -4,10 +4,10 @@
  * `rules-made/`); `keep rules` does each case of `RULES_CASES` over the saved `mixed` through COM (a rule added, deleted,
  * given another priority or look; an operation of the structure) and saves it (`keep/rules.json`, `keep/rules/`). Each
  * answer is the rules the sheets list (`CondRules`: type, applies to, formula 1, priority, stop if true) and Excel's
- * error where it refused a step. Test: `test/xlsx-keep-rules-excel.test.ts`.
+ * error where it refused a step; `keep rules-held` does the same for `RULES_HELD`. Test: `test/xlsx-keep-rules-excel.test.ts`.
  */
 import { readFileSync } from 'node:fs'
-import { RULES_BOOKS, RULES_CASES, rulesFile, rulesSteps, type RulesCase } from '../coverage/keep/rules.js'
+import { RULES_BOOKS, RULES_CASES, RULES_HELD, rulesFile, rulesSteps, type RulesCase } from '../coverage/keep/rules.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
 import { caseFiles } from '../coverage/xlsx/sent.js'
 import { fileJobs, opSteps, stepErrors } from './books.js'
@@ -21,9 +21,9 @@ export interface RulesAnswer {
 }
 
 export async function stepKeepRules(what: string, tag: Tag, e: WinEnv): Promise<void> {
-  if (what !== 'rules-made' && what !== 'rules') throw new Error('keep: rules-made | rules')
+  if (what !== 'rules-made' && what !== 'rules' && what !== 'rules-held') throw new Error('keep: rules-made | rules | rules-held')
   const made = what === 'rules-made'
-  const cases: RulesCase[] = made ? Object.keys(RULES_BOOKS).map((id) => ({ id })) : RULES_CASES
+  const cases: RulesCase[] = made ? Object.keys(RULES_BOOKS).map((id) => ({ id })) : what === 'rules' ? RULES_CASES : RULES_HELD
   const mixed = made ? undefined : new Uint8Array(readFileSync(winFile('keep/rules-made/mixed.xlsx')))
   const { files, sent } = await caseFiles(cases, async (c) => mixed ?? rulesFile(c.id))
   const store = fileAnswers<RulesCase, RulesAnswer>(winFile(`keep/${what}.json`), cases, sent)

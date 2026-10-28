@@ -1,0 +1,163 @@
+{
+ "cases": {
+  "held-last-1": {
+   "rules": [
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread",
+    "cellIs A2:A21 =100"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-first-3": {
+   "rules": [
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "cellIs A2:A21 =100",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-priority-4": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "expression C2:C21 =C2>$G$1",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-delete-rows-top": {
+   "rules": [
+    "cellIs A1:A19 =100",
+    "expression C1:C19 =C1>#REF!",
+    "expression D1:D19 =MOD(D1,2)=0 gradient",
+    "colorScale B1:B19 =#REF! unread",
+    "dataBar E1:E19 =0 bar E1:E19",
+    "dataBar F1:F19 bar F1:F19",
+    "x14 colorScale H1:H19 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-insert-col-i": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:I21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-delete-cols-b": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "expression B2:B21 =MOD(B2,2)=0 gradient",
+    "dataBar C2:C21 =0 bar C2:C21",
+    "dataBar D2:D21 bar D2:D21",
+    "x14 colorScale F2:F21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "held-delete-rows-end": {
+   "rules": [
+    "cellIs A2:A19 =100",
+    "expression C2:C19 =C2>$G$1",
+    "expression D2:D19 =MOD(D2,2)=0 gradient",
+    "colorScale B2:B19 =$G$2 unread",
+    "dataBar E2:E19 =0 bar E2:E19",
+    "dataBar F2:F19 bar F2:F19",
+    "x14 colorScale H2:H19 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "held-move-h-other": {
+   "refused": "xlsx/keep: an unread conditional format of 'S' (H2:H21) moved to another sheet, which writeKept does not write"
+  },
+  "held-move-part-b": {
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 =0 bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ }
+}
