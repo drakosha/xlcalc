@@ -11,6 +11,7 @@ import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
 import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
+import { remembered } from '../memo.js'
 import { inner } from '../model.js'
 import { checkLocaleArg } from './load.js'
 import { say } from './messages.js'
@@ -70,12 +71,7 @@ export function showFormula(formula: string, where: string | Locale, table?: str
   const shown = inner(inner(SHOWN, sides[1], () => new WeakMap()), externalBooks ?? NO_LINKS, () => new Map())
   // a table's name holds no line break
   const k = `${table ?? ''}\n${formula}`
-  let t = shown.get(k)
-  if (!t) {
-    if (shown.size >= 4096) shown.clear()
-    shown.set(k, (t = localText(formula, sides, table, externalBooks)))
-  }
-  return t
+  return remembered(shown, k, 4096, () => localText(formula, sides, table, externalBooks))
 }
 
 function localText(formula: string, [locale, s]: [Locale, Sides], table: string | undefined, externalBooks: ExternalBook[] | undefined): Translation {

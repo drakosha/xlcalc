@@ -4,6 +4,7 @@
  * Brackets give a section its colour, its condition, a currency symbol and locale (`[$₽-419]`) or elapsed time
  * (`[h]`); `"…"` and `\x` are literals, `_x` a space as wide as `x`, `*x` a fill, `@` the text.
  */
+import { remembered } from '../memo.js'
 import { EN_COLORS, PALETTE } from './palette.js'
 
 /**
@@ -218,12 +219,8 @@ const CACHE = new WeakMap<Codes, Map<string, Section[] | null>>()
 export function parseFormat(code: string, codes: Codes): Section[] | null {
   let cache = CACHE.get(codes)
   if (!cache) CACHE.set(codes, (cache = new Map()))
-  let out = cache.get(code)
-  if (out === undefined) {
+  return remembered(cache, code, 4096, () => {
     const secs = splitSections(code).map((s) => parseSection(s, codes))
-    out = secs.every((s): s is Section => s !== null) ? secs : null
-    if (cache.size >= 4096) cache.clear()
-    cache.set(code, out)
-  }
-  return out
+    return secs.every((s): s is Section => s !== null) ? secs : null
+  })
 }

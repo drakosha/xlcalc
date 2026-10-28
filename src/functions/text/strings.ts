@@ -4,6 +4,7 @@
  */
 import { directError, eachValue, type Cx, type FnDef, type Segment } from '../../args.js'
 import { Wildcard } from '../../wildcards.js'
+import { remembered } from '../../memo.js'
 import { E, isErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'
@@ -50,11 +51,7 @@ const patterns = new Map<string, Wildcard>()
 function search(find: string, within: string, start = 1): V {
   if (start < 1 || start > within.length) return E.VALUE
   if (find === '') return start
-  let w = patterns.get(find)
-  if (!w) {
-    if (patterns.size >= 256) patterns.clear()
-    patterns.set(find, (w = new Wildcard(find, 'iu')))
-  }
+  const w = remembered(patterns, find, 256, () => new Wildcard(find, 'iu'))
   // the slice, not a start inside the text: under `u` a start inside a surrogate pair would step back to its lead
   const m = w.find(within.slice(start - 1))
   return m ? m[0] + start : E.VALUE
