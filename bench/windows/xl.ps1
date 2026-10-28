@@ -548,6 +548,16 @@ function Step($xl, $wb, $s) {
     }
     # the book's folder and the linked books as Excel lists them (LinkSources of Excel links; none is Empty)
     'links' { List @((Str $wb.Path), (List @(@($wb.LinkSources(1)) | Where-Object { $null -ne $_ } | ForEach-Object { Str $_ }))) }
+    # Create Names from Selection over a range (bench/windows/select.ts): Range.CreateNames(Top, Left, Bottom, Right),
+    # then the book's names, each [Name, RefersTo], which are deleted for the next case; Excel's refusal is the error
+    'createNames' {
+      try {
+        [void](Rg $wb $s.sheet $s.range).CreateNames([bool]$s.top, [bool]$s.left, [bool]$s.bottom, [bool]$s.right)
+        $made = List ($wb.Names | ForEach-Object { List @((Str $_.Name), (Str $_.RefersTo)) })
+        @($wb.Names) | ForEach-Object { $_.Delete() }
+        $made
+      } catch { Err $_ }
+    }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }
