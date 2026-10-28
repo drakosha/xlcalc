@@ -49,21 +49,21 @@ export function commentsXml(notes: Map<string, CellNote>, sheet: string, issues:
 }
 
 /**
- * The VML drawing of a sheet's notes: a hidden box beside each cell. Shape ids are unique through the book: the sheet's
+ * The VML drawing of a sheet's notes: a box beside each cell, hidden but for a note shown all the time. Shape ids are unique through the book: the sheet's
  * blocks of 1,024 ids start at `block` (the idmap lists them), the notes count from one past its first id.
  */
 export function vmlXml(notes: Map<string, CellNote>, block: number): string {
-  const cells = inOrder(notes).map(([cell]) => parseAddress(cell))
+  const cells = inOrder(notes).map(([cell, n]) => ({ ...parseAddress(cell), shown: n.shown === true }))
   const last = Math.floor((block * 1024 + cells.length) / 1024)
   const blocks = Array.from({ length: last - block + 1 }, (_, i) => block + i).join(',')
-  const shapes = cells.map(({ row, col }, i) => {
+  const shapes = cells.map(({ row, col, shown }, i) => {
     // the box Excel draws for a new note: from the next column on, from the row above
     const top = Math.max(row - 1, 0)
     const anchor = `${col + 1}, 15, ${top}, ${row ? 10 : 2}, ${col + 3}, 15, ${top + 4}, 16`
     return (
-      `<v:shape id="_x0000_s${block * 1024 + i + 1}" type="#_x0000_t202" style="position:absolute;margin-left:59.25pt;margin-top:1.5pt;width:108pt;height:59.25pt;z-index:${i + 1};visibility:hidden" fillcolor="#ffffe1" o:insetmode="auto">` +
+      `<v:shape id="_x0000_s${block * 1024 + i + 1}" type="#_x0000_t202" style="position:absolute;margin-left:59.25pt;margin-top:1.5pt;width:108pt;height:59.25pt;z-index:${i + 1};visibility:${shown ? 'visible' : 'hidden'}" fillcolor="#ffffe1" o:insetmode="auto">` +
       '<v:fill color2="#ffffe1"/><v:shadow on="t" color="black" obscured="t"/><v:path o:connecttype="none"/><v:textbox style="mso-direction-alt:auto"><div style="text-align:left"></div></v:textbox>' +
-      `<x:ClientData ObjectType="Note"><x:MoveWithCells/><x:SizeWithCells/><x:Anchor>${anchor}</x:Anchor><x:AutoFill>False</x:AutoFill><x:Row>${row}</x:Row><x:Column>${col}</x:Column></x:ClientData></v:shape>`
+      `<x:ClientData ObjectType="Note"><x:MoveWithCells/><x:SizeWithCells/><x:Anchor>${anchor}</x:Anchor><x:AutoFill>False</x:AutoFill><x:Row>${row}</x:Row><x:Column>${col}</x:Column>${shown ? '<x:Visible/>' : ''}</x:ClientData></v:shape>`
     )
   })
   return (

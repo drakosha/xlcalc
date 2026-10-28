@@ -21,9 +21,8 @@ export const COND_KNOWN: Known = {
   // a colour between a percentile point and another at an exact third: Excel's channel is one more (its percentile's last bit)
   'files:kinds:S!G8': 'a colour one channel apart at an exact fraction past a percentile point',
   'files:kinds:saved:S!G8': 'the same on the saved book',
-  // the order of rules: Excel put a cell value rule whose reference a row deletion lost after the others
-  'struct-held:delete-row-2': 'Excel puts a rule whose reference a deletion of rows lost after the others; the engine keeps its place (and Excel kept it deleting a column)',
-  'struct-held:delete-rows-2-4': 'Excel puts a rule whose reference a deletion of rows lost after the others; the engine keeps its place',
+  // the order of rules: a rule over two ranges cut in the first, its formulas changed, stays in Excel
+  'order-held-3:delete-row-3': 'Excel keeps the place of a rule over two ranges that lost a row of the first, its formulas changed; the engine moves it after the others, as a rule over one range',
   // Excel for Mac orders Cyrillic before Latin in ru-RU; the engine follows Windows (Latin first)
   'looks-ru:ru:Лист!D10': 'Excel for Mac ru-RU: "b" > "в"; Windows and the engine: Latin before Cyrillic',
   // Excel for Mac's short month names in ru-RU; the engine follows Windows (three letters)
@@ -44,7 +43,7 @@ export const macOnly = (key: string) => key.startsWith('looks-ru:') || key.start
 const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...s, name: s.name }))]
 
 describe('conditional formats against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'sqref-held', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'order', 'order-held', 'order-held-2', 'order-held-3', 'sqref-held', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN, true)).toEqual([]))
 })
 

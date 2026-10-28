@@ -1,0 +1,22 @@
+{
+ "visible-one-cell": {
+  "cells": [
+   "17179836416 cells"
+  ],
+  "areas": [
+   "A1:XFD5",
+   "A7:XFD8",
+   "A10:XFD1048576"
+  ]
+ },
+ "visible-column": {
+  "cells": [
+   "1048574 cells"
+  ],
+  "areas": [
+   "D1:D5",
+   "D7:D8",
+   "D10:D1048576"
+  ]
+ }
+}

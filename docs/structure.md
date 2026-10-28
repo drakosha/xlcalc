@@ -548,6 +548,7 @@ Styles and layout change through the session, so that its workbook remains the h
 - the AutoFilter through `setLayout`: `{ sheet, autoFilter: { range: 'A1:D20' } }`, and `{ sheet, autoFilter: null }` removes it;
 - hidden sheets through `editStructure`: `hideSheet` and `unhideSheet` recalculate nothing and do not rebuild the state;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
+- a sheet's tab color through `setLayout`: `{ sheet, tabColor: '#FF0000' }`, and `{ sheet, tabColor: null }` removes it;
 - a sheet's protection through `setLayout`: `{ sheet, protection: {} }` protects it as Excel's dialog does, and `{ sheet, protection: null }` unprotects it ([Protection](#protection));
 - conditional formats through `setLayout`: `{ sheet, conditionalFormats: [...] }` replaces the sheet's rules;
 - data validation rules through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;

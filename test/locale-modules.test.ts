@@ -11,12 +11,12 @@ import { describe, expect, it } from 'vitest'
 import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, createSession, parseEntry, registerLocale, editStructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
 import { ruRU } from '../src/locales/ru-RU.js'
-import { LOCALE_MODULES } from '../src/worker/locales.js'
+import { LOCALE_MODULES } from '../src/locale/modules.js'
 import { writeXlsx } from '../src/xlsx.js'
 import { read } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
-const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)"
+const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { value: 46096, numberFormat: 14 }, B1: { value: 'Итого' } }
 const ruBook: BookInput = { locale: 'ru-RU', sheets: [{ name: 'S', cells, columns: { A: { width: 12 } } }] }
 const enBook: BookInput = { sheets: [{ name: 'S', cells }] }

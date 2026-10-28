@@ -1,0 +1,263 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 17.2
+ },
+ "cases": [
+  {
+   "id": "written",
+   "book": {
+    "sheets": [
+     {
+      "name": "Red",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "tabColor": "#FF0000",
+      "view": {
+       "gridlines": false
+      }
+     },
+     {
+      "name": "Blue",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "tabColor": "#0070C0",
+      "view": {
+       "headings": false,
+       "zoom": 150
+      }
+     },
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "gridlines": false,
+       "headings": false
+      },
+      "outline": {
+       "summaryBelow": false
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept-set",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "outline": {
+       "summaryRight": false
+      }
+     }
+    ]
+   },
+   "kept": {
+    "layout": [
+     {
+      "sheet": "S",
+      "tabColor": "#00B050"
+     },
+     {
+      "sheet": "T",
+      "tabColor": "#7030A0"
+     }
+    ],
+    "views": {
+     "S": {
+      "gridlines": false
+     },
+     "T": {
+      "headings": false
+     }
+    }
+   }
+  },
+  {
+   "id": "kept-changed",
+   "book": {
+    "sheets": [
+     {
+      "name": "Red",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "tabColor": "#FF0000",
+      "view": {
+       "gridlines": false
+      }
+     },
+     {
+      "name": "Blue",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "tabColor": "#0070C0",
+      "view": {
+       "headings": false,
+       "zoom": 150
+      }
+     },
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "gridlines": false,
+       "headings": false
+      },
+      "outline": {
+       "summaryBelow": false
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "layout": [
+     {
+      "sheet": "Red",
+      "tabColor": "#FFC000"
+     },
+     {
+      "sheet": "Blue",
+      "tabColor": null
+     }
+    ],
+    "views": {
+     "Red": {
+      "gridlines": true
+     },
+     "Both": null
+    }
+   }
+  }
+ ],
+ "answers": {
+  "written": {
+   "sheets": [
+    [
+     "Red",
+     "#FF0000",
+     false,
+     true
+    ],
+    [
+     "Blue",
+     "#0070C0",
+     true,
+     false
+    ],
+    [
+     "Both",
+     null,
+     false,
+     false
+    ],
+    [
+     "Plain",
+     null,
+     true,
+     true
+    ]
+   ]
+  },
+  "kept-set": {
+   "sheets": [
+    [
+     "S",
+     "#00B050",
+     false,
+     true
+    ],
+    [
+     "T",
+     "#7030A0",
+     true,
+     false
+    ]
+   ]
+  },
+  "kept-changed": {
+   "sheets": [
+    [
+     "Red",
+     "#FFC000",
+     true,
+     true
+    ],
+    [
+     "Blue",
+     null,
+     true,
+     false
+    ],
+    [
+     "Both",
+     null,
+     true,
+     true
+    ],
+    [
+     "Plain",
+     null,
+     true,
+     true
+    ]
+   ]
+  }
+ }
+}

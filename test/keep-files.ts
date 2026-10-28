@@ -1,7 +1,7 @@
 /**
  * Files for the tests of `xlcalc/xlsx/keep`: a book written by `writeXlsx`, with parts the model does not have added as
  * Excel writes them (a drawing with a chart and a picture, a pivot cache and its table, the print area, page breaks,
- * formatted runs of text, a cell format with rotation), and the parts of a file as text to compare.
+ * formatted runs of text, a cell format that shrinks its text to fit), and the parts of a file as text to compare.
  */
 import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
@@ -31,8 +31,8 @@ export interface Extra {
   breaks?: { sheet: number; rows: number[] }
   /** Shared strings given formatted runs: the text and the runs' XML. */
   rich?: Record<string, string>
-  /** Cell formats given a rotation of their text, by index. */
-  rotated?: number[]
+  /** Cell formats made to shrink their text to fit, which the model does not hold, by index. */
+  shrunk?: number[]
   /** Attributes added to cells of a sheet (`vm="1"` of a rich value, `ph="1"`), by address. */
   attrs?: { sheet: number; cells: Record<string, string> }
 }
@@ -102,10 +102,10 @@ export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Arr
   }
   for (const [text, runs] of Object.entries(extra.rich ?? {})) edit('xl/sharedStrings.xml', (x) => x.replace(`<si><t>${text}</t></si>`, `<si>${runs}</si>`))
   for (const [cell, attrs] of Object.entries(extra.attrs?.cells ?? {})) edit(`xl/worksheets/sheet${extra.attrs!.sheet + 1}.xml`, (x) => x.replace(new RegExp(`<c r="${cell}"`), `$& ${attrs}`))
-  for (const i of extra.rotated ?? [])
+  for (const i of extra.shrunk ?? [])
     edit('xl/styles.xml', (x) => {
       let k = -1
-      return x.replace(/<cellXfs[^>]*>([\s\S]*?)<\/cellXfs>/, (all) => all.replace(/<xf [^>]*?(\/>|>[\s\S]*?<\/xf>)/g, (xf) => (++k === i ? `${xf.replace(/\/>$|>[\s\S]*<\/xf>$/, '')} applyAlignment="1"><alignment textRotation="45"/></xf>` : xf)))
+      return x.replace(/<cellXfs[^>]*>([\s\S]*?)<\/cellXfs>/, (all) => all.replace(/<xf [^>]*?(\/>|>[\s\S]*?<\/xf>)/g, (xf) => (++k === i ? `${xf.replace(/\/>$|>[\s\S]*<\/xf>$/, '')} applyAlignment="1"><alignment shrinkToFit="1"/></xf>` : xf)))
     })
   return zip([...parts].map(([name, text]) => ({ name, data: new TextEncoder().encode(text) })))
 }

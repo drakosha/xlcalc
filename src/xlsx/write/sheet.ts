@@ -33,7 +33,7 @@ import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
 import type { ResultCell } from './snapshot.js'
-import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
+import { clip, HEAD, MAIN, MAX_TEXT, rgb } from './xml.js'
 import { protectionXml } from '../protection.js'
 
 /**
@@ -104,8 +104,8 @@ export interface SheetPieces {
   formulas: boolean
   /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
   rels: SheetRel[]
-  /** The comments part and VML drawing of the sheet's notes, and their count. */
-  notes?: { comments: string; vml: string; count: number }
+  /** The comments part and VML drawing of the sheet's notes, their count, and the cells of those shown all the time. */
+  notes?: { comments: string; vml: string; count: number; shown: string }
   sheetPr: string
   dimension: string
   views: string
@@ -331,12 +331,14 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
+  // the tab's colour first, as the schema orders the children of <sheetPr>
+  const prBody = (sheet.tabColor ? `<tabColor rgb="${rgb(sheet.tabColor)}"/>` : '') + outlinePr
   const deepest = (ls: Line<{ outlineLevel?: number }>[], attr: string) => {
     const n = ls.reduce((m, [, , e]) => Math.max(m, e.outlineLevel ?? 0), 0)
     return n ? ` ${attr}="${n}"` : ''
   }
   return {
-    sheetPr: (filter && sheet.filtered) || outlinePr ? `<sheetPr${filter && sheet.filtered ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '',
+    sheetPr: (filter && sheet.filtered) || prBody ? `<sheetPr${filter && sheet.filtered ? ' filterMode="1"' : ''}${prBody ? `>${prBody}</sheetPr>` : '/>'}` : '',
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
@@ -354,7 +356,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     ext: cond.ext,
     formulas,
     rels,
-    ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}),
+    ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size, shown: [...notes].flatMap(([a, n]) => (n.shown ? [a] : [])).join(' ') } } : {}),
   }
 }
 

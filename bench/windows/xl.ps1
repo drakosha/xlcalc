@@ -548,6 +548,52 @@ function Step($xl, $wb, $s) {
     }
     # the book's folder and the linked books as Excel lists them (LinkSources of Excel links; none is Empty)
     'links' { List @((Str $wb.Path), (List @(@($wb.LinkSources(1)) | Where-Object { $null -ne $_ } | ForEach-Object { Str $_ }))) }
+    # Create Names from Selection over a range (bench/windows/select.ts): Range.CreateNames(Top, Left, Bottom, Right),
+    # then the book's names, each [Name, RefersTo], which are deleted for the next case; Excel's refusal is the error
+    'createNames' {
+      try {
+        [void](Rg $wb $s.sheet $s.range).CreateNames([bool]$s.top, [bool]$s.left, [bool]$s.bottom, [bool]$s.right)
+        $made = List ($wb.Names | ForEach-Object { List @((Str $_.Name), (Str $_.RefersTo)) })
+        @($wb.Names) | ForEach-Object { $_.Delete() }
+        $made
+      } catch { Err $_ }
+    }
+    # Go To Special over a range (bench/windows/select.ts): Range.SpecialCells(Type, Value), the value only where given,
+    # { areas: each area's address }, none where Excel finds no cells (its error 1004)
+    'special' {
+      try {
+        $rg = Rg $wb $s.sheet $s.range
+        # assigned straight: a range out of an if statement is unrolled into its cells
+        if ([int]$s.values) { $found = $rg.SpecialCells([int]$s.type, [int]$s.values) } else { $found = $rg.SpecialCells([int]$s.type) }
+        $areas = for ($k = 1; $k -le $found.Areas.Count; $k++) { Str $found.Areas.Item($k).Address($false, $false) }
+        '{"areas":' + (List $areas) + '}'
+      } catch {
+        if ($_.Exception.Message -match 'No cells were found') { '{"areas":[]}' } else { Err $_ }
+      }
+    }
+    # each worksheet's tab colour (BGR, null for none), gridlines and headings, the sheet active (bench/windows/fields.ts)
+    'sheetFields' {
+      $all = List ($wb.Worksheets | ForEach-Object {
+          [void]$_.Activate()
+          $tab = if ($_.Tab.ColorIndex -eq -4142) { 'null' } else { Cell ([double]$_.Tab.Color) }
+          List @((Str $_.Name), $tab, (Cell $xl.ActiveWindow.DisplayGridlines), (Cell $xl.ActiveWindow.DisplayHeadings))
+        })
+      [void]$wb.Worksheets.Item(1).Activate()
+      $all
+    }
+    # each worksheet's notes, [sheet, cell, shown all the time] (Comment.Visible)
+    'notesShown' {
+      List ($wb.Worksheets | ForEach-Object { $ws = $_; $ws.Comments | ForEach-Object { List @((Str $ws.Name), (Str $_.Parent.Address($false, $false)), (Cell $_.Visible)) } })
+    }
+    # each worksheet's cells of its used range whose text is turned, [sheet, cell, Range.Orientation]
+    'orientations' {
+      List ($wb.Worksheets | ForEach-Object {
+          $ws = $_
+          foreach ($c in $ws.UsedRange.Cells) { $o = [double]$c.Orientation; if ($o -ne -4128 -and $o -ne 0) { List @((Str $ws.Name), (Str $c.Address($false, $false)), (Cell $o)) } }
+        })
+    }
+    # the calculation option Excel took from the book it opened first (XlCalculation: -4105 automatic, -4135 manual, 2 semiautomatic)
+    'calcMode' { Cell ([double]$xl.Calculation) }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }

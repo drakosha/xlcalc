@@ -50,7 +50,7 @@ export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFil
 
 /** A cell format's alignment, empty without one. */
 function alignmentXml(a: CellStyle['alignment']): string {
-  return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}/>` : ''
+  return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}${a.rotation ? ` textRotation="${a.rotation === 'vertical' ? 255 : a.rotation > 0 ? a.rotation : 90 - a.rotation}"` : ''}/>` : ''
 }
 
 /** A cell format's protection, empty without one. */

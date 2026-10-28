@@ -10,6 +10,7 @@ import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
 import { KEPT_CELLS } from '../src/xlsx/keep/carriers.js'
 import { changedParts, partsOf, withParts } from './keep-files.js'
+import { ruRU } from './locales.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
@@ -74,7 +75,7 @@ describe('writeKept: the file as it was', () => {
   it('a cell that did not change is the file\'s own: its formatted runs and a cell format the model cannot hold stay; a new value goes inline', async () => {
     const b = book()
     // B1 and B2 share the bold cell format, which gets a rotation; A2 gets formatted runs
-    const data = await withParts(b, { rich: { North: '<r><rPr><b/></rPr><t>No</t></r><r><t>rth</t></r>' }, rotated: [1] })
+    const data = await withParts(b, { rich: { North: '<r><rPr><b/></rPr><t>No</t></r><r><t>rth</t></r>' }, shrunk: [1] })
     const read = await openKept(data)
     const s = createSession(read.book, { cached: read.cached })
     s.setCells([{ sheet: 'Data', cell: 'B2', input: { value: 11, style: read.book.sheets[0].cells.B2.style } }])
@@ -82,7 +83,7 @@ describe('writeKept: the file as it was', () => {
     const sheet = (await partsOf((await writeKept(data, s.getSnapshot())).data)).get('xl/worksheets/sheet1.xml')!
     const was = (await partsOf(data)).get('xl/worksheets/sheet1.xml')!
     const cell = (xml: string, a: string) => new RegExp(`<c r="${a}"[^>]*?(/>|>.*?</c>)`).exec(xml)![0]
-    // A2 points at its shared string with runs as it did; B2 keeps its cell format (rotated) with its new value
+    // A2 points at its shared string with runs as it did; B2 keeps its cell format (shrunk to fit) with its new value
     expect(cell(sheet, 'A2')).toBe(cell(was, 'A2'))
     expect(cell(sheet, 'B2')).toBe(cell(was, 'B2').replace('<v>10</v>', '<v>11</v>'))
     expect(cell(sheet, 'A3')).toBe('<c r="A3" t="inlineStr"><is><t>Southwest</t></is></c>')
@@ -394,6 +395,16 @@ describe("the workbook's default font", () => {
     expect(Buffer.from((await writeKept(data, { book: opened.book })).data).equals(Buffer.from(data))).toBe(true)
     for (const font of [{ name: 'Arial', size: 12 }, undefined])
       await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'font', message: 'xlsx/keep: the default font changed, which writeKept does not write' })
+  })
+})
+
+describe("a refusal's message", () => {
+  it("is in the language of writeKept's locale, a loaded locale's tag or a locale object, en-US by default", async () => {
+    const data = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } }, { values: 'omit' })).data
+    const book = { ...(await openKept(data)).book, font: { name: 'Arial', size: 12 } }
+    const ru = 'xlsx/keep: Изменился шрифт по умолчанию, а writeKept его не записывает'
+    for (const locale of ['ru-RU', ruRU]) await expect(writeKept(data, { book }, { locale })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'font', message: ru })
+    await expect(writeKept(data, { book }, { locale: 'en-US' })).rejects.toMatchObject({ message: 'xlsx/keep: the default font changed, which writeKept does not write' })
   })
 })
 

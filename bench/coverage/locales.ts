@@ -6,7 +6,7 @@
 import { registerLocale } from '../../src/locale/load.js'
 import { DEFAULT_LOCALE, LOCALES } from '../../src/locale/registry.js'
 import { displayRules } from '../../src/locale/rules.js'
-import { LOCALE_MODULES } from '../../src/worker/locales.js'
+import { LOCALE_MODULES } from '../../src/locale/modules.js'
 
 // the harnesses compute in every locale of the package: its modules loaded, as a host loads the ones it needs
 for (const load of Object.values(LOCALE_MODULES)) registerLocale(await load())

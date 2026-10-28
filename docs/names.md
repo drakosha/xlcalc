@@ -126,13 +126,33 @@ A LET name has its own rules: any cell address can be one, written without `$` (
 
 A function that accepts only a reference (SUMIF's range) and gets an array through a name returns `#VALUE!` for each value of the array, as Excel does.
 
+## Names from a selection
+
+`Session.getNamesFromSelection(sheet, range, labels)` gives the names Excel's Create from Selection (Formulas > Defined Names) makes over a range, which a host passes to `setNames`, asking first, as Excel does, about a name the workbook already has. `labels` names the sides that hold labels, as the dialog's boxes: `top`, `left`, `bottom`, `right`, at least one. Each label names the cells of its column or row in the range past the labels, absolutely and with its sheet; with a row and a column of labels, the label in their corner names all of those cells:
+
+```js
+const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 'Region' }, B1: { value: 'Q1' }, C1: { value: '2025 total' }, A2: { value: 'north' }, A3: { value: 'south side' } } }] })
+s.getNamesFromSelection('S', 'A1:C3', { top: true, left: true })
+// → Q1_ 'S'!$B$2:$B$3, _2025_total 'S'!$C$2:$C$3, north 'S'!$B$2:$C$2, south_side 'S'!$B$3:$C$3, Region 'S'!$B$2:$C$3
+```
+
+A label's text is made a name as Excel makes it:
+
+- spaces at its ends are left out, and every other character a name does not take becomes `_` (`a-b` is `a_b`, `Цена, руб.` is `Цена__руб.`);
+- `_` goes before a first character a name cannot start with (`_2025_total`, `_.dot`) and before an R1C1 reference with a number (`_R2C3`, `_R2`, `_C3`), and after a cell's address, `R`, `C`, `RC` or TRUE and FALSE (`Q1_`, `XFD1_`, `R_`, `TRUE_`);
+- a name is cut to 255 characters;
+- text makes a name, and so does a date, by the text it shows (`3/15/2023` is `_3_15_2023`); a number, a time of day, a boolean, an error and a label without text make none;
+- of two labels that make one name, the later one stays (the bottom row's after the top row's, the left column's after them, the corners' last).
+
+A range of labels alone, with nothing past them, makes no names; Excel says the selection is not valid.
+
 ## Structure operations
 
 Operations rewrite the references in names' formulas as in cells' formulas: each part of a union separately, and a reference across sheets by its ends. A reference without `$` is an offset, so inserted and deleted rows and columns leave it unchanged (`'S'!XFD1` stays when row 1 is deleted), and so is the part without `$` of a mixed reference (`'S'!$A1` stays when row 1 is inserted, and becomes `'S'!$B1` when a column is inserted before A). The part with `$` moves alone, as one line: deleting row 2 makes `'S'!$B$2:$B1` `'S'!#REF!`, as Excel does, though the same range in a cell's formula would shrink. Renaming a sheet rewrites its local names written with it (`'S'!rate`).
 
 ## Checked against Excel
 
-Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, through the spill, structure, table and entry sets, the later ones predicted before Excel ran them. Where the two versions of Excel differ (the long `ſ` in a name), the engine follows Excel for Windows.
+Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, through the spill, structure, table and entry sets, the later ones predicted before Excel ran them. Where the two versions of Excel differ (the long `ſ` in a name), the engine follows Excel for Windows. Names from a selection were tested in Excel for Windows en-US alone, in two sets predicted before Excel ran them ([docs/development.md](development.md#names-from-a-selection)).
 
 ## Known differences
 

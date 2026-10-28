@@ -1,0 +1,205 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 29.8
+ },
+ "cases": [
+  {
+   "id": "written",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1,
+        "note": {
+         "author": "Ann",
+         "text": "shown",
+         "shown": true
+        }
+       },
+       "B2": {
+        "value": 2,
+        "note": {
+         "text": "on hover"
+        }
+       },
+       "C3": {
+        "note": {
+         "text": "shown too",
+         "shown": true
+        }
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D4": {
+        "value": "x",
+        "note": {
+         "text": "on hover"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept-shown",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1,
+        "note": {
+         "author": "Ann",
+         "text": "shown",
+         "shown": true
+        }
+       },
+       "B2": {
+        "value": 2,
+        "note": {
+         "text": "on hover"
+        }
+       },
+       "C3": {
+        "note": {
+         "text": "shown too",
+         "shown": true
+        }
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D4": {
+        "value": "x",
+        "note": {
+         "text": "on hover"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "cells": [
+     {
+      "sheet": "T",
+      "cell": "D4",
+      "input": {
+       "note": {
+        "text": "on hover",
+        "shown": true
+       }
+      }
+     },
+     {
+      "sheet": "S",
+      "cell": "A1",
+      "input": {
+       "note": {
+        "author": "Ann",
+        "text": "shown"
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "written": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ],
+    [
+     "T",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [
+    [
+     "S",
+     "A1",
+     true
+    ],
+    [
+     "S",
+     "B2",
+     false
+    ],
+    [
+     "S",
+     "C3",
+     true
+    ],
+    [
+     "T",
+     "D4",
+     false
+    ]
+   ]
+  },
+  "kept-shown": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ],
+    [
+     "T",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [
+    [
+     "S",
+     "A1",
+     false
+    ],
+    [
+     "S",
+     "B2",
+     false
+    ],
+    [
+     "S",
+     "C3",
+     true
+    ],
+    [
+     "T",
+     "D4",
+     true
+    ]
+   ]
+  }
+ }
+}

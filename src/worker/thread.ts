@@ -19,7 +19,7 @@ import { heapCaches } from '../range-cache.js'
 import type { HistoryData } from '../session/undo.js'
 import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
-import { LOCALE_MODULES } from './locales.js'
+import { LOCALE_MODULES } from '../locale/modules.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackCached, unpackData, type Sent } from './pack.js'
 
@@ -85,6 +85,12 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       break
     case 'getAutoSum':
       value = await s.getAutoSum(args[0] as string, args[1] as string)
+      break
+    case 'getNamesFromSelection':
+      value = await s.getNamesFromSelection(args[0] as string, args[1] as string, args[2] as never)
+      break
+    case 'getSpecialCells':
+      value = await s.getSpecialCells(args[0] as string, args[1] as string, args[2] as never)
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })

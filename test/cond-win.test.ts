@@ -12,7 +12,7 @@ import { pinnedCases } from './stored-cases.js'
 import './locales.js'
 
 export const WIN_KNOWN: Known = {
-  // the same as on the Mac: the bar lengths Excel drops, the order after a row deletion, a colour at an exact fraction
+  // the same as on the Mac: the bar lengths Excel drops, the order of a rule over two ranges, a colour at an exact fraction
   ...Object.fromEntries(Object.entries(COND_KNOWN).filter(([k]) => !macOnly(k))),
   // a colour between a percentile point and the highest at 0.4 of the way: Excel's channel is one more
   'made:made:saved:S!L10': 'a colour one channel apart at an exact fraction past a percentile point',
@@ -21,7 +21,7 @@ export const WIN_KNOWN: Known = {
 const SETS = [...condSets('win/cond/'), ...condSets('win/cond/ru-RU/')]
 
 describe('conditional formats against Excel for Windows', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'made', 'sqref-held', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'made', 'order', 'order-held', 'order-held-2', 'order-held-3', 'sqref-held', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, WIN_KNOWN, true)).toEqual([]))
 })
 

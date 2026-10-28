@@ -1,7 +1,7 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
-import type { CellStyle, ConditionalFormat, DataValidation } from './looks.js'
+import type { CellStyle, Color, ConditionalFormat, DataValidation } from './looks.js'
 
 /**
  * An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number; a
@@ -55,6 +55,8 @@ export interface CellInput {
 export interface CellNote {
   author?: string
   text: string
+  /** Shown all the time (Excel's Show/Hide Note, xlsx `<x:Visible/>`), not only while the pointer rests on its cell. */
+  shown?: boolean
 }
 
 /**
@@ -175,6 +177,8 @@ export interface SheetInput {
   frozen?: FrozenPanes
   /** The saved sheet view from xlsx; it does not affect calculation or inputHash. */
   view?: SheetView
+  /** The color of the sheet's tab (Excel's Tab Color, xlsx `<tabColor>`), `#RRGGBB`. Not part of calculation or inputHash. */
+  tabColor?: Color
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, highest first. They do not
    * change values: a session returns their effect on display in `CellView.appearance` (`docs/conditional-formats.md`).
@@ -367,6 +371,10 @@ export interface SheetView {
   topLeft?: string
   /** Zoom in percent, 10 to 400. */
   zoom?: number
+  /** False hides the sheet's gridlines (View > Show > Gridlines, xlsx `showGridLines="0"`); shown by default. */
+  gridlines?: boolean
+  /** False hides the row and column headings (View > Show > Headings, xlsx `showRowColHeaders="0"`); shown by default. */
+  headings?: boolean
 }
 
 /** A workbook as the engine accepts it: its sheets with their cells, names, styles, locale and date system; what `compute`, `createSession` and `writeXlsx` accept and `readXlsx` returns. */
@@ -403,6 +411,12 @@ export interface BookInput {
    * it holds.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
+  /**
+   * Excel's calculation option (Formulas > Calculation Options, xlsx `calcPr calcMode`): `manual`, or `autoNoTable`,
+   * automatic except for data tables; automatic without it. The engine calculates every edit whatever it says: a host
+   * that offers manual calculation keeps showing the values it showed until the user calculates. Not part of inputHash.
+   */
+  calculation?: 'manual' | 'autoNoTable'
   /**
    * The other workbooks that the workbook's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`):
    * element `i` is `[i+1]`. References to them use the values stored here, as Excel calculates a file it opens without

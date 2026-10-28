@@ -13,6 +13,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
 - [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
+- [`xlcalc/locales`](#xlcalclocales)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
@@ -882,8 +883,8 @@ function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot
 ```
 
 Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
-file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) a change that would leave
-references the model does not hold pointing at other cells.
+file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal), its message in the language of
+`opts.locale`) a change that would leave references the model does not hold pointing at other cells.
 
 ## xlcalc/worker
 
@@ -917,6 +918,19 @@ for a name outside the whitelist.
 ```ts
 const ruRUFunctionText: Required<Pick<Locale, "argumentWords" | "functionText">>
 ```
+
+## xlcalc/locales
+
+### <a id="xlcalclocales-loadlocale"></a>`loadLocale`
+
+```ts
+function loadLocale(tag: string): Promise<Locale>
+```
+
+Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
+`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
+[`InputError`](#xlcalc-inputerror) (tags are compared as written).
 
 ## xlcalc/locales/ru-RU
 
@@ -967,7 +981,7 @@ type AddressMove =
 
 ### `AlignmentStyle`
 
-A cell's alignment ([`CellStyle.alignment`](#cellstyle)), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent.
+A cell's alignment ([`CellStyle.alignment`](#cellstyle)), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent, orientation.
 
 ```ts
 interface AlignmentStyle {
@@ -976,6 +990,11 @@ interface AlignmentStyle {
   wrap?: boolean
   /** Indent level, 0 to 250. */
   indent?: number
+  /**
+   * The text's orientation (Format Cells > Alignment > Orientation, xlsx `textRotation`): degrees from -90 to 90, up for
+   * positive ones, or `vertical`, its letters one above the other. The engine fits widths and heights as for level text.
+   */
+  rotation?: number | 'vertical'
 }
 ```
 
@@ -1038,13 +1057,15 @@ interface AsyncSession {
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
-  /** The session's workbook; from a thread, a copy. */
+  /** The session's workbook; from a thread, a copy. The order of its objects' keys is not part of it (`Session.getBook`). */
   getBook(): Promise<Book>
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
+  getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
@@ -1220,6 +1241,12 @@ interface BookInput {
    * it holds.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
+  /**
+   * Excel's calculation option (Formulas > Calculation Options, xlsx `calcPr calcMode`): `manual`, or `autoNoTable`,
+   * automatic except for data tables; automatic without it. The engine calculates every edit whatever it says: a host
+   * that offers manual calculation keeps showing the values it showed until the user calculates. Not part of inputHash.
+   */
+  calculation?: 'manual' | 'autoNoTable'
   /**
    * The other workbooks that the workbook's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`):
    * element `i` is `[i+1]`. References to them use the values stored here, as Excel calculates a file it opens without
@@ -1629,6 +1656,8 @@ A note: its author and its text, lines separated by `\n`.
 interface CellNote {
   author?: string
   text: string
+  /** Shown all the time (Excel's Show/Hide Note, xlsx `<x:Visible/>`), not only while the pointer rests on its cell. */
+  shown?: boolean
 }
 ```
 
@@ -3119,6 +3148,8 @@ type LayoutEdit =
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
+  /** The color of the sheet's tab (`SheetInput.tabColor`); null removes it. */
+  | { sheet: string; tabColor: Color | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
   /** All the data validation rules of the sheet (`SheetInput.validations`). */
@@ -3903,6 +3934,20 @@ interface ScanOptions {
 }
 ```
 
+### `SelectionLabels`
+
+The sides of a range whose cells label the others ([`Session.getNamesFromSelection`](#session)), as the boxes of Excel's Create
+Names from Selection: the top row, the left column, the bottom row, the right column; at least one.
+
+```ts
+interface SelectionLabels {
+  top?: boolean
+  left?: boolean
+  bottom?: boolean
+  right?: boolean
+}
+```
+
 ### `Session`
 
 A session over a workbook: edits recalculate only the cells that depend on them. The session's current clock
@@ -4048,7 +4093,9 @@ interface Session {
   setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
    * The session's workbook with every change so far: what a host saves as a version. Its objects belong to the
-   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved.
+   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved. The order
+   * of its objects' keys (a sheet's fields, a sheet's cells) is not part of the workbook: it can differ between kinds
+   * of session and after undo and redo, while the hash, the values and a file written from it do not.
    */
   getBook(): Book
   /**
@@ -4083,6 +4130,20 @@ interface Session {
    * is `SUM()`, which Excel opens for editing and refuses to enter. It reads the cells along the cell's column and row.
    */
   getAutoSum(sheet: string, cell: string): AutoSumGuess
+  /**
+   * The names Excel's Create from Selection (Formulas > Defined Names) makes over a range (`SelectionLabels`): each
+   * label of the chosen sides, its text made a name as Excel makes it, refers to the cells of its column or row in the
+   * range past the labels; with a row and a column of labels, the label in their corner refers to all of them. A label
+   * without text makes none, and of two labels with one name the later one stays. A host passes the names to
+   * `setNames`, asking first, as Excel does, about a name the workbook already has.
+   */
+  getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): NameInput[]
+  /**
+   * The cells of a kind (`SpecialCells`) Excel's Go To Special selects in a range, as rectangles (`B2:C9`, `E4`); none
+   * where Excel says no cells were found. A range of one cell stands for the sheet's used range, as in Excel, and a
+   * larger one is taken within it.
+   */
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -4298,6 +4359,8 @@ interface SheetInput {
   frozen?: FrozenPanes
   /** The saved sheet view from xlsx; it does not affect calculation or inputHash. */
   view?: SheetView
+  /** The color of the sheet's tab (Excel's Tab Color, xlsx `<tabColor>`), `#RRGGBB`. Not part of calculation or inputHash. */
+  tabColor?: Color
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, highest first. They do not
    * change values: a session returns their effect on display in `CellView.appearance` (`docs/conditional-formats.md`).
@@ -4403,7 +4466,29 @@ interface SheetView {
   topLeft?: string
   /** Zoom in percent, 10 to 400. */
   zoom?: number
+  /** False hides the sheet's gridlines (View > Show > Gridlines, xlsx `showGridLines="0"`); shown by default. */
+  gridlines?: boolean
+  /** False hides the row and column headings (View > Show > Headings, xlsx `showRowColHeaders="0"`); shown by default. */
+  headings?: boolean
 }
+```
+
+### `SpecialCells`
+
+The cells Excel's Go To Special (Home > Editing > Find & Select) selects ([`Session.getSpecialCells`](#session)): blank cells,
+constants or formulas (of the kinds in `values`, every kind without it; a formula by the value it answers), or the
+visible cells, those of no hidden row or column.
+
+```ts
+type SpecialCells = { type: 'blanks' } | { type: 'constants' | 'formulas'; values?: SpecialValue[] } | { type: 'visible' }
+```
+
+### `SpecialValue`
+
+What a cell holds by the kinds of Excel's Go To Special: a number, text, a boolean, an error ([`SpecialCells.values`](#specialcells)).
+
+```ts
+type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
 ```
 
 ### `StructureOp`
@@ -5055,8 +5140,8 @@ interface WorkerLike {
 
 ### `WriteKeptOptions`
 
-Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and which formula values the file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes
-them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
+Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and of its refusals ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) and which formula values the
+file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
 
 ```ts
 interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'values'> {

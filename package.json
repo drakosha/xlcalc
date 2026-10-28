@@ -82,6 +82,10 @@
       "types": "./dist/worker/thread.d.ts",
       "default": "./dist/worker/thread.js"
     },
+    "./locales": {
+      "types": "./dist/locales.d.ts",
+      "default": "./dist/locales.js"
+    },
     "./locales/ru-RU": {
       "types": "./dist/locales/ru-RU.d.ts",
       "default": "./dist/locales/ru-RU.js"

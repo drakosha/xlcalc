@@ -42,7 +42,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 110 KB (17) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text` and `xlcalc/contract` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
 
 ## Quick start
 

@@ -134,13 +134,13 @@ describe('notes read', () => {
   const withNotes = (list: string, vml: string, extra: Record<string, string> = {}, sheetRels = '') =>
     sheetWith(`${DATA}<legacyDrawing r:id="rIdV"/>`, `<Relationship Id="rIdC" Type="${REL}/comments" Target="../comments1.xml"/><Relationship Id="rIdV" Type="${REL}/vmlDrawing" Target="../drawings/vmlDrawing1.vml"/>${sheetRels}`, { 'xl/comments1.xml': COMMENTS(list), 'xl/drawings/vmlDrawing1.vml': VML(vml), ...extra })
 
-  it('the author and the plain text; runs of several looks, a note always shown and other shapes reported', async () => {
+  it('the author and the plain text, a note always shown; runs of several looks and other shapes reported', async () => {
     const list =
       '<comment ref="A1" authorId="0"><text><r><rPr><b/><sz val="9"/></rPr><t>Ann:</t></r><r><rPr><sz val="9"/></rPr><t xml:space="preserve">\nchecked</t></r></text></comment>' +
       '<comment ref="B1" authorId="7"><text><r><rPr><b/></rPr><t>bold alone</t></r></text></comment><comment ref="C3" authorId="0"><text><t>plain</t></text></comment>'
     const r = await withNotes(list, note(0, 0) + note(2, 2, '<x:Visible/>') + note(5, 5, '', 'Checkbox'))
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'x', note: { author: 'Ann', text: 'Ann:\nchecked' } }, B1: { value: 1, note: { text: 'bold alone' } }, C3: { note: { author: 'Ann', text: 'plain' } } })
-    expect(codes(r.issues)).toEqual(['comment A1', 'comment C3', 'drawing'])
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'x', note: { author: 'Ann', text: 'Ann:\nchecked' } }, B1: { value: 1, note: { text: 'bold alone' } }, C3: { note: { author: 'Ann', text: 'plain', shown: true } } })
+    expect(codes(r.issues)).toEqual(['comment A1', 'drawing'])
   })
 
   it('threads of comments as notes: the first author, every text with the replies authored, at the cell of the placeholder; placeholders left out', async () => {

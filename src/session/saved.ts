@@ -129,7 +129,7 @@ function sheetFound(f: Found, s: number): SheetFound {
     reach(x.r2, x.c2)
     if (cell.spillFill !== undefined) fills.push({ x, from: a, value: cell.spillFill })
   }
-  reachLayout(input, f.tables, s, reach)
+  reachLayout(input, f.tables, s, (x) => reach(x.r2, x.c2))
   f.sheets.set(s, (out = { fills, extent: { rows, columns } }))
   return out
 }
