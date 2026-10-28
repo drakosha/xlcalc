@@ -225,7 +225,8 @@ function align(r0: ConditionalFormat[], r1: ConditionalFormat[]): { to: number[]
     const dp = Array.from({ length: n + 1 }, () => new Int32Array(m + 1))
     for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1])
     // a tie leaves out the later rule of `r1` (a rule Excel put back after the others), or of `r0` (one changed, where
-    // rules alike stay by their places): of the two the one whose rules moved the least
+    // rules alike stay by their places): of the two the one whose rules left out of `r1` lie nearest its ends (Excel
+    // moves a rule first or last), then whose rules moved the least
     const back = (later: boolean) => {
       const out = a.map(() => -1)
       for (let i = n, j = m; i > 0 && j > 0; ) {
@@ -236,8 +237,15 @@ function align(r0: ConditionalFormat[], r1: ConditionalFormat[]): { to: number[]
       return out
     }
     const moves = (xs: number[]) => xs.reduce((sum, j, i) => sum + (j < 0 ? 0 : Math.abs(j - i)), 0)
+    const ends = (xs: number[]) => {
+      const kept = new Set(xs)
+      let sum = 0
+      for (let j = 0; j < m; j++) if (!kept.has(j)) sum += Math.min(j, m - 1 - j)
+      return sum
+    }
     const [x, y] = [back(true), back(false)]
-    ;(moves(y) < moves(x) ? y : x).forEach((j, i) => ([to[i], same[i]] = [j, j >= 0]))
+    const better = ends(y) < ends(x) || (ends(y) === ends(x) && moves(y) < moves(x))
+    ;(better ? y : x).forEach((j, i) => ([to[i], same[i]] = [j, j >= 0]))
   } else
     for (let i = 0, j = 0; i < n && j < m; i++) {
       const k = b.indexOf(a[i], j)
