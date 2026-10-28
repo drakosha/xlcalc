@@ -79,7 +79,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 }
 
 /** `cellResult` of the cell at `addr`, row `row` and column `col`: for callers that have both, without reading the address again. */
-function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
+export function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
   const value = cellValue(state, s, row, col)
   const id = state.at.get(placeOf(s, row, col))
