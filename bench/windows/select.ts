@@ -36,10 +36,7 @@ export async function stepSelect(set: string, e: WinEnv): Promise<void> {
     step: (c) => ('labels' in c ? { do: 'createNames', sheet: 'S', range: c.range, ...c.labels } : specialStep(c.range, c.special)),
     answer: (x) => {
       if (x && typeof x === 'object' && 'error' in x) return { error: String(x.error) }
-      if (!(x && typeof x === 'object' && 'areas' in x)) return namesAnswer(x as [string, string][])
-      const { areas, count } = x as { areas: string[]; count?: number }
-      // an address cut short (COM gives at most 255 characters of it) is an error, not cells
-      return count === undefined || count === areas.length ? cellsAnswer(areas) : { error: `${count} areas, ${areas.length} in the address` }
+      return x && typeof x === 'object' && 'areas' in x ? cellsAnswer(x.areas as string[]) : namesAnswer(x as [string, string][])
     },
   })
 }
