@@ -70,9 +70,23 @@ function CondRules($wb) {
     })
 }
 
+# the sheet's rule of priority $s.priority (bench/windows/keep.ts): deleted, given the priority $s.to, or its font made italic
+function CondPick($wb, $s) {
+  $fc = $null
+  foreach ($x in $wb.Worksheets.Item($s.sheet).Cells.FormatConditions) { if ($x.Priority -eq [int]$s.priority) { $fc = $x; break } }
+  if (-not $fc) { throw "no rule of priority $($s.priority)" }
+  switch ($s.pick) {
+    'delete' { $fc.Delete() }
+    'priority' { $fc.Priority = [int]$s.to }
+    'italic' { $fc.Font.Italic = $true }
+    default { throw "unknown pick $($s.pick)" }
+  }
+}
+
 function Cond($wb, $s) {
   switch ($s.kind) {
     'make' { try { CondMake $wb $s; 'null' } catch { Err $_ } }
+    'pick' { try { CondPick $wb $s; 'null' } catch { Err $_ } }
     'looks' { CondLooks $wb $s.read $s.codes }
     'rules' { CondRules $wb }
     default { throw "unknown cond step $($s.kind)" }

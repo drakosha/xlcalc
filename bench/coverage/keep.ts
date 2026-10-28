@@ -14,6 +14,10 @@
  * refer to), before `keep struct-open` has Excel open, compute and save them (`test/excel/keep/struct-open.json`,
  * `struct-open/<case>.xlsx`). `keep made` also asks Excel what it does with an AutoFilter beside a table (`MADE_PROBES`),
  * its answer in `made.json` beside the engine's committed before it ran (`PROBES`). Test: `test/xlsx-keep-excel.test.ts`.
+ * The conditional formats the model does not read (`keep/rules.ts`): `keep rules-made-predict` and `keep rules-predict`
+ * write what Excel for Windows is predicted to save (`bench/windows/run.ts keep rules-made|rules`), `keep
+ * rules-open-predict` and `keep rules-open` what Excel for Mac does with the files `writeKept` wrote for the cases
+ * (`test/excel/keep/rules-open.json`, `rules-open/<case>.xlsx`). Test: `test/xlsx-keep-rules-excel.test.ts`.
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -24,6 +28,7 @@ import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
 import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
 import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
+import { RULES_BOOKS, RULES_CASES, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -253,7 +258,56 @@ async function structOpen(): Promise<void> {
   }
 }
 
+/** The saved `mixed` of Excel for Windows (`bench/windows/run.ts keep rules-made`), the file the rules' cases are written over. */
+const rulesMixed = () => new Uint8Array(readFileSync(join(ROOT, 'test/excel/win/keep/rules-made/mixed.xlsx')))
+
+/** Each case of `RULES_CASES` written by `writeKept` over the saved `mixed`: the file, or the refusal. */
+export async function rulesFiles(): Promise<{ id: string; written: { data: Uint8Array } | { refused: string } }[]> {
+  const data = rulesMixed()
+  return Promise.all(RULES_CASES.map(async (c) => ({ id: c.id, written: await rulesWritten(data, c) })))
+}
+
+/**
+ * The predictions of the rules' steps, written before each runs: Excel for Windows opens each book of `RULES_BOOKS`
+ * and saves its rules as they are, priorities counted from 1 (`rules-made`); after each case Excel saves the rules
+ * `writeKept` writes for the same case, refused or not (`rules`); Excel for Mac opens each file `writeKept` wrote
+ * without its repair window and saves its rules as written (`rules-open`).
+ */
+async function rulesPredict(what: string): Promise<void> {
+  const cases: Record<string, unknown> = {}
+  if (what === 'rules-made') for (const id of Object.keys(RULES_BOOKS)) cases[id] = { opens: true, ...(await rulesOf(await rulesFile(id))) }
+  else for (const f of await rulesFiles()) cases[f.id] = 'data' in f.written ? { ...(what === 'rules-open' ? { opens: true } : {}), ...(await rulesOf(f.written.data)) } : f.written
+  writePrediction(new URL('./keep/rules.ts', import.meta.url).href, what, { cases })
+}
+
+/** The files `writeKept` wrote for the rules' cases through Excel for Mac: opened, computed and saved (`test/excel/keep/rules-open.json`). */
+async function rulesOpen(): Promise<void> {
+  const file = join(DATA, 'rules-open.json')
+  const run = loadStored<StructOpenRun>(file) ?? { meta: {}, cases: {} }
+  mkdirSync(join(DATA, 'rules-open'), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  for (const f of await rulesFiles()) {
+    if ((ONLY && !ONLY.includes(f.id)) || !('data' in f.written)) continue
+    const sent = await partsHash(f.written.data)
+    if (run.cases[f.id]?.sent === sent && (run.cases[f.id].rejected || existsSync(join(DATA, 'rules-open', `${f.id}.xlsx`)))) continue
+    const r = await saveThroughExcel(f.written.data, f.id)
+    if ('rejected' in r) {
+      run.cases[f.id] = { sent, rejected: r.rejected }
+      console.log(`${f.id}: Excel refused the file: ${r.rejected}`)
+    } else {
+      writeFileSync(join(DATA, 'rules-open', `${f.id}.xlsx`), r.saved)
+      run.cases[f.id] = { sent, saved: await partsOf(r.saved), refs: await rulesOf(r.saved) }
+      console.log(`${f.id}: opened; ${JSON.stringify(run.cases[f.id].refs)}`)
+    }
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
 export async function stepKeep(what: string | undefined): Promise<void> {
+  if (what === 'rules-made-predict' || what === 'rules-predict' || what === 'rules-open-predict') return rulesPredict(what.slice(0, -'-predict'.length))
+  if (what === 'rules-open') return rulesOpen()
   if (what === 'made') return made()
   if (what === 'predict') return predict()
   if (what === 'open') return open()
@@ -261,5 +315,5 @@ export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'struct') return struct()
   if (what === 'struct-open-predict') return structOpenPredict()
   if (what === 'struct-open') return structOpen()
-  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open')
+  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | rules-made-predict | rules-predict | rules-open-predict | rules-open')
 }
