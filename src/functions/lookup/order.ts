@@ -47,14 +47,9 @@ function numberSort(n: number, key: (line: number) => V, desc: boolean): number[
   // the bits as unsigned 16-bit digits (little-endian, as every JS host) that order as the numbers do, reversed when
   // descending; least significant first
   const bits = new Uint16Array(value.buffer)
-  for (let i = 0; i < n; i++) {
-    const neg = bits[i * 4 + 3] & 0x8000
-    for (let d = 0; d < 4; d++) {
-      let x = neg ? ~bits[i * 4 + d] & 0xffff : d === 3 ? bits[i * 4 + d] ^ 0x8000 : bits[i * 4 + d]
-      if (desc) x = ~x & 0xffff
-      bits[i * 4 + d] = x
-    }
-  }
+  const reverse = desc ? 0xffff : 0
+  // a negative number's bits all flipped, a positive one's sign bit (read before the last digit is changed)
+  for (let i = 0; i < n * 4; i += 4) for (let d = 0; d < 4; d++) bits[i + d] ^= (bits[i + 3] & 0x8000 ? 0xffff : d === 3 ? 0x8000 : 0) ^ reverse
   let order = new Uint32Array(n)
   for (let i = 0; i < n; i++) order[i] = i
   let next = new Uint32Array(n)

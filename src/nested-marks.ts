@@ -24,13 +24,9 @@ export class NestedMarks extends Set<number> {
     return true
   }
 
-  /** Whether a mark lies in a column from `c1` to `c2`. */
+  /** Whether a mark lies in a column from `c1` to `c2` (few columns hold marks). */
   inColumns(c1: number, c2: number): boolean {
-    if (c2 - c1 + 1 > this.columns.size) {
-      for (const c of this.columns.keys()) if (c >= c1 && c <= c2) return true
-      return false
-    }
-    for (let c = c1; c <= c2; c++) if (this.columns.has(c)) return true
+    for (const c of this.columns.keys()) if (c >= c1 && c <= c2) return true
     return false
   }
 }

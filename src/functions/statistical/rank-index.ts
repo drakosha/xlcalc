@@ -16,15 +16,11 @@ const readOnce = new WeakSet<readonly V[]>()
 
 /** The numbers of a range ascending (text, booleans and blanks skipped), or its first error, as the list kind reads it. */
 function sortedOf(values: readonly V[]): Float64Array | CErr {
-  let n = 0
-  for (const v of values) {
-    if (typeof v === 'number') n++
+  const out: number[] = []
+  for (const v of values)
+    if (typeof v === 'number') out.push(v)
     else if (isErr(v)) return v
-  }
-  const out = new Float64Array(n)
-  n = 0
-  for (const v of values) if (typeof v === 'number') out[n++] = v
-  return out.sort()
+  return Float64Array.from(out).sort()
 }
 
 /** The first position whose value is above `x`. */

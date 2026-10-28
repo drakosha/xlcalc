@@ -75,10 +75,8 @@ function workdayHolidays(holidays: Float64Array, a: number, b: number, weekend: 
   return n
 }
 
-const EMPTY: Float64Array = new Float64Array(0)
-
 /** Inclusive count, negative when `end` is earlier. */
-function networkDays(start: number, end: number, weekend: boolean[], holidays = EMPTY): number {
+function networkDays(start: number, end: number, weekend: boolean[], holidays: Float64Array): number {
   const sign = start <= end ? 1 : -1
   const [a, b] = sign > 0 ? [start, end] : [end, start]
   const weeks = Math.floor((b - a + 1) / 7)
@@ -88,7 +86,7 @@ function networkDays(start: number, end: number, weekend: boolean[], holidays = 
 }
 
 /** Whole weeks first, then day by day; holidays passed on workdays are made up past the date reached. */
-function workday(start: number, days: number, weekend: boolean[], holidays = EMPTY): number | CErr {
+function workday(start: number, days: number, weekend: boolean[], holidays: Float64Array): number | CErr {
   if (days === 0) return start
   if (Math.abs(days) > MAX_SERIAL) return E.NUM
   const step = days > 0 ? 1 : -1

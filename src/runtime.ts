@@ -374,20 +374,15 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (name === 'COUNTIF' || name === 'COUNTIFS')
       return (...args) => (args.length === 2 && args[0] instanceof Rng ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
     if (RANKS.includes(name)) return (...args) => rankInRange(cx, name === 'RANK.AVG', args) ?? caller(...args)
-    // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them
-    if (name === 'SUBTOTAL')
+    // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them; AGGREGATE's options 0, 1, 4 and 5
+    // keep errors: below 4 they skip SUBTOTAL and AGGREGATE, odd ones hidden rows
+    if (name === 'SUBTOTAL' || name === 'AGGREGATE')
       return (...args) => {
-        const t = args.length === 2 ? number(args[0]) : undefined
-        const code = t === undefined ? 0 : whole(t)
-        return (code ? summarized(code > 100 ? code - 100 : code, args[1], true, code > 100 ? 'all' : 'filtered') : undefined) ?? caller(...args)
-      }
-    // AGGREGATE's options 0, 1, 4 and 5 keep errors: below 4 they skip SUBTOTAL and AGGREGATE, odd ones hidden rows
-    if (name === 'AGGREGATE')
-      return (...args) => {
-        const c = args.length === 3 ? number(args[0]) : undefined
-        const o = c === undefined ? undefined : number(args[1])
-        const option = o === undefined ? -1 : Math.trunc(o)
-        return ([0, 1, 4, 5].includes(option) ? summarized(whole(c!), args[2], option < 4, option % 2 ? 'all' : 'none') : undefined) ?? caller(...args)
+        const sub = name === 'SUBTOTAL'
+        const t = args.length === (sub ? 2 : 3) ? number(args[0]) : undefined
+        const c = t === undefined ? 0 : whole(t)
+        const o = sub ? 0 : Math.trunc(number(args[1]) ?? -1)
+        return (!c || ![0, 1, 4, 5].includes(o) ? undefined : sub ? summarized(c > 100 ? c - 100 : c, args[1], true, c > 100 ? 'all' : 'filtered') : summarized(c, args[2], o < 4, o % 2 ? 'all' : 'none')) ?? caller(...args)
       }
     return caller
   }
