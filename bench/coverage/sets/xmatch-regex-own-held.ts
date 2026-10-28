@@ -2,7 +2,7 @@
  * Match mode 3 with the PCRE2 engine of `xlcalc/regex` (`pcreEngine`), predicted by it before Excel for Mac ran the
  * set: where Excel's match limit falls for heavy patterns of other shapes than the calibration's (`(x+x+)+y`,
  * `(a*)*b`, words and spaces, `(a|a?)+$`, a caseless and a class repeat), the required character a match must hold
- * (missing: #N/A at once, in texts of up to 5,000 characters), the limit inside a range and in `XLOOKUP`, caseless
+ * (missing: #N/A at once; texts of 1,500, 4,000 and 6,000 characters), the limit inside a range and in `XLOOKUP`, caseless
  * letters outside ASCII, `\X`, `\b` in Cyrillic, a lookbehind of 255 and 256 characters, the verbs that cut
  * backtracking, a recursive palindrome, a back reference to an unset group, duplicate names, `(*NOTEMPTY)`.
  * Answers: `test/excel/cases/xmatch-regex-own-held.json`; `PREDICTED` was committed before Excel ran the set.
@@ -89,3 +89,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldGroups(CASES.map(([g, f, v]) => [g, 'XMATCH', f, v]))
+
+/**
+ * The predictions Excel for Mac did not confirm, now the engine's rules: `(a|a?)+$` over 17 letters stays under the
+ * limit (the engine's limit moved from 0.75 to 0.85 of its count); a required character is looked for in a text of
+ * 6,000 characters too; the dotless i has no other case; `(?m)^` matches after a newline at the end.
+ */
+export const MISSED: readonly string[] = ['limit#11', 'required#5', 'case#3', 'case#4', 'group#4']

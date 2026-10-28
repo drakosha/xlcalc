@@ -103,7 +103,8 @@ export function fold(c: number): number {
     const up = single(s.toUpperCase())
     const low = single(String.fromCodePoint(up < 0 ? c : up).toLowerCase())
     const lower = single(s.toLowerCase())
-    f = low >= 0 ? low : lower >= 0 ? lower : c
+    // the dotless i is its own: its upper case I folds to i (Excel: `(?i)ı` finds neither I nor i)
+    f = c === 0x131 ? c : low >= 0 ? low : lower >= 0 ? lower : c
     folds.set(c, f)
   }
   return f
@@ -117,7 +118,7 @@ export function caseVariants(c: number, restrict: boolean): number[] {
   const s = String.fromCodePoint(c)
   const f = fold(c)
   const out = [c, f, single(s.toLowerCase()), single(s.toUpperCase()), single(String.fromCodePoint(f).toUpperCase())]
-  return out.filter((v, i) => v >= 0 && out.indexOf(v) === i && (!restrict || v < 128 === c < 128))
+  return out.filter((v, i) => v >= 0 && out.indexOf(v) === i && fold(v) === f && (!restrict || v < 128 === c < 128))
 }
 
 /** A character class: ranges of code points (caseless: any character of their case) and tests, or the opposite. */

@@ -18,10 +18,11 @@ import {
  */
 export const MATCH_LIMIT = 1_000_000
 /**
- * This matcher's backtracking points for one of PCRE2's: it counts 458,750 and 917,502 for `(a+)+$` over 18 and 19,
- * 635,619 and 1,028,455 for `(a|aa)+$` over 25 and 26, so the limit lies at 0.75 of PCRE2's (between 0.64 and 0.92).
+ * This matcher's backtracking points for one of PCRE2's: of the heavy patterns Excel stopped and did not
+ * (`xmatch-regex-syntax-2`, `xmatch-regex-own-held`), the highest count it let through is 786,427 (`(a|a?)+$` over 17)
+ * and the lowest it stopped 917,502 (`(a+)+$` over 19), so the limit lies at 0.85 of PCRE2's.
  */
-const SCALE = 0.75
+const SCALE = 0.85
 
 const F_CHOICE = 1, F_UNDO = 2, F_OBJ = 3, F_REPG = 4, F_REPL = 5, F_BACK = 6, F_ATOMIC = 7, F_LOOK = 8, F_CALL = 9, F_GMARK = 10, F_VERB = 11
 const O_CALL = 0, O_MARKS = 1, O_SLOTS = 2
@@ -84,8 +85,8 @@ export class Matcher {
     this.s = s
     this.len = s.length
     const { first, prefix, required, minLength } = p
-    // a required character found nowhere: no match, without trying (as PCRE2 does for texts of up to 5,000 units)
-    if (required && s.length <= 5000 && s.indexOf(required) < 0) return false
+    // a required character found nowhere: no match, without trying (as PCRE2 does; Excel, for 6,000 characters too)
+    if (required && s.indexOf(required) < 0) return false
     for (let at = 0; at <= this.len; ) {
       if (this.len - at < minLength) return false
       if (p.anchored) {
@@ -206,7 +207,8 @@ export class Matcher {
       case 'G':
         return i === 0
       case 'mbol':
-        return i === 0 || (i < len && newlineBefore(s, i, nl))
+        // after a newline at the end too, as Excel's `(?m)^$` finds one in `a` and a line feed
+        return i === 0 || newlineBefore(s, i, nl)
       case 'z':
         return i === len
       case 'eol':

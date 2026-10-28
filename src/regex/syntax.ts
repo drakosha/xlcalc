@@ -283,8 +283,10 @@ function translate(p: string, whole: boolean): RegExp {
     const q = quantifier()
     if (q !== null) {
       if (atom < 0) no()
-      // a quantifier of unbounded length has none in a lookbehind
-      if (l.behind && (q === '*' || q === '+' || q.endsWith(',}'))) no()
+      // in a lookbehind a quantifier is bounded, and one of variable length takes 255 at most
+      const bounds = q.slice(1, -1).split(',')
+      const [min, max] = q.length === 1 ? [0, q === '?' ? 1 : Infinity] : [Number(bounds[0]), bounds.length === 1 ? Number(bounds[0]) : bounds[1] === '' ? Infinity : Number(bounds[1])]
+      if (l.behind && (max === Infinity || (min !== max && max > 255))) no()
       let mode = p[i] === '+' ? ((i++), 2) : p[i] === '?' ? ((i++), 1) : 0
       if (f.U && mode < 2) mode = 1 - mode
       if (mode === 2) {
@@ -376,7 +378,8 @@ function translate(p: string, whole: boolean): RegExp {
     }
     if (c === '^') {
       atom = -1
-      out += f.m ? `(?:(?<![\\s\\S])|(?<=[${nl}])(?<!\\r(?=\\n))(?=[\\s\\S]))` : '(?<![\\s\\S])'
+      // after a newline at the end too, as in Excel
+      out += f.m ? `(?:(?<![\\s\\S])|(?<=[${nl}])(?<!\\r(?=\\n)))` : '(?<![\\s\\S])'
       continue
     }
     if (c === '$') {

@@ -354,7 +354,8 @@ export function compile(parsed: Parsed): Program {
     if (max === 0) return
     if (simple(body)) {
       // auto-possessification, as PCRE2's: a repeat that the next literal cannot continue gives nothing back
-      if (mode !== 2 && next?.t === 'char' && !next.i && !firstOf(body, w)!(next.c)) mode = 2
+      const can = firstOf(body, w)
+      if (mode !== 2 && next?.t === 'char' && !next.i && can && !can(next.c)) mode = 2
       const [op, a, b] = item(body)
       return void emit(REP, op, a, b, min, max === Infinity ? -1 : max, mode)
     }
