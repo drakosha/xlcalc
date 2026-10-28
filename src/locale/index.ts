@@ -132,18 +132,22 @@ export function toInvariant(text: string, where: string | Locale, opts?: Transla
 export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
   const sides = localeSides(where)
   checkString(text, 'text')
-  return validatedText(text, sides, checkValidateContext(ctx))
+  const r = checkedText(text, sides, checkValidateContext(ctx))
+  if (!r.ok) return r
+  const { ast: _ast, ...rest } = r
+  return rest
 }
 
-/** `validateLocalFormula` for the package's own calls, which give it a checked context: typed text checks a book's links for each formula. */
-export const validateTyped = (text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult => validatedText(text, localeSides(where), ctx)
+/**
+ * `validateLocalFormula` for the package's own calls, which give it a checked context, with the parsed formula kept: typed
+ * text checks a book's links for each formula, and an entry reads its format from the tree.
+ */
+export const validateTyped = (text: string, where: string | Locale, ctx?: ValidateContext): ReturnType<typeof validate> => checkedText(text, localeSides(where), ctx)
 
-function validatedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ValidateResult {
+function checkedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ReturnType<typeof validate> {
   const eq = text.startsWith('=') ? 1 : 0
   const t = translate(text.slice(eq), s.local, s.invariant, eq)
   if (!t.ok) return refusal(t, locale)
   const r = validate(t.formula, { ...c, say: (m) => say(locale, m) })
-  if (!r.ok) return { ...r, at: t.back(r.at) }
-  const { ast: _ast, ...rest } = r
-  return rest
+  return r.ok ? r : { ...r, at: t.back(r.at) }
 }

@@ -70,7 +70,8 @@ type Formula = { formula: string; sets?: NumberFormat | 'money' }
 /** `text` as `validateTyped` read it (`v`): taken as a formula, or why Excel stops it, at its place in the typed text. */
 function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number, locale: Locale, externalBooks?: ExternalBook[]): Formula | Extract<EntryResult, { ok: false }> {
   if (v.ok) {
-    const p = validate(v.canonical)
+    // the typed text's tree; given the book's links, the canonical text's read without them, where a link fails and sets no format
+    const p = externalBooks ? validate(v.canonical) : v
     return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast) } : {}) }
   }
   // a book that is not one of its links: Excel would ask for the file, a new link the model does not make
