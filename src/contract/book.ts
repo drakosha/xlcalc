@@ -478,3 +478,15 @@ export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
 /** A workbook without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
+
+/**
+ * The PCRE2 engine of match mode 3 (`XLOOKUP`, `XMATCH`): the `pcre2` export of `xlcalc/regex`, which
+ * `registerRegexEngine` loads. Without it, match mode 3 uses JavaScript's regular expressions in JavaScript's syntax.
+ * With it, patterns take Excel's syntax, Excel's match limit is `#VALUE!`, and a call's `timeoutMs` and `signal` stop
+ * a pattern that backtracks heavily.
+ */
+export interface RegexEngine {
+  readonly kind: 'xlcalc-pcre2'
+  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern Excel refuses. */
+  compile(pattern: string): { test(text: string): boolean | 'limit' } | null
+}
