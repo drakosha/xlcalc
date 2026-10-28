@@ -21,7 +21,7 @@ interface Digits {
   firstPh: number
 }
 
-/** Plans by a section's tokens, or by the parts of them a fraction and scientific notation keep (`Plan`). */
+/** Digits' plans by a section's tokens, or by the parts of them a fraction and scientific notation keep (`Plan`). */
 const DIGITS = new WeakMap<Tok[], Digits>()
 
 function digitsOf(toks: Tok[]): Digits {
@@ -260,7 +260,10 @@ function formatExponent(v: number, x: Exponent, signed: boolean, style: Style): 
   return (signed && v < 0 ? '-' : '') + body + 'E' + (e < 0 ? '-' : x.plus ? '+' : '') + digits + rest.join('')
 }
 
-/** What a section of a number is, its parts kept: the token arrays a fraction and scientific notation pass on are then the same each time, and their digits' plans are found again. */
+/**
+ * What a section of a number is, with its parts: the tokens a fraction and scientific notation pass to `formatDigits`
+ * are then the same arrays for each value, whose plans it finds again.
+ */
 type Plan = { exponent: Exponent } | { fraction: Fraction | null } | null
 
 /** Plans by a section's tokens, which `parseFormat` keeps one array of per code. */
