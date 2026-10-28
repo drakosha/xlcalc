@@ -558,6 +558,17 @@ function Step($xl, $wb, $s) {
         $made
       } catch { Err $_ }
     }
+    # Go To Special over a range (bench/windows/select.ts): Range.SpecialCells(Type, Value), the value only where given,
+    # { areas: each area's address }, none where Excel finds no cells (its error 1004)
+    'special' {
+      try {
+        $rg = Rg $wb $s.sheet $s.range
+        $found = if ([int]$s.values) { $rg.SpecialCells([int]$s.type, [int]$s.values) } else { $rg.SpecialCells([int]$s.type) }
+        '{"areas":' + (List ($found.Areas | ForEach-Object { Str $_.Address($false, $false) })) + '}'
+      } catch {
+        if ($_.Exception.Message -match 'No cells were found') { '{"areas":[]}' } else { Err $_ }
+      }
+    }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }

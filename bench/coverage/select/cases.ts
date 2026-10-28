@@ -1,12 +1,14 @@
 /**
  * Selections in Excel for Windows (`bench/windows/run.ts select <set>`): a set names its books, each the sheet `S` with
- * its cells, and its cases, each a range of one book and the sides of it whose labels name the rest, as Excel's Create
- * Names from Selection (`Range.CreateNames`); the answer is the names Excel made, each with what it refers to, or
- * Excel's error. `predict.ts` writes the engine's answers (`Session.getNamesFromSelection`) before Excel runs a set.
+ * its cells, and its cases, each a range of one book and either the sides of it whose labels name the rest, as Excel's
+ * Create Names from Selection (`Range.CreateNames`), or a kind of cells, as Go To Special (`Range.SpecialCells`); the
+ * answer is the names Excel made, each with what it refers to, or the cells it selected, or Excel's error. `predict.ts`
+ * writes the engine's answers (`Session.getNamesFromSelection`, `getSpecialCells`) before Excel runs a set.
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, CellInput, CellStyle, SelectionLabels } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellStyle, ColumnInput, RowInput, SelectionLabels, SpecialCells } from '../../../src/contract.js'
+import { parseRange, rectCells } from '../../../src/structure/area.js'
 import { createSession, validateFormula } from '../../../src/index.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
@@ -15,17 +17,17 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 export interface SelectBook {
   cells: Record<string, CellInput>
   styles?: CellStyle[]
+  rows?: Record<string, RowInput>
+  columns?: Record<string, ColumnInput>
 }
 
-export interface SelectCase {
-  id: string
-  book: string
-  range: string
-  labels: SelectionLabels
-}
+export type SelectCase = { id: string; book: string; range: string } & ({ labels: SelectionLabels } | { special: SpecialCells })
 
-/** The names made, each as `[name, what it refers to]` without `=`, in their canonical spelling, sorted by name; or Excel's error. */
-export type SelectAnswer = { names: [string, string][] } | { error: string }
+/**
+ * The names made, each as `[name, what it refers to]` without `=`, in their canonical spelling, sorted by name; the
+ * cells selected, sorted, with the rectangles as given; or Excel's error.
+ */
+export type SelectAnswer = { names: [string, string][] } | { cells: string[]; areas: string[] } | { error: string }
 
 export interface SelectSet {
   BOOKS: Record<string, SelectBook>
@@ -36,7 +38,10 @@ export interface SelectSet {
 export const selectFile = (set: string) => join(ROOT, 'test/excel/win/select', `${set}.json`)
 
 /** The book as Excel and the engine get it. */
-export const selectBook = (b: SelectBook): BookInput => ({ ...(b.styles ? { styles: b.styles } : {}), sheets: [{ name: 'S', cells: b.cells }] })
+export const selectBook = (b: SelectBook): BookInput => ({ ...(b.styles ? { styles: b.styles } : {}), sheets: [{ name: 'S', cells: b.cells, ...(b.rows ? { rows: b.rows } : {}), ...(b.columns ? { columns: b.columns } : {}) }] })
+
+/** The cells of rectangles as they compare, sorted, beside the rectangles; none for Excel's "no cells were found". */
+export const cellsAnswer = (areas: string[]): SelectAnswer => ({ cells: areas.flatMap((a) => [...rectCells(parseRange(a)!)]).sort(), areas })
 
 /** A reference as it compares: canonical where it parses. */
 function canon(ref: string): string {
@@ -51,7 +56,7 @@ export const namesAnswer = (names: [string, string][]): SelectAnswer => ({ names
 export function selectedInBook(b: SelectBook, cases: SelectCase[]): Record<string, SelectAnswer> {
   const s = createSession(selectBook(b), { clock: { now: '2026-10-28T12:00:00Z', seed: 1 } })
   try {
-    return Object.fromEntries(cases.map((c) => [c.id, namesAnswer(s.getNamesFromSelection('S', c.range, c.labels).map((n) => [n.name, n.ref]))]))
+    return Object.fromEntries(cases.map((c) => [c.id, 'labels' in c ? namesAnswer(s.getNamesFromSelection('S', c.range, c.labels).map((n) => [n.name, n.ref])) : cellsAnswer(s.getSpecialCells('S', c.range, c.special))]))
   } finally {
     s.close()
   }
