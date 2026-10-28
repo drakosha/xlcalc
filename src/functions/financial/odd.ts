@@ -15,8 +15,8 @@ const later = (a: Ymd, b: Ymd) => (cmp(a, b) > 0 ? a : b)
 const normal = (q0: Ymd, q1: Ymd, basis: number, freq: number, actual = basis === 1) => (actual ? daysBetween(q0, q1, 1) : normalDays(basis, freq))
 const earlier = (a: Ymd, b: Ymd) => (cmp(a, b) < 0 ? a : b)
 
-/** ODDFPRICE at yield `yld`: quasi-coupon periods counted back from the first coupon. */
-function oddFirstPrice(settlement: number, maturity: number, issue: number, first: number, rate: number, yld: number, redemption: number, freq: number, basis: number): number {
+/** ODDFPRICE's terms besides the yield: quasi-coupon periods counted back from the first coupon. */
+function oddFirst(settlement: number, maturity: number, issue: number, first: number, freq: number, basis: number) {
   const f1 = ymd(first)
   const iss = ymd(issue)
   const settle = ymd(settlement)
@@ -27,7 +27,6 @@ function oddFirstPrice(settlement: number, maturity: number, issue: number, firs
     if (!d) dates.set(k, (d = couponDate(f1, k, freq)))
     return d
   }
-  const coupon = (100 * rate) / freq
   const n = periodOf(f1, ymd(maturity), freq)
   const ki = periodOf(f1, iss, freq)
   const ks = periodOf(f1, settle, freq)
@@ -41,6 +40,12 @@ function oddFirstPrice(settlement: number, maturity: number, issue: number, firs
     if (k <= ks) accrued += daysBetween(from, earlier(settle, q(k + 1)), basis) / nl
   }
   const t = -(ks + 1) + daysBetween(settle, q(ks + 1), basis) / normal(q(ks), q(ks + 1), basis, freq)
+  return { n, odd, accrued, t }
+}
+
+/** ODDFPRICE at yield `yld`. */
+function oddFirstPrice({ n, odd, accrued, t }: ReturnType<typeof oddFirst>, rate: number, yld: number, redemption: number, freq: number): number {
+  const coupon = (100 * rate) / freq
   const v = 1 + yld / freq
   let p = (coupon * odd) / Math.pow(v, t) + redemption / Math.pow(v, t + n)
   for (let j = 1; j <= n; j++) p += coupon / Math.pow(v, t + j)
@@ -81,11 +86,12 @@ export const functions: Record<string, FnDef> = {
   ODDFPRICE: atp('e e e e x x x j j?', (settlement: number, maturity: number, issue: number, first: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>
     oddFirstBad(settlement, maturity, issue, first, freq, basis) || rate < 0 || yld < 0 || redemption <= 0
       ? E.NUM
-      : oddFirstPrice(settlement, maturity, issue, first, rate, yld, redemption, freq, basis),
+      : oddFirstPrice(oddFirst(settlement, maturity, issue, first, freq, basis), rate, yld, redemption, freq),
   freqAt(7)),
   ODDFYIELD: atp('e e e e x x x j j?', (settlement: number, maturity: number, issue: number, first: number, rate: number, pr: number, redemption: number, freq: number, basis = 0): number | CErr => {
     if (oddFirstBad(settlement, maturity, issue, first, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
-    const f = (y: number) => oddFirstPrice(settlement, maturity, issue, first, rate, y, redemption, freq, basis) - pr
+    const terms = oddFirst(settlement, maturity, issue, first, freq, basis)
+    const f = (y: number) => oddFirstPrice(terms, rate, y, redemption, freq) - pr
     return solveDecreasing(f, rate || 0.05, -freq + 1e-9) ?? E.NUM
   }, freqAt(7)),
   ODDLPRICE: atp('e e e x x x j j?', (settlement: number, maturity: number, last: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) => {
