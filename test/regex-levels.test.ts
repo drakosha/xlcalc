@@ -41,23 +41,29 @@ const KNOWN = {
   builtin: ids({
     'xmatch-regex-syntax': 'class#3 class#4 class#8 class#13 class#15 class#17 class#19 class#20 class#21 class#22 anchor#4 anchor#6 anchor#8 anchor#9 anchor#10 anchor#11 dot#2 dot#5 dot#6 dot#9 dot#11 quant#5 quant#6 quant#8 quant#10 quant#13 quant#14 group#3 group#4 group#5 group#6 group#7 group#8 group#10 group#11 group#14 look#6 option#1 option#3 option#7 option#8 option#9 option#10 option#11 option#12 option#13 option#14 option#15 option#16 option#17 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#1 verb#2 verb#3 verb#4 verb#5 verb#6 verb#7 verb#8 bad#4 backtrack#2 backtrack#3 backtrack#4',
     'xmatch-regex-syntax-2': 'line#2 line#3 line#4 line#5 line#8 line#9 line#10 line#11 line#12 class#6 class#7 class#9 class#10 class#11 class#12 class#13 option#1 option#2 option#4 option#5 option#6 recurse#1 recurse#2 recurse#3 bad#2 bad#4 backtrack#3 backtrack#5 backtrack#6 backtrack#8 backtrack#11 limit#3 limit#4 limit#5 limit#6',
+    'xmatch-regex-own-held': 'class#1 look#2 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#3 group#4 group#6 group#7',
   }),
-  // recursion, conditional groups, (*ACCEPT) and the verbs that cut backtracking, \X and Bidi_Class have no
-  // translation (#VALUE!); no match limit (#N/A where Excel's is #VALUE!); duplicate group names before Node 23
+  // recursion, conditional groups, (*ACCEPT) and the verbs that cut backtracking, \X, Bidi_Class and (*NOTEMPTY)
+  // have no translation (#VALUE!); no match limit (#N/A where Excel's is #VALUE!); duplicate group names before Node 23
   pcreSyntax: ids({
     'xmatch-regex-syntax': `${DUPLICATE_NAMES ? '' : 'group#8 group#11 '}dot#11 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#2 verb#3 verb#4 verb#5 verb#6 backtrack#2 backtrack#3 backtrack#4`,
     'xmatch-regex-syntax-2': 'class#13 option#3 recurse#1 recurse#2 recurse#3 bad#2 backtrack#3 backtrack#5 backtrack#6 backtrack#8 backtrack#11 limit#1 limit#2',
+    // and a back reference to a group not set matches empty text in JavaScript
+    'xmatch-regex-own-held': 'class#1 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#6 group#7',
   }),
   // JavaScript has no Bidi_Class property
   pcreEngine: ['xmatch-regex-syntax-2:class#13'],
 }
 
-/** The cases of the sets of match mode 3 that differ from Excel at the level registered now. */
-async function offExcel(): Promise<string[]> {
+/** The cases of `xmatch-regex-own-held` that JavaScript's backtracking takes hours over: the engine's alone. */
+const HEAVY = /^xmatch-regex-own-held:(limit|required|range)#/
+
+/** The cases of the sets of match mode 3 that differ from Excel at the level registered now; `heavy`, those of HEAVY too. */
+async function offExcel(heavy = false): Promise<string[]> {
   const off: string[] = []
   for (const set of SETS.filter((s) => s.name.startsWith('xmatch-regex'))) {
     const mod = await loadSet(set.name)
-    const probes = mod.buildProbes()
+    const probes = mod.buildProbes().filter((p) => heavy || !HEAVY.test(`${set.name}:${p.id}`))
     const result = compute(caseBook(probes, mod.SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells
     probes.forEach((p, i) => {
       const got = toVal(result[`A${i + 1}`].value)
@@ -103,7 +109,7 @@ describe('pcreEngine', () => {
   it("matches Excel, in a pool's threads too, registered before the pool and after it", async () => {
     registerRegex(pcreEngine)
     registerRegex(pcreEngine)
-    expect(await offExcel()).toEqual(KNOWN.pcreEngine)
+    expect(await offExcel(true)).toEqual(KNOWN.pcreEngine)
     const late = await pool({ threads: 1 })
     try {
       for (const calc of [early, late]) expect(b1(await calc.compute(book('^(\\((?:[^()]|(?1))*\\))$', 1, '(a(b)c)')))).toBe(1)
