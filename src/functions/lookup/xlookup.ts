@@ -2,6 +2,7 @@
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { regexTest } from '../../regex-level.js'
 import { exactMatch, type Compare, type Key } from './search.js'
 
 const MATCH_MODES = [0, -1, 1, 2, 3]
@@ -9,29 +10,27 @@ const SEARCH_MODES = [1, -1, 2, -2]
 
 /**
  * Match mode 3, a regular expression found anywhere in a text, from the end with search mode -1 (Excel for Mac;
- * Excel for Windows 16.0.20430 has no such mode, #VALUE!). A leading `(?i)` ignores case, as PCRE takes it; a pattern
- * JavaScript does not read, or a binary search, is #VALUE!. The key and the values are read as text (42 finds 42, a
- * blank is empty text).
+ * Excel for Windows 16.0.20430 has no such mode, #VALUE!): JavaScript's syntax with PCRE2's commonest constructs, or
+ * Excel's with a level of `xlcalc/regex` (`regex-level.ts`). A pattern that is none, a binary search, and Excel's match
+ * limit reached are #VALUE!. The key and the values are read as text (42 finds 42, a blank is empty text).
  */
 function regex(cx: Cx, k: Key | null, look: Grid, searchMode: number): number | CErr {
   if (Math.abs(searchMode) === 2) return E.VALUE
-  const text = k === null ? '' : (cx.rules.toText(k) as string)
-  const insensitive = text.startsWith('(?i)')
-  let re: RegExp
-  try {
-    re = new RegExp(insensitive ? text.slice(4) : text, insensitive ? 'iu' : 'u')
-  } catch {
-    return E.VALUE
-  }
+  const test = regexTest(k === null ? '' : (cx.rules.toText(k) as string))
+  if (!test) return E.VALUE
   const n = look.v.length
   const size = look.rows * look.cols
   // a blank is empty text, past the occupied part too (`^$` finds the first blank)
-  const blanks = re.test('')
+  const blanks = test('')
+  if (blanks === 'limit') return E.VALUE
   if (blanks && searchMode < 0 && size > n) return size - 1
   for (let j = 0; j < n; j++) {
     const i = searchMode > 0 ? j : n - 1 - j
     const v = look.v[i]
-    if (!isErr(v) && re.test(v === null ? '' : typeof v === 'string' ? v : (cx.rules.toText(v) as string))) return i
+    if (isErr(v)) continue
+    const hit = test(v === null ? '' : typeof v === 'string' ? v : (cx.rules.toText(v) as string))
+    if (hit === 'limit') return E.VALUE
+    if (hit) return i
   }
   return blanks && searchMode > 0 && size > n ? n : -1
 }
