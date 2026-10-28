@@ -1,6 +1,7 @@
 /**
  * Excel's Go To Special (`Session.getSpecialCells`, the set `bench/coverage/select/special`): the cells of a kind in a
- * range, a range of one cell standing for the used range (`usedArea`) and a larger one taken within it. A blank cell
+ * range, a range of one cell standing for the used range (`usedArea`) and a larger one taken within it; the visible
+ * cells of the range itself, or of the whole sheet for one cell. A blank cell
  * holds neither a value nor a formula; a constant is a value typed in, a formula is a cell with one, each by the kind
  * of its value (a formula answering empty text is text); a visible cell lies in no hidden row or column. The cells of
  * a spill past its formula are neither constants nor formulas, nor blank. The cells found are given as rectangles: the
@@ -10,8 +11,8 @@ import type { CellValue, SpecialCells, SpecialValue } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { array, checkOneOf, object, onlyKeys } from '../input/basic.js'
-import { sheetLines } from '../layout/lines.js'
-import { formatAddress } from '../model.js'
+import { lines, type Line } from '../layout/spans.js'
+import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { cellValue } from '../result.js'
 import { intersect, rectText, type Rect } from '../structure/area.js'
 import { usedArea } from './extent.js'
@@ -65,31 +66,45 @@ function rectangles(rows: Map<number, number[]>): Rect[] {
   return [...done, ...open.values()].sort((a, b) => a.r1 - b.r1 || a.c1 - b.c1)
 }
 
+/** The parts of the span `lo`..`hi` of an axis outside its hidden lines. */
+function shownSpans(list: Line<{ hidden?: boolean }>[], lo: number, hi: number): [number, number][] {
+  const out: [number, number][] = []
+  let at = lo
+  for (const [a, b, e] of list) {
+    if (!e.hidden || b < at || a > hi) continue
+    if (a > at) out.push([at, a - 1])
+    at = b + 1
+  }
+  if (at <= hi) out.push([at, hi])
+  return out
+}
+
 export function specialCells(state: EngineState, s: number, x: Rect, kind: SpecialCells): string[] {
-  const used = usedArea(state, s)
-  const area = used && (x.r1 === x.r2 && x.c1 === x.c2 ? used : intersect(x, used))
-  if (!area) return []
   const sheet = state.input.sheets[s]
-  const lines = sheetLines(sheet, state)
+  const one = x.r1 === x.r2 && x.c1 === x.c2
+  // the visible cells of the range, or of the sheet for one cell, by the spans of rows and columns not hidden
+  if (kind.type === 'visible') {
+    const area = one ? { r1: 0, c1: 0, r2: MAX_ROWS - 1, c2: MAX_COLS - 1 } : x
+    const cols = shownSpans(lines(sheet.columns, 'c'), area.c1, area.c2)
+    return shownSpans(lines(sheet.rows, 'r'), area.r1, area.r2).flatMap(([r1, r2]) => cols.map(([c1, c2]) => rectText({ r1, r2, c1, c2 })))
+  }
+  const used = usedArea(state, s)
+  const area = used && (one ? used : intersect(x, used))
+  if (!area) return []
   const values = kind.type === 'constants' || kind.type === 'formulas' ? new Set(kind.values ?? VALUES) : undefined
   const rows = new Map<number, number[]>()
-  for (let r = area.r1; r <= area.r2; r++) {
-    const hiddenRow = lines.row(r)?.hidden
+  for (let r = area.r1; r <= area.r2; r++)
     for (let c = area.c1; c <= area.c2; c++) {
+      const own = sheet.cells[formatAddress(r, c)]
+      const v = cellValue(state, s, r, c)
+      const formula = own?.formula !== undefined
       let found: boolean
-      if (kind.type === 'visible') found = !hiddenRow && !lines.column(c)?.hidden
+      if (kind.type === 'blanks') found = !formula && v === null
       else {
-        const own = sheet.cells[formatAddress(r, c)]
-        const v = cellValue(state, s, r, c)
-        const formula = own?.formula !== undefined
-        if (kind.type === 'blanks') found = !formula && v === null
-        else {
-          const k = valueKind(v)
-          found = (kind.type === 'formulas' ? formula : !formula && own?.value !== undefined && own.value !== null) && k !== undefined && values!.has(k)
-        }
+        const k = valueKind(v)
+        found = (kind.type === 'formulas' ? formula : !formula && own?.value !== undefined && own.value !== null) && k !== undefined && values!.has(k)
       }
       if (found) (rows.get(r) ?? rows.set(r, []).get(r)!).push(c)
     }
-  }
   return rectangles(rows).map(rectText)
 }
