@@ -12,7 +12,7 @@ import { paced, type Steps } from '../exec/budget.js'
 import { inner, MAX_COLS } from '../model.js'
 import { enCode } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
-import { inside, type Rect } from '../structure/area.js'
+import { cellCount, hasCell, inside, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
 import { evaluator, holds, prepare } from './formulas.js'
@@ -259,29 +259,43 @@ export function* windowLooks(state: EngineState, s: number, x: Rect | Rect[], on
     const test = graded ? null : yield* styleTest(state, s, rule)
     const paint = graded ? yield* shade(state, s, rule) : null
     if (!test && !paint) continue
+    const style = 'style' in rule ? rule.style : undefined
+    const visit = (k: number, r: number, c: number) => {
+      if (stopped.has(k)) return
+      const v = value(r, c)
+      if (paint) {
+        if (typeof v !== 'number') return
+        const look = out.get(k) ?? {}
+        paint(v, look)
+        if (Object.keys(look).length) out.set(k, look)
+        return
+      }
+      if (!test!(v, r, c)) return
+      if (rule.stopIfTrue) stopped.add(k)
+      if (!style) return
+      const look = out.get(k) ?? {}
+      mergeStyle(look, style)
+      out.set(k, look)
+    }
+    // the cells listed, each tested against the parts, when that is less work than the parts' every cell
+    if (only && only.size * parts.length < parts.reduce((n, p) => n + cellCount(p), 0)) {
+      for (const k of only) {
+        if (paced(1)) yield
+        const r = Math.floor(k / MAX_COLS)
+        const c = k - r * MAX_COLS
+        if (parts.some((p) => hasCell(p, r, c))) visit(k, r, c)
+      }
+      continue
+    }
     const seen = parts.length > 1 ? new Set<number>() : null
     for (const p of parts)
       for (let r = p.r1; r <= p.r2; r++)
         for (let c = p.c1; c <= p.c2; c++) {
           if (paced(1)) yield
           const k = r * MAX_COLS + c
-          if ((only && !only.has(k)) || stopped.has(k) || seen?.has(k)) continue
+          if ((only && !only.has(k)) || seen?.has(k)) continue
           seen?.add(k)
-          const v = value(r, c)
-          if (paint) {
-            if (typeof v !== 'number') continue
-            const look = out.get(k) ?? {}
-            paint(v, look)
-            if (Object.keys(look).length) out.set(k, look)
-            continue
-          }
-          if (!test!(v, r, c)) continue
-          if (rule.stopIfTrue) stopped.add(k)
-          const style = 'style' in rule ? rule.style : undefined
-          if (!style) continue
-          const look = out.get(k) ?? {}
-          mergeStyle(look, style)
-          out.set(k, look)
+          visit(k, r, c)
         }
   }
   return out
