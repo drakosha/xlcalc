@@ -10,7 +10,7 @@ import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
 import { colToIndex, dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import { CELL_ERRORS, ERROR_CODE, FORMULA_ERRORS } from '../../syntax/errors.js'
-import type { Issues, Where } from '../issues.js'
+import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell } from '../types.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag, ownEntry } from '../xml/scan.js'
@@ -330,10 +330,17 @@ export function xfAt(index: string, ctx: Pick<CellsContext, 'xfs' | 'issues'>, w
   return xf
 }
 
+/** The messages of a cell format's lost parts, made once: `Issues` takes a message it has had before without its key. */
+const lostMessages = new WeakMap<Xf, XlsxMessage[]>()
+
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
 export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; numberFormat?: NumberFormat } {
   if (!xf) return {}
-  for (const lost of xf.lost) issues.add('style', { key: 'styleLost', part: lost }, where)
+  if (xf.lost.length) {
+    let messages = lostMessages.get(xf)
+    if (!messages) lostMessages.set(xf, (messages = xf.lost.map((part) => ({ key: 'styleLost', part }))))
+    for (const m of messages) issues.add('style', m, where)
+  }
   if (xf.eastAsian !== undefined) issues.add('numberFormat', { key: 'eastAsianFormat' }, where)
   if (xf.unknownFormat !== undefined) issues.add('numberFormat', { key: 'unknownFormat' }, where)
   const out: { style?: number; numberFormat?: NumberFormat } = {}

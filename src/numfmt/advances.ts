@@ -5,7 +5,7 @@
  * (`glyphs.ts`, `fitText`); the runs of one letter in `test/excel/fit/glyphs.json` agree with them to a point in 600. A
  * character not here counts as a digit.
  */
-const ADVANCES: [number, string][] = [
+export const ADVANCES: [number, string][] = [
   [452, "'"],
   [463, ' '],
   [470, 'ilìíîï'],
@@ -138,7 +138,7 @@ const ADVANCES: [number, string][] = [
 ]
 
 /** Characters Carlito lacks. */
-const BESIDES: [number, string][] = [
+export const BESIDES: [number, string][] = [
   // the ruble sign as Excel measured it: 100 of them fit to 581 points (`glyphs.json`), as the euro, pound and yen signs
   [1038, '₽'],
   // a no-break space as the space, a soft hyphen as the hyphen, a prime as the apostrophe
@@ -147,10 +147,5 @@ const BESIDES: [number, string][] = [
   [452, '′'],
 ]
 
-const ADVANCE = new Map<string, number>([...ADVANCES, ...BESIDES].flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
-
 /** A digit's advance, which a character not in the table takes too. */
-const DIGIT_ADVANCE = 1038
-
-/** The advance of one character, in 1/2048 of the font's size. */
-export const advance = (ch: string): number => ADVANCE.get(ch) ?? DIGIT_ADVANCE
+export const DIGIT_ADVANCE = 1038
