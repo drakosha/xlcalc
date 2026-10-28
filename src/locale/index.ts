@@ -11,6 +11,7 @@ import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
 import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
+import { inner } from '../model.js'
 import { checkLocaleArg } from './load.js'
 import { say } from './messages.js'
 import { sides, translate, type Fail, type Sides, type Translated } from './translate.js'
@@ -54,11 +55,28 @@ export function toLocal(formula: string, where: string | Locale, opts?: Translat
   return localText(checkString(formula, 'formula'), sides, table, externalBooks)
 }
 
+/** What `showFormula` gave, by the locale's tables, the book's links (`NO_LINKS` for none) and the formula's table and text. */
+const SHOWN = new WeakMap<Sides, WeakMap<object, Map<string, Translation>>>()
+const NO_LINKS = {}
+
 /**
  * `toLocal` for the package's own calls, which give it a checked book's table and links, without checking them: a
- * window and an explanation show each formula of a book whose links can hold thousands of sheets.
+ * window and an explanation show each formula of a book whose links can hold thousands of sheets. Kept between calls (a
+ * window shown again shows the same formulas), up to 4,096 per locale and links; the package changes a book's links by
+ * a new list, never in place.
  */
-export const showFormula = (formula: string, where: string | Locale, table?: string, externalBooks?: ExternalBook[]): Translation => localText(formula, localeSides(where), table, externalBooks)
+export function showFormula(formula: string, where: string | Locale, table?: string, externalBooks?: ExternalBook[]): Translation {
+  const sides = localeSides(where)
+  const shown = inner(inner(SHOWN, sides[1], () => new WeakMap()), externalBooks ?? NO_LINKS, () => new Map())
+  // a table's name holds no line break
+  const k = `${table ?? ''}\n${formula}`
+  let t = shown.get(k)
+  if (!t) {
+    if (shown.size >= 4096) shown.clear()
+    shown.set(k, (t = localText(formula, sides, table, externalBooks)))
+  }
+  return t
+}
 
 function localText(formula: string, [locale, s]: [Locale, Sides], table: string | undefined, externalBooks: ExternalBook[] | undefined): Translation {
   const shown = showLinks(shownTables(formula, table, s.local.syn.list), externalBooks ?? [])
