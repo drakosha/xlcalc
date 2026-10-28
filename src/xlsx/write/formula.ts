@@ -27,7 +27,8 @@ export interface FileNames {
  * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
  * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
  * and its references to other workbooks the book's links and their sheets. A defined name's ref (`opts.anySheet`) keeps
- * a reference to a sheet the book does not have, and binds its links without the walk that looks for them.
+ * a reference to a sheet the book does not have, and binds its links without the walk that looks for them. `opts.toks`
+ * are the formula's tokens where they were read already.
  */
 export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean; toks?: Tok[] } = {}): Ast | null {
   let ast: Ast
