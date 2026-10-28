@@ -8,20 +8,16 @@
  * it. The cases of `choose`, an item of the list applied, are the Mac's alone. Excel takes the whole run in front of the
  * session, about a second and a half a cell.
  */
-import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { localeDir } from '../coverage/locales.js'
 import { secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
 import { caseFile } from '../coverage/ui.js'
 import { readCells, type UiCase, type UiSet } from '../coverage/ui/cases.js'
-import { HOST, metaOf, ssh, type Tag, type WinEnv } from './remote.js'
+import { HOST, metaOf, type Tag, type WinEnv } from './remote.js'
 import { winFile } from './functions.js'
-
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const WORK = 'C:\\xlcalc\\ribbon'
+import { runOnScreen, scp } from './screen.js'
 
 /** What the box showed for a cell, the code Excel keeps for its format (en-US) and that code in the locale. */
 export interface RibbonBox {
@@ -39,35 +35,14 @@ export interface StoredRibbon {
 /** The cases of a ui set's module that read the box. */
 export const ribbonCases = (set: UiSet): UiCase[] => set.buildUiCases().filter((c) => c.act.do === 'ribbon')
 
-const scp = (...args: string[]) => execFileSync('scp', ['-q', '-o', 'BatchMode=yes', ...args])
-
 export async function stepRibbon(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const t0 = Date.now()
-  // quser names a session's state in English when its output is UTF-8: Active for one on a screen, Disc for one left
-  if (!/\bActive\b/.test(ssh('[Console]::OutputEncoding = [Text.Encoding]::UTF8; quser 2>&1 | Out-String'))) throw new Error('ribbon: no session on a screen on the machine (log on through Remote Desktop first)')
   const cases = ribbonCases(await setModule<UiSet>('ui', set))
   const dir = mkdtempSync(join(tmpdir(), 'xlwin-ribbon-'))
   for (const c of cases) writeFileSync(join(dir, `${c.id}.xlsx`), await caseFile(c, `${set} ${c.id}`))
   writeFileSync(join(dir, 'job.json'), JSON.stringify(cases.map((c) => ({ file: `${c.id}.xlsx`, cells: readCells(c) }))))
-  ssh(`Remove-Item -Recurse -Force ${WORK} -ErrorAction SilentlyContinue; New-Item -ItemType Directory ${WORK} | Out-Null`)
-  scp(join(HERE, 'ribbon.ps1'), `${HOST}:C:/xlcalc/bin/`)
-  scp(...readdirSync(dir).map((f) => join(dir, f)), `${HOST}:C:/xlcalc/ribbon/`)
-  const started = ssh('(Get-Date).ToString("o")').trim()
-  ssh(
-    `schtasks /Create /TN xlribbon /TR 'powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File C:\\xlcalc\\bin\\ribbon.ps1 -job ${WORK}\\job.json -out ${WORK}\\out.json' /SC ONCE /ST 23:59 /IT /F | Out-Null; schtasks /Run /TN xlribbon | Out-Null`,
-  )
-  try {
-    const cells = cases.reduce((n, c) => n + readCells(c).length, 0)
-    const until = Date.now() + (60 + 10 * cases.length + 4 * cells) * 1000
-    while (ssh(`Test-Path ${WORK}\\out.json`).trim() !== 'True') {
-      if (Date.now() > until) throw new Error('ribbon: the task wrote no answer in time')
-      await new Promise((r) => setTimeout(r, 5000))
-    }
-  } finally {
-    ssh('schtasks /Delete /TN xlribbon /F | Out-Null')
-    // the task's Excel may stay after it quits (it did once in two runs): stopped when it has no window, the user's own left alone
-    ssh(`Start-Sleep 10; Get-Process EXCEL -ErrorAction SilentlyContinue | Where-Object { $_.StartTime -ge [datetime]'${started}' -and $_.SessionId -ne 0 -and -not $_.MainWindowTitle } | Stop-Process -Force`)
-  }
+  const cells = cases.reduce((n, c) => n + readCells(c).length, 0)
+  await runOnScreen('ribbon', 'ribbon.ps1', dir, 60 + 10 * cases.length + 4 * cells)
   scp(`${HOST}:C:/xlcalc/ribbon/out.json`, join(dir, 'out.json'))
   const raw = JSON.parse(readFileSync(join(dir, 'out.json'), 'utf8').replace(/^\uFEFF/, '')) as { version: string; ui: number; box: string; error?: string; answers: string[][][] }
   if (raw.error) throw new Error(`ribbon: ${raw.error}`)

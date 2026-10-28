@@ -1,6 +1,11 @@
-/** Formulas of a file in the engine's spelling, with what the engine cannot take reported on their cell or name. */
+/**
+ * Formulas of a file in the engine's spelling, with what the engine cannot take reported on their cell or name. Of the
+ * formulas of one shape (`syntax/shape.ts`), a formula copied down a column, one is parsed for a file.
+ */
 import { FormulaError, type Ast } from '../../syntax/ast.js'
-import { parse } from '../../syntax/parse.js'
+import { parseTokens } from '../../syntax/parse.js'
+import { shaped, SHAPES } from '../../syntax/shape.js'
+import type { Tok } from '../../syntax/tokens.js'
 import { fromFile, type Found } from '../formulas/from-file.js'
 import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
@@ -17,7 +22,9 @@ const EXPLAINED = new Set<Found>(['table', 'externalLink', 'letName'])
 
 export interface ReadFormula {
   formula: string
-  /** The syntax tree, when the engine parses the formula. */
+  /** The engine parses the formula. */
+  ok: boolean
+  /** The syntax tree, when the engine parses the formula and it was asked for. */
   ast?: Ast
   found: Found[]
   /** The user-defined functions it calls, as `fromFile` finds them. */
@@ -43,27 +50,57 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
     if (x === 'userFunction') for (const fn of f.userFunctions ?? [undefined]) issues.add(...FOUND[x], { ...where, fn })
     else issues.add(...FOUND[x], where)
   }
-  if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', { key: 'formulaUnparsed' }, where)
+  if (!f.ok && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', { key: 'formulaUnparsed' }, where)
 }
 
-/** A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet. */
-export function parseFormula(text: string, opts: FormulaOptions = {}): ReadFormula {
-  const { links, ...c } = fromFile(text)
-  if (opts.rename) c.formula = opts.rename(c.formula)
-  let ast: Ast
-  try {
-    ast = parse(c.formula, { union: opts.union })
-  } catch (e) {
-    if (!(e instanceof FormulaError)) throw e
-    return c
+/** The shapes of the formulas read with one options object, a file's: true for one that parsed, false for one parsed formula by formula. */
+const shapesOf = new WeakMap<FormulaOptions, Map<string, boolean>>()
+
+/**
+ * Whether the formula parses, and its tree where `tree` asks for it: a formula of a shape a formula of the same file
+ * (`opts`) parsed before parses too, and is not parsed again.
+ */
+function parsed(text: string, opts: FormulaOptions | undefined, tree: boolean): { ok: boolean; ast?: Ast } {
+  const own = (toks: Tok[] | null) => {
+    try {
+      return { ok: true, ast: parseTokens(text, toks, { union: opts?.union }) }
+    } catch (e) {
+      if (e instanceof FormulaError) return { ok: false }
+      throw e
+    }
   }
-  const linked = links?.every((n) => opts.links?.has(n))
-  return { ...c, ast, ...(linked ? { found: c.found.filter((x) => x !== 'externalLink') } : {}) }
+  // a name's formula, and a text too long or blank, which fails before it is read
+  if (tree || !opts || opts.union) return own(null)
+  const read = shaped(text)
+  if (read === null) return own(null)
+  if (read === 'unread') return { ok: false }
+  const { toks, shape } = read
+  if (!shape) return own(toks)
+  let shapes = shapesOf.get(opts)
+  if (!shapes) shapesOf.set(opts, (shapes = new Map()))
+  if (shapes.get(shape.key)) return { ok: true }
+  // a shape that failed is parsed formula by formula, as the engine prepares it
+  const r = own(toks)
+  if (shapes.size < SHAPES) shapes.set(shape.key, r.ok)
+  return r
 }
 
-/** A formula read at `where`. */
-export function readFormula(text: string, issues: Issues, where: Where, opts?: FormulaOptions): ReadFormula {
-  const f = parseFormula(text, opts)
+/**
+ * A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet; its tree
+ * left out where `tree` is false and its shape parsed before.
+ */
+export function parseFormula(text: string, opts?: FormulaOptions, tree = true): ReadFormula {
+  const { links, ...c } = fromFile(text)
+  if (opts?.rename) c.formula = opts.rename(c.formula)
+  const r = parsed(c.formula, opts, tree)
+  if (!r.ok) return { ...c, ok: false }
+  const linked = links?.every((n) => opts?.links?.has(n))
+  return { ...c, ok: true, ...(r.ast ? { ast: r.ast } : {}), ...(linked ? { found: c.found.filter((x) => x !== 'externalLink') } : {}) }
+}
+
+/** A formula read at `where`, with its tree where `tree` asks for it (`parseFormula`). */
+export function readFormula(text: string, issues: Issues, where: Where, opts?: FormulaOptions, tree = false): ReadFormula {
+  const f = parseFormula(text, opts, tree)
   reportFormula(f, issues, where)
   return f
 }

@@ -2,31 +2,57 @@
  * Paste Special against stored answers of Excel (`test/excel/paste/` of the Mac, `test/excel/win/paste/` of Windows):
  * each case's book after `editStructure`'s `copyRange` with `paste` and `transpose`, written and read back, shows what
  * the file Excel saved shows (`bench/coverage/paste/shown.ts`). A paste Excel refused (it leaves the book as it was,
- * with or without an error) is one `editStructure` refuses. Kinds the engine does not have are left out; a known
- * difference must still differ.
+ * with or without an error) is one `editStructure` refuses; the formulas Excel read in the book's language after the
+ * paste (`local`) are the engine's through `toLocal`. Kinds the engine does not have are left out; a known difference
+ * must still differ.
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { writeXlsx } from '../src/xlsx.js'
+import type { NumberFormat } from '../src/contract.js'
+import { builtinIn } from '../src/numfmt/builtin.js'
 import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste/cases.js'
-import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
+import { engineHas, engineOutcome, localFormulas, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
+// the ru-RU sets compute in ru-RU
+import './locales.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops']
 
-/** An operation onto a dynamic array formula. */
+/** An operation onto a formula written as a dynamic array formula. */
 const DYNAMIC =
-  'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula and as a spill is; the engine combines it as Excel combines a formula of the ordinary kind (the set ops-held)'
+  'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula; the engine refuses it onto a spilled array alone and combines a formula that does not spill, as Excel combines a typed one (the set ops-held)'
 
 /** Values or formulas and number formats of whole columns. */
 const COLUMNS = "Excel gives each cell of the column within the sheet's used range the number format of the source's column; the engine pastes the cells' own"
+
+/** A shown book with each cell's number format through `f`. */
+export const withFormats = (shown: Shown, f: (x: NumberFormat) => NumberFormat): Shown =>
+  Object.fromEntries(
+    Object.entries(shown).map(([name, s]) => {
+      const cells = Object.entries(s.cells as Record<string, { numberFormat?: NumberFormat }>).map(([a, c]) => [a, c.numberFormat === undefined ? c : { ...c, numberFormat: f(c.numberFormat) }])
+      return [name, { ...s, cells: Object.fromEntries(cells) }]
+    }),
+  )
+
+/**
+ * A book as Excel ru-RU saves it, which is not the paste: a code that shows as one of its built-in formats saved as
+ * that format (`dd/mm/yyyy`, shown `dd.mm.yyyy`, as format 14); both sides by the code ru-RU shows, a date's `/` as `.`.
+ */
+export const asRu = (shown: Shown): Shown => withFormats(shown, (x) => (typeof x === 'number' ? builtinIn('ru-RU')(x) : /[dmy]/i.test(x) ? x.replaceAll('/', '.') : x))
+
+/** The paste sets with answers of Excel ru-RU. */
+export const PASTE_RU_SETS = ['ru-ops']
+
+/** One cell with a look and a rule pasted with all into a merged area. */
+export const INTO_MERGED = "Excel pastes one cell into a merged area with its value alone, without the cell's look and rule (measured once); the engine pastes the cell whole"
 
 /** Where the engine pastes otherwise than Excel for Mac, by set and case. */
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'held/table-formats': "Excel pastes the look a table's style gives its cells as their formats; the engine does not draw table styles",
   'kinds/allExceptBorders-column': 'a whole column that cuts a merged area (A5:B5): Excel leaves out the merged cell, the engine pastes it',
   ...Object.fromEntries(['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [`ops/${id}`, DYNAMIC])),
-  'ops-held/number-add-spill': DYNAMIC,
+  'merging-held/all-into-merged': INTO_MERGED,
   'kinds-held/valuesAndNumberFormats-column': COLUMNS,
   'kinds-held/formulasAndNumberFormats-column': COLUMNS,
 }
@@ -48,7 +74,12 @@ export function pasteSets(excel: string, dir: string, sets: readonly string[], k
       const why = known[`${set}/${c.id}`]
       if (why) expect('refused' in r ? null : r.shown, why).not.toEqual(saved)
       else if ('refused' in r) expect(saved, `${c.id} refused: ${r.refused}`).toEqual(as(await shownFile((await writeXlsx({ book })).data)))
-      else expect(r.shown).toEqual(saved)
+      else {
+        expect(r.shown).toEqual(saved)
+        // the formulas Excel read in the book's language
+        const local = s.answers[c.id]?.local
+        if (local) expect(localFormulas(r.shown, c, book.locale ?? 'en-US')).toEqual(local)
+      }
     })
   })
   it(`every known difference from ${excel} names a stored case`, () => {

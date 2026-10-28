@@ -24,6 +24,10 @@ export interface WriteArgs {
   book: BookInput
   /** The result's cells by sheet of the book, but with `omit`, where the file stores no values of formulas. */
   cells?: Record<string, ResultCell>[]
+  /** The addresses of each sheet's cells (`Object.keys`), listed once for the checks and the writer. */
+  keys: string[][]
+  /** The addresses of each sheet's cells of the result, with `cells`. */
+  resultKeys?: string[][]
   mode: 'formulas' | 'values'
   values: Values
   /** `values` was not given and there is no result: the file stores no values of formulas, which is reported. */
@@ -44,8 +48,8 @@ const isSession = (v: unknown) => typeof (v as { getSnapshot?: unknown } | null)
 /** A result (`compute`'s, a session's `getResult()`), told by its hashes: it has sheets, and a book does too. */
 const isResult = (v: unknown) => typeof (v as { hash?: unknown } | null)?.hash === 'string' && typeof (v as { inputHash?: unknown }).inputHash === 'string'
 
-/** The result's cells by sheet; the result must be of a result's shape and the book's (the same sheets in order). */
-function resultCells(book: BookInput, result: unknown, path: string): Record<string, ResultCell>[] {
+/** The result's cells by sheet with their addresses; the result must be of a result's shape and the book's (the same sheets in order). */
+function resultCells(book: BookInput, result: unknown, path: string): { cells: Record<string, ResultCell>; keys: string[] }[] {
   if (isSession(result)) throw new InputError(path, SESSION)
   const r = object(result, path, RESULT)
   if (!Array.isArray(r.sheets)) throw new InputError(path, `expected ${RESULT}, got an object without sheets`)
@@ -55,11 +59,12 @@ function resultCells(book: BookInput, result: unknown, path: string): Record<str
   return sheets.map((s, i) => {
     const p = `${path}.sheets[${i}].cells`
     const cells = object(s.cells, p, "the result's cells by address, such as { B1: { value: 200 } }")
-    for (const a in cells) {
+    const keys = Object.keys(cells)
+    for (const a of keys) {
       const c = cells[a]
       if (typeof c !== 'object' || c === null || !('value' in c)) throw new InputError(`${p}[${JSON.stringify(a)}]`, `expected a cell of a result, such as { value: 200 }, got ${what(c)}`)
     }
-    return cells as Record<string, ResultCell>
+    return { cells: cells as Record<string, ResultCell>, keys }
   })
 }
 
@@ -72,7 +77,10 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   onlyKeys(given, 'snapshot', ['book', 'result'], 'cached' in given ? ' (a file read: pass { book: read.book, result: read.cached })' : 'sheets' in given ? BOOK_ALONE : '')
   onlyKeys(o, 'opts', ['mode', 'values', 'locale'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
   // a sheet without looks is written as given, its entries in their order; one with looks as the engine takes it
-  const book = checkBook(given.book, 'snapshot.book', true)
+  const listed = new Map<object, string[]>()
+  const book = checkBook(given.book, 'snapshot.book', true, listed)
+  // a sheet checkBook gave anew (formulas without their `=`, looks alone taken out) is listed here
+  const keys = book.sheets.map((s) => listed.get(s.cells) ?? Object.keys(s.cells))
   const { result } = given
   const path = 'snapshot.result'
   const mode = o.mode ?? 'formulas'
@@ -83,19 +91,21 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   if (mode === 'values' && !has) throw new InputError(path, `the values mode takes the values from the result: pass { book, result }`)
   if (mode === 'values' && values === 'omit') throw new InputError('opts.values', `the values mode writes values only: "omit" would leave formula cells empty`)
   if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: pass { book, result }`)
-  const cells = has ? resultCells(book, result, path) : undefined
-  if (values === 'require') requireValues(book, cells!, path)
+  const res = has ? resultCells(book, result, path) : undefined
+  const cells = res?.map((r) => r.cells)
+  const resultKeys = res?.map((r) => r.keys)
+  if (values === 'require') requireValues(book, keys, cells!, resultKeys!, path)
   const locale = optionalLocale(o.locale, 'opts.locale')
-  return { book, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells } : {}), ...(locale ? { locale } : {}) }
+  return { book, keys, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells, resultKeys } : {}), ...(locale ? { locale } : {}) }
 }
 
 /** Every formula of the book and every cell of an array's range (but past a large array's `spillFill`) has its value. */
-function requireValues(book: BookInput, cells: Record<string, ResultCell>[], path: string): void {
+function requireValues(book: BookInput, keys: string[][], cells: Record<string, ResultCell>[], resultKeys: string[][], path: string): void {
   const missing = (where: string) => new InputError(path, `expected the result of this workbook: ${where} has no value in the result ${PRESERVE}`)
   book.sheets.forEach((s, i) => {
     const r = cells[i]
-    for (const a in s.cells) if (s.cells[a].formula !== undefined && r[a] === undefined) throw missing(`the formula of '${s.name}'!${a}`)
-    for (const a in r) {
+    for (const a of keys[i]) if (s.cells[a].formula !== undefined && r[a] === undefined) throw missing(`the formula of '${s.name}'!${a}`)
+    for (const a of resultKeys[i]) {
       const x = r[a].spillFill === undefined && r[a].spill !== undefined ? parseRange(r[a].spill!) : null
       if (!x) continue
       for (let row = x.r1; row <= x.r2; row++)
