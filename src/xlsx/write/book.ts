@@ -143,14 +143,10 @@ export function bookWriting(book: BookInput): BookWriting {
   const tables = tablesOf(book)
   return {
     names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks },
-    // a sheet without tables looks none up
-    tableAt: (i) =>
-      tables.list.some((t) => t.s === i)
-        ? (row, col) => {
-            const t = tableAt(tables, i, row, col)
-            return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
-          }
-        : () => undefined,
+    tableAt: (i) => (row, col) => {
+      const t = tableAt(tables, i, row, col)
+      return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
+    },
     // a filtered sheet's criteria go on its AutoFilter, else on its first table with a header row, which has a filter of its own
     filterTables: book.sheets.map((s) => (s.filtered && !s.autoFilter ? s.tables?.find((t) => t.headers !== false)?.name : undefined)),
     // Excel shows the active sheet, which is never a hidden one
