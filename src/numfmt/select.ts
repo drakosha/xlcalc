@@ -24,18 +24,38 @@ function negativeOnly(secs: Section[], i: number): boolean {
   return !probes.some((p) => p >= 0 && secs.slice(0, i).every((s) => !s.cond || !holds(s.cond, p)) && (!secs[i].cond || holds(secs[i].cond!, p)))
 }
 
-export function choose(secs: Section[], v: number): Choice | null {
+/** What of a code's sections the choice of a value's does not depend on: the sections numbers take, and with conditions whether each is signed. */
+interface Plan {
+  n: number
+  ordered: Section[]
+  /** By the conditional section a value takes, whether it is signed; undefined without conditions. */
+  signed?: boolean[]
+}
+
+/** Plans by a code's sections, which `parseFormat` keeps one array of per code. */
+const PLANS = new WeakMap<Section[], Plan>()
+
+function planOf(secs: Section[]): Plan {
+  let p = PLANS.get(secs)
+  if (p) return p
   // a text section ending a code of two or three sections takes no number (`h:mm;@` shows a negative as `h:mm` does)
   const n = secs.length > 1 && secs.length < 4 && secs[secs.length - 1].toks.some((t) => t.t === 'text') ? secs.length - 1 : secs.length
   const ordered = secs.slice(0, Math.min(3, n))
-  if (!ordered.some((s) => s.cond)) {
+  // the one number section before a text section writes the minus (`[<0]0;@` shows -5 as `-5`, the set `values-held`)
+  const signed = ordered.some((s) => s.cond) ? ordered.map((_, i) => (n === 1 && n < secs.length) || !negativeOnly(ordered, i)) : undefined
+  PLANS.set(secs, (p = { n, ordered, signed }))
+  return p
+}
+
+export function choose(secs: Section[], v: number): Choice | null {
+  const { n, ordered, signed } = planOf(secs)
+  if (!signed) {
     if (v < 0 && n >= 2) return { sec: secs[1], signed: false }
     return { sec: v === 0 && n >= 3 ? secs[2] : secs[0], signed: true }
   }
   const i = ordered.findIndex((s) => !s.cond || holds(s.cond, v))
   if (i < 0) return secs.length === 1 ? { sec: null, signed: true } : null
-  // the one number section before a text section writes the minus (`[<0]0;@` shows -5 as `-5`, the set `values-held`)
-  return { sec: ordered[i], signed: (n === 1 && n < secs.length) || !negativeOnly(ordered, i) }
+  return { sec: ordered[i], signed: signed[i] }
 }
 
 /** The section that shows text: the fourth, else one with `@`. */
