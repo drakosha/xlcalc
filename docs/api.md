@@ -882,8 +882,8 @@ function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot
 ```
 
 Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
-file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) a change that would leave
-references the model does not hold pointing at other cells.
+file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal), its message in the language of
+`opts.locale`) a change that would leave references the model does not hold pointing at other cells.
 
 ## xlcalc/worker
 
@@ -5051,8 +5051,8 @@ interface WorkerLike {
 
 ### `WriteKeptOptions`
 
-Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and which formula values the file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes
-them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
+Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and of its refusals ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) and which formula values the
+file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
 
 ```ts
 interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'values'> {

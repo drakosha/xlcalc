@@ -28,7 +28,7 @@ console.log(same.data === original) // → true
 | option | |
 |---|---|
 | `values` | which formula values the file stores, as for `writeXlsx`: `'require'` by default with a result, `'omit'` without one, `'preserve'` |
-| `locale` | the language of the issues' messages, as for `writeXlsx` |
+| `locale` | the language of the issues' messages and of a refusal's, as for `writeXlsx` |
 | `limits` | how large the original file's parts may be once inflated, as for `readXlsx` |
 
 A change the file cannot take without pointing a part at other cells is refused: `writeKept` throws `KeptRefusal`, exported by the subpath, with the reason in its message and its kind in `code`, and writes no file ([Refusals](#refusals)).
@@ -124,7 +124,7 @@ What cannot go as Excel would is refused: a pivot table's rules, which the pivot
 
 ## Refusals
 
-`writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does or lose what it holds. Its `code` (`KeptRefusalCode`) gives the kind for a program, in brackets:
+`writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does or lose what it holds. Its message is in the language of `writeKept`'s `locale`, as its issues are (`{ locale: 'ru-RU' }` once ru-RU is loaded, or the locale object), English by default; its `code` (`KeptRefusalCode`) gives the kind for a program, in brackets:
 
 - a range moved over a drawing (its cells move and its lines do not), or a change that would cut a pivot table, which Excel refuses (`moved`); a part that moves in a way `writeKept` does not write (`moved`);
 - a drawing whose cells were deleted with all the rows below or the columns beside it; the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know), or in cells deleted; a sparkline's cell deleted (`deleted`);

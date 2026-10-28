@@ -116,7 +116,7 @@ The operations change rules as Excel changes them:
 
 ## Checked against Excel
 
-Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, on 74 workbooks, each set predicted before Excel ran it: the engine displays what Excel displayed in 4,015 of 4,017 cells, and the other two are known differences. Not tested: a data bar's length and an icon, which no object model exposes, and the borders, underline and strikethrough of a rule's style.
+Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, on 74 workbooks, each set predicted before Excel ran it: the engine displays what Excel displayed in 4,015 of 4,017 cells, and the other two are known differences. The order of rules after inserted and deleted rows and columns was tested on 37 more workbooks in four sets, each held out after the one before: both versions of Excel saved the same order in every case, and the engine gives it in all but one, a known difference. Not tested: a data bar's length and an icon, which no object model exposes, and the borders, underline and strikethrough of a rule's style.
 
 ## Known differences
 
