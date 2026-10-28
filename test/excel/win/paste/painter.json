@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 36.6
+  "seconds": 26.1
  },
  "books": {
   "painter": {
@@ -354,12 +354,19 @@
   "other-sheet-formats": "57233d5e224dc88f7661f676b83d0229112e6ffdf7f0a4f1a806ecf717f92d2a"
  },
  "answers": {
+  "cell-to-range-painter": {},
   "cell-to-range-formats": {},
+  "range-to-cell-painter": {},
   "range-to-cell-formats": {},
+  "merged-painter": {},
   "merged-formats": {},
+  "onto-merged-painter": {},
   "onto-merged-formats": {},
+  "row-painter": {},
   "row-formats": {},
+  "column-painter": {},
   "column-formats": {},
+  "other-sheet-painter": {},
   "other-sheet-formats": {}
  }
 }

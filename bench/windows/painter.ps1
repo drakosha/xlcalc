@@ -20,36 +20,18 @@ function IsOn($t) { [int]$t.Current.ToggleState -eq 1 }
 Add-Type -Namespace XlPaint -Name Win -MemberDefinition @'
 [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
 [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int n);
-[DllImport("user32.dll")] public static extern bool BringWindowToTop(IntPtr h);
-[DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, out uint p);
-[DllImport("user32.dll")] public static extern bool AttachThreadInput(uint a, uint b, bool f);
-[DllImport("kernel32.dll")] public static extern uint GetCurrentThreadId();
 [DllImport("user32.dll")] public static extern void keybd_event(byte k, byte s, uint f, UIntPtr x);
 '@
-$shell = New-Object -ComObject WScript.Shell
-# Excel in front, by the first way Windows lets a background process take the foreground: after an input of its own,
-# by the process's activation, by a restore, by joining the input of the window in front; the way named in the answer
+# Excel in front: Windows lets a process take the foreground once it sent the last input, so Shift goes down and up
+# first; a window that keeps the foreground (Windows's Get Started did) stops the step
 function Front($hwnd) {
   $h = [IntPtr]$hwnd
-  $tries = @(
-    { [XlPaint.Win]::keybd_event(0x10, 0, 0, [UIntPtr]::Zero); [XlPaint.Win]::keybd_event(0x10, 0, 2, [UIntPtr]::Zero); [void][XlPaint.Win]::SetForegroundWindow($h) },
-    { $p = 0; [void][XlPaint.Win]::GetWindowThreadProcessId($h, [ref]$p); [void]$shell.AppActivate([int]$p) },
-    { [void][XlPaint.Win]::ShowWindow($h, 6); Start-Sleep -Milliseconds 300; [void][XlPaint.Win]::ShowWindow($h, 3) },
-    {
-      $p = 0
-      $fg = [XlPaint.Win]::GetWindowThreadProcessId([XlPaint.Win]::GetForegroundWindow(), [ref]$p)
-      $me = [XlPaint.Win]::GetCurrentThreadId()
-      [void][XlPaint.Win]::AttachThreadInput($me, $fg, $true)
-      [void][XlPaint.Win]::BringWindowToTop($h)
-      [void][XlPaint.Win]::SetForegroundWindow($h)
-      [void][XlPaint.Win]::AttachThreadInput($me, $fg, $false)
-    }
-  )
-  for ($i = 0; $i -lt $tries.Count; $i++) {
-    & $tries[$i]
+  for ($i = 0; $i -lt 3; $i++) {
+    [XlPaint.Win]::keybd_event(0x10, 0, 0, [UIntPtr]::Zero)
+    [XlPaint.Win]::keybd_event(0x10, 0, 2, [UIntPtr]::Zero)
+    [void][XlPaint.Win]::SetForegroundWindow($h)
     Start-Sleep -Milliseconds 400
-    if ([XlPaint.Win]::GetForegroundWindow() -eq $h) { $script:front = $i; return }
+    if ([XlPaint.Win]::GetForegroundWindow() -eq $h) { return }
   }
   throw "Excel did not come to the front: $([XlPaint.Win]::GetForegroundWindow()) is, not $hwnd"
 }
@@ -65,7 +47,6 @@ try {
   foreach ($b in $books) {
     $wb = $xl.Workbooks.Open((Join-Path $dir $b.file), 0, $false)
     $err = ''
-    $script:front = -1
     try {
       $ws = $wb.Worksheets.Item($b.from[0])
       [void]$ws.Activate()
@@ -80,16 +61,21 @@ try {
       [void]$wt.Range($b.to[1]).Select()
       Start-Sleep -Milliseconds 500
       if (-not (IsOn $t)) { throw 'the Format Painter applied at a selection of the object model' }
-      Front $xl.Hwnd
-      [System.Windows.Forms.SendKeys]::SendWait($(if ($b.key -eq 'up') { '+{UP}' } else { '+{LEFT}' }))
-      Start-Sleep 1
-      if (IsOn $t) { throw 'the Format Painter stayed on' }
+      $sel = $xl.Selection.Address()
+      # the key again where it was lost, the selection as it was (the first book of a run lost it once)
+      for ($k = 0; $k -lt 2 -and $xl.Selection.Address() -eq $sel; $k++) {
+        Front $xl.Hwnd
+        [System.Windows.Forms.SendKeys]::SendWait($(if ($b.key -eq 'up') { '+{UP}' } else { '+{LEFT}' }))
+        Start-Sleep -Milliseconds 500
+      }
+      for ($i = 0; $i -lt 30 -and (IsOn $t); $i++) { Start-Sleep -Milliseconds 100 }
+      if (IsOn $t) { throw "the Format Painter stayed on, $sel then $($xl.Selection.Address()) selected" }
     } catch { $err = 'paste: ' + [string]$_.Exception.Message + ' at line ' + [string]$_.InvocationInfo.ScriptLineNumber }
     [void]$wb.Worksheets.Item(1).Activate()
     [void]$wb.Worksheets.Item(1).Range('A1').Select()
     $wb.SaveAs((Join-Path $dir $b.out), 51)
     $wb.Close($false)
-    [void]$res.answers.Add([ordered]@{ error = $err; front = $script:front })
+    [void]$res.answers.Add([ordered]@{ error = $err })
   }
 } catch { $res.error = [string]$_.Exception.Message + ' ' + [string]$_.InvocationInfo.PositionMessage } finally {
   $xl.Quit()
