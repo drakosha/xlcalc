@@ -299,6 +299,17 @@ The words of a formula (TRUE and FALSE, function names, and LET names) containin
 
 LET names were tested as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Cell entry](entry.md)), predicted before Excel ran them: the engine rejected every cell address, while Excel accepts all of them except those that are also R1C1 row or column references (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside a name, at the start and after something shaped like a cell (`A1?x`) are names, as predicted. The engine now accepts them the same way (fixed).
 
+
+### Names from a selection
+
+`npx tsx bench/windows/run.ts select <set>` writes each book of `bench/coverage/select/<set>.ts` with `writeXlsx`, opens it in Excel 16.0.20430 for Windows, and for each case calls `Range.CreateNames` over its range with its sides of labels and reads the names Excel made (`Names`, each `Name` and `RefersTo`), deleting them before the next case; `test/select-win.test.ts` compares them with `getNamesFromSelection`. The engine's answers were committed before each run (`bench/coverage/select/*.predicted.json`).
+
+| set | cases | what |
+|---|---|---|
+| `names` | 9 | 23 labels of every kind in a top row (references, numbers, booleans, a date, an error, a formula's text, spaces and punctuation, Cyrillic, a name twice, 300 characters), the left column and the corner, each side alone and all four, labels alone |
+| `names-held` | 3 | held out: spaces at the ends and inside, a tab, R1C1 references of each form, a time and a percentage, text that reads as a number, formulas, a function's name, a range's address, ru-RU's boolean, a name twice in a column, 255 and 256 characters |
+
+`names` held in 7 of 9: a number, a boolean and an error make no name, where the engine had made `_2024` and `_N_A`; a date is named by the text it shows (`_3_15_2023`), spaces at a label's ends are left out (`lead`), and `_` goes before an R1C1 reference with a number (`_R2C3`) but after a cell's address (`Q1_`); and Excel refuses a range of labels alone, where the engine gives no names. `names-held`, predicted after the fit, held in 2 of 3: a time of day makes no name either.
 ### Editing a grid
 
 From [Editing a grid](edits.md).
