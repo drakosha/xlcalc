@@ -198,7 +198,7 @@ A sheet marked `state="hidden"` in a file gets `hidden: true`, and one marked `s
 
 ### The saved active sheet and view
 
-A grid can reopen a workbook on its saved sheet, with its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, and `zoom` (a percentage, 10 to 400). The active sheet's tab is the selected one.
+A grid can reopen a workbook on its saved sheet, with its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, `zoom` (a percentage, 10 to 400), and `gridlines` and `headings`, false where View > Show hides the sheet's gridlines or its row and column headings (xlsx `showGridLines`, `showRowColHeaders`). The active sheet's tab is the selected one, and a sheet's `tabColor` (`#RRGGBB`, xlsx `<tabColor>`, a theme color read as its color) colors its tab.
 
 ```js
 const book = {
@@ -209,13 +209,13 @@ const book = {
 }
 ```
 
-The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane, and a scroll position past the split from the pane after it, where Excel keeps it and the writer writes it, so frozen panes and `topLeft` round-trip together. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
+The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane, and a scroll position past the split from the pane after it, where Excel keeps it and the writer writes it, so frozen panes and `topLeft` round-trip together. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and the gridlines' color are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
 
-Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots keep them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it selects the first visible sheet. The host tracks the live selection and scrolling itself, and applies `activeSheet` and `view` to the workbook before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
+Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots keep them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it selects the first visible sheet. The host tracks the live selection and scrolling itself, and applies `activeSheet` and `view` to the workbook before saving. They have no `setLayout` edit, so moving around a grid and showing or hiding gridlines create no undo steps. A tab color is the workbook's own: `setLayout` sets it with `{ sheet, tabColor: '#FF0000' }` and removes it with `{ sheet, tabColor: null }`, one undo step, without changing a value or `inputHash`.
 
 #### How it is tested
 
-By round trips through the writer and the reader, in every kind of session; not tested in Excel.
+By round trips through the writer and the reader, in every kind of session. Tab colors, gridlines and headings also in Excel 16.0.20430 for Windows (`bench/windows/run.ts fields sheets`, `test/fields-win.test.ts`): for files `writeXlsx` wrote, and `writeKept` wrote setting, changing and removing them, Excel read through its object model each sheet's tab color, gridlines and headings as the workbook holds them, and saved them so, as the reader reads them back.
 
 ### Filters
 
