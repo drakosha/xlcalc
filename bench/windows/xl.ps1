@@ -559,13 +559,14 @@ function Step($xl, $wb, $s) {
       } catch { Err $_ }
     }
     # Go To Special over a range (bench/windows/select.ts): Range.SpecialCells(Type, Value), the value only where given,
-    # { areas: each area's address }, none where Excel finds no cells (its error 1004)
+    # { areas: each area's address, count: how many areas Excel gives }, none where Excel finds no cells (its error 1004)
     'special' {
       try {
         $rg = Rg $wb $s.sheet $s.range
         $found = if ([int]$s.values) { $rg.SpecialCells([int]$s.type, [int]$s.values) } else { $rg.SpecialCells([int]$s.type) }
-        $areas = foreach ($a in $found.Areas) { Str $a.Address($false, $false) }
-        '{"areas":' + (List $areas) + '}'
+        # the address of every area at once: walking the areas unrolls each into its cells
+        $areas = ([string]$found.Address($false, $false)).Split(',') | ForEach-Object { Str $_ }
+        '{"areas":' + (List $areas) + ',"count":' + $found.Areas.Count + '}'
       } catch {
         if ($_.Exception.Message -match 'No cells were found') { '{"areas":[]}' } else { Err $_ }
       }
