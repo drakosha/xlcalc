@@ -62,7 +62,7 @@ function tableCells(): Record<string, CellInput> {
   return cells
 }
 
-function opsBook(): BookInput {
+export function opsBook(): BookInput {
   return {
     styles: [{}, { font: { bold: true } }],
     sheets: [
