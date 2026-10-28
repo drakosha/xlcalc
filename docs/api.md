@@ -989,7 +989,7 @@ type AddressMove =
 
 ### `AlignmentStyle`
 
-A cell's alignment ([`CellStyle.alignment`](#cellstyle)), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent.
+A cell's alignment ([`CellStyle.alignment`](#cellstyle)), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent, orientation.
 
 ```ts
 interface AlignmentStyle {
@@ -998,6 +998,11 @@ interface AlignmentStyle {
   wrap?: boolean
   /** Indent level, 0 to 250. */
   indent?: number
+  /**
+   * The text's orientation (Format Cells > Alignment > Orientation, xlsx `textRotation`): degrees from -90 to 90, up for
+   * positive ones, or `vertical`, its letters one above the other. The engine fits widths and heights as for level text.
+   */
+  rotation?: number | 'vertical'
 }
 ```
 
@@ -1068,6 +1073,7 @@ interface AsyncSession {
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
@@ -1243,6 +1249,12 @@ interface BookInput {
    * it holds.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
+  /**
+   * Excel's calculation option (Formulas > Calculation Options, xlsx `calcPr calcMode`): `manual`, or `autoNoTable`,
+   * automatic except for data tables; automatic without it. The engine calculates every edit whatever it says: a host
+   * that offers manual calculation keeps showing the values it showed until the user calculates. Not part of inputHash.
+   */
+  calculation?: 'manual' | 'autoNoTable'
   /**
    * The other workbooks that the workbook's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`):
    * element `i` is `[i+1]`. References to them use the values stored here, as Excel calculates a file it opens without
@@ -1652,6 +1664,8 @@ A note: its author and its text, lines separated by `\n`.
 interface CellNote {
   author?: string
   text: string
+  /** Shown all the time (Excel's Show/Hide Note, xlsx `<x:Visible/>`), not only while the pointer rests on its cell. */
+  shown?: boolean
 }
 ```
 
@@ -3142,6 +3156,8 @@ type LayoutEdit =
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
+  /** The color of the sheet's tab (`SheetInput.tabColor`); null removes it. */
+  | { sheet: string; tabColor: Color | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
   /** All the data validation rules of the sheet (`SheetInput.validations`). */
@@ -4130,6 +4146,12 @@ interface Session {
    * `setNames`, asking first, as Excel does, about a name the workbook already has.
    */
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): NameInput[]
+  /**
+   * The cells of a kind (`SpecialCells`) Excel's Go To Special selects in a range, as rectangles (`B2:C9`, `E4`); none
+   * where Excel says no cells were found. A range of one cell stands for the sheet's used range, as in Excel, and a
+   * larger one is taken within it.
+   */
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -4345,6 +4367,8 @@ interface SheetInput {
   frozen?: FrozenPanes
   /** The saved sheet view from xlsx; it does not affect calculation or inputHash. */
   view?: SheetView
+  /** The color of the sheet's tab (Excel's Tab Color, xlsx `<tabColor>`), `#RRGGBB`. Not part of calculation or inputHash. */
+  tabColor?: Color
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, highest first. They do not
    * change values: a session returns their effect on display in `CellView.appearance` (`docs/conditional-formats.md`).
@@ -4450,7 +4474,29 @@ interface SheetView {
   topLeft?: string
   /** Zoom in percent, 10 to 400. */
   zoom?: number
+  /** False hides the sheet's gridlines (View > Show > Gridlines, xlsx `showGridLines="0"`); shown by default. */
+  gridlines?: boolean
+  /** False hides the row and column headings (View > Show > Headings, xlsx `showRowColHeaders="0"`); shown by default. */
+  headings?: boolean
 }
+```
+
+### `SpecialCells`
+
+The cells Excel's Go To Special (Home > Editing > Find & Select) selects ([`Session.getSpecialCells`](#session)): blank cells,
+constants or formulas (of the kinds in `values`, every kind without it; a formula by the value it answers), or the
+visible cells, those of no hidden row or column.
+
+```ts
+type SpecialCells = { type: 'blanks' } | { type: 'constants' | 'formulas'; values?: SpecialValue[] } | { type: 'visible' }
+```
+
+### `SpecialValue`
+
+What a cell holds by the kinds of Excel's Go To Special: a number, text, a boolean, an error ([`SpecialCells.values`](#specialcells)).
+
+```ts
+type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
 ```
 
 ### `StructureOp`
