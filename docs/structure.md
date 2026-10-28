@@ -33,7 +33,7 @@ console.log(last.ok, last.code) // → false last_sheet
 
 The operations are:
 - `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`);
-- `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`) and `copyRange` (`from` and `to` as `{ sheet, range }`; a destination that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`; `paste` and `transpose` for [Paste Special](#paste-special));
+- `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`) and `copyRange` (`from` and `to` as `{ sheet, range }`; a destination that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`; `paste`, `transpose`, `operation` and `skipBlanks` for [Paste Special](#paste-special));
 - `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`), `moveSheet` (`sheet`, `before`; Excel positions a sheet relative to the visible ones), `hideSheet` (`sheet`, `very` for a very hidden sheet) and `unhideSheet` (`sheet`);
 - for tables, `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](tables.md));
 - Excel's outline commands `group` and `ungroup` (`sheet`, `rows` or `columns`), `hideDetail` and `showDetail` (`sheet`, `row` or `column`) and `showLevels` (`sheet`, `rows`, `columns`; [docs/outline.md](outline.md));
@@ -198,21 +198,32 @@ What a copy does beyond one formula's text is specific to `copyRange`: it leaves
 
 ## Paste Special
 
-`copyRange` with `paste` pastes part of the copy, as Excel's Paste Special does, and leaves the rest of the destination as it was; `transpose: true` turns the copy, rows into columns, with any kind. Each is one operation and one step of undo.
+`copyRange` with `paste` pastes part of the copy, as Excel's Paste Special does, and leaves the rest of the destination as it was; `transpose: true` turns the copy, rows into columns, with any kind; `operation` combines the copy's numbers with the destination's; `skipBlanks: true` keeps the destination's cells under the copy's blank cells. `operation` or `skipBlanks` without `paste` is Paste Special with `all`, the dialog's default. Each paste is one operation and one step of undo.
 
 | `paste` | what the destination takes | what it keeps |
 |---|---|---|
 | `all` (the default) | everything, as without `paste` | |
 | `values` | each cell's value as calculated: a formula's, a spilled cell's, an error as an error constant (`#N/A`) | styles, number formats, merged areas, notes, hyperlinks, conditional formats, data validation |
 | `formulas` | formulas as a copy pastes them, and constants | as for `values` |
+| `valuesAndNumberFormats` | values as with `values`, and the cells' number formats | styles and the rest, as for `values` |
+| `formulasAndNumberFormats` | formulas as with `formulas`, and the cells' number formats | as for `valuesAndNumberFormats` |
 | `formats` | styles, number formats, merged areas, conditional formats; whole columns' and rows' widths, heights and looks | values and formulas, notes, hyperlinks, data validation |
 | `validation` | data validation | everything else |
+| `columnWidths` | the widths of the copy's columns | everything else |
+| `allExceptBorders` | everything, as `all` | each cell's borders |
+| `notes` | notes (Excel's Comments) | everything else |
 
-A blank cell of the source clears the cell it lands on with `values` and `formulas`, as with a whole copy. A paste of values takes the values the workbook calculates at that moment: in a session, after its edits. `values` and `formulas` are refused with `merged` onto a merged area that the copy does not bring with it at the same place; `formats` and `validation` may cover part of a legacy array formula, which a whole copy may not. No kind other than `all` makes a new table from a table it copies, and a header cell whose text changes renames its column, as with a whole copy.
+A blank cell of the source clears the cell it lands on with `values` and `formulas`, as with a whole copy, and a cell of the source without a note clears the note of the cell it lands on with `notes`. A number format the source's cell does not have is no number format with `valuesAndNumberFormats` and `formulasAndNumberFormats`: a destination's `0.000` under a cell of General becomes General. A paste of values takes the values the workbook calculates at that moment: in a session, after its edits. `values` and `formulas` are refused with `merged` onto a merged area that the copy does not bring with it at the same place; `valuesAndNumberFormats` and `formulasAndNumberFormats` are not, and write the cells under the area. `formats`, `validation`, `columnWidths` and `notes` may cover part of a legacy array formula, which a whole copy may not. No kind other than `all` makes a new table from a table it copies, and a header cell whose text changes renames its column, as with a whole copy.
 
-In a session, a copy that brings its looks (without `paste`, with `all` or `formats`) fits the rows it lands on to their fonts in the same step, as `patchCells` does: a row of the default height or one Excel fitted grows for a larger font and goes back down for a smaller one, a row of its own height stays, and over entire columns only the rows with cells are fitted. The result's `fitted` gives those rows. `values` and `formulas` fit none. `editStructure` on a workbook does not fit rows.
+`columnWidths` gives each column of the destination the width of the copy's column, a column of the standard width taking it back: copying `A1:B1` (A of width 20, B of the standard width) to `F1` makes F 20 wide and G standard, whatever G was. A destination wider than the copy repeats its widths, so `A1:B1` over `J1:M1` gives J and L the width of A and K and M that of B. Transposed, the widths come from the copy's columns in order over the turned destination: `A1:A3` transposed to `K1` makes K, L and M as wide as A.
 
-With `paste`, the destination is taken as Excel takes a selection: a cell of a merged area stands for the whole area. A copy of several cells is pasted at the area's top-left cell. A copy of one cell goes over the whole area, except with `all`, which pastes it into the area's top-left cell and keeps the area. `formats` and `validation` lay the copy over that area alone, cut to its size. Without `paste`, a copy onto part of a merged area is refused, as Excel's `Range.Copy` refuses it.
+`allExceptBorders` pastes as `all` does, and each cell keeps the borders it had: a source cell with a thin bottom border over a cell with a thick top border leaves it with the thick top border and the source's font, fill and number format.
+
+`notes` lays the copy's notes alone. A merged area of the destination holds one note, at its top-left cell: the first note the copy lays over the area, row by row.
+
+In a session, a copy that brings its looks (without `paste`, with `all`, `formats` or `allExceptBorders`) fits the rows it lands on to their fonts in the same step, as `patchCells` does: a row of the default height or one Excel fitted grows for a larger font and goes back down for a smaller one, a row of its own height stays, and over entire columns only the rows with cells are fitted. The result's `fitted` gives those rows. The other kinds fit none. `editStructure` on a workbook does not fit rows.
+
+With `paste`, the destination is taken as Excel takes a selection: a cell of a merged area stands for the whole area. A copy of several cells is pasted at the area's top-left cell. A copy of one cell goes over the whole area, except with `all`, which pastes it into the area's top-left cell and keeps the area. `formats`, `validation`, `columnWidths` and `notes` lay the copy over that area alone, cut to its size. Without `paste`, a copy onto part of a merged area is refused, as Excel's `Range.Copy` refuses it.
 
 A transposed copy is laid with its rows as columns from the destination's top-left cell, tiled when the destination is a whole multiple of the turned size, each tile turned at its own corner. A reference into the source follows the cell it points to, an absolute one too, and its `$` swap axes with it: `$A$1+A$2` in `B2`, copied with `A1:D2` to `F1`, becomes `$F$1+$G1`. A reference out of the source without any `$` is turned the same way about the source's top-left cell (`A9` in `C3` of a copy of `A1:D3` to `K1` becomes `S1`), on another sheet too; one with a `$` stays as it is. An entire column or row is turned into one that runs to the sheet's edge (`A:A` from `D1` of a copy of `A1:D3` to `F1` becomes `$F1:$XFD1`, `5:5` from `D2` becomes `J:J`). A reference turned off the sheet becomes `#REF!`. A transposed copy that does not fit is refused with `off_sheet`.
 
@@ -223,6 +234,29 @@ const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: '
 const r = editStructure(book, { op: 'copyRange', from: { sheet: 'S', range: 'A1:A2' }, to: { sheet: 'S', range: 'D1' }, paste: 'values' })
 console.log(r.ok && r.book.sheets[0].cells.D2) // → { value: 20, numberFormat: '0%' }
 ```
+
+### Operations
+
+`operation: 'add'`, `'subtract'`, `'multiply'` or `'divide'` combines each cell of the copy with the cell it lands on, with the kinds that paste contents (`all`, `values`, `formulas`, `valuesAndNumberFormats`, `formulasAndNumberFormats`, `allExceptBorders`); the other kinds ignore it, as Excel does. The rest of the cell (its look, note and hyperlink) follows the kind.
+
+- Two numbers give a number, as Excel's arithmetic gives it: 10 plus 2 is 12, 10 divided by 0 is `#DIV/0!`, 0.1 plus 0.2 is 0.30000000000000004. A date is its serial number.
+- A blank counts as 0 on either side: 10 times a blank is 0, a blank minus 5 is -5. Two blanks stay blank.
+- A formula on either side gives a formula of both, the destination's first: a number as it is, a formula in parentheses. 10 plus a copied `D1*2` is `10+(D1*2)`, `B1+1` plus 5 is `(B1+1)+5`, a blank plus `A1*2` is `0+(A1*2)`. With `values`, the copy's formulas are their values, and the destination's formulas still combine as text.
+- Text, booleans and errors leave the cell as it was, on either side.
+
+```js
+const ops = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'B1*2' }, C1: { value: 10 }, C2: { value: 10 } } }] }
+const sum = editStructure(ops, { op: 'copyRange', from: { sheet: 'S', range: 'A1:A2' }, to: { sheet: 'S', range: 'C1' }, paste: 'formulas', operation: 'add' })
+console.log(sum.ok && [sum.book.sheets[0].cells.C1, sum.book.sheets[0].cells.C2]) // → [{ value: 12 }, { formula: '10+(D1*2)' }]
+```
+
+### Skip Blanks
+
+With `skipBlanks: true`, a cell of the copy without a value or a formula leaves the contents and the look of the cell it lands on, its own look not pasted either; and with the kinds that paste notes (`all`, `allExceptBorders`, `notes`), a cell of the copy without a note leaves the note of the cell it lands on, while a cell holding a note alone pastes its note. Skip Blanks works with every kind, a transposed paste and an operation.
+
+### The Format Painter
+
+Excel's Format Painter pastes what Paste Special's Formats pastes: `paste: 'formats'` is the Format Painter, from one cell over a range, from a range onto one cell, with merged areas, conditional formats, whole rows (their height) and whole columns (their width), onto a merged area and onto another sheet, a cell's protection with its style. Like Formats, it does not paste data validation.
 
 ## Renaming and deleting sheets
 
@@ -314,7 +348,7 @@ A sheet's protection is `SheetInput.protection`: a protected sheet has one, an u
 
 ### Checked against Excel
 
-Excel 16.114 for Mac read the protection of 31 workbooks after its own steps, each sheet's and each listed cell's, and saved them; the engine's answers were committed before it ran, and all 31 held (`test/excel/protect/`, [docs/development.md](development.md#protection)). Excel's Protect Sheet through the object model, its own copies, Paste Special, inserted rows and Clear Formats are among them; Excel's Format Painter and protection set through its dialogs by hand were not measured.
+Excel 16.114 for Mac read the protection of 31 workbooks after its own steps, each sheet's and each listed cell's, and saved them; the engine's answers were committed before it ran, and all 31 held (`test/excel/protect/`, [docs/development.md](development.md#protection)). Excel's Protect Sheet through the object model, its own copies, Paste Special, inserted rows and Clear Formats are among them; the Format Painter takes a cell's protection as Formats does (the paste set `painter`, [The Format Painter](#the-format-painter)); protection set through its dialogs by hand was not measured.
 
 ## Merging cells
 
@@ -513,12 +547,15 @@ Only two of these recalculate values. A merged area added or removed over an arr
 
 ## Checked against Excel
 
-Tested in Excel 16 for Mac, en-US, on 317 workbooks, and the AutoFilter on 19 operations and 6 tables; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists; and the AutoFilter under a copy, a moved sheet and the operations on a filtered sheet, and in Excel for Windows.
+Tested in Excel 16 for Mac, en-US, on 317 workbooks, and the AutoFilter on 19 operations and 6 tables; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both; Paste Special on 178 cases in both, every kind, operation and Skip Blanks among them, the two Excels pasting every case alike, and the Format Painter on 14 in Excel for Mac. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists; and the AutoFilter under a copy, a moved sheet and the operations on a filtered sheet, and in Excel for Windows.
 
 ## Known differences and limits
 
 - Entire columns copied onto part of a merged area: Excel pastes them and keeps the area, while the engine rejects the copy with `merged` (two observations).
-- Paste Special was measured in Excel for Mac alone (63 cases), with its Paste Special command, not its Format Painter. `formats` of a table's cells: Excel pastes the look the table's style gives them as their formats; the engine does not draw table styles and pastes their own. Paste Special's other kinds (values and number formats, formulas and number formats, column widths, all except borders, comments), its operations and Skip Blanks are not in the engine.
+- Paste Special, `formats` of a table's cells: Excel pastes the look the table's style gives them as their formats; the engine does not draw table styles and pastes their own.
+- Paste Special, an operation onto a dynamic array formula: Excel refuses it ("You can't change part of an array"), and it holds as one every formula of a file xlcalc writes and every spill; the engine combines it as Excel combines a formula typed into a cell, which Excel saves as an ordinary formula (6 cases).
+- Paste Special, `valuesAndNumberFormats` and `formulasAndNumberFormats` of whole columns: Excel gives each cell of the column within the sheet's used range the number format of the source's column, and the engine pastes the cells' own (2 cases). `allExceptBorders` of a whole column that cuts a merged area: Excel leaves out the area's cell, and the engine pastes it (1 case).
+- Paste Special was not measured: `allMergingConditionalFormats` (Excel for Windows has it, AppleScript does not) and `allUsingSourceTheme`; the rows `allExceptBorders` fits to their fonts (the engine fits them as for `all`); an operation with a whole line, onto a table and over hidden rows of a filtered sheet; a ru-RU Excel. The Format Painter was not measured in Excel for Windows (it needs a session on a screen), nor double-clicked to paint several targets.
 - The fill handle was not tested in Excel for Mac, nor in a ru-RU Excel (its lists of names), nor with types other than default, series and copy. Also not tested: whether a number at the end of text keeps its leading zeros beyond one width (`Item001`, here `Item002`), and a time next to a lone number (here it makes the number continue, as a date does).
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Charts are not part of a workbook. Comment threads are stored as notes in a workbook ([docs/xlsx.md](xlsx.md#threads-of-comments)).
