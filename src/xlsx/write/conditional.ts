@@ -28,6 +28,8 @@ const TEXT_OPERATOR: Record<string, string> = { containsText: 'containsText', no
 export interface ConditionalContext extends FileNames {
   styles: CellFormats
   issues: Issues
+  /** The priority of the rule at `i`, its place among rules the writer does not write (`writeKept`'s of the file); `i + 1` without. */
+  priority?: (i: number) => number
 }
 
 export interface ConditionalWritten {
@@ -35,6 +37,8 @@ export interface ConditionalWritten {
   main: string
   /** The extension of Excel 2010's rules (`<ext>`), for the sheet's extension list; empty without them. */
   ext: string
+  /** By rule: its `<conditionalFormatting>` and its `x14:conditionalFormatting`, empty where it has none; none for a rule left out. */
+  each: ({ main: string; ext: string } | undefined)[]
 }
 
 const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '0')
@@ -52,15 +56,18 @@ function fileFormula(text: string, own: string, ctx: ConditionalContext): { text
 
 const VALUE_2007: Record<string, string> = { autoMin: 'min', autoMax: 'max' }
 
+// the model's ranges as they are: Excel saves `A:A` as `A1:A1048576` and reads both (the set `cond/files`, case `wide`)
+/** A `<conditionalFormatting>` of rules over ranges, and Excel 2010's. */
+export const block = (ranges: string[], rules: string) => `<conditionalFormatting sqref="${escapeAttr(ranges.join(' '))}">${rules}</conditionalFormatting>`
+export const block14 = (ranges: string[], rules: string) => `<x14:conditionalFormatting xmlns:xm="${XM}">${rules}<xm:sqref>${escapeText(ranges.join(' '))}</xm:sqref></x14:conditionalFormatting>`
+
 /** Thrown by a formula the file cannot hold, which leaves its rule out. */
 const UNFIT = Symbol('unfit')
 
 export function conditionalXml(sheet: SheetInput, index: number, ctx: ConditionalContext): ConditionalWritten {
-  const main: string[] = []
-  const ext: string[] = []
-  // the model's ranges as they are: Excel saves `A:A` as `A1:A1048576` and reads both (the set `cond/files`, case `wide`)
-  const block = (ranges: string[], rules: string) => `<conditionalFormatting sqref="${escapeAttr(ranges.join(' '))}">${rules}</conditionalFormatting>`
-  const block14 = (ranges: string[], rules: string) => `<x14:conditionalFormatting xmlns:xm="${XM}">${rules}<xm:sqref>${escapeText(ranges.join(' '))}</xm:sqref></x14:conditionalFormatting>`
+  const each: ConditionalWritten['each'] = []
+  let main = ''
+  let ext = ''
   ;(sheet.conditionalFormats ?? []).map(withFormula).forEach((rule, i) => {
     const where = { sheet: sheet.name, cell: rule.ranges[0] }
     const id = `{${hex(index + 1, 8)}-0000-4000-8000-${hex(i + 1, 12)}}`
@@ -89,7 +96,8 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
       ctx.issues.add('conditionalFormat', { key: 'condFormulaOut' }, where)
       return
     }
-    const priority = ` priority="${i + 1}"`
+    const priority = ` priority="${ctx.priority?.(i) ?? i + 1}"`
+    const out = (m: string, x = '') => (each[i] = { main: m, ext: x })
     const stop = rule.stopIfTrue ? ' stopIfTrue="1"' : ''
     const style = 'style' in rule && rule.style ? rule.style : undefined
     const x14 = other || (rule.type === 'iconSet' && (NEW_SETS.has(rule.icons) || rule.points.some((p) => p.icon !== undefined)))
@@ -132,8 +140,8 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
       const lengths = old ? `${rule.minLength !== undefined && rule.minLength !== 10 ? ` minLength="${rule.minLength}"` : ''}${rule.maxLength !== undefined && rule.maxLength !== 90 ? ` maxLength="${rule.maxLength}"` : ''}` : ''
       const link = old ? '' : `<extLst><ext uri="${BAR_ID}" xmlns:x14="${X14}"><x14:id>${id}</x14:id></ext></extLst>`
       const bar = `<dataBar${lengths}${rule.showValue === false ? ' showValue="0"' : ''}>${values!(rule.min, false)}${values!(rule.max, false)}<color rgb="${rgb(rule.color)}"/></dataBar>`
-      main.push(block(rule.ranges, `<cfRule type="dataBar"${priority}${stop}>${bar}${link}</cfRule>`))
-      if (old) return
+      const own = block(rule.ranges, `<cfRule type="dataBar"${priority}${stop}>${bar}${link}</cfRule>`)
+      if (old) return void out(own)
       const a = [
         ` minLength="${rule.minLength ?? 0}" maxLength="${rule.maxLength ?? 100}"`,
         rule.gradient === false ? ' gradient="0"' : '',
@@ -149,20 +157,25 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
         rule.border && rule.negativeBorder ? `<x14:negativeBorderColor rgb="${rgb(rule.negativeBorder)}"/>` : '',
         `<x14:axisColor rgb="${rgb(rule.axisColor ?? '#000000')}"/>`,
       ].join('')
-      ext.push(block14(rule.ranges, `<x14:cfRule type="dataBar" id="${id}"><x14:dataBar${a}>${values!(rule.min, true)}${values!(rule.max, true)}${colors}</x14:dataBar></x14:cfRule>`))
-      return
+      return void out(own, block14(rule.ranges, `<x14:cfRule type="dataBar" id="${id}"><x14:dataBar${a}>${values!(rule.min, true)}${values!(rule.max, true)}${colors}</x14:dataBar></x14:cfRule>`))
     }
     const [attrs, content] = parts(x14)
     if (x14) {
       const dxf = style ? `<x14:dxf>${ctx.styles.dxfBody(ctx.styles.dxf(style))}</x14:dxf>` : ''
-      ext.push(block14(rule.ranges, `<x14:cfRule type="${rule.type}"${priority}${stop}${attrs} id="${id}">${content}${dxf}</x14:cfRule>`))
-      return
+      return void out('', block14(rule.ranges, `<x14:cfRule type="${rule.type}"${priority}${stop}${attrs} id="${id}">${content}${dxf}</x14:cfRule>`))
     }
     const dxf = style ? ` dxfId="${ctx.styles.dxf(style)}"` : ''
-    main.push(block(rule.ranges, `<cfRule type="${rule.type}"${dxf}${priority}${stop}${attrs}>${content}</cfRule>`))
+    out(block(rule.ranges, `<cfRule type="${rule.type}"${dxf}${priority}${stop}${attrs}>${content}</cfRule>`))
   })
-  return { main: main.join(''), ext: ext.length ? `<ext uri="${X14_CF}" xmlns:x14="${X14}"><x14:conditionalFormattings>${ext.join('')}</x14:conditionalFormattings></ext>` : '' }
+  for (const x of each) {
+    main += x?.main ?? ''
+    ext += x?.ext ?? ''
+  }
+  return { main, ext: x14Ext(ext), each }
 }
+
+/** The extension of a sheet's Excel 2010 rules (their `x14:conditionalFormatting` elements); empty without them. */
+export const x14Ext = (blocks: string) => (blocks ? `<ext uri="${X14_CF}" xmlns:x14="${X14}"><x14:conditionalFormattings>${blocks}</x14:conditionalFormattings></ext>` : '')
 
 /** A rule with the formula it computes by: a rule Excel computes by one of its own (`defaultFormula`: text, blanks, errors, a period) always has one in a file. */
 export function withFormula(rule: ConditionalFormat): ConditionalFormat {

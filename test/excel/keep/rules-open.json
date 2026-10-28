@@ -1,0 +1,1201 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "seconds": 13.5,
+  "date": "2026-10-28"
+ },
+ "cases": {
+  "add": {
+   "sent": "bb403541ddf2d3ab10eb6800b90463b661654b717921196e57617b43564b624d",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread",
+     "cellIs B2:B21 =150 stop"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   }
+  },
+  "delete-1": {
+   "sent": "1cce9d9e0c36c5ea1ea8fea0c85ad6f01e6095a42c049b1689696a7d4aed9bf1",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "delete-3": {
+   "sent": "5cd72fb5f22a866386ea9128e6348eb522608fcab1be3daa170fc175b2b56ebd",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "delete-6": {
+   "sent": "6196024ab098d74080469bfe589d27aa9fe652b052a93bacb50305573b5f1a3d",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "first-6": {
+   "sent": "54280baed686e8c4b66fb879b2f728e44ec6f5b6b0ee47eb39f5652c019d6a85",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "dataBar F2:F21 bar F2:F21",
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "last-1": {
+   "sent": "7e9948f11c99857f3bfbff54633aa1cba4233004663eda7f156cfc53aa6f7704",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread",
+     "cellIs A2:A21 =100"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "italic-3": {
+   "sent": "ed45af69f1389363bad6b18193eb1253c838801c0e70de9bd4650ebce22dba0e",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "insert-row-1": {
+   "sent": "5bf9ee15ff8cb255aa366174351efba983e741a13923f76440c651589933a515",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A3:A22 =100",
+     "colorScale B3:B22 =$G$3 unread",
+     "expression C3:C22 =C3>$G$2",
+     "expression D3:D22 =MOD(D3,2)=0 gradient",
+     "dataBar E3:E22 =0 bar E3:E22",
+     "dataBar F3:F22 bar F3:F22",
+     "x14 colorScale H3:H22 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "insert-row-10": {
+   "sent": "9bcc6e92de8d14b06314619f819732bf5d66c04af23f4e0cb5e11e77e6f675ee",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A23 =100",
+     "colorScale B2:B23 =$G$2 unread",
+     "expression C2:C23 =C2>$G$1",
+     "expression D2:D23 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E23 =0 bar E2:E23",
+     "dataBar F2:F23 bar F2:F23",
+     "x14 colorScale H2:H23 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "insert-row-22": {
+   "sent": "c0b20d23318be214c683fbb3392d6d36c21c6a3ea4ac8245cc89d16d3794dc4f",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A23 =100",
+     "colorScale B2:B23 =$G$2 unread",
+     "expression C2:C23 =C2>$G$1",
+     "expression D2:D23 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E23 =0 bar E2:E23",
+     "dataBar F2:F23 bar F2:F23",
+     "x14 colorScale H2:H23 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "delete-rows-5": {
+   "sent": "a9a88d06a0bb9e21c3b2f5c347df24290ed8573c2ecc47661af804e86c54ab89",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A19 =100",
+     "expression C2:C19 =C2>$G$1",
+     "expression D2:D19 =MOD(D2,2)=0 gradient",
+     "colorScale B2:B19 =$G$2 unread",
+     "dataBar E2:E19 =0 bar E2:E19",
+     "dataBar F2:F19 bar F2:F19",
+     "x14 colorScale H2:H19 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "delete-row-2": {
+   "sent": "f09f1775a27249c1f76ad5670e31dc405d2178ac02c85ac67733549803168653",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A20 =100",
+     "expression C2:C20 =C2>$G$1",
+     "expression D2:D20 =MOD(D2,2)=0 gradient",
+     "colorScale B2:B20 =#REF! unread",
+     "dataBar E2:E20 =0 bar E2:E20",
+     "dataBar F2:F20 bar F2:F20",
+     "x14 colorScale H2:H20 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "delete-rows-all": {
+   "sent": "6081309e95027c1d9ed0079d555016cae7f29ca7e141d4cab01550c8d57e9c93",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [],
+    "priorities": []
+   }
+  },
+  "insert-col-b": {
+   "sent": "6bef24760c8d3f9dfc334554265f02be2dfe549cdd5b9948ef50e299cacb4512",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:B21 =100",
+     "colorScale C2:C21 =$H$2 unread",
+     "expression D2:D21 =D2>$H$1",
+     "expression E2:E21 =MOD(E2,2)=0 gradient",
+     "dataBar F2:F21 =0 bar F2:F21",
+     "dataBar G2:G21 bar G2:G21",
+     "x14 colorScale I2:I21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "delete-col-b": {
+   "sent": "323ec21f24be6beb09a07a598cc44d40b03e07f35fc8f37a16a66b21ec879278",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "expression B2:B21 =B2>$F$1",
+     "expression C2:C21 =MOD(C2,2)=0 gradient",
+     "dataBar D2:D21 =0 bar D2:D21",
+     "dataBar E2:E21 bar E2:E21",
+     "x14 colorScale G2:G21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "delete-col-h": {
+   "sent": "182adbf156f6d2b50136c93b0da45b1bcfd4a109f31696fa0be08a6d03e4b724",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   }
+  },
+  "insert-row-p": {
+   "sent": "aa6051afe0919e9d1e19e347e09c73c9dbfe3e21dc83956ec9eac3a99b17715d",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$2 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "rename-p": {
+   "sent": "b34baf0fedab2d4956d18765bea9ac599b2cd7e869f70922b325337897e819fb",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='Q 2'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "delete-sheet-p": {
+   "sent": "78554de74acb61de640a823bf83bb5159f66cb61de7aada2236bf408e2a5b79a",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "colorScale H2:H21 =#REF! unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "move-b": {
+   "sent": "4ec7e8f6a519a2507e7b85f49cf825cafebb216d1bcac29078a67ee21a44fbf7",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale J2:J21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-last-1": {
+   "sent": "7e9948f11c99857f3bfbff54633aa1cba4233004663eda7f156cfc53aa6f7704",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread",
+     "cellIs A2:A21 =100"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-first-3": {
+   "sent": "22f4e6455ce9bfec8dcfea06ed8937f7b464bcf8910cc45891b9ee646d3703b7",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "expression C2:C21 =C2>$G$1",
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-priority-4": {
+   "sent": "e4b48673162524832ec399baf62c218ea98c30069a00caf6cf5ca5fe586a5150",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "expression C2:C21 =C2>$G$1",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-delete-rows-top": {
+   "sent": "61648cdb4a3962010f09b22b8eba4f2f37752fc252611e27d0d9ee303a6bfcf6",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A1:A19 =100",
+     "expression C1:C19 =C1>#REF!",
+     "expression D1:D19 =MOD(D1,2)=0 gradient",
+     "colorScale B1:B19 =#REF! unread",
+     "dataBar E1:E19 =0 bar E1:E19",
+     "dataBar F1:F19 bar F1:F19",
+     "x14 colorScale H1:H19 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-insert-col-i": {
+   "sent": "23d668d34454fae6075529efed56a1d700474ba6a69a8d78b6d22119c0cec967",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:I21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-delete-cols-b": {
+   "sent": "eda5660bfc8b788f530909ae6c4f6d612b4c94e17104dd8fd6520ee047883090",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "expression B2:B21 =MOD(B2,2)=0 gradient",
+     "dataBar C2:C21 =0 bar C2:C21",
+     "dataBar D2:D21 bar D2:D21",
+     "x14 colorScale F2:F21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   }
+  },
+  "held-delete-rows-end": {
+   "sent": "b65c27a509b1dd3d85ac489d6715a6d05ed5ace09cd7514783eb6242734b1380",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A19 =100",
+     "expression C2:C19 =C2>$G$1",
+     "expression D2:D19 =MOD(D2,2)=0 gradient",
+     "colorScale B2:B19 =$G$2 unread",
+     "dataBar E2:E19 =0 bar E2:E19",
+     "dataBar F2:F19 bar F2:F19",
+     "x14 colorScale H2:H19 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held-move-part-b": {
+   "sent": "94307ad2edc223c92013bf3db16d5e129fbb04687c96017fc93a78c13fcc419c",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held2-first-6": {
+   "sent": "54280baed686e8c4b66fb879b2f728e44ec6f5b6b0ee47eb39f5652c019d6a85",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "dataBar F2:F21 bar F2:F21",
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held2-last-3": {
+   "sent": "17d2105e6720a55e20153466fe4478a96735fb13a2a4313dfb448e1c55b9ec1e",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread",
+     "expression C2:C21 =C2>$G$1"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held2-first-4": {
+   "sent": "cc5c0ac85b7e18dfefaf1002ddc3f90ce1db4ed009556536c89355de6aa778c8",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "expression D2:D21 =MOD(D2,2)=0 gradient",
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$G$2 unread",
+     "expression C2:C21 =C2>$G$1",
+     "dataBar E2:E21 =0 bar E2:E21",
+     "dataBar F2:F21 bar F2:F21",
+     "x14 colorScale H2:H21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held2-delete-cols-c": {
+   "sent": "55f0808c17215145867d890d23eec5502d518fe4e55c377b6b1bb6824e35aa5f",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A21 =100",
+     "colorScale B2:B21 =$E$2 unread",
+     "dataBar C2:C21 =0 bar C2:C21",
+     "dataBar D2:D21 bar D2:D21",
+     "x14 colorScale F2:F21 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   }
+  },
+  "held2-insert-row-21": {
+   "sent": "7eaab1c30ffbee54984d07dad25b21e547927f3bb7c1dd2b6e1c04a4c1a326da",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A24 =100",
+     "colorScale B2:B24 =$G$2 unread",
+     "expression C2:C24 =C2>$G$1",
+     "expression D2:D24 =MOD(D2,2)=0 gradient",
+     "dataBar E2:E24 =0 bar E2:E24",
+     "dataBar F2:F24 bar F2:F24",
+     "x14 colorScale H2:H24 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  },
+  "held2-delete-row-21": {
+   "sent": "1dbb2f6e9186ae8d242a1c398a17876ac946abc963700ec195234bfeab20f026",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "rules": [
+     "cellIs A2:A20 =100",
+     "expression C2:C20 =C2>$G$1",
+     "expression D2:D20 =MOD(D2,2)=0 gradient",
+     "colorScale B2:B20 =$G$2 unread",
+     "dataBar E2:E20 =0 bar E2:E20",
+     "dataBar F2:F20 bar F2:F20",
+     "x14 colorScale H2:H20 ='P'!$A$1 unread"
+    ],
+    "priorities": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   }
+  }
+ }
+}

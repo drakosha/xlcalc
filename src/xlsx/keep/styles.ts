@@ -1,11 +1,11 @@
 /**
  * The styles of a file written over another: styles.xml is not built again but added to. A cell of the file that keeps
  * its look (the same style and number format, as the reader sees them) keeps its own cell format (`keep`), and with it
- * what the model does not hold of it (theme colours, a cell style, a quote prefix, rotation). A new cell, a cell whose
- * look changed and a cell that moved (rows or columns inserted or deleted) take the file's first cell format of their
- * look, or a new one at the end of `<cellXfs>`, with its font, fill, border and number format after the file's, its font
- * relative to the file's default one. A conditional format's differential format goes at the end of `<dxfs>`. Only what
- * a written part uses is added.
+ * what the model does not hold of it (theme colours, a cell style, a quote prefix, rotation); one that moved with rows
+ * or columns inserted or deleted keeps it by the carriers of formats that look as earlier ones (`twin`, `formats.ts`).
+ * A new cell and a cell whose look changed take the file's first cell format of their look, or a new one at the end of
+ * `<cellXfs>`, with its font, fill, border and number format after the file's, its font relative to the file's default
+ * one. A conditional format's differential format goes at the end of `<dxfs>`. Only what a written part uses is added.
  */
 import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
@@ -49,6 +49,8 @@ export class KeptStyles {
   private used = { cellXfs: 0, dxfs: 0 }
   /** Whether the file has a styles part: without one the writer adds it. */
   readonly present: boolean
+  /** Whether a cell format of the file looks as an earlier one (`twin`). */
+  readonly twins: boolean
 
   constructor(xml: string | undefined, table: StyleTable) {
     this.present = xml !== undefined
@@ -72,6 +74,7 @@ export class KeptStyles {
       if (!this.byLook.has(key)) this.byLook.set(key, i)
       this.first.push(this.byLook.get(key)!)
     }
+    this.twins = this.first.some((f, i) => f !== i)
     // the default font a style's font is relative to: the file's first, its colour and theme scheme as written
     const font = elements(this.listText('fonts'), 'font')[0]?.body ?? ''
     const val = (local: string) => attributes(element(font, local)?.attrs ?? '').val
@@ -129,6 +132,12 @@ export class KeptStyles {
   /** The cell format a written cell of the file's cell format `own` takes for the look `xf` stands for: `own` when it looks so. */
   keep(own: number | undefined, xf: number): number {
     return own !== undefined && this.first[own] === xf ? own : xf
+  }
+
+  /** Whether the file's cell format `s` looks as an earlier one: a cell of it that moves keeps it by a carrier (`formats.ts`). */
+  twin(s: number): boolean {
+    const f = this.first[s]
+    return f !== undefined && f !== s
   }
 
   /** A cell format or dxf a written part uses. */

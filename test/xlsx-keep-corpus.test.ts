@@ -237,8 +237,13 @@ describe('xlsx/keep over the test sets', () => {
   it('random edits: read back as writeXlsx writes the book, the other parts as they were', async () => {
     const r = await check(EDITS)
     expect(r.problems).toEqual([])
-    // a file with rules the workbook reads in part (gradient fills), whose rules an edit changed
-    expect(r.refused).toEqual([`${FILLS} rules`])
+    // a file with conditional formats the workbook reads in part (gradient fills), whose rules an edit changed, is
+    // written; one with data validation it reads in part, refused
+    expect(r.refused).not.toContain(`${FILLS} rules`)
+    for (const x of r.refused) {
+      const [f, code] = x.split(' ')
+      expect([code, (await readXlsx(readFileSync(`${root}/${f}`))).issues.some((i) => i.code === 'dataValidation')], x).toEqual(['rules', true])
+    }
   }, 240_000)
 
   it('random operations of the structure: written as writeXlsx writes the book, or refused', async () => {

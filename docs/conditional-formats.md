@@ -101,7 +101,7 @@ Every kind of rule is evaluated and kept. What a data bar and an icon set give a
 
 ## Files
 
-`readXlsx` reads the rules in `<conditionalFormatting>` with their differential formats (`<dxfs>` in styles.xml), and the Excel 2010 rules in the sheet's extension list: a data bar's 2010 part (its fill, border, direction, negative bars and axis), joined to its 2007 rule by id, and the rules only Excel 2010 has (the icon sets `3Stars`, `3Triangles` and `5Boxes`, custom icons, and formulas referring to other sheets), with their own style. `writeXlsx` writes them the same way. A rule that belongs to a pivot table's formatting, or of a kind the model does not support, is left out and reported (`conditionalFormat`).
+`readXlsx` reads the rules in `<conditionalFormatting>` with their differential formats (`<dxfs>` in styles.xml), and the Excel 2010 rules in the sheet's extension list: a data bar's 2010 part (its fill, border, direction, negative bars and axis), joined to its 2007 rule by id, and the rules only Excel 2010 has (the icon sets `3Stars`, `3Triangles` and `5Boxes`, custom icons, and formulas referring to other sheets), with their own style. `writeXlsx` writes them the same way. A rule that belongs to a pivot table's formatting, or of a kind the model does not support, is left out and reported (`conditionalFormat`). Writing over the original file, `writeKept` keeps such rules among the workbook's ([Writing over the original file](xlsx-keep.md#conditional-formats-the-workbook-does-not-read)).
 
 ## Structure operations
 

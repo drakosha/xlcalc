@@ -1,0 +1,77 @@
+{
+ "cases": {
+  "u1": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1"
+   ],
+   "priorities": [
+    1,
+    2,
+    3
+   ]
+  },
+  "u2": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "expression C2:C21 =C2>$G$1",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3
+   ]
+  },
+  "u3": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "dataBar E2:E21 unread bar E2:E21",
+    "dataBar F2:F21 bar F2:F21"
+   ],
+   "priorities": [
+    1,
+    2,
+    3
+   ]
+  },
+  "p1": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "expression C2:C21 =C2>$G$1"
+   ],
+   "priorities": [
+    1,
+    2,
+    3
+   ]
+  },
+  "mixed": {
+   "opens": true,
+   "rules": [
+    "cellIs A2:A21 =100",
+    "colorScale B2:B21 =$G$2 unread",
+    "expression C2:C21 =C2>$G$1",
+    "expression D2:D21 =MOD(D2,2)=0 gradient",
+    "dataBar E2:E21 unread bar E2:E21",
+    "dataBar F2:F21 bar F2:F21",
+    "x14 colorScale H2:H21 ='P'!$A$1 unread"
+   ],
+   "priorities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ }
+}

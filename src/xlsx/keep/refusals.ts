@@ -16,6 +16,7 @@ import { formatAddress } from '../../model.js'
 import { entryAt, lines } from '../../layout/spans.js'
 import { attributes } from '../xml/scan.js'
 import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
+import type { FormatArea } from './formats.js'
 import { areasOf } from './refs.js'
 import type { Source } from './source.js'
 
@@ -26,8 +27,10 @@ import type { Source } from './source.js'
  * does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
  * part would move or be cut by the change, which writeKept does not write; `links`, a link to another workbook was
  * removed, moved or pointed at another file, or one of a kind other than a workbook (DDE, OLE) changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
- * the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
- * could not read (its `readXlsx` issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
+ * the data validation of a sheet changed and the file has rules of it the workbook could not read (its `readXlsx` issues
+ * `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
+ * it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
+ * would need making for a new first cell).
  */
 export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 
@@ -53,6 +56,8 @@ export interface Identity {
   edits: Edit[]
   /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
   cells: Map<number, Moved>
+  /** By sheet of the book read: the rectangles of its cell formats that look as earlier ones where they lie now on its sheet of the book written; none for a sheet past `KEPT_FORMATS` or whose carriers a host dropped. */
+  formats: Map<number, FormatArea[]>
 }
 
 export interface Moved {
@@ -71,7 +76,7 @@ const EMU = 12_700
 export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Carriers): Identity {
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
   const index = new Map(book1.sheets.map((s, j) => [sheetKey(s.name), j]))
-  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], edits: [], cells: new Map() }
+  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], edits: [], cells: new Map(), formats: new Map() }
   for (const [k, carrier] of c.sheets.entries()) {
     const was = book0.sheets[k].name
     const n = names.get(caseKey(carrier.name))
@@ -113,6 +118,18 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       if (at !== undefined) moved.to.set(at, cell.addr)
     }
     if (moved.left.size) out.cells.set(k, moved)
+  }
+  // the rectangles of cell formats on their sheet now; a carrier gone leaves the sheet's cells their formats by address
+  for (const [k, list] of c.formats.entries()) {
+    const j = out.target.get(k)
+    if (j === undefined || !list) continue
+    const areas: FormatArea[] = []
+    const kept = list.every(({ kind, s, carrier }) => {
+      const n = names.get(caseKey(carrier.name))
+      for (const a of (n && areasOf(n.ref)) || []) if ('rect' in a && sheetKey(a.sheet) === sheetKey(book1.sheets[j].name)) areas.push({ kind, s, rect: a.rect })
+      return n !== undefined
+    })
+    if (kept) out.formats.set(k, areas)
   }
   /** A sheet's lines in EMUs as the book written has them: a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
   const geometry = (k: number | undefined): Geometry => {
