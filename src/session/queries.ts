@@ -1,5 +1,5 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
-import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
+import type { CellReadField, CellValue, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
 import { sheetIndexOf, toCellValue, valueAt, type EngineState, type Formula } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { readersOf, referencesOf } from '../graph.js'
@@ -8,9 +8,9 @@ import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
 import { issueDetail } from '../issues.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf, rowOf } from '../model.js'
 import { cellAt, outValue } from '../result.js'
-import { rectText, meets } from '../structure/area.js'
+import { hasCell, rectText, meets } from '../structure/area.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { inputIn } from '../looks/sheet.js'
@@ -18,7 +18,8 @@ import { cellValue } from './looks.js'
 import { checkLineNumbers, sessionEditTexts } from './viewport.js'
 import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
 import { finderOf, type Finder, type Ref } from './find.js'
-import { readOrder } from './read-order.js'
+import { firstIn, nextIn, readOrder } from './read-order.js'
+import { textsOf } from './search.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue']
@@ -203,13 +204,8 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
   if (o.rows !== undefined) checkLineNumbers(o.rows, 'opts.rows', MAX_ROWS)
   const out: RangeSummary = { revision, clock: { ...clock }, cells: 0, numbers: 0, errors: 0, sum: 0, min: null, max: null },
     sum = new CompensatedSum()
-  for (const at of readOrder(s, refsOf(s, given), o.rows?.map((n) => n - 1) ?? null, null, false)) {
-    if (!at) {
-      yield
-      continue
-    }
-    const v = cellValue(s, at[0], at[1], at[2])
-    if (v === null || v === '') continue
+  const add = (v: CellValue) => {
+    if (v === null || v === '') return
     out.cells++
     if (typeof v === 'number') {
       out.numbers++
@@ -217,6 +213,28 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
       out.min = out.min === null ? v : Math.min(out.min, v)
       out.max = out.max === null ? v : Math.max(out.max, v)
     } else if (typeof v === 'object') out.errors++
+  }
+  const refs = refsOf(s, given)
+  const rows = o.rows?.map((n) => n - 1) ?? null
+  for (const [n, x] of refs.entries()) {
+    const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
+    if ([...s.spills.on.values()].some((y) => y.s === x.s && meets(y, x))) {
+      // spilled cells among the range's: read in readCells' order, this range's cells alone
+      for (const at of readOrder(s, refs, rows, [n, -1], false)) {
+        if (!at) yield
+        else if (at[3] !== n) break
+        else add(cellValue(s, at[0], at[1], at[2]))
+      }
+      continue
+    }
+    // no spill: the values of the index's places by rows, read from the columns; a place whose cell is gone holds none
+    const { at } = yield* textsOf(s, x.s)
+    for (let j = firstIn(at, x, rows, 0); j < at.length; j = nextIn(at, x, rows, 0, j + 1)) {
+      if (paced(1)) yield
+      const r = rowOf(at[j])
+      const c = colOf(at[j])
+      if (!(earlier.length && earlier.some((y) => hasCell(y, r, c)))) add(cellValue(s, x.s, r, c))
+    }
   }
   out.sum = Number.isFinite(sum.value) ? sum.value : { error: 'NUM' }
   return out

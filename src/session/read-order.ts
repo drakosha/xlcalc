@@ -21,7 +21,7 @@ export type Read = [s: number, r: number, c: number, n: number, addr: string]
 const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(rows, r)] ?? Infinity) : r)
 
 /** The index of the first place of `at` (ascending) from index `j` on in rectangle `x` and rows `rows`, not before place `start`, each row's run found by a search; `at.length` when none. */
-function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number, j: number): number {
+export function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number, j: number): number {
   while (j < at.length) {
     const m = at[j]
     const r = rowOf(m)
@@ -36,7 +36,7 @@ function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number,
 }
 
 /** The index of the first place of `at` in rectangle `x` and rows `rows` from place `start` on; `at.length` when none. */
-const firstIn = (at: Float64Array, x: Rect, rows: number[] | null, start: number) => nextIn(at, x, rows, start, lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1)))
+export const firstIn = (at: Float64Array, x: Rect, rows: number[] | null, start: number) => nextIn(at, x, rows, start, lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1)))
 
 /** The places of `at` in rectangle `x` and rows `rows`, by rows, from place `start` on. */
 function* indexed(at: Float64Array, x: Rect, rows: number[] | null, start: number): Generator<number> {
