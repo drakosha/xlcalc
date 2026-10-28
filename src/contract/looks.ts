@@ -50,13 +50,18 @@ export interface BorderLine {
   color?: Color
 }
 
-/** A cell's alignment (`CellStyle.alignment`), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent. */
+/** A cell's alignment (`CellStyle.alignment`), like xlsx `<alignment>`: horizontal and vertical alignment, text wrapping, indent, orientation. */
 export interface AlignmentStyle {
   horizontal?: 'general' | 'left' | 'center' | 'right' | 'fill' | 'justify' | 'centerContinuous' | 'distributed'
   vertical?: 'top' | 'center' | 'bottom' | 'justify' | 'distributed'
   wrap?: boolean
   /** Indent level, 0 to 250. */
   indent?: number
+  /**
+   * The text's orientation (Format Cells > Alignment > Orientation, xlsx `textRotation`): degrees from -90 to 90, up for
+   * positive ones, or `vertical`, its letters one above the other. The engine fits widths and heights as for level text.
+   */
+  rotation?: number | 'vertical'
 }
 
 /**
