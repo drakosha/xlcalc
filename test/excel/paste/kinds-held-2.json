@@ -1,0 +1,196 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 9.1
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 1
+      },
+      "B1": {
+       "value": 2,
+       "note": {
+        "text": "nb"
+       }
+      },
+      "C1": {
+       "note": {
+        "text": "alone"
+       }
+      },
+      "A2": {
+       "value": 3,
+       "note": {
+        "text": "na2"
+       }
+      },
+      "F2": {
+       "value": "f"
+      },
+      "H2": {
+       "value": "h",
+       "style": 1,
+       "note": {
+        "text": "own-h"
+       }
+      },
+      "F10": {
+       "value": "x",
+       "note": {
+        "text": "own"
+       }
+      }
+     },
+     "merges": [
+      "F10:G11"
+     ],
+     "columns": {
+      "A": {
+       "width": 20
+      },
+      "B": {
+       "width": 5
+      },
+      "C": {
+       "width": 9
+      },
+      "L": {
+       "width": 30
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "columnWidths-two-rows-transposed",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "columnWidths",
+   "transpose": true
+  },
+  {
+   "id": "columnWidths-row-transposed-tiled",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1:N2"
+   },
+   "what": "columnWidths",
+   "transpose": true
+  },
+  {
+   "id": "notes-two-rows-merged",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10"
+   },
+   "what": "notes"
+  },
+  {
+   "id": "notes-merged-none",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F10"
+   },
+   "what": "notes"
+  },
+  {
+   "id": "all-skip-note-alone",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F2"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "allExceptBorders-skip-note-alone",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F2"
+   },
+   "what": "allExceptBorders",
+   "skipBlanks": true
+  },
+  {
+   "id": "formats-skip-note-alone",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F2"
+   },
+   "what": "formats",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "columnWidths-two-rows-transposed": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "columnWidths-row-transposed-tiled": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "notes-two-rows-merged": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "notes-merged-none": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "all-skip-note-alone": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "allExceptBorders-skip-note-alone": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48",
+  "formats-skip-note-alone": "75f544432e569ac6d59dbbb898c5f3acde0056208d140d761055074344cd7c48"
+ },
+ "answers": {
+  "columnWidths-two-rows-transposed": {},
+  "columnWidths-row-transposed-tiled": {},
+  "notes-two-rows-merged": {},
+  "notes-merged-none": {},
+  "all-skip-note-alone": {},
+  "allExceptBorders-skip-note-alone": {},
+  "formats-skip-note-alone": {}
+ }
+}

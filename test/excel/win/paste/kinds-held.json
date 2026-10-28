@@ -1,0 +1,377 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 21
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "italic": true
+     },
+     "border": {
+      "top": {
+       "style": "thin"
+      },
+      "bottom": {
+       "style": "thin"
+      },
+      "left": {
+       "style": "thin"
+      },
+      "right": {
+       "style": "thin"
+      }
+     }
+    },
+    {
+     "fill": {
+      "color": "#9BC2E6"
+     },
+     "border": {
+      "top": {
+       "style": "thick"
+      }
+     }
+    },
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 1,
+       "numberFormat": "0.00"
+      },
+      "B1": {
+       "value": 2,
+       "note": {
+        "text": "nb"
+       }
+      },
+      "C1": {
+       "note": {
+        "text": "alone"
+       }
+      },
+      "E1": {
+       "value": 4
+      },
+      "E2": {
+       "value": 5,
+       "numberFormat": "0%"
+      },
+      "A3": {
+       "formula": "SEQUENCE(2)",
+       "numberFormat": "0.0"
+      },
+      "G2": {
+       "value": "g",
+       "style": 2,
+       "note": {
+        "text": "own"
+       }
+      },
+      "H2": {
+       "value": "h",
+       "note": {
+        "text": "own-h"
+       }
+      },
+      "F5": {
+       "value": "x"
+      },
+      "F7": {
+       "value": "y",
+       "numberFormat": "0.000"
+      }
+     },
+     "merges": [
+      "F5:G5",
+      "F7:H7"
+     ],
+     "columns": {
+      "A": {
+       "width": 20
+      },
+      "B": {
+       "width": 5
+      },
+      "E": {
+       "width": 12,
+       "style": 3,
+       "numberFormat": "0.0"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "columnWidths-row-transposed",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "columnWidths",
+   "transpose": true
+  },
+  {
+   "id": "columnWidths-column-transposed",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "K1"
+   },
+   "what": "columnWidths",
+   "transpose": true
+  },
+  {
+   "id": "columnWidths-onto-merged",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G7"
+   },
+   "what": "columnWidths"
+  },
+  {
+   "id": "valuesAndNumberFormats-column",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E:E"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J:J"
+   },
+   "what": "valuesAndNumberFormats"
+  },
+  {
+   "id": "formulasAndNumberFormats-column",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E:E"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J:J"
+   },
+   "what": "formulasAndNumberFormats"
+  },
+  {
+   "id": "valuesAndNumberFormats-spill",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A3:A4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L3"
+   },
+   "what": "valuesAndNumberFormats"
+  },
+  {
+   "id": "formulasAndNumberFormats-merged",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F5"
+   },
+   "what": "formulasAndNumberFormats"
+  },
+  {
+   "id": "formulasAndNumberFormats-merged-part",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G7"
+   },
+   "what": "formulasAndNumberFormats"
+  },
+  {
+   "id": "valuesAndNumberFormats-merged-wide",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F7"
+   },
+   "what": "valuesAndNumberFormats"
+  },
+  {
+   "id": "allExceptBorders-borders",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G2"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "allExceptBorders-whole-column",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "E:E"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J:J"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "allExceptBorders-transposed",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G2"
+   },
+   "what": "allExceptBorders",
+   "transpose": true
+  },
+  {
+   "id": "notes-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F2"
+   },
+   "what": "notes",
+   "skipBlanks": true
+  },
+  {
+   "id": "notes-alone",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "H2"
+   },
+   "what": "notes"
+  },
+  {
+   "id": "notes-onto-merged-wide",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F7"
+   },
+   "what": "notes"
+  },
+  {
+   "id": "valuesAndNumberFormats-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F2"
+   },
+   "what": "valuesAndNumberFormats",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "columnWidths-row-transposed": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "columnWidths-column-transposed": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "columnWidths-onto-merged": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "valuesAndNumberFormats-column": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "formulasAndNumberFormats-column": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "valuesAndNumberFormats-spill": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "formulasAndNumberFormats-merged": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "formulasAndNumberFormats-merged-part": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "valuesAndNumberFormats-merged-wide": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "allExceptBorders-borders": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "allExceptBorders-whole-column": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "allExceptBorders-transposed": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "notes-skip": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "notes-alone": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "notes-onto-merged-wide": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf",
+  "valuesAndNumberFormats-skip": "38e57d1d43a65b669088fecc69739397f773c3c6926fe74072e8d539f49a69cf"
+ },
+ "answers": {
+  "columnWidths-row-transposed": {},
+  "columnWidths-column-transposed": {},
+  "columnWidths-onto-merged": {
+   "error": "-2146827284 We can't do that to a merged cell."
+  },
+  "valuesAndNumberFormats-column": {},
+  "formulasAndNumberFormats-column": {},
+  "valuesAndNumberFormats-spill": {},
+  "formulasAndNumberFormats-merged": {},
+  "formulasAndNumberFormats-merged-part": {},
+  "valuesAndNumberFormats-merged-wide": {},
+  "allExceptBorders-borders": {},
+  "allExceptBorders-whole-column": {},
+  "allExceptBorders-transposed": {},
+  "notes-skip": {},
+  "notes-alone": {},
+  "notes-onto-merged-wide": {},
+  "valuesAndNumberFormats-skip": {}
+ }
+}

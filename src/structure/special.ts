@@ -231,12 +231,13 @@ function withBorders(lay: Laying, copy: number | undefined, target: number | und
 /**
  * The cell of the target after a paste: its contents from the copy's cell or the target's, combined by the operation,
  * its look, note and hyperlink likewise (a look of the entry, or of the sheet's looks where there is none); the target's
- * cell whole under a blank of the copy with Skip Blanks; undefined for none.
+ * cell under a blank of the copy with Skip Blanks, but for the copy's own note where the paste takes notes; undefined for none.
  */
 function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: string | undefined, r: number, c: number, lay: Laying): CellInput | undefined {
   const [t, x] = [a === undefined ? undefined : target.cells[a], b === undefined ? undefined : copy.cells[b]]
-  // a cell holding a note alone is no blank to a paste of notes, and is to a paste of values (the paste set `kinds-held`)
-  const parts = lay.skipBlanks && isBlank(x) && !(lay.parts.notes && x?.note !== undefined) ? NONE_TAKEN : lay.parts
+  // a blank of the copy leaves the target's cell, but for a note of its own where the paste takes notes (the paste sets `kinds-held`, `kinds-held-2`)
+  const skipped = lay.skipBlanks && isBlank(x)
+  const parts = skipped ? NONE_TAKEN : lay.parts
   const out: Record<string, unknown> = {}
   const both = parts.content && lay.operation ? combined(lay.operation, t, x) : null
   if (both) Object.assign(out, both, t?.meta !== undefined ? { meta: t.meta } : {})
@@ -244,7 +245,7 @@ function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: st
     const has = parts.content && !lay.operation ? x : t
     for (const k of CONTENT) if (has?.[k] !== undefined) out[k] = has[k]
   }
-  const note = parts.notes ? x?.note : t?.note
+  const note = parts.notes || (skipped && lay.parts.notes && x?.note !== undefined) ? x?.note : t?.note
   if (note !== undefined) out.note = note
   const link = parts.links ? x?.link : t?.link
   if (link !== undefined) out.link = link
