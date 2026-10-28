@@ -9,7 +9,7 @@ import type { BookInput, CellInput } from '../contract.js'
 import { say } from '../locale/messages.js'
 import { cornersText, hasCell, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
-import { copyRange, tiles } from './copy.js'
+import { copyRange, tiles, type PasteHow } from './copy.js'
 import { chain, placer, type Applied, type Geometry } from './geometry.js'
 import { placedCells, shift, shiftTransform } from './shift.js'
 import { arraysOf, gridOf } from './grid.js'
@@ -109,14 +109,14 @@ export function clipboard(book: BookInput, from: string, src: Rect, values: Valu
  * hidden rows of a filtered sheet takes the copy in each run of its visible rows, as a target alone; a copy that left
  * rows out cannot be pasted over several runs (Excel refuses a selection of several areas pasted onto several areas).
  */
-export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: Rect, withMeta: boolean, looksOnly = false): Applied {
+export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: Rect, withMeta: boolean, how: PasteHow = {}): Applied {
   const { source, from: at, src: rect } = clip
   const parts = pasteRuns(book, to, target)
-  if (!parts) return copyRange(book, at, rect, to, target, withMeta, source, looksOnly)
+  if (!parts) return copyRange(book, at, rect, to, target, withMeta, source, how)
   if (clip.packed && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
   const runs = parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))
-  const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source, looksOnly)))
+  const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source, how)))
   if (runs.length === 1) return steps(book)
   // a run that is no whole multiple of the copy takes one copy at its top-left, which can reach past the run and the target
   return pastedOnce(book, to, pastedArea(rect, runs), steps)

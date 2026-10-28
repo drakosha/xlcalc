@@ -1,0 +1,276 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 8.5
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5,
+       "style": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "B1": {
+       "value": -1
+      },
+      "H1": {
+       "value": 4
+      },
+      "J1": {
+       "value": 9
+      },
+      "D1": {
+       "value": 3
+      },
+      "D2": {
+       "value": 3
+      },
+      "E2": {
+       "value": 3
+      },
+      "E3": {
+       "value": 3
+      },
+      "L1": {
+       "value": 3
+      },
+      "L2": {
+       "value": 3
+      },
+      "L3": {
+       "value": 3
+      }
+     },
+     "merges": [
+      "J1:K2"
+     ],
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A3"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "L1:L5"
+       ],
+       "operator": "lessThan",
+       "formulas": [
+        "10"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "E2:E3"
+       ],
+       "formula": "E2>2",
+       "style": {
+        "font": {
+         "bold": true
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "D1:D9"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "3"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "H:H"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "font": {
+         "bold": true
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J1:K2"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "5"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "T",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "B2:C3"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "all-below-own",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "A4"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-over-own-rule",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "L1:L2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "L4"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-over-own-cells",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "A2"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-rule-inside",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1:E3"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-columns",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A:A"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "H:H"
+   },
+   "what": "all"
+  },
+  {
+   "id": "all-into-merged",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J1"
+   },
+   "what": "all"
+  }
+ ],
+ "sent": {
+  "all-below-own": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
+  "all-over-own-rule": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
+  "all-over-own-cells": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
+  "all-rule-inside": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
+  "all-columns": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
+  "all-into-merged": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11"
+ },
+ "answers": {
+  "all-below-own": {},
+  "all-over-own-rule": {},
+  "all-over-own-cells": {},
+  "all-rule-inside": {},
+  "all-columns": {},
+  "all-into-merged": {}
+ }
+}
