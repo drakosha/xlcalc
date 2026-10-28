@@ -1,0 +1,443 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 15.5
+ },
+ "books": {
+  "labels": {
+   "cells": {
+    "A2": {
+     "value": "east"
+    },
+    "A3": {
+     "value": "east"
+    },
+    "A4": {
+     "value": "west"
+    },
+    "B1": {
+     "value": "lead "
+    },
+    "B2": {
+     "value": 20
+    },
+    "B3": {
+     "value": 30
+    },
+    "B4": {
+     "value": 40
+    },
+    "C1": {
+     "value": "  two  words "
+    },
+    "C2": {
+     "value": 21
+    },
+    "C3": {
+     "value": 31
+    },
+    "C4": {
+     "value": 41
+    },
+    "D1": {
+     "value": "tab\there"
+    },
+    "D2": {
+     "value": 22
+    },
+    "D3": {
+     "value": 32
+    },
+    "D4": {
+     "value": 42
+    },
+    "E1": {
+     "value": "R2"
+    },
+    "E2": {
+     "value": 23
+    },
+    "E3": {
+     "value": 33
+    },
+    "E4": {
+     "value": 43
+    },
+    "F1": {
+     "value": "C3"
+    },
+    "F2": {
+     "value": 24
+    },
+    "F3": {
+     "value": 34
+    },
+    "F4": {
+     "value": 44
+    },
+    "G1": {
+     "value": "RC"
+    },
+    "G2": {
+     "value": 25
+    },
+    "G3": {
+     "value": 35
+    },
+    "G4": {
+     "value": 45
+    },
+    "H1": {
+     "value": "R1C"
+    },
+    "H2": {
+     "value": 26
+    },
+    "H3": {
+     "value": 36
+    },
+    "H4": {
+     "value": 46
+    },
+    "I1": {
+     "value": "r2c3"
+    },
+    "I2": {
+     "value": 27
+    },
+    "I3": {
+     "value": 37
+    },
+    "I4": {
+     "value": 47
+    },
+    "J1": {
+     "value": "c"
+    },
+    "J2": {
+     "value": 28
+    },
+    "J3": {
+     "value": 38
+    },
+    "J4": {
+     "value": 48
+    },
+    "K1": {
+     "value": 0.5,
+     "numberFormat": "h:mm"
+    },
+    "K2": {
+     "value": 29
+    },
+    "K3": {
+     "value": 39
+    },
+    "K4": {
+     "value": 49
+    },
+    "L1": {
+     "value": 0.5,
+     "numberFormat": "0%"
+    },
+    "L2": {
+     "value": 30
+    },
+    "L3": {
+     "value": 40
+    },
+    "L4": {
+     "value": 50
+    },
+    "M1": {
+     "value": "123"
+    },
+    "M2": {
+     "value": 31
+    },
+    "M3": {
+     "value": 41
+    },
+    "M4": {
+     "value": 51
+    },
+    "N1": {
+     "formula": "1+1"
+    },
+    "N2": {
+     "value": 32
+    },
+    "N3": {
+     "value": 42
+    },
+    "N4": {
+     "value": 52
+    },
+    "O1": {
+     "formula": "\"t\"&\"x\""
+    },
+    "O2": {
+     "value": 33
+    },
+    "O3": {
+     "value": 43
+    },
+    "O4": {
+     "value": 53
+    },
+    "P1": {
+     "value": false
+    },
+    "P2": {
+     "value": 34
+    },
+    "P3": {
+     "value": 44
+    },
+    "P4": {
+     "value": 54
+    },
+    "Q1": {
+     "value": "   "
+    },
+    "Q2": {
+     "value": 35
+    },
+    "Q3": {
+     "value": 45
+    },
+    "Q4": {
+     "value": 55
+    },
+    "R1": {
+     "value": "SUM"
+    },
+    "R2": {
+     "value": 36
+    },
+    "R3": {
+     "value": 46
+    },
+    "R4": {
+     "value": 56
+    },
+    "S1": {
+     "value": "A1:B2"
+    },
+    "S2": {
+     "value": 37
+    },
+    "S3": {
+     "value": 47
+    },
+    "S4": {
+     "value": 57
+    },
+    "T1": {
+     "value": "ИСТИНА"
+    },
+    "T2": {
+     "value": 38
+    },
+    "T3": {
+     "value": 48
+    },
+    "T4": {
+     "value": 58
+    },
+    "U1": {
+     "value": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+    },
+    "U2": {
+     "value": 39
+    },
+    "U3": {
+     "value": 49
+    },
+    "U4": {
+     "value": 59
+    },
+    "V1": {
+     "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+    },
+    "V2": {
+     "value": 40
+    },
+    "V3": {
+     "value": 50
+    },
+    "V4": {
+     "value": 60
+    },
+    "W1": {
+     "value": "XFD1"
+    },
+    "W2": {
+     "value": 41
+    },
+    "W3": {
+     "value": 51
+    },
+    "W4": {
+     "value": 61
+    },
+    "X1": {
+     "value": "XFE1"
+    },
+    "X2": {
+     "value": 42
+    },
+    "X3": {
+     "value": 52
+    },
+    "X4": {
+     "value": 62
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "top",
+   "book": "labels",
+   "range": "B1:X4",
+   "labels": {
+    "top": true
+   }
+  },
+  {
+   "id": "left-twice",
+   "book": "labels",
+   "range": "A2:C4",
+   "labels": {
+    "left": true
+   }
+  },
+  {
+   "id": "top-right",
+   "book": "labels",
+   "range": "B1:E4",
+   "labels": {
+    "top": true,
+    "right": true
+   }
+  }
+ ],
+ "answers": {
+  "top": {
+   "names": [
+    [
+     "A1_B2",
+     "'S'!$S$2:$S$4"
+    ],
+    [
+     "RC_",
+     "'S'!$G$2:$G$4"
+    ],
+    [
+     "SUM",
+     "'S'!$R$2:$R$4"
+    ],
+    [
+     "XFD1_",
+     "'S'!$W$2:$W$4"
+    ],
+    [
+     "XFE1",
+     "'S'!$X$2:$X$4"
+    ],
+    [
+     "_123",
+     "'S'!$M$2:$M$4"
+    ],
+    [
+     "_C3",
+     "'S'!$F$2:$F$4"
+    ],
+    [
+     "_R1C",
+     "'S'!$H$2:$H$4"
+    ],
+    [
+     "_R2",
+     "'S'!$E$2:$E$4"
+    ],
+    [
+     "_r2c3",
+     "'S'!$I$2:$I$4"
+    ],
+    [
+     "c_",
+     "'S'!$J$2:$J$4"
+    ],
+    [
+     "lead",
+     "'S'!$B$2:$B$4"
+    ],
+    [
+     "tab_here",
+     "'S'!$D$2:$D$4"
+    ],
+    [
+     "two__words",
+     "'S'!$C$2:$C$4"
+    ],
+    [
+     "tx",
+     "'S'!$O$2:$O$4"
+    ],
+    [
+     "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+     "'S'!$U$2:$U$4"
+    ],
+    [
+     "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+     "'S'!$V$2:$V$4"
+    ],
+    [
+     "ИСТИНА",
+     "'S'!$T$2:$T$4"
+    ]
+   ]
+  },
+  "left-twice": {
+   "names": [
+    [
+     "east",
+     "'S'!$B$3:$C$3"
+    ],
+    [
+     "west",
+     "'S'!$B$4:$C$4"
+    ]
+   ]
+  },
+  "top-right": {
+   "names": [
+    [
+     "_R2",
+     "'S'!$B$2:$D$4"
+    ],
+    [
+     "lead",
+     "'S'!$B$2:$B$4"
+    ],
+    [
+     "tab_here",
+     "'S'!$D$2:$D$4"
+    ],
+    [
+     "two__words",
+     "'S'!$C$2:$C$4"
+    ]
+   ]
+  }
+ }
+}
