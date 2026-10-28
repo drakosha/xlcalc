@@ -385,12 +385,11 @@ function numberLooks(sheet: SheetInput, keys: readonly string[], layer: Layer, l
       else if (++b < layer.blocks) [r, k, c] = [layer.r1[b], 0, layer.patterns[layer.at[b]][0]]
     }
   }
-  // once every look is numbered, the entries left take theirs in the same order from the cells' walk
   const at = { r: 0, c: 0 }
-  for (let i = 0; i < keys.length && left > 0; i++) {
-    readAddress(keys[i], at)
+  for (const a of keys) {
+    readAddress(a, at)
     before(at.r * MAX_COLS + at.c)
-    sAttr(at.r, at.c, sheet.cells[keys[i]])
+    sAttr(at.r, at.c, sheet.cells[a])
   }
   before(Infinity)
   return attr
