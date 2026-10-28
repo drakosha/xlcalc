@@ -10,12 +10,22 @@ import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS, sum, sumZeroed } from '../common.js'
 import { functions as trig } from '../math/trig.js'
-import { areaNumbers, devsq, interpolate, mean, sorted, stdev, variance } from './common.js'
+import { areaNumbers, devsq, interpolate, mean, stdev, variance } from './common.js'
+import { orderAt, sortedNumbers } from './order-stats.js'
 
 function median(xs: number[]): number {
-  const s = sorted(xs)
-  const m = s.length >> 1
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2
+  const m = xs.length >> 1
+  if (xs.length % 2) return orderAt(xs, m)[0]
+  const [a, b] = orderAt(xs, m - 1, true)
+  return (a + b) / 2
+}
+
+/** The interpolated order statistic at the 0-based rank h, as `interpolate` takes it from the sorted data. */
+function percentileOf(xs: number[], h: number): number {
+  const i = Math.floor(h)
+  const last = i >= xs.length - 1
+  const pair = orderAt(xs, last ? xs.length - 1 : i, !last)
+  return last ? pair[0] : interpolate(pair, h - i)
 }
 
 /** AVERAGE: 0 where SUM's last addition leaves a remainder Excel makes 0 (the set `sum-zero-held`), else the stable mean. */
@@ -33,14 +43,14 @@ function moment(xs: number[], k: number, ddof: number): number | undefined {
 
 function percentileInc(xs: number[], k: number): V {
   if (k < 0 || k > 1) return E.NUM
-  return interpolate(sorted(xs), k * (xs.length - 1))
+  return percentileOf(xs, k * (xs.length - 1))
 }
 
 function percentileExc(xs: number[], k: number): V {
   const n = xs.length
   // Excel compares k with 1/(n+1) and n/(n+1), not the rank with 1 and n
   if (k < 1 / (n + 1) || k > n / (n + 1)) return E.NUM
-  return interpolate(sorted(xs), Math.max(k * (n + 1) - 1, 0))
+  return percentileOf(xs, Math.max(k * (n + 1) - 1, 0))
 }
 
 // the quart is checked before it is truncated: QUARTILE(x, -0.5) is #NUM!, QUARTILE(x, 4.9) the maximum
@@ -50,14 +60,21 @@ const quartileExc = (xs: number[], q: number): V => (q < 1 || q >= 4 ? E.NUM : p
 /** PERCENTRANK: the rank of x among the data, interpolated, truncated (not rounded) to `digits`. */
 function percentRank(xs: number[], x: number, digits = 3, exclusive: boolean): V {
   if (digits < 1) return E.NUM
-  const s = sorted(xs)
-  const n = s.length
-  if (x < s[0] || x > s[n - 1]) return E.NA
+  // one pass for what the sorted data gives: its ends, the count below x, the largest below and the smallest from x
+  const n = xs.length
+  let lo = Infinity, hi = -Infinity, below = 0, under = -Infinity, from = Infinity
+  for (const v of xs) {
+    if (v < lo) lo = v
+    if (v > hi) hi = v
+    if (v < x) {
+      below++
+      if (v > under) under = v
+    } else if (v < from) from = v
+  }
+  if (x < lo || x > hi) return E.NA
   if (n === 1) return 1
-  let i = 0
-  while (s[i] < x) i++
-  // position among the n values: the first equal one, or between s[i−1] and s[i]
-  const pos = s[i] === x ? i : i - 1 + (x - s[i - 1]) / (s[i] - s[i - 1])
+  // position among the n values: the first equal one, or between the neighbours of x
+  const pos = from === x ? below : below - 1 + (x - under) / (from - under)
   const r = exclusive ? (pos + 1) / (n + 1) : pos / (n - 1)
   const p = 10 ** Math.min(digits, 15)
   // the product read at 15 digits, as Excel sees it: 0.285 * 1000 is 285
@@ -217,7 +234,7 @@ export const functions: Record<string, FnDef> = {
   LARGE: {
     args: 'N n',
     empty: 'NUM',
-    fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : sorted(xs)[xs.length - Math.ceil(k)]),
+    fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : orderAt(xs, xs.length - Math.ceil(k))[0]),
   },
   MAX: { args: 'N', rep: 1, fn: max },
   MAXA: { args: 'A', rep: 1, fn: max },
@@ -265,7 +282,7 @@ export const functions: Record<string, FnDef> = {
   SMALL: {
     args: 'N n',
     empty: 'NUM',
-    fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : sorted(xs)[Math.floor(k) - 1]),
+    fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : orderAt(xs, Math.floor(k) - 1)[0]),
   },
   STANDARDIZE: { args: 'n n n', fn: (x: number, m: number, sd: number) => (sd <= 0 ? E.NUM : (x - m) / sd) },
   'STDEV.P': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => stdev(xs, 0) },
@@ -279,7 +296,7 @@ export const functions: Record<string, FnDef> = {
       if (p < 0 || p >= 1) return E.NUM
       // the number trimmed is rounded down to an even count, half from each end
       const t = Math.floor((xs.length * p) / 2)
-      return mean(sorted(xs).slice(t, xs.length - t))
+      return mean(sortedNumbers(xs).slice(t, xs.length - t))
     },
   },
   'VAR.P': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => variance(xs, 0) },
