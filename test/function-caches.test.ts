@@ -18,7 +18,7 @@ function follows(cells: Cells, range: string, steps: (CellEdit | Clock)[], execu
     if ('now' in step) s.setClock((now = step))
     else {
       s.setCells([step])
-      book[step.cell] = step.input ?? undefined!
+      book[step.cell] = step.input as CellInput
     }
     const fresh = compute({ sheets: [{ name: 'S', cells: book }] }, { clock: now, execution }).sheets[0].cells
     const got = s.getCells('S', range)
