@@ -51,6 +51,8 @@ export interface SpliceInput {
   lines: boolean
   /** The file's cells with what only it holds that moved (`refusals.ts`). */
   moved?: Moved
+  /** The sheet's conditional formats written over the file's (`rules.ts`), in place of the workbook's. */
+  conditional?: { main: string; ext: string }
   /** The rectangles of the file's cell formats that look as earlier ones where they lie now (`formats.ts`); none past their limit. */
   formats?: Formats
 }
@@ -511,11 +513,12 @@ export function spliceSheet(x: SpliceInput): Spliced {
     put('mergeCells', p1.merges)
   }
   const ext = { cf: undefined as string | undefined, dv: false }
-  if (p0.conditional + p0.ext !== p1.conditional + p1.ext) {
+  const cf = x.conditional ?? (p0.conditional + p0.ext !== p1.conditional + p1.ext ? { main: p1.conditional, ext: p1.ext } : undefined)
+  if (cf) {
     changed = true
-    for (const m of p1.conditional.matchAll(/ dxfId="(\d+)"/g)) x.styles.use('dxfs', Number(m[1]))
-    put('conditionalFormatting', p1.conditional)
-    ext.cf = p1.ext
+    for (const m of cf.main.matchAll(/ dxfId="(\d+)"/g)) x.styles.use('dxfs', Number(m[1]))
+    put('conditionalFormatting', cf.main)
+    ext.cf = cf.ext
   }
   if (p0.validations !== p1.validations) {
     changed = true

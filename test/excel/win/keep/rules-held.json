@@ -1,0 +1,657 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "day": "2026-10-28",
+  "seconds": 20.2
+ },
+ "cases": [
+  {
+   "id": "held-last-1",
+   "edit": {
+    "last": 1
+   }
+  },
+  {
+   "id": "held-first-3",
+   "edit": {
+    "first": 3
+   }
+  },
+  {
+   "id": "held-priority-4",
+   "edit": {
+    "priority": [
+     4,
+     2
+    ]
+   }
+  },
+  {
+   "id": "held-delete-rows-top",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1,
+    "count": 2
+   }
+  },
+  {
+   "id": "held-insert-col-i",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "I"
+   }
+  },
+  {
+   "id": "held-delete-cols-b",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "B",
+    "count": 2
+   }
+  },
+  {
+   "id": "held-delete-rows-end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 20,
+    "count": 5
+   }
+  },
+  {
+   "id": "held-move-h-other",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "H2:H21"
+    },
+    "to": {
+     "sheet": "P",
+     "cell": "A5"
+    }
+   }
+  },
+  {
+   "id": "held-move-part-b",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "B5:B6"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J5"
+    }
+   }
+  }
+ ],
+ "sent": {
+  "held-last-1": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-first-3": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-priority-4": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-delete-rows-top": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-insert-col-i": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-delete-cols-b": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-delete-rows-end": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-move-h-other": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f",
+  "held-move-part-b": "adccd5eaff4900f78eb15c0ad8d17b70d387d3bf0fef2beedc31510054ee4b5f"
+ },
+ "answers": {
+  "held-last-1": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       3,
+       "B2:B21",
+       "",
+       2,
+       false
+      ],
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       4,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       5,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       6,
+       false
+      ],
+      [
+       3,
+       "H2:H21",
+       "",
+       7,
+       false
+      ],
+      [
+       1,
+       "A2:A21",
+       "=100",
+       8,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-first-3": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       1,
+       false
+      ],
+      [
+       1,
+       "A2:A21",
+       "=100",
+       2,
+       false
+      ],
+      [
+       3,
+       "B2:B21",
+       "",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       5,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       6,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       7,
+       false
+      ],
+      [
+       3,
+       "H2:H21",
+       "",
+       8,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-priority-4": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A21",
+       "=100",
+       1,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       2,
+       false
+      ],
+      [
+       3,
+       "B2:B21",
+       "",
+       3,
+       false
+      ],
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       4,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       6,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       7,
+       false
+      ],
+      [
+       3,
+       "H2:H21",
+       "",
+       8,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-delete-rows-top": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A1:A19",
+       "=100",
+       1,
+       false
+      ],
+      [
+       2,
+       "D1:D19",
+       "=MOD(D1,2)=0",
+       4,
+       false
+      ],
+      [
+       3,
+       "B1:B19",
+       "",
+       9,
+       false
+      ],
+      [
+       2,
+       "C1:C19",
+       "=C1>#REF!",
+       10,
+       false
+      ],
+      [
+       4,
+       "E1:E19",
+       "",
+       12,
+       false
+      ],
+      [
+       4,
+       "F1:F19",
+       "",
+       13,
+       false
+      ],
+      [
+       3,
+       "H1:H19",
+       "",
+       14,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-insert-col-i": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A21",
+       "=100",
+       1,
+       false
+      ],
+      [
+       3,
+       "B2:B21",
+       "",
+       2,
+       false
+      ],
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       4,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       5,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       6,
+       false
+      ],
+      [
+       3,
+       "H2:I21",
+       "",
+       7,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-delete-cols-b": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A21",
+       "=100",
+       1,
+       false
+      ],
+      [
+       2,
+       "B2:B21",
+       "=MOD(B2,2)=0",
+       4,
+       false
+      ],
+      [
+       4,
+       "C2:C21",
+       "",
+       5,
+       false
+      ],
+      [
+       4,
+       "D2:D21",
+       "",
+       6,
+       false
+      ],
+      [
+       3,
+       "F2:F21",
+       "",
+       7,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-delete-rows-end": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A19",
+       "=100",
+       1,
+       false
+      ],
+      [
+       2,
+       "C2:C19",
+       "=C2>$G$1",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D19",
+       "=MOD(D2,2)=0",
+       4,
+       false
+      ],
+      [
+       3,
+       "B2:B19",
+       "",
+       8,
+       false
+      ],
+      [
+       4,
+       "E2:E19",
+       "",
+       9,
+       false
+      ],
+      [
+       4,
+       "F2:F19",
+       "",
+       10,
+       false
+      ],
+      [
+       3,
+       "H2:H19",
+       "",
+       11,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  },
+  "held-move-h-other": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A21",
+       "=100",
+       1,
+       false
+      ],
+      [
+       3,
+       "B2:B21",
+       "",
+       2,
+       false
+      ],
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       4,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       5,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       6,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     [
+      [
+       3,
+       "A5:A24",
+       "",
+       1,
+       false
+      ]
+     ]
+    ]
+   ]
+  },
+  "held-move-part-b": {
+   "rules": [
+    [
+     "S",
+     [
+      [
+       1,
+       "A2:A21",
+       "=100",
+       1,
+       false
+      ],
+      [
+       3,
+       "B2:B4,B7:B21,J5:J6",
+       "",
+       2,
+       false
+      ],
+      [
+       2,
+       "C2:C21",
+       "=C2>$G$1",
+       3,
+       false
+      ],
+      [
+       2,
+       "D2:D21",
+       "=MOD(D2,2)=0",
+       4,
+       false
+      ],
+      [
+       4,
+       "E2:E21",
+       "",
+       5,
+       false
+      ],
+      [
+       4,
+       "F2:F21",
+       "",
+       6,
+       false
+      ],
+      [
+       3,
+       "H2:H21",
+       "",
+       7,
+       false
+      ]
+     ]
+    ],
+    [
+     "P",
+     []
+    ]
+   ]
+  }
+ }
+}

@@ -349,6 +349,17 @@ function inFileOrder(cells: Record<string, CellInput>, added: Set<string>, made:
   return out
 }
 
+/**
+ * Where a worksheet's rules lie in `tail` (the part after `<sheetData>`): its elements before its own extension list
+ * (`own`), and the content of that list (`extensions`, from `extAt`). The list is the worksheet's last element:
+ * autofilters, sorts and rules may hold lists of their own.
+ */
+export function rulesText(tail: string): { own: string; extensions: string; extAt: number } {
+  const ext = lastChild(tail, 'extLst')
+  const extensions = ext?.body ?? ''
+  return { own: ext ? tail.slice(0, ext.start) : tail, extensions, extAt: ext ? tail.lastIndexOf('</', ext.end - 1) - extensions.length : 0 }
+}
+
 export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const { xml, name } = src
   const open = xml.search(/<(?:[\w.-]+:)?sheetData[\s>/]/)
@@ -415,10 +426,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (view) sheet.view = view
   const frozen = readFrozen(first, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
-  // the worksheet's own extension list is its last element: autofilters, sorts and rules may hold lists of their own
-  const ext = lastChild(tail, 'extLst')
-  const own = ext ? tail.slice(0, ext.start) : tail
-  const extensions = ext?.body ?? ''
+  const { own, extensions } = rulesText(tail)
   const cf = readConditional(own, extensions, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
   if (cf) sheet.conditionalFormats = cf
   const validations = readValidations(own, extensions, name, src.sheets, ctx.issues, src.formulas)

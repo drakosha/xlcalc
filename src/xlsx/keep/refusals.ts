@@ -27,8 +27,10 @@ import type { Source } from './source.js'
  * does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
  * part would move or be cut by the change, which writeKept does not write; `links`, a link to another workbook was
  * removed, moved or pointed at another file, or one of a kind other than a workbook (DDE, OLE) changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
- * the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
- * could not read (its `readXlsx` issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
+ * the data validation of a sheet changed and the file has rules of it the workbook could not read (its `readXlsx` issues
+ * `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
+ * it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
+ * would need making for a new first cell).
  */
 export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 

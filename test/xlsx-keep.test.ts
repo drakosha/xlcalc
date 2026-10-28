@@ -408,7 +408,7 @@ describe('the carriers outside writeKept', () => {
   })
 })
 
-describe('rules the workbook could not read are refused, never lost', () => {
+describe('validation the workbook could not read is refused, never lost; conditional formats are carried', () => {
   /** S with a rule of each kind the workbook reads, and the file given a conditional format and a validation rule it does not; T without. */
   async function unread(): Promise<Uint8Array> {
     const book: BookInput = {
@@ -428,13 +428,12 @@ describe('rules the workbook could not read are refused, never lost', () => {
     return zip([...parts].map(([name, data]) => ({ name, data: typeof data === 'string' ? new TextEncoder().encode(data) : data })))
   }
 
-  it("the sheet's rules changed, or moved by its rows, are refused with rules; a value or another sheet's rules are written", async () => {
+  it("the sheet's validation changed, or moved by its rows, is refused with rules; its conditional formats, a value or another sheet's rules are written", async () => {
     const data = await unread()
     expect((await readXlsx(data)).issues.map((x) => [x.code, x.sheet])).toEqual(expect.arrayContaining([['conditionalFormat', 'S'], ['dataValidation', 'S']]))
     const open = async () => createSession((await openKept(data)).book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
     const rule = { type: 'cellIs' as const, ranges: ['B1'], operator: 'lessThan' as const, formulas: ['9'], style: { font: { italic: true } } }
     for (const edit of [
-      (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'S', conditionalFormats: [...s.getBook().sheets[0].conditionalFormats!, rule] }]),
       (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'S', validations: [] }]),
       (s: ReturnType<typeof createSession>) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 }),
     ]) {
@@ -444,6 +443,7 @@ describe('rules the workbook could not read are refused, never lost', () => {
     }
     for (const edit of [
       (s: ReturnType<typeof createSession>) => s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 5 } }]),
+      (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'S', conditionalFormats: [...s.getBook().sheets[0].conditionalFormats!, rule] }]),
       (s: ReturnType<typeof createSession>) => s.setLayout([{ sheet: 'T', conditionalFormats: [rule] }]),
     ]) {
       const s = await open()

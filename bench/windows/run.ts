@@ -19,6 +19,7 @@
  *   npx tsx bench/windows/run.ts fit <name> [L]        columns fitted and texts typed into them, into fit/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts rows <name> [L]       rows fitted and texts with line breaks set into them, into rows/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts cond <name>           conditional formats (in the set's locale) into cond/[<tag>/]<name>.json and cond/[<tag>/]<name>/
+ *   npx tsx bench/windows/run.ts keep rules-made|rules  rules the model does not read, Excel's edits of them, into keep/<name>.json and keep/<name>/
  *   npx tsx bench/windows/run.ts valid <name> [L]      data validation and outlines into valid/[<tag>/]<name>.json and valid/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts ui <name> [L]         a paste from the clipboard, and array cells through the object model, into ui/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts ribbon <name> [L]     the ribbon's Number Format box over a ui set's books, by UI Automation in a session on a screen, into ribbon/[<tag>/]<name>.json
@@ -50,6 +51,7 @@ import { stepEntry } from './entry.js'
 import { stepFit } from './fit.js'
 import { stepRows } from './rows.js'
 import { stepCond } from './cond.js'
+import { stepKeepRules } from './keep.js'
 import type { CondSet } from '../coverage/cond/cases.js'
 import { stepValid } from './valid.js'
 import { stepUi } from './ui.js'
@@ -67,7 +69,7 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** The sets with Mac answers, by their files in `test/excel/<dir>`; none where the directory is not there. */
 const macSets = (dir: string) => (existsSync(join(ROOT, 'test/excel', dir)) ? readdirSync(join(ROOT, 'test/excel', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [])
 
-const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks, sort: stepSort } as const
+const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks, sort: stepSort, keep: stepKeepRules } as const
 /** The parts sets: every set of `bench/coverage/parts/`, `threads` among them, which Windows alone runs. */
 const PARTS_SETS = readdirSync(join(ROOT, 'bench/coverage/parts')).filter((f) => f.endsWith('.ts') && f !== 'cases.ts' && f !== 'predict.ts').map((f) => f.slice(0, -3))
 

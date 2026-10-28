@@ -29,7 +29,9 @@ import { KeptIssues } from './issues.js'
 import { keyOf } from '../../style-table.js'
 import { externalLinkXml } from '../write/links.js'
 import { records } from './zip.js'
-import { carrierNames, carriersOf, type Edit } from './carriers.js'
+import { carrierNames, carriersOf, type Carriers, type Edit } from './carriers.js'
+import { keptRules } from './rules.js'
+import { conditionalXml } from '../write/conditional.js'
 import { edited, KeptRefusal, refusals, type Identity } from './refusals.js'
 import { spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
@@ -167,7 +169,7 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   // the sheets whose rules the reader could not all take, which writing them again from the workbook would lose
   const unread = (code: string) => new Set(read.issues.flatMap((x) => (x.code === code && x.sheet !== undefined ? [x.sheet] : [])))
   const lost = { conditional: unread('conditionalFormat'), validation: unread('dataValidation') }
-  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits, styles), lost)
+  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits, styles), lost, carriers.rules)
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
@@ -224,6 +226,8 @@ class Kept {
     readonly setup: Setup,
     /** By name, the sheets of the file with conditional formats, and with data validation, the reader could not all take. */
     readonly lost: { conditional: Set<string>; validation: Set<string> },
+    /** By sheet of the file: its conditional formats as the reader met them. */
+    readonly rules0: Carriers['rules'],
   ) {
     this.parts = new Parts(src)
     this.types = contentTypes(src)
@@ -278,10 +282,9 @@ class Kept {
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
       const p0 = sheetPieces(s0, k, this.context(book0, this.w0, k, this.cached?.[k], new Issues()))
       const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
-      // rules the workbook does not hold would go with a sheet's rules written again: refused, never lost
+      // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never lost
       const name = book0.sheets[k].name
-      if (this.lost.conditional.has(name) && p0.conditional + p0.ext !== p1.conditional + p1.ext)
-        throw new KeptRefusal(`the conditional formats of '${name}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`, 'rules')
+      const conditional = this.lost.conditional.has(name) ? this.rules(k, j, p0, p1) : undefined
       if (this.lost.validation.has(name) && p0.validations !== p1.validations)
         throw new KeptRefusal(`the data validation of '${name}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`, 'rules')
       const rels = new Rels(ss.relsXml)
@@ -298,7 +301,7 @@ class Kept {
       }
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}) })
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
@@ -308,6 +311,22 @@ class Kept {
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
+  }
+
+  /**
+   * The conditional formats of the file's sheet `k` (the book's `j`) where they changed and the file has rules the model
+   * does not have, or read without a part of their look: the workbook's with the file's (`keptRules`); undefined where
+   * neither the workbook's rules nor the carried ones changed.
+   */
+  private rules(k: number, j: number, p0: SheetPieces, p1: SheetPieces): { main: string; ext: string } | undefined {
+    const ss = this.src.sheets[k]
+    const sources = this.rules0[k] ?? []
+    const part = ss.part.toLowerCase()
+    const edits = this.id.edits.filter((e) => e.part.toLowerCase() === part && sources.some((s) => e.start >= s.block.start && e.end <= s.block.end))
+    if (p0.conditional + p0.ext === p1.conditional + p1.ext && !edits.length) return undefined
+    const [s0, s1] = [this.book0.sheets[k], this.book.sheets[j]]
+    const ctx = this.context(this.book, this.w1, j, this.cells?.[j], new Issues())
+    return keptRules({ xml: ss.xml, sheet: s0.name, sources, edits, r0: s0.conditionalFormats ?? [], r1: s1.conditionalFormats ?? [], write: (priority) => conditionalXml(s1, k, { ...ctx, priority }) })
   }
 
   /**

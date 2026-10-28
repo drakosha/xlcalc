@@ -6,7 +6,7 @@
  * operation of the structure moves as Excel moves a name's reference, and the edits that write them back (`fix`): the
  * series and labels of charts, the anchors of drawings by their `editAs`, the place and the source of pivot tables,
  * sparklines, a sheet's AutoFilter and sort, the names the model does not take (the print area and titles), page
- * breaks and protected ranges. A part an item cannot write back as Excel would refuses (comment threads, a pivot
+ * breaks, protected ranges and the conditional formats the model does not read (`rules.ts`). A part an item cannot write back as Excel would refuses (comment threads, a pivot
  * table cut). Parts whose references are not read (`unparsed`) are known only by their sheet's carrier: rows and
  * columns inserted or deleted there are seen, a range moved over them is not. A cell with what only the file holds
  * (formatted runs of text, a rich value the writer does not write, phonetic text) has a carrier of its own, which
@@ -28,11 +28,15 @@ import { parseFormula } from '../read/formulas.js'
 import { CARRIER_PREFIX } from '../write/book.js'
 import { cellMetadata } from '../read/metadata.js'
 import { partText } from '../read/package.js'
-import { ABSOLUTE, areasOf, areaText, dollarsOf, plainArea, sheetPrefix, sqrefRects, type Area, type Dollars } from './refs.js'
+import { ABSOLUTE, absText, areasOf, areaText, dollarsOf, lastCell, plainArea, rectsNow, sheetPrefix, sqrefCarrier, sqrefRects, type Area, type Dollars } from './refs.js'
 import type { Source } from './source.js'
+import type { RuleSource } from '../read/conditional.js'
+import { palette } from '../styles/color.js'
+import { readDxfs } from '../styles/dxf.js'
 import { formatAreas, type FormatKind } from './formats.js'
+import { fileRules, ruleItems } from './rules.js'
 import type { KeptStyles } from './styles.js'
-import { attrsOf, childrenOf, ContentTypes, rootOf, type Placed } from './xml.js'
+import { attrsOf, childrenOf, ContentTypes, rootOf, valueAt, type Placed } from './xml.js'
 
 /** The prefix of the carriers' names, which `writeXlsx` leaves out. */
 export const PREFIX = CARRIER_PREFIX
@@ -112,6 +116,8 @@ export interface Carriers {
   byName: { name: string; what: string; part: string; at: [number, number] }[]
   /** By sheet of the source: parts that name the sheet (a pivot chart's pivot table), where the name lies. */
   named: { what: string; part: string; at: [number, number]; prefix: string; rest: string }[][]
+  /** By sheet of the source: its conditional formats as the reader met them (`rules.ts`). */
+  rules: RuleSource[][]
 }
 
 /** Elements of a worksheet whose references are not read. */
@@ -141,12 +147,6 @@ const CELL_XML = /<(?:[\w.-]+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?c>)
 /** The rich values of errors the writer writes itself (`write/book.ts`). */
 const OWN_ERRORS = new Set(['#SPILL!', '#CALC!'])
 
-/** A rectangle as an absolute reference: `$B$3`, `$B$3:$E$10`, `$C:$D`, `$3:$5`. */
-export const absText = (x: Rect) => areaText(x, ABSOLUTE)
-
-/** A sheet's carrier: its last cell. */
-const lastCell = (sheet: string) => `${quoteSheet(sheet)}!$XFD$1048576`
-
 /** Rows taken below an anchor to tell where it lands when its rows are deleted, and columns beside it. */
 const BELOW = 100_000
 const BESIDE = 1_000
@@ -157,13 +157,6 @@ interface Span {
   end: number
 }
 
-/** Where the value of an attribute of the element at `e` lies in its opening tag; undefined without it. */
-function valueAt(xml: string, e: Span, name: string): [number, number] | undefined {
-  const tag = xml.slice(e.start, xml.indexOf('>', e.start) + 1)
-  const m = new RegExp(`\\s${name.replace(/[.:]/g, '\\$&')}\\s*=\\s*(["'])([^"']*)\\1`).exec(tag)
-  return m ? [e.start + m.index + m[0].length - 1 - m[2].length, e.start + m.index + m[0].length - 1] : undefined
-}
-
 /** The elements of a local name in a part from `from` to `to`: each where it lies, where its content lies, and its attributes and content. */
 function within(xml: string, from: number, to: number, local: string, first = false): (Span & { open: number; close: number; attrs: string; body: string | null })[] {
   const sub = xml.slice(from, to)
@@ -172,12 +165,6 @@ function within(xml: string, from: number, to: number, local: string, first = fa
     return { start: from + p.start, end: from + p.end, open, close: p.body === null ? open : open + p.body.length, attrs: p.attrs, body: p.body }
   })
 }
-
-/** The rectangles of an `sqref` in a carrier: a union on the sheet; null when one is none. */
-const sqrefCarrier = (sheet: string, rects: Rect[] | null): string | null => (rects?.length ? rects.map((x) => `${quoteSheet(sheet)}!${absText(x)}`).join(',') : null)
-
-/** The rectangles a carrier's text holds now: each, or null where lost; null when it is no union of references. */
-const rectsNow = (text: string): (Rect | null)[] | null => areasOf(text)?.map((a) => ('rect' in a ? a.rect : null)) ?? null
 
 /** A reference written back as a file's formula: each area with its sheet and the `$`s it had (`dollars`), `#REF!` where lost; the whole `#REF!` for a sheet deleted. */
 function formulaText(areas: Area[], dollars: Dollars[], parens: boolean): string {
@@ -198,7 +185,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   }
   const parts = { n: 0 }
   const carrier = (ref: string, kind: Carrier['kind']): Carrier => ({ name: fresh('', parts), ref, kind })
-  const out: Carriers = { sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []) }
+  const out: Carriers = { sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []), rules: [] }
   for (const [i, sheet] of names.entries()) {
     let name = `${PREFIX}s${i}`
     for (let k = 2; taken.has(caseKey(name)); k++) name = `${PREFIX}s${i}.${k}`
@@ -236,7 +223,9 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
 
   // the shared strings with formatted runs, and the rich values of the cells
   const part = (kind: string) => partText(src.archive, src.wbRels, kind)
-  const [sst, metaXml, richValues, richStructures] = await Promise.all(['sharedStrings', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure'].map(part))
+  const [sst, metaXml, richValues, richStructures, stylesXml, themeXml] = await Promise.all(['sharedStrings', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'styles', 'theme'].map(part))
+  const colors = palette(themeXml, stylesXml)
+  const dxfs = readDxfs(stylesXml, colors)
   const richStrings = new Set<number>()
   if (sst && RUNS.test(sst)) elements(sst, 'si').forEach((e, k) => RUNS.test(e.body ?? '') && richStrings.add(k))
   const meta = cellMetadata(metaXml, richValues, richStructures)
@@ -246,6 +235,11 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
     const sheet = names[i]
     const xml = s.xml
     const root = rootOf(xml)
+    // the conditional formats the model does not have, with their carriers
+    out.rules[i] = fileRules(xml, sheet, dxfs, colors)
+    const rules = ruleItems(xml, out.rules[i], sheet, i, s.part, carrier)
+    out.items.push(...rules.items)
+    out.unparsed[i].push(...rules.unparsed)
     const kids = root ? childrenOf(xml, root) : []
     if (styles.twins) formats(xml, kids, i)
     for (const c of kids) {
