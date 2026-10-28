@@ -154,7 +154,10 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
       for (let j = lowerBound(at, Math.max(lo, start)); j < at.length && at[j] <= hi; j++) {
         if (paced(1)) yield
         const k = at[j]
-        const [r, c] = cols ? cr(k) : rc(k)
+        // the row and column of the place, without a pair made for each cell
+        const q = Math.floor(k / (cols ? MAX_ROWS : MAX_COLS))
+        const r = cols ? k - q * MAX_ROWS : q
+        const c = cols ? q : k - q * MAX_COLS
         if (r < x.r1 || r > x.r2 || c < x.c1 || c > x.c2 || (only && !only.has(r)) || !take(cols ? cols.ix[j] : j, k, r, c)) continue
         yield [ix, places]
         ix = []
@@ -197,8 +200,9 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
         const [ix, places] = chunk
         const unread = ix.filter((i) => texts[i] === undefined)
         if (unread.length) yield* fill(x.s, t, unread, raw, texts)
-        for (const [q, i] of ix.entries()) {
+        for (let q = 0; q < ix.length; q++) {
           if (paced(1)) yield
+          const i = ix[q]
           if (!test(texts[i]!)) continue
           const [r, c] = rc(t.at[i])
           const position = [n, blocks ? hr.at(r)[1] : 0, blocks ? hc.at(c)[1] : 0, places[q]]
@@ -235,16 +239,12 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
   }
 }
 
-/** A place's row and column; by columns (`c * MAX_ROWS + r`), too. */
+/** A place's row and column. */
 const rc = (m: number): [number, number] => [rowOf(m), colOf(m)]
 /** Whether position `a` comes after `b` in Find's order. */
 const later = (a: number[], b: number[]) => {
   for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] > b[k]
   return false
-}
-const cr = (k: number): [number, number] => {
-  const c = Math.floor(k / MAX_ROWS)
-  return [k - c * MAX_ROWS, c]
 }
 
 /** The cells a search reads at a time, so that a page that is full stops it. */
