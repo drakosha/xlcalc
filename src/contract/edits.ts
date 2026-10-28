@@ -1,7 +1,7 @@
 /** The edits of a session's book: cells set, replaced and patched, the layout changed, operations in a batch and their preview, what a call that changes the book answers and its subscribers get, undo and redo. */
 import type { CellRef, CellValue, Clock, JsonValue, RangeRef } from './values.js'
-import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection } from './book.js'
-import type { CellStyle, ConditionalFormat, DataValidation, StylePatch } from './looks.js'
+import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection, SheetView } from './book.js'
+import type { CellStyle, Color, ConditionalFormat, DataValidation, StylePatch } from './looks.js'
 import type { CellDisplay, CellIssueDetail } from './results.js'
 import type { ValidationRefusal } from './typing.js'
 
@@ -224,6 +224,10 @@ export type LayoutEdit =
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
   | { sheet: string; frozen: FrozenPanes | null }
+  /** The sheet's saved view (`SheetInput.view`), all its fields at once; null removes it. */
+  | { sheet: string; view: SheetView | null }
+  /** The color of the sheet's tab (`SheetInput.tabColor`); null removes it. */
+  | { sheet: string; tabColor: Color | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
   /** All the data validation rules of the sheet (`SheetInput.validations`). */
