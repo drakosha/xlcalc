@@ -9,7 +9,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, InputError, registerRegex, type BookInput, type CalcError } from '../src/index.js'
 import { pcreEngine, pcreSyntax } from '../src/regex/index.js'
 import { CLOCK, show, toVal, verdict } from './excel-cases.js'
-import { caseBook, LEVELED_SETS, loadSet, SETS } from './excel-sets.js'
+import { caseBook, LEVELED_SETS, loadSet, STORED_SETS } from './excel-sets.js'
 import { pool } from './fixtures/pool.js'
 
 const rows = (n: number, text: string) => Object.fromEntries(Array.from({ length: n }, (_, i) => [`A${i + 1}`, { value: text }]))
@@ -65,7 +65,7 @@ const HEAVY = /^xmatch-regex-own-held(-2)?:(limit|required|range)#/
 /** The cases of the sets of match mode 3 that differ from Excel at the level registered now; `heavy`, those of HEAVY too. */
 async function offExcel(heavy = false): Promise<string[]> {
   const off: string[] = []
-  for (const set of SETS.filter((s) => s.name.startsWith('xmatch-regex'))) {
+  for (const set of STORED_SETS.filter((s) => s.name.startsWith('xmatch-regex'))) {
     const mod = await loadSet(set.name)
     const probes = mod.buildProbes().filter((p) => heavy || !HEAVY.test(`${set.name}:${p.id}`))
     const result = compute(caseBook(probes, mod.SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells
@@ -90,7 +90,7 @@ describe('the built-in level', () => {
     expect(b1(await early.compute(book('^\\w+$', 1, 'привет')))).toBe(1)
   })
 
-  it('the sets of the levels are checked here alone', () => expect([...LEVELED_SETS].every((s) => SETS.some((x) => x.name === s))).toBe(true))
+  it('the sets of the levels are checked here alone', () => expect([...LEVELED_SETS].every((s) => STORED_SETS.some((x) => x.name === s))).toBe(true))
 
   it('registerRegex takes pcreSyntax or pcreEngine alone', () => {
     expect(() => registerRegex({} as never)).toThrow(new InputError('level', "expected pcreSyntax or pcreEngine of 'xlcalc/regex'"))

@@ -32,6 +32,7 @@ import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 import { partsHash } from './xlsx/sent.js'
 import { loadStored, secondsSince, setModule, writeAnswers } from './stored.js'
 import { HERE, ROOT } from './paths.js'
+import { REGEX_HEAVY_SETS } from './sets/regex-heavy.js'
 
 const DATA = join(ROOT, 'test/excel/xlsx')
 const OUT = join(HERE, 'out/xlsx')
@@ -115,6 +116,7 @@ async function caseParts(): Promise<{ id: string; probes: Probe[]; sheets: Sheet
   const names = readdirSync(join(ROOT, 'test/excel/cases'))
     .filter((f) => f.endsWith('.json'))
     .map((f) => f.slice(0, -5))
+    .filter((name) => !REGEX_HEAVY_SETS.has(name))
     .sort()
   const sets: { name: string; probes: Probe[]; sheets: SheetCells }[] = [{ name: 'probes', probes: buildProbes(), sheets: PROBE_SHEETS }]
   for (const name of names) {

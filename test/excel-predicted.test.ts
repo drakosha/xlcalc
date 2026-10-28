@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { matches, show } from './excel-cases.js'
 import { LOCALE_SETS } from './excel-locale-cases.js'
-import { SETS } from './excel-sets.js'
+import { STORED_SETS } from './excel-sets.js'
 
 const PREDICTING = ['accrint-ironcalc-held', 'areas-each', 'array-size-held', 'array-size-held-2', 'binom-sumx-held', 'countif-ironcalc-held', 'currency-held', 'database-ironcalc-held', 'date-ironcalc-held', 'euro-ironcalc-held', 'euro-ironcalc-held-2', 'euro-ironcalc-held-3', 'finance-ironcalc-held', 'finance-ironcalc-held-2', 'findate-edges', 'fit-offset-held', 'intersect', 'known-held', 'lookup-held', 'lookup-own-held', 'low-values-held', 'math-ironcalc-held', 'name-case-held', 'near-zero-held', 'pct-text', 'power-bound-held', 'power-edges-held', 'power-neg-held', 'ref-deps', 'refs-ironcalc-held', 'refs-ironcalc-held-2', 'rounding-ironcalc-held', 'seconds-held', 'sheet-cells', 'single-values', 'sortby-one-held', 'stat-edges-held', 'sum-zero-held', 'sumif-own-held', 'sumproduct-held', 'sumx-cell-held', 'tests-cell-held', 'text-date-ironcalc-held', 'text-date-ironcalc-held-2', 'text-date-ironcalc-held-3', 'text-date-ironcalc-held-4', 'textafter-ironcalc-held', 'textafter-ironcalc-held-2', 'values-held', 'values-held-2', 'values-held-3', 'xlookup-ironcalc-held', 'xlookup-ironcalc-held-2', 'xmatch-regex-held', 'xmatch-regex-held-2', 'xmatch-regex-held-3', 'xmatch-regex-own-held', 'xmatch-regex-own-held-2']
 const LEGACY_PREDICTING = ['ifs-text']
@@ -25,7 +25,7 @@ function legacySet(name: string): { cases: { id: string; fn?: string }[]; values
 describe('case sets predicted before Excel ran them', async () => {
   for (const [name, dir] of [...PREDICTING.map((n) => [n, 'sets']), ...LEGACY_PREDICTING.map((n) => [n, 'legacy'])]) {
     const mod = (await import(`../bench/coverage/${dir}/${name}.ts`)) as { PREDICTED: Readonly<Record<string, Val>>; MISSED?: readonly string[] }
-    const set = dir === 'sets' ? SETS.find((s) => s.name === name) : legacySet(name)
+    const set = dir === 'sets' ? STORED_SETS.find((s) => s.name === name) : legacySet(name)
     it.skipIf(!set)(`${name}: the predictions Excel did not confirm are the ones in MISSED`, () => {
       const missed = Object.entries(mod.PREDICTED)
         .filter(([id, v]) => !matches(set!.cases.find((c) => c.id === id)?.fn, set!.values[id], v))
