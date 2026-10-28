@@ -177,15 +177,34 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
  * cells, and in the conditional formats' tests.
  */
 export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean, whole = false): Steps<CellView | undefined> {
+  const cond = state.input.sheets[s].conditionalFormats?.length ? yield* windowLooks(state, s, { r1: r, c1: c, r2: r, c2: c }) : null
+  return yield* viewAt(state, s, r, c, display ? cellLooks(state) : null, formatCodeIn(state.input.locale), cond, whole)
+}
+
+/**
+ * `cellAt` (display on) of each cell of `cells` (sheet, row, column) in turn, the looks and each sheet's conditional
+ * formats made once for them all (`readCells`, `findCells`): over the cells' own rectangles, not the box around them.
+ */
+export function* cellsAt(state: EngineState, cells: [s: number, r: number, c: number, ...rest: unknown[]][], whole: boolean): Steps<(CellView | undefined)[]> {
+  const look = cellLooks(state)
+  const code = formatCodeIn(state.input.locale)
+  const conds = new Map<number, Map<number, ConditionalAppearance>>()
+  for (const s of new Set(cells.map((x) => x[0])))
+    if (state.input.sheets[s].conditionalFormats?.length) conds.set(s, yield* windowLooks(state, s, cells.filter((x) => x[0] === s).map(([, r, c]) => ({ r1: r, c1: c, r2: r, c2: c }))))
+  const out: (CellView | undefined)[] = []
+  for (const [s, r, c] of cells) out.push(yield* viewAt(state, s, r, c, look, code, conds.get(s) ?? null, whole))
+  return out
+}
+
+/** `cellAt`'s view by looks `look`, codes `code` and the appearances `cond` of the sheet's conditional formats (null without any). */
+function* viewAt(state: EngineState, s: number, r: number, c: number, look: Looks | null, code: (format: NumberFormat) => string, cond: Map<number, ConditionalAppearance> | null, whole: boolean): Steps<CellView | undefined> {
   const sheet = state.input.sheets[s]
   const addr = formatAddress(r, c)
   const layer = layerOf(sheet)
-  const one = { r1: r, c1: c, r2: r, c2: c }
-  const spillOf = state.spills.on.size ? (yield* spilled(state, s, one, whole)).get(addr) : undefined
-  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, one) : null
+  const spillOf = state.spills.on.size ? (yield* spilled(state, s, { r1: r, c1: c, r2: r, c2: c }, whole)).get(addr) : undefined
   const k = r * MAX_COLS + c
   if (spillOf === undefined && !cond?.has(k) && !(addr in sheet.cells) && !(layer && layer.idAt(r, c) !== NONE)) return undefined
-  return viewOf(state, s, addr, r, c, layer, display ? cellLooks(state) : null, spillOf, cond?.get(k), (format) => formatCodeIn(state.input.locale)(format))
+  return viewOf(state, s, addr, r, c, layer, look, spillOf, cond?.get(k), code)
 }
 
 /**

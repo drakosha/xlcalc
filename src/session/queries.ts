@@ -9,7 +9,7 @@ import { array, checkBoolean, checkNumber, checkString, object, onlyKeys } from 
 import { checkAddress, checkRange } from '../input/range.js'
 import { issueDetail } from '../issues.js'
 import { colOf, formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf, rowOf } from '../model.js'
-import { cellAt, outValue } from '../result.js'
+import { cellsAt, outValue } from '../result.js'
 import { hasCell, rectText, meets } from '../structure/area.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
@@ -44,6 +44,8 @@ class Page<T> {
   readonly from: number[] | null = null
   readonly total: number | null = null
   matched = 0
+  /** The results the page takes, which its items hold once made. */
+  taken = 0
   more = false
   /** The position of the last result of the page. */
   last: number[] = []
@@ -75,7 +77,8 @@ class Page<T> {
   /** A result at `position` of the query's order: whether it goes on the page, or the page is full. */
   wanted(position: number[]): boolean {
     this.matched++
-    if (this.items.length < this.max) {
+    if (this.taken < this.max) {
+      this.taken++
       this.last = position
       return true
     }
@@ -87,7 +90,7 @@ class Page<T> {
   }
   result(): QueryPage {
     const total = this.total ?? (this.count ? this.offset + this.matched : -1)
-    return { revision: this.revision, clock: { ...this.clock }, truncated: this.more, ...(this.more ? { cursor: JSON.stringify([this.revision, this.offset + this.items.length, this.signature, total, ...this.last]) } : {}), ...(this.count ? { total } : {}) }
+    return { revision: this.revision, clock: { ...this.clock }, truncated: this.more, ...(this.more ? { cursor: JSON.stringify([this.revision, this.offset + this.taken, this.signature, total, ...this.last]) } : {}), ...(this.count ? { total } : {}) }
   }
 }
 
@@ -116,6 +119,15 @@ function projected(s: EngineState, i: number, r: number, c: number, addr: string
   return out
 }
 
+/** A cell of a page: its sheet, row, column and address. */
+type Cell = [s: number, r: number, c: number, addr: string]
+
+/** The fields `fields` of a page's cells (`projected`); with `text`, their views made together (`cellsAt`). */
+function* projectedAll(s: EngineState, cells: Cell[], fields: CellReadField[], edit: ReturnType<typeof sessionEditTexts> | null): Steps<ReadCell[]> {
+  const views = fields.includes('text') ? yield* cellsAt(s, cells, true) : null
+  return cells.map(([i, r, c, addr], k) => projected(s, i, r, c, addr, fields, edit, views ? views[k] : null))
+}
+
 /** A query's ranges, fields and rows checked, and its page; `key`, what else makes the query the one a cursor belongs to. */
 function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef[], o: ReadCellsOptions, key: unknown[]) {
   const refs = refsOf(s, given)
@@ -129,16 +141,17 @@ function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef
 
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: ReadCellsOptions): Steps<ReadCellsResult> {
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, checkBase<ReadCellsOptions>(eo, revision, READ_OPTIONS), [])
-  const shown = fields.includes('text')
+  const cells: Cell[] = []
   for (const cell of readOrder(s, refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
     }
     const [i, r, c, n, addr] = cell
-    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(projected(s, i, r, c, addr, fields, edit, shown ? yield* cellAt(s, i, r, c, true, true) : null))
+    if (page.wanted([n, r * MAX_COLS + c])) cells.push([i, r, c, addr])
     if (page.done) break
   }
+  page.items.push(...(yield* projectedAll(s, cells, fields, edit)))
   return { ...page.result(), cells: page.items }
 }
 
@@ -158,15 +171,17 @@ export function* findQuery(s: EngineState, revision: number, clock: Clock, given
   const finder = finderOf(s, checkString(query, 'query'), o, clock.now)
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, o, [...finder.key, o.after ?? null])
   const start = o.after === undefined ? null : startOf(s, refs, finder, o.after)
+  const cells: Cell[] = []
   for (const cell of start ? finder.around(refs, rows, start, page.from) : finder.found(refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
     }
     const [i, r, c, position] = cell
-    if (page.wanted(position)) page.items.push(projected(s, i, r, c, formatAddress(r, c), fields, edit, fields.includes('text') ? yield* cellAt(s, i, r, c, true, true) : null))
+    if (page.wanted(position)) cells.push([i, r, c, formatAddress(r, c)])
     if (page.done) break
   }
+  page.items.push(...(yield* projectedAll(s, cells, fields, edit)))
   return { ...page.result(), cells: page.items }
 }
 
