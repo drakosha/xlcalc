@@ -347,6 +347,17 @@ export interface CellValidation {
   list?: { value: CellValue; text: string; input: CellInput | null }[] | { error: ErrorCode }
 }
 
+/**
+ * The sides of a range whose cells label the others (`Session.getNamesFromSelection`), as the boxes of Excel's Create
+ * Names from Selection: the top row, the left column, the bottom row, the right column; at least one.
+ */
+export interface SelectionLabels {
+  top?: boolean
+  left?: boolean
+  bottom?: boolean
+  right?: boolean
+}
+
 /** Excel's AutoSum at a cell (`Session.getAutoSum`): the range it offers to sum and the formula it enters. */
 export interface AutoSumGuess {
   /**
