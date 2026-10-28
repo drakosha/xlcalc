@@ -128,7 +128,6 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
     else if ('protection' in e) sheet.protection = e.protection ? { ...e.protection } : undefined
-    else if ('view' in e) sheet.view = e.view ? { ...e.view, ...(e.view.selection ? { selection: [...e.view.selection] } : {}) } : undefined
     else if ('tabColor' in e) sheet.tabColor = e.tabColor ?? undefined
     // a width or height assigned leaves AutoFit; an explicit bestFit still describes a fitted size
     else if ('columns' in e) patchIn(listOf(sheet, 'columns'), ...parseSpan(e.columns, 'c')!, e.set.width !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
@@ -141,7 +140,7 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
-    for (const k of ['frozen', 'autoFilter', 'outline', 'conditionalFormats', 'protection', 'view', 'tabColor'] as const) if (sheet[k] === undefined) delete sheet[k]
+    for (const k of ['frozen', 'autoFilter', 'outline', 'conditionalFormats', 'protection', 'tabColor'] as const) if (sheet[k] === undefined) delete sheet[k]
     book.sheets[i] = sheet
   }
   return changed

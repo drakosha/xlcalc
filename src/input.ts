@@ -475,7 +475,6 @@ const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; n
   autoFilter: { check: checkAutoFilter, nullable: true },
   protection: { check: checkSheetProtection, nullable: true },
   frozen: { check: checkFrozen, nullable: true },
-  view: { check: checkSheetView, nullable: true },
   tabColor: { check: checkColor, nullable: true },
   conditionalFormats: { check: checkConditionalFormats },
   validations: { check: checkValidations },

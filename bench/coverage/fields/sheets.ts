@@ -19,7 +19,7 @@ const four: BookInput = {
 export function buildFieldsCases(): FieldsCase[] {
   return [
     { id: 'written', book: four },
-    { id: 'kept-set', book: { sheets: [{ name: 'S', cells }, { name: 'T', cells, outline: { summaryRight: false } }] }, kept: [{ sheet: 'S', tabColor: '#00B050' }, { sheet: 'S', view: { gridlines: false } }, { sheet: 'T', tabColor: '#7030A0' }, { sheet: 'T', view: { headings: false } }] },
-    { id: 'kept-changed', book: four, kept: [{ sheet: 'Red', tabColor: '#FFC000' }, { sheet: 'Red', view: { gridlines: true } }, { sheet: 'Blue', tabColor: null }, { sheet: 'Both', view: null }] },
+    { id: 'kept-set', book: { sheets: [{ name: 'S', cells }, { name: 'T', cells, outline: { summaryRight: false } }] }, kept: { layout: [{ sheet: 'S', tabColor: '#00B050' }, { sheet: 'T', tabColor: '#7030A0' }], views: { S: { gridlines: false }, T: { headings: false } } } },
+    { id: 'kept-changed', book: four, kept: { layout: [{ sheet: 'Red', tabColor: '#FFC000' }, { sheet: 'Blue', tabColor: null }], views: { Red: { gridlines: true }, Both: null } } },
   ]
 }

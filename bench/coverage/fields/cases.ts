@@ -1,13 +1,14 @@
 /**
  * Fields of a workbook the model holds for a host, through Excel for Windows (`bench/windows/run.ts fields <set>`): a
  * set names its cases, each a workbook written by `writeXlsx`, or by `writeKept` over a file `writeXlsx` wrote after
- * layout edits in a session; Excel opens the file, reads each sheet's tab colour, gridlines and headings through its
+ * layout edits in a session and the sheets' views a host set on the workbook it saves; Excel opens the file, reads each sheet's tab colour, gridlines and headings through its
  * object model, and saves it. `test/fields-win.test.ts` checks that Excel read what the workbook holds and that the
  * reader reads it back from the file Excel saved.
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, LayoutEdit } from '../../../src/contract.js'
+import type { BookInput, LayoutEdit, SheetView } from '../../../src/contract.js'
+import { withField } from '../../../src/looks/sheet.js'
 import { createSession } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { openKept, writeKept } from '../../../src/xlsx-keep.js'
@@ -17,8 +18,8 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 export interface FieldsCase {
   id: string
   book: BookInput
-  /** Layout edits a session makes over the book read by `openKept`, written over its file by `writeKept`. */
-  kept?: LayoutEdit[]
+  /** Layout edits a session makes over the book read by `openKept`, and views a host sets by sheet (null removes one), written over its file by `writeKept`. */
+  kept?: { layout?: LayoutEdit[]; views?: Record<string, SheetView | null> }
 }
 
 /** What Excel read of each sheet: its tab colour (`#RRGGBB`, null for none), whether it shows gridlines and headings. */
@@ -35,12 +36,17 @@ export interface FieldsSet {
 export const fieldsFile = (set: string) => join(ROOT, 'test/excel/win/fields', `${set}.json`)
 export const savedDir = (set: string) => join(ROOT, 'test/excel/win/fields', set)
 
-/** The book a case's file holds: its book, after its layout edits for a kept case. */
+/** A book with the views a host set on it. */
+function withViews(b: BookInput, views: Record<string, SheetView | null> = {}): BookInput {
+  return { ...b, sheets: b.sheets.map((s) => (s.name in views ? withField(s, 'view', views[s.name] ?? undefined) : s)) }
+}
+
+/** The book a case's file holds: its book, after its layout edits and views for a kept case. */
 export function caseBook(c: FieldsCase): BookInput {
   if (!c.kept) return c.book
   const s = createSession(c.book)
-  s.setLayout(c.kept)
-  const out = s.getBook()
+  s.setLayout(c.kept.layout ?? [])
+  const out = withViews(s.getBook(), c.kept.views)
   s.close()
   return out
 }
@@ -51,8 +57,9 @@ export async function fieldsFileOf(c: FieldsCase): Promise<Uint8Array> {
   if (!c.kept) return data
   const read = await openKept(data)
   const s = createSession(read.book, { cached: read.cached })
-  s.setLayout(c.kept)
-  const out = (await writeKept(data, s.getSnapshot())).data
+  s.setLayout(c.kept.layout ?? [])
+  const snap = s.getSnapshot()
+  const out = (await writeKept(data, { ...snap, book: withViews(snap.book, c.kept.views) })).data
   s.close()
   return out
 }
