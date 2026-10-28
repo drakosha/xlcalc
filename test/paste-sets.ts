@@ -12,11 +12,18 @@ import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste
 import { engineHas, engineOutcome, shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops']
 
 /** Where the engine pastes otherwise than Excel for Mac, by set and case. */
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'held/table-formats': "Excel pastes the look a table's style gives its cells as their formats; the engine does not draw table styles",
+  'kinds/allExceptBorders-column': 'a whole column that cuts a merged area (A5:B5): Excel leaves out the merged cell, the engine pastes it',
+  ...Object.fromEntries(
+    ['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [
+      `ops/${id}`,
+      'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula; the engine combines it as Excel combines a formula of the ordinary kind (the set ops-held)',
+    ]),
+  ),
 }
 
 /**

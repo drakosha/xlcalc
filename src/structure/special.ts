@@ -6,13 +6,13 @@
  * reference of the source's formulas as the cell it points to turns about the source's top-left cell, an absolute one
  * too, and swaps its `$` between the axes (`B2`'s `$A$1+A$2` copied from A1 to F1 is `$F$1+$G1`).
  */
-import type { BookInput, CellInput, ConditionalFormat, DataValidation, PasteKind, SheetInput } from '../contract.js'
+import type { BookInput, CellInput, CellStyle, ConditionalFormat, DataValidation, PasteKind, PasteOperation, SheetInput } from '../contract.js'
 import { mapFormulas } from '../cond/structure.js'
 import { originOf, rectsOf } from '../cond/rules.js'
 import { spend } from '../exec/budget.js'
 import { lookOf } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
-import { entryAt, lines } from '../layout/spans.js'
+import { entryAt, lines, patchLines } from '../layout/spans.js'
 import { say } from '../locale/messages.js'
 import { cellEdits, edited, LookTable, NONE } from '../looks/layer.js'
 import { expanded, layerOf, lookIn, withField, withLayer } from '../looks/sheet.js'
@@ -29,36 +29,58 @@ import { tiles } from './copy.js'
 import { cellsIn, gridOf } from './grid.js'
 import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
 import { formulaAt } from './transform.js'
+import { combined, isBlank } from './operation.js'
+import { internStyle } from '../style-table.js'
 
 type Refused = Exclude<Applied, { ok: true }>
 
 /** The scratch sheet of a transposed copy, which no sheet of a book can have. */
 export const TURNED = '\u0000turned'
 
-/** Whether a kind of paste pastes the cells' contents as values (from a clipboard of values, `clipped`). */
-export const ofValues = (kind: PasteKind) => kind === 'values'
-
 /** What a kind of paste takes from the copy; the rest stays the target's. */
 interface Parts {
-  /** Values or formulas, and `meta` with them. */
+  /** Values or formulas, and `meta` with them; as values from a clipboard of values (`clipped`). */
   content: boolean
-  /** Styles, number formats, the lines of a whole-line copy, merged areas and conditional formats. */
-  looks: boolean
+  values: boolean
+  /** The cells' styles: the copy's, the target's, or the copy's with the target's borders. */
+  style: 'copy' | 'target' | 'borders'
+  numberFormat: boolean
+  /** The copy's sheet: the lines of a whole-line copy, merged areas and conditional formats. */
+  layout: boolean
   validation: boolean
+  notes: boolean
+  links: boolean
+  /** The widths of the copy's columns. */
+  widths: boolean
+  /** Refused onto a merged area the copy does not bring (`contentRefusal`). */
+  merged: boolean
 }
 
-const PARTS: Record<Exclude<PasteKind, 'all'>, Parts> = {
-  values: { content: true, looks: false, validation: false },
-  formulas: { content: true, looks: false, validation: false },
-  formats: { content: false, looks: true, validation: false },
-  validation: { content: false, looks: false, validation: true },
+const NONE_TAKEN: Parts = { content: false, values: false, style: 'target', numberFormat: false, layout: false, validation: false, notes: false, links: false, widths: false, merged: false }
+const ALL: Parts = { content: true, values: false, style: 'copy', numberFormat: true, layout: true, validation: true, notes: true, links: true, widths: false, merged: false }
+
+/** Each kind's parts; `all`'s are laid this way only with an operation or Skip Blanks, a whole copy otherwise. */
+const PARTS: Record<PasteKind, Parts> = {
+  all: ALL,
+  values: { ...NONE_TAKEN, content: true, values: true, merged: true },
+  formulas: { ...NONE_TAKEN, content: true, merged: true },
+  formats: { ...NONE_TAKEN, style: 'copy', numberFormat: true, layout: true },
+  validation: { ...NONE_TAKEN, validation: true },
+  valuesAndNumberFormats: { ...NONE_TAKEN, content: true, values: true, numberFormat: true },
+  formulasAndNumberFormats: { ...NONE_TAKEN, content: true, numberFormat: true },
+  columnWidths: { ...NONE_TAKEN, widths: true },
+  allExceptBorders: { ...ALL, style: 'borders' },
+  notes: { ...NONE_TAKEN, notes: true },
 }
+
+/** Whether a kind of paste pastes the cells' contents as values (from a clipboard of values, `clipped`). */
+export const ofValues = (kind: PasteKind) => PARTS[kind].values
 
 /** A cell's fields that hold what it contains: Paste Special takes them or leaves them together. */
 const CONTENT = ['value', 'formula', 'array', 'held', 'meta'] as const
 
 /** Whether the paste writes the cells' contents (and so is refused onto merged areas and renames header cells). */
-export const writesContent = (kind: PasteKind) => kind === 'all' || PARTS[kind].content
+export const writesContent = (kind: PasteKind) => PARTS[kind].content
 
 /**
  * One axis of a reference turned onto the other: from the source's `from` to the target's `to` on the other axis, its
@@ -186,34 +208,94 @@ function lookAt(sheet: SheetInput, cell: CellInput | undefined, r: number, c: nu
   return { style: x?.style, numberFormat: x?.numberFormat }
 }
 
-/**
- * The cell of the target after a paste of `parts`: its contents from the copy's cell or the target's, its look likewise
- * (of the entry, or of the sheet's looks where there is none), its note and hyperlink the target's; undefined for none.
- */
-function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: string | undefined, r: number, c: number, parts: Parts): CellInput | undefined {
-  const [t, x] = [a === undefined ? undefined : target.cells[a], b === undefined ? undefined : copy.cells[b]]
-  const out: Record<string, unknown> = {}
-  const has = parts.content ? x : t
-  for (const k of CONTENT) if (has?.[k] !== undefined) out[k] = has[k]
-  if (t?.note !== undefined) out.note = t.note
-  if (t?.link !== undefined) out.link = t.link
-  const look = parts.looks ? lookAt(copy, x, r, c) : lookAt(target, t, r, c)
-  if (look.style !== undefined) out.style = look.style
-  if (look.numberFormat !== undefined) out.numberFormat = look.numberFormat
-  return Object.keys(out).length ? (out as CellInput) : undefined
+/** How the cells of a paste are laid: its parts, its operation and Skip Blanks, and the book's styles, which a paste keeping the target's borders adds to. */
+interface Laying {
+  parts: Parts
+  operation?: PasteOperation
+  skipBlanks: boolean
+  styles: CellStyle[]
+}
+
+/** The copy's style with the target's borders (all except borders), added to the styles where it is new. */
+function withBorders(lay: Laying, copy: number | undefined, target: number | undefined): number | undefined {
+  const [x, t] = [copy === undefined ? undefined : lay.styles[copy], target === undefined ? undefined : lay.styles[target]]
+  if (x?.border === t?.border) return copy
+  const { border: _, ...rest } = x ?? {}
+  const style = t?.border ? { ...rest, border: t.border } : rest
+  if (!Object.keys(style).length) return undefined
+  const { index, styles } = internStyle(lay.styles, style)
+  lay.styles = styles
+  return index
 }
 
 /**
- * The book after a paste of `kind` (not `all`) over `area` of sheet `to`: `full` is the book after the whole copy, of
- * values for a paste of values. Its cells in the area are laid from both (`laid`); a paste of looks takes the copy's
- * sheet (its looks, lines, merged areas and conditional formats), the others the target's; data validation from the
- * copy for a paste of validation alone; a paste of formulas takes the names and links the copy brought.
+ * The cell of the target after a paste: its contents from the copy's cell or the target's, combined by the operation,
+ * its look, note and hyperlink likewise (a look of the entry, or of the sheet's looks where there is none); the target's
+ * cell whole under a blank of the copy with Skip Blanks; undefined for none.
  */
-export function pastedPart(book: BookInput, full: BookInput, to: string, area: Rect, kind: Exclude<PasteKind, 'all'>): BookInput {
+function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: string | undefined, r: number, c: number, lay: Laying): CellInput | undefined {
+  const [t, x] = [a === undefined ? undefined : target.cells[a], b === undefined ? undefined : copy.cells[b]]
+  const parts = lay.skipBlanks && isBlank(x) ? NONE_TAKEN : lay.parts
+  const out: Record<string, unknown> = {}
+  const both = parts.content && lay.operation ? combined(lay.operation, t, x) : null
+  if (both) Object.assign(out, both, t?.meta !== undefined ? { meta: t.meta } : {})
+  else {
+    const has = parts.content && !lay.operation ? x : t
+    for (const k of CONTENT) if (has?.[k] !== undefined) out[k] = has[k]
+  }
+  const note = parts.notes ? x?.note : t?.note
+  if (note !== undefined) out.note = note
+  const link = parts.links ? x?.link : t?.link
+  if (link !== undefined) out.link = link
+  const [mine, theirs] = [lookAt(target, t, r, c), lookAt(copy, x, r, c)]
+  const style = parts.style === 'target' ? mine.style : parts.style === 'copy' ? theirs.style : withBorders(lay, theirs.style, mine.style)
+  if (style !== undefined) out.style = style
+  const numberFormat = parts.numberFormat ? theirs.numberFormat : mine.numberFormat
+  if (numberFormat !== undefined) out.numberFormat = numberFormat
+  return Object.keys(out).length ? (out as CellInput) : undefined
+}
+
+/** The cells of `area` that merged areas of `sheet` cover but their top-left ones, which hold no note. */
+function coveredIn(sheet: SheetInput, area: Rect): Set<string> {
+  const out = new Set<string>()
+  for (const m of mergesOf(sheet))
+    for (let r = Math.max(m.r1, area.r1); r <= Math.min(m.r2, area.r2); r++)
+      for (let c = Math.max(m.c1, area.c1); c <= Math.min(m.c2, area.c2); c++) if (r !== m.r1 || c !== m.c1) out.add(formatAddress(r, c))
+  return out
+}
+
+/** The columns of `area` on `sheet` with the widths of the columns `src` of `from`, tiled. */
+function withWidths(sheet: SheetInput, from: SheetInput, src: Rect, area: Rect): SheetInput {
+  const cols = lines(from.columns, 'c')
+  const n = src.c2 - src.c1 + 1
+  let map = sheet.columns
+  for (let c = area.c1; c <= area.c2; c++) {
+    spend(1)
+    const e = entryAt(cols, src.c1 + ((c - area.c1) % n))
+    map = patchLines(map, 'c', c, c, { width: e?.width ?? null, bestFit: e?.bestFit ?? null })
+  }
+  return withField(sheet, 'columns', map && Object.keys(map).length ? map : undefined)
+}
+
+/** What a paste lays besides its kind: the operation, Skip Blanks, and for column widths the source. */
+export interface PartOptions {
+  operation?: PasteOperation
+  skipBlanks: boolean
+  widths?: { from: string; src: Rect }
+}
+
+/**
+ * The book after a paste of `kind` over `area` of sheet `to`: `full` is the book after the whole copy, of values for a
+ * paste of values. Its cells in the area are laid from both (`laid`); a paste of looks takes the copy's sheet (its looks,
+ * lines, merged areas and conditional formats), the others the target's; data validation from the copy for `all` and a
+ * paste of validation; a paste of formulas takes the names and links the copy brought; notes leave the cells merged
+ * areas cover; column widths come from the source's columns.
+ */
+export function pastedPart(book: BookInput, full: BookInput, to: string, area: Rect, kind: PasteKind, o: PartOptions): BookInput {
   const parts = PARTS[kind]
   const ti = sheetIndex(book, to)
   const [target, copy] = [book.sheets[ti], full.sheets[ti]]
-  const base = parts.looks ? copy : target
+  const base = parts.layout ? copy : target
   const cells: Record<string, CellInput> = {}
   const [g, h] = [gridOf(target), gridOf(copy)]
   const taken = new Map<string, [number, number, string | undefined, string | undefined]>()
@@ -223,30 +305,42 @@ export function pastedPart(book: BookInput, full: BookInput, to: string, area: R
     taken.set(h.addr[i], [h.row[i], h.col[i], was?.[2], h.addr[i]])
   }
   // the cells outside the area as the base has them, in its order, then the area's
-  const gb = parts.looks ? h : g
+  const gb = parts.layout ? h : g
   for (let i = 0; i < gb.addr.length; i++) if (!taken.has(gb.addr[i])) cells[gb.addr[i]] = gb.cell[i]
-  // where the base's entry is gone, no look of the sheet's own: the entry showed its lines' look, not the one kept under it
+  const lay: Laying = { parts, operation: o.operation, skipBlanks: o.skipBlanks, styles: full.styles ?? [] }
+  const covered = kind === 'notes' ? coveredIn(base, area) : null
+  // where the base's entry or look is gone, no look of the sheet's own: the entry showed its lines' look, not the one kept under it
   const bare: [number, number, number][] = []
   for (const [addr, [r, c, a, b]] of taken) {
     spend(1)
-    const cell = laid(target, copy, a, b, r, c, parts)
+    let cell = laid(target, copy, a, b, r, c, lay)
+    if (cell?.note !== undefined && covered?.has(addr)) {
+      const { note: _, ...rest } = cell
+      cell = Object.keys(rest).length ? rest : undefined
+    }
     if (cell) cells[addr] = cell
-    else if ((parts.looks ? b : a) !== undefined) bare.push([r, c, NONE])
+    else if ((parts.layout ? b : a) !== undefined || lookIn(base, r, c)) bare.push([r, c, NONE])
   }
   const layer = layerOf(base)
   let sheet = layer ? withLayer(base, cells, bare.length ? edited(layer, cellEdits(bare), new LookTable(layer.looks)) : layer) : { ...base, cells }
-  if (parts.looks || parts.validation) sheet = withField(sheet, 'validations', (parts.validation ? copy : target).validations)
+  if (parts.layout || parts.validation) sheet = withField(sheet, 'validations', (parts.validation ? copy : target).validations)
+  if (o.widths) sheet = withWidths(sheet, sheetOf(book, o.widths.from), o.widths.src, area)
   const sheets = book.sheets.map((s, i) => (i === ti ? sheet : s))
-  const books = kind === 'formulas' ? full : book
-  return { ...books, styles: full.styles, sheets }
+  const books = parts.content && !parts.values ? full : book
+  return { ...books, styles: lay.styles, sheets }
 }
 
-/** How a copy pastes (`StructureOp` `copyRange`): the kind of paste, turned, with `meta`, and whether it is Paste Special (`paste` given). */
+/**
+ * How a copy pastes (`StructureOp` `copyRange`): the kind of paste, turned, with `meta`, whether it is Paste Special
+ * (`paste`, `operation` or `skipBlanks` given), its operation and Skip Blanks.
+ */
 export interface PasteOptions {
   kind: PasteKind
   transpose: boolean
   withMeta: boolean
   special: boolean
+  operation?: PasteOperation
+  skipBlanks: boolean
 }
 
 /** The merged area of sheet `to` a target of one cell lies in, or undefined. */
@@ -277,6 +371,8 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     } else target = one ? merged : corner
   }
   const looksOnly = !writesContent(o.kind)
+  // column widths come from the source's columns as they stand, not turned
+  if (o.kind === 'columnWidths') o = { ...o, transpose: false }
   // the source as the clipboard holds it: of values for a paste of values, turned for a transposed one
   const held = clipboard(book, from, src, values, ofValues(o.kind))
   const turn = o.transpose ? pasteTurned(book, held, to, target, o.withMeta, looksOnly) : null
@@ -284,13 +380,15 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
   const area = turn ? turn.area : pasteArea(book, held, to, target)
   // a transposed copy's cells are not where its source's tables would read them: it renames header cells alone
   let r = turn ? (area ? headersPasted(book, to, area)(pasted) : pasted) : copyTables(book, from, src, to, target, o.kind === 'all').after(pasted)
-  if (o.kind !== 'all' && r.ok && area) {
-    const refused = writesContent(o.kind) ? contentRefusal(book, r.book, to, area) : null
-    const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind), geometry: writesContent(o.kind) ? r.geometry : [] }
+  // `all` is laid cell by cell only with an operation or Skip Blanks
+  if ((o.kind !== 'all' || o.operation || o.skipBlanks) && r.ok && area) {
+    const refused = PARTS[o.kind].merged ? contentRefusal(book, r.book, to, area) : null
+    const widths = o.kind === 'columnWidths' ? { from, src } : undefined
+    const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind, { operation: o.operation, skipBlanks: o.skipBlanks, widths }), geometry: writesContent(o.kind) ? r.geometry : [] }
     r = writesContent(o.kind) ? headersPasted(book, to, area)(part) : part
   }
   // the looks the copy laid, over the rows a session fits to their fonts
-  if (r.ok && area && (o.kind === 'all' || o.kind === 'formats')) r = { ...r, looked: { s: sheetIndex(book, to), area } }
+  if (r.ok && area && PARTS[o.kind].style !== 'target') r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }
 }
 

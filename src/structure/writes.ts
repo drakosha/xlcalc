@@ -37,7 +37,7 @@ export function pasteOf(book: BookInput, op: StructureOp): PasteOp | null {
   const range = (v: unknown) => (typeof v === 'string' ? parseRange(v) : null)
   const copy = op.op === 'copyRange'
   const src = range(o.from?.range)
-  return src && { copy, fs: index(o.from?.sheet), src, ts: index(o.to?.sheet), at: range(copy ? o.to?.range : o.to?.cell), values: copy && flags.paste === 'values', turn: copy && flags.transpose === true }
+  return src && { copy, fs: index(o.from?.sheet), src, ts: index(o.to?.sheet), at: range(copy ? o.to?.range : o.to?.cell), values: copy && (flags.paste === 'values' || flags.paste === 'valuesAndNumberFormats'), turn: copy && flags.transpose === true }
 }
 
 /** The cells of `x` a copy or a move writes with a value or a formula: those that hold one, and each cell of an array formula's area it takes part of (`copiedCells`). */
