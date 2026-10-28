@@ -5,9 +5,9 @@
 -- applies at a change of the selection by the keyboard, not by the object model.
 -- Arguments: the book's path and the path to save to (inside Excel's sandbox), the saved file's name, the paste as JSON
 -- ([source sheet, source range, target sheet, target range, what (all, values, formulas, formats, validation,
--- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes; copy: a plain copy to the
--- target, Range.Copy with a destination; painter: the Format Painter), transpose "1" or "0", the operation (none, add,
--- subtract, multiply, divide), skip blanks "1" or "0", the painter's key (left or up)]).
+-- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes, allUsingSourceTheme; copy: a
+-- plain copy to the target, Range.Copy with a destination; painter: the Format Painter), transpose "1" or "0", the
+-- operation (none, add, subtract, multiply, divide), skip blanks "1" or "0", the painter's key (left or up)]).
 -- Output: JSON {"error": text}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -29,6 +29,7 @@ on pasteType(t)
 		if t is "columnWidths" then return paste column widths
 		if t is "allExceptBorders" then return paste all except borders
 		if t is "notes" then return paste comments
+		if t is "allUsingSourceTheme" then return paste all using source theme
 		if t is "all" then return paste all
 	end tell
 	error "no paste type " & t

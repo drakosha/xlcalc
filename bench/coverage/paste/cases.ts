@@ -3,10 +3,29 @@ import type { BookInput, RangeRef } from '../../../src/contract.js'
 import { colToIndex, formatAddress } from '../../../src/model.js'
 
 /**
- * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`); `copy`, a plain
- * copy (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab (Excel for Mac alone).
+ * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`,
+ * `allMergingConditionalFormats` Excel for Windows alone, which the Mac's AppleScript does not name); `copy`, a plain copy
+ * (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab (Excel for Mac alone).
  */
-export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'painter'
+export type PasteWhat =
+  | 'copy'
+  | 'all'
+  | 'values'
+  | 'formulas'
+  | 'formats'
+  | 'validation'
+  | 'formulasAndNumberFormats'
+  | 'valuesAndNumberFormats'
+  | 'columnWidths'
+  | 'allExceptBorders'
+  | 'notes'
+  | 'allMergingConditionalFormats'
+  | 'allUsingSourceTheme'
+  | 'painter'
+
+/** The kinds one Excel alone pastes: the Format Painter the Mac's, All Merging Conditional Formats Windows's. */
+export const MAC_ONLY: readonly PasteWhat[] = ['painter']
+export const WINDOWS_ONLY: readonly PasteWhat[] = ['allMergingConditionalFormats']
 
 /** Paste Special's operation (`XlPasteSpecialOperation`), none when left out. */
 export type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'

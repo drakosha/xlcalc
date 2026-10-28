@@ -9,7 +9,7 @@
 import { join } from 'node:path'
 import { writeXlsx } from '../../src/xlsx.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
-import { pasteArgs, type PasteAnswer, type PasteCase, type PasteCases, type PasteSet } from './paste/cases.js'
+import { pasteArgs, WINDOWS_ONLY, type PasteAnswer, type PasteCase, type PasteCases, type PasteSet } from './paste/cases.js'
 import { fileAnswers, runFileCases, secondsSince, setModule, writePrediction } from './stored.js'
 import { engineHas, engineOutcome } from './paste/shown.js'
 import { caseFiles, editParts } from './xlsx/sent.js'
@@ -48,7 +48,9 @@ async function runCase(c: PasteCase, data: Uint8Array) {
 
 /** Runs the set's cases that have no stored answer for the same case and book (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepPaste(set: string): Promise<void> {
-  const { built, files, sent } = await pasteSet(set)
+  const { built: all, files, sent } = await pasteSet(set)
+  const built = { ...all, cases: all.cases.filter((c) => !WINDOWS_ONLY.includes(c.what)) }
+  if (!built.cases.length) return void console.log(`paste ${set}: no case for Excel for Mac`)
   const store = fileAnswers<PasteCase, PasteAnswer>(pasteFile(set), built.cases, sent)
   const t0 = Date.now()
   const save = () => store.save({ version: excelVersion(), locale: 'en-US', seconds: secondsSince(t0) }, { books: built.books, cases: built.cases })

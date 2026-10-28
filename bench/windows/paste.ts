@@ -6,7 +6,7 @@
  * `test/paste-win.test.ts` reads them. The Format Painter's cases are the Mac's alone.
  */
 import { pasteSet } from '../coverage/paste.js'
-import type { PasteAnswer, PasteCase, PasteOperation, PasteWhat } from '../coverage/paste/cases.js'
+import { MAC_ONLY, type PasteAnswer, type PasteCase, type PasteOperation, type PasteWhat } from '../coverage/paste/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
 import { fileJobs } from './books.js'
 import { winFile } from './functions.js'
@@ -24,6 +24,8 @@ const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy' | 'painter'>, number> = {
   formulasAndNumberFormats: 11,
   valuesAndNumberFormats: 12,
   notes: -4144,
+  allUsingSourceTheme: 13,
+  allMergingConditionalFormats: 14,
 }
 
 /** Excel's `XlPasteSpecialOperation` of each operation. */
@@ -32,7 +34,7 @@ const OPERATION: Record<PasteOperation, number> = { add: 2, subtract: 3, multipl
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built: all, files, sent } = await pasteSet(set)
   // the Format Painter takes a session on a screen, which the step does not have: the Mac's alone
-  const built = { ...all, cases: all.cases.filter((c) => c.what !== 'painter') }
+  const built = { ...all, cases: all.cases.filter((c) => !MAC_ONLY.includes(c.what)) }
   if (!built.cases.length) return void console.log(`paste ${set}: no case for Excel for Windows`)
   const store = fileAnswers<PasteCase, PasteAnswer>(winFile(`paste/${set}.json`), built.cases, sent)
   const t0 = Date.now()
