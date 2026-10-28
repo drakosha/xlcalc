@@ -6,18 +6,19 @@ import type { SheetExtent, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { layerOf } from '../looks/sheet.js'
-import { colOf, rowOf } from '../model.js'
+import { colOf, readAddress, rowOf } from '../model.js'
+import type { Rect } from '../structure/area.js'
 import type { Tables } from '../tables/model.js'
 
-/** What a sheet's layout reaches: its merged areas, its tables on the sheet, and its looks' bounds (`sheetExtent`, a saved sheet). */
-export function reachLayout(sheet: SheetInput, tables: Tables, s: number, reach: (r: number, c: number) => void): void {
+/** The rectangles a sheet's layout covers: its merged areas, its tables on the sheet, and its looks' bounds (`sheetExtent`, a saved sheet, `usedArea`). */
+export function reachLayout(sheet: SheetInput, tables: Tables, s: number, reach: (x: Rect) => void): void {
   for (const m of sheet.merges ?? []) {
     const x = parseMerge(m)
-    if (x) reach(x.r2, x.c2)
+    if (x) reach(x)
   }
-  for (const t of tables.list) if (t.s === s) reach(t.r2, t.c2)
+  for (const t of tables.list) if (t.s === s) reach(t)
   const looked = layerOf(sheet)?.bounds()
-  if (looked) reach(looked.r2, looked.c2)
+  if (looked) reach(looked)
 }
 
 export function sheetExtent(state: EngineState, s: number): SheetExtent {
@@ -42,6 +43,28 @@ export function sheetExtent(state: EngineState, s: number): SheetExtent {
   for (const x of state.spills.on.values()) if (x.s === s) reach(x.r2, x.c2)
   for (const k of state.bare.get(s) ?? []) reach(rowOf(k), colOf(k))
   // the sheet's layout: its looks, merged areas and tables
-  reachLayout(state.input.sheets[s], state.tables, s, reach)
+  reachLayout(state.input.sheets[s], state.tables, s, (x) => reach(x.r2, x.c2))
   return { rows, columns }
+}
+
+/**
+ * Excel's used range of a sheet: from the first row and column to the last ones of its cells (values, formulas, input
+ * cells without a value), its spills and its layout (`sheetExtent`); null for an empty sheet.
+ */
+export function usedArea(state: EngineState, s: number): Rect | null {
+  const { rows, columns } = sheetExtent(state, s)
+  if (!rows) return null
+  const x: Rect = { r1: rows - 1, c1: columns - 1, r2: rows - 1, c2: columns - 1 }
+  const reach = (r: number, c: number) => {
+    if (r < x.r1) x.r1 = r
+    if (c < x.c1) x.c1 = c
+  }
+  const at = { r: 0, c: 0 }
+  for (const a of Object.keys(state.input.sheets[s].cells)) {
+    readAddress(a, at)
+    reach(at.r, at.c)
+  }
+  for (const y of state.spills.on.values()) if (y.s === s) reach(y.r1, y.c1)
+  reachLayout(state.input.sheets[s], state.tables, s, (y) => reach(y.r1, y.c1))
+  return x
 }

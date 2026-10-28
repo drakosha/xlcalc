@@ -89,6 +89,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'getNamesFromSelection':
       value = await s.getNamesFromSelection(args[0] as string, args[1] as string, args[2] as never)
       break
+    case 'getSpecialCells':
+      value = await s.getSpecialCells(args[0] as string, args[1] as string, args[2] as never)
+      break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
       break
