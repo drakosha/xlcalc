@@ -25,11 +25,10 @@ import { NONE, type Layer } from '../../looks/layer.js'
 import { hasLook, inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
-import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileText, type FileNames, type FileShapes } from './formula.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
@@ -61,10 +60,15 @@ export interface SheetContext extends FileNames {
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when the file stores values of formulas. */
   result?: Record<string, ResultCell>
+  /** The book's formulas written by their shape (`fileText`), shared by its sheets. */
+  shapes?: FileShapes
+  /** The addresses of the sheet's cells and of its result's (`Object.keys`), where the checks listed them already. */
+  keys?: readonly string[]
+  resultKeys?: readonly string[]
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!; without one, `#VALUE!` alone. */
   richError(code: 'SPILL' | 'CALC'): number | undefined
-  /** The book's table holding a cell of this sheet, with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
-  tableAt(addr: string): { name: string; totals: boolean } | undefined
+  /** The book's table holding a cell of this sheet (0-based row and column), with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
+  tableAt(row: number, col: number): { name: string; totals: boolean } | undefined
   /** The relationship ids of the sheet's table parts. */
   tableParts: string[]
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): a date's serial counts from it. */
@@ -140,16 +144,16 @@ const INLINE = ' t="inlineStr"'
  * for older readers) and the content of `<v>`, or an inline string's `<is>`; `shared` writes text through the shared
  * strings, or inline (`ctx.inline`).
  */
-function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
+function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, shared: boolean): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
-    const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
+    const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, { sheet, cell })
     if (shared && ctx.inline) return { t: INLINE, v: `<is>${textElement(s)}</is>` }
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
-  return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, where), ctx.richError)
+  return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, { sheet, cell }), ctx.richError)
 }
 
 /**
@@ -179,8 +183,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const extent = { r1: Infinity, r2: -1, c1: MAX_COLS, c2: 0, n: 0 }
   const rowsUsed = new Set<number>()
   let formulas = false
-  const put = (addr: string, xml: string) => {
-    const { row, col } = parseAddress(addr)
+  const put = (row: number, col: number, xml: string) => {
     const xs = (xmlAt[row] ??= [])
     if (xs[col] === undefined) {
       ;(colsOf[row] ??= []).push(col)
@@ -197,71 +200,71 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const sheetLook = sheetLines(sheet)
   // a sheet whose rows and columns have no look writes each cell's own
   const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some(hasLook))
-  const sAttr = (addr: string, c: CellInput | undefined) => {
-    let look: Look | undefined = c
-    if (lined) {
-      const { row, col } = parseAddress(addr)
-      look = sheetLook.look(row, col, c)
-    }
+  const sAttr = (row: number, col: number, c: CellInput | undefined) => {
+    const look: Look | undefined = lined ? sheetLook.look(row, col, c) : c
     const xf = styles.xf(look?.style, look?.numberFormat)
     return xf ? ` s="${xf}"` : ''
   }
-  // `cm` marks a dynamic array formula
+  // the cells' addresses, listed once for the looks' numbering and the cells' walk
+  const keys = ctx.keys ?? Object.keys(sheet.cells)
   // the cells of the sheet's looks numbered among its entries, as entries of theirs would be (`numberLooks`)
   const layer = layerOf(sheet)
-  const layerXf = layer ? numberLooks(sheet, layer, lined, sAttr) : null
-  const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
+  const layerXf = layer ? numberLooks(sheet, keys, layer, lined, sAttr) : null
+  // `cm` marks a dynamic array formula
+  const cellXml = (addr: string, row: number, col: number, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ` cm="${ctx.dynamicMark ?? 1}"` : ''
-    if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
-    const x = valueXml(v, ctx, where(addr), !f)
-    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}${x.t === INLINE ? x.v : `<v>${x.v}</v>`}</c>`
+    if (v === undefined) return `<c r="${addr}"${sAttr(row, col, c)}${cm}${f ? `>${f}</c>` : '/>'}`
+    const x = valueXml(v, ctx, sheet.name, addr, !f)
+    return `<c r="${addr}"${sAttr(row, col, c)}${x.t}${cm}>${f}${x.t === INLINE ? x.v : `<v>${x.v}</v>`}</c>`
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()
-  for (const addr of Object.keys(sheet.cells)) {
+  const at = { r: 0, c: 0 }
+  for (const addr of keys) {
     const c = sheet.cells[addr]
+    readAddress(addr, at)
+    const { r: row, c: col } = at
     if (c.meta !== undefined) issues.add('meta', { key: 'cellMeta' }, where(addr))
     if (c.note) notes.set(addr, c.note)
     if (c.link) links.set(addr, c.link)
-    const res = result?.[addr]
     if (c.formula === undefined) {
       const v = c.value == null ? undefined : bookScalar(c.value, ctx.epoch)
-      put(addr, cellXml(addr, c, v))
+      put(row, col, cellXml(addr, row, col, c, v))
       continue
     }
+    const res = result?.[addr]
     // a formula a circular reference stops stores the value it holds where the result gives none, or the engine's #CYCLE!
     const value = c.held !== undefined && (res === undefined || (typeof res.value === 'object' && res.value?.error === 'CYCLE')) ? c.held : res?.value
     // a result without the formula's value (`values: 'preserve'`)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     // the book's table holding the cell, looked up once for its name and its totals row
-    const table = mode === 'formulas' ? ctx.tableAt(addr) : undefined
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, table?.name) : null
+    const table = mode === 'formulas' ? ctx.tableAt(row, col) : undefined
+    const text = mode === 'formulas' ? fileText(c.formula, ctx, table?.name, ctx.shapes) : null
     // without a value (no result), the cell is written empty
-    if (mode === 'formulas' && !tree) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
-    if (!tree) {
-      put(addr, cellXml(addr, c, value))
+    if (mode === 'formulas' && text === null) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
+    if (text === null) {
+      put(row, col, cellXml(addr, row, col, c, value))
       continue
     }
     formulas = true
     if (table?.totals && c.array === undefined) {
-      put(addr, cellXml(addr, c, value, `<f>${escapeText(toFile(tree))}</f>`, false))
+      put(row, col, cellXml(addr, row, col, c, value, `<f>${escapeText(text)}</f>`, false))
       continue
     }
     const ref = c.array ?? res?.spill ?? addr
-    put(addr, cellXml(addr, c, value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
+    put(row, col, cellXml(addr, row, col, c, value, `<f t="array" ref="${ref}">${escapeText(text)}</f>`, c.array === undefined))
   }
-  // the cells arrays spilled into, with the look their own cells give them
-  const ownAt = (addr: string) => {
-    if (!layer) return sheet.cells[addr]
+  // the cells arrays spilled into, with the look their own cells give them (a result's addresses are not checked: parsed)
+  const spilled = (addr: string, v: CellValue) => {
     const { row, col } = parseAddress(addr)
-    return inputIn(sheet, addr, row, col)
+    put(row, col, cellXml(addr, row, col, layer ? inputIn(sheet, addr, row, col) : sheet.cells[addr], v))
   }
   if (result)
-    for (const addr of Object.keys(result)) {
+    for (const addr of ctx.resultKeys ?? Object.keys(result)) {
       const r = result[addr]
-      if (r.spillOf !== undefined) put(addr, cellXml(addr, ownAt(addr), r.value))
+      if (r.spillOf !== undefined) spilled(addr, r.value)
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
-        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, ownAt(a), r.spillFill))
+        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) spilled(a, r.spillFill)
     }
   // the collapsed marks as Excel keeps and saves them, whatever marks the book holds
   const rowLines = lines(normalized(sheet.rows, 'r', sheet.outline?.summaryBelow !== false), 'r')
@@ -275,7 +278,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
   crossings(rowLines, colLines, styles, (r, c, xf) => {
-    if (xmlAt[r]?.[c] === undefined && !(layer && layer.idAt(r, c) !== NONE)) put(formatAddress(r, c), `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
+    if (xmlAt[r]?.[c] === undefined && !(layer && layer.idAt(r, c) !== NONE)) put(r, c, `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
   })
   // the rows of the looks' blocks too, their cells written as the rows are, not held cell by cell
   if (layer) for (let b = 0; b < layer.blocks; b++) for (let r = layer.r1[b]; r <= layer.r2[b]; r++) rowsUsed.add(r)
@@ -361,9 +364,9 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
  * entries in their order, as a file read lists them (a cell a note or a link alone made comes last); by cell where the
  * sheet's rows or columns have a look (`lined`), which a cell's whole look takes.
  */
-function numberLooks(sheet: SheetInput, layer: Layer, lined: boolean, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
+function numberLooks(sheet: SheetInput, keys: readonly string[], layer: Layer, lined: boolean, sAttr: (r: number, c: number, own: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
   const byLook: (string | undefined)[] = []
-  const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
+  const attr = (r: number, c: number, look: number) => (lined ? sAttr(r, c, layer.looks.list[look]) : (byLook[look] ??= sAttr(r, c, layer.looks.list[look])))
   // the looks not numbered yet; once none is left, only the entries take new numbers
   let left = lined ? Infinity : layer.used().length
   // a cursor through the looks' cells: block, row, run and column; a run's first cell alone without lines
@@ -383,10 +386,10 @@ function numberLooks(sheet: SheetInput, layer: Layer, lined: boolean, sAttr: (ad
     }
   }
   const at = { r: 0, c: 0 }
-  for (const a in sheet.cells) {
+  for (const a of keys) {
     readAddress(a, at)
     before(at.r * MAX_COLS + at.c)
-    sAttr(a, sheet.cells[a])
+    sAttr(at.r, at.c, sheet.cells[a])
   }
   before(Infinity)
   return attr

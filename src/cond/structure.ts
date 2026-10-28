@@ -255,28 +255,37 @@ function joinedTiles(xs: Rect[]): Rect[] {
   return xs.reduce((n, x) => n + cellCount(x), 0) === cellCount(around) ? [around] : xs
 }
 
+/** The one rectangle rectangles make with more over them, or null. */
+function joined(xs: Rect[], more: Rect[]): Rect | null {
+  const all = [...more.reduce((left, x) => subtract(left, x), xs), ...more]
+  const one = joinedTiles(all)
+  return column(all) ?? (one.length === 1 ? one[0] : null)
+}
+
 /**
  * The rules after a copy (`p`, copy and paste or fill; `source`, the book copied from): the cells pasted on lose their
  * rules; the copied cells' rules come as new rules over the pasted cells, first in the target's order, their formulas
  * copied as the cells' are; a rule of the same sheet whose cells and the pasted ones make one rectangle down its columns
  * (a fill down) grows over them instead (the sets `cond/struct-held`, `held`). A rule whose first cell moves has its
- * formulas made for the new one.
+ * formulas made for the new one. With `merge` (All Merging Conditional Formats, the paste sets `merging`,
+ * `merging-held`), the pasted cells keep their rules, and a rule copied on its own sheet grows over the pasted cells
+ * where they make one rectangle with its own, over them or beside them.
  */
-export function copyConditional(source: BookInput, out: BookInput, p: Paste, names: Map<string, string>) {
+export function copyConditional(source: BookInput, out: BookInput, p: Paste, names: Map<string, string>, merge = false) {
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
   const target = sheetOf(out, p.to)
   const from = sheetOf(source, p.from).conditionalFormats ?? []
   const pasted = (rule: ConditionalFormat) => joinedTiles(p.offsets.flatMap(([dr, dc]) => inside(rectsOf(rule), p.src).map((x) => shiftRect(x, dr, dc))))
   const own = target.conditionalFormats ?? []
   if (!own.length && !from.some((r) => anyMeets(rectsOf(r), [p.src]))) return
-  const kept = own.map((rule) => ({ rule, stay: subtract(rectsOf(rule), p.area) }))
+  const kept = own.map((rule) => ({ rule, stay: merge ? rectsOf(rule) : subtract(rectsOf(rule), p.area) }))
   const added: ConditionalFormat[] = []
   for (const rule of from) {
     const next = pasted(rule)
     if (!next.length) continue
     // a fill down or up on the rule's own sheet: one column of rectangles with the rule's other cells
     const same = fk === tk ? kept.find((x) => x.rule === rule) : undefined
-    const grownTo = same && column([...same.stay, ...next])
+    const grownTo = same && (merge ? joined(same.stay, next) : column([...same.stay, ...next]))
     if (same && grownTo) {
       same.stay = [grownTo]
       continue

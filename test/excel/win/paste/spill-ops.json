@@ -1,0 +1,168 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.4
+ },
+ "books": {
+  "spill": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      },
+      "A3": {
+       "value": 7
+      },
+      "B1": {
+       "value": 2
+      },
+      "D1": {
+       "formula": "SEQUENCE(3)"
+      },
+      "F1": {
+       "formula": "B1*3"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "add-formula-cell",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "add-spilled-cell",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "multiply-whole",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "formulas",
+   "operation": "multiply"
+  },
+  {
+   "id": "add-part-beyond",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "values-spilled-cell",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D2"
+   },
+   "what": "values"
+  },
+  {
+   "id": "skip-over-spill",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "add-typed-formula",
+   "book": "spill",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "values",
+   "operation": "add"
+  }
+ ],
+ "plain": {
+  "spill": [
+   "F1"
+  ]
+ },
+ "sent": {
+  "add-formula-cell": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "add-spilled-cell": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "multiply-whole": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "add-part-beyond": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "values-spilled-cell": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "skip-over-spill": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8",
+  "add-typed-formula": "f85cb20132ba47c9d49d58b5a400bf09a131d3fbf8a0f73188021136c42faee8"
+ },
+ "answers": {
+  "add-formula-cell": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "add-spilled-cell": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "multiply-whole": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "add-part-beyond": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "values-spilled-cell": {},
+  "skip-over-spill": {},
+  "add-typed-formula": {}
+ }
+}

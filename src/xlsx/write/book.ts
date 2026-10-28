@@ -23,7 +23,7 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileTree, type FileNames, type FileShapes } from './formula.js'
 import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
@@ -31,7 +31,6 @@ import { tableXml } from './tables.js'
 import { HEAD, MAIN } from './xml.js'
 import { RICH_ERRORS } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
-import { parseAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { areaText, sheetPrefix } from '../keep/refs.js'
 
@@ -144,8 +143,7 @@ export function bookWriting(book: BookInput): BookWriting {
   const tables = tablesOf(book)
   return {
     names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks },
-    tableAt: (i) => (addr) => {
-      const { row, col } = parseAddress(addr)
+    tableAt: (i) => (row, col) => {
       const t = tableAt(tables, i, row, col)
       return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
     },
@@ -162,7 +160,7 @@ export function bookWriting(book: BookInput): BookWriting {
  * or only its values (`opts.mode: 'values'`).
  */
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
-  const { book, cells, mode, unasked, locale } = writeArgs(snapshot, opts)
+  const { book, keys, cells, resultKeys, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
   const styles = new StyleWriter(book.styles, book.font)
   const strings = new Map<string, number>()
@@ -182,6 +180,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
+  const shapes: FileShapes = new Map()
   const sheets = book.sheets.map((s, i) => {
     const w = sheetPieces(s, i, {
       styles,
@@ -190,6 +189,9 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       ...names,
       mode,
       result: cells?.[i],
+      shapes,
+      keys: keys[i],
+      ...(resultKeys ? { resultKeys: resultKeys[i] } : {}),
       richError,
       tableAt: bw.tableAt(i),
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),

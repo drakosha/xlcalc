@@ -1,0 +1,911 @@
+{
+ "all-over": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "E1": {
+      "formula": "D1*2"
+     },
+     "G1": {
+      "value": 3
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 2
+     },
+     "E2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "G2": {
+      "value": 3
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:D3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"D4:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"E1:E3\"],\"type\":\"expression\",\"formula\":\"E1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3 D1:D3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-same": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 3
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 2
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "G3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3 G1:G3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-inside": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 3
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 3
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 3
+     },
+     "L2": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "L3": {
+      "value": 2
+     },
+     "D4": {
+      "value": 3
+     },
+     "L4": {
+      "value": "a",
+      "note": "n"
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1\",\"L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L2:L4\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3 L2:L4\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-relative": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 3
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 3
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "formula": "M1*2"
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 3
+     },
+     "N2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-plain": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 7
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 3
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 3
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D3:E5\",\"E1:E2\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-other-sheet": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 3
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 3
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 3
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all-empty": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "B1": {
+      "formula": "A1*2"
+     },
+     "D1": {
+      "value": 3
+     },
+     "E1": {
+      "value": 3
+     },
+     "G1": {
+      "value": 3
+     },
+     "J1": {
+      "value": 5,
+      "style": {
+       "font": {
+        "bold": true
+       }
+      },
+      "numberFormat": 2
+     },
+     "K1": {
+      "formula": "J1*2"
+     },
+     "L1": {
+      "value": 3
+     },
+     "N1": {
+      "value": 3
+     },
+     "P1": {
+      "value": 7
+     },
+     "A2": {
+      "value": 2
+     },
+     "B2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 3
+     },
+     "G2": {
+      "value": 3
+     },
+     "J2": {
+      "value": 2
+     },
+     "K2": {
+      "value": -1,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "P2": {
+      "value": 8,
+      "style": {
+       "fill": {
+        "color": "#9BC2E6"
+       }
+      }
+     },
+     "A3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D3": {
+      "value": 3
+     },
+     "E3": {
+      "value": 3
+     },
+     "J3": {
+      "value": "a",
+      "note": "n"
+     },
+     "D4": {
+      "value": 3
+     },
+     "L5": {
+      "value": 3
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:A3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"B1:B3\"],\"type\":\"expression\",\"formula\":\"B1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"D1:E5\"],\"type\":\"cellIs\",\"operator\":\"lessThan\",\"formulas\":[\"10\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}",
+     "{\"ranges\":[\"G1:G3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"J1:J3\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"K1:K3\"],\"type\":\"expression\",\"formula\":\"K1<0\",\"style\":{\"font\":{\"italic\":true}}}",
+     "{\"ranges\":[\"L1:L5\"],\"type\":\"cellIs\",\"operator\":\"greaterThan\",\"formulas\":[\"1\"],\"style\":{\"fill\":{\"color\":\"#FFC7CE\"}}}",
+     "{\"ranges\":[\"N1:N3\"],\"type\":\"expression\",\"formula\":\"N1<0\",\"style\":{\"font\":{\"italic\":true}}}"
+    ],
+    "validations": [
+     "{\"range\":\"A1:A3 J1:J3\",\"type\":\"whole\",\"formula1\":\"0\",\"formula2\":\"10\"}"
+    ],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "A1": {
+      "value": 1
+     },
+     "B2": {
+      "value": 2
+     }
+    },
+    "merges": [],
+    "rules": [
+     "{\"ranges\":[\"A1:B3\"],\"type\":\"cellIs\",\"operator\":\"equal\",\"formulas\":[\"2\"],\"style\":{\"fill\":{\"color\":\"#C6EFCE\"}}}"
+    ],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}

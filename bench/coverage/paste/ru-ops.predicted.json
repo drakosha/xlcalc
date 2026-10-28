@@ -1,0 +1,831 @@
+{
+ "formulas-add": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 1244.5
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))+0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "formula": "2.5+(IF(D1>1,D1*1.5,0))"
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)+0.125"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 46038
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))+0,5",
+   "C3": "=2,5+(ЕСЛИ(D1>1;D1*1,5;0))",
+   "C4": "=(B1/4)+0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "formulas-subtract": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": -1224.5
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))-0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "formula": "2.5-(IF(D1>1,D1*1.5,0))"
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)-0.125"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": -46036
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))-0,5",
+   "C3": "=2,5-(ЕСЛИ(D1>1;D1*1,5;0))",
+   "C4": "=(B1/4)-0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "formulas-multiply": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 12345
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))*0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "formula": "2.5*(IF(D1>1,D1*1.5,0))"
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)*0.125"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 46037
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))*0,5",
+   "C3": "=2,5*(ЕСЛИ(D1>1;D1*1,5;0))",
+   "C4": "=(B1/4)*0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "formulas-divide": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 0.008100445524503848
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))/0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "formula": "2.5/(IF(D1>1,D1*1.5,0))"
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)/0.125"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 0.000021721658665855725
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))/0,5",
+   "C3": "=2,5/(ЕСЛИ(D1>1;D1*1,5;0))",
+   "C4": "=(B1/4)/0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "values-add": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 1244.5
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))+0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "value": 5.5
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)+0.125"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 46038
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))+0,5",
+   "C4": "=(B1/4)+0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "all-add": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 1244.5,
+      "numberFormat": 4
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": "#,##0.000"
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "(SUM(B1:B2))+0.5"
+     },
+     "E2": {
+      "value": 1002,
+      "numberFormat": "#,##0.000"
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "formula": "2.5+(IF(D1>1,D1*1.5,0))"
+     },
+     "E3": {
+      "value": 1003,
+      "numberFormat": "#,##0.000"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "(B1/4)+0.125",
+      "numberFormat": "0.0%"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "#,##0.000"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 46038,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "#,##0.000"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006,
+      "numberFormat": "#,##0.000"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "C2": "=(СУММ(B1:B2))+0,5",
+   "C3": "=2,5+(ЕСЛИ(D1>1;D1*1,5;0))",
+   "C4": "=(B1/4)+0,125",
+   "C6": "=ОКРУГЛ(B1;1)"
+  }
+ },
+ "values-number-formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 10
+     },
+     "E1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "SUM(B1:B2)"
+     },
+     "E2": {
+      "value": 0.5
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "value": 2.5
+     },
+     "E3": {
+      "value": 3
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "B1/4"
+     },
+     "E4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 1
+     },
+     "E5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": "текст"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 10
+     },
+     "E1": {
+      "value": 1001,
+      "numberFormat": 4
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "SUM(B1:B2)"
+     },
+     "E2": {
+      "value": 1002
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "value": 2.5
+     },
+     "E3": {
+      "value": 1003
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "B1/4"
+     },
+     "E4": {
+      "value": 1004,
+      "numberFormat": "0.0%"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 1
+     },
+     "E5": {
+      "value": 1005,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "values-add-formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 10
+     },
+     "E1": {
+      "value": 2235.5,
+      "numberFormat": 4
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "SUM(B1:B2)"
+     },
+     "E2": {
+      "value": 1002.5
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "value": 2.5
+     },
+     "E3": {
+      "value": 1006
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "B1/4"
+     },
+     "E4": {
+      "value": 1004.125,
+      "numberFormat": "0.0%"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 1
+     },
+     "E5": {
+      "value": 47042,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formulas-number-formats-multiply": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 1234.5,
+      "numberFormat": 4
+     },
+     "B1": {
+      "value": 2
+     },
+     "C1": {
+      "value": 10
+     },
+     "E1": {
+      "value": 1235734.5,
+      "numberFormat": 4
+     },
+     "A2": {
+      "value": 0.5
+     },
+     "C2": {
+      "formula": "SUM(B1:B2)"
+     },
+     "E2": {
+      "value": 501
+     },
+     "A3": {
+      "formula": "IF(B1>1,B1*1.5,0)"
+     },
+     "C3": {
+      "value": 2.5
+     },
+     "E3": {
+      "formula": "1003*(IF(F1>1,F1*1.5,0))"
+     },
+     "A4": {
+      "value": 0.125,
+      "numberFormat": "0.0%"
+     },
+     "C4": {
+      "formula": "B1/4"
+     },
+     "E4": {
+      "value": 125.5,
+      "numberFormat": "0.0%"
+     },
+     "A5": {
+      "value": 46037,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "C5": {
+      "value": 1
+     },
+     "E5": {
+      "value": 46267185,
+      "numberFormat": "dd/mm/yyyy"
+     },
+     "A6": {
+      "value": "текст"
+     },
+     "C6": {
+      "formula": "ROUND(B1,1)"
+     },
+     "E6": {
+      "value": 1006
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  },
+  "local": {
+   "E3": "=1003*(ЕСЛИ(F1>1;F1*1,5;0))"
+  }
+ }
+}
