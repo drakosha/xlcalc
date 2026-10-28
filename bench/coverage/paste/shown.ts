@@ -14,7 +14,7 @@ import { formatAddress } from '../../../src/model.js'
 import type { PasteCase } from './cases.js'
 
 /** The kinds of paste the engine has. */
-export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
+export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'allMergingConditionalFormats', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
 
 /** Whether the engine has a case's paste. */
 export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what)

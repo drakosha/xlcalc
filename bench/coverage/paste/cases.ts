@@ -7,21 +7,7 @@ import { colToIndex, formatAddress } from '../../../src/model.js'
  * `allMergingConditionalFormats` Excel for Windows alone, which the Mac's AppleScript does not name); `copy`, a plain copy
  * (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab (Excel for Mac alone).
  */
-export type PasteWhat =
-  | 'copy'
-  | 'all'
-  | 'values'
-  | 'formulas'
-  | 'formats'
-  | 'validation'
-  | 'formulasAndNumberFormats'
-  | 'valuesAndNumberFormats'
-  | 'columnWidths'
-  | 'allExceptBorders'
-  | 'notes'
-  | 'allMergingConditionalFormats'
-  | 'allUsingSourceTheme'
-  | 'painter'
+export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'allMergingConditionalFormats' | 'allUsingSourceTheme' | 'painter'
 
 /** The kinds one Excel alone pastes: the Format Painter the Mac's, All Merging Conditional Formats Windows's. */
 export const MAC_ONLY: readonly PasteWhat[] = ['painter']
