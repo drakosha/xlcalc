@@ -19,10 +19,11 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здес�
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
-A host that knows a locale only by its tag, from a file or a user's choice, loads it with `loadLocale`, in the root and in `xlcalc/xlsx`, which imports the package's module of that tag and loads it as `registerLocale` does; a bundler puts the module into a chunk of its own, which comes only when it is loaded. A locale loaded already comes back without importing its module again, and a tag that is not one of the package's locales is an `InputError`:
+A host that knows a locale only by its tag, from a file or a user's choice, loads it with `loadLocale` from `xlcalc/locales`, which imports the package's module of that tag and loads it as `registerLocale` does, for every call that takes a loaded locale, a pool's threads included. It is a subpath of its own, without the engine, so the bundles of the root and of `xlcalc/xlsx` carry no locale module but en-US; where a bundler splits, the module comes as a chunk of its own, only when it is loaded. A locale loaded already comes back without importing its module again, and a tag that is not one of the package's locales is an `InputError`:
 
 ```js
-import { loadLocale, readXlsx, writeXlsx } from 'xlcalc/xlsx'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+import { loadLocale } from 'xlcalc/locales'
 
 const read = await readXlsx(data)
 if (read.book.locale) await loadLocale(read.book.locale)
@@ -37,7 +38,7 @@ import { compute } from 'xlcalc'
 try {
   compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
 } catch (e) {
-  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)
+  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)
 }
 ```
 
@@ -93,7 +94,7 @@ console.log(compute(book).sheets[0].cells.A1.value, [...LOCALES.keys()])
 ```
 
 - `LOCALES` lists the loaded locales by tag: `en-US`, then each registered locale.
-- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
+- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
 - Every function that accepts a locale accepts the tag of a loaded locale or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. An object needs no loading there, since no workbook is calculated: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
 - Importing the module has no effect by itself, so a bundler leaves it out of a bundle that does not use it. Loading the same object again does nothing; another object with an already loaded tag causes an `InputError`, as does a locale without the rules a workbook calculates by.
 - `readXlsx` keeps a file's locale (`ru-RU`) as it reads it, loaded or not; calculating or writing the workbook requires the locale to be loaded.

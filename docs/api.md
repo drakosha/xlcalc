@@ -13,6 +13,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
 - [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
+- [`xlcalc/locales`](#xlcalclocales)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
@@ -374,17 +375,6 @@ function liveBook(session: Session): LiveBook
 
 The live workbook of a synchronous session ([`LiveBook`](#livebook)): the same object for the same session. An asynchronous
 session throws [`InputError`](#xlcalc-inputerror): its writes cannot return what they calculated.
-
-### <a id="xlcalc-loadlocale"></a>`loadLocale`
-
-```ts
-function loadLocale(tag: string): Promise<Locale>
-```
-
-Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
-`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
-loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
-[`InputError`](#xlcalc-inputerror) (tags are compared as written).
 
 ### <a id="xlcalc-locales"></a>`LOCALES`
 
@@ -848,17 +838,6 @@ becomes `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name d
 returns, so the workbook's names are needed for formulas that use names. A formula the engine cannot parse is
 returned as is. The API function (`strict-args.ts`), from `xlcalc/xlsx`.
 
-### <a id="xlcalcxlsx-loadlocale"></a>`loadLocale`
-
-```ts
-function loadLocale(tag: string): Promise<Locale>
-```
-
-Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
-`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
-loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
-[`InputError`](#xlcalc-inputerror) (tags are compared as written).
-
 ### <a id="xlcalcxlsx-readxlsx"></a>`readXlsx`
 
 ```ts
@@ -939,6 +918,19 @@ for a name outside the whitelist.
 ```ts
 const ruRUFunctionText: Required<Pick<Locale, "argumentWords" | "functionText">>
 ```
+
+## xlcalc/locales
+
+### <a id="xlcalclocales-loadlocale"></a>`loadLocale`
+
+```ts
+function loadLocale(tag: string): Promise<Locale>
+```
+
+Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
+`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
+[`InputError`](#xlcalc-inputerror) (tags are compared as written).
 
 ## xlcalc/locales/ru-RU
 

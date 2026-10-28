@@ -10,7 +10,8 @@ const contract = await import(`${name}/contract`)
 const text = await import(`${name}/text`)
 const { createState, parse, valuesHash } = await import(`${name}/unstable/internal`)
 const { classAEdits, synthBook } = await import(`${name}/unstable/synth`)
-const { loadLocale, readXlsx, writeXlsx } = await import(`${name}/xlsx`)
+const { readXlsx, writeXlsx } = await import(`${name}/xlsx`)
+const { loadLocale } = await import(`${name}/locales`)
 const { createCalcPool } = await import(`${name}/worker`)
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -26,10 +27,10 @@ const pool = createCalcPool({ threads: 1 })
 const inThread = await pool.createSession(synth.book, { clock })
 for (const e of classAEdits(synth, 3, 10)) await inThread.setCells([e])
 const threads = { hash: (await pool.compute(synth.book, { clock })).hash, edited: (await inThread.getResult()).hash }
-// a package locale loaded by its tag from the xlsx subpath: its module found in dist, a file written in it, the pool's thread given it
+// a package locale loaded by its tag from its subpath: its module found in dist, a file written in it, the pool's thread given it
 const ru = await loadLocale('ru-RU')
 const ruBook = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
-const loaded = { tag: ru.tag, same: (await root.loadLocale('ru-RU')) === ru, read: (await readXlsx((await writeXlsx({ book: ruBook })).data)).book.locale, thread: (await pool.compute(ruBook, { clock })).sheets[0].cells.B1.value }
+const loaded = { tag: ru.tag, same: (await loadLocale('ru-RU')) === ru, inRoot: 'loadLocale' in root, read: (await readXlsx((await writeXlsx({ book: ruBook })).data)).book.locale, thread: (await pool.compute(ruBook, { clock })).sheets[0].cells.B1.value }
 /** Error code of importing a path that `exports` does not expose. */
 async function closed(spec) {
   try {

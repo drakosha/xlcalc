@@ -16,7 +16,7 @@ import { writeXlsx } from '../src/xlsx.js'
 import { read } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
-const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)"
+const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { value: 46096, numberFormat: 14 }, B1: { value: 'Итого' } }
 const ruBook: BookInput = { locale: 'ru-RU', sheets: [{ name: 'S', cells, columns: { A: { width: 12 } } }] }
 const enBook: BookInput = { sheets: [{ name: 'S', cells }] }

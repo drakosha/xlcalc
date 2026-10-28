@@ -15,7 +15,7 @@ import { closedAfter, inside } from './fixtures/pool.js'
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' } }
 const book = (locale: string): BookInput => ({ locale, sheets: [{ name: 'S', cells }] })
-const HINT = "book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') (loaded: en-US)"
+const HINT = "book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
 
 const { open, keep, made } = closedAfter()
 
