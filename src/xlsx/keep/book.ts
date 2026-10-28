@@ -742,15 +742,20 @@ class Kept {
     return k !== undefined && (this.book0.sheets[k].autoFilter !== undefined || (j !== undefined && this.book.sheets[j].autoFilter !== undefined))
   }
 
-  /** A `_xlnm._FilterDatabase` of the file's `<sheet>` `d` (`text`, its reference moved) at place `at`: none without the workbook's AutoFilter, the file's over its range, else as writeXlsx writes it. */
+  /**
+   * A `_xlnm._FilterDatabase` of the file's `<sheet>` `d` (`text`, its reference moved) at place `at`: none without the
+   * workbook's AutoFilter, the file's over its range or where the AutoFilter did not change (Excel leaves it `#REF!`
+   * under cells moved over the AutoFilter), else as writeXlsx writes it.
+   */
   private filterName(text: string, d: number, at: number): string | undefined {
-    const s = this.book.sheets[this.id.target.get(this.src.decls[d].sheet!)!]
+    const k = this.src.decls[d].sheet!
+    const s = this.book.sheets[this.id.target.get(k)!]
     if (!s.autoFilter) return undefined
     const head = text.slice(0, text.indexOf('>') + 1)
     const area = areasOf(readText(text.slice(head.length, text.lastIndexOf('<'))))?.[0]
     const x = parseRange(s.autoFilter.range)!
     const same = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(s.name) && area.rect.r1 === x.r1 && area.rect.r2 === x.r2 && area.rect.c1 === x.c1 && area.rect.c2 === x.c2
-    return same && at === d ? text : filterDatabase(s.name, s.autoFilter.range, at)
+    return (same || this.book0.sheets[k].autoFilter?.range === s.autoFilter.range) && at === d ? text : filterDatabase(s.name, s.autoFilter.range, at)
   }
 
   /** The parts of the book as a whole: styles, metadata, the calculation chain, relationships and content types. */
