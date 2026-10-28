@@ -35,4 +35,9 @@ describe('text functions beyond the Excel cases', () => {
   it('PROPER, UPPER and MID keep astral characters whole (UTF-16 units count, as in Excel)', () => {
     expect(values(['PROPER("😀abc def")', 'UPPER("😀ß")', 'LEN("😀")', 'MID("a😀b",2,2)'])).toEqual(['😀Abc Def', '😀ß', 2, '😀'])
   })
+
+  it('SEARCH from a start inside a surrogate pair answers a position at the start or after it, the same pattern again too', () => {
+    const calls = ['SEARCH("?","😀a",2)', 'SEARCH("?","a😀b",3)', 'SEARCH("*","😀",2)', 'SEARCH("?a","x😀a",3)']
+    expect(values([...calls, ...calls])).toEqual([2, 3, 2, 3, 2, 3, 2, 3])
+  })
 })

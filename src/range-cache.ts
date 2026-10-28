@@ -89,6 +89,16 @@ export function keptWith(value: object, bytes: number): void {
   carried.get(value)?.(bytes)
 }
 
+/** The cells from which a range's values are kept (`Cx.flat`): one array call after call, which what is made from it can go with. */
+export const KEPT_RANGE = 256
+
+/** `made` from a kept range's `values`, put in `map` by them and counted with them: an entry and `count` numbers. */
+export function keepAlong<T>(map: WeakMap<readonly unknown[], T>, values: readonly unknown[], made: T, count: number): T {
+  map.set(values, made)
+  keptWith(values, 64 + count * VALUE_BYTES)
+  return made
+}
+
 export class RangeCache<T> {
   private readonly ranges = new Map<string, Entry<T>>()
   private readonly index = new AreaIndex<Entry<T>>()

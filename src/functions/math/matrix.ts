@@ -76,18 +76,24 @@ function minverse(g: Grid): V | Arr {
 
 /** The product; the columns of the first must equal the rows of the second. An error inside is the answer (kind M). */
 function mmult(x: Grid, y: Grid): V | Arr {
-  const a = numbers(x)
-  if (!Array.isArray(a)) return a
-  const b = numbers(y)
-  if (!Array.isArray(b)) return b
+  // row-major numbers, sums in ascending k as before
+  const a = values(x)
+  if (isErr(a)) return a
+  const b = values(y)
+  if (isErr(b)) return b
   if (x.cols !== y.rows) return E.VALUE
-  allot(x.rows * y.cols)
-  return matrix(
-    a.map((row) => {
-      spend(y.cols * x.cols)
-      return b[0].map((_, j) => row.reduce((s, v, k) => s + v * b[k][j], 0))
-    }),
-  )
+  const [n, m, inner] = [x.rows, y.cols, x.cols]
+  allot(n * m)
+  const out: number[] = new Array(n * m)
+  for (let i = 0; i < n; i++) {
+    spend(m * inner)
+    for (let j = 0; j < m; j++) {
+      let s = 0
+      for (let k = 0; k < inner; k++) s += a[i * inner + k] * b[k * m + j]
+      out[i * m + j] = s
+    }
+  }
+  return new Arr(n, m, n, m, out)
 }
 
 export const functions: Record<string, FnDef> = {

@@ -175,12 +175,10 @@ export function ibeta(x: number, y: number, a: number, b: number): [number, numb
 
 export const normPdf = (z: number) => Math.exp(-0.5 * z * z) / SQRT_2PI
 
-/** [Φ(z), 1 − Φ(z)]. */
-export function normCdf(z: number): [number, number] {
-  const lower = 0.5 * erfc(-z / Math.SQRT2)
-  const upper = 0.5 * erfc(z / Math.SQRT2)
-  return [lower, upper]
-}
+/** Φ(z). */
+export const normCdf = (z: number) => 0.5 * erfc(-z / Math.SQRT2)
+/** 1 − Φ(z), by its own tail. */
+export const normUpper = (z: number) => 0.5 * erfc(z / Math.SQRT2)
 
 /**
  * Φ(z) as LOGNORM.DIST takes it: next to 0 (|z| < 1.4E-4) 0.5 + erf(z/√2)/2 by erf's Maclaurin series, which keeps
@@ -189,7 +187,7 @@ export function normCdf(z: number): [number, number] {
  */
 export function lognormCdf(z: number): number {
   const x = z / Math.SQRT2
-  if (Math.abs(x) >= 1e-4) return normCdf(z)[0]
+  if (Math.abs(x) >= 1e-4) return normCdf(z)
   let sum = 0
   for (let n = 0, t = x; n < 40; n++, t *= (-x * x) / n) {
     const term = t / (2 * n + 1)

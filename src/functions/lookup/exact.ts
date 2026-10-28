@@ -2,12 +2,14 @@
 import { spend } from '../../exec/budget.js'
 import type { V } from '../../values.js'
 import type { Compare, Key, Line } from './search.js'
-import { KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
+import { KEPT_RANGE, KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
 
 interface Positions { first: number; last: number }
 interface TextPosition extends Positions { value: string }
+/** A key's first position, and its last only where it repeats: a lookup column's keys are mostly unique. */
+interface ScalarIndex { first: Map<number | boolean, number>; last: Map<number | boolean, number> }
 export interface Index {
-  scalar?: Map<number | boolean, Positions> | false
+  scalar?: ScalarIndex | false
   text?: TextPosition[]
   scalarWork: number
   textWork: number
@@ -20,7 +22,7 @@ export interface ExactStore {
   write(index: Index, bytes: number): void
 }
 
-export const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
+export const storedBytes = (index: Index) => 128 + (index.scalar ? (index.scalar.first.size + index.scalar.last.size) * KEY_BYTES : 0)
   + (index.text?.reduce((n, x) => n + KEY_BYTES + POSITION_BYTES + x.value.length * 2, 0) ?? 0)
 
 /** A built index counted in the budget: in its range's store, or with the values it is over, which it goes with. */
@@ -33,7 +35,6 @@ function counted(line: Line, index: Index): void {
 
 // Range arrays are immutable and replaced on invalidation; their indexes disappear with them.
 const caches = new WeakMap<readonly V[], WeakMap<Compare, Map<string, Index>>>()
-const MIN_LENGTH = 256
 const STRIDE = 0xffff
 
 function indexFor(line: Line, compare: Compare): Index {
@@ -60,7 +61,7 @@ function indexFor(line: Line, compare: Compare): Index {
 
 /** Remember actual scan work: several hits at the start of a long range should not trigger a full index build. */
 export function scannedExact(line: Line, key: Key, compare: Compare, work: number): void {
-  if (line.filled < MIN_LENGTH || (typeof key === 'number' && !Number.isFinite(key))) return
+  if (line.filled < KEPT_RANGE || (typeof key === 'number' && !Number.isFinite(key))) return
   const index = indexFor(line, compare)
   if (typeof key === 'string') index.textWork += work
   else index.scalarWork += work
@@ -69,7 +70,7 @@ export function scannedExact(line: Line, key: Key, compare: Compare, work: numbe
 /** Undefined means the caller scans; -1 is an indexed miss. `stride` uses the stored grid width, not its referenced width. */
 export function indexedExact(line: Line, key: Key, compare: Compare, last: boolean): number | undefined {
   const length = line.filled
-  if (length < MIN_LENGTH || (typeof key === 'number' && !Number.isFinite(key))) return undefined
+  if (length < KEPT_RANGE || (typeof key === 'number' && !Number.isFinite(key))) return undefined
   const index = indexFor(line, compare)
   let position: Positions | undefined
   if (typeof key === 'string') {
@@ -91,21 +92,21 @@ export function indexedExact(line: Line, key: Key, compare: Compare, last: boole
   } else {
     if (index.scalar === undefined) {
       if (index.scalarWork < length) return undefined
-      const map = new Map<number | boolean, Positions>()
+      const map: ScalarIndex = { first: new Map(), last: new Map() }
       for (let i = 0; i < length; i++) {
         if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, length - i))
         const value = line.at(i)
         if (value === undefined || (typeof value === 'number' && !Number.isFinite(value))) { index.scalar = false; break }
         if (typeof value !== 'number' && typeof value !== 'boolean') continue
-        const found = map.get(value)
-        if (found) found.last = i
-        else map.set(value, { first: i, last: i })
+        if (map.first.has(value)) map.last.set(value, i)
+        else map.first.set(value, i)
       }
       index.scalar ??= map
       counted(line, index)
     }
     if (index.scalar === false) return undefined
-    position = index.scalar.get(key)
+    const first = index.scalar.first.get(key)
+    return first === undefined ? -1 : last ? (index.scalar.last.get(key) ?? first) : first
   }
   return position ? (last ? position.last : position.first) : -1
 }
