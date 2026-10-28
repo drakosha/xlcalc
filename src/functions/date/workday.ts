@@ -5,6 +5,7 @@ import { MAX_SERIAL } from '../../dates.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { readsClock } from '../../locale/rules/data.js'
 import { keptWith, VALUE_BYTES } from '../../range-cache.js'
+import { lowerBound } from '../../sorted.js'
 import { atp } from './atp.js'
 import { weekday } from './calendar.js'
 
@@ -67,21 +68,10 @@ function holidaysOf(x: Segment | undefined, rules: Rules): Float64Array | CErr {
   return holidays
 }
 
-/** The first position in ascending `xs` whose value is above `x`, or at least `x` when `equal`. */
-function bound(xs: Float64Array, x: number, equal: boolean): number {
-  let lo = 0, hi = xs.length
-  while (lo < hi) {
-    const mid = (lo + hi) >>> 1
-    if (xs[mid] < x || (!equal && xs[mid] === x)) lo = mid + 1
-    else hi = mid
-  }
-  return lo
-}
-
-/** Holidays on workdays from position `i` on, up to `b` (inclusive when `upTo`). */
-function workdayHolidays(holidays: Float64Array, i: number, b: number, upTo: boolean, weekend: boolean[]): number {
+/** Holidays from `a` to `b` (inclusive) on workdays. */
+function workdayHolidays(holidays: Float64Array, a: number, b: number, weekend: boolean[]): number {
   let n = 0
-  for (; i < holidays.length && (holidays[i] < b || (upTo && holidays[i] === b)); i++) if (!weekend[weekday(holidays[i])]) n++
+  for (let i = lowerBound(holidays, a); i < holidays.length && holidays[i] <= b; i++) if (!weekend[weekday(holidays[i])]) n++
   return n
 }
 
@@ -94,7 +84,7 @@ function networkDays(start: number, end: number, weekend: boolean[], holidays = 
   const weeks = Math.floor((b - a + 1) / 7)
   let count = weeks * weekend.filter((x) => !x).length
   for (let s = a + weeks * 7; s <= b; s++) if (!weekend[weekday(s)]) count++
-  return sign * (count - workdayHolidays(holidays, bound(holidays, a, true), b, true, weekend))
+  return sign * (count - workdayHolidays(holidays, a, b, weekend))
 }
 
 /** Whole weeks first, then day by day; holidays passed on workdays are made up past the date reached. */
@@ -110,9 +100,9 @@ function workday(start: number, days: number, weekend: boolean[], holidays = EMP
     d += step
     if (!weekend[weekday(d)]) left--
   }
-  // after `start` up to `d`, or from `d` up to before `start`
-  let extra = step > 0 ? workdayHolidays(holidays, bound(holidays, start, false), d, true, weekend) : workdayHolidays(holidays, bound(holidays, d, true), start, false, weekend)
-  const holiday = (x: number) => { const i = bound(holidays, x, true); return i < holidays.length && holidays[i] === x }
+  // whole dates: after `start` up to `d`, or from `d` up to before `start`
+  let extra = step > 0 ? workdayHolidays(holidays, start + 1, d, weekend) : workdayHolidays(holidays, d, start - 1, weekend)
+  const holiday = (x: number) => holidays[lowerBound(holidays, x)] === x
   while (extra > 0) {
     d += step
     if (d < 0 || d > MAX_SERIAL) return E.NUM
