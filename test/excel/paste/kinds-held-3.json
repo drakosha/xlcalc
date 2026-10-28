@@ -1,0 +1,105 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 4.1
+ },
+ "books": {
+  "held": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "bold": true
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "C1": {
+       "note": {
+        "text": "alone"
+       }
+      },
+      "F1": {
+       "value": "f",
+       "note": {
+        "text": "own-f"
+       }
+      },
+      "G1": {
+       "value": "g",
+       "style": 1,
+       "note": {
+        "text": "own-g"
+       }
+      },
+      "H1": {
+       "value": "h",
+       "style": 1
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "all-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "all",
+   "skipBlanks": true
+  },
+  {
+   "id": "allExceptBorders-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "allExceptBorders",
+   "skipBlanks": true
+  },
+  {
+   "id": "notes-skip",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "F1"
+   },
+   "what": "notes",
+   "skipBlanks": true
+  }
+ ],
+ "sent": {
+  "all-skip": "5c8af2e69983fdb709f0e578cbe7850ca14af1472d48475e87a1ed9ebb3d2455",
+  "allExceptBorders-skip": "5c8af2e69983fdb709f0e578cbe7850ca14af1472d48475e87a1ed9ebb3d2455",
+  "notes-skip": "5c8af2e69983fdb709f0e578cbe7850ca14af1472d48475e87a1ed9ebb3d2455"
+ },
+ "answers": {
+  "all-skip": {},
+  "allExceptBorders-skip": {},
+  "notes-skip": {}
+ }
+}
