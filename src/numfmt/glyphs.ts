@@ -6,7 +6,7 @@
  * script may stand in any book, whatever locales are loaded. Characters not in the table count as a digit (a known
  * difference for other scripts).
  */
-import { advance } from './advances.js'
+import { ADVANCES, BESIDES, DIGIT_ADVANCE } from './advances.js'
 import { BLANK, FILL, PAD } from './style.js'
 export { columnPoints, widthOf } from '../column-width.js'
 
@@ -34,35 +34,69 @@ const CYRILLIC: [number, string][] = [
   [10, 'ШЩЮ'],
 ]
 
-const GLYPH = new Map<string, number>([...WIDTHS, ...CYRILLIC].flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
+/**
+ * Widths by character code, from lists of runs of equal width, up to the highest code they hold: the last run's for a
+ * character in two, `other` for a code with none. Read by its code, a character costs no string of its own.
+ */
+function byCode(lists: [number, string][][], other: number, Table: Uint8ArrayConstructor | Uint16ArrayConstructor): Uint8Array | Uint16Array {
+  const codes = lists.flat().map(([w, cs]): [number, number[]] => [w, [...cs].map((c) => c.charCodeAt(0))])
+  const table = new Table(Math.max(...codes.flatMap(([, cs]) => cs)) + 1).fill(other)
+  for (const [w, cs] of codes) for (const c of cs) table[c] = w
+  return table
+}
 
 /** The width of a digit, which a character not in the table takes too. */
 export const DIGIT = 6
 
-/** The width of one character. */
-export const glyph = (ch: string): number => GLYPH.get(ch) ?? DIGIT
+const GLYPH = /* @__PURE__ */ byCode([WIDTHS, CYRILLIC], DIGIT, Uint8Array)
 
-/** The width of a text. */
+const ADVANCE = /* @__PURE__ */ byCode([ADVANCES, BESIDES], DIGIT_ADVANCE, Uint16Array)
+
+/** The advance of the character of code point `c` in Carlito (`advances.ts`), in 1/2048 of the font's size. */
+const advanceOf = (c: number): number => (c < ADVANCE.length ? ADVANCE[c] : DIGIT_ADVANCE)
+
+/** The advance of one character, in 1/2048 of the font's size. */
+export const advance = (ch: string): number => (ch.length === 1 ? advanceOf(ch.charCodeAt(0)) : DIGIT_ADVANCE)
+
+/** The width of the character of code point `c`. */
+const glyphOf = (c: number): number => (c < GLYPH.length ? GLYPH[c] : DIGIT)
+
+/** The width of one character. */
+export const glyph = (ch: string): number => (ch.length === 1 ? glyphOf(ch.charCodeAt(0)) : DIGIT)
+
+/** The width of a text, a pair of surrogates one character. */
 export function textWidth(s: string): number {
   let w = 0
-  for (const ch of s) w += glyph(ch)
+  for (let i = 0; i < s.length; i++) {
+    const c = s.codePointAt(i)!
+    if (c > 0xffff) i++
+    w += glyphOf(c)
+  }
   return w
 }
 
 /** The room for text in a cell of `points`: the column less its padding. */
 export const room = (points: number): number => points - 5
 
+/** The codes of the marks of laid-out text, and of the digit a blank takes the room of. */
+const FILL_CODE = /* @__PURE__ */ FILL.charCodeAt(0)
+const PAD_CODE = /* @__PURE__ */ PAD.charCodeAt(0)
+const BLANK_CODE = /* @__PURE__ */ BLANK.charCodeAt(0)
+const ZERO_CODE = 0x30
+
 /**
  * The width of text laid out for AutoFit (`Style.layout`) by `width`, a character's: a fill takes no room, a padding `_x`
  * the room of `x`, a `?` with no digit a digit's room.
  */
-function laidOut(s: string, width: (ch: string) => number): number {
+function laidOut(s: string, width: (c: number) => number): number {
   let w = 0
-  let mark = ''
-  for (const ch of s) {
-    if (mark) w += mark === PAD ? width(ch) : 0
-    else if (ch !== FILL && ch !== PAD) w += width(ch === BLANK ? '0' : ch)
-    mark = !mark && (ch === FILL || ch === PAD) ? ch : ''
+  let mark = 0
+  for (let i = 0; i < s.length; i++) {
+    const c = s.codePointAt(i)!
+    if (c > 0xffff) i++
+    if (mark) w += mark === PAD_CODE ? width(c) : 0
+    else if (c !== FILL_CODE && c !== PAD_CODE) w += width(c === BLANK_CODE ? ZERO_CODE : c)
+    mark = !mark && (c === FILL_CODE || c === PAD_CODE) ? c : 0
   }
   return w
 }
@@ -78,10 +112,10 @@ const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
  */
 export function fitText(s: string): number {
   if (ASCII.test(s)) {
-    const w = laidOut(s, glyph)
+    const w = laidOut(s, glyphOf)
     return Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
   }
-  const u = laidOut(s, advance)
+  const u = laidOut(s, advanceOf)
   return Math.max(Math.floor((u * 11 + 1024) / 2048) + 7, Math.floor((u * 11 * 31) / (2048 * 30)) + 5)
 }
 

@@ -18,8 +18,41 @@ export const EPOCH_1904 = 1462
 /** The day 0 of a book's date system in the 1900 system: 0, or 1462 for 1904. */
 export const epochOf = (system: DateSystem | undefined) => (system === 1904 ? EPOCH_1904 : 0)
 
+/** The days from 1970-01-01 (day 0 of `Date`) to 1899-12-30, Excel's day 0 of real dates. */
+const UNIX_EPOCH = 25_569
+
+/**
+ * Days from 1970-01-01 to a date of the proleptic Gregorian calendar, `m` from 1 to 12 and `d` any whole number (`Date`'s
+ * MakeDay): Howard Hinnant's days_from_civil, as `Date` counts them, without making one.
+ */
+function fromCivil(y: number, m: number, d: number): number {
+  y -= m <= 2 ? 1 : 0
+  const era = Math.floor(y / 400)
+  const yoe = y - era * 400
+  const doy = Math.floor((153 * (m > 2 ? m - 3 : m + 9) + 2) / 5) + d - 1
+  return era * 146_097 + yoe * 365 + Math.floor(yoe / 4) - Math.floor(yoe / 100) + doy - 719_468
+}
+
+/** The proleptic Gregorian date of a day from 1970-01-01 (Hinnant's civil_from_days), as `Date`'s UTC getters give it. */
+function toCivil(days: number): { y: number; m: number; d: number } {
+  const z = days + 719_468
+  const era = Math.floor(z / 146_097)
+  const doe = z - era * 146_097
+  const yoe = Math.floor((doe - Math.floor(doe / 1460) + Math.floor(doe / 36_524) - Math.floor(doe / 146_096)) / 365)
+  const doy = doe - (365 * yoe + Math.floor(yoe / 4) - Math.floor(yoe / 100))
+  const mp = Math.floor((5 * doy + 2) / 153)
+  const m = mp < 10 ? mp + 3 : mp - 9
+  return { y: yoe + era * 400 + (m <= 2 ? 1 : 0), m, d: doy - Math.floor((153 * mp + 2) / 5) + 1 }
+}
+
 /** Days from 1899-12-30 to a date of the real calendar (month and day overflow roll over, as in `Date.UTC`). */
 export function utcDays(y: number, m: number, d: number): number {
+  // whole parts as `Date` takes them, by arithmetic where the date is well inside `Date`'s range (NaN and the far ones by `Date`)
+  if (Math.abs(y) <= 100_000 && Math.abs(m) <= 100_000 && Math.abs(d) <= 10_000_000) {
+    const mm = Math.trunc(m - 1)
+    const years = Math.floor(mm / 12)
+    return fromCivil(Math.trunc(y) + years, mm - years * 12 + 1, 1) + Math.trunc(d) - 1 + UNIX_EPOCH
+  }
   const t = new Date(0)
   t.setUTCFullYear(y, m - 1, d)
   return Math.round((t.getTime() - EPOCH_MS) / DAY_MS)
@@ -33,7 +66,10 @@ export const serialExcel = (y: number, m: number, d: number) => (y === 1900 && m
 
 export const isLeap = (y: number) => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0
 
-export const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1]
+/** The days of each month of a year that is not leap. */
+const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+export const daysInMonth = (y: number, m: number) => (m === 2 && isLeap(y) ? 29 : MONTH_DAYS[m - 1])
 
 /** The last day of a month in Excel's calendar, which has 1900-02-29. */
 export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
@@ -61,6 +97,8 @@ export function ymd(serial: number): { y: number; m: number; d: number } {
   const s = Math.floor(serial)
   if (s === 0) return { y: 1900, m: 1, d: 0 }
   if (s === 60) return { y: 1900, m: 2, d: 29 }
+  // by arithmetic well inside `Date`'s range, else (NaN, the far ones) by `Date`
+  if (Math.abs(s) < 90_000_000) return toCivil((s < 61 ? s + 1 : s) - UNIX_EPOCH)
   const t = new Date(serialToUtcMs(s))
   return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() }
 }
