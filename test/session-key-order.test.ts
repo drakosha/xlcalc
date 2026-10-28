@@ -37,8 +37,10 @@ describe.each(CASES)('%s', (_, book, op) => {
     const all: Awaited<ReturnType<typeof state>>[][] = []
     for (const kind of KINDS) {
       const s = await (await opener(kind))(structuredClone(book), { clock })
-      const steps = [await state(s, (await s.editStructure(op)).changes)]
-      steps.push(await state(s, (await s.undo()).changes), await state(s, (await s.redo()).changes))
+      const r = await s.editStructure(op)
+      if (!r.ok) throw new Error(r.message)
+      const steps = [await state(s, r.changes)]
+      steps.push(await state(s, (await s.undo())!.changes), await state(s, (await s.redo())!.changes))
       all.push(steps)
     }
     for (const steps of all.slice(1)) expect(steps).toEqual(all[0])
