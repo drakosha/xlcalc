@@ -21,6 +21,7 @@ import { rulesOf } from './locale/rules.js'
 import { markingClock } from './locale/rules/data.js'
 import { addressOrder, bookScalar, formatAddress, MAX_COLS, parseAddress, placeOf } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
+import { NestedMarks } from './nested-marks.js'
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
 import { AreaIndex } from './area-index.js'
@@ -145,7 +146,7 @@ export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
 /** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
 function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
   let marks = ctx.nested.get(s)
-  if (!marks) ctx.nested.set(s, (marks = new Set()))
+  if (!marks) ctx.nested.set(s, (marks = new NestedMarks()))
   if (on) marks.add(r * MAX_COLS + c)
   else marks.delete(r * MAX_COLS + c)
 }

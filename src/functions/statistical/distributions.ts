@@ -17,7 +17,7 @@ export const MAX_COUNT = 2147483647
 function normDist(x: number, m: number, sd: number, cumulative: boolean): V {
   if (sd <= 0) return E.NUM
   const z = (x - m) / sd
-  if (cumulative) return normCdf(z)[0]
+  if (cumulative) return normCdf(z)
   return Number.isFinite(z * z) ? normPdf(z) / sd : E.NUM
 }
 
@@ -209,7 +209,7 @@ export const functions: Record<string, FnDef> = {
   'GAMMA.DIST': { args: 'n n n b', fn: gammaDist },
   GAMMALN,
   'GAMMALN.PRECISE': GAMMALN,
-  GAUSS: { args: 'n', fn: (z: number) => normCdf(z)[0] - 0.5 },
+  GAUSS: { args: 'n', fn: (z: number) => normCdf(z) - 0.5 },
   'HYPGEOM.DIST': { args: 'i i i i b', fn: hypgeomDist },
   'LOGNORM.DIST': { args: 'n n n b', fn: lognormDist },
   'NEGBINOM.DIST': { args: 'i i n b', fn: negbinomDist },
