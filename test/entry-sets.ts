@@ -8,8 +8,7 @@
 import { expect } from 'vitest'
 import type { StoredEntry } from '../bench/coverage/entry.js'
 import type { EntryCase, EntrySet } from '../bench/coverage/entry/cases.js'
-import { entryDifferences } from '../bench/coverage/entry/compare.js'
-import { parseEntry } from '../src/index.js'
+import { engineEntry, entryDifferences } from '../bench/coverage/entry/compare.js'
 import { ENTRY_REASONS, type EntryReason } from './entry-known.js'
 import { localeSets } from './stored-sets.js'
 import './locales.js'
@@ -24,19 +23,20 @@ export function entrySets(root: '' | 'win/'): EntrySetFile[] {
   return localeSets<StoredEntry>(`${root}entry`).map((r) => ({ name: r.set, tag: r.tag, ...r.stored }))
 }
 
-const generators = new Map<string, Promise<EntryCase[]>>()
+const generators = new Map<string, Promise<EntrySet>>()
 
-/** A set's current cases, by its generator. */
-const current = (name: string) => {
+/** A set's generator. */
+const generator = (name: string) => {
   let g = generators.get(name)
-  if (!g) generators.set(name, (g = (import(`../bench/coverage/entry/${name}.ts`) as Promise<EntrySet>).then((m) => m.buildEntryCases())))
+  if (!g) generators.set(name, (g = import(`../bench/coverage/entry/${name}.ts`) as Promise<EntrySet>))
   return g
 }
 
 /** One stored case against `parseEntry`: Excel's answer, or a difference where `known` names a reason. */
 export async function checkCase(set: EntrySetFile, c: EntryCase, known: (key: string) => EntryReason | undefined): Promise<void> {
-  expect((await current(set.name)).find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
-  const got = parseEntry(c.text, { locale: set.tag, now: String(set.meta.date), ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
+  const mod = await generator(set.name)
+  expect(mod.buildEntryCases().find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
+  const got = engineEntry(c, set.tag, String(set.meta.date), mod.data)
   const want = set.answers[c.id]
   if (want.value2 !== undefined && typeof want.cell?.value === 'number') expect(want.value2, "the object model's value is the number the file holds").toBe(want.cell.value)
   const diff = entryDifferences(got, want, set.tag, c.text)

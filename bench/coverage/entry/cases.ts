@@ -5,7 +5,7 @@
  * it (the value or formula and the format, read from the saved file), what it shows and its format codes. Formulas typed
  * read the data in column C, never column A.
  */
-import type { BookInput, CellInput, CellValue, NumberFormat } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellValue, NameInput, NumberFormat, SheetInput } from '../../../src/contract.js'
 import type { StoredCell } from '../stored.js'
 import { groupCollector } from '../collect.js'
 
@@ -49,6 +49,15 @@ export interface EntrySet {
   keys?: boolean
   /** Each cell's `Formula` and `FormulaLocal` are read too, for `entryText`. */
   edit?: boolean
+  /** The data the formulas read in place of `DATA`: the cells of `S` beside the cases', the sheets after it, the names. */
+  data?: EntryData
+}
+
+/** A set's data: cells of the sheet `S` outside column A, more sheets, defined names. */
+export interface EntryData {
+  cells: Record<string, CellInput>
+  sheets?: SheetInput[]
+  names?: NameInput[]
 }
 
 /** The text of the formula bar from its description (`Formula Bar. A,1 1/31/2025`, in the interface's language). */
@@ -57,13 +66,13 @@ export const formulaBar = (bar: string): string => bar.replace(/^[^.]*\. [A-Z]{1
 /** The data the typed formulas read: a number and a date with the short date format. */
 export const DATA: Readonly<Record<string, CellInput>> = { C1: { value: 2 }, C2: { value: 46096, numberFormat: 14 } }
 
-/** The book of a part: the cases' cells in A1 down with their formats, and the data. */
-export function entryBook(cases: EntryCase[]): BookInput {
-  const cells: Record<string, CellInput> = { ...DATA }
+/** The book of a part: the cases' cells in A1 down with their formats, and the data (the set's, else `DATA`). */
+export function entryBook(cases: EntryCase[], data: EntryData = { cells: DATA }): BookInput {
+  const cells: Record<string, CellInput> = { ...data.cells }
   cases.forEach((c, i) => {
     if (c.format !== undefined) cells[`A${i + 1}`] = { numberFormat: c.format }
   })
-  return { sheets: [{ name: 'S', cells }] }
+  return { sheets: [{ name: 'S', cells }, ...(data.sheets ?? [])], ...(data.names ? { names: data.names } : {}) }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */
