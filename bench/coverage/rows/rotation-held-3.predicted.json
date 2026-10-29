@@ -1,0 +1,289 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "format-1": {
+    "before": 15,
+    "height": 27,
+    "cells": {
+     "0": {
+      "formula": "0",
+      "wrap": false
+     }
+    }
+   },
+   "format-2": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "0",
+      "wrap": false
+     }
+    }
+   },
+   "format-3": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-4": {
+    "before": 15,
+    "height": 37,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-5": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-6": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-7": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-8": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-9": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "0.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-10": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "0.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-11": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "12",
+      "wrap": false
+     }
+    }
+   },
+   "format-12": {
+    "before": 15,
+    "height": 35,
+    "cells": {
+     "0": {
+      "formula": "12",
+      "wrap": false
+     }
+    }
+   },
+   "format-13": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-14": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "format-1": {
+    "before": 15,
+    "height": 27,
+    "cells": {
+     "0": {
+      "formula": "0",
+      "wrap": false
+     }
+    }
+   },
+   "format-2": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "0",
+      "wrap": false
+     }
+    }
+   },
+   "format-3": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-4": {
+    "before": 15,
+    "height": 37,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-5": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-6": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-7": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-8": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "5",
+      "wrap": false
+     }
+    }
+   },
+   "format-9": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "0.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-10": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "0.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-11": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "12",
+      "wrap": false
+     }
+    }
+   },
+   "format-12": {
+    "before": 15,
+    "height": 35,
+    "cells": {
+     "0": {
+      "formula": "12",
+      "wrap": false
+     }
+    }
+   },
+   "format-13": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   },
+   "format-14": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "-3",
+      "wrap": false
+     }
+    }
+   }
+  }
+ }
+}

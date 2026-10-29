@@ -146,7 +146,7 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
 /** Styles that lay text out for AutoFit, by the style they lay out. */
 const LAID = new WeakMap<Style, Style>()
 
-/** What AutoFit lays out of a cell (`fitLaid`): its text, and its kind, a number in General, another number but a date or time, or other. */
+/** What AutoFit lays out of a cell (`fitLaid`): its text, and its kind, a number in General, another number but a date, a time or a section of text alone, or other. */
 export interface Laid {
   text: string
   kind: 'general' | 'number' | 'other'
@@ -171,7 +171,8 @@ export function fitLaid(value: CellValue, format: NumberFormat | undefined, styl
   } else {
     const chosen = byFormat(value, secs, laid)
     if (chosen.general !== undefined) return { text: (chosen.general < 0 ? '-' : '') + style.general(Math.abs(chosen.general)), kind: 'general' }
-    if (chosen.text) return { text: chosen.text, kind: chosen.sec && kind(chosen.sec.toks) === 'date' ? 'other' : 'number' }
+    // a section of a date or of text alone shows no number (`test/excel/rows/rotation-held-2.json`)
+    if (chosen.text) return { text: chosen.text, kind: chosen.sec && /^(date|literal)$/.test(kind(chosen.sec.toks)) ? 'other' : 'number' }
   }
   return text ? { text, kind: 'other' } : null
 }
