@@ -85,15 +85,14 @@ export function stepInEngine(s: Session, step: FilterStep): void {
   else s.undo()
 }
 
-/** The engine's answer to a case: its AutoFilter's range after each step and at the end. */
+/** The engine's answer to a case: the range its AutoFilter acts on after each step (`getAutoFilterRange`), and its own range at the end, which a file saves. */
 export function filterInEngine(c: FilterCase): FilterAnswer {
   const s = createSession(filterBook(c))
-  const range = () => s.getLayout().sheets[0].autoFilter?.range ?? ''
   const after = c.steps.map((step) => {
     stepInEngine(s, step)
-    return range()
+    return s.getAutoFilterRange('S') ?? ''
   })
-  const saved = range() || null
+  const saved = s.getLayout().sheets[0].autoFilter?.range ?? null
   s.close()
   return { after, saved }
 }
