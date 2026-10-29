@@ -28,8 +28,8 @@ interface Functions {
   down: boolean
 }
 
-/** A function's label: a built-in function's name, a LAMBDA's own word. */
-const labelOf = (f: Lambda): V => f.name ?? 'LAMBDA'
+/** A function's label: a built-in function's name, a LAMBDA's `CUSTOM`, as Excel writes them. */
+const labelOf = (f: Lambda): V => f.name ?? 'CUSTOM'
 
 /** The function argument: a function, or an array of functions in a row or a column; a second row or column labels them. */
 function functionsOf(x: Arg): Functions | CErr {
@@ -78,7 +78,10 @@ interface AxisOptions {
   sort: { at: number; desc: boolean }[]
 }
 
-/** The groups of the rows by the fields' values, nested field by field; the first value of a group spells its key. */
+/**
+ * The groups of the rows by the fields' values, nested field by field, in the order of `rows`: the first row of a group
+ * there spells its key; a group's rows stay in the data's order, as the function gets them.
+ */
 function groups(fields: Grid, start: number, rows: readonly number[], depth: number, k: number): Group[] {
   const out: Group[] = []
   const byKey = new Map<V, Group>()
@@ -92,38 +95,15 @@ function groups(fields: Grid, start: number, rows: readonly number[], depth: num
     }
     g.rows.push(r)
   }
-  if (depth + 1 < k)
-    for (const g of out) g.children = groups(fields, start, g.rows, depth + 1, k).map((c) => ({ ...c, keys: [...g.keys, ...c.keys] }))
+  for (const g of out) {
+    if (depth + 1 < k) g.children = groups(fields, start, g.rows, depth + 1, k).map((c) => ({ ...c, keys: [...g.keys, ...c.keys] }))
+    g.rows.sort((x, y) => x - y)
+  }
   return out
 }
 
-/**
- * The table relationship: each distinct row of the fields' values a group, all at one level; a field's value is spelled
- * as its first row spells it (`West` and `west` as one, whatever the other fields).
- */
-function flatGroups(fields: Grid, start: number, rows: readonly number[], k: number): Group[] {
-  const out: Group[] = []
-  const byKey = new Map<string, Group>()
-  const spelled = Array.from({ length: k }, () => new Map<V, V>())
-  const spell = (c: number, v: V) => {
-    const key = valueKey(v)
-    const own = spelled[c].get(key)
-    if (own !== undefined) return own
-    spelled[c].set(key, v)
-    return v
-  }
-  for (const r of rows) {
-    const keys = Array.from({ length: k }, (_, c) => spell(c, gridAt(fields, (start + r) * fields.cols + c)))
-    const key = keys.map((v) => String(valueKey(v))).join('\u0000')
-    let g = byKey.get(key)
-    if (!g) {
-      byKey.set(key, (g = { keys, rows: [], children: [] }))
-      out.push(g)
-    }
-    g.rows.push(r)
-  }
-  return out
-}
+/** The groups of the last field under `list`, at one level (the table relationship). */
+const leaves = (list: Group[]): Group[] => list.flatMap((g) => (g.children.length ? leaves(g.children) : [g]))
 
 /**
  * The lines of an axis, its groups sorted: by the sort keys at each level (a field's own value at its level, a measured
@@ -132,17 +112,19 @@ function flatGroups(fields: Grid, start: number, rows: readonly number[], k: num
  */
 function lines(fields: Grid, start: number, rows: readonly number[], k: number, o: AxisOptions, measure: (rows: number[], col: number) => V, cx: Cx): Line[] {
   const compare = cx.rules.compare
-  // the rows in the order of their fields first: a group's first row there spells its key (`West` and `west` show as
-  // the one that sorts first with the fields after it), and its values go to the function in that order
+  // the rows in the order of their fields, as sorted (ascending where the sort leaves a field): a group's first row there
+  // spells its key (`West` and `west` show as the one that sorts first)
   const field = (r: number, c: number) => gridAt(fields, (start + r) * fields.cols + c)
+  const byFields = [...o.sort.filter((x) => x.at < k), ...Array.from({ length: k }, (_, at) => ({ at, desc: false }))]
   const inOrder = [...rows].sort((a, b) => {
-    for (let c = 0; c < k; c++) {
-      const d = sortOrder(field(a, c), field(b, c), false, compare, true)
+    for (const { at, desc } of byFields) {
+      const d = sortOrder(field(a, at), field(b, at), desc, compare, true)
       if (d) return d
     }
     return a - b
   })
-  const top = o.table ? flatGroups(fields, start, inOrder, k) : groups(fields, start, inOrder, 0, k)
+  const nested = groups(fields, start, inOrder, 0, k)
+  const top = o.table ? leaves(nested) : nested
   const order = (list: Group[], level: number): Group[] => {
     const keys = [...o.sort.filter((s) => s.at >= k || o.table || s.at === level), ...Array.from({ length: k }, (_, i) => ({ at: i, desc: false }))]
     const measured = new Map<Group, V[]>()
@@ -178,7 +160,7 @@ function lines(fields: Grid, start: number, rows: readonly number[], k: number, 
       if (subtotal && !atTop) out.push(sub)
     }
   }
-  const all = inOrder
+  const all = [...rows]
   const total: Line = { kind: 'total', keys: [subs > 0 ? GRAND : TOTAL, ...new Array<V>(k - 1).fill(EMPTY_CELL)], rows: all, parent: all }
   if (o.depth && atTop) out.push(total)
   visit(top, 0, all)
@@ -187,18 +169,26 @@ function lines(fields: Grid, start: number, rows: readonly number[], k: number, 
 }
 
 /**
- * The headers of the fields' data: whether its first row is headers, and whether the summary shows them. Left out, the
- * documentation has headers found where the first value is text above a number; Excel for Mac 16.114 answers #VALUE!
- * there (the set `groupby`), and takes the data as having none elsewhere.
+ * The headers of the fields' data: whether its first row is headers, and whether the summary shows them. Left out, as
+ * Excel for Mac 16.114 answered the sets `groupby` and `groupby-held`: where the first row field and the first value are
+ * text, the first row is headers, not shown, if every value under it is a number or blank, and the call is #VALUE!
+ * otherwise; elsewhere there are none.
  */
-function headersOf(mode: number | undefined, values: Grid): { has: boolean; show: boolean } | CErr {
-  if (mode === undefined) return typeof gridAt(values, 0) === 'string' && typeof gridAt(values, values.cols) === 'number' ? E.VALUE : { has: false, show: false }
+function headersOf(mode: number | undefined, fields: Grid, values: Grid): { has: boolean; show: boolean } | CErr {
+  if (mode === undefined) {
+    if (typeof gridAt(fields, 0) !== 'string' || typeof gridAt(values, 0) !== 'string') return { has: false, show: false }
+    for (let i = values.cols; i < values.rows * values.cols; i++) {
+      const v = gridAt(values, i)
+      if (v !== null && typeof v !== 'number') return E.VALUE
+    }
+    return { has: true, show: false }
+  }
   if (mode === 0 || mode === 1 || mode === 2 || mode === 3) return { has: mode === 1 || mode === 3, show: mode >= 2 }
   return E.VALUE
 }
 
-/** A whole-number option from its argument (undefined for one not given); a number not whole is truncated. */
-const option = (n: number | undefined) => (n === undefined ? undefined : Math.trunc(n))
+/** A whole-number option from its argument (undefined for one not given); one not whole is NaN, which no option takes (#VALUE!). */
+const option = (n: number | undefined) => (n === undefined ? undefined : Number.isInteger(n) ? n : NaN)
 
 /**
  * The sort keys of a sort order: 1-based column numbers, negative descending; 0 or past the columns #VALUE!, and so are
@@ -278,7 +268,7 @@ const fieldHeaders = (fields: Grid, has: boolean, word: string): V[] => Array.fr
 /** The depth of totals: left out, the grand total alone (Excel for Mac, the set `groupby`); past the fields' levels #VALUE!. */
 function depthOf(n: number | undefined, levels: number, table: boolean): number | CErr {
   const d = n ?? 1
-  if (Math.abs(d) > levels || (table && Math.abs(d) > 1)) return E.VALUE
+  if (Number.isNaN(d) || Math.abs(d) > levels || (table && Math.abs(d) > 1)) return E.VALUE
   return d
 }
 
@@ -298,7 +288,7 @@ function groupby(cx: Cx, rowFields: Grid, values: Grid, fn: Arg, fieldHeadersMod
   const rel = option(relationship) ?? 0
   if (rel !== 0 && rel !== 1) return E.VALUE
   const table = rel === 1 && k > 1
-  const heads = headersOf(option(fieldHeadersMode), values)
+  const heads = headersOf(option(fieldHeadersMode), rowFields, values)
   if (isErr(heads)) return heads
   const start = heads.has ? 1 : 0
   const depth = depthOf(option(totalDepth), k, table)
@@ -342,11 +332,11 @@ function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg
   const n = rowFields.rows
   if (values.rows !== n || colFields.rows !== n) return E.VALUE
   const [k, j] = [rowFields.cols, colFields.cols]
-  const heads = headersOf(option(fieldHeadersMode), values)
+  const heads = headersOf(option(fieldHeadersMode), rowFields, values)
   if (isErr(heads)) return heads
   const start = heads.has ? 1 : 0
   const rel = option(relativeTo) ?? 0
-  if (rel < 0 || rel > 4) return E.VALUE
+  if (!(rel >= 0 && rel <= 4)) return E.VALUE
   const [rd, cd] = [depthOf(option(rowDepth), k, false), depthOf(option(colDepth), j, false)]
   if (isErr(rd)) return rd
   if (isErr(cd)) return cd
@@ -361,33 +351,37 @@ function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg
   return summary(() => {
     const rowLines = lines(rowFields, start, rows, k, { depth: rd, table: false, sort: rs }, (r, c) => agg(r, c, rows), cx)
     const colLines = lines(colFields, start, rows, j, { depth: cd, table: false, sort: cs }, (r, c) => agg(r, c, rows), cx)
-    const { headers, labels } = measuredLabels(values, heads.has, fns, true)
-    const corner = new Array<V>(k).fill(EMPTY_CELL)
-    const across = (cell: (c: Line, i: number) => V) => colLines.flatMap((c) => Array.from({ length: measuredCols }, (_, i) => cell(c, i)))
+    const { headers, labels } = measuredLabels(values, heads.has, fns, !fns.down)
+    // a column of functions repeats each row line for each function, its label beside the row fields
+    const [per, side] = fns.down ? [m, 1] : [measuredCols, 0]
+    const corner = new Array<V>(k + side).fill(EMPTY_CELL)
+    const across = (cell: (c: Line, i: number) => V) => colLines.flatMap((c) => Array.from({ length: per }, (_, i) => cell(c, i)))
     const out: V[][] = []
+    // the column fields' headers in one, as text joined by commas
     if (heads.show) {
-      const names = fieldHeaders(colFields, heads.has, 'Column Field')
-      for (let level = 0; level < j; level++) out.push([...corner, ...across((c, i) => (c === colLines[0] && i === 0 ? names[level] : EMPTY_CELL))])
+      const names = fieldHeaders(colFields, heads.has, 'Column Field').map((v) => cx.rules.toText(v)).join(', ')
+      out.push([...corner, ...across((c, i) => (c === colLines[0] && i === 0 ? names : EMPTY_CELL))])
     }
     for (let level = 0; level < j; level++) out.push([...corner, ...across((c) => c.keys[level])])
-    if (fns.fns.length > 1) out.push([...corner, ...across((_, i) => labels[i])])
-    if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...across((_, i) => headers[i])])
+    if (!fns.down && fns.fns.length > 1) out.push([...corner, ...across((_, i) => labels[i])])
+    if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...new Array<V>(side).fill(EMPTY_CELL), ...across((_, i) => headers[i])])
     const sets = new Map<Line, Set<number>>()
     const setOf = (l: Line) => {
       let x = sets.get(l)
       if (!x) sets.set(l, (x = new Set(l.rows)))
       return x
     }
-    for (const r of rowLines) {
-      const cells = across((c, i) => {
-        if (m > 1 && c.kind !== 'item') return EMPTY_CELL
-        const here = meet(r.rows, setOf(c))
-        // the total a function of two parameters is relative to: the column's, the row's, the grand, a parent's
-        const total = rel === 0 ? c.rows : rel === 1 ? r.rows : rel === 2 ? rows : rel === 3 ? meet(r.rows, new Set(c.parent)) : meet(c.rows, new Set(r.parent))
-        return here.length ? agg(here, i, total) : EMPTY_CELL
-      })
-      out.push([...r.keys, ...cells])
-    }
+    for (const r of rowLines)
+      for (let f = 0; f < (fns.down ? fns.fns.length : 1); f++) {
+        const cells = across((c, i) => {
+          if (m > 1 && c.kind !== 'item') return EMPTY_CELL
+          const here = meet(r.rows, setOf(c))
+          // the total a function of two parameters is relative to: the column's, the row's, the grand, a parent's
+          const total = rel === 0 ? c.rows : rel === 1 ? r.rows : rel === 2 ? rows : rel === 3 ? meet(r.rows, new Set(c.parent)) : meet(c.rows, new Set(r.parent))
+          return here.length ? agg(here, f * m + i, total) : EMPTY_CELL
+        })
+        out.push([...r.keys, ...(fns.down ? [fns.labels[f]] : []), ...cells])
+      }
     return rowsArray(out)
   })
 }
