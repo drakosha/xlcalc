@@ -17,8 +17,9 @@ import { valueKey } from './order.js'
 /** The labels of the grand total, as Excel writes them: with subtotals beside it, and alone. */
 const GRAND = 'Grand Total'
 const TOTAL = 'Total'
-/** An empty cell of the summary. */
+/** An empty cell of the summary, `n` of them. */
 const EMPTY_CELL = ''
+const blanks = (n: number): V[] => new Array<V>(n).fill(EMPTY_CELL)
 
 /** The functions to aggregate with: one, or a row or a column of them, and their labels. */
 interface Functions {
@@ -111,40 +112,33 @@ const leaves = (list: Group[]): Group[] => list.flatMap((g) => (g.children.lengt
  * the depth takes after (or before) their groups, the grand total last (or first).
  */
 function lines(fields: Grid, start: number, rows: readonly number[], k: number, o: AxisOptions, measure: (rows: number[], col: number) => V, cx: Cx): Line[] {
-  const compare = cx.rules.compare
+  // the order of two items by the keys, each item's key by `value`, ties in the items' order (`i`)
+  const ordered = <T>(keys: AxisOptions['sort'], value: (x: T, at: number) => V | undefined) => (x: { x: T; i: number }, y: { x: T; i: number }) => {
+    for (const { at, desc } of keys) {
+      const [a, b] = [value(x.x, at), value(y.x, at)]
+      const c = a === undefined || b === undefined ? 0 : sortOrder(a, b, desc, cx.rules.compare, true)
+      if (c) return c
+    }
+    return x.i - y.i
+  }
+  const sorted = <T>(list: readonly T[], compare: ReturnType<typeof ordered<T>>) => list.map((x, i) => ({ x, i })).sort(compare).map((e) => e.x)
+  const ascending = Array.from({ length: k }, (_, at) => ({ at, desc: false }))
   // the rows in the order of their fields, as sorted (ascending where the sort leaves a field): a group's first row there
   // spells its key (`West` and `west` show as the one that sorts first)
-  const field = (r: number, c: number) => gridAt(fields, (start + r) * fields.cols + c)
-  const byFields = [...o.sort.filter((x) => x.at < k), ...Array.from({ length: k }, (_, at) => ({ at, desc: false }))]
-  const inOrder = [...rows].sort((a, b) => {
-    for (const { at, desc } of byFields) {
-      const d = sortOrder(field(a, at), field(b, at), desc, compare, true)
-      if (d) return d
-    }
-    return a - b
-  })
+  const inOrder = sorted(rows, ordered([...o.sort.filter((x) => x.at < k), ...ascending], (r: number, c) => gridAt(fields, (start + r) * fields.cols + c)))
   const nested = groups(fields, start, inOrder, 0, k)
   const top = o.table ? leaves(nested) : nested
+  // a level's groups by the sort keys: a field's own value there (any field's in the table relationship), a measured
+  // column's of the group's rows
   const order = (list: Group[], level: number): Group[] => {
-    const keys = [...o.sort.filter((s) => s.at >= k || o.table || s.at === level), ...Array.from({ length: k }, (_, i) => ({ at: i, desc: false }))]
     const measured = new Map<Group, V[]>()
-    const at = (g: Group, s: { at: number }) => {
-      if (s.at < k) return o.table ? g.keys[s.at] : g.keys[level]
+    const value = (g: Group, at: number) => {
+      if (at < k) return o.table || at === level ? g.keys[at] : undefined
       let m = measured.get(g)
       if (!m) measured.set(g, (m = []))
-      return (m[s.at] ??= measure(g.rows, s.at - k))
+      return (m[at] ??= measure(g.rows, at - k))
     }
-    return list
-      .map((g, i) => ({ g, i }))
-      .sort((x, y) => {
-        for (const s of keys) {
-          if (!o.table && s.at < k && s.at !== level) continue
-          const c = sortOrder(at(x.g, s), at(y.g, s), s.desc, compare, true)
-          if (c) return c
-        }
-        return x.i - y.i
-      })
-      .map((x) => x.g)
+    return sorted(list, ordered([...o.sort, ...ascending], value))
   }
   const subs = Math.abs(o.depth) - 1
   const atTop = o.depth < 0
@@ -152,7 +146,7 @@ function lines(fields: Grid, start: number, rows: readonly number[], k: number, 
   const visit = (list: Group[], level: number, parent: number[]) => {
     for (const g of order(list, level)) {
       const leaf = o.table || level === k - 1
-      const sub: Line = { kind: 'sub', keys: [...g.keys, ...new Array<V>(k - g.keys.length).fill(EMPTY_CELL)], rows: g.rows, parent }
+      const sub: Line = { kind: 'sub', keys: [...g.keys, ...blanks(k - g.keys.length)], rows: g.rows, parent }
       const subtotal = !leaf && level < subs
       if (subtotal && atTop) out.push(sub)
       if (leaf) out.push({ kind: 'item', keys: g.keys, rows: g.rows, parent })
@@ -161,7 +155,7 @@ function lines(fields: Grid, start: number, rows: readonly number[], k: number, 
     }
   }
   const all = [...rows]
-  const total: Line = { kind: 'total', keys: [subs > 0 ? GRAND : TOTAL, ...new Array<V>(k - 1).fill(EMPTY_CELL)], rows: all, parent: all }
+  const total: Line = { kind: 'total', keys: [subs > 0 ? GRAND : TOTAL, ...blanks(k - 1)], rows: all, parent: all }
   if (o.depth && atTop) out.push(total)
   visit(top, 0, all)
   if (o.depth && !atTop) out.push(total)
@@ -281,39 +275,54 @@ function rowsArray(out: V[][]): Arr {
   return arr(out.length, cols, out.flat())
 }
 
-function groupby(cx: Cx, rowFields: Grid, values: Grid, fn: Arg, fieldHeadersMode?: number, totalDepth?: number, sortOrderGrid?: Grid, filterGrid?: Grid, relationship?: number): Arg {
+/** What GROUPBY and PIVOTBY read alike: the functions, the fields' headers, the data rows kept and the aggregation. */
+interface Summary {
+  fns: Functions
+  heads: { has: boolean; show: boolean }
+  start: number
+  rows: number[]
+  m: number
+  measuredCols: number
+  agg: ReturnType<typeof aggregator>
+}
+
+function summaryOf(cx: Cx, fields: Grid[], values: Grid, fn: Arg, mode: number | undefined, filter: Grid | undefined): Summary | CErr {
   const fns = functionsOf(fn)
   if (isErr(fns)) return fns
-  const n = rowFields.rows
-  if (values.rows !== n) return E.VALUE
-  const k = rowFields.cols
-  const rel = option(relationship) ?? 0
-  if (rel !== 0 && rel !== 1) return E.VALUE
-  const table = rel === 1 && k > 1
-  const heads = headersOf(option(fieldHeadersMode), rowFields, values)
+  const n = values.rows
+  if (fields.some((f) => f.rows !== n)) return E.VALUE
+  const heads = headersOf(option(mode), fields[0], values)
   if (isErr(heads)) return heads
   const start = heads.has ? 1 : 0
-  const depth = depthOf(option(totalDepth), k, table)
-  if (isErr(depth)) return depth
-  const m = values.cols
-  const measuredCols = m * fns.fns.length
-  const sort = sortKeys(sortOrderGrid, k + measuredCols, k)
-  if (isErr(sort)) return sort
-  const rows = kept(filterGrid, n, start)
+  const rows = kept(filter, n, start)
   if (isErr(rows)) return rows
-  const agg = aggregator(cx, values, start, fns)
+  return { fns, heads, start, rows, m: values.cols, measuredCols: values.cols * fns.fns.length, agg: aggregator(cx, values, start, fns) }
+}
+
+function groupby(cx: Cx, rowFields: Grid, values: Grid, fn: Arg, fieldHeadersMode?: number, totalDepth?: number, sortOrderGrid?: Grid, filterGrid?: Grid, relationship?: number): Arg {
+  const k = rowFields.cols
+  const rel = option(relationship) ?? 0
+  const table = rel === 1 && k > 1
+  const depth = depthOf(option(totalDepth), k, table)
+  const sm = summaryOf(cx, [rowFields], values, fn, fieldHeadersMode, filterGrid)
+  if (isErr(sm)) return sm
+  const { fns, heads, start, rows, m, measuredCols, agg } = sm
+  const sort = sortKeys(sortOrderGrid, k + measuredCols, k)
+  if (rel !== 0 && rel !== 1) return E.VALUE
+  if (isErr(depth)) return depth
+  if (isErr(sort)) return sort
   return summary(() => {
     const axis = lines(rowFields, start, rows, k, { depth, table, sort }, (r, c) => agg(r, c, rows), cx)
     const out: V[][] = []
     const { headers, labels } = measuredLabels(values, heads.has, fns, !fns.down)
-    const fieldsRow = heads.show ? fieldHeaders(rowFields, heads.has, 'Row Field') : new Array<V>(k).fill(EMPTY_CELL)
+    const fieldsRow = heads.show ? fieldHeaders(rowFields, heads.has, 'Row Field') : blanks(k)
     if (fns.down) {
       // a column of functions: a line for each function, its label beside the fields
       if (heads.show) out.push([...fieldsRow, EMPTY_CELL, ...headers])
       for (const line of axis) fns.fns.forEach((_, f) => out.push([...line.keys, fns.labels[f], ...Array.from({ length: m }, (_, c) => agg(line.rows, f * m + c, rows))]))
       return rowsArray(out)
     }
-    if (fns.fns.length > 1) out.push([...new Array<V>(k).fill(EMPTY_CELL), ...labels])
+    if (fns.fns.length > 1) out.push([...blanks(k), ...labels])
     if (heads.show) out.push([...fieldsRow, ...headers])
     for (const line of axis) out.push([...line.keys, ...Array.from({ length: measuredCols }, (_, c) => agg(line.rows, c, rows))])
     return rowsArray(out)
@@ -329,34 +338,25 @@ const meet = (a: readonly number[], b: ReadonlySet<number>) => a.filter((r) => b
  * values' own. With several value columns the total columns stay empty, as Excel for Mac leaves them (the set `groupby`).
  */
 function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg, fieldHeadersMode?: number, rowDepth?: number, rowSort?: Grid, colDepth?: number, colSort?: Grid, filterGrid?: Grid, relativeTo?: number): Arg {
-  const fns = functionsOf(fn)
-  if (isErr(fns)) return fns
-  const n = rowFields.rows
-  if (values.rows !== n || colFields.rows !== n) return E.VALUE
   const [k, j] = [rowFields.cols, colFields.cols]
-  const heads = headersOf(option(fieldHeadersMode), rowFields, values)
-  if (isErr(heads)) return heads
-  const start = heads.has ? 1 : 0
+  const sm = summaryOf(cx, [rowFields, colFields], values, fn, fieldHeadersMode, filterGrid)
+  if (isErr(sm)) return sm
+  const { fns, heads, start, rows, m, measuredCols, agg } = sm
   const rel = option(relativeTo) ?? 0
-  if (!(rel >= 0 && rel <= 4)) return E.VALUE
   const [rd, cd] = [depthOf(option(rowDepth), k, false), depthOf(option(colDepth), j, false)]
+  const [rs, cs] = [sortKeys(rowSort, k + measuredCols, k), sortKeys(colSort, j + measuredCols, j)]
+  if (!(rel >= 0 && rel <= 4)) return E.VALUE
   if (isErr(rd)) return rd
   if (isErr(cd)) return cd
-  const m = values.cols
-  const measuredCols = m * fns.fns.length
-  const [rs, cs] = [sortKeys(rowSort, k + measuredCols, k), sortKeys(colSort, j + measuredCols, j)]
   if (isErr(rs)) return rs
   if (isErr(cs)) return cs
-  const rows = kept(filterGrid, n, start)
-  if (isErr(rows)) return rows
-  const agg = aggregator(cx, values, start, fns)
   return summary(() => {
     const rowLines = lines(rowFields, start, rows, k, { depth: rd, table: false, sort: rs }, (r, c) => agg(r, c, rows), cx)
     const colLines = lines(colFields, start, rows, j, { depth: cd, table: false, sort: cs }, (r, c) => agg(r, c, rows), cx)
     const { headers, labels } = measuredLabels(values, heads.has, fns, !fns.down)
     // a column of functions repeats each row line for each function, its label beside the row fields
     const [per, side] = fns.down ? [m, 1] : [measuredCols, 0]
-    const corner = new Array<V>(k + side).fill(EMPTY_CELL)
+    const corner = blanks(k + side)
     const across = (cell: (c: Line, i: number) => V) => colLines.flatMap((c) => Array.from({ length: per }, (_, i) => cell(c, i)))
     const out: V[][] = []
     // the column fields' headers in one, as text joined by commas
@@ -366,7 +366,7 @@ function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg
     }
     for (let level = 0; level < j; level++) out.push([...corner, ...across((c) => c.keys[level])])
     if (!fns.down && fns.fns.length > 1) out.push([...corner, ...across((_, i) => labels[i])])
-    if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...new Array<V>(side).fill(EMPTY_CELL), ...across((_, i) => headers[i])])
+    if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...blanks(side), ...across((_, i) => headers[i])])
     const sets = new Map<Line, Set<number>>()
     const setOf = (l: Line) => {
       let x = sets.get(l)

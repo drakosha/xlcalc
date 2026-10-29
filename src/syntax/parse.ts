@@ -206,6 +206,19 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     return readsAsCell(word) && !letNameClash(word) ? word : undefined
   }
   let slots = 0
+  // the name a LET or a LAMBDA declares at the next token, followed by `,`: a word that is no boolean, or a cell's word
+  const declared = (): string | undefined => {
+    const t = peek()
+    const name = t.t === 'ident' && boolWord(t.v) === undefined ? t.v : cellWord(t)
+    return name !== undefined && toks[p + 1].t === ',' ? name : undefined
+  }
+  const twice = (list: readonly Param[], name: string) => list.some((x) => wordKey(x.name) === wordKey(name))
+  // a declared name seen from now on, the outer one it shadows kept for `restore`
+  const see = (x: Param, outer: [string, Param | undefined][]) => {
+    const up = wordKey(x.name)
+    outer.push([up, scope.get(up)])
+    scope.set(up, x)
+  }
   // LET(name, value, …, calculation); the calculation may be left off (Excel loads `LET(x,1)`: 1)
   const let_ = (at: number): Ast => {
     const binds: Bind[] = []
@@ -213,15 +226,13 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     let body: Ast | undefined
     for (;;) {
       const t = peek()
-      const name = t.t === 'ident' && boolWord(t.v) === undefined ? t.v : cellWord(t)
-      if (name !== undefined && toks[p + 1].t === ',') {
-        const up = wordKey(name)
-        if (binds.some((b) => wordKey(b.name) === up)) bad(t.at, { key: 'letTwice', name })
+      const name = declared()
+      if (name !== undefined) {
+        if (twice(binds, name)) bad(t.at, { key: 'letTwice', name })
         p += 2
         const bind: Bind = { name, slot: slots++, value: arg() }
         binds.push(bind)
-        outer.push([up, scope.get(up)])
-        scope.set(up, bind)
+        see(bind, outer)
         if (peek().t !== ',') break
         p++
         continue
@@ -245,18 +256,15 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
   // LAMBDA(parameter, …, calculation): the parameters are seen in the calculation
   const lambda_ = (at: number): Ast => {
     const params: Param[] = []
-    for (;;) {
-      const t = peek()
-      const name = t.t === 'ident' && boolWord(t.v) === undefined ? t.v : cellWord(t)
-      if (name === undefined || toks[p + 1].t !== ',') break
-      if (name.includes('.')) bad(t.at, { key: 'lambdaDot', name })
-      if (params.some((x) => wordKey(x.name) === wordKey(name))) bad(t.at, { key: 'lambdaTwice', name })
+    for (let name = declared(); name !== undefined; name = declared()) {
+      if (name.includes('.')) bad(peek().at, { key: 'lambdaDot', name })
+      if (twice(params, name)) bad(peek().at, { key: 'lambdaTwice', name })
       params.push({ name, slot: slots++ })
       p += 2
     }
     if (params.length > MAX_PARAMS) bad(at, { key: 'lambdaTooMany', max: MAX_PARAMS })
-    const outer = params.map((x): [string, Param | undefined] => [wordKey(x.name), scope.get(wordKey(x.name))])
-    for (const x of params) scope.set(wordKey(x.name), x)
+    const outer: [string, Param | undefined][] = []
+    for (const x of params) see(x, outer)
     const first = peek()
     const body = arg()
     restore(outer)

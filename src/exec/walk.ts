@@ -220,6 +220,12 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   let uses: T[] = []
   let bound: (Ast | undefined)[] = []
   let omits: (T | undefined)[] = []
+  // a LET name (its value) or a parameter (ISOMITTED of it) seen from now on
+  const see = (slot: number, use: T, value?: Ast, omitted?: T) => {
+    uses[slot] = use
+    bound[slot] = value
+    omits[slot] = omitted
+  }
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
@@ -548,10 +554,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'let':
         // the values are kept as references; the result is read where one value goes
         return b.let(n.binds.length, (local) => {
-          n.binds.forEach((x, i) => {
-            uses[x.slot] = local(i)
-            bound[x.slot] = x.value
-          })
+          n.binds.forEach((x, i) => see(x.slot, local(i), x.value))
           const values = n.binds.map((x) => go(x.value, true))
           return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
         })
@@ -560,11 +563,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'lambda':
         // the calculation keeps a reference it answers: its call reads it where one value goes
         return b.lambda(n.params.length, (param, omitted) => {
-          n.params.forEach((x, i) => {
-            uses[x.slot] = param(i)
-            omits[x.slot] = omitted(i)
-            bound[x.slot] = undefined
-          })
+          n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
           const [from, outer] = [level, deepest]
           deepest = level
           const body = go(n.body, true)

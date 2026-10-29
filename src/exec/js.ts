@@ -19,6 +19,12 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
   const hoist = (code: string) => `h${hoisted.push(code) - 1}`
   // LET's names and LAMBDA's parameters of the formula: v0, v1, …; the definitions that call themselves: r0, r1, …
   let names = 0
+  // the variables of `count` new names: v<i> for the i-th
+  const variables = (count: number) => {
+    const first = names
+    names += count
+    return (i: number) => `v${first + i}`
+  }
   let selves = 0
   const bound = (v: Arg) => parameters ? `p[${parameters.push(v) - 1}]` : lit(v as V)
   return {
@@ -49,15 +55,12 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
     refOp: (op, a, b) => `RO(${JSON.stringify(op)},${a},${b})`,
     at: (a, r, c) => `I(${a},${bound(r)},${bound(c)})`,
     let: (count, build) => {
-      const first = names
-      names += count
-      const { values, body } = build((i) => `v${first + i}()`)
-      return `(()=>{const ${values.map((v, i) => `v${first + i}=M(()=>${v})`).join(',')};return ${body}})()`
+      const v = variables(count)
+      const { values, body } = build((i) => `${v(i)}()`)
+      return `(()=>{const ${values.map((x, i) => `${v(i)}=M(()=>${x})`).join(',')};return ${body}})()`
     },
     lambda: (count, build) => {
-      const first = names
-      names += count
-      const v = (i: number) => `v${first + i}`
+      const v = variables(count)
       const { body, height } = build((i) => `${v(i)}()`, (i) => `(${v(i)}===OM)`)
       return `LAM(${count},${height},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body})`
     },
