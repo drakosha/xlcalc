@@ -492,3 +492,16 @@ export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
 /** A workbook without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
+
+/**
+ * A level of match mode 3 (`XLOOKUP`, `XMATCH`) beyond the one built in, which `registerRegex` loads: `pcreSyntax`
+ * of `xlcalc/regex`, Excel's syntax translated into JavaScript's regular expressions, or `pcreEngine`, a PCRE2 engine
+ * of the package's own with Excel's match limit (`#VALUE!`), stopped by a call's `timeoutMs`. Without one, match
+ * mode 3 uses JavaScript's regular expressions in JavaScript's syntax, Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}`
+ * and a leading `(?i)` as PCRE2 takes them.
+ */
+export interface RegexLevel {
+  readonly kind: 'xlcalc-pcre-syntax' | 'xlcalc-pcre-engine'
+  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern refused (`#VALUE!`). */
+  compile(pattern: string): { test(text: string): boolean | 'limit' } | null
+}

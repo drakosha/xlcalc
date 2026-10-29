@@ -15,6 +15,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
 - [`xlcalc/locales`](#xlcalclocales)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
+- [`xlcalc/regex`](#xlcalcregex)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
 
@@ -633,6 +634,16 @@ of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, 
 the same object again does nothing; a different object with an already loaded tag throws an [`InputError`](#xlcalc-inputerror). A pool's
 threads load it too.
 
+### <a id="xlcalc-registerregex"></a>`registerRegex`
+
+```ts
+function registerRegex(l: RegexLevel): void
+```
+
+Loads a level of `xlcalc/regex` for match mode 3 of `XLOOKUP` and `XMATCH` in the calculations from now on, a pool's
+threads too: `import { pcreEngine } from 'xlcalc/regex'`, then `registerRegex(pcreEngine)` (or [`pcreSyntax`](#xlcalcregex-pcresyntax)). The
+last one registered is used.
+
 ### <a id="xlcalc-samename"></a>`sameName`
 
 ```ts
@@ -941,6 +952,24 @@ const ruRU: Locale
 ```
 
 ru-RU, for [`registerLocale`](#xlcalc-registerlocale), or to pass as is to [`toLocal`](#xlcalc-tolocal) and the other functions that work without a workbook.
+
+## xlcalc/regex
+
+### <a id="xlcalcregex-pcreengine"></a>`pcreEngine`
+
+```ts
+const pcreEngine: RegexLevel
+```
+
+The PCRE2 engine: Excel's syntax and match limit, its steps counted on the calculation's budget.
+
+### <a id="xlcalcregex-pcresyntax"></a>`pcreSyntax`
+
+```ts
+const pcreSyntax: RegexLevel
+```
+
+Excel's syntax by JavaScript's regular expressions: fast, without Excel's match limit, a heavy pattern not stopped.
 
 ## xlcalc/contract
 
@@ -3803,6 +3832,22 @@ interface Refusal<Code extends string = string> {
   code: Code
   message: string
   at?: number
+}
+```
+
+### `RegexLevel`
+
+A level of match mode 3 (`XLOOKUP`, `XMATCH`) beyond the one built in, which [`registerRegex`](#xlcalc-registerregex) loads: [`pcreSyntax`](#xlcalcregex-pcresyntax)
+of `xlcalc/regex`, Excel's syntax translated into JavaScript's regular expressions, or [`pcreEngine`](#xlcalcregex-pcreengine), a PCRE2 engine
+of the package's own with Excel's match limit (`#VALUE!`), stopped by a call's `timeoutMs`. Without one, match
+mode 3 uses JavaScript's regular expressions in JavaScript's syntax, Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}`
+and a leading `(?i)` as PCRE2 takes them.
+
+```ts
+interface RegexLevel {
+  readonly kind: 'xlcalc-pcre-syntax' | 'xlcalc-pcre-engine'
+  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern refused (`#VALUE!`). */
+  compile(pattern: string): { test(text: string): boolean | 'limit' } | null
 }
 ```
 

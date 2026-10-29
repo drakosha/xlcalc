@@ -2,7 +2,7 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
@@ -44,10 +44,12 @@ export interface Snapshot {
 
 /** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
 export type ToThread =
-  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those loaded but en-US. */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[] }
+  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those loaded but en-US; `regex`: the kind of match mode 3's registered level. */
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind'] }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
+  /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
+  | { t: 'regex'; kind: RegexLevel['kind'] }
   | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number }
   | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }

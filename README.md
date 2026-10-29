@@ -171,7 +171,7 @@ Workbooks and formulas: [Formulas](docs/formulas.md), [Functions](docs/functions
 
 Sessions and grids: [Sessions](docs/sessions.md), [Rendering a grid](docs/grid.md), [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes and queries](docs/live-books.md), [Live objects](docs/live-objects.md), [Structure operations](docs/structure.md), [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md), [Addresses and formula text](docs/addresses.md).
 
-Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Asynchronous and threaded computation](docs/async.md).
+Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Asynchronous and threaded computation](docs/async.md), [Regular expressions in XLOOKUP and XMATCH](docs/regex.md).
 
 The project: [Limitations](docs/limitations.md), [Development](docs/development.md), [formula.js against Excel](docs/coverage-formulajs.md), [Range and lookup caches](docs/cache.md), [Numerical stability of statistical moments](docs/statistics.md).
 

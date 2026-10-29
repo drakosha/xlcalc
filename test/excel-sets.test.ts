@@ -8,10 +8,10 @@ import { describe, expect, it } from 'vitest'
 import { compute } from '../src/index.js'
 import { CASES, CLOCK, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
 import { OPEN } from './excel-open.js'
-import { caseBook, loadSet, SETS } from './excel-sets.js'
+import { caseBook, LEVELED_SETS, loadSet, SETS } from './excel-sets.js'
 import { pinnedCases } from './stored-cases.js'
 
-for (const set of SETS) {
+for (const set of SETS.filter((s) => !LEVELED_SETS.has(s.name))) {
   const mod = await loadSet(set.name)
   const probes = mod.buildProbes()
   const result = compute(caseBook(probes, mod.SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells

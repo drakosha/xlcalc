@@ -1,0 +1,492 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.884,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "limit#1",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rh!A1,3)"
+  },
+  {
+   "id": "limit#2",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rh!A2,3)"
+  },
+  {
+   "id": "limit#3",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(x+x+)+y\",Rh!A3,3)"
+  },
+  {
+   "id": "limit#4",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a*)*b\",Rh!A4,3)"
+  },
+  {
+   "id": "limit#5",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a*)*b\",Rh!A5,3)"
+  },
+  {
+   "id": "limit#6",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a*)*b\",Rh!A6,3)"
+  },
+  {
+   "id": "limit#7",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(\\w+\\s?)+$\",Rh!A8,3)"
+  },
+  {
+   "id": "limit#8",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(\\w+\\s?)+$\",Rh!A9,3)"
+  },
+  {
+   "id": "limit#9",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(\\w+\\s?)+$\",Rh!A10,3)"
+  },
+  {
+   "id": "limit#10",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|a?)+$\",Rh!A11,3)"
+  },
+  {
+   "id": "limit#11",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|a?)+$\",Rh!A12,3)"
+  },
+  {
+   "id": "limit#12",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a|a?)+$\",Rh!A13,3)"
+  },
+  {
+   "id": "limit#13",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)(A+)+$\",Rh!A13,3)"
+  },
+  {
+   "id": "limit#14",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)(A+)+$\",Rh!A15,3)"
+  },
+  {
+   "id": "limit#15",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"([a-z]+)+$\",Rh!A16,3)"
+  },
+  {
+   "id": "limit#16",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"([a-z]+)+$\",Rh!A17,3)"
+  },
+  {
+   "id": "limit#17",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A4,3)"
+  },
+  {
+   "id": "limit#18",
+   "group": "limit",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A5,3)"
+  },
+  {
+   "id": "required#1",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a*)*b\",Rh!A7,3)"
+  },
+  {
+   "id": "required#2",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A14,3)"
+  },
+  {
+   "id": "required#3",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A19,3)"
+  },
+  {
+   "id": "required#4",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A20,3)"
+  },
+  {
+   "id": "required#5",
+   "group": "required",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+b\",Rh!A21,3)"
+  },
+  {
+   "id": "range#1",
+   "group": "range",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rh!A15:A18,3)"
+  },
+  {
+   "id": "range#2",
+   "group": "range",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rh!A18:A15,3)"
+  },
+  {
+   "id": "range#3",
+   "group": "range",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a+)+$\",Rh!A15:A18,3,-1)"
+  },
+  {
+   "id": "range#4",
+   "group": "range",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XLOOKUP(\"(a+)+$\",Rh!A15:A16,Rh!B1:B2,\"none\",3)"
+  },
+  {
+   "id": "case#1",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)ǅ\",Rh!A22,3)"
+  },
+  {
+   "id": "case#2",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)ß\",Rh!A23,3)"
+  },
+  {
+   "id": "case#3",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)ı\",Rh!A24,3)"
+  },
+  {
+   "id": "case#4",
+   "group": "case",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)ı\",Rh!A25,3)"
+  },
+  {
+   "id": "class#1",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^\\X$\",Rh!A26,3)"
+  },
+  {
+   "id": "class#2",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\bмир\\b\",Rh!A27,3)"
+  },
+  {
+   "id": "class#3",
+   "group": "class",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\Bир\\b\",Rh!A27,3)"
+  },
+  {
+   "id": "look#1",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a{1,255})b\",Rh!A34,3)"
+  },
+  {
+   "id": "look#2",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a{1,256})b\",Rh!A34,3)"
+  },
+  {
+   "id": "look#3",
+   "group": "look",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?<=a{255})b\",Rh!A34,3)"
+  },
+  {
+   "id": "verb#1",
+   "group": "verb",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a(*COMMIT)b|ac\",Rh!A28,3)"
+  },
+  {
+   "id": "verb#2",
+   "group": "verb",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a(*PRUNE)b|ac\",Rh!A28,3)"
+  },
+  {
+   "id": "verb#3",
+   "group": "verb",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a(*THEN)b|ac\",Rh!A28,3)"
+  },
+  {
+   "id": "verb#4",
+   "group": "verb",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a(*SKIP)b|c\",Rh!A28,3)"
+  },
+  {
+   "id": "group#1",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^((.)(?1)\\2|.?)$\",Rh!A29,3)"
+  },
+  {
+   "id": "group#2",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(a)?b\\1\",Rh!A30,3)"
+  },
+  {
+   "id": "group#3",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?J)(?:(?<n>a)|(?<n>b))\\k<n>\",Rh!A31,3)"
+  },
+  {
+   "id": "group#4",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?m)^$\",Rh!A32,3)"
+  },
+  {
+   "id": "group#5",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^(a|)*$\",Rh!A18,3)"
+  },
+  {
+   "id": "group#6",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*NOTEMPTY)a*\",Rh!A30,3)"
+  },
+  {
+   "id": "group#7",
+   "group": "group",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(*NOTEMPTY_ATSTART)a*\",Rh!A33,3)"
+  }
+ ],
+ "values": {
+  "limit#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#4": {
+   "t": "n",
+   "v": 1
+  },
+  "limit#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#7": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#10": {
+   "t": "n",
+   "v": 1
+  },
+  "limit#11": {
+   "t": "n",
+   "v": 1
+  },
+  "limit#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#13": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#15": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "limit#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "limit#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "required#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "required#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "required#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "required#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "required#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "range#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "range#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "range#3": {
+   "t": "n",
+   "v": 4
+  },
+  "range#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "case#1": {
+   "t": "n",
+   "v": 1
+  },
+  "case#2": {
+   "t": "n",
+   "v": 1
+  },
+  "case#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "case#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "class#1": {
+   "t": "n",
+   "v": 1
+  },
+  "class#2": {
+   "t": "n",
+   "v": 1
+  },
+  "class#3": {
+   "t": "n",
+   "v": 1
+  },
+  "look#1": {
+   "t": "n",
+   "v": 1
+  },
+  "look#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "look#3": {
+   "t": "n",
+   "v": 1
+  },
+  "verb#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "verb#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "verb#3": {
+   "t": "n",
+   "v": 1
+  },
+  "verb#4": {
+   "t": "n",
+   "v": 1
+  },
+  "group#1": {
+   "t": "n",
+   "v": 1
+  },
+  "group#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "group#3": {
+   "t": "n",
+   "v": 1
+  },
+  "group#4": {
+   "t": "n",
+   "v": 1
+  },
+  "group#5": {
+   "t": "n",
+   "v": 1
+  },
+  "group#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "group#7": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}

@@ -7,6 +7,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/contract.js'
 import { caseCells, dataSheet, engineFormula } from './excel-cases.js'
+import { REGEX_HEAVY_SETS } from '../bench/coverage/sets/regex-heavy.js'
 import { storedSets } from './stored-sets.js'
 
 export interface StoredSet {
@@ -15,7 +16,14 @@ export interface StoredSet {
   values: Record<string, Val>
 }
 
-export const SETS: StoredSet[] = storedSets<Omit<StoredSet, 'name'>>('cases')
+/** Every stored set, those of REGEX_HEAVY_SETS too. */
+export const STORED_SETS: StoredSet[] = storedSets<Omit<StoredSet, 'name'>>('cases')
+
+/** The stored sets that the engine calculates without a level of `xlcalc/regex` (REGEX_HEAVY_SETS are left out). */
+export const SETS: StoredSet[] = STORED_SETS.filter((s) => !REGEX_HEAVY_SETS.has(s.name))
+
+/** The sets of match mode 3's syntax, which each level of `xlcalc/regex` answers differently: `regex-levels.test.ts` checks them. */
+export const LEVELED_SETS: ReadonlySet<string> = new Set(['xmatch-regex-syntax', 'xmatch-regex-syntax-2', ...REGEX_HEAVY_SETS])
 
 /** Functions that some set has cases for (`fn` of its cases). */
 export const SET_FUNCTIONS: ReadonlySet<string> = new Set(SETS.flatMap((s) => s.cases.flatMap((c) => (c.fn ? [c.fn] : []))))

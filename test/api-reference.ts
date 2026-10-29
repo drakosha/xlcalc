@@ -23,6 +23,7 @@ export const ENTRIES: readonly [string, string][] = [
   ['xlcalc/function-text/ru-RU', 'src/function-text/ru-RU.ts'],
   ['xlcalc/locales', 'src/locales.ts'],
   ['xlcalc/locales/ru-RU', 'src/locales/ru-RU.ts'],
+  ['xlcalc/regex', 'src/regex/index.ts'],
   ['xlcalc/contract', 'src/contract.ts'],
 ]
 

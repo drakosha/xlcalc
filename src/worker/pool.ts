@@ -10,6 +10,7 @@ import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues,
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { addedLocales, onLocale } from '../locale/registry.js'
+import { onRegexLevel, regexLevel } from '../regex-level.js'
 import { splitCall, checkCall, checkEditCall, withCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import { subscribers, withSubscribe } from '../session/subscribers.js'
@@ -132,7 +133,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     )
     // a thread computes in the locales loaded here, those loaded later as they are
     const locales = addedLocales().map(sentLocale)
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}) })
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}), ...(regexLevel() ? { regex: regexLevel()!.kind } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
@@ -140,8 +141,11 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     slot.thread = start(slot)
     return slot
   })
-  const unlisten = onLocale((l) => {
+  const unlistenLocales = onLocale((l) => {
     for (const s of slots) s.thread?.post({ t: 'locales', locales: [sentLocale(l)] })
+  })
+  const unlistenRegex = onRegexLevel(() => {
+    for (const s of slots) s.thread?.post({ t: 'regex', kind: regexLevel()!.kind })
   })
 
   peek?.({ slots, recs })
@@ -531,7 +535,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     async close() {
       if (closed) return
       closed = new CalcError('closed', 'the pool is closed')
-      unlisten()
+      unlistenLocales()
+      unlistenRegex()
       for (const t of jobs.splice(0)) fail(t, closed)
       for (const s of slots) {
         // a session closing is closed with the pool; the pool's own tasks end

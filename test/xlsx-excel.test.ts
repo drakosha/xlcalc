@@ -28,6 +28,7 @@ import { CLOCK, matches, show, toVal } from './excel-cases.js'
 import { cellsOf } from './looks-book.js'
 import './locales.js'
 import { filterRun } from './xlsx-filters.js'
+import { REGEX_HEAVY_SETS } from '../bench/coverage/sets/regex-heavy.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir), 'utf8')) as T
@@ -159,7 +160,7 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
   }
 
   it('every part of every set with stored answers went through Excel, and only those', async () => {
-    const names = ['probes', ...readdirSync(new URL('../cases/', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5))]
+    const names = ['probes', ...readdirSync(new URL('../cases/', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).filter((n) => !REGEX_HEAVY_SETS.has(n))]
     const parts: string[] = []
     for (const name of names) for (let k = 0; k * PART < (await set(name)).probes.length; k++) parts.push(`${name}-${k + 1}.xlsx`)
     expect([...files].sort()).toEqual(parts.sort())
