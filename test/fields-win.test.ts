@@ -1,16 +1,26 @@
 /**
  * Fields of a workbook the model holds for a host, against Excel for Windows (`test/excel/win/fields/`,
  * `bench/coverage/fields/`): Excel read from each file `writeXlsx` or `writeKept` wrote what the workbook holds, and the
- * reader reads it back from the file Excel saved: a split window with the same lines.
+ * reader reads it back from the file Excel saved: a split window with the same lines, which Excel moves to its screen's
+ * nearest pixel.
  */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { bookCalculation, bookFields, bookNotes, bookPanes, bookTurned, caseBook, fieldsFile, savedDir, seenPanes, splitOf, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
 import { readXlsx } from '../src/xlsx.js'
+import type { SplitPanes } from '../src/contract.js'
+
+/** A split's lines where Excel for Windows saves them: on its screen's nearest pixel (0.75 points at 96 DPI). */
+function onScreen(s: SplitPanes, dpi: number): SplitPanes {
+  const pixel = 72 / dpi
+  const out = { ...s }
+  for (const axis of ['x', 'y'] as const) if (out[axis] !== undefined) out[axis] = Math.round(out[axis] / pixel) * pixel
+  return out
+}
 
 describe.each(['sheets', 'book', 'notes', 'rotation', 'split'])('the set %s', (set) => {
-  const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { answers: Record<string, FieldsAnswer> }
+  const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { meta: { dpi: number }; answers: Record<string, FieldsAnswer> }
   it('Excel reads what the workbook holds, and saves it so', async () => {
     const cases = ((await import(`../bench/coverage/fields/${set}.ts`)) as FieldsSet).buildFieldsCases()
     expect(Object.keys(stored.answers).sort()).toEqual(cases.map((c) => c.id).sort())
@@ -32,7 +42,7 @@ describe.each(['sheets', 'book', 'notes', 'rotation', 'split'])('the set %s', (s
       const panes = stored.answers[c.id].panes
       if (panes !== undefined) {
         expect([panes.map((p) => seenPanes(p.panes)), bookPanes(saved.book)], c.id).toEqual([bookPanes(caseBook(c)), bookPanes(caseBook(c))])
-        expect(splitOf(saved.book), c.id).toEqual(splitOf(caseBook(c)))
+        expect(splitOf(saved.book), c.id).toEqual(splitOf(caseBook(c)).map((s) => s && onScreen(s, stored.meta.dpi)))
       }
     }
   })
