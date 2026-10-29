@@ -5,8 +5,11 @@
  */
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Reason } from './excel-win-cases.js'
+import { PREDICTED as REGEX_PREDICTED } from '../bench/coverage/sets/regex-functions-held.js'
 
 export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: Val }>> = {
+  // the REGEX functions, which Excel for Windows does not know: the engine gives the answers predicted by Microsoft's descriptions
+  ...Object.fromEntries(Object.entries(REGEX_PREDICTED).map(([id, engine]) => [`en-US:regex-functions-held:${id}`, { reason: 'winRegexFunctions' as const, engine }])),
   'en-US:measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
   'en-US:measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
   'en-US:measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },

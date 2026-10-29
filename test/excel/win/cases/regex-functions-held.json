@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 14.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "REGEXTEST#1",
+   "group": "REGEXTEST",
+   "fn": "REGEXTEST",
+   "formula": "_xlfn.REGEXTEST(\"Excel 2025\",\"\\d+\")"
+  },
+  {
+   "id": "REGEXTEST#2",
+   "group": "REGEXTEST",
+   "fn": "REGEXTEST",
+   "formula": "_xlfn.REGEXTEST(\"Excel\",\"excel\")"
+  },
+  {
+   "id": "REGEXTEST#3",
+   "group": "REGEXTEST",
+   "fn": "REGEXTEST",
+   "formula": "_xlfn.REGEXTEST(\"Excel\",\"excel\",1)"
+  },
+  {
+   "id": "REGEXTEST#4",
+   "group": "REGEXTEST",
+   "fn": "REGEXTEST",
+   "formula": "_xlfn.REGEXTEST(\"abc\",\"[\")"
+  },
+  {
+   "id": "REGEXEXTRACT#1",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "_xlfn.REGEXEXTRACT(\"tel 555-1234 or 555-9876\",\"\\d{3}-\\d{4}\")"
+  },
+  {
+   "id": "REGEXEXTRACT#2",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "_xlfn.REGEXEXTRACT(\"abc\",\"\\d\")"
+  },
+  {
+   "id": "REGEXEXTRACT#3",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "INDEX(_xlfn.REGEXEXTRACT(\"a1b22c333\",\"\\d+\",1),2)"
+  },
+  {
+   "id": "REGEXEXTRACT#4",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "ROWS(_xlfn.REGEXEXTRACT(\"a1b22c333\",\"\\d+\",1))"
+  },
+  {
+   "id": "REGEXEXTRACT#5",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "COLUMNS(_xlfn.REGEXEXTRACT(\"a1b22c333\",\"\\d+\",1))"
+  },
+  {
+   "id": "REGEXEXTRACT#6",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "INDEX(_xlfn.REGEXEXTRACT(\"John Smith\",\"(\\w+) (\\w+)\",2),2)"
+  },
+  {
+   "id": "REGEXEXTRACT#7",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "COLUMNS(_xlfn.REGEXEXTRACT(\"John Smith\",\"(\\w+) (\\w+)\",2))"
+  },
+  {
+   "id": "REGEXEXTRACT#8",
+   "group": "REGEXEXTRACT",
+   "fn": "REGEXEXTRACT",
+   "formula": "_xlfn.REGEXEXTRACT(\"ABC\",\"b\",0,1)"
+  },
+  {
+   "id": "REGEXREPLACE#1",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"a1b2c3\",\"\\d\",\"#\")"
+  },
+  {
+   "id": "REGEXREPLACE#2",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"a1b2c3\",\"\\d\",\"#\",2)"
+  },
+  {
+   "id": "REGEXREPLACE#3",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"a1b2c3\",\"\\d\",\"#\",-1)"
+  },
+  {
+   "id": "REGEXREPLACE#4",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"SoniaBrown\",\"([A-Z][a-z]+)([A-Z][a-z]+)\",\"$2, $1\")"
+  },
+  {
+   "id": "REGEXREPLACE#5",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"abc\",\"B\",\"x\",0,1)"
+  },
+  {
+   "id": "REGEXREPLACE#6",
+   "group": "REGEXREPLACE",
+   "fn": "REGEXREPLACE",
+   "formula": "_xlfn.REGEXREPLACE(\"abc\",\"\\d\",\"x\")"
+  }
+ ],
+ "values": {
+  "REGEXTEST#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXTEST#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXTEST#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXTEST#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#6": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#7": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXEXTRACT#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "REGEXREPLACE#6": {
+   "t": "e",
+   "v": "NAME"
+  }
+ }
+}

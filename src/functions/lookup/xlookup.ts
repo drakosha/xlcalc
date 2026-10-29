@@ -2,7 +2,7 @@
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
-import { regexTest } from '../../regex-level.js'
+import { regexPattern } from '../../regex-level.js'
 import { exactMatch, type Compare, type Key } from './search.js'
 
 const MATCH_MODES = [0, -1, 1, 2, 3]
@@ -16,7 +16,7 @@ const SEARCH_MODES = [1, -1, 2, -2]
  */
 function regex(cx: Cx, k: Key | null, look: Grid, searchMode: number): number | CErr {
   if (Math.abs(searchMode) === 2) return E.VALUE
-  const re = regexTest(k === null ? '' : (cx.rules.toText(k) as string))
+  const re = regexPattern(k === null ? '' : (cx.rules.toText(k) as string))
   if (!re) return E.VALUE
   const n = look.v.length
   const size = look.rows * look.cols

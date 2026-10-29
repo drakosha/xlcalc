@@ -1,20 +1,18 @@
 /**
- * The matcher of match mode 3's regular expressions (`XLOOKUP`, `XMATCH`): JavaScript's own over the pattern as
- * `rewrite` gives it, or the level of `xlcalc/regex` that `registerRegex` loaded (the full translation, or the PCRE2
- * engine). A pool's threads load the same level (`worker/thread.ts`).
+ * The matcher of regular expressions (match mode 3 of `XLOOKUP` and `XMATCH`, the REGEX functions): JavaScript's own
+ * over the pattern as `rewrite` gives it, or the level of `xlcalc/regex` that `registerRegex` loaded (the full
+ * translation, or the PCRE2 engine). A pool's threads load the same level (`worker/thread.ts`).
  */
-import type { RegexLevel } from './contract.js'
+import type { RegexLevel, RegexPattern } from './contract.js'
 import { rewrite } from './functions/lookup/regex-syntax.js'
 import { InputError } from './input-error.js'
-
-/** A pattern's test of a text, as `RegexLevel.compile` gives it (a regular expression is one). */
-export type RegexTest = { test(text: string): boolean | 'limit' }
+import { regExpPattern } from './regex/from-regexp.js'
 
 export const REGEX_KINDS: readonly RegexLevel['kind'][] = ['xlcalc-pcre-syntax', 'xlcalc-pcre-engine']
 
 let level: RegexLevel | null = null
 const listeners = new Set<() => void>()
-const cache = new Map<string, RegexTest | null>()
+const cache = new Map<string, RegexPattern | null>()
 const CACHED = 64
 
 /** The registered level, or null. */
@@ -44,11 +42,12 @@ export function onRegexLevel(f: () => void): () => void {
   return () => listeners.delete(f)
 }
 
-/** A pattern's test, or null for one that is no pattern: `#VALUE!`. */
-export function regexTest(pattern: string): RegexTest | null {
+/** A pattern compiled by the level in use, or null for one that is no pattern: `#VALUE!`. */
+export function regexPattern(pattern: string): RegexPattern | null {
   let t = cache.get(pattern)
   if (t === undefined) {
-    t = level ? level.compile(pattern) : rewrite(pattern)
+    const re = level ? null : rewrite(pattern)
+    t = level ? level.compile(pattern) : re && regExpPattern(re, (d) => d.slice(1))
     if (cache.size >= CACHED) cache.clear()
     cache.set(pattern, t)
   }

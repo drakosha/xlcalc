@@ -8,6 +8,7 @@ import type { RegexLevel } from '../contract.js'
 import { Matcher } from './match.js'
 import { parse, RegexSyntaxError } from './parse.js'
 import { compile } from './program.js'
+import { regExpPattern } from './from-regexp.js'
 import { pcreToRegExp } from './syntax.js'
 
 /** Excel's syntax by JavaScript's regular expressions: fast, without Excel's match limit, a heavy pattern not stopped. */
@@ -15,7 +16,11 @@ export const pcreSyntax: RegexLevel = {
   kind: 'xlcalc-pcre-syntax',
   compile(pattern: string) {
     const re = pcreToRegExp(pattern)
-    return re && { test: (s: string) => re.test(s) }
+    if (!re) return null
+    // the translation names a group `_n` (`_n_k` again in a branch reset), its own lookaheads `_a…`
+    const named = [...re.source.matchAll(/\(\?<_(\d+)(?:_\d+)?>/g)].map((m) => Number(m[1]))
+    const n = named.length ? Math.max(...named) : 0
+    return regExpPattern(re, (d) => Array.from({ length: n }, (_, k) => Object.entries(d.groups ?? {}).find(([name, at]) => at && (name === `_${k + 1}` || name.startsWith(`_${k + 1}_`)))?.[1]))
   },
 }
 

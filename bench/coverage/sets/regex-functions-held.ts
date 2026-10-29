@@ -30,5 +30,8 @@ const CASES: [string, string, Val][] = [
   ['REGEXREPLACE', 'REGEXREPLACE("abc","\\d","x")', s('abc')],
 ]
 
+/** Excel for Windows 16.0.20430 answered #NAME? everywhere: it has none of the three functions. */
+export const MISSED = ['REGEXTEST#1', 'REGEXTEST#2', 'REGEXTEST#3', 'REGEXTEST#4', 'REGEXEXTRACT#1', 'REGEXEXTRACT#2', 'REGEXEXTRACT#3', 'REGEXEXTRACT#4', 'REGEXEXTRACT#5', 'REGEXEXTRACT#6', 'REGEXEXTRACT#7', 'REGEXEXTRACT#8', 'REGEXREPLACE#1', 'REGEXREPLACE#2', 'REGEXREPLACE#3', 'REGEXREPLACE#4', 'REGEXREPLACE#5', 'REGEXREPLACE#6']
+
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)

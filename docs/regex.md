@@ -1,6 +1,14 @@
-# Regular expressions in XLOOKUP and XMATCH
+# Regular expressions
 
 Match mode 3 of `XLOOKUP` and `XMATCH` finds a regular expression anywhere in a value's text: `XMATCH("[A-Z][a-z]+y",A2:A9,3)` is the position of the first value with a capital letter followed by lowercase letters and a `y`. Numbers are matched by their text, a blank as empty text, from the end with search mode −1; a binary search (search modes 2 and −2) is `#VALUE!`. Excel for Mac reads the pattern as PCRE2 does, with Unicode classes; Excel for Windows 16.0.20430 has no match mode 3 and returns `#VALUE!`. The engine follows Excel for Mac.
+
+`REGEXTEST`, `REGEXEXTRACT` and `REGEXREPLACE` read their patterns the same way:
+
+- `REGEXTEST("Excel 2025","\d+")` is TRUE; a `case_sensitivity` of 1 ignores case (`REGEXTEST("Excel","excel",1)`).
+- `REGEXEXTRACT` gives the first match (`#N/A` without one), with `return_mode` 1 every match in a row (`REGEXEXTRACT("a1b22c333","\d+",1)` is `{"1","22","333"}`), with 2 the groups of the first match in a row, an empty text for a group that took no part.
+- `REGEXREPLACE` replaces every match, with `occurrence` n the nth, with -n the nth from the end; in the replacement `$1` or `${1}` is a group's text and `$$` a dollar (`REGEXREPLACE("SoniaBrown","([A-Z][a-z]+)([A-Z][a-z]+)","$2, $1")` is `Brown, Sonia`).
+
+A match is looked for from the end of the one before it, an empty match a character further on (`REGEXREPLACE("abc","","-")` is `-a-b-c-`). A pattern that is none, Excel's match limit and an answer longer than 32,767 characters are `#VALUE!`. Neither Excel these functions were checked with has them (Excel for Mac 16.114 and Excel for Windows 16.0.20430 answer `#NAME?`), so they follow Microsoft's description of them.
 
 How closely a pattern is read as Excel reads it is the host's choice, between three levels.
 
