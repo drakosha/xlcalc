@@ -60,9 +60,9 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       // a date without a year takes the session's clock's; a row of dates keeps its format; the column widens for it
       expect(await s.setCellText('S', 'A5', '15.3')).toMatchObject({ changes: [{ cell: 'A5', value: 46096, text: '15.03.2026' }], width: 10.1640625 })
       expect((await cells()).A5).toEqual({ value: 46096 })
-      // a formula in the locale's words is stored in English
+      // a formula in the locale's words is stored in English, with the format of the cell it sums first
       expect((await s.setCellText('S', 'A6', '=СУММ(A1;1,5)')).ok).toBe(true)
-      expect((await cells()).A6).toEqual({ formula: 'SUM(A1,1.5)' })
+      expect((await cells()).A6).toEqual({ formula: 'SUM(A1,1.5)', numberFormat: 4 })
       // empty text clears the value and keeps the rest
       await s.setCellText('S', 'A1', '')
       expect((await cells()).A1).toEqual({ numberFormat: 4, style: 0, meta: 'm', note: { text: 'n' } })
