@@ -17,7 +17,7 @@ import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/q
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
-import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, ExternalBook, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, SelectionLabels, Session, SpecialCells, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, ExternalBook, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, SelectionLabels, Session, SpecialCells, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions, WorkbookStatistics } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
@@ -41,6 +41,7 @@ import { checkDirection, endOf } from './session/end.js'
 import { autoSumOf } from './session/auto-sum.js'
 import { checkLabels, namesFromSelection } from './session/names-from-selection.js'
 import { checkSpecial, specialCells } from './session/special-cells.js'
+import { workbookStatistics } from './session/statistics.js'
 import { textsChanged } from './session/search.js'
 import { replacedTexts } from './session/replace.js'
 import { snapshotBook } from './session/snapshot.js'
@@ -123,6 +124,7 @@ export interface SessionSteps {
   getAutoSum(sheet: string, cell: string): Steps<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Steps<NameInput[]>
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): Steps<string[]>
+  getWorkbookStatistics(sheet: string): Steps<WorkbookStatistics>
   undo(opts?: EditOptions): Steps<UndoResult | null>
   redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
@@ -866,6 +868,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return specialCells(s, checkSheet(sheet, sheetIndex(s), 'sheet'), checkRange(range, 'range'), checkSpecial(kind))
     },
+    *getWorkbookStatistics(sheet: string) {
+      const s = yield* ready()
+      return workbookStatistics(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
+    },
     *explain(sheet: string, cell: string, eo?: ExplainOptions) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
@@ -995,6 +1001,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getAutoSum: (sheet, cell) => now(() => core.getAutoSum(sheet, cell)),
     getNamesFromSelection: (sheet, range, labels) => now(() => core.getNamesFromSelection(sheet, range, labels)),
     getSpecialCells: (sheet, range, kind) => now(() => core.getSpecialCells(sheet, range, kind)),
+    getWorkbookStatistics: (sheet) => now(() => core.getWorkbookStatistics(sheet)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
     copyText: (sheet, range, o) => now(() => core.copyText(sheet, range, o)),

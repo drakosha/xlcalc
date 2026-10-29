@@ -1,0 +1,857 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-29",
+  "seconds": 57.3
+ },
+ "cases": [
+  {
+   "id": "written",
+   "book": {
+    "sheets": [
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "bottomRight"
+       },
+       "activeCell": "G21",
+       "selection": [
+        "G21"
+       ]
+      }
+     },
+     {
+      "name": "Columns",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 150.5,
+        "topLeft": "H1",
+        "activePane": "topRight"
+       },
+       "activeCell": "H2",
+       "selection": [
+        "H2"
+       ]
+      }
+     },
+     {
+      "name": "Rows",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "y": 75,
+        "topLeft": "A30",
+        "activePane": "bottomLeft"
+       }
+      }
+     },
+     {
+      "name": "Scrolled",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "topLeft": "C5",
+       "split": {
+        "x": 200,
+        "y": 100,
+        "topLeft": "K40"
+       },
+       "activeCell": "D6",
+       "selection": [
+        "D6"
+       ]
+      }
+     },
+     {
+      "name": "Zoomed",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 200,
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "topRight"
+       }
+      }
+     },
+     {
+      "name": "Frozen",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "frozen": {
+       "rows": 2
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20"
+       }
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept-set",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 150
+      }
+     }
+    ]
+   },
+   "kept": {
+    "views": {
+     "S": {
+      "split": {
+       "x": 100,
+       "y": 50,
+       "topLeft": "E12",
+       "activePane": "bottomRight"
+      },
+      "activeCell": "E12",
+      "selection": [
+       "E12"
+      ]
+     },
+     "T": {
+      "zoom": 150,
+      "split": {
+       "y": 90,
+       "topLeft": "A25"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "kept-changed",
+   "book": {
+    "sheets": [
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "bottomRight"
+       },
+       "activeCell": "G21",
+       "selection": [
+        "G21"
+       ]
+      }
+     },
+     {
+      "name": "Columns",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 150.5,
+        "topLeft": "H1",
+        "activePane": "topRight"
+       },
+       "activeCell": "H2",
+       "selection": [
+        "H2"
+       ]
+      }
+     },
+     {
+      "name": "Rows",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "y": 75,
+        "topLeft": "A30",
+        "activePane": "bottomLeft"
+       }
+      }
+     },
+     {
+      "name": "Scrolled",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "topLeft": "C5",
+       "split": {
+        "x": 200,
+        "y": 100,
+        "topLeft": "K40"
+       },
+       "activeCell": "D6",
+       "selection": [
+        "D6"
+       ]
+      }
+     },
+     {
+      "name": "Zoomed",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 200,
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "topRight"
+       }
+      }
+     },
+     {
+      "name": "Frozen",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "frozen": {
+       "rows": 2
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20"
+       }
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "views": {
+     "Both": {
+      "split": {
+       "x": 240,
+       "y": 30,
+       "topLeft": "J5"
+      }
+     },
+     "Columns": null,
+     "Rows": {
+      "split": {
+       "y": 75,
+       "topLeft": "A30",
+       "activePane": "bottomLeft"
+      },
+      "activeCell": "A31",
+      "selection": [
+       "A31"
+      ]
+     },
+     "Frozen": null
+    }
+   }
+  }
+ ],
+ "answers": {
+  "written": {
+   "sheets": [
+    [
+     "Both",
+     null,
+     true,
+     true
+    ],
+    [
+     "Columns",
+     null,
+     true,
+     true
+    ],
+    [
+     "Rows",
+     null,
+     true,
+     true
+    ],
+    [
+     "Scrolled",
+     null,
+     true,
+     true
+    ],
+    [
+     "Zoomed",
+     null,
+     true,
+     true
+    ],
+    [
+     "Frozen",
+     null,
+     true,
+     true
+    ],
+    [
+     "Plain",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [],
+   "turned": [],
+   "panes": [
+    {
+     "panes": [
+      "Both",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      4
+     ],
+     "points": [
+      100.5,
+      45
+     ]
+    },
+    {
+     "panes": [
+      "Columns",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        8
+       ]
+      ],
+      2
+     ],
+     "points": [
+      131.25,
+      0
+     ]
+    },
+    {
+     "panes": [
+      "Rows",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        30,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      60
+     ]
+    },
+    {
+     "panes": [
+      "Scrolled",
+      false,
+      true,
+      [
+       [
+        5,
+        3
+       ],
+       [
+        5,
+        11
+       ],
+       [
+        40,
+        3
+       ],
+       [
+        40,
+        11
+       ]
+      ],
+      1
+     ],
+     "points": [
+      180.75,
+      84.75
+     ]
+    },
+    {
+     "panes": [
+      "Zoomed",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      2
+     ],
+     "points": [
+      79.5,
+      31.5
+     ]
+    },
+    {
+     "panes": [
+      "Frozen",
+      true,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        3,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      30
+     ]
+    },
+    {
+     "panes": [
+      "Plain",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "kept-set": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ],
+    [
+     "T",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [],
+   "turned": [],
+   "panes": [
+    {
+     "panes": [
+      "S",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        5
+       ],
+       [
+        12,
+        1
+       ],
+       [
+        12,
+        5
+       ]
+      ],
+      4
+     ],
+     "points": [
+      80.25,
+      35.25
+     ]
+    },
+    {
+     "panes": [
+      "T",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        25,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      68.25
+     ]
+    }
+   ]
+  },
+  "kept-changed": {
+   "sheets": [
+    [
+     "Both",
+     null,
+     true,
+     true
+    ],
+    [
+     "Columns",
+     null,
+     true,
+     true
+    ],
+    [
+     "Rows",
+     null,
+     true,
+     true
+    ],
+    [
+     "Scrolled",
+     null,
+     true,
+     true
+    ],
+    [
+     "Zoomed",
+     null,
+     true,
+     true
+    ],
+    [
+     "Frozen",
+     null,
+     true,
+     true
+    ],
+    [
+     "Plain",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [],
+   "turned": [],
+   "panes": [
+    {
+     "panes": [
+      "Both",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        10
+       ],
+       [
+        5,
+        1
+       ],
+       [
+        5,
+        10
+       ]
+      ],
+      1
+     ],
+     "points": [
+      220.5,
+      15
+     ]
+    },
+    {
+     "panes": [
+      "Columns",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    },
+    {
+     "panes": [
+      "Rows",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        30,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      60
+     ]
+    },
+    {
+     "panes": [
+      "Scrolled",
+      false,
+      true,
+      [
+       [
+        5,
+        3
+       ],
+       [
+        5,
+        11
+       ],
+       [
+        40,
+        3
+       ],
+       [
+        40,
+        11
+       ]
+      ],
+      1
+     ],
+     "points": [
+      180.75,
+      84.75
+     ]
+    },
+    {
+     "panes": [
+      "Zoomed",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      2
+     ],
+     "points": [
+      79.5,
+      31.5
+     ]
+    },
+    {
+     "panes": [
+      "Frozen",
+      true,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        3,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      30
+     ]
+    },
+    {
+     "panes": [
+      "Plain",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    }
+   ]
+  }
+ }
+}

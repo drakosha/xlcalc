@@ -9,7 +9,7 @@
 import type { ErrorCode } from './contract.js'
 import { collator } from './collate.js'
 import { critTextToNumber, textToNumber } from './dates.js'
-import { spend } from './exec/budget.js'
+import { spend, STRIDE } from './exec/budget.js'
 import { ERROR_TYPE } from './error-type.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
 import { CELL_ERRORS, ERROR_CODE } from './syntax/errors.js'
@@ -230,9 +230,6 @@ let watch: SelectWatch | undefined
 export function watchSelections(w?: SelectWatch): void {
   watch = w
 }
-
-/** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask). */
-const STRIDE = 0xffff
 
 export function buildIndex(flat: readonly CritValue[], rules: CritRules = EN_CRIT): CritIndex {
   const ix: CritIndex = new Map()

@@ -581,6 +581,17 @@ function Step($xl, $wb, $s) {
       [void]$wb.Worksheets.Item(1).Activate()
       $all
     }
+    # each worksheet's window: frozen, split, the lines in points, each pane's first row and column, the active pane (bench/windows/fields.ts)
+    'sheetPanes' {
+      $all = List ($wb.Worksheets | ForEach-Object {
+          [void]$_.Activate()
+          $w = $xl.ActiveWindow
+          $panes = List (1..$w.Panes.Count | ForEach-Object { $p = $w.Panes.Item($_); List @((Cell ([double]$p.ScrollRow)), (Cell ([double]$p.ScrollColumn))) })
+          List @((Str $_.Name), (Cell $w.FreezePanes), (Cell $w.Split), (Cell ([double]$w.SplitHorizontal)), (Cell ([double]$w.SplitVertical)), $panes, (Cell ([double]$w.ActivePane.Index)))
+        })
+      [void]$wb.Worksheets.Item(1).Activate()
+      $all
+    }
     # each worksheet's notes, [sheet, cell, shown all the time] (Comment.Visible)
     'notesShown' {
       List ($wb.Worksheets | ForEach-Object { $ws = $_; $ws.Comments | ForEach-Object { List @((Str $ws.Name), (Str $_.Parent.Address($false, $false)), (Cell $_.Visible)) } })

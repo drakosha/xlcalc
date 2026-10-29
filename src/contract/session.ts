@@ -6,7 +6,7 @@ import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOp
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
 import type { CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, FillTextOptions, FillTextPreview, FillTextResult, PasteTextPreview, PasteTextResult } from './typing.js'
 import type { SessionStructureResult, StructureOp } from './structure.js'
-import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, SelectionLabels, SpecialCells, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
+import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, SelectionLabels, SpecialCells, ReadCellsResult, WorkbookStatistics, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
 
 /**
  * Session options. A session keeps a single clock, `clock` or by default the time it was opened and a random
@@ -225,6 +225,8 @@ export interface Session {
    * larger one is taken within it.
    */
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
+  /** What Excel's Workbook Statistics shows with `sheet` active: the sheet's end and counts, and the workbook's counts. */
+  getWorkbookStatistics(sheet: string): WorkbookStatistics
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -489,6 +491,7 @@ export interface AsyncSession {
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
+  getWorkbookStatistics(sheet: string): Promise<WorkbookStatistics>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>

@@ -351,16 +351,19 @@ export function makeRuntime(ctx: RuntimeContext) {
   const FL: Record<string, (...a: any[]) => Arg> = {}
   /**
    * SUBTOTAL(code, range) and AGGREGATE(code, option, range) by the range summaries, as SUM over one range: the codes
-   * of AVERAGE, COUNT, COUNTA, MAX, MIN and SUM, errors not skipped, and only where they read every cell (no SUBTOTAL
-   * or AGGREGATE in the range's columns when those are skipped, no row they skip hidden in it); undefined otherwise.
+   * of AVERAGE, COUNT, COUNTA, MAX, MIN and SUM. Where they read every cell the prefixes are shared with SUM; where they
+   * skip some (SUBTOTAL or AGGREGATE in the range's columns, a row hidden in it, errors), the range is folded once with
+   * those cells blank, as `counted` makes them, and never made whole; undefined for another code or argument.
    */
-  const summarized = (code: number, range: Arg | undefined, nested: boolean, hidden: HiddenRule): V | undefined => {
+  const summarized = (code: number, range: Arg | undefined, nested: boolean, hidden: HiddenRule, errors = false): V | undefined => {
     const name = SUMMARIZED[code]
     if (!name || !(range instanceof Rng)) return undefined
-    if (nested && ctx.nested.get(range.s)?.inColumns(range.c1, range.c2)) return undefined
+    const marks = nested ? ctx.nested.get(range.s) : undefined
+    const inColumns = marks !== undefined && marks.inColumns(range.c1, range.c2)
     const rows = ctx.hidden.get(range.s)
-    if (rows && skips(rows, hidden) && rows.spans.some(([lo, hi]) => lo <= range.r2 && hi >= range.r1)) return undefined
-    return ctx.aggregates.read(name, range, () => bounds(range), cell)
+    const spans = rows && skips(rows, hidden) ? rows.spans.filter(([lo, hi]) => lo <= range.r2 && hi >= range.r1) : []
+    if (!inColumns && !spans.length && !errors) return ctx.aggregates.read(name, range, () => bounds(range), cell)
+    return ctx.aggregates.skipping(name, range, bounds(range), cell, { spans, nested: inColumns ? marks : undefined, errors })
   }
   /** A number argument as kind `n` reads it, or undefined for an error or one left out (the caller answers those). */
   const number = (x: Arg | undefined): number | undefined => {
@@ -375,15 +378,15 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (name === 'COUNTIF' || name === 'COUNTIFS')
       return (...args) => (args.length === 2 && args[0] instanceof Rng ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) : undefined) ?? caller(...args)
     if (RANKS.includes(name)) return (...args) => (args.length <= 3 ? rankInRange(cx, name === 'RANK.AVG', number(args[0]), args[1], args[2]) : undefined) ?? caller(...args)
-    // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them; AGGREGATE's options 0, 1, 4 and 5
-    // keep errors: below 4 they skip SUBTOTAL and AGGREGATE, odd ones hidden rows
+    // SUBTOTAL 1–11 skip the hidden rows of a filtered sheet, 101–111 all of them; AGGREGATE's options below 4 skip
+    // SUBTOTAL and AGGREGATE, odd ones hidden rows, 2, 3, 6 and 7 errors
     if (name === 'SUBTOTAL' || name === 'AGGREGATE')
       return (...args) => {
         const sub = name === 'SUBTOTAL'
         const t = args.length === (sub ? 2 : 3) ? number(args[0]) : undefined
         const c = t === undefined ? 0 : whole(t)
         const o = sub ? 0 : Math.trunc(number(args[1]) ?? -1)
-        return (!c || ![0, 1, 4, 5].includes(o) ? undefined : sub ? summarized(c > 100 ? c - 100 : c, args[1], true, c > 100 ? 'all' : 'filtered') : summarized(c, args[2], o < 4, o % 2 ? 'all' : 'none')) ?? caller(...args)
+        return (!c || o < 0 || o > 7 ? undefined : sub ? summarized(c > 100 ? c - 100 : c, args[1], true, c > 100 ? 'all' : 'filtered') : summarized(c, args[2], o < 4, o % 2 ? 'all' : 'none', o % 4 >= 2)) ?? caller(...args)
       }
     return caller
   }

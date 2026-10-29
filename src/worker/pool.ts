@@ -16,7 +16,7 @@ import { checkedMapCell } from '../structure/index.js'
 import { subscribers, withSubscribe } from '../session/subscribers.js'
 import type { SentGeometry } from '../structure/geometry.js'
 import { FILL_OPTIONS, FIND_CALL_OPTIONS, READ_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
-import type { Spawn, Thread, ThreadLoss } from './platform.js'
+import { sharedWord, type Spawn, type Thread, type ThreadLoss } from './platform.js'
 import { texts, unpackSlowly, type Texts } from './pack.js'
 import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
@@ -46,6 +46,8 @@ interface Task {
 interface Slot {
   /** None after a loss, until a task needs one: a thread that cannot start fails one task at a time. */
   thread: Thread | null
+  /** Where the pool writes the task it cancels, shared with the thread: one formula sees it at its next check. */
+  cancelled?: Int32Array
   busy: Task | null
   timer: unknown
   /** Tasks of its sessions, in order. */
@@ -133,7 +135,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     )
     // a thread computes in the locales loaded here, those loaded later as they are
     const locales = addedLocales().map(sentLocale)
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}), ...(regexLevel() ? { regex: regexLevel()!.kind } : {}) })
+    slot.cancelled ??= sharedWord()
+    const cancelled = slot.cancelled
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}), ...(regexLevel() ? { regex: regexLevel()!.kind } : {}), ...(cancelled ? { cancelled } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
@@ -369,6 +373,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
             fail(task, abortError(signal))
           } else {
             const slot = slots.find((s) => s.busy === task)
+            // the shared word reaches a formula in progress; the message, a thread without one, between its steps
+            if (slot?.cancelled) Atomics.store(slot.cancelled, 0, task.id)
             slot?.thread?.post({ t: 'cancel', task: task.id })
           }
         }
@@ -464,6 +470,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getAutoSum: (sheet, cell) => value(call('getAutoSum', [sheet, cell])),
       getNamesFromSelection: (sheet, range, labels) => value(call('getNamesFromSelection', [sheet, range, labels])),
       getSpecialCells: (sheet, range, kind) => value(call('getSpecialCells', [sheet, range, kind])),
+      getWorkbookStatistics: (sheet) => value(call('getWorkbookStatistics', [sheet])),
       explain: (sheet, cell, eo) => withCall<ExplainOptions, Explanation>(eo, (rest, co) => value(call('explain', [sheet, cell, rest], co))),
       getCells: (sheet, range, co) => value(call('getCells', [sheet, range], co)),
       copyText: (sheet, range, o) => withCall<CopyTextOptions, string>(o, (rest, co) => value(call('copyText', [sheet, range, rest], co))),

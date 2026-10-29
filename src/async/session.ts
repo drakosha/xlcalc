@@ -149,6 +149,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getAutoSum: (sheet, cell) => call(() => core.getAutoSum(sheet, cell)),
     getNamesFromSelection: (sheet, range, labels) => call(() => core.getNamesFromSelection(sheet, range, labels)),
     getSpecialCells: (sheet, range, kind) => call(() => core.getSpecialCells(sheet, range, kind)),
+    getWorkbookStatistics: (sheet) => call(() => core.getWorkbookStatistics(sheet)),
     explain: (sheet, cell, eo) => withCall<ExplainOptions, Explanation>(eo, (rest, co) => call(() => core.explain(sheet, cell, rest), co)),
     getCells: (sheet, range, co) => call(() => core.getCells(sheet, range), co),
     copyText: (sheet, range, o) => withCall<CopyTextOptions, string>(o, (rest, co) => call(() => core.copyText(sheet, range, rest), co)),
