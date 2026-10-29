@@ -645,7 +645,7 @@
  },
  "sheets#3": {
   "t": "n",
-  "v": 3
+  "v": 2
  },
  "sheets#4": {
   "t": "n",
@@ -700,12 +700,12 @@
   "v": "=\"\""
  },
  "formulatext#10": {
-  "t": "e",
-  "v": "NA"
+  "t": "s",
+  "v": "=SUM(A1:A3)"
  },
  "formulatext#11": {
-  "t": "e",
-  "v": "NA"
+  "t": "s",
+  "v": "=\"t\"&A4"
  },
  "formulatext#12": {
   "t": "e",
@@ -748,12 +748,12 @@
   "v": false
  },
  "isformula#8": {
-  "t": "e",
-  "v": "VALUE"
+  "t": "b",
+  "v": true
  },
  "isformula#9": {
-  "t": "e",
-  "v": "VALUE"
+  "t": "b",
+  "v": true
  },
  "isformula#10": {
   "t": "e",

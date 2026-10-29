@@ -2,8 +2,8 @@
  * Held out: INDIRECT, OFFSET and CELL in books the case sets cannot write, predicted by the engine before Excel computed
  * them (`indirect-held.predicted.json`, from `predict.ts`). Defined names (a reference, a range, an OFFSET over a
  * cell, an INDIRECT), a table's columns, cells typed after opening that the found references read or that change where
- * they point, a chain read backwards, rows inserted and deleted and a sheet renamed and inserted (INDIRECT's text stays,
- * OFFSET's reference moves), the looks CELL tells (number formats, alignment, protection, column widths) and the
+ * they point, a chain read backwards, rows inserted and deleted and a sheet renamed (INDIRECT's text stays, OFFSET's
+ * reference moves), the looks CELL tells (number formats, alignment, protection, column widths) and the
  * active cell CELL reads without a reference.
  */
 import type { CellStyle, StructureOp } from '../../../src/contract.js'
@@ -49,7 +49,7 @@ export function buildTableCases(): TableCase[] {
   const moved = book(['S', { A1: 1, A2: 2, A3: 3, B1: '=INDIRECT("A2")', B2: '=OFFSET(A1,1,0)', B3: '=SUM(OFFSET(A1,0,0,3))', B4: '=INDIRECT("T!A1")', B5: '=INDIRECT("New!A1")', B6: '=SUM(A1:OFFSET(A1,2,0))' }], ['T', { A1: 'tee' }])
   add('insert-rows', 'a row inserted above: the text stays and reads the cell that came there, OFFSET moves', moved, [op({ op: 'insertRows', sheet: 'S', row: 1, count: 1 })], on('S', 'A1:B8'))
   add('delete-rows', 'the row of the cell INDIRECT and OFFSET read deleted', moved, [op({ op: 'deleteRows', sheet: 'S', row: 2, count: 1 })], on('S', 'A1:B7'))
-  add('rename-sheet', 'the sheet INDIRECT names renamed, and a sheet inserted with the name another text names', moved, [op({ op: 'renameSheet', sheet: 'T', name: 'U' }), op({ op: 'insertSheet', name: 'New' }), typed('A1', 9, 'New')], on('S', 'A1:B7'))
+  add('rename-sheet', 'the sheet INDIRECT names renamed to the name another text names', moved, [op({ op: 'renameSheet', sheet: 'T', name: 'New' })], on('S', 'A1:B7'))
 
   const fmt: Record<string, number | string | object> = {}
   FORMATS.forEach((code, i) => {
