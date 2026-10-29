@@ -4,14 +4,14 @@
  * locales, by the session's clock on the day of the prediction. A case of `bars`: each cell's `editText` in a window of
  * `getViewport` (empty for a cell the window does not list). A paste or a fill: `previewCellTexts` and `setCellTexts` of
  * the texts the action puts into cells (`entriesOf`), and after it the cells read as the book holds them, their values
- * and the widths of their columns. An edit in place (F2): `pasteText` of its text, which reads it with no percent
+ * and the widths of their columns; a fill by `previewFillCellText` and `fillCellText` from the active cell. An edit in place (F2): `pasteText` of its text, which reads it with no percent
  * editor, and the cells after it. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
  * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after. Point mode:
  * the sheet component's model (`point-model.ts`), the formula bar after each step and the cells after. The ribbon's
  * buttons (`press`): `pressInEngine`, the cells after.
  */
 import { setModule, writePrediction } from '../stored.js'
-import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
+import { createSession, type CellInput, type CellTextsPreview, type CellTextsResult, type CellValidationAlert, type CellValue, type FillTextPreview, type FillTextResult } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import { entriesOf, pressInEngine, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
 import { pointPrediction } from './point-model.js'
@@ -48,9 +48,12 @@ function predict(c: UiCase, tag: string) {
       return { set: r.ok ? {} : { refused: { cell: r.cell, code: r.code } }, after: after() }
     }
     const entries = entriesOf(c.act)
-    const p = s.previewCellTexts(entries)
+    // a fill from the selection's active cell, its alert that cell's
+    const act = c.act
+    const fill = (r: FillTextPreview | FillTextResult) => (r.ok && r.validation ? { ...r, validations: [{ sheet: 'S', cell: entries[0].cell, ...r.validation }] } : r) as CellTextsPreview & CellTextsResult
+    const p = act.do === 'fill' ? fill(s.previewFillCellText('S', act.range, act.text)) : s.previewCellTexts(entries)
     const preview = p.ok ? { cells: Object.fromEntries(p.cells.map((x) => [x.cell, { input: x.input, value: x.value }])), ...(p.widths ? { widths: p.widths } : {}), ...(p.validations ? { validations: p.validations.map(alert) } : {}) } : { refused: { cell: p.cell, code: p.code, at: p.at } }
-    const r = s.setCellTexts(entries)
+    const r = act.do === 'fill' ? fill(s.fillCellText('S', act.range, act.text)) : s.setCellTexts(entries)
     const book = s.getBook().sheets[0]
     const widths = Object.fromEntries(readColumns(c).map((k) => [k, book.columns?.[k]?.width ?? null]))
     return { preview, set: r.ok ? { ...(r.widths ? { widths: r.widths } : {}), ...(r.validations ? { validations: r.validations.map(alert) } : {}) } : { refused: { cell: r.cell, code: r.code, at: r.at } }, after: after(), widths }

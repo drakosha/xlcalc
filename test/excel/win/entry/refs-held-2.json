@@ -1,0 +1,122 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-29",
+  "autoPercentEntry": "true",
+  "seconds": 17.9
+ },
+ "cases": [
+  {
+   "id": "mod-1",
+   "text": "=MOD(D3,7)"
+  },
+  {
+   "id": "mod-2",
+   "text": "=MOD(D6,D12)"
+  },
+  {
+   "id": "mod-3",
+   "text": "=MOD(D11,7)"
+  },
+  {
+   "id": "mod-4",
+   "text": "=ABS(D11)"
+  },
+  {
+   "id": "mod-5",
+   "text": "=TRUNC(D3)"
+  },
+  {
+   "id": "mod-6",
+   "text": "=ROUNDDOWN(D11,0)"
+  },
+  {
+   "id": "mod-7",
+   "text": "=MOD(D5,1)-D6"
+  }
+ ],
+ "answers": {
+  "mod-1": {
+   "cell": {
+    "formula": "MOD(D3,7)",
+    "format": "\"$\"#,##0_);\\(\"$\"#,##0\\)"
+   },
+   "computed": 2,
+   "text": "$2 ",
+   "code": "$#,##0_);($#,##0)",
+   "local": "$#,##0_);($#,##0)",
+   "value2": 2
+  },
+  "mod-2": {
+   "cell": {
+    "formula": "MOD(D6,D12)",
+    "format": 9
+   },
+   "computed": 0.0999999999999999,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.0999999999999999
+  },
+  "mod-3": {
+   "cell": {
+    "formula": "MOD(D11,7)",
+    "format": 14
+   },
+   "computed": 0,
+   "text": "1/0/1900",
+   "code": "m/d/yyyy",
+   "local": "m/d/yyyy",
+   "value2": 0
+  },
+  "mod-4": {
+   "cell": {
+    "formula": "ABS(D11)"
+   },
+   "computed": 46200,
+   "text": "46200",
+   "code": "General",
+   "local": "General",
+   "value2": 46200
+  },
+  "mod-5": {
+   "cell": {
+    "formula": "TRUNC(D3)",
+    "format": "\"$\"#,##0_);\\(\"$\"#,##0\\)"
+   },
+   "computed": 100,
+   "text": "$100 ",
+   "code": "$#,##0_);($#,##0)",
+   "local": "$#,##0_);($#,##0)",
+   "value2": 100
+  },
+  "mod-6": {
+   "cell": {
+    "formula": "ROUNDDOWN(D11,0)",
+    "format": 14
+   },
+   "computed": 46200,
+   "text": "########",
+   "code": "m/d/yyyy",
+   "local": "m/d/yyyy",
+   "value2": 46200
+  },
+  "mod-7": {
+   "cell": {
+    "formula": "MOD(D5,1)-D6",
+    "format": 21
+   },
+   "computed": -1.75,
+   "text": "########",
+   "code": "h:mm:ss",
+   "local": "h:mm:ss",
+   "value2": -1.75
+  }
+ }
+}

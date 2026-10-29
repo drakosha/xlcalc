@@ -49,6 +49,13 @@ export function builtinOf(format: NumberFormat, locale: Locale): number | undefi
   return undefined
 }
 
+/** The form of a constant typed with a format of a kind a typed form sets (a formula's format, `formula.ts`); plain for another, which keeps a cell's format. */
+export function formOf(format: NumberFormat, locale: Locale): Form {
+  const id = builtinOf(format, locale)
+  const family = id === undefined ? undefined : FAMILY.get(id)
+  return family === undefined ? 'plain' : family === 'accounting' ? 'currency' : family
+}
+
 /** The format of a cell with the format `cell` in a locale after a number of the form typed, with that form's format; undefined: General. */
 export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, locale: Locale): NumberFormat | undefined {
   const id = cell === undefined ? 0 : builtinOf(cell, locale)
@@ -58,10 +65,10 @@ export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: N
   return family && own && family !== own ? typed : cell
 }
 
-/** Whether a format shows text (`@`) or percent, by its first section. */
-export function shows(format: NumberFormat | undefined, what: 'text' | 'pct'): boolean {
+/** Whether a format shows text (`@`), percent or a day (a day, a year or a month's name: a date), by its first section. */
+export function shows(format: NumberFormat | undefined, what: 'text' | 'pct' | 'day'): boolean {
   if (format === undefined) return false
   const code = enCode(format)
   const toks: Tok[] = parseFormat(code, EN_CODES)?.[0]?.toks ?? []
-  return toks.some((t) => t.t === what)
+  return toks.some((t) => (what === 'day' ? t.t === 'date' && /^(d|y|m{3})/i.test(t.s) : t.t === what))
 }

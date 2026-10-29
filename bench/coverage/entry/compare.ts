@@ -6,8 +6,25 @@
  * Excel writes to the file with every digit (`1.255%` is 0.01255, not 1.255/100).
  */
 import type { CellInput, EntryResult, NumberFormat } from '../../../src/contract.js'
-import { displayValue, validateFormula } from '../../../src/index.js'
+import { displayValue, parseEntry, validateFormula } from '../../../src/index.js'
+import { sheetLines } from '../../../src/layout/lines.js'
+import { parseAddress } from '../../../src/model.js'
 import { numberFormatOf } from '../stored.js'
+import { entryBook, type EntryCase, type EntryData } from './cases.js'
+
+/**
+ * `parseEntry`'s answer to a case in the locale on the day `now`, into a cell of the case's format, its formulas
+ * reading the formats of the data (the set's, else `DATA`), a cell's own or its row's or column's, by `numberFormatAt`.
+ */
+export function engineEntry(c: EntryCase, tag: string, now: string, data?: EntryData): EntryResult {
+  const sheets = entryBook([], data).sheets
+  const numberFormatAt = (sheet: string | null, cell: string) => {
+    const sh = sheet === null ? sheets[0] : sheets.find((s) => s.name.toLowerCase() === sheet.toLowerCase())
+    const { row, col } = parseAddress(cell)
+    return sh && sheetLines(sh).format(row, col)
+  }
+  return parseEntry(c.text, { locale: tag, now, numberFormatAt, ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
+}
 
 const SAMPLES = [46096.770833, -1234.5678, 0.05, 0, 1.5]
 

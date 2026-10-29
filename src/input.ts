@@ -618,9 +618,10 @@ export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptio
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
-  onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks', 'inPlace'])
+  onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks', 'inPlace', 'numberFormatAt'])
   optionalLocale(o.locale, `${path}.locale`)
   if (o.inPlace !== undefined) checkBoolean(o.inPlace, `${path}.inPlace`)
+  if (o.numberFormatAt !== undefined && typeof o.numberFormatAt !== 'function') throw new InputError(`${path}.numberFormatAt`, `expected a function (sheet, cell) that gives a cell's number format, got ${what(o.numberFormatAt)}`)
   if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.now !== undefined) checkMoment(o.now, `${path}.now`)

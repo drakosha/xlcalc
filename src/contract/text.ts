@@ -62,6 +62,15 @@ export interface EntryOptions {
    * sign: in a cell formatted `0%`, `6%` is 0.06 and `6` is 6 (600%). False by default, as `Session.setCellText` has it.
    */
   inPlace?: boolean
+  /**
+   * The number format of a cell of the workbook as the workbook stores it: its own, else its row's or column's;
+   * undefined for General. `sheet` is the sheet's name as the formula writes it, null for the sheet typed into; `cell`
+   * is an A1 address (`C3`). Given it, a typed formula in General takes the format of the cells it refers to, as Excel
+   * gives it: `=C3+C1` over a percent in C3 shows a percent. The function is called at most once for each reference to
+   * the workbook's own cells, with the first cell of a range (`C1` for `C:C`); a name or another workbook's cell gives no
+   * format. Without it, a reference gives no format.
+   */
+  numberFormatAt?: (sheet: string | null, cell: string) => NumberFormat | undefined
 }
 
 /**

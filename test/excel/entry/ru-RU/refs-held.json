@@ -1,0 +1,1498 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-29",
+  "seconds": 11.3
+ },
+ "cases": [
+  {
+   "id": "one-1",
+   "text": "=D1"
+  },
+  {
+   "id": "one-2",
+   "text": "=D2"
+  },
+  {
+   "id": "one-3",
+   "text": "=D3"
+  },
+  {
+   "id": "one-4",
+   "text": "=D4"
+  },
+  {
+   "id": "one-5",
+   "text": "=D5"
+  },
+  {
+   "id": "one-6",
+   "text": "=D7"
+  },
+  {
+   "id": "one-7",
+   "text": "=D8"
+  },
+  {
+   "id": "one-8",
+   "text": "=D9"
+  },
+  {
+   "id": "one-9",
+   "text": "=D10"
+  },
+  {
+   "id": "one-10",
+   "text": "=D11"
+  },
+  {
+   "id": "one-11",
+   "text": "=D12"
+  },
+  {
+   "id": "one-12",
+   "text": "=D13"
+  },
+  {
+   "id": "one-13",
+   "text": "=D15"
+  },
+  {
+   "id": "one-14",
+   "text": "=D16"
+  },
+  {
+   "id": "one-15",
+   "text": "=D17"
+  },
+  {
+   "id": "diff-1",
+   "text": "=D11-D1"
+  },
+  {
+   "id": "diff-2",
+   "text": "=D11-D7"
+  },
+  {
+   "id": "diff-3",
+   "text": "=D12-D15"
+  },
+  {
+   "id": "diff-4",
+   "text": "=D3-D3"
+  },
+  {
+   "id": "diff-5",
+   "text": "=D11-D12"
+  },
+  {
+   "id": "diff-6",
+   "text": "=D12-D11"
+  },
+  {
+   "id": "diff-7",
+   "text": "=D5-D5"
+  },
+  {
+   "id": "diff-8",
+   "text": "=D11-D5"
+  },
+  {
+   "id": "diff-9",
+   "text": "=D5-D11"
+  },
+  {
+   "id": "diff-10",
+   "text": "=1-D11"
+  },
+  {
+   "id": "diff-11",
+   "text": "=D6-D11"
+  },
+  {
+   "id": "diff-12",
+   "text": "=D11-1"
+  },
+  {
+   "id": "diff-13",
+   "text": "=D11-TODAY()"
+  },
+  {
+   "id": "diff-14",
+   "text": "=NOW()-D11"
+  },
+  {
+   "id": "diff-15",
+   "text": "=TODAY()-D12"
+  },
+  {
+   "id": "diff-16",
+   "text": "=D12-TODAY()"
+  },
+  {
+   "id": "diff-17",
+   "text": "=D16-D5"
+  },
+  {
+   "id": "sum-1",
+   "text": "=D6+D12"
+  },
+  {
+   "id": "sum-2",
+   "text": "=D12+D3"
+  },
+  {
+   "id": "sum-3",
+   "text": "=D3+D12"
+  },
+  {
+   "id": "sum-4",
+   "text": "=D14+D12"
+  },
+  {
+   "id": "sum-5",
+   "text": "=D6*D12"
+  },
+  {
+   "id": "sum-6",
+   "text": "=D12/100"
+  },
+  {
+   "id": "sum-7",
+   "text": "=-D3"
+  },
+  {
+   "id": "sum-8",
+   "text": "=--D12"
+  },
+  {
+   "id": "sum-9",
+   "text": "=(D6+D12)*1"
+  },
+  {
+   "id": "sum-10",
+   "text": "=IF(D6>0,D12)"
+  },
+  {
+   "id": "pass-1",
+   "text": "=SUM(D12,D3)"
+  },
+  {
+   "id": "pass-2",
+   "text": "=SUM(D6,D3)"
+  },
+  {
+   "id": "pass-3",
+   "text": "=MAX(D6,D11)"
+  },
+  {
+   "id": "pass-4",
+   "text": "=MIN(D12)"
+  },
+  {
+   "id": "pass-5",
+   "text": "=AVERAGE(D6:D7)"
+  },
+  {
+   "id": "pass-6",
+   "text": "=AVERAGE(D7:D8)"
+  },
+  {
+   "id": "pass-7",
+   "text": "=MEDIAN(D3,D6)"
+  },
+  {
+   "id": "pass-8",
+   "text": "=ROUND(D6,D12)"
+  },
+  {
+   "id": "pass-9",
+   "text": "=ROUNDUP(D3,0)"
+  },
+  {
+   "id": "pass-10",
+   "text": "=INT(D11)"
+  },
+  {
+   "id": "pass-11",
+   "text": "=ROUNDDOWN(D12,1)"
+  },
+  {
+   "id": "pass-12",
+   "text": "=TRUNC(D12)"
+  },
+  {
+   "id": "other-1",
+   "text": "=MROUND(D12,0.1)"
+  },
+  {
+   "id": "other-2",
+   "text": "=CEILING(D3,1)"
+  },
+  {
+   "id": "other-3",
+   "text": "=FLOOR(D3,1)"
+  },
+  {
+   "id": "other-4",
+   "text": "=LARGE(D12:D15,1)"
+  },
+  {
+   "id": "other-5",
+   "text": "=SMALL(D12:D15,1)"
+  },
+  {
+   "id": "other-6",
+   "text": "=MODE(D12,D12)"
+  },
+  {
+   "id": "other-7",
+   "text": "=SUMIF(D12:D15,\">0\")"
+  },
+  {
+   "id": "other-8",
+   "text": "=AVERAGEIF(D12:D15,\">0\")"
+  },
+  {
+   "id": "other-9",
+   "text": "=MAXA(D12)"
+  },
+  {
+   "id": "other-10",
+   "text": "=SIGN(D12)"
+  },
+  {
+   "id": "other-11",
+   "text": "=MOD(D12,1)"
+  },
+  {
+   "id": "other-12",
+   "text": "=ABS(D3)"
+  },
+  {
+   "id": "other-13",
+   "text": "=STDEV(D12,D15)"
+  },
+  {
+   "id": "other-14",
+   "text": "=EDATE(D11,1)"
+  },
+  {
+   "id": "other-15",
+   "text": "=AVERAGEA(D12)"
+  },
+  {
+   "id": "other-16",
+   "text": "=DAY(D11)"
+  },
+  {
+   "id": "range-1",
+   "text": "=SUM(D:D)"
+  },
+  {
+   "id": "range-2",
+   "text": "=SUM(E:E)"
+  },
+  {
+   "id": "range-3",
+   "text": "=E5"
+  },
+  {
+   "id": "range-4",
+   "text": "=E7"
+  },
+  {
+   "id": "range-5",
+   "text": "=SUM(D14:D15)"
+  },
+  {
+   "id": "range-6",
+   "text": "=SUM(D6:D7)"
+  },
+  {
+   "id": "range-7",
+   "text": "=SUM(D12:D15)"
+  },
+  {
+   "id": "range-8",
+   "text": "=SUM(D15:D12)"
+  },
+  {
+   "id": "range-9",
+   "text": "=SUM((D6,D12))"
+  },
+  {
+   "id": "sheet-1",
+   "text": "=U!C1"
+  },
+  {
+   "id": "sheet-2",
+   "text": "='U'!C1*2"
+  },
+  {
+   "id": "sheet-3",
+   "text": "=SUM(U!C1:C2)"
+  },
+  {
+   "id": "sheet-4",
+   "text": "=U!C2+D12"
+  },
+  {
+   "id": "name-1",
+   "text": "=Rate"
+  },
+  {
+   "id": "name-2",
+   "text": "=Rate+D6"
+  },
+  {
+   "id": "name-3",
+   "text": "=D6+Rate"
+  },
+  {
+   "id": "ru-1",
+   "text": "=СУММ(D12;D3)"
+  },
+  {
+   "id": "ru-2",
+   "text": "=ОКРУГЛВВЕРХ(D3;0)"
+  },
+  {
+   "id": "ru-3",
+   "text": "=ЦЕЛОЕ(D11)"
+  },
+  {
+   "id": "ru-4",
+   "text": "=МЕДИАНА(D3;D6)"
+  },
+  {
+   "id": "ru-5",
+   "text": "=ОТБР(D12)"
+  },
+  {
+   "id": "ru-6",
+   "text": "=СУММ(D:D)"
+  },
+  {
+   "id": "ru-7",
+   "text": "=ОКРУГЛВНИЗ(D12;1)"
+  },
+  {
+   "id": "in-sci-1",
+   "text": "=D12",
+   "format": 11
+  },
+  {
+   "id": "in-sci-2",
+   "text": "=D11",
+   "format": 11
+  },
+  {
+   "id": "in-frac-1",
+   "text": "=D12",
+   "format": 12
+  },
+  {
+   "id": "in-acct-1",
+   "text": "=D12",
+   "format": 44
+  },
+  {
+   "id": "in-acct-2",
+   "text": "=D6",
+   "format": 44
+  },
+  {
+   "id": "in-pct2-1",
+   "text": "=D12",
+   "format": 10
+  },
+  {
+   "id": "in-pct2-2",
+   "text": "=D3",
+   "format": 10
+  },
+  {
+   "id": "in-grp-1",
+   "text": "=D12",
+   "format": 3
+  },
+  {
+   "id": "in-text-1",
+   "text": "=D12",
+   "format": "@"
+  },
+  {
+   "id": "in-datel-1",
+   "text": "=D11",
+   "format": 15
+  },
+  {
+   "id": "in-datel-2",
+   "text": "=D5",
+   "format": 15
+  },
+  {
+   "id": "in-own-1",
+   "text": "=D11",
+   "format": "[Red]0"
+  }
+ ],
+ "answers": {
+  "one-1": {
+   "cell": {
+    "formula": "D1",
+    "format": "d\\ mmmm\\ yyyy"
+   },
+   "computed": 46096,
+   "text": "#########",
+   "code": "d mmmm yyyy",
+   "local": "Д ММММ ГГГГ"
+  },
+  "one-2": {
+   "cell": {
+    "formula": "D2",
+    "format": 10
+   },
+   "computed": 0.3,
+   "text": "30,00%",
+   "code": "0.00%",
+   "local": "0,00%",
+   "value2": 0.3
+  },
+  "one-3": {
+   "cell": {
+    "formula": "D3",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 100,
+   "text": "100 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 100
+  },
+  "one-4": {
+   "cell": {
+    "formula": "D4",
+    "format": "0.0%"
+   },
+   "computed": 0.5,
+   "text": "50,0%",
+   "code": "0.0%",
+   "local": "0,0%",
+   "value2": 0.5
+  },
+  "one-5": {
+   "cell": {
+    "formula": "D5",
+    "format": 21
+   },
+   "computed": 0.25,
+   "text": "06:00:00",
+   "code": "h:mm:ss",
+   "local": "чч:мм:сс",
+   "value2": 0.25
+  },
+  "one-6": {
+   "cell": {
+    "formula": "D7",
+    "format": 15
+   },
+   "computed": 46096,
+   "text": "#########",
+   "code": "d-mmm-yy",
+   "local": "ДД.МММ.ГГ"
+  },
+  "one-7": {
+   "cell": {
+    "formula": "D8",
+    "format": 13
+   },
+   "computed": 3.5,
+   "text": "3  1/2 ",
+   "code": "# ??/??",
+   "local": "#\" \"??/??",
+   "value2": 3.5
+  },
+  "one-8": {
+   "cell": {
+    "formula": "D9",
+    "format": 4
+   },
+   "computed": 1000,
+   "text": "1 000,00",
+   "code": "#,##0.00",
+   "local": "# ##0,00",
+   "value2": 1000
+  },
+  "one-9": {
+   "cell": {
+    "formula": "D10",
+    "format": 48
+   },
+   "computed": 100000,
+   "text": "100,0E+3",
+   "code": "##0.0E+0",
+   "local": "##0,0E+0",
+   "value2": 100000
+  },
+  "one-10": {
+   "cell": {
+    "formula": "D11",
+    "format": 14
+   },
+   "computed": 46200,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "one-11": {
+   "cell": {
+    "formula": "D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "one-12": {
+   "cell": {
+    "formula": "D13",
+    "format": "[Red]0"
+   },
+   "computed": 5,
+   "text": "5",
+   "code": "[Red]0",
+   "local": "[Красный]0",
+   "value2": 5
+  },
+  "one-13": {
+   "cell": {
+    "formula": "D15",
+    "format": 9
+   },
+   "computed": 0.2,
+   "text": "20%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.2
+  },
+  "one-14": {
+   "cell": {
+    "formula": "D16",
+    "format": 46
+   },
+   "computed": 0.7,
+   "text": "16:48:00",
+   "code": "[h]:mm:ss",
+   "local": "[ч]:мм:сс",
+   "value2": 0.7
+  },
+  "one-15": {
+   "cell": {
+    "formula": "D17",
+    "format": "\\€#,##0"
+   },
+   "computed": 100,
+   "text": "€100",
+   "code": "€#,##0",
+   "local": "€# ##0",
+   "value2": 100
+  },
+  "diff-1": {
+   "cell": {
+    "formula": "D11-D1"
+   },
+   "computed": 104,
+   "text": "104",
+   "code": "General",
+   "local": "Основной",
+   "value2": 104
+  },
+  "diff-2": {
+   "cell": {
+    "formula": "D11-D7"
+   },
+   "computed": 104,
+   "text": "104",
+   "code": "General",
+   "local": "Основной",
+   "value2": 104
+  },
+  "diff-3": {
+   "cell": {
+    "formula": "D12-D15",
+    "format": 9
+   },
+   "computed": -0.1,
+   "text": "-10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.1
+  },
+  "diff-4": {
+   "cell": {
+    "formula": "D3-D3",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 0,
+   "text": "0 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 0
+  },
+  "diff-5": {
+   "cell": {
+    "formula": "D11-D12",
+    "format": 14
+   },
+   "computed": 46199.9,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-6": {
+   "cell": {
+    "formula": "D12-D11",
+    "format": 9
+   },
+   "computed": -46199.9,
+   "text": "#########",
+   "code": "0%",
+   "local": "0%",
+   "value2": -46199.9
+  },
+  "diff-7": {
+   "cell": {
+    "formula": "D5-D5",
+    "format": 21
+   },
+   "computed": 0,
+   "text": "00:00:00",
+   "code": "h:mm:ss",
+   "local": "чч:мм:сс",
+   "value2": 0
+  },
+  "diff-8": {
+   "cell": {
+    "formula": "D11-D5",
+    "format": 14
+   },
+   "computed": 46199.75,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-9": {
+   "cell": {
+    "formula": "D5-D11",
+    "format": 21
+   },
+   "computed": -46199.75,
+   "text": "#########",
+   "code": "h:mm:ss",
+   "local": "чч:мм:сс",
+   "value2": -46199.75
+  },
+  "diff-10": {
+   "cell": {
+    "formula": "1-D11",
+    "format": 14
+   },
+   "computed": -46199,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-11": {
+   "cell": {
+    "formula": "D6-D11",
+    "format": 14
+   },
+   "computed": -46198,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-12": {
+   "cell": {
+    "formula": "D11-1",
+    "format": 14
+   },
+   "computed": 46199,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-13": {
+   "cell": {
+    "formula": "D11-TODAY()",
+    "format": 14
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-14": {
+   "cell": {
+    "formula": "NOW()-D11",
+    "format": 14
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "diff-15": {
+   "cell": {
+    "formula": "TODAY()-D12",
+    "format": 9
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "0%",
+   "local": "0%"
+  },
+  "diff-16": {
+   "cell": {
+    "formula": "D12-TODAY()",
+    "format": 9
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "0%",
+   "local": "0%"
+  },
+  "diff-17": {
+   "cell": {
+    "formula": "D16-D5",
+    "format": 46
+   },
+   "computed": 0.44999999999999996,
+   "text": "10:48:00",
+   "code": "[h]:mm:ss",
+   "local": "[ч]:мм:сс",
+   "value2": 0.44999999999999996
+  },
+  "sum-1": {
+   "cell": {
+    "formula": "D6+D12",
+    "format": 9
+   },
+   "computed": 2.1,
+   "text": "210%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 2.1
+  },
+  "sum-2": {
+   "cell": {
+    "formula": "D12+D3",
+    "format": 9
+   },
+   "computed": 100.1,
+   "text": "10010%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 100.1
+  },
+  "sum-3": {
+   "cell": {
+    "formula": "D3+D12",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 100.1,
+   "text": "100 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 100.1
+  },
+  "sum-4": {
+   "cell": {
+    "formula": "D14+D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "sum-5": {
+   "cell": {
+    "formula": "D6*D12"
+   },
+   "computed": 0.2,
+   "text": "0,2",
+   "code": "General",
+   "local": "Основной",
+   "value2": 0.2
+  },
+  "sum-6": {
+   "cell": {
+    "formula": "D12/100"
+   },
+   "computed": 0.001,
+   "text": "0,001",
+   "code": "General",
+   "local": "Основной",
+   "value2": 0.001
+  },
+  "sum-7": {
+   "cell": {
+    "formula": "-D3",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": -100,
+   "text": "-100 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": -100
+  },
+  "sum-8": {
+   "cell": {
+    "formula": "--D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "sum-9": {
+   "cell": {
+    "formula": "(D6+D12)*1"
+   },
+   "computed": 2.1,
+   "text": "2,1",
+   "code": "General",
+   "local": "Основной",
+   "value2": 2.1
+  },
+  "sum-10": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-1": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-3": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-4": {
+   "cell": {
+    "formula": "MIN(D12)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-5": {
+   "cell": {
+    "formula": "AVERAGE(D6:D7)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-6": {
+   "cell": {
+    "formula": "AVERAGE(D7:D8)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-7": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-8": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-9": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-10": {
+   "cell": {
+    "formula": "INT(D11)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-11": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "pass-12": {
+   "cell": {
+    "formula": "TRUNC(D12)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-1": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-3": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-4": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-5": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-6": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-7": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-8": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-9": {
+   "cell": {
+    "formula": "MAXA(D12)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-10": {
+   "cell": {
+    "formula": "SIGN(D12)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-11": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-12": {
+   "cell": {
+    "formula": "ABS(D3)"
+   },
+   "computed": 100,
+   "text": "100",
+   "code": "General",
+   "local": "Основной",
+   "value2": 100
+  },
+  "other-13": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-14": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-15": {
+   "cell": {
+    "formula": "AVERAGEA(D12)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "other-16": {
+   "cell": {
+    "formula": "DAY(D11)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-1": {
+   "cell": {
+    "formula": "SUM(D:D)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-2": {
+   "cell": {
+    "formula": "SUM(E:E)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-3": {
+   "cell": {
+    "formula": "E5",
+    "format": 9
+   },
+   "computed": 0.4,
+   "text": "40%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.4
+  },
+  "range-4": {
+   "cell": {
+    "formula": "E7",
+    "format": 9
+   },
+   "computed": 0,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0
+  },
+  "range-5": {
+   "cell": {
+    "formula": "SUM(D14:D15)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-6": {
+   "cell": {
+    "formula": "SUM(D6:D7)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-7": {
+   "cell": {
+    "formula": "SUM(D12:D15)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-8": {
+   "cell": {
+    "formula": "SUM(D12:D15)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "range-9": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "sheet-1": {
+   "cell": {
+    "formula": "U!C1",
+    "format": 14
+   },
+   "computed": 46096,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "sheet-2": {
+   "cell": {
+    "formula": "U!C1*2"
+   },
+   "computed": 92192,
+   "text": "92192",
+   "code": "General",
+   "local": "Основной",
+   "value2": 92192
+  },
+  "sheet-3": {
+   "cell": {
+    "formula": "SUM(U!C1:C2)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "sheet-4": {
+   "cell": {
+    "formula": "U!C2+D12",
+    "format": 9
+   },
+   "computed": 1.1,
+   "text": "110%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 1.1
+  },
+  "name-1": {
+   "cell": {
+    "formula": "Rate"
+   },
+   "computed": 0.1,
+   "text": "0,1",
+   "code": "General",
+   "local": "Основной",
+   "value2": 0.1
+  },
+  "name-2": {
+   "cell": {
+    "formula": "Rate+D6"
+   },
+   "computed": 2.1,
+   "text": "2,1",
+   "code": "General",
+   "local": "Основной",
+   "value2": 2.1
+  },
+  "name-3": {
+   "cell": {
+    "formula": "D6+Rate"
+   },
+   "computed": 2.1,
+   "text": "2,1",
+   "code": "General",
+   "local": "Основной",
+   "value2": 2.1
+  },
+  "ru-1": {
+   "cell": {
+    "formula": "SUM(D12,D3)",
+    "format": 9
+   },
+   "computed": 100.1,
+   "text": "10010%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 100.1
+  },
+  "ru-2": {
+   "cell": {
+    "formula": "ROUNDUP(D3,0)",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 100,
+   "text": "100 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 100
+  },
+  "ru-3": {
+   "cell": {
+    "formula": "INT(D11)",
+    "format": 14
+   },
+   "computed": 46200,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "ru-4": {
+   "cell": {
+    "formula": "MEDIAN(D3,D6)",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 51,
+   "text": "51 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 51
+  },
+  "ru-5": {
+   "cell": {
+    "formula": "TRUNC(D12)",
+    "format": 9
+   },
+   "computed": 0,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0
+  },
+  "ru-6": {
+   "cell": {
+    "formula": "SUM(D:D)",
+    "format": "d\\ mmmm\\ yyyy"
+   },
+   "computed": 239604.55000000002,
+   "text": "#########",
+   "code": "d mmmm yyyy",
+   "local": "Д ММММ ГГГГ"
+  },
+  "ru-7": {
+   "cell": {
+    "formula": "ROUNDDOWN(D12,1)",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "in-sci-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "in-sci-2": {
+   "cell": {
+    "formula": "D11",
+    "format": 14
+   },
+   "computed": 46200,
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "in-frac-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "in-acct-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "in-acct-2": {
+   "cell": {
+    "formula": "D6",
+    "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+   },
+   "computed": 2,
+   "text": "        2,00 ₽ ",
+   "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "value2": 2
+  },
+  "in-pct2-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 10
+   },
+   "computed": 0.1,
+   "text": "10,00%",
+   "code": "0.00%",
+   "local": "0,00%",
+   "value2": 0.1
+  },
+  "in-pct2-2": {
+   "cell": {
+    "formula": "D3",
+    "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+   },
+   "computed": 100,
+   "text": "100 ₽",
+   "code": "$#,##0_);($#,##0)",
+   "local": "# ##0 ₽;-# ##0 ₽",
+   "value2": 100
+  },
+  "in-grp-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 3
+   },
+   "computed": 0.1,
+   "text": "0",
+   "code": "#,##0",
+   "local": "# ##0",
+   "value2": 0.1
+  },
+  "in-text-1": {
+   "cell": {
+    "value": "=D12",
+    "format": 49
+   },
+   "text": "=D12",
+   "code": "@",
+   "local": "@"
+  },
+  "in-datel-1": {
+   "cell": {
+    "formula": "D11",
+    "format": 15
+   },
+   "computed": 46200,
+   "text": "#########",
+   "code": "d-mmm-yy",
+   "local": "ДД.МММ.ГГ"
+  },
+  "in-datel-2": {
+   "cell": {
+    "formula": "D5",
+    "format": 21
+   },
+   "computed": 0.25,
+   "text": "06:00:00",
+   "code": "h:mm:ss",
+   "local": "чч:мм:сс",
+   "value2": 0.25
+  },
+  "in-own-1": {
+   "cell": {
+    "formula": "D11",
+    "format": "[Red]0"
+   },
+   "computed": 46200,
+   "text": "46200",
+   "code": "[Red]0",
+   "local": "[Красный]0",
+   "value2": 46200
+  }
+ }
+}

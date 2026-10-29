@@ -10,6 +10,7 @@
 # Output: a JSON object { version, answers: [per book { error }] } written as UTF-8 to $out.
 param([Parameter(Mandatory = $true)][string]$job, [Parameter(Mandatory = $true)][string]$out)
 Add-Type -AssemblyName System.Windows.Forms, UIAutomationClient, UIAutomationTypes
+. (Join-Path $PSScriptRoot 'front.ps1')
 $UIA = [System.Windows.Automation.AutomationElement]
 # the window's Format Painter button: an element of that name with a toggle
 function Painter($hwnd) {
@@ -23,10 +24,10 @@ function IsOn($t) { [int]$t.Current.ToggleState -eq 1 }
 # a double click of the left button at the middle of the element, which UI Automation's toggle does not make
 function DoubleClick($b) {
   $r = $b.Current.BoundingRectangle
-  [void][XlPaint.Win]::SetCursorPos([int]($r.X + $r.Width / 2), [int]($r.Y + $r.Height / 2))
+  [void][XlScreen.Win]::SetCursorPos([int]($r.X + $r.Width / 2), [int]($r.Y + $r.Height / 2))
   for ($i = 0; $i -lt 2; $i++) {
-    [XlPaint.Win]::mouse_event(2, 0, 0, 0, [UIntPtr]::Zero)
-    [XlPaint.Win]::mouse_event(4, 0, 0, 0, [UIntPtr]::Zero)
+    [XlScreen.Win]::mouse_event(2, 0, 0, 0, [UIntPtr]::Zero)
+    [XlScreen.Win]::mouse_event(4, 0, 0, 0, [UIntPtr]::Zero)
     Start-Sleep -Milliseconds 60
   }
 }
@@ -46,26 +47,6 @@ function Take($xl, $wb, $t, $to, $key) {
     Start-Sleep -Milliseconds 500
   }
   $sel
-}
-Add-Type -Namespace XlPaint -Name Win -MemberDefinition @'
-[DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
-[DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-[DllImport("user32.dll")] public static extern void keybd_event(byte k, byte s, uint f, UIntPtr x);
-[DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
-[DllImport("user32.dll")] public static extern void mouse_event(uint f, uint x, uint y, uint d, UIntPtr e);
-'@
-# Excel in front: Windows lets a process take the foreground once it sent the last input, so Shift goes down and up
-# first; a window that keeps the foreground (Windows's Get Started did) stops the step
-function Front($hwnd) {
-  $h = [IntPtr]$hwnd
-  for ($i = 0; $i -lt 3; $i++) {
-    [XlPaint.Win]::keybd_event(0x10, 0, 0, [UIntPtr]::Zero)
-    [XlPaint.Win]::keybd_event(0x10, 0, 2, [UIntPtr]::Zero)
-    [void][XlPaint.Win]::SetForegroundWindow($h)
-    Start-Sleep -Milliseconds 400
-    if ([XlPaint.Win]::GetForegroundWindow() -eq $h) { return }
-  }
-  throw "Excel did not come to the front: $([XlPaint.Win]::GetForegroundWindow()) is, not $hwnd"
 }
 $books = [IO.File]::ReadAllText($job, [Text.Encoding]::UTF8) | ConvertFrom-Json
 $dir = Split-Path $job

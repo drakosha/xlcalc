@@ -1,0 +1,1560 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "one-1": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "one-2": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "one-3": {
+    "ok": true,
+    "input": {
+     "formula": "C4",
+     "numberFormat": 10
+    }
+   },
+   "one-4": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "one-5": {
+    "ok": true,
+    "input": {
+     "formula": "C6",
+     "numberFormat": "$#,##0.00"
+    }
+   },
+   "one-6": {
+    "ok": true,
+    "input": {
+     "formula": "C7",
+     "numberFormat": 20
+    }
+   },
+   "one-7": {
+    "ok": true,
+    "input": {
+     "formula": "C8",
+     "numberFormat": 2
+    }
+   },
+   "one-8": {
+    "ok": true,
+    "input": {
+     "formula": "C9",
+     "numberFormat": 3
+    }
+   },
+   "one-9": {
+    "ok": true,
+    "input": {
+     "formula": "C10",
+     "numberFormat": 11
+    }
+   },
+   "one-10": {
+    "ok": true,
+    "input": {
+     "formula": "C11",
+     "numberFormat": 12
+    }
+   },
+   "one-11": {
+    "ok": true,
+    "input": {
+     "formula": "C12",
+     "numberFormat": "@"
+    }
+   },
+   "one-12": {
+    "ok": true,
+    "input": {
+     "formula": "C13",
+     "numberFormat": 44
+    }
+   },
+   "one-13": {
+    "ok": true,
+    "input": {
+     "formula": "C14",
+     "numberFormat": "0.0 \"kg\""
+    }
+   },
+   "one-14": {
+    "ok": true,
+    "input": {
+     "formula": "C15",
+     "numberFormat": 22
+    }
+   },
+   "one-15": {
+    "ok": true,
+    "input": {
+     "formula": "C16",
+     "numberFormat": 9
+    }
+   },
+   "one-16": {
+    "ok": true,
+    "input": {
+     "formula": "C17",
+     "numberFormat": 9
+    }
+   },
+   "one-17": {
+    "ok": true,
+    "input": {
+     "formula": "C18",
+     "numberFormat": "yyyy-mm-dd"
+    }
+   },
+   "op-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C1",
+     "numberFormat": 9
+    }
+   },
+   "op-2": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C3",
+     "numberFormat": 9
+    }
+   },
+   "op-3": {
+    "ok": true,
+    "input": {
+     "formula": "C3-C1"
+    }
+   },
+   "op-4": {
+    "ok": true,
+    "input": {
+     "formula": "C1-C3"
+    }
+   },
+   "op-5": {
+    "ok": true,
+    "input": {
+     "formula": "C3-1",
+     "numberFormat": 9
+    }
+   },
+   "op-6": {
+    "ok": true,
+    "input": {
+     "formula": "C3*C1"
+    }
+   },
+   "op-7": {
+    "ok": true,
+    "input": {
+     "formula": "C1*C3"
+    }
+   },
+   "op-8": {
+    "ok": true,
+    "input": {
+     "formula": "C3*2"
+    }
+   },
+   "op-9": {
+    "ok": true,
+    "input": {
+     "formula": "2*C3"
+    }
+   },
+   "op-10": {
+    "ok": true,
+    "input": {
+     "formula": "C3/C1"
+    }
+   },
+   "op-11": {
+    "ok": true,
+    "input": {
+     "formula": "C1/C3"
+    }
+   },
+   "op-12": {
+    "ok": true,
+    "input": {
+     "formula": "C3/2"
+    }
+   },
+   "op-13": {
+    "ok": true,
+    "input": {
+     "formula": "C3^2"
+    }
+   },
+   "op-14": {
+    "ok": true,
+    "input": {
+     "formula": "-C3",
+     "numberFormat": 9
+    }
+   },
+   "op-15": {
+    "ok": true,
+    "input": {
+     "formula": "+C3",
+     "numberFormat": 9
+    }
+   },
+   "op-16": {
+    "ok": true,
+    "input": {
+     "formula": "(C3)",
+     "numberFormat": 9
+    }
+   },
+   "op-17": {
+    "ok": true,
+    "input": {
+     "formula": "C3%"
+    }
+   },
+   "op-18": {
+    "ok": true,
+    "input": {
+     "formula": "C3&\"\""
+    }
+   },
+   "op-19": {
+    "ok": true,
+    "input": {
+     "formula": "C3=C1"
+    }
+   },
+   "op-20": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C5",
+     "numberFormat": 9
+    }
+   },
+   "op-21": {
+    "ok": true,
+    "input": {
+     "formula": "C5+C3",
+     "numberFormat": 7
+    }
+   },
+   "op-22": {
+    "ok": true,
+    "input": {
+     "formula": "C2+C3",
+     "numberFormat": 14
+    }
+   },
+   "op-23": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C2",
+     "numberFormat": 9
+    }
+   },
+   "op-24": {
+    "ok": true,
+    "input": {
+     "formula": "C2-C15"
+    }
+   },
+   "op-25": {
+    "ok": true,
+    "input": {
+     "formula": "C5*2"
+    }
+   },
+   "op-26": {
+    "ok": true,
+    "input": {
+     "formula": "C5/2"
+    }
+   },
+   "op-27": {
+    "ok": true,
+    "input": {
+     "formula": "C5-C1"
+    }
+   },
+   "op-28": {
+    "ok": true,
+    "input": {
+     "formula": "C1-C5"
+    }
+   },
+   "op-29": {
+    "ok": true,
+    "input": {
+     "formula": "C7+C1",
+     "numberFormat": 20
+    }
+   },
+   "op-30": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C7",
+     "numberFormat": 20
+    }
+   },
+   "op-31": {
+    "ok": true,
+    "input": {
+     "formula": "C2*1"
+    }
+   },
+   "op-32": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C2",
+     "numberFormat": 14
+    }
+   },
+   "op-33": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+C3",
+     "numberFormat": 14
+    }
+   },
+   "op-34": {
+    "ok": true,
+    "input": {
+     "formula": "C3+TODAY()",
+     "numberFormat": 9
+    }
+   },
+   "op-35": {
+    "ok": true,
+    "input": {
+     "formula": "C16+C1",
+     "numberFormat": 9
+    }
+   },
+   "op-36": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C16",
+     "numberFormat": 9
+    }
+   },
+   "op-37": {
+    "ok": true,
+    "input": {
+     "formula": "C19+C3",
+     "numberFormat": 9
+    }
+   },
+   "fn-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3)",
+     "numberFormat": 9
+    }
+   },
+   "fn-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3,C1)",
+     "numberFormat": 9
+    }
+   },
+   "fn-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,C3)",
+     "numberFormat": 9
+    }
+   },
+   "fn-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3:C4)",
+     "numberFormat": 9
+    }
+   },
+   "fn-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1:C3)"
+    }
+   },
+   "fn-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3:C5)",
+     "numberFormat": 9
+    }
+   },
+   "fn-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C2:C3)",
+     "numberFormat": 14
+    }
+   },
+   "fn-8": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C16:C17)",
+     "numberFormat": 9
+    }
+   },
+   "fn-9": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C:C)"
+    }
+   },
+   "fn-10": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3,C5)",
+     "numberFormat": 9
+    }
+   },
+   "fn-11": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C5,C3)",
+     "numberFormat": 7
+    }
+   },
+   "fn-12": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(C3,C1)",
+     "numberFormat": 9
+    }
+   },
+   "fn-13": {
+    "ok": true,
+    "input": {
+     "formula": "MIN(C1,C3)",
+     "numberFormat": 9
+    }
+   },
+   "fn-14": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(C3,C17)",
+     "numberFormat": 9
+    }
+   },
+   "fn-15": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(C3,2)",
+     "numberFormat": 9
+    }
+   },
+   "fn-16": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(C3)"
+    }
+   },
+   "fn-17": {
+    "ok": true,
+    "input": {
+     "formula": "INT(C5)"
+    }
+   },
+   "fn-18": {
+    "ok": true,
+    "input": {
+     "formula": "IF(C1>0,C3,0)"
+    }
+   },
+   "fn-19": {
+    "ok": true,
+    "input": {
+     "formula": "IF(TRUE,C3)"
+    }
+   },
+   "fn-20": {
+    "ok": true,
+    "input": {
+     "formula": "CONCAT(C3)"
+    }
+   },
+   "fn-21": {
+    "ok": true,
+    "input": {
+     "formula": "INDEX(C3:C4,1)"
+    }
+   },
+   "fn-22": {
+    "ok": true,
+    "input": {
+     "formula": "PRODUCT(C3,2)"
+    }
+   },
+   "fn-23": {
+    "ok": true,
+    "input": {
+     "formula": "SUMPRODUCT(C3:C4)"
+    }
+   },
+   "fn-24": {
+    "ok": true,
+    "input": {
+     "formula": "SUBTOTAL(9,C3:C4)"
+    }
+   },
+   "fn-25": {
+    "ok": true,
+    "input": {
+     "formula": "N(C3)"
+    }
+   },
+   "fn-26": {
+    "ok": true,
+    "input": {
+     "formula": "CHOOSE(1,C3)"
+    }
+   },
+   "fn-27": {
+    "ok": true,
+    "input": {
+     "formula": "MEDIAN(C3,C17)"
+    }
+   },
+   "fn-28": {
+    "ok": true,
+    "input": {
+     "formula": "COUNT(C3:C4)"
+    }
+   },
+   "fn-29": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDUP(C3,1)"
+    }
+   },
+   "fn-30": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3)*2"
+    }
+   },
+   "fn-31": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C5)+C3",
+     "numberFormat": 7
+    }
+   },
+   "fnru-1": {
+    "ok": true,
+    "input": {
+     "formula": "СУММ(C3)"
+    }
+   },
+   "fnru-2": {
+    "at": 8,
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;"
+   },
+   "fnru-3": {
+    "ok": true,
+    "input": {
+     "formula": "СУММ(C3:C4)"
+    }
+   },
+   "fnru-4": {
+    "at": 10,
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;"
+   },
+   "fnru-5": {
+    "at": 10,
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;"
+   },
+   "fnru-6": {
+    "at": 8,
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;"
+   },
+   "fnru-7": {
+    "ok": true,
+    "input": {
+     "formula": "СУММ(C1:C3)"
+    }
+   },
+   "sheet-1": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-2": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C1+C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-3": {
+    "ok": true,
+    "input": {
+     "formula": "C1+'T'!C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM('T'!C1:C2)",
+     "numberFormat": 9
+    }
+   },
+   "sheet-5": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C2"
+    }
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "Pct"
+    }
+   },
+   "name-2": {
+    "ok": true,
+    "input": {
+     "formula": "Pct*2"
+    }
+   },
+   "name-3": {
+    "ok": true,
+    "input": {
+     "formula": "Pct+C1"
+    }
+   },
+   "name-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(Pct)"
+    }
+   },
+   "name-5": {
+    "ok": true,
+    "input": {
+     "formula": "Num+Pct"
+    }
+   },
+   "in-num-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 2
+    }
+   },
+   "in-num-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 2
+    }
+   },
+   "in-num-3": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 2
+    }
+   },
+   "in-pct-1": {
+    "ok": true,
+    "input": {
+     "formula": "C1",
+     "numberFormat": 9
+    }
+   },
+   "in-pct-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-pct-3": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "in-pct-4": {
+    "ok": true,
+    "input": {
+     "formula": "C4",
+     "numberFormat": 9
+    }
+   },
+   "in-date-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "in-date-2": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "in-date-3": {
+    "ok": true,
+    "input": {
+     "formula": "C1",
+     "numberFormat": 14
+    }
+   },
+   "in-date-4": {
+    "ok": true,
+    "input": {
+     "formula": "C15",
+     "numberFormat": 14
+    }
+   },
+   "in-cur-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "in-cur-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-own-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": "0.0 \"kg\""
+    }
+   },
+   "in-time-1": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-time-2": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   }
+  },
+  "ru-RU": {
+   "one-1": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "one-2": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "one-3": {
+    "ok": true,
+    "input": {
+     "formula": "C4",
+     "numberFormat": 10
+    }
+   },
+   "one-4": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "one-5": {
+    "ok": true,
+    "input": {
+     "formula": "C6",
+     "numberFormat": "$#,##0.00"
+    }
+   },
+   "one-6": {
+    "ok": true,
+    "input": {
+     "formula": "C7",
+     "numberFormat": 20
+    }
+   },
+   "one-7": {
+    "ok": true,
+    "input": {
+     "formula": "C8",
+     "numberFormat": 2
+    }
+   },
+   "one-8": {
+    "ok": true,
+    "input": {
+     "formula": "C9",
+     "numberFormat": 3
+    }
+   },
+   "one-9": {
+    "ok": true,
+    "input": {
+     "formula": "C10",
+     "numberFormat": 11
+    }
+   },
+   "one-10": {
+    "ok": true,
+    "input": {
+     "formula": "C11",
+     "numberFormat": 12
+    }
+   },
+   "one-11": {
+    "ok": true,
+    "input": {
+     "formula": "C12",
+     "numberFormat": "@"
+    }
+   },
+   "one-12": {
+    "ok": true,
+    "input": {
+     "formula": "C13",
+     "numberFormat": 44
+    }
+   },
+   "one-13": {
+    "ok": true,
+    "input": {
+     "formula": "C14",
+     "numberFormat": "0.0 \"kg\""
+    }
+   },
+   "one-14": {
+    "ok": true,
+    "input": {
+     "formula": "C15",
+     "numberFormat": 22
+    }
+   },
+   "one-15": {
+    "ok": true,
+    "input": {
+     "formula": "C16",
+     "numberFormat": 9
+    }
+   },
+   "one-16": {
+    "ok": true,
+    "input": {
+     "formula": "C17",
+     "numberFormat": 9
+    }
+   },
+   "one-17": {
+    "ok": true,
+    "input": {
+     "formula": "C18",
+     "numberFormat": "yyyy-mm-dd"
+    }
+   },
+   "op-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C1",
+     "numberFormat": 9
+    }
+   },
+   "op-2": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C3",
+     "numberFormat": 9
+    }
+   },
+   "op-3": {
+    "ok": true,
+    "input": {
+     "formula": "C3-C1"
+    }
+   },
+   "op-4": {
+    "ok": true,
+    "input": {
+     "formula": "C1-C3"
+    }
+   },
+   "op-5": {
+    "ok": true,
+    "input": {
+     "formula": "C3-1",
+     "numberFormat": 9
+    }
+   },
+   "op-6": {
+    "ok": true,
+    "input": {
+     "formula": "C3*C1"
+    }
+   },
+   "op-7": {
+    "ok": true,
+    "input": {
+     "formula": "C1*C3"
+    }
+   },
+   "op-8": {
+    "ok": true,
+    "input": {
+     "formula": "C3*2"
+    }
+   },
+   "op-9": {
+    "ok": true,
+    "input": {
+     "formula": "2*C3"
+    }
+   },
+   "op-10": {
+    "ok": true,
+    "input": {
+     "formula": "C3/C1"
+    }
+   },
+   "op-11": {
+    "ok": true,
+    "input": {
+     "formula": "C1/C3"
+    }
+   },
+   "op-12": {
+    "ok": true,
+    "input": {
+     "formula": "C3/2"
+    }
+   },
+   "op-13": {
+    "ok": true,
+    "input": {
+     "formula": "C3^2"
+    }
+   },
+   "op-14": {
+    "ok": true,
+    "input": {
+     "formula": "-C3",
+     "numberFormat": 9
+    }
+   },
+   "op-15": {
+    "ok": true,
+    "input": {
+     "formula": "+C3",
+     "numberFormat": 9
+    }
+   },
+   "op-16": {
+    "ok": true,
+    "input": {
+     "formula": "(C3)",
+     "numberFormat": 9
+    }
+   },
+   "op-17": {
+    "ok": true,
+    "input": {
+     "formula": "C3%"
+    }
+   },
+   "op-18": {
+    "ok": true,
+    "input": {
+     "formula": "C3&\"\""
+    }
+   },
+   "op-19": {
+    "ok": true,
+    "input": {
+     "formula": "C3=C1"
+    }
+   },
+   "op-20": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C5",
+     "numberFormat": 9
+    }
+   },
+   "op-21": {
+    "ok": true,
+    "input": {
+     "formula": "C5+C3",
+     "numberFormat": 7
+    }
+   },
+   "op-22": {
+    "ok": true,
+    "input": {
+     "formula": "C2+C3",
+     "numberFormat": 14
+    }
+   },
+   "op-23": {
+    "ok": true,
+    "input": {
+     "formula": "C3+C2",
+     "numberFormat": 9
+    }
+   },
+   "op-24": {
+    "ok": true,
+    "input": {
+     "formula": "C2-C15"
+    }
+   },
+   "op-25": {
+    "ok": true,
+    "input": {
+     "formula": "C5*2"
+    }
+   },
+   "op-26": {
+    "ok": true,
+    "input": {
+     "formula": "C5/2"
+    }
+   },
+   "op-27": {
+    "ok": true,
+    "input": {
+     "formula": "C5-C1"
+    }
+   },
+   "op-28": {
+    "ok": true,
+    "input": {
+     "formula": "C1-C5"
+    }
+   },
+   "op-29": {
+    "ok": true,
+    "input": {
+     "formula": "C7+C1",
+     "numberFormat": 20
+    }
+   },
+   "op-30": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C7",
+     "numberFormat": 20
+    }
+   },
+   "op-31": {
+    "ok": true,
+    "input": {
+     "formula": "C2*1"
+    }
+   },
+   "op-32": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C2",
+     "numberFormat": 14
+    }
+   },
+   "op-33": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+C3",
+     "numberFormat": 14
+    }
+   },
+   "op-34": {
+    "ok": true,
+    "input": {
+     "formula": "C3+TODAY()",
+     "numberFormat": 9
+    }
+   },
+   "op-35": {
+    "ok": true,
+    "input": {
+     "formula": "C16+C1",
+     "numberFormat": 9
+    }
+   },
+   "op-36": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C16",
+     "numberFormat": 9
+    }
+   },
+   "op-37": {
+    "ok": true,
+    "input": {
+     "formula": "C19+C3",
+     "numberFormat": 9
+    }
+   },
+   "fn-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3)",
+     "numberFormat": 9
+    }
+   },
+   "fn-2": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-3": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3:C4)",
+     "numberFormat": 9
+    }
+   },
+   "fn-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1:C3)"
+    }
+   },
+   "fn-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3:C5)",
+     "numberFormat": 9
+    }
+   },
+   "fn-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C2:C3)",
+     "numberFormat": 14
+    }
+   },
+   "fn-8": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C16:C17)",
+     "numberFormat": 9
+    }
+   },
+   "fn-9": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C:C)"
+    }
+   },
+   "fn-10": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-11": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-12": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-13": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-14": {
+    "at": 11,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-15": {
+    "at": 7,
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C3» читается иначе"
+   },
+   "fn-16": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(C3)"
+    }
+   },
+   "fn-17": {
+    "ok": true,
+    "input": {
+     "formula": "INT(C5)"
+    }
+   },
+   "fn-18": {
+    "at": 9,
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C3» читается иначе"
+   },
+   "fn-19": {
+    "at": 8,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-20": {
+    "ok": true,
+    "input": {
+     "formula": "CONCAT(C3)"
+    }
+   },
+   "fn-21": {
+    "at": 10,
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C4» читается иначе"
+   },
+   "fn-22": {
+    "at": 9,
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C3» читается иначе"
+   },
+   "fn-23": {
+    "ok": true,
+    "input": {
+     "formula": "SUMPRODUCT(C3:C4)"
+    }
+   },
+   "fn-24": {
+    "at": 12,
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь ссылка"
+   },
+   "fn-25": {
+    "ok": true,
+    "input": {
+     "formula": "N(C3)"
+    }
+   },
+   "fn-26": {
+    "at": 10,
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь ссылка"
+   },
+   "fn-27": {
+    "at": 10,
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»"
+   },
+   "fn-28": {
+    "ok": true,
+    "input": {
+     "formula": "COUNT(C3:C4)"
+    }
+   },
+   "fn-29": {
+    "at": 9,
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C3» читается иначе"
+   },
+   "fn-30": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3)*2"
+    }
+   },
+   "fn-31": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C5)+C3",
+     "numberFormat": 7
+    }
+   },
+   "fnru-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3)",
+     "numberFormat": 9
+    }
+   },
+   "fnru-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,C3)",
+     "numberFormat": 9
+    }
+   },
+   "fnru-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C3:C4)",
+     "numberFormat": 9
+    }
+   },
+   "fnru-4": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(C3,2)",
+     "numberFormat": 9
+    }
+   },
+   "fnru-5": {
+    "ok": true,
+    "input": {
+     "formula": "IF(C1>0,C3,0)"
+    }
+   },
+   "fnru-6": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(C3,C1)",
+     "numberFormat": 9
+    }
+   },
+   "fnru-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1:C3)"
+    }
+   },
+   "sheet-1": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-2": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C1+C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-3": {
+    "ok": true,
+    "input": {
+     "formula": "C1+'T'!C1",
+     "numberFormat": 9
+    }
+   },
+   "sheet-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM('T'!C1:C2)",
+     "numberFormat": 9
+    }
+   },
+   "sheet-5": {
+    "ok": true,
+    "input": {
+     "formula": "'T'!C2"
+    }
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "Pct"
+    }
+   },
+   "name-2": {
+    "ok": true,
+    "input": {
+     "formula": "Pct*2"
+    }
+   },
+   "name-3": {
+    "ok": true,
+    "input": {
+     "formula": "Pct+C1"
+    }
+   },
+   "name-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(Pct)"
+    }
+   },
+   "name-5": {
+    "ok": true,
+    "input": {
+     "formula": "Num+Pct"
+    }
+   },
+   "in-num-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 2
+    }
+   },
+   "in-num-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 2
+    }
+   },
+   "in-num-3": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 2
+    }
+   },
+   "in-pct-1": {
+    "ok": true,
+    "input": {
+     "formula": "C1",
+     "numberFormat": 9
+    }
+   },
+   "in-pct-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-pct-3": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "in-pct-4": {
+    "ok": true,
+    "input": {
+     "formula": "C4",
+     "numberFormat": 9
+    }
+   },
+   "in-date-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "in-date-2": {
+    "ok": true,
+    "input": {
+     "formula": "C5",
+     "numberFormat": 7
+    }
+   },
+   "in-date-3": {
+    "ok": true,
+    "input": {
+     "formula": "C1",
+     "numberFormat": 14
+    }
+   },
+   "in-date-4": {
+    "ok": true,
+    "input": {
+     "formula": "C15",
+     "numberFormat": 14
+    }
+   },
+   "in-cur-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   },
+   "in-cur-2": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-own-1": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": "0.0 \"kg\""
+    }
+   },
+   "in-time-1": {
+    "ok": true,
+    "input": {
+     "formula": "C2",
+     "numberFormat": 14
+    }
+   },
+   "in-time-2": {
+    "ok": true,
+    "input": {
+     "formula": "C3",
+     "numberFormat": 9
+    }
+   }
+  }
+ }
+}

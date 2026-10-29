@@ -28,7 +28,7 @@ export async function stepEntry(set: string, tag: Tag, e: WinEnv): Promise<void>
   const todo = cases.filter((c) => !answers[c.id])
   const parts = inParts(todo, ENTRY_PART)
   const book = async (part: EntryCase[], f: string) => {
-    const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
+    const { data, issues } = await writeXlsx({ book: entryBook(part, mod.data) }, { values: 'omit' })
     if (issues.length) throw new Error(`entry ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(f, data)
     const cells = part.map((_, i) => `A${i + 1}`)

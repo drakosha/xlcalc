@@ -11,6 +11,7 @@ import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, Num
 import { inner } from '../model.js'
 import { checkEntryOptions } from '../input.js'
 import { checkString } from '../input/basic.js'
+import { checkFormat } from '../input/styles.js'
 import { validateTyped, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'
@@ -21,10 +22,10 @@ import { englishName } from '../call-at.js'
 import { wordKey } from '../collate.js'
 import { epochOf, ymd } from '../dates.js'
 import { arityFor } from '../arity.js'
-import { msToSerial } from '../model.js'
-import { formatAfter, shows } from './forms.js'
+import { formatAddress, msToSerial } from '../model.js'
+import { formatAfter, formOf, shows } from './forms.js'
 import { closeTyped } from './close.js'
-import { formulaFormat } from './formula.js'
+import { formulaFormat, type FormatAt } from './formula.js'
 import { moneyFormat, readTyped, type Form, type YearClock } from './read.js'
 
 /** The rules of each locale object and date system, with a clock whose year is set for each entry (entries are synchronous). */
@@ -51,16 +52,16 @@ const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 't
  * A typed formula, `shift` characters into the typed text: its canonical stored text and the format it sets (`formula.ts`),
  * its invariant text where it names what the book may lack (`#NAME?` then), or why Excel stops it, at its place in the text.
  */
-function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[], close = false): Formula | Extract<EntryResult, { ok: false }> {
+function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[], close = false, at?: FormatAt): Formula | Extract<EntryResult, { ok: false }> {
   const opts = externalBooks ? { externalBooks } : undefined
   const v = validateTyped(text, locale, opts)
   // typed or edited in place, what is left open at the end Excel closes on Return, or offers to (`close.ts`)
   const c = close && !v.ok && v.code === 'syntax' ? closeTyped(text) : null
   if (c?.silent) {
-    const f = taken(c.closed, validateTyped(c.closed, locale, opts), shift, locale, externalBooks)
+    const f = taken(c.closed, validateTyped(c.closed, locale, opts), shift, locale, externalBooks, at)
     return 'formula' in f ? f : { ...f, at: Math.min(f.at, text.length + shift) }
   }
-  const f = taken(text, v, shift, locale, externalBooks)
+  const f = taken(text, v, shift, locale, externalBooks, at)
   return c?.offered && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.correction, locale, opts).ok ? { ...f, correction: c.correction } : f
 }
 
@@ -68,11 +69,11 @@ function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: 
 type Formula = { formula: string; sets?: NumberFormat | 'money' }
 
 /** `text` as `validateTyped` read it (`v`): taken as a formula, or why Excel stops it, at its place in the typed text. */
-function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number, locale: Locale, externalBooks?: ExternalBook[]): Formula | Extract<EntryResult, { ok: false }> {
+function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number, locale: Locale, externalBooks?: ExternalBook[], at?: FormatAt): Formula | Extract<EntryResult, { ok: false }> {
   if (v.ok) {
     // the typed text's tree; given the book's links, the canonical text's read without them, where a link fails and sets no format
     const p = externalBooks ? validate(v.canonical) : v
-    return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast) } : {}) }
+    return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast, at) } : {}) }
   }
   // a book that is not one of its links: Excel would ask for the file, a new link the model does not make
   if (STOPS.has(v.code) || (externalBooks && v.code === 'external_ref')) return { ok: false, code: v.code, message: v.message, at: v.at + shift }
@@ -103,6 +104,18 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   return readEntry(text, o, o.inPlace ? 'inPlace' : 'typed')
 }
 
+/** A host's formats of the book's cells (`EntryOptions.numberFormatAt`) by zero-based row and column, each checked. */
+function formatsOf(fn: EntryOptions['numberFormatAt']): FormatAt | undefined {
+  return (
+    fn &&
+    ((sheet, r, c) => {
+      const f = fn(sheet, formatAddress(r, c))
+      if (f !== undefined) checkFormat(f, 'opts.numberFormatAt')
+      return f
+    })
+  )
+}
+
 /** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard, put back by Excel's Replace. */
 export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
 
@@ -117,7 +130,7 @@ export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
  * format takes a number, a date, a boolean or a formula as a General cell does, keeping its format where typing gives
  * none (`3/15/2026` is the date with its date format, `12` the number shown by `@`).
  */
-export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'): EntryResult {
+export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed', at: FormatAt | undefined = formatsOf(o.numberFormatAt)): EntryResult {
   const pasted = way === 'pasted'
   const locale = localeOf(o.locale)
   const cell = o.cell ?? {}
@@ -133,11 +146,11 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
   const { rules, clock } = rulesFor(locale, epoch, year)
   // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
-    const f = formulaOf(src, shift, locale, o.externalBooks, way === 'typed' || way === 'inPlace')
+    const f = formulaOf(src, shift, locale, o.externalBooks, way === 'typed' || way === 'inPlace', at)
     if (!('formula' in f)) return pasted ? input({ value: text }) : f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
-    return input({ formula: f.formula }, after(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets))
+    return input({ formula: f.formula }, after(f.sets === 'money' ? 'currency' : formOf(f.sets, locale), sets))
   }
   if (text === '') return cell.numberFormat !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'") && !pasted) return input({ value: text.slice(1) })

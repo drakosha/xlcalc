@@ -19,7 +19,7 @@ import { heldOf } from './entry.js'
 import { savedColumns } from './fit.js'
 import { localeDir, localeMeta } from './locales.js'
 import { answeredLine, answerSaver, keptSame, loadStored, runCases, setModule } from './stored.js'
-import { clipboardText, readCells, readColumns, selectedOf, uiBook, type PointStep, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
+import { clipboardText, pressName, readCells, readColumns, selectedOf, uiBook, type PointStep, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
 import { rawFile } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 
@@ -95,9 +95,10 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
 }
 
 /** The action as the script takes it; a paste with its clipboard's text, a choice with its cells and items apart. */
-function actJson(c: UiCase): string {
+function actJson(c: UiCase, tag: string): string {
   const act = c.act
   if (act.do === 'paste') return JSON.stringify({ do: 'paste', at: act.at, text: clipboardText(act) })
+  if (act.do === 'press') return JSON.stringify({ ...act, buttons: act.buttons.map((b) => pressName(b, 'Mac', tag)) })
   return JSON.stringify(act.do === 'choose' ? { do: 'choose', cells: selectedOf(act), items: act.picks.map(([, k]) => k) } : act)
 }
 
@@ -124,7 +125,7 @@ function checkTyped(steps: PointStep[], bars: [string, string][], label: string)
 }
 
 /** One case in Excel, its action taken (`none` reads the book alone). A book Excel repairs stops the run; a window Excel shows for the action is answered by the script. */
-export async function runCase(c: UiCase, label: string, act = actJson(c)): Promise<UiAnswer> {
+export async function runCase(c: UiCase, label: string, tag: string, act = actJson(c, tag)): Promise<UiAnswer> {
   if (declineRepair()) console.log('closed a leftover book repair window')
   // the keyboard types a case of `point` in the ABC layout, taken again before each: another layout typed `=ф2#` for `=E2#`
   if (c.act.do === 'point') execFileSync('swift', [INPUT_SOURCE, 'com.apple.keylayout.ABC'])
@@ -168,7 +169,7 @@ export async function stepUi(set: string, tag: string): Promise<void> {
   const clipboard = pastes ? execFileSync('pbpaste', { encoding: 'utf8', env: UTF8 }) : ''
   try {
     await runCases(todo, 'FUI_ONLY', async (c) => {
-      answers[c.id] = await runCase(c, `${set} ${tag} ${c.id}`)
+      answers[c.id] = await runCase(c, `${set} ${tag} ${c.id}`, tag)
       save()
     }, (n) => {
       save()

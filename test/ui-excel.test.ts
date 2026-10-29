@@ -164,7 +164,7 @@ for (const run of RUNS) {
     for (const c of stored.cases)
       it(c.id, () => {
         const a = stored.answers[c.id]
-        const reasons = UI_KNOWN.get(`${tag}:${set}:${c.id}`)
+        const reasons = UI_KNOWN.get(`${tag}:${set}:${c.id}`) ?? (excel === 'Windows' ? UI_KNOWN.get(`${tag}:win/${set}:${c.id}`) : undefined)
         if (ribbonCase(c)) {
           // a known difference names its cell: the others agree, and each known one still differs
           const off = ribbonOff(c, a, tag)
@@ -243,6 +243,10 @@ const CONFIRMED: Record<string, number> = {
   'en-US:press-held': 79,
   'en-US:press-more-held': 57,
   'en-US:press-third-held': 16,
+  'en-US:fill-refs-held': 7,
+  'ru-RU:press-held': 79,
+  'ru-RU:press-more-held': 57,
+  'ru-RU:press-third-held': 16,
   'ru-RU:pick-held': 5,
   'ru-RU:edit-held': 13,
 }
@@ -257,7 +261,10 @@ interface Predicted {
 describe('ui sets (Excel for Mac)', () => {
   const mac = RUNS.filter((r) => r.excel === 'Mac')
   it('every known difference is a stored case, or a cell read in one', () => {
-    const stored = new Set(mac.flatMap((r) => r.stored.cases.flatMap((c) => [`${r.tag}:${r.set}:${c.id}`, ...readCells(c).map((x) => `${r.tag}:${r.set}:${c.id}:${x}`)])))
+    const stored = new Set([
+      ...mac.flatMap((r) => r.stored.cases.flatMap((c) => [`${r.tag}:${r.set}:${c.id}`, ...readCells(c).map((x) => `${r.tag}:${r.set}:${c.id}:${x}`)])),
+      ...RUNS.filter((r) => r.excel === 'Windows').flatMap((r) => r.stored.cases.map((c) => `${r.tag}:win/${r.set}:${c.id}`)),
+    ])
     expect([...UI_KNOWN.keys()].filter((k) => !stored.has(k))).toEqual([])
   })
   it.each(mac.map((r) => [`${r.tag}:${r.set}`, r] as const))('%s: the predictions written before Excel ran it', (key, run) => {

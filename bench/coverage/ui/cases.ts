@@ -44,8 +44,17 @@ export type UiAction =
    */
   | { do: 'press'; range: string; buttons: PressButton[]; enter?: true }
 
-/** The ribbon's buttons a case of `press` takes, by their names in Excel for Mac in en-US. */
+/** The ribbon's buttons a case of `press` takes, by their names in Excel in en-US. */
 export type PressButton = 'Increase Decimal' | 'Decrease Decimal' | 'Comma Style' | 'Accounting Number Format' | 'AutoSum'
+
+/** The buttons' names in Excel's interface in ru-RU (Accessibility's `name` on the Mac, UI Automation's on Windows); en-US's are the buttons'. */
+const PRESS_RU: Record<'Mac' | 'Windows', Record<PressButton, string>> = {
+  Mac: { 'Increase Decimal': 'Увеличить разрядность', 'Decrease Decimal': 'Уменьшить разрядность', 'Comma Style': 'Формат с разделителями', 'Accounting Number Format': 'Финансовый числовой формат', AutoSum: 'Автосумма' },
+  Windows: { 'Increase Decimal': 'Увеличить разрядность', 'Decrease Decimal': 'Уменьшить разрядность', 'Comma Style': 'Формат с разделителями', 'Accounting Number Format': 'Финансовый числовой формат', AutoSum: 'Автосумма' },
+}
+
+/** A button's name in Excel's interface of the locale `tag`. */
+export const pressName = (b: PressButton, excel: 'Mac' | 'Windows', tag: string): string => (tag === 'ru-RU' ? PRESS_RU[excel][b] : b)
 
 /** A step of a case of `point`: a text typed, or a key pressed with the modifiers held (Command on the Mac for Excel's Control). */
 export type PointStep = { type: string } | { key: PointKey; shift?: true; cmd?: true }
@@ -133,8 +142,8 @@ export function cellsOf(range: string): string[] {
   return out
 }
 
-/** The actions Excel takes only on the Mac's screen: the keyboard's fill, edit and pick, the ribbon's box and list. */
-export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose' || act.do === 'point' || act.do === 'press'
+/** The actions Excel takes only on the Mac's screen: the keyboard's fill, edit and pick, the ribbon's box and list; Windows presses the ribbon's buttons on a screen of its own (`bench/windows/press.ps1`). */
+export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose' || act.do === 'point'
 
 /** The cells an action selects in turn without writing: the formula bar's and the ribbon's; a choice's cells by its picks. */
 export function selectedOf(act: UiAction): string[] {

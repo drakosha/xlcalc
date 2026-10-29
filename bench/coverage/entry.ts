@@ -57,14 +57,15 @@ export async function partAnswers(part: EntryCase[], refused: string[], shown: [
 }
 
 /** One part in Excel. A window that is not a book stops the run (nothing is clicked); a book Excel repairs stops it too. */
-async function runPart(part: EntryCase[], label: string, keys: boolean, edit: boolean): Promise<Record<string, EntryAnswer>> {
+async function runPart(part: EntryCase[], label: string, mod: EntrySet): Promise<Record<string, EntryAnswer>> {
+  const [keys, edit] = [mod.keys === true, mod.edit === true]
   if (declineRepair()) console.log('closed a leftover book repair window')
   return runWatched<Record<string, EntryAnswer>>({
     script: SCRIPT,
     label: `entry ${label}`,
     folder: 'fentry',
     book: async (file) => {
-      const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
+      const { data, issues } = await writeXlsx({ book: entryBook(part, mod.data) }, { values: 'omit' })
       if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
       writeFileSync(file, data)
     },
@@ -101,7 +102,7 @@ export async function stepEntry(set: string, tag: string): Promise<void> {
   await ensureExcel(tag)
   try {
     for (const [k, part] of inParts(todo, ENTRY_PART).entries()) {
-      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod.keys === true, mod.edit === true))
+      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod))
       save()
       console.log(`entry ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)
     }

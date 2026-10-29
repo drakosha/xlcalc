@@ -1,0 +1,100 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "mod-1": {
+    "ok": true,
+    "input": {
+     "formula": "MOD(D3,7)",
+     "numberFormat": 5
+    }
+   },
+   "mod-2": {
+    "ok": true,
+    "input": {
+     "formula": "MOD(D6,D12)",
+     "numberFormat": 9
+    }
+   },
+   "mod-3": {
+    "ok": true,
+    "input": {
+     "formula": "MOD(D11,7)",
+     "numberFormat": 14
+    }
+   },
+   "mod-4": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D11)"
+    }
+   },
+   "mod-5": {
+    "ok": true,
+    "input": {
+     "formula": "TRUNC(D3)",
+     "numberFormat": 5
+    }
+   },
+   "mod-6": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDDOWN(D11,0)",
+     "numberFormat": 14
+    }
+   },
+   "mod-7": {
+    "ok": true,
+    "input": {
+     "formula": "MOD(D5,1)-D6",
+     "numberFormat": 21
+    }
+   }
+  },
+  "ru-RU": {
+   "mod-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D3» читается иначе",
+    "at": 5
+   },
+   "mod-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 7
+   },
+   "mod-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D11» читается иначе",
+    "at": 5
+   },
+   "mod-4": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D11)"
+    }
+   },
+   "mod-5": {
+    "ok": true,
+    "input": {
+     "formula": "TRUNC(D3)",
+     "numberFormat": 5
+    }
+   },
+   "mod-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D11» читается иначе",
+    "at": 11
+   },
+   "mod-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D5» читается иначе",
+    "at": 5
+   }
+  }
+ }
+}

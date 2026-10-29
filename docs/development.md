@@ -182,6 +182,22 @@ Line breaks were tested by the `rows` step (`bench/coverage/rows.ts`, `docs/form
 
 Rejecting a value a rule does not allow (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not test: the alert is a dialog, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a rejected call leaves the workbook, the revision and the history as they were, and that a value the rules allow is written as it would be without the option.
 
+### Cell entry: A formula's format from its references
+
+From [Cell entry](entry.md#formulas).
+
+The format a typed formula takes from the cells it refers to was tested by the same `entry` step, in Excel 16.114 for Mac and 16.0.20430 for Windows, en-US and ru-RU, with sets whose workbooks carry their own data (`data` of the set: cells of the sheet `S` beside column A, its columns, another sheet, a defined name). The engine's answer is `parseEntry` with `numberFormatAt` over that data (`engineEntry`, `bench/coverage/entry/compare.ts`). The two versions of Excel answered alike in every case.
+
+| set | cases per locale | how | predicted correctly before the run, en-US |
+|---|---:|---|---|
+| `refs` | 118 | object model, Mac and Windows | 111: a difference takes a format from either term (`=C1-C3`, `=C5-C1`), where the engine took it only from the first over a plain number; `MEDIAN`, `ROUNDUP` and `INT` pass a format on |
+| `refs-held` | 105 | object model, Mac and Windows | 104: `MOD` passes its first argument's format on; two dates' difference has none, a date minus a time or a percentage keeps the date's, and `ROUNDDOWN` and `TRUNC` pass a format, as predicted |
+| `refs-keys-held` | 13 (en-US) | keyboard, Mac | 13 |
+| `refs-held-2` | 7 (en-US) | object model, Mac and Windows | 7 |
+| `ui/fill-refs-held` | 9 (en-US) | Control+Return and AutoSum, Mac keyboard | 7: the two misses are selections of one cell, where Control+Return left the formula's value as a constant, twice; they say nothing of the format (`oneCellFill` in `test/ui-known.ts`) |
+
+The first set's data covered every kind of built-in format, a code of the book's own, a blank cell with a format and Text; the operators and 31 functions around a percentage beside a General number; ranges whose first cell is General or blank; another sheet; a name; and cells of other formats typed into. Every format passes to a reference, `0.00` and Text included, and a range takes its first cell's alone (`=SUM(C1:C3)` with C1 General gets none, `=SUM(C:C)` that of C1). A defined name gives none, even one over a percentage. In ru-RU Excel reads an English function's name as an unknown name and gives the formula no format, the known difference `english` (`test/entry-known.ts`); the Russian names (`СУММ`, `ОКРУГЛВВЕРХ`, `ЦЕЛОЕ`, `МЕДИАНА`, `ОТБР`) gave what the English ones give in en-US. Control+Return gives every cell the format its active cell's formula takes (`=A1+A3` over B1:B3 with a percentage in A1 shows percentages in B3 too, where `=A3+A5` alone takes A5's money), and AutoSum the format of its range's first cell. The known difference `reference` of the entry and ui sets is gone with this rule.
+
 ### Cell entry: A formula left open
 
 From [Cell entry, A formula left open](entry.md#a-formula-left-open).
@@ -577,7 +593,11 @@ The Home tab's buttons (Increase Decimal, Decrease Decimal, Comma Style, Account
 | `press-more-held`, 66 cases | General by all of its decimals when it shows the number whole; AutoSum past the cells without a number, a date no number, subtotals alone | 57 by the prediction |
 | `press-third-held`, 17 cases | General by the decimals the column shows, the number's own for a fraction shown whole, scientific for `#`; a run ending at a `SUM` subtotal | 16 by the prediction; the miss is `SUBTOTAL`, also a subtotal |
 
-Every case agrees with the rules now, but one: Excel gives a sum of percentages their format (`0%`), as it gives a typed formula the format of a date it refers to, which `setCellText` does not (`reference` in `test/ui-known.ts`). Two answers were taken again: a case whose cell held keys typed in another layout at the run's start, and one whose press did not reach the button (no change; the second run changed the format as predicted). Comma Style and Accounting were measured in en-US only, where Excel saves them as codes of the file's own; Excel for Windows did not run these sets.
+Every case agrees with the rules now: a sum of percentages takes their format (`0%`) as any typed formula takes the format of its range's first cell ([Cell entry: A formula's format from its references](#cell-entry-a-formulas-format-from-its-references)). Two answers were taken again: a case whose cell held keys typed in another layout at the run's start, and one whose press did not reach the button (no change; the second run changed the format as predicted).
+
+The same three sets ran in Excel for Mac in ru-RU, the buttons by their Russian names (`pressName`: Увеличить разрядность, Уменьшить разрядность, Формат с разделителями, Финансовый числовой формат, Автосумма), against the predictions written for ru-RU before the first run: 79, 57 and 16 cases by the prediction, as in en-US, and every case as the engine answers now but two. Comma Style in ru-RU (`_-* # ##0,00_-`) keeps the default column for 1 234,50 in Excel, where the engine fits it to 54 points and widens it (`ruCommaWidth`); the accounting format with ₽ widens it to 10 in both. One AutoSum case was taken again, its first answer holding `=СУММ(3)` and its editing left open, a key typed into the cell during the run.
+
+Excel for Windows 16.0.20430 ran the three sets in en-US and ru-RU by the Windows `ui` step (`bench/windows/ui.ts`): the ribbon exists only on a screen, so `press.ps1` runs as a task in the session of the user logged on through Remote Desktop, as the `ribbon` step does, selects the range through the object model, invokes each button by its name through UI Automation, presses Return after AutoSum, answers a window Excel brings, and saves the book, which is then read as the other cases are. It pressed every button as Excel for Mac did, in both locales: 79, 57 and 16 cases by the prediction, the same cells. The differences are widths, by Windows's own geometry (a widened column of 12.5703125 where the Mac's is 12.6640625, and a number that fits Windows's default 64 pixels keeps it: `winGeometry`), and the three cases where AutoSum's `SUM()` was refused: the cell stayed blank as on the Mac, but the step did not find the window it answered (`winDialogUnread`). Excel for Windows in ru-RU widens the column for Comma Style's 1 234,50 as the engine does, by its own geometry. The ru-RU runs switch the interface's language alone (`XLWIN_CODEPAGE=any`, `bench/windows/README.md`): a first try switched the system locale, which restarts the machine and ended the session on the screen. A run of `press-held` in ru-RU lost the foreground to another window for 44 cases, which the step did not press; they ran again.
 
 ### Outlines
 

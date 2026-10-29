@@ -8,6 +8,7 @@
 import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
+import type { FormatAt } from '../entry/formula.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { mergedOf } from '../layout/merges.js'
@@ -29,10 +30,23 @@ function lineFormat(s: EngineState, i: number, r: number, c: number) {
   return formatOf(undefined, lines.row(r), lines.column(c))
 }
 
-/** What `text` typed, edited in place or pasted (`way`) into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
-export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed'): EntryResult {
+/** The input a cell got from an entry earlier in the same call (null: none left), by sheet index and zero-based row and column; undefined where it got none. */
+export type EarlierInput = (i: number, r: number, c: number) => CellInput | null | undefined
+
+/** The format a cell of the book shows, by its sheet's name (null: sheet `i`), as a formula typed into sheet `i` refers to it, after the call's earlier entries; none on a sheet the book lacks. */
+const formatIn =
+  (s: EngineState, i: number, earlier?: EarlierInput): FormatAt =>
+  (sheet, r, c) => {
+    const k = sheet === null ? i : sheetIndexOf(s, sheet)
+    if (k === undefined) return undefined
+    const own = earlier?.(k, r, c)
+    return sheetLines(s.input.sheets[k], s).format(r, c, own === null ? {} : own)
+  }
+
+/** What `text` typed, edited in place or pasted (`way`) into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's; its references by the formats of the book after `earlier`. */
+export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed', earlier?: EarlierInput): EntryResult {
   const shown = own?.numberFormat ?? lineFormat(s, i, r, c)
-  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, way)
+  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, way, formatIn(s, i, earlier))
 }
 
 /** The input `own` of the cell with an entry's content and format (`typed`, `readText`'s input) in place of its own; a format its row or column gives it stays theirs. */
@@ -49,8 +63,8 @@ export function withTyped(s: EngineState, i: number, r: number, c: number, own: 
 }
 
 /** The input `own` of the cell after `text` is typed, edited in place or pasted (`way`) into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
-export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed'): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
-  const p = readText(s, i, r, c, own, text, now, way)
+export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed', earlier?: EarlierInput): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
+  const p = readText(s, i, r, c, own, text, now, way, earlier)
   return p.ok ? { ok: true, input: withTyped(s, i, r, c, own, p.input) } : (p as Refusal<CellTextRefusal>)
 }
 

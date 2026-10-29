@@ -71,7 +71,8 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
     const ref = { sheet: s.sheetNames[i], cell: formatAddress(r, c) }
     const k = `${i}:${ref.cell}`
     const earlier = cells.get(k)
-    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : inputAt(s, i, ref.cell), text, now, way)
+    // a formula refers to the cells typed before it in the call as they are then
+    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : inputAt(s, i, ref.cell), text, now, way, (k, row, col) => cells.get(`${k}:${formatAddress(row, col)}`)?.edit.input)
     if (!typed.ok) return { ok: false, refusal: typed, ref }
     const edit = { ...ref, input: typed.input }
     const refused = pasted ? null : textRefusal(s, edit)

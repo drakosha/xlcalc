@@ -1,0 +1,1401 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "one-1": {
+    "ok": true,
+    "input": {
+     "formula": "D1",
+     "numberFormat": "d mmmm yyyy"
+    }
+   },
+   "one-2": {
+    "ok": true,
+    "input": {
+     "formula": "D2",
+     "numberFormat": 10
+    }
+   },
+   "one-3": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "one-4": {
+    "ok": true,
+    "input": {
+     "formula": "D4",
+     "numberFormat": "0.0%"
+    }
+   },
+   "one-5": {
+    "ok": true,
+    "input": {
+     "formula": "D5",
+     "numberFormat": 21
+    }
+   },
+   "one-6": {
+    "ok": true,
+    "input": {
+     "formula": "D7",
+     "numberFormat": 15
+    }
+   },
+   "one-7": {
+    "ok": true,
+    "input": {
+     "formula": "D8",
+     "numberFormat": 13
+    }
+   },
+   "one-8": {
+    "ok": true,
+    "input": {
+     "formula": "D9",
+     "numberFormat": 4
+    }
+   },
+   "one-9": {
+    "ok": true,
+    "input": {
+     "formula": "D10",
+     "numberFormat": 48
+    }
+   },
+   "one-10": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 14
+    }
+   },
+   "one-11": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "one-12": {
+    "ok": true,
+    "input": {
+     "formula": "D13",
+     "numberFormat": "[Red]0"
+    }
+   },
+   "one-13": {
+    "ok": true,
+    "input": {
+     "formula": "D15",
+     "numberFormat": 9
+    }
+   },
+   "one-14": {
+    "ok": true,
+    "input": {
+     "formula": "D16",
+     "numberFormat": 46
+    }
+   },
+   "one-15": {
+    "ok": true,
+    "input": {
+     "formula": "D17",
+     "numberFormat": "€#,##0"
+    }
+   },
+   "diff-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D1"
+    }
+   },
+   "diff-2": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D7"
+    }
+   },
+   "diff-3": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D15",
+     "numberFormat": 9
+    }
+   },
+   "diff-4": {
+    "ok": true,
+    "input": {
+     "formula": "D3-D3",
+     "numberFormat": 5
+    }
+   },
+   "diff-5": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D12",
+     "numberFormat": 14
+    }
+   },
+   "diff-6": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D11",
+     "numberFormat": 9
+    }
+   },
+   "diff-7": {
+    "ok": true,
+    "input": {
+     "formula": "D5-D5",
+     "numberFormat": 21
+    }
+   },
+   "diff-8": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D5",
+     "numberFormat": 14
+    }
+   },
+   "diff-9": {
+    "ok": true,
+    "input": {
+     "formula": "D5-D11",
+     "numberFormat": 21
+    }
+   },
+   "diff-10": {
+    "ok": true,
+    "input": {
+     "formula": "1-D11",
+     "numberFormat": 14
+    }
+   },
+   "diff-11": {
+    "ok": true,
+    "input": {
+     "formula": "D6-D11",
+     "numberFormat": 14
+    }
+   },
+   "diff-12": {
+    "ok": true,
+    "input": {
+     "formula": "D11-1",
+     "numberFormat": 14
+    }
+   },
+   "diff-13": {
+    "ok": true,
+    "input": {
+     "formula": "D11-TODAY()"
+    }
+   },
+   "diff-14": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()-D11"
+    }
+   },
+   "diff-15": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-D12",
+     "numberFormat": 14
+    }
+   },
+   "diff-16": {
+    "ok": true,
+    "input": {
+     "formula": "D12-TODAY()",
+     "numberFormat": 9
+    }
+   },
+   "diff-17": {
+    "ok": true,
+    "input": {
+     "formula": "D16-D5",
+     "numberFormat": 46
+    }
+   },
+   "sum-1": {
+    "ok": true,
+    "input": {
+     "formula": "D6+D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-2": {
+    "ok": true,
+    "input": {
+     "formula": "D12+D3",
+     "numberFormat": 9
+    }
+   },
+   "sum-3": {
+    "ok": true,
+    "input": {
+     "formula": "D3+D12",
+     "numberFormat": 5
+    }
+   },
+   "sum-4": {
+    "ok": true,
+    "input": {
+     "formula": "D14+D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-5": {
+    "ok": true,
+    "input": {
+     "formula": "D6*D12"
+    }
+   },
+   "sum-6": {
+    "ok": true,
+    "input": {
+     "formula": "D12/100"
+    }
+   },
+   "sum-7": {
+    "ok": true,
+    "input": {
+     "formula": "-D3",
+     "numberFormat": 5
+    }
+   },
+   "sum-8": {
+    "ok": true,
+    "input": {
+     "formula": "--D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-9": {
+    "ok": true,
+    "input": {
+     "formula": "(D6+D12)*1"
+    }
+   },
+   "sum-10": {
+    "ok": true,
+    "input": {
+     "formula": "IF(D6>0,D12)"
+    }
+   },
+   "pass-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12,D3)",
+     "numberFormat": 9
+    }
+   },
+   "pass-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D6,D3)",
+     "numberFormat": 5
+    }
+   },
+   "pass-3": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(D6,D11)",
+     "numberFormat": 14
+    }
+   },
+   "pass-4": {
+    "ok": true,
+    "input": {
+     "formula": "MIN(D12)",
+     "numberFormat": 9
+    }
+   },
+   "pass-5": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(D6:D7)"
+    }
+   },
+   "pass-6": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(D7:D8)",
+     "numberFormat": 15
+    }
+   },
+   "pass-7": {
+    "ok": true,
+    "input": {
+     "formula": "MEDIAN(D3,D6)",
+     "numberFormat": 5
+    }
+   },
+   "pass-8": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(D6,D12)",
+     "numberFormat": 9
+    }
+   },
+   "pass-9": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDUP(D3,0)",
+     "numberFormat": 5
+    }
+   },
+   "pass-10": {
+    "ok": true,
+    "input": {
+     "formula": "INT(D11)",
+     "numberFormat": 14
+    }
+   },
+   "pass-11": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDDOWN(D12,1)",
+     "numberFormat": 9
+    }
+   },
+   "pass-12": {
+    "ok": true,
+    "input": {
+     "formula": "TRUNC(D12)",
+     "numberFormat": 9
+    }
+   },
+   "other-1": {
+    "ok": true,
+    "input": {
+     "formula": "MROUND(D12,0.1)"
+    }
+   },
+   "other-2": {
+    "ok": true,
+    "input": {
+     "formula": "CEILING(D3,1)"
+    }
+   },
+   "other-3": {
+    "ok": true,
+    "input": {
+     "formula": "FLOOR(D3,1)"
+    }
+   },
+   "other-4": {
+    "ok": true,
+    "input": {
+     "formula": "LARGE(D12:D15,1)"
+    }
+   },
+   "other-5": {
+    "ok": true,
+    "input": {
+     "formula": "SMALL(D12:D15,1)"
+    }
+   },
+   "other-6": {
+    "ok": true,
+    "input": {
+     "formula": "MODE(D12,D12)"
+    }
+   },
+   "other-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUMIF(D12:D15,\">0\")"
+    }
+   },
+   "other-8": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGEIF(D12:D15,\">0\")"
+    }
+   },
+   "other-9": {
+    "ok": true,
+    "input": {
+     "formula": "MAXA(D12)"
+    }
+   },
+   "other-10": {
+    "ok": true,
+    "input": {
+     "formula": "SIGN(D12)"
+    }
+   },
+   "other-11": {
+    "ok": true,
+    "input": {
+     "formula": "MOD(D12,1)"
+    }
+   },
+   "other-12": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D3)"
+    }
+   },
+   "other-13": {
+    "ok": true,
+    "input": {
+     "formula": "STDEV(D12,D15)"
+    }
+   },
+   "other-14": {
+    "ok": true,
+    "input": {
+     "formula": "EDATE(D11,1)"
+    }
+   },
+   "other-15": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGEA(D12)"
+    }
+   },
+   "other-16": {
+    "ok": true,
+    "input": {
+     "formula": "DAY(D11)"
+    }
+   },
+   "range-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D:D)",
+     "numberFormat": "d mmmm yyyy"
+    }
+   },
+   "range-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(E:E)",
+     "numberFormat": 9
+    }
+   },
+   "range-3": {
+    "ok": true,
+    "input": {
+     "formula": "E5",
+     "numberFormat": 9
+    }
+   },
+   "range-4": {
+    "ok": true,
+    "input": {
+     "formula": "E7",
+     "numberFormat": 9
+    }
+   },
+   "range-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D14:D15)"
+    }
+   },
+   "range-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D6:D7)"
+    }
+   },
+   "range-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12:D15)",
+     "numberFormat": 9
+    }
+   },
+   "range-8": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12:D15)",
+     "numberFormat": 9
+    }
+   },
+   "range-9": {
+    "ok": true,
+    "input": {
+     "formula": "SUM((D6,D12))"
+    }
+   },
+   "sheet-1": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1",
+     "numberFormat": 14
+    }
+   },
+   "sheet-2": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1*2"
+    }
+   },
+   "sheet-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM('U'!C1:C2)",
+     "numberFormat": 14
+    }
+   },
+   "sheet-4": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C2+D12",
+     "numberFormat": 9
+    }
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "Rate"
+    }
+   },
+   "name-2": {
+    "ok": true,
+    "input": {
+     "formula": "Rate+D6"
+    }
+   },
+   "name-3": {
+    "ok": true,
+    "input": {
+     "formula": "D6+Rate"
+    }
+   },
+   "ru-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 9
+   },
+   "ru-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 15
+   },
+   "ru-3": {
+    "ok": true,
+    "input": {
+     "formula": "ЦЕЛОЕ(D11)"
+    }
+   },
+   "ru-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 11
+   },
+   "ru-5": {
+    "ok": true,
+    "input": {
+     "formula": "ОТБР(D12)"
+    }
+   },
+   "ru-6": {
+    "ok": true,
+    "input": {
+     "formula": "СУММ(D:D)"
+    }
+   },
+   "ru-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 15
+   },
+   "in-sci-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-sci-2": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 14
+    }
+   },
+   "in-frac-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-acct-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-acct-2": {
+    "ok": true,
+    "input": {
+     "formula": "D6",
+     "numberFormat": 44
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 10
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "in-grp-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 3
+    }
+   },
+   "in-text-1": {
+    "ok": true,
+    "input": {
+     "value": "=D12",
+     "numberFormat": "@"
+    }
+   },
+   "in-datel-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 15
+    }
+   },
+   "in-datel-2": {
+    "ok": true,
+    "input": {
+     "formula": "D5",
+     "numberFormat": 21
+    }
+   },
+   "in-own-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": "[Red]0"
+    }
+   }
+  },
+  "ru-RU": {
+   "one-1": {
+    "ok": true,
+    "input": {
+     "formula": "D1",
+     "numberFormat": "d mmmm yyyy"
+    }
+   },
+   "one-2": {
+    "ok": true,
+    "input": {
+     "formula": "D2",
+     "numberFormat": 10
+    }
+   },
+   "one-3": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "one-4": {
+    "ok": true,
+    "input": {
+     "formula": "D4",
+     "numberFormat": "0.0%"
+    }
+   },
+   "one-5": {
+    "ok": true,
+    "input": {
+     "formula": "D5",
+     "numberFormat": 21
+    }
+   },
+   "one-6": {
+    "ok": true,
+    "input": {
+     "formula": "D7",
+     "numberFormat": 15
+    }
+   },
+   "one-7": {
+    "ok": true,
+    "input": {
+     "formula": "D8",
+     "numberFormat": 13
+    }
+   },
+   "one-8": {
+    "ok": true,
+    "input": {
+     "formula": "D9",
+     "numberFormat": 4
+    }
+   },
+   "one-9": {
+    "ok": true,
+    "input": {
+     "formula": "D10",
+     "numberFormat": 48
+    }
+   },
+   "one-10": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 14
+    }
+   },
+   "one-11": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "one-12": {
+    "ok": true,
+    "input": {
+     "formula": "D13",
+     "numberFormat": "[Red]0"
+    }
+   },
+   "one-13": {
+    "ok": true,
+    "input": {
+     "formula": "D15",
+     "numberFormat": 9
+    }
+   },
+   "one-14": {
+    "ok": true,
+    "input": {
+     "formula": "D16",
+     "numberFormat": 46
+    }
+   },
+   "one-15": {
+    "ok": true,
+    "input": {
+     "formula": "D17",
+     "numberFormat": "€#,##0"
+    }
+   },
+   "diff-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D1"
+    }
+   },
+   "diff-2": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D7"
+    }
+   },
+   "diff-3": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D15",
+     "numberFormat": 9
+    }
+   },
+   "diff-4": {
+    "ok": true,
+    "input": {
+     "formula": "D3-D3",
+     "numberFormat": 5
+    }
+   },
+   "diff-5": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D12",
+     "numberFormat": 14
+    }
+   },
+   "diff-6": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D11",
+     "numberFormat": 9
+    }
+   },
+   "diff-7": {
+    "ok": true,
+    "input": {
+     "formula": "D5-D5",
+     "numberFormat": 21
+    }
+   },
+   "diff-8": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D5",
+     "numberFormat": 14
+    }
+   },
+   "diff-9": {
+    "ok": true,
+    "input": {
+     "formula": "D5-D11",
+     "numberFormat": 21
+    }
+   },
+   "diff-10": {
+    "ok": true,
+    "input": {
+     "formula": "1-D11",
+     "numberFormat": 14
+    }
+   },
+   "diff-11": {
+    "ok": true,
+    "input": {
+     "formula": "D6-D11",
+     "numberFormat": 14
+    }
+   },
+   "diff-12": {
+    "ok": true,
+    "input": {
+     "formula": "D11-1",
+     "numberFormat": 14
+    }
+   },
+   "diff-13": {
+    "ok": true,
+    "input": {
+     "formula": "D11-TODAY()"
+    }
+   },
+   "diff-14": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()-D11"
+    }
+   },
+   "diff-15": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-D12",
+     "numberFormat": 14
+    }
+   },
+   "diff-16": {
+    "ok": true,
+    "input": {
+     "formula": "D12-TODAY()",
+     "numberFormat": 9
+    }
+   },
+   "diff-17": {
+    "ok": true,
+    "input": {
+     "formula": "D16-D5",
+     "numberFormat": 46
+    }
+   },
+   "sum-1": {
+    "ok": true,
+    "input": {
+     "formula": "D6+D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-2": {
+    "ok": true,
+    "input": {
+     "formula": "D12+D3",
+     "numberFormat": 9
+    }
+   },
+   "sum-3": {
+    "ok": true,
+    "input": {
+     "formula": "D3+D12",
+     "numberFormat": 5
+    }
+   },
+   "sum-4": {
+    "ok": true,
+    "input": {
+     "formula": "D14+D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-5": {
+    "ok": true,
+    "input": {
+     "formula": "D6*D12"
+    }
+   },
+   "sum-6": {
+    "ok": true,
+    "input": {
+     "formula": "D12/100"
+    }
+   },
+   "sum-7": {
+    "ok": true,
+    "input": {
+     "formula": "-D3",
+     "numberFormat": 5
+    }
+   },
+   "sum-8": {
+    "ok": true,
+    "input": {
+     "formula": "--D12",
+     "numberFormat": 9
+    }
+   },
+   "sum-9": {
+    "ok": true,
+    "input": {
+     "formula": "(D6+D12)*1"
+    }
+   },
+   "sum-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь ссылка",
+    "at": 9
+   },
+   "pass-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "pass-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 7
+   },
+   "pass-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 7
+   },
+   "pass-4": {
+    "ok": true,
+    "input": {
+     "formula": "MIN(D12)",
+     "numberFormat": 9
+    }
+   },
+   "pass-5": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(D6:D7)"
+    }
+   },
+   "pass-6": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(D7:D8)",
+     "numberFormat": 15
+    }
+   },
+   "pass-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "pass-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "pass-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D3» читается иначе",
+    "at": 9
+   },
+   "pass-10": {
+    "ok": true,
+    "input": {
+     "formula": "INT(D11)",
+     "numberFormat": 14
+    }
+   },
+   "pass-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D12» читается иначе",
+    "at": 11
+   },
+   "pass-12": {
+    "ok": true,
+    "input": {
+     "formula": "TRUNC(D12)",
+     "numberFormat": 9
+    }
+   },
+   "other-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 13
+   },
+   "other-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D3» читается иначе",
+    "at": 9
+   },
+   "other-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D3» читается иначе",
+    "at": 7
+   },
+   "other-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D15» читается иначе",
+    "at": 11
+   },
+   "other-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D15» читается иначе",
+    "at": 11
+   },
+   "other-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "other-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 14
+   },
+   "other-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 18
+   },
+   "other-9": {
+    "ok": true,
+    "input": {
+     "formula": "MAXA(D12)"
+    }
+   },
+   "other-10": {
+    "ok": true,
+    "input": {
+     "formula": "SIGN(D12)"
+    }
+   },
+   "other-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D12» читается иначе",
+    "at": 5
+   },
+   "other-12": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D3)"
+    }
+   },
+   "other-13": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "other-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D11» читается иначе",
+    "at": 7
+   },
+   "other-15": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGEA(D12)"
+    }
+   },
+   "other-16": {
+    "ok": true,
+    "input": {
+     "formula": "DAY(D11)"
+    }
+   },
+   "range-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D:D)",
+     "numberFormat": "d mmmm yyyy"
+    }
+   },
+   "range-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(E:E)",
+     "numberFormat": 9
+    }
+   },
+   "range-3": {
+    "ok": true,
+    "input": {
+     "formula": "E5",
+     "numberFormat": 9
+    }
+   },
+   "range-4": {
+    "ok": true,
+    "input": {
+     "formula": "E7",
+     "numberFormat": 9
+    }
+   },
+   "range-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D14:D15)"
+    }
+   },
+   "range-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D6:D7)"
+    }
+   },
+   "range-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12:D15)",
+     "numberFormat": 9
+    }
+   },
+   "range-8": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12:D15)",
+     "numberFormat": 9
+    }
+   },
+   "range-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "sheet-1": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1",
+     "numberFormat": 14
+    }
+   },
+   "sheet-2": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1*2"
+    }
+   },
+   "sheet-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM('U'!C1:C2)",
+     "numberFormat": 14
+    }
+   },
+   "sheet-4": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C2+D12",
+     "numberFormat": 9
+    }
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "Rate"
+    }
+   },
+   "name-2": {
+    "ok": true,
+    "input": {
+     "formula": "Rate+D6"
+    }
+   },
+   "name-3": {
+    "ok": true,
+    "input": {
+     "formula": "D6+Rate"
+    }
+   },
+   "ru-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D12,D3)",
+     "numberFormat": 9
+    }
+   },
+   "ru-2": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDUP(D3,0)",
+     "numberFormat": 5
+    }
+   },
+   "ru-3": {
+    "ok": true,
+    "input": {
+     "formula": "INT(D11)",
+     "numberFormat": 14
+    }
+   },
+   "ru-4": {
+    "ok": true,
+    "input": {
+     "formula": "MEDIAN(D3,D6)",
+     "numberFormat": 5
+    }
+   },
+   "ru-5": {
+    "ok": true,
+    "input": {
+     "formula": "TRUNC(D12)",
+     "numberFormat": 9
+    }
+   },
+   "ru-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D:D)",
+     "numberFormat": "d mmmm yyyy"
+    }
+   },
+   "ru-7": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDDOWN(D12,1)",
+     "numberFormat": 9
+    }
+   },
+   "in-sci-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-sci-2": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 14
+    }
+   },
+   "in-frac-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-acct-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "in-acct-2": {
+    "ok": true,
+    "input": {
+     "formula": "D6",
+     "numberFormat": 44
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 10
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "in-grp-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 3
+    }
+   },
+   "in-text-1": {
+    "ok": true,
+    "input": {
+     "value": "=D12",
+     "numberFormat": "@"
+    }
+   },
+   "in-datel-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": 15
+    }
+   },
+   "in-datel-2": {
+    "ok": true,
+    "input": {
+     "formula": "D5",
+     "numberFormat": 21
+    }
+   },
+   "in-own-1": {
+    "ok": true,
+    "input": {
+     "formula": "D11",
+     "numberFormat": "[Red]0"
+    }
+   }
+  }
+ }
+}
