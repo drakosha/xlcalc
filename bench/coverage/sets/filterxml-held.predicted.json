@@ -1,0 +1,334 @@
+{
+ "mixed#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "mixed#2": {
+  "t": "s",
+  "v": "one"
+ },
+ "mixed#3": {
+  "t": "b",
+  "v": true
+ },
+ "mixed#4": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "mixed#5": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "mixed#6": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "mixed#7": {
+  "t": "n",
+  "v": 3
+ },
+ "mixed#8": {
+  "t": "n",
+  "v": 4
+ },
+ "mixed#9": {
+  "t": "n",
+  "v": 7
+ },
+ "mixed#10": {
+  "t": "n",
+  "v": 9
+ },
+ "text#1": {
+  "t": "s",
+  "v": "x y z"
+ },
+ "text#2": {
+  "t": "s",
+  "v": "ab"
+ },
+ "text#3": {
+  "t": "s",
+  "v": " "
+ },
+ "text#4": {
+  "t": "s",
+  "v": " x"
+ },
+ "text#5": {
+  "t": "s",
+  "v": "x"
+ },
+ "text#6": {
+  "t": "n",
+  "v": 7
+ },
+ "text#7": {
+  "t": "s",
+  "v": "xy"
+ },
+ "text#8": {
+  "t": "n",
+  "v": 1
+ },
+ "text#9": {
+  "t": "n",
+  "v": 12
+ },
+ "text#10": {
+  "t": "n",
+  "v": 12
+ },
+ "text#11": {
+  "t": "n",
+  "v": 2
+ },
+ "text#12": {
+  "t": "n",
+  "v": 160
+ },
+ "text#13": {
+  "t": "n",
+  "v": 2
+ },
+ "text#14": {
+  "t": "s",
+  "v": "y"
+ },
+ "text#15": {
+  "t": "s",
+  "v": "x"
+ },
+ "text#16": {
+  "t": "s",
+  "v": "x"
+ },
+ "text#17": {
+  "t": "n",
+  "v": 1
+ },
+ "text#18": {
+  "t": "s",
+  "v": "<&"
+ },
+ "values#1": {
+  "t": "b",
+  "v": true
+ },
+ "values#2": {
+  "t": "b",
+  "v": true
+ },
+ "values#3": {
+  "t": "b",
+  "v": true
+ },
+ "values#4": {
+  "t": "s",
+  "v": "yes"
+ },
+ "values#5": {
+  "t": "b",
+  "v": false
+ },
+ "values#6": {
+  "t": "s",
+  "v": "ИСТИНА"
+ },
+ "values#7": {
+  "t": "s",
+  "v": "1e400"
+ },
+ "values#8": {
+  "t": "n",
+  "v": 0
+ },
+ "values#9": {
+  "t": "n",
+  "v": -0.0015
+ },
+ "values#10": {
+  "t": "s",
+  "v": "1 000"
+ },
+ "values#11": {
+  "t": "n",
+  "v": 0.15
+ },
+ "values#12": {
+  "t": "n",
+  "v": 43832
+ },
+ "values#13": {
+  "t": "s",
+  "v": "Jan 2 2020"
+ },
+ "values#14": {
+  "t": "n",
+  "v": 0.5625
+ },
+ "values#15": {
+  "t": "s",
+  "v": "#N/A"
+ },
+ "values#16": {
+  "t": "n",
+  "v": 0
+ },
+ "values#17": {
+  "t": "n",
+  "v": 1
+ },
+ "values#18": {
+  "t": "n",
+  "v": 4
+ },
+ "values#19": {
+  "t": "b",
+  "v": true
+ },
+ "names#1": {
+  "t": "n",
+  "v": 3
+ },
+ "names#2": {
+  "t": "n",
+  "v": 4
+ },
+ "names#3": {
+  "t": "n",
+  "v": 5
+ },
+ "names#4": {
+  "t": "n",
+  "v": 2
+ },
+ "names#5": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "names#6": {
+  "t": "n",
+  "v": 4
+ },
+ "names#7": {
+  "t": "n",
+  "v": 5
+ },
+ "names#8": {
+  "t": "n",
+  "v": 4
+ },
+ "names#9": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "names#10": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "names#11": {
+  "t": "n",
+  "v": 3
+ },
+ "names#12": {
+  "t": "s",
+  "v": "http://www.w3.org/XML/1998/namespace"
+ },
+ "names#13": {
+  "t": "n",
+  "v": 3
+ },
+ "names#14": {
+  "t": "n",
+  "v": 1
+ },
+ "names#15": {
+  "t": "n",
+  "v": 2
+ },
+ "positions#1": {
+  "t": "n",
+  "v": 5
+ },
+ "positions#2": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "positions#3": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "positions#4": {
+  "t": "n",
+  "v": 5
+ },
+ "positions#5": {
+  "t": "n",
+  "v": 3
+ },
+ "positions#6": {
+  "t": "n",
+  "v": 1
+ },
+ "positions#7": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "positions#8": {
+  "t": "n",
+  "v": 4
+ },
+ "positions#9": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "positions#10": {
+  "t": "n",
+  "v": 4
+ },
+ "positions#11": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "positions#12": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "positions#13": {
+  "t": "n",
+  "v": 5
+ },
+ "positions#14": {
+  "t": "n",
+  "v": 4
+ },
+ "args#1": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "args#2": {
+  "t": "n",
+  "v": 2
+ },
+ "args#3": {
+  "t": "s",
+  "v": "x"
+ },
+ "args#4": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "args#5": {
+  "t": "e",
+  "v": "NA"
+ },
+ "args#6": {
+  "t": "n",
+  "v": 2
+ },
+ "args#7": {
+  "t": "s",
+  "v": "1!"
+ }
+}
