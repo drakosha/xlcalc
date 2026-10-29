@@ -12,6 +12,8 @@ export const FIT_REASONS = {
   script: 'characters outside Latin, Cyrillic and the common signs (中文) count as a digit here; Excel lays them out in a font that has them',
   advances:
     "text with a character outside ASCII, which Excel for Mac measures by fractional widths: the engine takes them from the advance widths of Carlito, metrically compatible with Calibri, which give Excel's width on short text and are a point off on some runs of one Cyrillic letter 600 points wide (19 of 70), on 'Итого по разделу 1' and on ru-RU's long date",
+  turnedWrap:
+    'wrapped text turned by an angle other than 90 degrees, or its letters one above the other: Excel wraps it in the room the row gives it, the engine fits it by its line breaks alone',
 } as const
 
 export type FitReason = keyof typeof FIT_REASONS
@@ -31,6 +33,7 @@ export const FIT_KNOWN: ReadonlyMap<string, FitReason> = new Map([
   }),
   ...cases('font', { 'en-US:autofit': ['font-1', 'font-2'], 'ru-RU:autofit': ['font-1', 'font-2'] }),
   ...cases('script', { 'en-US:autofit': ['glyphs-4'], 'ru-RU:autofit': ['glyphs-4'] }),
+  ...cases('turnedWrap', { 'en-US:rotation': ['wrap-3', 'wrap-4'] }),
   ...cases('advances', {
     'en-US:glyphs': ['94', '103', '107', '109', '118', '121', '122', '123', '128', '129', '130', '131', '134', '137', '142', '143', '147', '148', '150'].map((n) => `many-${n}`),
     'en-US:held': ['text-7'],
