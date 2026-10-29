@@ -65,6 +65,8 @@ export interface RowAnswer {
   refused?: Record<number, string>
   /** The heights of the rows `RowCase.more` names after, by number. */
   more?: Record<string, number>
+  /** Of a case that patches columns, the sheet's `<sheetFormatPr>` as Excel saved it. */
+  format?: Record<string, string>
 }
 
 export interface RowSet {

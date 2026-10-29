@@ -39,13 +39,18 @@ export function keptRows(file: string, cases: RowCase[]): { answers: Record<stri
   return { answers, meta: prev?.meta }
 }
 
-/** The rows of the first sheet of a saved book with a height, as their `<row>` elements give them, by number. */
-export async function savedRows(saved: Uint8Array): Promise<Map<number, NonNullable<RowAnswer['saved']>>> {
+/** The attributes of an element's opening tag. */
+const attrsOf = (tag: string): Record<string, string> => Object.fromEntries([...tag.matchAll(/(\w+)="([^"]*)"/g)].map((x) => [x[1], x[2]]))
+
+/** The rows of the first sheet of a saved book with a height, as their `<row>` elements give them, by number, and the sheet's `<sheetFormatPr>`. */
+export async function savedRows(saved: Uint8Array): Promise<Map<number, NonNullable<RowAnswer['saved']>> & { format?: Record<string, string> }> {
   const zip = await JSZip.loadAsync(saved)
   const xml = await zip.file('xl/worksheets/sheet1.xml')!.async('string')
-  const out = new Map<number, NonNullable<RowAnswer['saved']>>()
+  const out: Map<number, NonNullable<RowAnswer['saved']>> & { format?: Record<string, string> } = new Map()
+  const fp = /<sheetFormatPr\s([^>]*?)\/?>/.exec(xml)
+  if (fp) out.format = attrsOf(fp[1])
   for (const m of xml.matchAll(/<row\s([^>]*?)\/?>/g)) {
-    const a = Object.fromEntries([...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((x) => [x[1], x[2]]))
+    const a = attrsOf(m[1])
     const on = (k: string) => a[k] === '1' || a[k] === 'true'
     if (a.ht !== undefined) out.set(Number(a.r), { ht: Number(a.ht), ...(on('customHeight') ? { customHeight: true } : {}), ...(on('hidden') ? { hidden: true } : {}) })
   }
@@ -87,6 +92,7 @@ export async function partAnswers(part: RowCase[], before: number[], refused: st
       cells: Object.fromEntries(caseCells(c).map((x, i) => [cellKey(x), { formula: cells[i][0], wrap: cells[i][1] }])),
       ...(Object.keys(why).length ? { refused: why } : {}),
       ...(c.more ? { more: Object.fromEntries(c.more.map((r, i) => [r, more![i]])) } : {}),
+      ...(c.patched && rows.format ? { format: rows.format } : {}),
     }
   })
   return out

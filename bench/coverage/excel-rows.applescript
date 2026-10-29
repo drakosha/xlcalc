@@ -1,5 +1,5 @@
 -- Open a rows part's book, read each case's row height, and case by case (a row of the sheet "S") type its texts in
--- turn, set a font size or a rotation (`orientation`) on its columns whole when it patches them, and fit the row
+-- turn, set a font size or a rotation (`text orientation`) on its columns whole when it patches them, and fit the row
 -- (`autofit` of its entire row) when it has no texts and no patch or the case says so: texts through `value` or
 -- `formula2 local` with alerts off, or with Excel in front (System Events): typed into the cell and Return (`keys`), into
 -- a selection and Control+Return (`fill`), a line break typed as Control+Option+Return, or put on the clipboard as plain
@@ -85,9 +85,9 @@ on run argv
 					set cols to range ((item 1 of pt) as text) of ws
 					if (item 2 of pt) as integer > 0 then set font size of font object of cols to (item 2 of pt) as integer
 					if (item 3 of pt) as text is "vertical" then
-						set orientation of cols to orientation vertical
+						set text orientation of cols to orientation vertical
 					else if (item 3 of pt) as text is not "" then
-						set orientation of cols to ((item 3 of pt) as integer)
+						set text orientation of cols to ((item 3 of pt) as integer)
 					end if
 				end if
 				if (item 2 of c) is 1 then autofit rw
