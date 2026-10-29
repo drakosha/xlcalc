@@ -47,7 +47,8 @@ import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 import { loadStored, secondsSince, writeAnswers, writePrediction } from './stored.js'
 
-const DATA = join(ROOT, 'test/excel/keep')
+/** The answers and files of the step; `FKEEP_DATA` names another directory, for a repeat to compare with the recorded ones. */
+const DATA = process.env.FKEEP_DATA ?? join(ROOT, 'test/excel/keep')
 const ONLY = process.env.FKEEP_ONLY?.split(',').filter(Boolean)
 
 /** A file Excel made: the hash of what was sent, what its script answered, the parts its file holds. */
