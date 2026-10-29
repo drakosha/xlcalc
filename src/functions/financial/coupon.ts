@@ -1,6 +1,6 @@
 /** Coupon schedules and the COUP* functions, on Excel's serial numbers. */
 import type { FnDef } from '../../args.js'
-import { addMonths, daysInMonth, serialExcel, ymd } from '../../dates.js'
+import { addMonths, daysInMonth, serialExcel, utcDays, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { d360, euro360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
@@ -83,9 +83,33 @@ export function bondDays(c: Coupons, basis: number, freq: number) {
   return { e, a, dsc: e - a }
 }
 
+/** The day of the month of the date `steps` periods before maturity, each date stepped from the one before it (a 31st that meets February stays the 28th). */
+function steppedDay(mat: Ymd, steps: number, freq: number): number {
+  let { y, m, d } = mat
+  for (let i = 0; i < steps && d > 28; i++) {
+    ;({ y, m } = addMonths(y, m, -12 / freq))
+    d = Math.min(d, daysInMonth(y, m))
+  }
+  return d
+}
+
+/**
+ * COUPDAYS on basis 1, in the real calendar (before 1900 without 29 February): Excel steps the coupon dates back from
+ * maturity each from the one before it, so a 31st that meets February stays the 28th, and counts from the date a
+ * period before the next one, the month's last day where that next date is one. The next date is COUPNCD's on the
+ * stepped day while that is still after settlement (`COUPDAYS(DATE(2011,3,15),DATE(2015,8,31),2,1)` is 181, 28 February
+ * to 28 August, where COUPPCD and COUPNCD are 28 February and 31 August).
+ */
+function actualPeriod(c: Coupons, mat: Ymd, freq: number): number {
+  const stepped = { ...c.ncd, d: steppedDay(mat, c.n - 1, freq) }
+  const next = cmp(stepped, c.settle) > 0 ? stepped : c.ncd
+  const from = couponDate(next, -1, freq)
+  return utcDays(next.y, next.m, next.d) - utcDays(from.y, from.m, from.d)
+}
+
 /** The COUP* functions check each argument as they read it: the dates' order, then the frequency, then the basis. */
-function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr, date?: FnDef['date']): FnDef {
-  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq), {
+function coup(answer: (c: Coupons, basis: number, freq: number, mat: Ymd) => number | CErr, date?: FnDef['date']): FnDef {
+  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq, ymd(maturity)), {
     check: { 1: need((maturity, a) => a[0] < maturity), 2: need(validFreq), 3: need(validBasis) },
     date,
   })
@@ -93,6 +117,7 @@ function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr
 
 export const functions: Record<string, FnDef> = {
   COUPDAYBS: coup((c, basis, freq) => couponDays(c, basis, freq).a),
+  COUPDAYS: coup((c, basis, freq, mat) => (basis === 1 ? actualPeriod(c, mat, freq) : normalDays(basis, freq))),
   COUPDAYSNC: coup((c, basis, freq) => couponDays(c, basis, freq).dsc),
   COUPNCD: coup((c) => serialOfYmd(c.ncd), 'calendar'),
   COUPNUM: coup((c) => c.n || E.NUM),
