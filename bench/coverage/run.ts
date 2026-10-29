@@ -29,6 +29,7 @@
  *   npx tsx bench/coverage/run.ts paste X [ru|T]    Paste Special of paste/X.ts into test/excel/paste/[ru-RU/ or T/]X.json and X/ (test: test/paste-excel.test.ts)
  *   npx tsx bench/coverage/run.ts valid X [ru]    data validation and outlines of valid/X.ts into test/excel/valid/[ru-RU/]X.json and X/ (test: test/validation-excel.test.ts)
  *   npx tsx bench/coverage/run.ts hidden X   hidden sheets of hidden/X.ts into test/excel/hidden/X.json and X/ (test: test/hidden-sheets-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts csv X      CSV files of csv/X.ts opened and saved into test/excel/csv/[<tag>/]X.json and X/ (test: test/csv-excel.test.ts)
  *   npx tsx bench/coverage/run.ts fit X [ru|T]    column widths fitted and widened by typing, fit/X.ts, into test/excel/fit/[ru-RU/ or T/]X.json (test: test/fit-excel.test.ts)
  *   npx tsx bench/coverage/run.ts links X   links to other workbooks of links/X.ts, opened without updating them, into test/excel/links/X.json and X/
  *   npx tsx bench/coverage/run.ts lines X   formats of rows and columns and the cells under them, lines/X.ts, into test/excel/lines/X.json and X/ (test: test/lines-excel.test.ts)
@@ -69,6 +70,7 @@ import { stepFields } from './fields.js'
 import { stepStats } from './stats.js'
 import { stepEntry } from './entry.js'
 import { stepHidden } from './hidden.js'
+import { stepCsv } from './csv.js'
 import { stepLinks } from './links.js'
 import { stepCond } from './cond.js'
 import { stepValid } from './valid.js'
@@ -326,6 +328,7 @@ else if (step === 'valid') await withExcelLock(() => stepValid(process.argv[3], 
 else if (step === 'paste') await withExcelLock(() => stepPaste(process.argv[3], locale))
 else if (step === 'paste-predict') await stepPastePredict(process.argv[3])
 else if (step === 'hidden') await withExcelLock(() => stepHidden(process.argv[3]))
+else if (step === 'csv') await withExcelLock(() => stepCsv(process.argv[3]))
 else if (step === 'lines') await withExcelLock(() => stepLines(process.argv[3]))
 else if (step === 'protect') await withExcelLock(() => stepProtect(process.argv[3]))
 else if (step === 'links') await withExcelLock(() => stepLinks(process.argv[3]))
@@ -343,7 +346,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

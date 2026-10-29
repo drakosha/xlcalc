@@ -1,0 +1,284 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-29",
+  "seconds": 17
+ },
+ "cases": [
+  {
+   "id": "at",
+   "text": "1,2\r\n@A1,@abc,@1,@,@A1+B1,@SUM(A1:B1)\r\n"
+  },
+  {
+   "id": "quoted-values",
+   "text": "\"00123\",\"1,234\",\"TRUE\",\"=1+2\",\" 5\",\"5 \"\r\n"
+  },
+  {
+   "id": "numbers",
+   "text": "1.5E+3,1 1/2,(5%),-0,1.0,\"12,345,678\",1e-400,0x1F,1_000,5-\r\n"
+  },
+  {
+   "id": "dates",
+   "text": "Mar 15 2026,15 March 2026,1-2,2026-13-01,12:00 AM,0:00,23:59:59,3/15/26,15-Mar,\"March 15, 2026\"\r\n"
+  },
+  {
+   "id": "words",
+   "text": "TRUE ,FALSE,yes,#N/A ,#NULL!,#SPILL!,#CALC!,#GETTING_DATA\r\n"
+  },
+  {
+   "id": "euro-bom",
+   "text": "€5,5 €,€-5,-€5,£5,¥5\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "sep-upper",
+   "text": "SEP=;\r\na;b\r\n"
+  },
+  {
+   "id": "sep-comma",
+   "text": "sep=,\r\na,b\r\n"
+  },
+  {
+   "id": "sep-late",
+   "text": "a,b\r\nsep=;\r\n"
+  },
+  {
+   "id": "cr-wrap",
+   "text": "\"a\rb\",c\r\n"
+  },
+  {
+   "id": "formulas",
+   "text": "2,=A1*3,\"=\"\"a\"\"&\"\"b\"\"\",+A1*2,=IF(A1>1,\"\"big\"\",\"\"small\"\"),\"=IF(A1>1,\"\"big\"\",\"\"small\"\")\",=A1:A2\r\n"
+  },
+  {
+   "id": "ragged",
+   "text": "a\r\nb,c,d\r\ne,f\r\n"
+  },
+  {
+   "id": "w-formats",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1.5,
+        "numberFormat": "0.000"
+       },
+       "B1": {
+        "value": 1.25,
+        "numberFormat": "[h]:mm"
+       },
+       "C1": {
+        "value": 12,
+        "numberFormat": "@"
+       },
+       "D1": {
+        "value": 1234,
+        "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+       },
+       "E1": {
+        "value": 1.5,
+        "numberFormat": "# ?/?"
+       },
+       "F1": {
+        "value": -1234.5,
+        "numberFormat": "#,##0.00;[Red]-#,##0.00"
+       },
+       "G1": {
+        "value": 0,
+        "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+       },
+       "H1": {
+        "value": "x",
+        "numberFormat": "\"<\"@\">\""
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-formulas",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 2
+       },
+       "B1": {
+        "formula": "A1>1"
+       },
+       "C1": {
+        "formula": "NA()"
+       },
+       "D1": {
+        "formula": "\"a\"&\"b\""
+       },
+       "E1": {
+        "formula": "A1/3"
+       },
+       "F1": {
+        "formula": "\"\""
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-hidden",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "value": 2
+       },
+       "C1": {
+        "value": 3
+       }
+      },
+      "columns": {
+       "B": {
+        "hidden": true
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-formatted-first",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "numberFormat": "0.00"
+       },
+       "C3": {
+        "value": "c"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-long-text",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+       },
+       "B1": {
+        "value": "tab\there"
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "sent": {
+  "at": "c410d6a7dc3100da0b9a13d5204e977475957446256cc20391d93ec821e22e4c",
+  "quoted-values": "49e307bbb1c4c1d9d9c5c486dd1637e9f54b97e9c7734329cd51395c4920386f",
+  "numbers": "8e4a53f096c49780cc10b2e93d20fe985feefeb57041fa05f21486e100535904",
+  "dates": "f8d535930ef671d0d8c731fb744663b9cf6cbf2a0a68157f5214efa156e6f0c9",
+  "words": "c12ec813f8036124aa7aff1c794384d2b7ec2d58f1f76913629678879d468706",
+  "euro-bom": "e86f609cc50b50c40c9fc9b9d415db9f2b81ee318b0550d321c84c514fd9c6ff",
+  "sep-upper": "ecf2afcafe8a9b5eb817fbde48964aaf8a3f89b97799e2f87d1933e96189de3f",
+  "sep-comma": "a2908abe042221f595d3b95b128224caa1af749111fcb7bbaa523e9111865868",
+  "sep-late": "407c5272fb1c9a8e737d91bea3a1da50dc64a5a29a1dec97c924a6af782fef6b",
+  "cr-wrap": "4401c562056a5e8568c404e0ee568bfcf18d599fff5d984af05fdda95fbd6c6e",
+  "formulas": "9099a2b39b83a421a3a30aff2aa606469a5b09753e5f97cac7db983010da8187",
+  "ragged": "43cc725eeaa71347d75b60a5d473085b96e17ae9e7955c040d8ed069bddbe9dc",
+  "w-formats": "50e176901a98bfc3590f75a505cc4900d8e97167bc15c704e3147fa8622577fe",
+  "w-formulas": "a529f4d388120d18e75ae8e320c5039411210261800b6dfc53cfe696ce003cb6",
+  "w-hidden": "33a061c03d0012781a598403a0c8b0ff6a12afc374eb22a8d2e266cc9eaf22de",
+  "w-formatted-first": "39a649abe4cd7f1f8d0a93670c022c9acee851adb1c9cd6b712c92048bdba69e",
+  "w-long-text": "ac6a97143190220bf7dd6ec72fadee0659ef17a71b1fb75941e5c1303828a137"
+ },
+ "answers": {
+  "at": {
+   "sheet": "book",
+   "csv": "MSwyLCwsLA0KQEExLEBhYmMsQDEsQCxAQTErQjEsMw=="
+  },
+  "quoted-values": {
+   "sheet": "book",
+   "csv": "MTIzLCIxLDIzNCIsVFJVRSwzLDUsNQ=="
+  },
+  "numbers": {
+   "sheet": "book",
+   "csv": "MS41MEUrMDMsMSAxLzIsLTUlLDAsMSwiMTIsMzQ1LDY3OCIsMWUtNDAwLDB4MUYsMV8wMDAsNS0="
+  },
+  "dates": {
+   "sheet": "book",
+   "csv": "TWFyIDE1IDIwMjYsMTUtTWFyLTI2LDItSmFuLDIwMjYtMTMtMDEsMTI6MDAgQU0sMDowMCwyMzo1OTo1OSwzLzE1LzI2LDE1LU1hciwxNS1NYXItMjY="
+  },
+  "words": {
+   "sheet": "book",
+   "csv": "VFJVRSAsRkFMU0UseWVzLCNOL0EgLCNOVUxMISwjU1BJTEwhLCNDQUxDISwjR0VUVElOR19EQVRB"
+  },
+  "euro-bom": {
+   "sheet": "book",
+   "csv": "2yA1LDUg2ywt2yA1LC3bIDUsozUstDU="
+  },
+  "sep-upper": {
+   "sheet": "book",
+   "csv": "YSxi"
+  },
+  "sep-comma": {
+   "sheet": "book",
+   "csv": "YSxi"
+  },
+  "sep-late": {
+   "sheet": "book",
+   "csv": "YSxiDQpzZXA9Oyw="
+  },
+  "cr-wrap": {
+   "sheet": "book",
+   "csv": "ImENYiIsYw=="
+  },
+  "formulas": {
+   "sheet": "book",
+   "csv": "Miw2LGFiLDQsPUlGKEExPjEsImJpZyIiIiIiLCJzbWFsbCIiIiIpIixiaWcsMg=="
+  },
+  "ragged": {
+   "sheet": "book",
+   "csv": "YSwsDQpiLGMsZA0KZSxmLA=="
+  },
+  "w-formats": {
+   "sheet": "S",
+   "csv": "MS41MDAsMzA6MDAsMTIsIiAxLDIzNCAiLDEgMS8yLCItMSwyMzQuNTAiLCAtICw8eD4="
+  },
+  "w-formulas": {
+   "sheet": "S",
+   "csv": "MixUUlVFLCNOL0EsYWIsMC42NjY2NjY2Njcs"
+  },
+  "w-hidden": {
+   "sheet": "S",
+   "csv": "MSwyLDM="
+  },
+  "w-formatted-first": {
+   "sheet": "S",
+   "csv": "LCwNCiwsDQosLGM="
+  },
+  "w-long-text": {
+   "sheet": "S",
+   "csv": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4LCJ0YWIJaGVyZSI="
+  }
+ }
+}

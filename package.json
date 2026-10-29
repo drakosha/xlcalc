@@ -74,6 +74,10 @@
       "types": "./dist/xlsx-keep.d.ts",
       "default": "./dist/xlsx-keep.js"
     },
+    "./csv": {
+      "types": "./dist/csv.d.ts",
+      "default": "./dist/csv.js"
+    },
     "./worker": {
       "types": "./dist/worker/index.d.ts",
       "default": "./dist/worker/index.js"

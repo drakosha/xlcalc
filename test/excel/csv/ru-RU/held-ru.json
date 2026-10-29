@@ -1,0 +1,170 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-29",
+  "seconds": 12.8
+ },
+ "cases": [
+  {
+   "id": "logic",
+   "text": "ИСТИНА;ложь;Истина;#Н/Д;#ДЕЛ/0!;#ИМЯ?;#ЗНАЧ!;#ССЫЛКА!\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "formulas",
+   "text": "2;=A1*3;\"=СУММ(A1;1)\";=СУММ(A1;1);\"=ОКРУГЛ(1,5;0)\";+A1*2;-A1;@СУММ(1;2);=ЕСЛИ(A1>1;1;0);=SUM(1)\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "money",
+   "text": "5 ₽;5₽;-5 ₽;5,50 ₽;1 234 ₽;5 р.;$5;€5;5 €\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "dates",
+   "text": "15-мар-2026;15 марта 2026;мар 2026;15.03.2026 18:30;15.3.26;1.2;31.02.2026;18:30:15\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "numbers",
+   "text": "1 234,5;-1,5;1,5%;(5);1,5E+3;1.5;\"1,5\";0,5;,5\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "quoted",
+   "text": "\"ИСТИНА\";\"1,5\";\"15.03.2026\";\"а;б\";\"\"\"к\"\"\"\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "wrap",
+   "text": "\"строка 1\nстрока 2\";x\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "named",
+   "text": "а;б\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "w-formats",
+   "book": {
+    "locale": "ru-RU",
+    "sheets": [
+     {
+      "name": "Лист",
+      "cells": {
+       "A1": {
+        "value": -1234.5,
+        "numberFormat": "#,##0.00;[Red]-#,##0.00"
+       },
+       "B1": {
+        "value": 46096,
+        "numberFormat": "d mmmm yyyy"
+       },
+       "C1": {
+        "value": false
+       },
+       "D1": {
+        "formula": "NA()"
+       },
+       "E1": {
+        "value": 0.75,
+        "numberFormat": 20
+       },
+       "F1": {
+        "value": 1.5,
+        "numberFormat": "0.000"
+       },
+       "G1": {
+        "formula": "1/3"
+       },
+       "H1": {
+        "value": "текст"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-formulas",
+   "book": {
+    "locale": "ru-RU",
+    "sheets": [
+     {
+      "name": "Лист",
+      "cells": {
+       "A1": {
+        "value": 2
+       },
+       "B1": {
+        "formula": "A1>1"
+       },
+       "C1": {
+        "formula": "A1*1.5"
+       },
+       "D1": {
+        "formula": "\"а\"&\"б\""
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "sent": {
+  "logic": "e7639b1871ac0862a30f2284fb89c3355579c6451ca0bad1d4f255ff84c686b4",
+  "formulas": "951ba03418a654f7c8a76ea2eaa1616389009aa4628880c85573936d48410329",
+  "money": "5910f39e23f5e758c0d5dc8f0db8672e864c84bdf590e0aef0c4be589fe88415",
+  "dates": "cee54ae345be5a9295b9b304d8b1f3c792638b52506e68d9a597cc63dc76cd1e",
+  "numbers": "e8017f0dcedf094fd6f879f494d785262c09fd70cee57904a2beeb2a53a36f7c",
+  "quoted": "2b43444fa51523def4d210cc3db25cc748fc4722b3ae9dd9591e4e90c69a7213",
+  "wrap": "d4c3d4b027a3c7d9d4c72fafeb7b727d1f5d4583ed7942e5d01bc7c33d598946",
+  "named": "80008b710b310a9561f6069a9c41d667d789cd36f001ddc01ee2b41122d97191",
+  "w-formats": "17df4f231326f2fc5b67df6a9dcdbbdded7cc8f60272af321b16f4edda2de36c",
+  "w-formulas": "51f9a3428d05f77ae90f752c2a1856321d5b0e8bb1bade2036289f226736e69b"
+ },
+ "answers": {
+  "logic": {
+   "sheet": "book",
+   "csv": "iJGSiI2AO4uOhpw7iJGSiI2AOyONL4Q7I4SFiy8wITsjiIyfPzsjh42AlyE7I5GRm4uKgCE="
+  },
+  "formulas": {
+   "sheet": "book",
+   "csv": "Mjs2OzM7PZGTjIwoQTE7MSk7Mjs0Oy0yO0CRk4yMKDE7Mik7PYWRi4goQTE+MTsxOzApOyOIjJ8/"
+  },
+  "money": {
+   "sheet": "book",
+   "csv": "NSBfOzUgXzstNSBfOzUsNTAgXzsxIDIzNCBfOzUg8C47JDU7/yA1OzUg/w=="
+  },
+  "dates": {
+   "sheet": "book",
+   "csv": "MTUu7ODw8i4yNjsxNSDs4PDy4CAyMDI2O+zg8PIuMjY7MTUuMDMuMjAyNiAxODozMDsxNS4wMy4yMDI2OzAxLvTl4vA7MzEuMDIuMjAyNjsxODozMDoxNQ=="
+  },
+  "numbers": {
+   "sheet": "book",
+   "csv": "MSAyMzQsNTA7LTEsNTsxLDUwJTstNTsxLDUwRSswMzswMS7s4Ok7MSw1OzAsNTswLDU="
+  },
+  "quoted": {
+   "sheet": "book",
+   "csv": "iJGSiI2AOzEsNTsxNS4wMy4yMDI2OyLgO+EiOyIiIuoiIiI="
+  },
+  "wrap": {
+   "sheet": "book",
+   "csv": "IvHy8O7q4CAxCvHy8O7q4CAyIjt4"
+  },
+  "named": {
+   "sheet": "book",
+   "csv": "4Dvh"
+  },
+  "w-formats": {
+   "sheet": "Лист",
+   "csv": "LTEgMjM0LDUwOzE1IOzg8PIgMjAyNjuLjoacOyONL4Q7MTg6MDA7MSw1MDA7MCwzMzMzMzMzMzM78uXq8fI="
+  },
+  "w-formulas": {
+   "sheet": "Лист",
+   "csv": "MjuIkZKIjYA7Mzvg4Q=="
+  }
+ }
+}

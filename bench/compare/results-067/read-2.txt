@@ -1,0 +1,28 @@
+values of the data sheet, 34001 rows
+opened (with the first read): base display false 459 ms, base display true 444 ms, branch display false 474 ms, branch display true 447 ms
+window A1:P100: HyperFormula 0.17 ms, base display false 0.91 ms, base display true 0.92 ms, branch display false 1.30 ms, branch display true 1.33 ms
+window A1:P100, value, text and formula: HyperFormula not measured, base display false 0.53 ms, base display true 0.52 ms, branch display false 0.57 ms, branch display true 0.64 ms
+column B, its rows: HyperFormula 5.72 ms, base display false 17 ms, base display true 16 ms, branch display false 16 ms, branch display true 15 ms
+column B whole: HyperFormula 129 ms, base display false 23 ms, base display true 18 ms, branch display false 19 ms, branch display true 16 ms
+the sheet by pages of 10,000: HyperFormula 15 ms, base display false 162 ms, base display true 165 ms, branch display false 164 ms, branch display true 166 ms
+10,000 single cells: HyperFormula 2.07 ms, base display false 5.34 ms, base display true 8.67 ms, branch display false 5.30 ms, branch display true 8.66 ms
+window A1:P100 as values: HyperFormula 0.05 ms, base display false 0.06 ms, base display true 0.05 ms, branch display false 0.04 ms, branch display true 0.04 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+column B, its rows, as values: HyperFormula 6.00 ms, base display false 0.74 ms, base display true 1.95 ms, branch display false 0.81 ms, branch display true 0.68 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+column B whole as values: HyperFormula 106 ms, base display false 47 ms, base display true 45 ms, branch display false 43 ms, branch display true 45 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+the sheet as values: HyperFormula 14 ms, base display false 11 ms, base display true 11 ms, branch display false 11 ms, branch display true 12 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+the synthetic book with formulas, 3400 rows
+opened (with the first read): base display false 102 ms, base display true 87 ms, branch display false 117 ms, branch display true 92 ms
+window ПоНаправлениям!A1:P50: HyperFormula 0.07 ms, base display false 0.15 ms, base display true 0.16 ms, branch display false 0.26 ms, branch display true 0.27 ms
+the sheets of formulas by pages of 10,000: HyperFormula 0.63 ms, base display false 0.94 ms, base display true 0.89 ms, branch display false 0.97 ms, branch display true 0.96 ms
+the data sheet by pages of 10,000: HyperFormula 1.62 ms, base display false 12 ms, base display true 13 ms, branch display false 11 ms, branch display true 10 ms
+10,000 single cells of ПоНаправлениям: HyperFormula 0.42 ms, base display false 3.88 ms, base display true 9.10 ms, branch display false 3.60 ms, branch display true 9.02 ms
+window ПоНаправлениям!A1:P50 as values: HyperFormula 0.05 ms, base display false 0.02 ms, base display true 0.02 ms, branch display false 0.14 ms, branch display true 0.14 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+the data sheet as values: HyperFormula 1.59 ms, base display false 0.90 ms, base display true 0.90 ms, branch display false 0.92 ms, branch display true 0.88 ms (cells differing from HyperFormula: base display false 0, base display true 0, branch display false 0, branch display true 0)
+the synthetic book with formulas, 34000 rows (HyperFormula not measured)
+opened (with the first read): base display false 646 ms, base display true 606 ms, branch display false 598 ms, branch display true 577 ms
+window ПоНаправлениям!A1:P50: base display false 0.33 ms, base display true 0.33 ms, branch display false 0.21 ms, branch display true 0.21 ms
+the sheets of formulas by pages of 10,000: base display false 0.96 ms, base display true 0.98 ms, branch display false 0.97 ms, branch display true 0.95 ms
+the data sheet by pages of 10,000: base display false 154 ms, base display true 148 ms, branch display false 152 ms, branch display true 153 ms
+10,000 single cells of ПоНаправлениям: base display false 3.28 ms, base display true 12 ms, branch display false 3.32 ms, branch display true 11 ms
+window ПоНаправлениям!A1:P50 as values: base display false 0.06 ms, base display true 0.06 ms, branch display false 0.05 ms, branch display true 0.05 ms
+the data sheet as values: base display false 10 ms, base display true 10 ms, branch display false 10 ms, branch display true 8.78 ms
