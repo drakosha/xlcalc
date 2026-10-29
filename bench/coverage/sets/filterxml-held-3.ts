@@ -31,3 +31,6 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./filterxml-held-3.predicted.json', import.meta.url), 'utf8'))
+
+/** Excel for Windows confirmed every prediction. */
+export const MISSED: readonly string[] = []

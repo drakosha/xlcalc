@@ -52,3 +52,9 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./filterxml-held.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Windows did not confirm: a text node is #VALUE! (`filterxml-held-2` measured it), and
+ * `1E-400` stays text.
+ */
+export const MISSED: readonly string[] = ['text#14', 'values#16']

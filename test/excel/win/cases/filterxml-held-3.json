@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "text#1",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"/a/b/text()\")"
+  },
+  {
+   "id": "text#2",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//text()[.=\"\"2\"\"]\")"
+  },
+  {
+   "id": "text#3",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"/a/b/text()/self::node()\")"
+  },
+  {
+   "id": "text#4",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"/a/text()\")"
+  },
+  {
+   "id": "text#5",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//b/text()/..\")"
+  },
+  {
+   "id": "text#6",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//*[text()=\"\"5\"\"]\")"
+  },
+  {
+   "id": "text#7",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//b | //b/text()\"),1)"
+  },
+  {
+   "id": "text#8",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//b | //b/text()\"),2)"
+  },
+  {
+   "id": "attrs#1",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//@* | //c\"),1)"
+  },
+  {
+   "id": "attrs#2",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//@* | //c\"),2)"
+  },
+  {
+   "id": "attrs#3",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//@* | //c\"),3)"
+  },
+  {
+   "id": "attrs#4",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//c/@x/..\")"
+  },
+  {
+   "id": "attrs#5",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"sum(//@*)\")"
+  },
+  {
+   "id": "attrs#6",
+   "group": "attrs",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a k=\"\"1\"\"><b>2</b><![CDATA[3]]><c x=\"\"4\"\">5</c></a>\",\"//*[@x=4]\")"
+  },
+  {
+   "id": "ns#1",
+   "group": "ns",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a xmlns:p=\"\"u\"\"><b>1</b></a>\",\"/a/namespace::*\"),1)"
+  },
+  {
+   "id": "ns#2",
+   "group": "ns",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a xmlns:p=\"\"u\"\"><b>1</b></a>\",\"/a/namespace::*\"),2)"
+  },
+  {
+   "id": "ns#3",
+   "group": "ns",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a xmlns:p=\"\"u\"\"><b>1</b></a>\",\"count(/a/namespace::*)\")"
+  },
+  {
+   "id": "ns#4",
+   "group": "ns",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a xmlns:p=\"\"u\"\"><b>1</b></a>\",\"/a/namespace::p\")"
+  }
+ ],
+ "values": {
+  "text#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "text#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "text#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "text#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "text#5": {
+   "t": "n",
+   "v": 2
+  },
+  "text#6": {
+   "t": "n",
+   "v": 5
+  },
+  "text#7": {
+   "t": "n",
+   "v": 2
+  },
+  "text#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "attrs#1": {
+   "t": "n",
+   "v": 1
+  },
+  "attrs#2": {
+   "t": "n",
+   "v": 5
+  },
+  "attrs#3": {
+   "t": "n",
+   "v": 4
+  },
+  "attrs#4": {
+   "t": "n",
+   "v": 5
+  },
+  "attrs#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "attrs#6": {
+   "t": "n",
+   "v": 5
+  },
+  "ns#1": {
+   "t": "s",
+   "v": "http://www.w3.org/XML/1998/namespace"
+  },
+  "ns#2": {
+   "t": "s",
+   "v": "u"
+  },
+  "ns#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ns#4": {
+   "t": "s",
+   "v": "u"
+  }
+ }
+}

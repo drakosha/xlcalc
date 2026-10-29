@@ -31,3 +31,13 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./filterxml-held-2.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Windows did not confirm: every text node is #VALUE!, the first as well as the later ones:
+ * a node's value is its children's text.
+ */
+export const MISSED: readonly string[] = [
+  'siblings#1', 'siblings#2', 'siblings#3', 'siblings#4', 'siblings#5', 'siblings#6', 'siblings#7', 'siblings#8',
+  'siblings#9', 'siblings#10', 'siblings#11', 'siblings#12', 'siblings#13', 'single#1', 'single#2', 'single#4',
+  'single#5', 'single#6', 'nodes#2', 'nodes#4', 'nodes#5', 'nodes#6', 'nodes#7', 'nodes#8', 'nodes#9', 'nodes#10',
+]

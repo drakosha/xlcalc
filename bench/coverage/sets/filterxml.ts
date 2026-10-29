@@ -61,3 +61,16 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./filterxml.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Windows did not confirm: a node's value is its own text, not its descendants' (an element
+ * without text, a comment and an instruction are #VALUE!, `<a>x<b>1</b>y</a>` is `xy`), trimmed; TRUE and FALSE are
+ * booleans; names are compared as written, so `//b` finds `b` under a default namespace and `//x:a` needs no declared
+ * prefix; the namespace axis has nodes; and the parser had refused names with a colon.
+ */
+export const MISSED: readonly string[] = [
+  'nodes#9', 'nodes#10', 'nodes#11', 'nodes#12', 'nodes#13', 'nodes#14', 'values#10', 'values#11', 'values#22',
+  'values#23', 'values#24', 'values#26', 'values#29', 'values#31', 'values#32', 'xpath#11', 'xpath#12', 'xpath#14',
+  'xpath#15', 'xpath#20', 'xpath#22', 'xpath#41', 'xpath#44', 'xpath#50', 'xpath-off#24', 'ns#1', 'ns#4', 'ns#5',
+  'ns#7', 'ns#10', 'ns#11', 'args#14',
+]
