@@ -31,7 +31,8 @@ function DoubleClick($b) {
   }
 }
 # the target sheet active, the selection made through the object model, which must leave the painter on, and Shift
-# with the key typed (again where it was lost, the selection as it was: the first book of a run lost it once)
+# with the key typed (again where it was lost, the selection as it was and not merged: the first book of a run lost it
+# once; a painted merged area can be the selection given, which a key again would shrink and paint anew)
 function Take($xl, $wb, $t, $to, $key) {
   $wt = $wb.Worksheets.Item($to[0])
   [void]$wt.Activate()
@@ -39,7 +40,7 @@ function Take($xl, $wb, $t, $to, $key) {
   Start-Sleep -Milliseconds 500
   if (-not (IsOn $t)) { throw 'the Format Painter applied at a selection of the object model' }
   $sel = $xl.Selection.Address()
-  for ($k = 0; $k -lt 2 -and $xl.Selection.Address() -eq $sel; $k++) {
+  for ($k = 0; $k -lt 2 -and $xl.Selection.Address() -eq $sel -and -not $xl.Selection.MergeCells; $k++) {
     Front $xl.Hwnd
     [System.Windows.Forms.SendKeys]::SendWait($(if ($key -eq 'up') { '+{UP}' } else { '+{LEFT}' }))
     Start-Sleep -Milliseconds 500
