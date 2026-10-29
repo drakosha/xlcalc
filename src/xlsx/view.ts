@@ -1,5 +1,5 @@
 /** The first workbook and sheet views, passed between the file and presentation metadata. */
-import type { BookInput, FrozenPanes, SheetInput, SheetView } from '../contract.js'
+import type { BookInput, FrozenPanes, SheetInput, SheetView, SplitPanes } from '../contract.js'
 import { checkSheetView } from '../input-view.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -20,6 +20,8 @@ export function readSheetView(first: Element | undefined): SheetView | undefined
   if (topLeft !== undefined) out.topLeft = topLeft
   if (attrs.zoomScale !== undefined) out.zoom = Number(attrs.zoomScale)
   for (const [key, attr] of VIEW_FLAGS) if (attrs[attr] !== undefined && !flag(attrs[attr])) out[key] = false
+  const split = paneElement && splitOf(pane)
+  if (split) out.split = split
   if (selected.activeCell !== undefined) out.activeCell = selected.activeCell
   if (selected.sqref?.trim()) out.selection = selected.sqref.trim().split(/\s+/)
   // Malformed optional view fields do not make a valid workbook unreadable.
@@ -31,6 +33,30 @@ export function readSheetView(first: Element | undefined): SheetView | undefined
 
 const CELL = /^[A-Z]{1,3}[1-9]\d*$/
 
+/** A pane's state is a split unless it says otherwise (`frozen`, `frozenSplit`). */
+export const isSplit = (pane: Record<string, string>) => pane.state === undefined || pane.state === 'split'
+
+/** The split of a window that is not frozen: its lines in points (the file's twentieths), the pane after them and the active one. */
+function splitOf(pane: Record<string, string>): SplitPanes | undefined {
+  if (!isSplit(pane)) return undefined
+  const out: SplitPanes = {}
+  for (const [axis, attr] of [['x', 'xSplit'], ['y', 'ySplit']] as const) {
+    const n = Number(pane[attr])
+    if (n > 0) out[axis] = n / 20
+  }
+  if (out.x === undefined && out.y === undefined) return undefined
+  if (pane.topLeftCell !== undefined) out.topLeft = pane.topLeftCell
+  if (pane.activePane !== undefined && pane.activePane !== 'topLeft') out.activePane = pane.activePane as SplitPanes['activePane']
+  return out
+}
+
+/** The `<pane>` of a split window, as Excel writes it: its lines in twentieths of a point, the pane after them, the active one where it is not the first. */
+export function splitXml(split: SplitPanes | undefined): string {
+  if (!split) return ''
+  const twips = (v: number | undefined, attr: string) => (v ? ` ${attr}="${Math.round(v * 20)}"` : '')
+  return `<pane${twips(split.x, 'xSplit')}${twips(split.y, 'ySplit')}${split.topLeft ? ` topLeftCell="${split.topLeft}"` : ''}${split.activePane && split.activePane !== 'topLeft' ? ` activePane="${split.activePane}"` : ''}/>`
+}
+
 /** The view's flags shown by default, by their attributes: written as `0` where the model has false. */
 export const VIEW_FLAGS = [['gridlines', 'showGridLines'], ['headings', 'showRowColHeaders']] as const
 
@@ -39,7 +65,7 @@ export const VIEW_FLAGS = [['gridlines', 'showGridLines'], ['headings', 'showRow
  * it, that pane's top left cell on each frozen axis (as `frozenScroll` writes it and Excel keeps it).
  */
 function scrollOf(top: string | undefined, pane: Record<string, string>): string | undefined {
-  if ((pane.state !== 'frozen' && pane.state !== 'frozenSplit') || !CELL.test(pane.topLeftCell ?? '')) return top
+  if (isSplit(pane) || !CELL.test(pane.topLeftCell ?? '')) return top
   const p = parseAddress(pane.topLeftCell!)
   const v = top !== undefined && CELL.test(top) ? parseAddress(top) : { row: 0, col: 0 }
   const [ys, xs] = [Math.trunc(Number(pane.ySplit ?? 0)), Math.trunc(Number(pane.xSplit ?? 0))]

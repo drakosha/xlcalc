@@ -168,7 +168,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
 
   it('what a sheet has that the model does not: each reported once for the sheet', async () => {
     const body =
-      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="600" topLeftCell="A2"/></sheetView></sheetViews>' +
+      '<sheetViews><sheetView workbookViewId="0" topLeftCell="A5"><pane ySplit="1" topLeftCell="A6" state="frozen"/></sheetView></sheetViews>' +
       one(1) +
       '<sheetProtection sheet="1"/><protectedRanges><protectedRange sqref="A1" name="R"/></protectedRanges><autoFilter ref="A1:A9"/><conditionalFormatting sqref="A1"><cfRule type="cellIs"/></conditionalFormatting><conditionalFormatting sqref="B1"/><dataValidations count="1"><dataValidation sqref="A1"/></dataValidations><pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter><drawing r:id="rId2"/><tableParts count="1"><tablePart r:id="rId3"/></tableParts><extLst><ext><x14:sparklineGroups/></ext></extLst>'
     const f = parts({ sheets: [{ name: 'S', body }] })

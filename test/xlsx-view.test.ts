@@ -1,7 +1,8 @@
 /** Saved sheet views roundtrip without participating in either computation hash. */
 import JSZip from 'jszip'
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, InputError, type BookInput, type Execution, type FrozenPanes } from '../src/index.js'
+import { compute, InputError, type BookInput, type Execution, type FrozenPanes, type SheetView } from '../src/index.js'
+import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 afterAll(closeCalcs)
@@ -146,5 +147,66 @@ describe.each(['closures', 'eval'] as const)('frozen panes with a saved scroll p
     const third = await cycle(second.book)
     expect([second.book.sheets[0].frozen, third.book.sheets[0].frozen, second.issues, third.issues]).toEqual([{ rows: 6 }, { rows: 6 }, [], []])
     expect(third.book.sheets[0].view).toEqual(second.book.sheets[0].view)
+  })
+})
+
+describe('a window split into panes', () => {
+  const split = (view: SheetView, frozen?: FrozenPanes): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 } }, view, ...(frozen ? { frozen } : {}) }] })
+  const sheetViews = async (data: Uint8Array) => (await (await JSZip.loadAsync(data)).file('xl/worksheets/sheet1.xml')!.async('string')).match(/<sheetViews>.*<\/sheetViews>/)![0]
+
+  it('is checked, and changes neither hash', () => {
+    const view = { split: { x: 120, y: 60, topLeft: 'F20', activePane: 'bottomRight' as const } }
+    expect([compute(split(view)).hash, compute(split(view)).inputHash]).toEqual([compute(split({})).hash, compute(split({})).inputHash])
+    const refused: [unknown, string, string][] = [
+      [{}, 'book.sheets[0].view.split', 'expected a line: x or y above 0'],
+      [{ x: 0 }, 'book.sheets[0].view.split', 'expected a line: x or y above 0'],
+      [{ x: -1 }, 'book.sheets[0].view.split.x', 'expected a number from 0 to 100000, got number -1'],
+      [{ y: 10, activePane: 'topRight' }, 'book.sheets[0].view.split.activePane', 'expected one of "topLeft", "bottomLeft", got the string "topRight"'],
+      [{ x: 10, topLeft: 'A0' }, 'book.sheets[0].view.split.topLeft', ''],
+      [{ x: 10, state: 'split' }, 'book.sheets[0].view.split', ''],
+    ]
+    for (const [v, path, message] of refused) {
+      const e = (() => { try { compute(split({ split: v as never })) } catch (x) { return x as InputError } })()
+      expect(e, JSON.stringify(v)).toBeInstanceOf(InputError)
+      expect(e!.path).toBe(path)
+      if (message) expect(e!.message).toContain(message)
+    }
+  })
+
+  it('is written as Excel writes it, in twentieths of a point, and read back', async () => {
+    const view: SheetView = { split: { x: 120, y: 60.25, topLeft: 'F20', activePane: 'bottomRight' }, activeCell: 'G21', selection: ['G21'] }
+    const data = (await writeXlsx({ book: split(view) })).data
+    expect(await sheetViews(data)).toBe('<sheetViews><sheetView workbookViewId="0" tabSelected="1"><pane xSplit="2400" ySplit="1205" topLeftCell="F20" activePane="bottomRight"/><selection pane="bottomRight" activeCell="G21" sqref="G21"/></sheetView></sheetViews>')
+    const read = await readXlsx(data)
+    expect([read.book.sheets[0].view, read.book.sheets[0].frozen, read.issues]).toEqual([view, undefined, []])
+    // the first pane active: no pane named, as Excel writes it
+    expect(await sheetViews((await writeXlsx({ book: split({ split: { y: 30 }, activeCell: 'B2', selection: ['B2'] }) })).data)).toBe('<sheetViews><sheetView workbookViewId="0" tabSelected="1"><pane ySplit="600"/><selection activeCell="B2" sqref="B2"/></sheetView></sheetViews>')
+  })
+
+  it('frozen panes take its place; unfrozen, the split is written again', async () => {
+    const view: SheetView = { split: { x: 120, topLeft: 'F1' } }
+    const frozen = await readXlsx((await writeXlsx({ book: split(view, { rows: 2 }) })).data)
+    expect([frozen.book.sheets[0].frozen, frozen.book.sheets[0].view]).toEqual([{ rows: 2 }, undefined])
+    for (const kind of KINDS) {
+      const s = await (await opener(kind))(split(view), {})
+      await s.setLayout([{ sheet: 'S', frozen: { rows: 2 } }])
+      await s.setLayout([{ sheet: 'S', frozen: null }])
+      expect((await readXlsx((await writeXlsx({ book: await s.getBook() })).data)).book.sheets[0].view, kind).toEqual(view)
+      await s.close()
+    }
+  })
+
+  it("writeKept puts the workbook's pane in place of the file's and keeps the rest of the view", async () => {
+    const zip = await JSZip.loadAsync((await writeXlsx({ book: split({}) })).data)
+    const path = 'xl/worksheets/sheet1.xml'
+    // as Excel for Mac saved a split window, with a pivot table's selection and an extension of its own
+    const excel = '<sheetView tabSelected="1" workbookViewId="0"><pane xSplit="3640" ySplit="1940" topLeftCell="D6"/><selection pane="bottomLeft" activeCell="A6" sqref="A6"/><selection pane="topRight" activeCell="D1" sqref="D1"/><selection pane="bottomRight" activeCell="D6" sqref="D6"/><pivotSelection pane="bottomRight"><pivotArea/></pivotSelection><extLst><ext uri="{X}"/></extLst></sheetView>'
+    zip.file(path, (await zip.file(path)!.async('string')).replace(/<sheetView[^>]*\/>/, excel))
+    const data = await zip.generateAsync({ type: 'uint8array' })
+    const read = await openKept(data)
+    expect(read.book.sheets[0].view).toEqual({ split: { x: 182, y: 97, topLeft: 'D6' } })
+    expect(await sheetViews((await writeKept(data, { book: read.book })).data)).toBe(`<sheetViews>${excel}</sheetViews>`)
+    const moved = { ...read.book, sheets: [{ ...read.book.sheets[0], view: { split: { x: 200, topLeft: 'H1', activePane: 'topRight' as const } } }] }
+    expect(await sheetViews((await writeKept(data, { book: moved })).data)).toBe('<sheetViews><sheetView workbookViewId="0" tabSelected="1"><pane xSplit="4000" topLeftCell="H1" activePane="topRight"/><pivotSelection pane="bottomRight"><pivotArea/></pivotSelection><extLst><ext uri="{X}"/></extLst></sheetView></sheetViews>')
   })
 })
