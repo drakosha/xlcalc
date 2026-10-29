@@ -3,7 +3,8 @@
  * and of the workbook and a sheet's end, found from the book's input and its spills without reading every cell. A cell
  * with data holds a value or a formula; each cell a spilled array or a legacy array formula fills is one with data and
  * one with a formula, as Excel counts them. The end is the last row and the last column of the cells with data or a
- * note, not of the used range: a style, a row or column of its own, a hyperlink alone or a table does not reach it.
+ * note and of the merged areas over them, not of the used range: a style, a row or column of its own, a hyperlink
+ * alone or a table does not reach it.
  * What the workbook does not hold is null.
  */
 import type { StatisticsCounts, WorkbookStatistics } from '../contract.js'
@@ -11,6 +12,7 @@ import type { EngineState } from '../engine.js'
 import { arrayArea, holds } from '../array-areas.js'
 import { formatAddress, readAddress } from '../model.js'
 import type { Rect } from '../structure/area.js'
+import { parseMerge } from '../layout/merges.js'
 
 /** The counts of what the workbook does not hold. */
 const UNHELD = { pivotTables: null, charts: null, images: null, formControls: null, objects: null, comments: null } as const
@@ -31,7 +33,8 @@ function counts(state: EngineState, s: number): StatisticsCounts & { end: string
     reach(x.r2, x.c2)
   }
   const at = { r: 0, c: 0 }
-  for (const [addr, c] of Object.entries(state.input.sheets[s].cells)) {
+  const sheet = state.input.sheets[s]
+  for (const [addr, c] of Object.entries(sheet.cells)) {
     const data = holds(c)
     if (data) cells++
     if (c.note) notes++
@@ -45,6 +48,12 @@ function counts(state: EngineState, s: number): StatisticsCounts & { end: string
     if (x) fill(x)
   }
   for (const x of state.spills.on.values()) if (x.s === s) fill(x)
+  // a merged area over a cell with data or a note reaches the end with its last cell (the set stats/held)
+  for (const m of sheet.merges ?? []) {
+    const x = parseMerge(m)
+    const c = x && sheet.cells[formatAddress(x.r1, x.c1)]
+    if (x && c && (holds(c) || c.note)) reach(x.r2, x.c2)
+  }
   const tables = state.tables.list.filter((t) => t.s === s).length
   return { end: rows ? formatAddress(rows - 1, cols - 1) : null, cells, tables, formulas, notes, ...UNHELD }
 }
