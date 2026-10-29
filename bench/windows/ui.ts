@@ -37,7 +37,7 @@ export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const waiting = cases.filter((c) => !answers[c.id] && c.act.do === 'press')
   const pressed = waiting.length && onScreen() ? await pressOnScreen(set, tag, waiting) : new Map<string, { saved: Uint8Array; answer: Record<string, unknown> }>()
-  if (waiting.length > pressed.size) console.log(`ui ${set} ${tag}: ${waiting.length - pressed.size} cases of the ribbon's buttons wait for a session on the screen`)
+  if (waiting.length > pressed.size) console.log(`ui ${set} ${tag}: ${waiting.length - pressed.size} cases of the ribbon's buttons not pressed (their errors above) or waiting for a session on the screen`)
   const todo = cases.filter((c) => !answers[c.id] && (c.act.do !== 'press' || pressed.has(c.id)))
   const results: [UiCase, unknown[], Uint8Array][] = []
   const book = async (c: UiCase, f: string) => {
