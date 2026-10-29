@@ -93,8 +93,8 @@ function cellNeed(value: CellValue, style: CellStyle | undefined, points: number
 function turnedNeed(rules: Rules, value: CellValue, style: CellStyle, format: NumberFormat | undefined, turn: Turn): Need | null {
   const wrap = !!style.alignment?.wrap
   if (value === null || (wrap && turn !== 'vertical')) return null
-  const laid = rules.fitLaid(value, format) ?? { text: '', general: false }
-  return [0, 0, Math.min(MAX_HEIGHT, turnedHeight(laid.text, fontSize(style), turn, laid.general, wrap))]
+  const laid = rules.fitLaid(value, format)
+  return [0, 0, Math.min(MAX_HEIGHT, turnedHeight(laid?.text ?? '', fontSize(style), turn, !!laid && laid.kind !== 'other', wrap))]
 }
 
 /** What a span of rows needs: rows `r1` to `r2`, and its need. */

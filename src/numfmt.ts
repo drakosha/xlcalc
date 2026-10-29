@@ -146,12 +146,18 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
 /** Styles that lay text out for AutoFit, by the style they lay out. */
 const LAID = new WeakMap<Style, Style>()
 
+/** What AutoFit lays out of a cell (`fitLaid`): its text, and its kind, a number in General, another number but a date or time, or other. */
+export interface Laid {
+  text: string
+  kind: 'general' | 'number' | 'other'
+}
+
 /**
- * The text AutoFit lays out of a cell (`Style.layout`: paddings, fills and blanks marked), and whether it is a number in
- * General at its full length, sign first. Null when the cell shows nothing: a blank, empty text, a number its section
- * cannot show (`#` in any width).
+ * The text AutoFit lays out of a cell (`Style.layout`: paddings, fills and blanks marked), a number in General at its
+ * full length, sign first. Null when the cell shows nothing: a blank, empty text, a number its section cannot show (`#`
+ * in any width).
  */
-export function fitLaid(value: CellValue, format: NumberFormat | undefined, style: Style): { text: string; general: boolean } | null {
+export function fitLaid(value: CellValue, format: NumberFormat | undefined, style: Style): Laid | null {
   if (value === null) return null
   let laid = LAID.get(style)
   if (!laid) LAID.set(style, (laid = { ...style, layout: true }))
@@ -164,10 +170,10 @@ export function fitLaid(value: CellValue, format: NumberFormat | undefined, styl
     text = sec ? asText(sec, word, laid) : word
   } else {
     const chosen = byFormat(value, secs, laid)
-    if (chosen.general !== undefined) return { text: (chosen.general < 0 ? '-' : '') + style.general(Math.abs(chosen.general)), general: true }
-    text = chosen.text
+    if (chosen.general !== undefined) return { text: (chosen.general < 0 ? '-' : '') + style.general(Math.abs(chosen.general)), kind: 'general' }
+    if (chosen.text) return { text: chosen.text, kind: chosen.sec && kind(chosen.sec.toks) === 'date' ? 'other' : 'number' }
   }
-  return text ? { text, general: false } : null
+  return text ? { text, kind: 'other' } : null
 }
 
 /**
@@ -178,7 +184,7 @@ export function fitLaid(value: CellValue, format: NumberFormat | undefined, styl
  */
 export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
   const x = fitLaid(value, format, style)
-  if (!x?.general) return x && fitText(x.text)
+  if (x?.kind !== 'general') return x && fitText(x.text)
   const minus = x.text.startsWith('-')
   const w = (minus ? glyph('-') : 0) + DIGIT * (x.text.length - (minus ? 1 : 0))
   return x.text.includes('E') ? w + 5 : w + 7
