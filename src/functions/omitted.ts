@@ -46,6 +46,8 @@ export const OMITTED: Readonly<Record<string, Omission>> = {
   LOGEST: defaults(1, 2),
   MATCH: { at: { 1: 'blank' } },
   MIRR: { at: { 0: 'VALUE' } },
+  // the reference's own height and width
+  OFFSET: defaults(3, 4),
   PERCENTRANK: defaults(2),
   'PERCENTRANK.EXC': defaults(2),
   'PERCENTRANK.INC': defaults(2),
@@ -95,12 +97,14 @@ export const NOT_OMITTED: Readonly<Record<string, Positions>> = {
 
 /**
  * Positions that take a reference of an open book: another workbook's range there is `#VALUE!`, as Excel computes it
- * over a closed book (the criteria functions' ranges, COUNTBLANK's, a database function's range;
+ * over a closed book (the criteria functions' ranges, COUNTBLANK's, OFFSET's and CELL's reference, a database function's range;
  * the sets `links/basics-held` and `links/functions-held`). RANK's list, SUBTOTAL's and AGGREGATE's references read
  * the stored values.
  */
 export const OPEN_REFERENCE: Readonly<Record<string, Positions>> = {
   ...Object.fromEntries(Object.entries(NOT_OMITTED).filter(([name]) => !name.startsWith('RANK') && name !== 'SUBTOTAL')),
   COUNTBLANK: { at: [0] },
+  OFFSET: { at: [0] },
+  CELL: { at: [1] },
   ...Object.fromEntries(Object.keys(database).map((f) => [f, { at: [0] }])),
 }

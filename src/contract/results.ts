@@ -1,6 +1,6 @@
 /** A computation and what it reports: its options and limits, a cell's result and how it shows, the issues of cells and names, the checks of formulas and names, why a cell holds its value, a book with its result. */
 import type { Locale } from '../locale/types.js'
-import type { CellRef, CellValue, CheckCode, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
+import type { BookFile, CellRef, CellValue, CheckCode, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
 import type { Book, ExternalBook, NumberFormat } from './book.js'
 import type { Color } from './looks.js'
 
@@ -93,6 +93,8 @@ export interface ComputeOptions {
    * it, or empty text when the file stores none. Nothing else is read from them.
    */
   cached?: CachedValues
+  /** The file the workbook was opened from (`BookFile`): what CELL and INFO tell of it. A workbook not saved yet without it. */
+  file?: BookFile
 }
 
 /** A cell's value and, by default (`display`), what the cell displays: `text` and `color`, as in `CellDisplay`. */

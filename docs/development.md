@@ -811,6 +811,20 @@ The `areas` set (1,137 cases) puts a union and a reference across sheets into ev
 
 Sheet names were tested in the harness's tables step (`bench/coverage/tables.ts`, `bench/windows/run.ts tables`): a workbook of sheets named as above, whose sheet `F` refers to each one's A1 as the engine stores it (in quotes), opened in Excel, with its formula text read back (`Range.Formula` and `Range.FormulaLocal`). The `sheet-quotes-held` set (54 names) came out as predicted on 49; its misses (`R0` and `R1048577` unquoted, `R2D2`, `C3PO` and `RC1C` quoted) showed that Excel parses an R1C1 reference at the start of a name, and the `sheet-quotes-r1c1-held` set (54 more), predicted after them, came out on 48: a `.` after the reference (`C1.x`, `R1.`), a column beyond the sheet (`R1C0`, `R1C16385`), and names that are A1 cells (`RCC1`, `xR1`) produced the rule above. Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and in ru-RU, wrote every name the same way (`test/excel/tables/` and `test/excel/win/tables/`, `test/a1-excel.test.ts`), and the formula text of every other table set is now compared with the names quoted by the same rule.
 
+#### INDIRECT, OFFSET and the functions about references and the workbook
+
+From [References a formula finds as it calculates](references.md#references-a-formula-finds-as-it-calculates), [Trim references](references.md#trim-references) and [Functions](functions.md). Each set's results were predicted by the engine and committed before Excel ran it, in Excel for Mac 16.114 and Excel for Windows 16.0.20430.
+
+| set | cases | what | as predicted |
+|---|---:|---|---|
+| `indirect` | 219 | `INDIRECT` in A1 and R1C1 text, other and quoted sheets, whole columns and rows, spill references, text that names nothing; `OFFSET` with sizes, negative sizes, off the edges, in `SUM`, `INDEX`, `ROWS` and the range operator, over arrays; `CELL`, `INFO`, `SHEET`, `SHEETS`, `FORMULATEXT`, `ISFORMULA`, `TRIMRANGE` and the trim references' file form | 182 on the Mac; the fit took up `OFFSET` truncating and its size left out, a union's first area, `FORMULATEXT` and `ISFORMULA` cell by cell, `SHEET` and `SHEETS` of a value, the trim references, which the Mac knows and Windows does not |
+| `indirect-held` | 46 | held out after the fit: the same rules on other cases, and the cases the Mac answered `#NUM!` in the first run, in a book of their own | 40 on the Mac: the spill reference typed in `INDIRECT`'s text (a known difference), `CELL` over several sheets, two `TRIMRANGE` cases predicted with a bug since fixed; the Mac's `#NUM!` did not repeat |
+| tables `indirect-held` | 10 | defined names (a reference, a range, an `OFFSET`, an `INDIRECT`), a table, cells typed after opening, a chain read backwards, rows inserted and deleted, a sheet renamed, `CELL`'s format codes of 43 number formats, alignment, protection, widths, the active cell | 8 on Windows: in `looks` `CELL`'s codes of a currency (`,0`), of dates by the first of day, month and year, of an elapsed time, justified text, a cell's own width, the active cell outside the saved selection |
+| tables `indirect-held-2` | 7 | the cases of the previous one the Mac answered `#NUM!` for, and the active cell with its selection saved | 7 on both |
+| workbook `place-cycles-held` | 17 | a formula over its own cell that reads its place, look or formula alone, against one that reads its value (Windows alone) | 5: `ROW`, `COLUMNS`, `ISREF`, `AREAS`, `SHEET`, `CELL`'s address, row and width, `FORMULATEXT`, `ISFORMULA` and `OFFSET` from the cell are no circular reference |
+
+In the first runs Excel for Mac answered `#NUM!` for some `INDIRECT` and `CELL` formulas while other workbooks were calculated beside it; the same formulas in the held-out books gave the engine's answers, and those cases are pinned in `test/excel-open.ts` and `test/tables-excel.test.ts`.
+
 ### Regular expressions
 
 From [Regular expressions in XLOOKUP and XMATCH](regex.md).

@@ -40,7 +40,7 @@ describe('formula parsing', () => {
     expect(code('1+' + '1+'.repeat(5000) + '1')).toBe('too_long')
     expect(code('('.repeat(70) + '1' + ')'.repeat(70))).toBe('too_deep')
     expect(code('[1]Лист!A1')).toBe('external_ref')
-    expect(code('INDIRECT("A1")')).toBe('unknown_function')
+    expect(code('SUMM(A1)')).toBe('unknown_function')
     expect(code('SUM(Нет!A1)')).toBe('unknown_sheet')
     expect(code('SUM(nope)')).toBe('unknown_name')
     expect(code('SUM(данные!A1)')).toBe('ok') // sheet names are case-insensitive

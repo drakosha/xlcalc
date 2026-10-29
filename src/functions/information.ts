@@ -6,12 +6,14 @@ import { lifts } from '../arrays/lift.js'
 import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import { ERROR_TYPE } from '../error-type.js'
+import { functions as workbook } from './workbook.js'
 
 const typeOf = (v: V) => (typeof v === 'number' || v === null ? 1 : typeof v === 'string' ? 2 : typeof v === 'boolean' ? 4 : 16)
 
 const is = (test: (v: V) => boolean): FnDef => ({ args: 'a', fn: test })
 
 export const functions: Record<string, FnDef> = {
+  ...workbook,
   'ERROR.TYPE': { args: 'a', fn: (v: V) => (isErr(v) ? (ERROR_TYPE[v.code] ?? E.NA) : E.NA) },
   ISBLANK: is((v) => v === null),
   ISERR: is((v) => isErr(v) && v.code !== 'NA'),

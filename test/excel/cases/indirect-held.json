@@ -1,0 +1,472 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.745,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "again#1",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "INDIRECT(D!A7)"
+  },
+  {
+   "id": "again#2",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT({\"R!A1\",\"R!A2\"}))"
+  },
+  {
+   "id": "again#3",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "SUMPRODUCT(ROW(INDIRECT(\"1:4\")))"
+  },
+  {
+   "id": "again#4",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "OFFSET(INDIRECT(\"R!A1\"),2,0)"
+  },
+  {
+   "id": "again#5",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "CELL(\"row\",INDIRECT(\"R!A5\"))"
+  },
+  {
+   "id": "again#6",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "_xlfn.FORMULATEXT(R!A1)"
+  },
+  {
+   "id": "again#7",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT(\"R!E1#\"))"
+  },
+  {
+   "id": "again#8",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "ROWS(INDIRECT(\"R!E1#\"))"
+  },
+  {
+   "id": "again#9",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "INDEX(INDIRECT(\"R!E1#\"),2)"
+  },
+  {
+   "id": "again#10",
+   "group": "again",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT(R!B5))"
+  },
+  {
+   "id": "offset#1",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "OFFSET(R!A1,0.999,0)"
+  },
+  {
+   "id": "offset#2",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "OFFSET(R!A2,-0.5,0)"
+  },
+  {
+   "id": "offset#3",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "ROWS(OFFSET(R!A1,0,0,1.9))"
+  },
+  {
+   "id": "offset#4",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "SUM(OFFSET(R!A2,0,0,-1.5))"
+  },
+  {
+   "id": "offset#5",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "SUM(OFFSET(R!A1,0,0,,2))"
+  },
+  {
+   "id": "offset#6",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "COLUMNS(OFFSET(R!A1:C1,1,0,,))"
+  },
+  {
+   "id": "offset#7",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "OFFSET(R!A1,\"0.5\",0)"
+  },
+  {
+   "id": "offset#8",
+   "group": "offset",
+   "fn": "OFFSET",
+   "formula": "SUM(OFFSET(R!A1:A2,1,0))"
+  },
+  {
+   "id": "cell#1",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "CELL(\"row\",(R!B2,R!A1))"
+  },
+  {
+   "id": "cell#2",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "MID(CELL(\"address\",R:C!B2),FIND(\"]\",CELL(\"address\",R:C!B2))+1,99)"
+  },
+  {
+   "id": "cell#3",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "CELL(\"contents\",(R!A3,R!A1))"
+  },
+  {
+   "id": "cell#4",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "CELL(\"col\",R!C1:D2 R!D2:E3)"
+  },
+  {
+   "id": "cell#5",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "CELL(\"format\",D!A6)"
+  },
+  {
+   "id": "cell#6",
+   "group": "cell",
+   "fn": "CELL",
+   "formula": "CELL(\"type\",D!A6)"
+  },
+  {
+   "id": "sheet#1",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEET('R:Two Words'!A1)=_xlfn.SHEET(R!A1)"
+  },
+  {
+   "id": "sheet#2",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEET({1,2})"
+  },
+  {
+   "id": "sheet#3",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEET((R!A1,R!B1))=_xlfn.SHEET(R!A1)"
+  },
+  {
+   "id": "sheet#4",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEETS('R:Two Words'!A1)"
+  },
+  {
+   "id": "sheet#5",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEETS({1})"
+  },
+  {
+   "id": "sheet#6",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEETS(TRUE)"
+  },
+  {
+   "id": "sheet#7",
+   "group": "sheet",
+   "fn": "SHEET",
+   "formula": "_xlfn.SHEETS((R!A1,R!B2))"
+  },
+  {
+   "id": "formulas#1",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "INDEX(_xlfn.FORMULATEXT(R!A1:C1),1,3)"
+  },
+  {
+   "id": "formulas#2",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "ROWS(_xlfn.FORMULATEXT(R!C1:C3))"
+  },
+  {
+   "id": "formulas#3",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "INDEX(_xlfn.ISFORMULA(R!A1:C1),1,3)"
+  },
+  {
+   "id": "formulas#4",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "_xlfn.FORMULATEXT((R!C2,R!C1))"
+  },
+  {
+   "id": "formulas#5",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "_xlfn.ISFORMULA((R!A1,R!C1))"
+  },
+  {
+   "id": "formulas#6",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "_xlfn.FORMULATEXT('R:Two Words'!C1)"
+  },
+  {
+   "id": "formulas#7",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "_xlfn.ISFORMULA('R:Two Words'!C1)"
+  },
+  {
+   "id": "formulas#8",
+   "group": "formulas",
+   "fn": "FORMULATEXT",
+   "formula": "SUM(--_xlfn.ISFORMULA(R!A1:E3))"
+  },
+  {
+   "id": "trim#1",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,2.0))"
+  },
+  {
+   "id": "trim#2",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,TRUE))"
+  },
+  {
+   "id": "trim#3",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,\"2\"))"
+  },
+  {
+   "id": "trim#4",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "ROWS(_xlfn._TRO_ALL(R!A:A))"
+  },
+  {
+   "id": "trim#5",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "SUM(_xlfn._TRO_TRAILING(R!E1:E9))"
+  },
+  {
+   "id": "trim#6",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "COLUMNS(_xlfn._TRO_LEADING(R!F1:J1))"
+  },
+  {
+   "id": "trim#7",
+   "group": "trim",
+   "fn": "TRIMRANGE",
+   "formula": "ROWS(_xlfn._TRO_ALL(R!K1:K9))"
+  }
+ ],
+ "values": {
+  "again#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "again#2": {
+   "t": "n",
+   "v": 30
+  },
+  "again#3": {
+   "t": "n",
+   "v": 10
+  },
+  "again#4": {
+   "t": "n",
+   "v": 30
+  },
+  "again#5": {
+   "t": "n",
+   "v": 5
+  },
+  "again#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "again#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "again#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "again#9": {
+   "t": "e",
+   "v": "REF"
+  },
+  "again#10": {
+   "t": "n",
+   "v": 6
+  },
+  "offset#1": {
+   "t": "n",
+   "v": 10
+  },
+  "offset#2": {
+   "t": "n",
+   "v": 20
+  },
+  "offset#3": {
+   "t": "n",
+   "v": 1
+  },
+  "offset#4": {
+   "t": "n",
+   "v": 20
+  },
+  "offset#5": {
+   "t": "n",
+   "v": 10
+  },
+  "offset#6": {
+   "t": "n",
+   "v": 3
+  },
+  "offset#7": {
+   "t": "n",
+   "v": 10
+  },
+  "offset#8": {
+   "t": "n",
+   "v": 50
+  },
+  "cell#1": {
+   "t": "n",
+   "v": 2
+  },
+  "cell#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "cell#3": {
+   "t": "n",
+   "v": 30
+  },
+  "cell#4": {
+   "t": "n",
+   "v": 4
+  },
+  "cell#5": {
+   "t": "s",
+   "v": "G"
+  },
+  "cell#6": {
+   "t": "s",
+   "v": "v"
+  },
+  "sheet#1": {
+   "t": "b",
+   "v": true
+  },
+  "sheet#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "sheet#3": {
+   "t": "b",
+   "v": true
+  },
+  "sheet#4": {
+   "t": "n",
+   "v": 2
+  },
+  "sheet#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "sheet#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "sheet#7": {
+   "t": "n",
+   "v": 1
+  },
+  "formulas#1": {
+   "t": "s",
+   "v": "=A1*2"
+  },
+  "formulas#2": {
+   "t": "n",
+   "v": 3
+  },
+  "formulas#3": {
+   "t": "b",
+   "v": true
+  },
+  "formulas#4": {
+   "t": "s",
+   "v": "=SUM(A1:A3)"
+  },
+  "formulas#5": {
+   "t": "b",
+   "v": false
+  },
+  "formulas#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "formulas#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "formulas#8": {
+   "t": "n",
+   "v": 4
+  },
+  "trim#1": {
+   "t": "n",
+   "v": 5
+  },
+  "trim#2": {
+   "t": "n",
+   "v": 8
+  },
+  "trim#3": {
+   "t": "n",
+   "v": 5
+  },
+  "trim#4": {
+   "t": "n",
+   "v": 6
+  },
+  "trim#5": {
+   "t": "n",
+   "v": 6
+  },
+  "trim#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "trim#7": {
+   "t": "e",
+   "v": "REF"
+  }
+ }
+}
