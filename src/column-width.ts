@@ -6,6 +6,10 @@
 /** A stored width's points. */
 export const columnPoints = (width: number | undefined): number => width === undefined ? 53 : Math.trunc(6 * width + 126 / 256)
 
+/** The widest stored width Excel for Mac writes, 255 digits and the padding, and its points. */
+export const MAX_FILE_WIDTH = 255.83203125
+export const MAX_POINTS = /* @__PURE__ */ columnPoints(MAX_FILE_WIDTH)
+
 /** A stored width in 256ths of a digit, without clipping or validation for internal callers. */
 export const widthOf = (points: number): number => Math.floor(points * 256 / 6) / 256
 

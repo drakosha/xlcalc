@@ -1,0 +1,409 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-29",
+  "seconds": 14.8
+ },
+ "cases": [
+  {
+   "id": "format-1",
+   "cells": {
+    "0": {
+     "value": 0,
+     "format": "0;-0;\"none\"",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-2",
+   "cells": {
+    "0": {
+     "value": 0,
+     "format": "0;-0;\"none\"",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-3",
+   "cells": {
+    "0": {
+     "value": -3,
+     "format": "0;\"minus\"",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-4",
+   "cells": {
+    "0": {
+     "value": -3,
+     "format": "0;\"minus\"",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-5",
+   "cells": {
+    "0": {
+     "value": 5,
+     "format": "\"five\"",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-6",
+   "cells": {
+    "0": {
+     "value": 5,
+     "format": "\"five\"",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-7",
+   "cells": {
+    "0": {
+     "value": 5,
+     "format": "\"n=\"0",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-8",
+   "cells": {
+    "0": {
+     "value": 5,
+     "format": "\"n=\"0",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-9",
+   "cells": {
+    "0": {
+     "value": 0.5,
+     "format": "[h]:mm",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-10",
+   "cells": {
+    "0": {
+     "value": 0.5,
+     "format": "[h]:mm",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-11",
+   "cells": {
+    "0": {
+     "value": 12,
+     "format": "0 \"kg\"",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-12",
+   "cells": {
+    "0": {
+     "value": 12,
+     "format": "0 \"kg\"",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-13",
+   "cells": {
+    "0": {
+     "value": -3,
+     "format": "0;(0)",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-14",
+   "cells": {
+    "0": {
+     "value": -3,
+     "format": "0;(0)",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  }
+ ],
+ "answers": {
+  "format-1": {
+   "before": 27,
+   "height": 27,
+   "standard": true,
+   "saved": {
+    "ht": 27
+   },
+   "cells": {
+    "0": {
+     "formula": "0",
+     "wrap": false
+    }
+   }
+  },
+  "format-2": {
+   "before": 32.25,
+   "height": 32.25,
+   "standard": true,
+   "saved": {
+    "ht": 32.25
+   },
+   "cells": {
+    "0": {
+     "formula": "0",
+     "wrap": false
+    }
+   }
+  },
+  "format-3": {
+   "before": 29.25,
+   "height": 29.25,
+   "standard": true,
+   "saved": {
+    "ht": 29.25
+   },
+   "cells": {
+    "0": {
+     "formula": "-3",
+     "wrap": false
+    }
+   }
+  },
+  "format-4": {
+   "before": 36,
+   "height": 36,
+   "standard": true,
+   "saved": {
+    "ht": 36
+   },
+   "cells": {
+    "0": {
+     "formula": "-3",
+     "wrap": false
+    }
+   }
+  },
+  "format-5": {
+   "before": 24,
+   "height": 24,
+   "standard": true,
+   "saved": {
+    "ht": 24
+   },
+   "cells": {
+    "0": {
+     "formula": "5",
+     "wrap": false
+    }
+   }
+  },
+  "format-6": {
+   "before": 27,
+   "height": 27,
+   "standard": true,
+   "saved": {
+    "ht": 27
+   },
+   "cells": {
+    "0": {
+     "formula": "5",
+     "wrap": false
+    }
+   }
+  },
+  "format-7": {
+   "before": 24.75,
+   "height": 24.75,
+   "standard": true,
+   "saved": {
+    "ht": 24.75
+   },
+   "cells": {
+    "0": {
+     "formula": "5",
+     "wrap": false
+    }
+   }
+  },
+  "format-8": {
+   "before": 27,
+   "height": 27,
+   "standard": true,
+   "saved": {
+    "ht": 27
+   },
+   "cells": {
+    "0": {
+     "formula": "5",
+     "wrap": false
+    }
+   }
+  },
+  "format-9": {
+   "before": 27,
+   "height": 27,
+   "standard": true,
+   "saved": {
+    "ht": 27
+   },
+   "cells": {
+    "0": {
+     "formula": "0.5",
+     "wrap": false
+    }
+   }
+  },
+  "format-10": {
+   "before": 32.25,
+   "height": 32.25,
+   "standard": true,
+   "saved": {
+    "ht": 32.25
+   },
+   "cells": {
+    "0": {
+     "formula": "0.5",
+     "wrap": false
+    }
+   }
+  },
+  "format-11": {
+   "before": 28.5,
+   "height": 28.5,
+   "standard": true,
+   "saved": {
+    "ht": 28.5
+   },
+   "cells": {
+    "0": {
+     "formula": "12",
+     "wrap": false
+    }
+   }
+  },
+  "format-12": {
+   "before": 33,
+   "height": 33,
+   "standard": true,
+   "saved": {
+    "ht": 33
+   },
+   "cells": {
+    "0": {
+     "formula": "12",
+     "wrap": false
+    }
+   }
+  },
+  "format-13": {
+   "before": 23.25,
+   "height": 23.25,
+   "standard": true,
+   "saved": {
+    "ht": 23.25
+   },
+   "cells": {
+    "0": {
+     "formula": "-3",
+     "wrap": false
+    }
+   }
+  },
+  "format-14": {
+   "before": 24,
+   "height": 24,
+   "standard": true,
+   "saved": {
+    "ht": 24
+   },
+   "cells": {
+    "0": {
+     "formula": "-3",
+     "wrap": false
+    }
+   }
+  }
+ }
+}
