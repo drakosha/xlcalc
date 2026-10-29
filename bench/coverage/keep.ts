@@ -23,6 +23,10 @@
  * and `rules-held-2-predict` for the held-out sets, `keep rules-held`, `keep rules-held-2`), `keep
  * rules-open-predict` and `keep rules-open` what Excel for Mac does with the files `writeKept` wrote for the cases
  * (`test/excel/keep/rules-open.json`, `rules-open/<case>.xlsx`). Test: `test/xlsx-keep-rules-excel.test.ts`.
+ * `keep win-predict` writes what Excel for Windows is predicted to save of the files of `open`, `struct-open` and
+ * `formats` from the Mac's answers (`keep/win.predicted.json`), before `bench/windows/run.ts keep <set>` runs them.
+ * `keep looks-predict` and `keep looks`: what Excel saves of a file `writeXlsx` wrote with a look over a whole column or
+ * row, a cell for each of its cells (`LOOKS`, `test/excel/keep/looks.json`).
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -31,6 +35,9 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
+import { writeXlsx } from '../../src/xlsx.js'
+import { openArchive } from '../../src/xlsx/zip/read.js'
+import type { BookInput } from '../../src/contract.js'
 import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
 import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { RULES_BOOKS, RULES_SETS, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
@@ -366,6 +373,72 @@ async function formats(): Promise<void> {
   }
 }
 
+/**
+ * The prediction of Excel for Windows over the files `writeKept` wrote for the Mac's sets (`bench/windows/keep.ts`),
+ * written before it runs: it opens each without repairing it and saves what Excel for Mac saved, the parts counted and
+ * their references (`open`, `struct-open`) or the cell formats (`formats-open`).
+ */
+async function winPredict(): Promise<void> {
+  const answers = <T>(name: string) => JSON.parse(readFileSync(join(DATA, `${name}.json`), 'utf8')) as T
+  const open = answers<OpenRun>('open').cases
+  const struct = answers<StructOpenRun>('struct-open').cases
+  const formats = answers<FormatsRun>('formats').cases
+  const sets = {
+    open: Object.fromEntries((await written()).map((f) => [f.id, { opens: true, parts: open[f.id].saved }])),
+    'struct-open': Object.fromEntries((await structFiles()).flatMap((f) => ('data' in f.written ? [[f.id, { opens: true, parts: struct[f.id].saved, refs: struct[f.id].refs }]] : []))),
+    'formats-open': Object.fromEntries((await formatsFiles()).map((f) => [f.id, { opens: true, formats: formats[f.id].open.formats }])),
+  }
+  writePrediction(new URL('./keep/books.ts', import.meta.url).href, 'win', { sets })
+}
+
+/** Books with a look over a whole column and over a whole row, which `writeXlsx` writes as a cell for each of their cells. */
+export const LOOKS: Record<string, BookInput> = {
+  column: { styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1 } }, looks: [{ range: 'C:C', style: 0 }] }] },
+  row: { styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1 } }, looks: [{ range: '3:3', style: 0 }] }] },
+}
+
+/** What a file's first sheet holds of cells and of formatted lines: its cells, its columns and rows with a cell format of their own. */
+export async function looksOf(data: Uint8Array): Promise<{ cells: number; cols: string[]; rows: string[] }> {
+  const xml = (await openArchive(data).text('xl/worksheets/sheet1.xml')) ?? ''
+  const cols = [...xml.matchAll(/<col\b[^>]*\bstyle="\d+"[^>]*>/g)].map((m) => m[0])
+  const rows = [...xml.matchAll(/<row\b[^>]*\bcustomFormat="(?:1|true)"[^>]*>/g)].map((m) => m[0].replace(/\s(?:spans|x14ac:dyDescent)="[^"]*"/g, ''))
+  return { cells: xml.split(/<c[\s>]/).length - 1, cols, rows }
+}
+
+/** A book of `LOOKS` written, and what its sheet holds. */
+const looksFile = async (id: string) => (await writeXlsx({ book: LOOKS[id] })).data
+
+/** The prediction, written before `looks` runs: Excel opens each file without its repair window and saves the cells as they were written, a cell format on each, and no formatted line. */
+async function looksPredict(): Promise<void> {
+  const cases: Record<string, { opens: true; saved: Awaited<ReturnType<typeof looksOf>> }> = {}
+  for (const id of Object.keys(LOOKS)) cases[id] = { opens: true, saved: await looksOf(await looksFile(id)) }
+  writePrediction(new URL('./keep/books.ts', import.meta.url).href, 'looks', { cases })
+}
+
+/** The books of `LOOKS` through Excel: opened, computed and saved (`test/excel/keep/looks.json`, `looks/<id>.xlsx`): what the file it saved holds, and how long it took. */
+async function looks(): Promise<void> {
+  const file = join(DATA, 'looks.json')
+  const run = loadStored<{ meta: Record<string, string | number>; cases: Record<string, { sent: string; rejected?: string; seconds: number; bytes?: number; saved?: Awaited<ReturnType<typeof looksOf>> }> }>(file) ?? { meta: {}, cases: {} }
+  mkdirSync(join(DATA, 'looks'), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  for (const id of Object.keys(LOOKS)) {
+    const data = await looksFile(id)
+    const sent = await partsHash(data)
+    if (run.cases[id]?.sent === sent) continue
+    const t = Date.now()
+    const r = await saveThroughExcel(data, `looks-${id}`)
+    if ('rejected' in r) run.cases[id] = { sent, rejected: r.rejected, seconds: secondsSince(t) }
+    else {
+      writeFileSync(join(DATA, 'looks', `${id}.xlsx`), r.saved)
+      run.cases[id] = { sent, seconds: secondsSince(t), bytes: r.saved.length, saved: await looksOf(r.saved) }
+    }
+    console.log(`${id}: ${JSON.stringify(run.cases[id])}`)
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
 export async function stepKeep(what: string | undefined): Promise<void> {
   const rules = what?.match(/^(rules(?:-[a-z0-9-]+)?)-predict$/)?.[1]
   if (rules && (rules === 'rules-made' || rules === 'rules-open' || RULES_SETS[rules])) return rulesPredict(rules)
@@ -379,5 +452,8 @@ export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'struct-open') return structOpen()
   if (what === 'formats-predict') return formatsPredict()
   if (what === 'formats') return formats()
-  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
+  if (what === 'win-predict') return winPredict()
+  if (what === 'looks-predict') return looksPredict()
+  if (what === 'looks') return looks()
+  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict | looks-predict | looks | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
 }

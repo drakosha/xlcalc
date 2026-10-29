@@ -300,6 +300,8 @@ function VRead($ws, $win) {
 function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
+    # how the book opened: its name, Excel's caption, and the repair logs Excel wrote into the temporary folder in the last two minutes
+    'opened' { List @((Str $wb.Name), (Str ([string]$xl.Caption)), (List @(Get-ChildItem $env:TEMP -Filter 'error*.xml' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-2) } | ForEach-Object { Str (Get-Content -Raw $_.FullName) }))) }
     'calc' { $xl.Calculate(); 'null' }
     'rebuild' { $xl.CalculateFullRebuild(); 'null' }
     'values' { Grid (Rg $wb $s.sheet $s.range).Value2 }
