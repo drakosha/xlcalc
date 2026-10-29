@@ -11,6 +11,7 @@ import { placeOf } from './model.js'
 import { AreaIndex } from './area-index.js'
 import { RangeDependencies } from './graph/ranges.js'
 import { indegrees, releaseReady } from './graph/order.js'
+import { linkAll } from './graph/dynamic.js'
 
 // a range operator reaching a spilled array reads as far as the array claims, around its other ends; LOOKUP past it
 export function referencesOf(state: EngineState, f: Formula): readonly Rng[] {
@@ -48,6 +49,7 @@ export function rebuildGraph(state: EngineState) {
   for (let i = 0; i < succ.length; i++) if (succ[i].length) succ[i] = succ[i].slice()
   state.succ = succ
   state.listeners = listeners
+  linkAll(state)
   const spillSucc = new Map<number, number[]>()
   for (const [id, x] of state.spills.claims) {
     const readers = new Set<number>()
@@ -57,7 +59,8 @@ export function rebuildGraph(state: EngineState) {
   }
   state.spillSucc = spillSucc
   state.spills.rank = state.spills.looped = state.spills.pred = state.spills.reach = undefined
-  const indeg = indegrees(succ, spillSucc)
+  const extra = state.dyn ? merged(spillSucc, state.dyn.succ) : spillSucc
+  const indeg = indegrees(succ, extra)
   const order: number[] = []
   const queue: number[] = []
   formulas.forEach((f, id) => f && indeg[id] === 0 && queue.push(id))
@@ -67,7 +70,7 @@ export function rebuildGraph(state: EngineState) {
   while (queue.length) {
     const id = queue.pop()!
     order.push(id)
-    releaseReady(id, succ, indeg, formulas.length, ready, spillSucc)
+    releaseReady(id, succ, indeg, formulas.length, ready, extra)
   }
   const topo = new Array<number>(formulas.length).fill(-1)
   order.forEach((id, i) => (topo[id] = i))
@@ -95,9 +98,18 @@ function descendants(state: EngineState, seen: Set<number>): Set<number> {
   return seen
 }
 
-/** Next graph vertices, including the formulas reading a spill's range. Helper ids follow the formula slots. */
+/** Two maps of successors as one. */
+function merged(a: ReadonlyMap<number, number[]>, b: ReadonlyMap<number, number[]>): Map<number, number[]> {
+  const out = new Map(a)
+  for (const [id, list] of b) out.set(id, [...(out.get(id) ?? []), ...list])
+  return out
+}
+
+/** Next graph vertices, including the formulas reading a spill's range or a formula's cell by their reads. Helper ids follow the formula slots. */
 export function successors(state: EngineState, id: number): number[] {
   const spilled = state.spillSucc.get(id)
+  const found = state.dyn?.succ.get(id)
+  if (found) return [...(state.succ[id] ?? []), ...(spilled ?? []), ...found]
   return spilled ? [...state.succ[id], ...spilled] : (state.succ[id] ?? [])
 }
 

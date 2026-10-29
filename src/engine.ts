@@ -38,7 +38,9 @@ import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
-import { E, fromCellValue, isErr, type V } from './values.js'
+import { E, fromCellValue, isErr, type Rng, type V } from './values.js'
+import { newDynamic, type Dynamic } from './graph/dynamic.js'
+import { referrer } from './indirect.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -49,6 +51,8 @@ export interface Formula extends FormulaCode {
   text: string
   /** An array formula of the old kind: its area (`CellInput.array`, `spill/fixed.ts`). */
   area?: Rect
+  /** A dynamic formula's references found in its last computation (`graph/dynamic.ts`); none on any other formula. */
+  reads?: Rng[]
 }
 
 export interface Invalid {
@@ -139,6 +143,8 @@ export interface EngineState {
   bare: Map<number, Set<number>>
   /** The linked workbooks' sheets in the runtime after the book's own, and their names (`links.ts`). */
   links: LinkState
+  /** The references dynamic formulas found as they computed, in the graph (`graph/dynamic.ts`): only once the book has such a formula. */
+  dyn?: Dynamic
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -224,7 +230,7 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 
 /** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
 function sameDependencies(a: Formula, b: Formula): boolean {
-  return !a.area && !b.area && !a.spans && !b.spans && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
+  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
     && a.refs.length === b.refs.length && a.refs.every((g, i) => {
       const h = b.refs[i]
       return g.s === h.s && g.r1 === h.r1 && g.c1 === h.c1 && g.r2 === h.r2 && g.c2 === h.c2
@@ -255,6 +261,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock = markingClock(() => ymd(Math.floor(ctx.now) + epoch).y)
   const cache = opts.cache ?? heapCaches
+  let refer: ReturnType<typeof referrer> | undefined
   const ctx: RuntimeContext = {
     sheets: [...sheetNames.map(emptySheet), ...linked.data],
     now: opts.now - epoch,
@@ -270,6 +277,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     nested: new Map(),
     hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),
+    refer: (...a) => (refer ??= referrer(state))(...a),
   }
   input.sheets.forEach((sh, s) => setHidden(ctx, s, sh))
   const rt = makeRuntime(ctx)
@@ -346,6 +354,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   }
   state.compiler.link(pending)
   state.formulas = pending
+  if (pending.some((f) => f.dynamic)) state.dyn = newDynamic()
   if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
   for (const f of state.formulas) state.at.set(placeOf(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
@@ -415,6 +424,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       if (input.held !== undefined) state.held.set(f.id, fromCellValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
       if (f.area) state.arrays++
+      if (f.dynamic) state.dyn ??= newDynamic()
       state.formulas[f.id] = f
       state.at.set(n, f.id)
       fresh.push(f)

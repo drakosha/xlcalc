@@ -100,6 +100,10 @@ export interface Cx {
   readonly now: number
   /** The rules of computation of the book's locale: text as numbers and dates, numbers as text, formats. */
   readonly rules: Rules
+  /** INDIRECT: the reference a text names from the formula at sheet `s`, row `r`, column `c` (`indirect.ts`); #REF! for none. */
+  refer(text: string, a1: boolean, s: number, r: number, c: number): Rng | CErr
+  /** A reference a dynamic formula found as it computes (INDIRECT, OFFSET): the graph learns it (`graph/dynamic.ts`). */
+  found(g: Rng): void
   /** Pseudo-random [0, 1) from the clock seed, a cell and an element of an array (RANDARRAY). */
   rand(s: number, r: number, c: number, k?: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
@@ -150,6 +154,8 @@ export interface FnDef {
   /** `fn` gets every argument as a function evaluated on demand, without coercion: IF, IFERROR. */
   lazy?: boolean
   volatile?: boolean
+  /** The answer is a reference the call finds as it computes (INDIRECT, OFFSET): the graph learns it then (`graph/dynamic.ts`). */
+  dynamic?: boolean
   /** The answer can be an array (`Arr`) or a reference of several cells. */
   array?: boolean
   /**
@@ -220,6 +226,7 @@ export interface FunctionSpec {
   /** The counts it takes, for a message (SUMIFS 3 to 255, odd). */
   counts: Counts
   volatile?: boolean
+  dynamic?: boolean
   lazy?: boolean
   cell?: boolean
   /** A range of criteria (`FnDef.criteria`): an array there makes the call an array of #VALUE!. */
@@ -277,6 +284,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     mode,
     rangeAt,
     volatile: def.volatile,
+    dynamic: def.dynamic,
     lazy: def.lazy,
     cell: def.cell,
     criteriaAt: (i) => def.criteria === true && kindAt(i) === 'R',

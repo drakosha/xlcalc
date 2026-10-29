@@ -65,6 +65,10 @@ export interface RuntimeContext {
   aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
+  /** While a dynamic formula computes: the references it finds (`graph/dynamic.ts`). */
+  reads?: Rng[]
+  /** INDIRECT's reading of a text as a reference (`indirect.ts`); without it every text is #REF!. */
+  refer?: (text: string, a1: boolean, s: number, r: number, c: number) => Rng | CErr
 }
 
 /** Whether SUBTOTAL and AGGREGATE skip a sheet's hidden rows by their rule: all of them, or those of a filtered sheet. */
@@ -314,6 +318,8 @@ export function makeRuntime(ctx: RuntimeContext) {
       return ctx.now
     },
     rules,
+    refer: (text, a1, s, r, c) => ctx.refer?.(text, a1, s, r, c) ?? E.REF,
+    found: (g) => ctx.reads?.push(g),
     rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),
     flat,
     counted,
@@ -439,7 +445,10 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (!a || !b || [...a, ...b].some((g) => g.s !== a[0].s)) return E.VALUE
     if (op === ':') {
       const all = [...a, ...b]
-      return new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
+      const g = new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
+      // in a dynamic formula an end may be found as it computes (`A1:OFFSET(…)`): the graph learns the range
+      ctx.reads?.push(g)
+      return g
     }
     const met: Rng[] = []
     for (const g of a)

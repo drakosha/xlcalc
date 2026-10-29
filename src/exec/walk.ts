@@ -146,6 +146,8 @@ export interface FormulaInfo {
   spans?: Span[]
   /** Calls a volatile function directly. */
   volatile: boolean
+  /** Calls a function that finds its reference as it computes (INDIRECT, OFFSET); absent otherwise. */
+  dynamic?: true
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
   nested: boolean
   /** Calls an external function (its missing value is #N/A). */
@@ -181,6 +183,12 @@ function relative(ref: RangeRef): Area | null {
     bounds.set(ref, a)
   }
   return a
+}
+
+/** A reference of a name's formula used at row `r`, column `c`: its relative bounds moved from A1 there. */
+export function nameRect(ref: RangeRef, r: number, c: number): Rect {
+  const a = relative(ref)
+  return a ? placed(a, r, c) : ref
 }
 
 /** The rectangle around a sheet's rectangles, by sheet. */
@@ -487,6 +495,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return b.external(canonical(n))
         }
         if (spec.volatile) info.volatile = true
+        if (spec.dynamic) info.dynamic = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
         const open = OPEN_REFERENCE[n.name]
         if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
