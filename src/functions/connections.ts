@@ -25,7 +25,8 @@ export const functions: Record<string, FnDef> = {
   RTD: answering('a a a', E.NA, 1),
   WEBSERVICE: { args: 's', fn: () => E.VALUE },
   IMAGE: { args: 's s? n? n? n?', fn: (source: string, _alt?: string, sizing = 0) => (!WEB.test(source) || sizing < 0 || sizing > 3 ? E.VALUE : E.BLOCKED) },
-  STOCKHISTORY: { args: 's d d? n? n? n?', rep: 1, max: 11, fn: () => E.BLOCKED },
+  // Excel loads as many properties as a function newer than Excel 2007 takes arguments (the set arity)
+  STOCKHISTORY: { args: 's d d? n? n? n?', rep: 1, max: 254, fn: () => E.BLOCKED },
   // Excel 16.0.20430 for Windows has neither (#NAME?); Microsoft's service unreached, as STOCKHISTORY's
   TRANSLATE: { args: 's s? s?', fn: () => E.BLOCKED },
   DETECTLANGUAGE: { args: 's', fn: () => E.BLOCKED },
