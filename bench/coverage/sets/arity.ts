@@ -7,6 +7,7 @@
  */
 import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'
+import { xlpm } from './let/xlpm.js'
 
 interface Shape {
   /** The arguments before the repeated ones. */
@@ -15,6 +16,8 @@ interface Shape {
   rep: string[]
   /** The arguments after them (SWITCH's default). */
   tail?: string[]
+  /** The last argument by the number of repetitions: MAP's LAMBDA, a parameter for each array. */
+  last?: (k: number) => string
   /** A function with an array answer is wrapped (ROWS) to give one value. */
   wrap?: string
 }
@@ -38,6 +41,7 @@ export const SHAPES: Record<string, Shape> = {
   CHOOSECOLS: { head: ['D!B1:C8'], rep: ['1'], wrap: 'ROWS' },
   CHOOSEROWS: { head: ['D!B1:C8'], rep: ['1'], wrap: 'ROWS' },
   HSTACK: { ...ones(), wrap: 'ROWS' },
+  MAP: { head: ['D!B1:B2'], rep: ['D!B1:B2'], last: (k) => `LAMBDA(${Array.from({ length: k + 1 }, (_, i) => `p_${i + 1}`).join(',')},1)`, wrap: 'ROWS' },
   VSTACK: { ...ones(), wrap: 'ROWS' },
   SORTBY: { head: ['D!B1:B8'], rep: ['D!C1:C8', '1'], wrap: 'ROWS' },
   AGGREGATE: { head: ['9', '0'], rep: ['D!B1:B8'] },
@@ -56,10 +60,10 @@ export const SHAPES: Record<string, Shape> = {
 /** The call of `fn` with `n` arguments; null when no whole number of repetitions gives `n`. */
 export function call(fn: string, n: number): string | null {
   const s = SHAPES[fn]
-  const fixed = s.head.length + (s.tail?.length ?? 0)
+  const fixed = s.head.length + (s.last ? 1 : (s.tail?.length ?? 0))
   const k = (n - fixed) / s.rep.length
   if (!Number.isInteger(k) || k < 1) return null
-  const args = [...s.head, ...Array.from({ length: k }, () => s.rep).flat(), ...(s.tail ?? [])]
+  const args = [...s.head, ...Array.from({ length: k }, () => s.rep).flat(), ...(s.last ? [s.last(k)] : (s.tail ?? []))]
   const f = `${fn}(${args.join(',')})`
   return s.wrap ? `${s.wrap}(${f})` : f
 }
@@ -71,7 +75,7 @@ export function call(fn: string, n: number): string | null {
  * function with 255 (measured on 7 October 2026, two runs).
  */
 export const LIMITS: Record<string, number> = {
-  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
+  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
   COUNTIFS: 254,
   MAXIFS: 253,
   MINIFS: 253,
@@ -81,5 +85,5 @@ export const LIMITS: Record<string, number> = {
 export const limit = (fn: string) => LIMITS[fn] ?? 255
 
 export function buildProbes(): Probe[] {
-  return Object.keys(SHAPES).map((fn) => ({ id: `${fn}:${limit(fn)}`, group: fn, fn, formula: xl(call(fn, limit(fn))!) }))
+  return Object.keys(SHAPES).map((fn) => ({ id: `${fn}:${limit(fn)}`, group: fn, fn, formula: xl(xlpm(call(fn, limit(fn))!)) }))
 }

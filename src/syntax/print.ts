@@ -27,6 +27,13 @@ export function walk(ast: Ast, visit: (n: Ast) => void): void {
       for (const b of ast.binds) walk(b.value, visit)
       if (ast.body) walk(ast.body, visit)
       break
+    case 'lambda':
+      walk(ast.body, visit)
+      break
+    case 'call':
+      walk(ast.fn, visit)
+      for (const a of ast.args) walk(a, visit)
+      break
   }
 }
 
@@ -69,6 +76,16 @@ export function mapAst(ast: Ast, f: (n: Ast) => Ast | undefined): Ast {
         })
         const body = n.body && go(n.body)
         if (body !== n.body || binds.some((x, i) => x !== n.binds[i])) m = { ...n, binds, ...(body ? { body } : {}) }
+        break
+      }
+      case 'lambda': {
+        const body = go(n.body)
+        if (body !== n.body) m = { ...n, body }
+        break
+      }
+      case 'call': {
+        const [fn, args] = [go(n.fn), list(n.args)]
+        if (fn !== n.fn || args !== n.args) m = { ...n, fn, args }
         break
       }
     }
@@ -153,6 +170,12 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'let':
         return `LET(${[...n.binds.flatMap((b) => [b.name, go(b.value)]), ...(n.body ? [go(n.body)] : [])].join(',')})`
       case 'local':
+        return n.name
+      case 'lambda':
+        return `LAMBDA(${[...n.params.map((x) => x.name), go(n.body)].join(',')})`
+      case 'call':
+        return `${go(n.fn)}(${n.args.map(go).join(',')})`
+      case 'eta':
         return n.name
     }
   }

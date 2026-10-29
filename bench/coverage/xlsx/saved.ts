@@ -10,8 +10,8 @@ import { CASE_SHEET, READ_COLUMNS } from '../book.js'
 import { DATA_SHEET, dataCells } from '../data.js'
 import type { Probe, SheetCells } from '../probes.js'
 
-/** A formula without the file's prefixes of newer functions and of LET's names, a trim reference's file form (`_xlfn._TRO_ALL(A1:C9)`) as the reader reads it (`A1.:.C9`). */
-export const plainFormula = (f: string) => (f.includes('_TRO_') ? fromFile(f).formula : f).replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+/** A formula without the file's prefixes of newer functions, of LET's and LAMBDA's names and of functions as values, a trim reference's file form (`_xlfn._TRO_ALL(A1:C9)`) as the reader reads it (`A1.:.C9`). */
+export const plainFormula = (f: string) => (f.includes('_TRO_') ? fromFile(f).formula : f).replace(/_xlfn\.(_xlws\.)?|_xlpm\.|_xleta\./g, '')
 
 /** The parts of a set as `xlsx saved` sends them: PART cases each, `<set>-<k>`. */
 export { PART } from '../book.js'

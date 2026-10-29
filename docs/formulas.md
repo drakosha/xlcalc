@@ -1,6 +1,6 @@
 # Formulas
 
-What a formula can contain and how the engine parses it: arrays inside a formula, validating formula text before it is stored, errors, functions a host adds, hidden rows and the 1904 date system.
+What a formula can contain and how the engine parses it: arrays inside a formula, functions of a workbook's own (LAMBDA), validating formula text before it is stored, errors, functions a host adds, hidden rows and the 1904 date system.
 
 ## Arrays
 
@@ -41,6 +41,30 @@ console.log(out.C1.value, out.C2.value, out.C3.value) // → 10 20 { error: 'NA'
 ```
 
 The array fills its range and never spills. A session does not allow changing part of the range, just as Excel does not. `fromLegacy` from `xlcalc/xlsx` converts a legacy array formula from a file into the dynamic array formula Excel 365 displays for it, with `@` where Excel inserts it, and `readXlsx` does so for every such formula in a file. [docs/legacy.md](legacy.md) covers both.
+
+## Functions of your own: LAMBDA
+
+`LAMBDA` makes a function out of a calculation, as in Excel 365: `LAMBDA(x,y,x*y)` has the parameters `x` and `y`, seen in its calculation as LET's names are seen in LET's. A function is called where it is written (`LAMBDA(x,x*2)(3)` is 6), through a LET name (`LET(f,LAMBDA(x,x+1),f(2))`), or through a defined name whose formula is a `LAMBDA`, as Name Manager keeps one: a name `Twice` with `LAMBDA(x,x*2)` makes `=Twice(A1)` a call, shown with the name as it is defined. A name's `LAMBDA` may call itself and other names, and the cells that call it depend on the cells its calculation reads. A call by a built-in function's name is the function's, whatever name of that word the book defines, as Excel reads it (a name `Fact` called as `Fact(5)` is `FACT(5)`).
+
+```js
+import { compute } from 'xlcalc'
+
+const book = {
+  sheets: [{ name: 'S', cells: { A1: { value: 4 }, B1: { formula: 'twice(A1)' }, B2: { formula: 'Down(5)' }, B3: { formula: 'SUM(MAP(A1:A1,LAMBDA(x,x+1)))' }, B4: { formula: 'Twice' } } }],
+  names: [
+    { name: 'Twice', ref: 'LAMBDA(x,x*2)' },
+    { name: 'Down', ref: 'LAMBDA(n,IF(n<=0,0,1+Down(n-1)))' },
+  ],
+}
+const out = compute(book).sheets[0].cells
+console.log(out.B1.formula, out.B1.value, out.B2.value, out.B3.value, out.B4.value) // → Twice(A1) 8 5 5 { error: 'CALC' }
+```
+
+A call gives each parameter its argument, a reference as a reference; an argument left out between commas is omitted (`LAMBDA(x,y,ISOMITTED(y))(1,)` is TRUE) and reads as a blank. A call with fewer or more arguments than the parameters is `#VALUE!`. A function is a value of its own: a cell that holds one shows `#CALC!`, an operator or another function given one answers `#VALUE!`, `TYPE` of it is 128, it is no error (`ISERROR` is FALSE, `IFERROR` keeps it), and `ARRAYTOTEXT` writes it `λ`.
+
+A function's name alone is that function as a value, Excel's eta-reduced LAMBDA: `BYROW(A1:C3,SUM)` sums each row, and `LET(f,SUM,f(1,2))` is 3; called with a number of arguments the function does not take, it is `#CALC!`. Alone, a defined name of the same word comes first. `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL` and `MAKEARRAY` call a function for each value, row or column; `GROUPBY` and `PIVOTBY` summarize data by groups with one ([Functions](functions.md)).
+
+Calls of LAMBDAs inside one another, a recursion, go about 200 calls deep for a short calculation, fewer for a longer one; past that a call is `#NUM!`, as Excel answers too many recursive calls, though Excel goes deeper ([Limitations](limitations.md)). A long recursion counts toward a calculation's `timeoutMs` and `signal` as any other work.
 
 ## Checking formulas
 

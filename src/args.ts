@@ -55,7 +55,7 @@ import { MAX_SERIAL } from './dates.js'
 import { arityOf, type Positions } from './arity.js'
 import type { Counts } from './locale/messages.js'
 import type { Rules } from './locale/rules.js'
-import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, asValue, E, fitNumber, isErr, Lambda, Rng, whole, type CErr, type V } from './values.js'
 import { CalcError } from './exec/budget.js'
 import type { Line } from './functions/lookup/search.js'
 
@@ -71,7 +71,7 @@ export interface Grid {
 }
 
 /** What the runtime passes a function: a value, a reference, an array, or a reference of several areas. */
-export type Arg = V | Rng | Arr | Areas
+export type Arg = V | Rng | Arr | Areas | Lambda
 
 /** A value from a `V` argument: a direct value, or the values of a range (row by row) as one segment. */
 export type Segment = V | readonly V[]
@@ -407,7 +407,7 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther,
       }
       return out
     }
-    const n = direct(x, rules)
+    const n = direct(x instanceof Lambda ? asValue(x) : x, rules)
     if (isErr(n)) return n
     out.push(n)
     return out

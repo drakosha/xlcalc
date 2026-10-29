@@ -144,7 +144,7 @@ export interface BookWriting {
 export function bookWriting(book: BookInput): BookWriting {
   const tables = tablesOf(book)
   return {
-    names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks },
+    names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks, defined: new Map((book.names ?? []).map((n) => [caseKey(n.name), n.name])) },
     tableAt: (i) => (row, col) => {
       const t = tableAt(tables, i, row, col)
       return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }

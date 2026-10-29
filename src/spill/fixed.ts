@@ -12,14 +12,14 @@ import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
 import { cellCount, meets, rectCells, type Rect } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
-import { Areas, E, Rng, type V } from '../values.js'
+import { E, type V } from '../values.js'
 
 /**
  * The answer as the area's array: a value in every cell, an array or a reference repeated along a dimension of one,
  * else #N/A past its end, cut past the area; an empty element is 0.
  */
 export function fit(x: Arg, rows: number, cols: number, view: (x: Arg) => V | Arr): Arr {
-  const a = x instanceof Areas ? E.VALUE : x instanceof Rng || x instanceof Arr ? view(x) : x
+  const a = view(x)
   allot(rows * cols)
   const v: V[] = new Array(rows * cols)
   for (let r = 0; r < rows; r++)

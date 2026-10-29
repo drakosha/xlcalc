@@ -27,7 +27,7 @@ import { QUIET, QUIET_RANGE } from './exec/placed.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, asValue, E, fitNumber, fromCellValue, holds, isErr, Lambda, nearZero, Rng, whole, type CErr, type V } from './values.js'
 import type { Column } from './column.js'
 
 export interface SheetData {
@@ -163,12 +163,12 @@ export function makeRuntime(ctx: RuntimeContext) {
   const scalar = (x: Arg): V => {
     if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
     if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
-    return x instanceof Areas ? E.VALUE : x
+    return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
   }
 
   /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are; several areas #VALUE!. */
   const view = (x: Arg): V | Arr => {
-    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
+    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
     const b = bounds(x)
     return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
   }
@@ -219,6 +219,8 @@ export function makeRuntime(ctx: RuntimeContext) {
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
+    // a function (a LAMBDA), the one object past the errors, compares with nothing
+    if ((typeof a === 'object' && a !== null) || (typeof b === 'object' && b !== null)) return E.VALUE
     return holds(op, compareOp(a, b))
   }
 
@@ -414,6 +416,22 @@ export function makeRuntime(ctx: RuntimeContext) {
   /** A lazy function whose lifting arguments at `check` can be arrays. */
   const LZ = (name: string, check: number[], ...thunks: (() => Arg)[]): Arg => liftLazy(F[name], FUNCTIONS[name], check, thunks, cx)
 
+  /**
+   * A function by its name as a value (`BYROW(A1:C3,SUM)`), made once: called with the counts it takes, it is its call
+   * over those arguments, lifted as a formula's call is; an argument left out is not given; called with other counts
+   * #CALC!, as Excel answers `LET(f,SUM,f())` and `LET(f,ABS,f(1,2))`. RAND and its kin get the book's first cell.
+   */
+  const etas = new Map<string, Lambda>()
+  const ETA = (name: string): Lambda => {
+    let f = etas.get(name)
+    if (f) return f
+    const spec = FUNCTIONS[name]
+    const call = spec.lazy ? (args: readonly Arg[]) => F[name](...args.map((a) => () => a)) : spec.cell ? (args: readonly Arg[]) => FL[name](0, 0, 0, ...args) : (args: readonly Arg[]) => FL[name](...args)
+    f = new Lambda(0, Infinity, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes, name)
+    etas.set(name, f)
+    return f
+  }
+
   const ext = (key: string): V => (key in ctx.externals ? fromCellValue(ctx.externals[key]) : E.NA)
 
   const spill = (s: number, r: number, c: number) => ctx.spillRef(s, r, c)
@@ -470,7 +488,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return !met.length ? E.NULL : met.length === 1 ? met[0] : new Areas(met)
   }
 
-  return { cell, spill, flat, bounds, scalar, view, add, sub, addLast, subLast, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, E, cx }
+  return { cell, spill, flat, bounds, scalar, view, add, sub, addLast, subLast, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ETA, ext, I, U, RO, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

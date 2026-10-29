@@ -1,0 +1,527 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 16,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "GROUPBY#1",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#2",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:A11,G!D1:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#3",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:A11,G!D1:D11,_xleta.SUM,3),1)"
+  },
+  {
+   "id": "GROUPBY#4",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,2),1)"
+  },
+  {
+   "id": "GROUPBY#5",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:B11,G!D1:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#6",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,1),1)"
+  },
+  {
+   "id": "GROUPBY#7",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,2),1)"
+  },
+  {
+   "id": "GROUPBY#8",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,-2),1)"
+  },
+  {
+   "id": "GROUPBY#9",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,0),1)"
+  },
+  {
+   "id": "GROUPBY#10",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,0,2),1)"
+  },
+  {
+   "id": "GROUPBY#11",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,-2),1)"
+  },
+  {
+   "id": "GROUPBY#12",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,-1),1)"
+  },
+  {
+   "id": "GROUPBY#13",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,G!F2:F11),1)"
+  },
+  {
+   "id": "GROUPBY#14",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:E11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#15",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:A11,G!D1:E11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#16",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.HSTACK(_xleta.SUM,_xleta.COUNT)),1)"
+  },
+  {
+   "id": "GROUPBY#17",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.VSTACK(_xleta.SUM,_xleta.COUNT)),1)"
+  },
+  {
+   "id": "GROUPBY#18",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,MAX(_xlpm.x))),1)"
+  },
+  {
+   "id": "GROUPBY#19",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.PERCENTOF),1)"
+  },
+  {
+   "id": "GROUPBY#20",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.COUNTA),1)"
+  },
+  {
+   "id": "GROUPBY#21",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,2,,,1),1)"
+  },
+  {
+   "id": "GROUPBY#22",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,1,,,1),1)"
+  },
+  {
+   "id": "GROUPBY#23",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,1),1)"
+  },
+  {
+   "id": "GROUPBY#24",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A10,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#25",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,G!F2:F11=99),1)"
+  },
+  {
+   "id": "GROUPBY#26",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!C2:C11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#27",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,_xlpm.x)),1)"
+  },
+  {
+   "id": "GROUPBY#28",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,1,{2,-3}),1)"
+  },
+  {
+   "id": "GROUPBY#29",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,3),1)"
+  },
+  {
+   "id": "GROUPBY#30",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.VSTACK(_xlfn.HSTACK(_xleta.SUM,_xleta.COUNT),{\"s\",\"c\"})),1)"
+  },
+  {
+   "id": "GROUPBY#31",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "ROWS(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM))"
+  },
+  {
+   "id": "GROUPBY#32",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,4),1)"
+  },
+  {
+   "id": "GROUPBY#33",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.AVERAGE),1)"
+  },
+  {
+   "id": "GROUPBY#34",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY({\"a\";\"b\";\"a\"},{1;2;3},_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#35",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#36",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,,,,,1),1)"
+  },
+  {
+   "id": "PIVOTBY#1",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "PIVOTBY#2",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A1:A11,G!C1:C11,G!D1:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "PIVOTBY#3",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A1:A11,G!C1:C11,G!D1:D11,_xleta.SUM,3),1)"
+  },
+  {
+   "id": "PIVOTBY#4",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,0,0,,0),1)"
+  },
+  {
+   "id": "PIVOTBY#5",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.PERCENTOF),1)"
+  },
+  {
+   "id": "PIVOTBY#6",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.PERCENTOF,,,,,,,1),1)"
+  },
+  {
+   "id": "PIVOTBY#7",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.PERCENTOF,,,,,,,2),1)"
+  },
+  {
+   "id": "PIVOTBY#8",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!B2:C11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "PIVOTBY#9",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:E11,_xleta.SUM),1)"
+  },
+  {
+   "id": "PIVOTBY#10",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xlfn.HSTACK(_xleta.SUM,_xleta.COUNT)),1)"
+  },
+  {
+   "id": "PIVOTBY#11",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,-2),1)"
+  },
+  {
+   "id": "PIVOTBY#12",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,,,-1),1)"
+  },
+  {
+   "id": "PIVOTBY#13",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:B11,G!C2:C11,G!D2:D11,_xleta.SUM),1)"
+  },
+  {
+   "id": "PIVOTBY#14",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,,,,G!F2:F11),1)"
+  },
+  {
+   "id": "PIVOTBY#15",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.COUNT),1)"
+  }
+ ],
+ "values": {
+  "GROUPBY#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#6": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#7": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#9": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#10": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#11": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#12": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#13": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#14": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#15": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#16": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#17": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#18": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#19": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#20": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#21": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#22": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#23": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#24": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#25": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#26": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#27": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#28": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#29": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#30": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#31": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#32": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#33": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#34": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#35": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "GROUPBY#36": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#6": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#7": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#9": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#10": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#11": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#12": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#13": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#14": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PIVOTBY#15": {
+   "t": "e",
+   "v": "NAME"
+  }
+ }
+}

@@ -23,7 +23,9 @@ const OUTSIDE = {
 const START = 'Excel starts a cycle from what the file stores (50 in counter-cached, the fixed point 2 in cycles:iterate-file), empty text (#VALUE! in arithmetic) where it stores none; the engine starts from 0'
 /** The one miss of the predictions of `cycles-held`: the engine still answers as predicted there. */
 const ARRAY = 'a spilled array a cycle comes to holds its first value here and spills no more (a held value is one value a cell); Excel keeps its whole spill as it was'
+const DEPTH = 'a recursion of LAMBDAs past the engine\'s budget of calls is #NUM! (300 calls of `Cnt`), where Excel goes on to its stack (the reason lambdaDepth)'
 const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'lambda-names:names': { 'F!A14': DEPTH },
   'cycles:iterate-file': { 'S!A1': START, 'S!B1': START, 'S!C1': START },
   'cycles-held:array-enters': { 'S!A2': ARRAY, 'S!A3': ARRAY },
   'date1904-held:held': { 'S!A9': PIXELS },

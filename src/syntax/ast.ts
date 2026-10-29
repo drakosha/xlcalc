@@ -59,12 +59,21 @@ export type Ast =
    * formula's LET names.
    */
   | { k: 'let'; binds: Bind[]; body?: Ast }
-  /** A LET name where it is seen: the binding `slot` of the formula. */
+  /** A LET name or a LAMBDA parameter where it is seen: the binding `slot` of the formula. */
   | { k: 'local'; name: string; slot: number }
+  /** LAMBDA: its parameters (slots numbered with LET's names) and its calculation, a function as a value. */
+  | { k: 'lambda'; params: Param[]; body: Ast }
+  /** A call of a value as a function: `LAMBDA(x,x*2)(3)`, a LET name's `f(2)`, a defined name's `MyFn(1,2)`. */
+  | { k: 'call'; fn: Ast; args: Ast[] }
+  /** A function by its name as a value, where a function goes (`BYROW(A1:C3,SUM)`, Excel's eta-reduced LAMBDA). */
+  | { k: 'eta'; name: string }
 
-export interface Bind {
+export interface Param {
   name: string
   slot: number
+}
+
+export interface Bind extends Param {
   value: Ast
 }
 

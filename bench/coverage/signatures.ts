@@ -569,5 +569,6 @@ export const XLFN: Record<string, string> = Object.fromEntries(
     'TOCOL', 'TOROW', 'VALUETOTEXT', 'WRAPCOLS', 'WRAPROWS', 'XLOOKUP', 'XMATCH',
     // the functions about references and the book
     'FORMULATEXT', 'ISFORMULA', 'SHEET', 'SHEETS', 'TRIMRANGE',
+    'BYCOL', 'BYROW', 'GROUPBY', 'ISOMITTED', 'LAMBDA', 'MAKEARRAY', 'MAP', 'PIVOTBY', 'REDUCE', 'SCAN',
   ].map((n) => [n, `_xlfn.${n}`] as const).concat([['SORT', '_xlfn._xlws.SORT'], ['FILTER', '_xlfn._xlws.FILTER']]),
 )
