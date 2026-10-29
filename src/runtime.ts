@@ -23,6 +23,7 @@ import type { Index as LookupIndex } from './functions/lookup/exact.js'
 import type { Line } from './functions/lookup/search.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
+import { QUIET, QUIET_RANGE } from './exec/placed.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
@@ -401,9 +402,14 @@ export function makeRuntime(ctx: RuntimeContext) {
       }
     return caller
   }
+  // a dynamic function's quiet form tells the graph nothing it finds (`exec/placed.ts`)
+  const quiet: Cx = Object.create(cx, { found: { value: () => {} } })
   for (const [name, def] of Object.entries(DEFS)) {
     F[name] = route(name, makeCaller(def, cx))
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
+    if (!def.dynamic) continue
+    F[name + QUIET] = makeCaller(def, quiet)
+    FL[name + QUIET] = liftCaller(FUNCTIONS[name], def.cell === true, F[name + QUIET], quiet)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */
   const LZ = (name: string, check: number[], ...thunks: (() => Arg)[]): Arg => liftLazy(F[name], FUNCTIONS[name], check, thunks, cx)
@@ -441,18 +447,18 @@ export function makeRuntime(ctx: RuntimeContext) {
    * A reference operator: the intersection (`' '`) of the areas of two references, #NULL! where none meet, or the
    * range operator (`':'`), the rectangle around both. Anything but references on one sheet is #VALUE!.
    */
-  const RO = (op: RefOp, x: Arg, y: Arg): Arg => {
+  const RO = (op: RefOp | typeof QUIET_RANGE, x: Arg, y: Arg): Arg => {
     if (isErr(x)) return x
     if (isErr(y)) return y
     const parts = (z: Arg) => (z instanceof Rng ? [z] : z instanceof Areas && !z.cube ? z.list : null)
     const a = parts(x)
     const b = parts(y)
     if (!a || !b || [...a, ...b].some((g) => g.s !== a[0].s)) return E.VALUE
-    if (op === ':') {
+    if (op !== ' ') {
       const all = [...a, ...b]
       const g = new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
-      // in a dynamic formula an end may be found as it computes (`A1:OFFSET(…)`): the graph learns the range
-      ctx.reads?.push(g)
+      // in a dynamic formula an end may be found as it computes (`A1:OFFSET(…)`): the graph learns the range, unless its place alone is used
+      if (op === ':') ctx.reads?.push(g)
       return g
     }
     const met: Rng[] = []

@@ -46,6 +46,32 @@ const position = (row: boolean): FnDef => ({
   },
 })
 
+/**
+ * TRIMRANGE: a reference without its blank rows and columns at the start (`1`), at the end (`2`) or both (`3`, the
+ * default) of each axis; an array is as it is. A blank cell holds nothing: a formula's empty text is not blank.
+ */
+function trimRange(cx: Cx, x: Arg, rows = 3, cols = 3): Arg {
+  if (isErr(x)) return x
+  if (rows < 0 || rows > 3 || cols < 0 || cols > 3) return E.VALUE
+  if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
+  const b = cx.bounds(x)
+  const v = cx.flat(x)
+  let [r1, r2, c1, c2] = [Infinity, -1, Infinity, -1]
+  for (let i = 0; i < v.length; i++)
+    if (v[i] !== null) {
+      const r = Math.floor(i / b.w), c = i % b.w
+      r1 = Math.min(r1, r)
+      r2 = Math.max(r2, r)
+      c1 = Math.min(c1, c)
+      c2 = Math.max(c2, c)
+    }
+  if (r2 < 0) return E.REF
+  const at = (lo: number, hi: number, from: number, to: number, how: number): [number, number] => [how & 1 ? from + lo : from, how & 2 ? from + hi : to]
+  const [a, z] = at(r1, r2, x.r1, x.r2, rows)
+  const [l, w] = at(c1, c2, x.c1, x.c2, cols)
+  return new Rng(x.s, a, l, z, w)
+}
+
 export const functions: Record<string, FnDef> = {
   ADDRESS: { args: 'w w w? b? s?', fn: address },
   // the areas of a union; a reference across sheets, a value or an array is #VALUE!
@@ -59,4 +85,5 @@ export const functions: Record<string, FnDef> = {
   HYPERLINK: { args: 'v v?', cx: true, fn: (cx: Cx, link: V, name?: V) => (name === undefined ? cx.rules.toText(link) : name) },
   ROW: position(true),
   ROWS: { args: 'G', fn: (g: Grid) => g.rows },
+  TRIMRANGE: { args: 'R w? w?', cx: true, array: true, fn: trimRange },
 }

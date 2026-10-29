@@ -445,6 +445,7 @@ export const FUNCTION_ARITY: Readonly<Record<string, ArityDef>> = {
   TREND: { args: 'G G? G? b?' },
   TRIM: { args: 's' },
   TRIMMEAN: { args: 'N n' },
+  TRIMRANGE: { args: 'R w? w?' },
   TRUE: { args: '' },
   TRUNC: { args: 'n i?' },
   TTEST: { args: 'C C w w' },

@@ -126,6 +126,23 @@ describe('the reads converge', () => {
   })
 })
 
+describe.each(['closures', 'eval'] as Execution[])('a reference used for its place alone, %s', (execution) => {
+  it('is no circular reference over the formula\'s own cell; one read is', () => {
+    const cells: Record<string, CellInput> = {
+      A1: { value: 4 },
+      A2: { formula: 'SUMPRODUCT(ROW(INDIRECT("1:"&A1)))' },
+      A3: { formula: 'ROWS(A1:OFFSET(A1,5,0))' },
+      A4: { formula: 'ROW(INDIRECT("A4"))+COLUMNS(INDEX(INDIRECT("A1:C9"),2,0))' },
+      A5: { formula: 'COLUMN(OFFSET(INDIRECT("A5"),0,2))+CELL("row",INDIRECT("A5"))' },
+      A6: { formula: 'ROWS(INDIRECT("A1:A9"))+SUM(INDIRECT("A1"))' },
+      A7: { formula: 'SUM(INDIRECT("A7"))' },
+    }
+    const r = compute(book(cells), { clock, execution })
+    expect(Object.fromEntries(['A2', 'A3', 'A4', 'A5', 'A6'].map((a) => [a, r.sheets[0].cells[a].value]))).toEqual({ A2: 10, A3: 6, A4: 7, A5: 8, A6: 13 })
+    expect(r.diagnostics.flatMap((d) => (d.kind === 'cell' && d.sheet === 'S' ? [d.cell] : []))).toEqual(['A7'])
+  })
+})
+
 describe('a book without INDIRECT and OFFSET', () => {
   it('keeps no reads: no state of them and none on any formula', () => {
     const state = createState(synthBook({ seed: 1, rows: 340 }).book, { now: 46000, seed: 1 })

@@ -461,6 +461,7 @@ export const SIGNATURES: Readonly<Record<string, string>> = {
   TREND: 'known_y [known_x] [new_x] [const]',
   TRIM: 'text',
   TRIMMEAN: 'array percent',
+  TRIMRANGE: 'range [trim_rows] [trim_columns]',
   TRUE: '',
   TRUNC: 'number [digits]',
   TTEST: 'array1 array2 tails type',

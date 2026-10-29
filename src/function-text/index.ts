@@ -451,6 +451,7 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
   TREND: 'Values along a linear trend.',
   TRIM: 'Text without extra spaces.',
   TRIMMEAN: 'The mean of a data set without a share of its smallest and largest values.',
+  TRIMRANGE: 'A range without its blank rows and columns at its edges.',
   TRUE: 'The logical value TRUE.',
   TRUNC: 'A number cut to an integer or to digits.',
   TTEST: "The probability of a Student's t-test (older version).",
