@@ -58,7 +58,7 @@ export const ruRUFunctionText: Required<Pick<Locale, 'argumentWords' | 'function
     table: 'таблица', tails: 'хвосты', text: 'текст', time: 'время', times: 'число_повторов', to_unit: 'в_единицу',
     top: 'верхняя_граница', trials: 'испытания', type: 'тип', unit: 'единица', upper_limit: 'верхний_предел',
     value: 'значение', values: 'значения', vector: 'вектор', weekend: 'выходные', whole: 'целое',
-    whole_number: 'целые', within: 'просматриваемый_текст', wrap_count: 'число_значений', year: 'год',
+    whole_number: 'целые', within: 'просматриваемый_текст', wrap_count: 'число_значений', xml: 'xml', xpath: 'xpath', year: 'год',
     yield: 'доходность',
   },
   functionText: {
@@ -231,6 +231,7 @@ export const ruRUFunctionText: Required<Pick<Locale, 'argumentWords' | 'function
       FALSE: 'Логическое значение ЛОЖЬ.',
       FDIST: 'Правостороннее F-распределение вероятностей (прежняя версия).',
       FILTER: 'Строки или столбцы массива, отвечающие условию.',
+      FILTERXML: 'Значения узлов XML, выбранных выражением XPath.',
       FIND: 'С какого места текст входит в другой текст, с учётом регистра.',
       FINDB: 'С какого байта текст входит в другой текст, с учётом регистра.',
       FINV: 'Обратное правостороннее F-распределение вероятностей (прежняя версия).',
