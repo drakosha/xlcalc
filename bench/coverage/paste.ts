@@ -49,11 +49,12 @@ export async function pasteSet(set: string): Promise<{ built: PasteCases; files:
   return { built, files, sources, sent }
 }
 
-/** One case in Excel: its answer and the saved file, or the repair window's text. Paste Special's window, which the script answers, stops no run. */
+/** One case in Excel: its answer and the saved file, the repair window's text, or the script's own failure (`again`). Paste Special's window, which the script answers, stops no run. */
 async function runCase(c: PasteCase, data: Uint8Array, source: Uint8Array | undefined) {
   const r = await runSavingScript(c.id, SCRIPT, data, [pasteArgs(c)], 120_000, { beside: source ? { [SOURCE_FILE]: source } : {}, fatal: !viaWindow(c) })
   if ('rejected' in r) return r
   const raw = JSON.parse(r.out) as { error: string; local: string[] }
+  if (raw.error.includes('harness: ')) return { again: raw.error }
   const answer = pasteAnswer(c, raw.error, raw.local)
   return { answer, saved: r.saved }
 }

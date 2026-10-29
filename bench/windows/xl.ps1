@@ -509,7 +509,7 @@ function Step($xl, $wb, $s) {
         }
         'null'
       } catch { Err $_ } finally {
-        if ($other) { $xl.CutCopyMode = $false; $other.Close($false) }
+        if ($other) { $other.Close($false) }
         [void]$wb.Worksheets.Item(1).Activate()
         [void]$wb.Worksheets.Item(1).Range('A1').Select()
       }

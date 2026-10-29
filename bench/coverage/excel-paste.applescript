@@ -14,7 +14,8 @@
 -- Painter), transpose "1" or "0", the operation (none, add, subtract, multiply, divide), skip blanks "1" or "0", the
 -- painter's key (left or up), cells of the target sheet whose formula local is read after the paste, separated by commas,
 -- the painter's further targets ([sheet, selection, key]), "1" when the source is in source.xlsx]).
--- Output: JSON {"error": text, "local": [formula local of each cell]}.
+-- Output: JSON {"error": text, "local": [formula local of each cell]}; an error of the script's own steps (the window did
+-- not open, the painter did not turn on or off) begins with "harness: ", which is no answer of Excel's.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -72,7 +73,7 @@ on painterButton(bookName)
 			end repeat
 		end tell
 	end repeat
-	error "no Format Painter in the window of " & bookName
+	error "harness: no Format Painter in the window of " & bookName
 end painterButton
 
 -- Excel in front, a key with Shift: the painter applies at the change of the selection it makes.
@@ -111,7 +112,7 @@ on paint(wb, ws, wt, op, bookName)
 		my doubleClick(b)
 	end if
 	delay 0.8
-	tell application "System Events" to if (value of b as integer) is 0 then error "the Format Painter did not turn on"
+	tell application "System Events" to if (value of b as integer) is 0 then error "harness: the Format Painter did not turn on"
 	tell application "Microsoft Excel"
 		activate object wt
 		select range (item 4 of op) of wt
@@ -120,7 +121,7 @@ on paint(wb, ws, wt, op, bookName)
 	my shiftKey(item 9 of op)
 	delay 1
 	repeat with t in more
-		tell application "System Events" to if (value of b as integer) is 0 then error "the Format Painter turned off before " & (item 2 of t)
+		tell application "System Events" to if (value of b as integer) is 0 then error "harness: the Format Painter turned off before " & (item 2 of t)
 		tell application "Microsoft Excel"
 			activate object (worksheet (item 1 of t) of wb)
 			select range (item 2 of t) of (worksheet (item 1 of t) of wb)
@@ -133,7 +134,7 @@ on paint(wb, ws, wt, op, bookName)
 		tell application "System Events" to key code 53
 		delay 0.8
 	end if
-	tell application "System Events" to if (value of b as integer) is not 0 then error "the Format Painter stayed on"
+	tell application "System Events" to if (value of b as integer) is not 0 then error "harness: the Format Painter stayed on"
 end paint
 
 -- The window's radio button or check box (`kind`, its role) named `n`, clicked when its value is not `v`.
@@ -150,7 +151,7 @@ on setControl(w, kind, n, v)
 			end try
 		end repeat
 	end tell
-	error "no " & n & " in the Paste Special window"
+	error "harness: no " & n & " in the Paste Special window"
 end setControl
 
 -- The window of Excel named `n`, waited for up to `secs` seconds; missing value if it did not come.
@@ -191,11 +192,16 @@ on pasteInWindow(wt, op)
 		select range (item 4 of op) of wt
 		activate
 	end tell
-	tell application "System Events" to set frontmost of process "Microsoft Excel" to true
-	delay 1
-	tell application "System Events" to keystroke "v" using {command down, control down}
-	set w to my excelWindow("Paste Special", 10)
-	if w is missing value then error "no Paste Special window"
+	-- the keys again where they were lost, Excel in front each time
+	set w to missing value
+	repeat 3 times
+		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+		delay 1
+		tell application "System Events" to keystroke "v" using {command down, control down}
+		set w to my excelWindow("Paste Special", 5)
+		if w is not missing value then exit repeat
+	end repeat
+	if w is missing value then error "harness: no Paste Special window"
 	set ops to {{"none", "None"}, {"add", "Add"}, {"subtract", "Subtract"}, {"multiply", "Multiply"}, {"divide", "Divide"}}
 	repeat with o in ops
 		if (item 1 of o) is (item 7 of op) then my setControl(w, "AXRadioButton", item 2 of o, 1)
