@@ -6,23 +6,24 @@
  * Excel writes to the file with every digit (`1.255%` is 0.01255, not 1.255/100).
  */
 import type { CellInput, EntryResult, NumberFormat } from '../../../src/contract.js'
-import { createSession, displayValue, parseEntry, validateFormula } from '../../../src/index.js'
+import { displayValue, parseEntry, validateFormula } from '../../../src/index.js'
+import { sheetLines } from '../../../src/layout/lines.js'
+import { parseAddress } from '../../../src/model.js'
 import { numberFormatOf } from '../stored.js'
 import { entryBook, type EntryCase, type EntryData } from './cases.js'
 
 /**
- * The engine's answer to a case in the locale on the day `now`: `parseEntry` into a cell of the case's format; for a set
- * with its own data, a session's `previewCellText` in A1 of the case's book, whose formulas read the formats of the data.
+ * `parseEntry`'s answer to a case in the locale on the day `now`, into a cell of the case's format, its formulas
+ * reading the formats of the data (the set's, else `DATA`), a cell's own or its row's or column's, by `numberFormatAt`.
  */
 export function engineEntry(c: EntryCase, tag: string, now: string, data?: EntryData): EntryResult {
-  if (!data) return parseEntry(c.text, { locale: tag, now, ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
-  const s = createSession({ ...entryBook([c], data), locale: tag }, { clock: { now: `${now}T12:00:00Z`, seed: 1 } })
-  try {
-    const r = s.previewCellText('S', 'A1', c.text)
-    return r.ok ? { ok: true, input: r.input } : ({ at: 0, ...r } as EntryResult)
-  } finally {
-    s.close()
+  const sheets = entryBook([], data).sheets
+  const numberFormatAt = (sheet: string | null, cell: string) => {
+    const sh = sheet === null ? sheets[0] : sheets.find((s) => s.name.toLowerCase() === sheet.toLowerCase())
+    const { row, col } = parseAddress(cell)
+    return sh && sheetLines(sh).format(row, col)
   }
+  return parseEntry(c.text, { locale: tag, now, numberFormatAt, ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
 }
 
 const SAMPLES = [46096.770833, -1234.5678, 0.05, 0, 1.5]

@@ -9,6 +9,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Ast } from '../syntax.js'
+import { shows } from './forms.js'
 
 /** The format a cell shows, its own or its row's or column's, by its sheet (null: the formula's own) and its zero-based row and column. */
 export type FormatAt = (sheet: string | null, row: number, col: number) => NumberFormat | undefined
@@ -19,10 +20,10 @@ const general = (f: NumberFormat | undefined) => f === undefined || f === 0 || (
 const FORMATS: Readonly<Record<string, NumberFormat | 'money'>> = { TODAY: 14, DATE: 14, NOW: 22, TIME: 18, PMT: 'money', PV: 'money', FV: 'money', IPMT: 'money', PPMT: 'money', NPV: 'money' }
 
 /** The functions that take the format of their first argument with one. */
-const PASSING = new Set(['SUM', 'MAX', 'MIN', 'AVERAGE', 'ROUND'])
+const PASSING = new Set(['SUM', 'MAX', 'MIN', 'AVERAGE', 'MEDIAN', 'ROUND', 'ROUNDUP', 'ROUNDDOWN', 'TRUNC', 'INT'])
 
-/** Whether a node is a number with no format of its own: literals and arithmetic of them. */
-const plain = (a: Ast): boolean => a.k === 'num' || ((a.k === 'un' || a.k === 'paren' || a.k === 'pct') && plain(a.a)) || (a.k === 'bin' && plain(a.a) && plain(a.b))
+/** Whether a formula's format shows a date. */
+const isDate = (f: NumberFormat | 'money' | undefined) => f !== undefined && f !== 'money' && shows(f, 'day')
 
 /** The format a formula's result takes, `money` standing for the locale's; undefined when it has none. */
 export function formulaFormat(a: Ast, at?: FormatAt): NumberFormat | 'money' | undefined {
@@ -40,7 +41,10 @@ export function formulaFormat(a: Ast, at?: FormatAt): NumberFormat | 'money' | u
       return of(a.a)
     case 'bin':
       if (a.op === '+') return of(a.a) ?? of(a.b)
-      return a.op === '-' && plain(a.b) ? of(a.a) : undefined
+      if (a.op !== '-') return undefined
+      // a difference of two dates is a number of days
+      const [x, y] = [of(a.a), of(a.b)]
+      return isDate(x) && isDate(y) ? undefined : (x ?? y)
     default:
       return undefined
   }

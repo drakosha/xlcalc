@@ -5,7 +5,7 @@
  * it (the value or formula and the format, read from the saved file), what it shows and its format codes. Formulas typed
  * read the data in column C, never column A.
  */
-import type { BookInput, CellInput, CellValue, NameInput, NumberFormat, SheetInput } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellValue, ColumnInput, NameInput, NumberFormat, SheetInput } from '../../../src/contract.js'
 import type { StoredCell } from '../stored.js'
 import { groupCollector } from '../collect.js'
 
@@ -53,9 +53,10 @@ export interface EntrySet {
   data?: EntryData
 }
 
-/** A set's data: cells of the sheet `S` outside column A, more sheets, defined names. */
+/** A set's data: cells of the sheet `S` outside column A and its columns, more sheets, defined names. */
 export interface EntryData {
   cells: Record<string, CellInput>
+  columns?: Record<string, ColumnInput>
   sheets?: SheetInput[]
   names?: NameInput[]
 }
@@ -72,7 +73,7 @@ export function entryBook(cases: EntryCase[], data: EntryData = { cells: DATA })
   cases.forEach((c, i) => {
     if (c.format !== undefined) cells[`A${i + 1}`] = { numberFormat: c.format }
   })
-  return { sheets: [{ name: 'S', cells }, ...(data.sheets ?? [])], ...(data.names ? { names: data.names } : {}) }
+  return { sheets: [{ name: 'S', cells, ...(data.columns ? { columns: data.columns } : {}) }, ...(data.sheets ?? [])], ...(data.names ? { names: data.names } : {}) }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */

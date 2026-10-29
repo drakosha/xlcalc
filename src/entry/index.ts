@@ -11,6 +11,7 @@ import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, Num
 import { inner } from '../model.js'
 import { checkEntryOptions } from '../input.js'
 import { checkString } from '../input/basic.js'
+import { checkFormat } from '../input/styles.js'
 import { validateTyped, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'
@@ -21,7 +22,7 @@ import { englishName } from '../call-at.js'
 import { wordKey } from '../collate.js'
 import { epochOf, ymd } from '../dates.js'
 import { arityFor } from '../arity.js'
-import { msToSerial } from '../model.js'
+import { formatAddress, msToSerial } from '../model.js'
 import { formatAfter, formOf, shows } from './forms.js'
 import { closeTyped } from './close.js'
 import { formulaFormat, type FormatAt } from './formula.js'
@@ -103,6 +104,18 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   return readEntry(text, o, o.inPlace ? 'inPlace' : 'typed')
 }
 
+/** A host's formats of the book's cells (`EntryOptions.numberFormatAt`) by zero-based row and column, each checked. */
+function formatsOf(fn: EntryOptions['numberFormatAt']): FormatAt | undefined {
+  return (
+    fn &&
+    ((sheet, r, c) => {
+      const f = fn(sheet, formatAddress(r, c))
+      if (f !== undefined) checkFormat(f, 'opts.numberFormatAt')
+      return f
+    })
+  )
+}
+
 /** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard, put back by Excel's Replace. */
 export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
 
@@ -117,7 +130,7 @@ export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
  * format takes a number, a date, a boolean or a formula as a General cell does, keeping its format where typing gives
  * none (`3/15/2026` is the date with its date format, `12` the number shown by `@`).
  */
-export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed', at?: FormatAt): EntryResult {
+export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed', at: FormatAt | undefined = formatsOf(o.numberFormatAt)): EntryResult {
   const pasted = way === 'pasted'
   const locale = localeOf(o.locale)
   const cell = o.cell ?? {}
