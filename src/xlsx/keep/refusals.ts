@@ -32,9 +32,10 @@ import type { Source } from './source.js'
  * the data validation of a sheet changed and the file has rules of it the workbook could not read (its `readXlsx` issues
  * `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
  * it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
- * would need making for a new first cell).
+ * would need making for a new first cell); `layout`, the workbook's carriers were laid out by another version of
+ * openKept or for another file, or their layout's name is gone while carriers stay.
  */
-export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
+export type KeptRefusalCode = 'file' | 'carriers' | 'layout' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 
 /** The message of each refusal, which `writeKept` gives in the language of its `locale`. */
 const MESSAGES = new WeakMap<KeptRefusal, KeptMessage>()

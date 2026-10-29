@@ -128,6 +128,7 @@ export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K
   keptLinkKind: [{ link: 2 }],
   keptLinks: [{}],
   keptNoCarrier: [{ name: '_xlcalc_keep_s1', sheet }],
+  keptLayout: [{ name: '_xlcalc.keep.layout' }],
   keptNoCellCarrier: [{ name: '_xlcalc_keep_c1', cell: 'B2', sheet }],
   keptNoPartCarrier: [{ name: '_xlcalc_keep_p1', what: { part: 'name', name: 'Rate' } }, { name: '_xlcalc_keep_p2', what: { part: 'chart', path: 'xl/charts/chart1.xml' } }],
   keptUnread: [
