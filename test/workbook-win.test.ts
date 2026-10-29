@@ -56,13 +56,18 @@ const WIN_CASES: Readonly<Record<string, string>> = {
 
 /** Predictions of held-out cases that Excel for Windows answered otherwise: `<set>:<case>` → cell → why; the engine gives Excel's answer since. */
 const RANKED = 'the engine left the cells of a cycle through a spill empty before an array closing such a cycle gave way to one that closes none (x-fuzz-modes-6)'
-const WIN_MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = Object.fromEntries(
-  Object.entries({
-    'munit-file': ['S!D11'],
-    'sheets-file-Sheet2-Q_data': ['Sheet2!E5', 'Q data!D4', 'Q data!E4', 'Q data!D5', 'Q data!E5', 'Q data!D6', 'Q data!E6'],
-    'wait-typed-B1-A2-C1-C2': ['S!A2'],
-  }).map(([id, cells]) => [`spill-cycles-off-held:${id}`, Object.fromEntries(cells.map((k) => [k, RANKED]))]),
-)
+/** A formula over its own cell that reads its place, look or formula alone: Excel finds no circular reference, which the engine found by the reference. */
+const PLACED = 'a reference used for its place, look or formula alone is no circular reference in Excel; the engine took it for one before (exec/placed.ts)'
+const WIN_MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  ...Object.fromEntries(
+    Object.entries({
+      'munit-file': ['S!D11'],
+      'sheets-file-Sheet2-Q_data': ['Sheet2!E5', 'Q data!D4', 'Q data!E4', 'Q data!D5', 'Q data!E5', 'Q data!D6', 'Q data!E6'],
+      'wait-typed-B1-A2-C1-C2': ['S!A2'],
+    }).map(([id, cells]) => [`spill-cycles-off-held:${id}`, Object.fromEntries(cells.map((k) => [k, RANKED]))]),
+  ),
+  ...Object.fromEntries(['row', 'columns', 'isref', 'areas', 'sheet', 'cell-address', 'cell-row', 'cell-width', 'formulatext', 'isformula', 'rows-offset', 'offset-below'].map((id) => [`place-cycles-held:${id}`, { 'S!A1': PLACED }])),
+}
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()

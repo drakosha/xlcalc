@@ -47,3 +47,14 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set (`predict.ts`). */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./indirect.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm, which the fit took up where both Excels agree: OFFSET truncating its
+ * numbers (`0.99999999` is 0) and taking a size left out as the reference's; CELL, SHEET, FORMULATEXT and ISFORMULA over
+ * a union's first area; FORMULATEXT and ISFORMULA over a range cell by cell; SHEET and SHEETS of a value `#N/A`; TRIMRANGE's
+ * codes whole numbers; the trim references' file form, which Excel for Mac computes; a spill reference from a cell under
+ * ROWS ordered after its array. Known differences: a spill reference
+ * in INDIRECT's typed text, CELL's book name, INFO's constants, a quoted last sheet; `#NUM!` the Mac did not repeat
+ * (`test/excel-open.ts`).
+ */
+export const MISSED: readonly string[] = ['a1#26', 'a1#32', 'a1#33', 'offset#16', 'offset#22', 'offset#37', 'arrays#1', 'arrays#2', 'arrays#3', 'arrays#4', 'arrays#5', 'cell#1', 'cell#3', 'cell#4', 'cell#21', 'cell#22', 'cell#26', 'info#1', 'info#2', 'info#10', 'sheet#11', 'sheet#12', 'sheet#16', 'sheets#3', 'sheets#5', 'sheets#6', 'formulatext#4', 'formulatext#8', 'formulatext#12', 'formulatext#13', 'isformula#6', 'isformula#7', 'isformula#10', 'trimrange#22', 'tro#1', 'tro#2', 'tro#3']

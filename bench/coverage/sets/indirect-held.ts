@@ -30,3 +30,10 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set (`predict.ts`). */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./indirect-held.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: a spill reference typed in INDIRECT's text (a known difference), CELL
+ * over a reference across several sheets (`#VALUE!`, which the engine answers since), and two TRIMRANGE cases the
+ * engine predicted while it took TRIMRANGE's range under ROWS for its place alone (fixed since).
+ */
+export const MISSED: readonly string[] = ['again#7', 'again#8', 'again#9', 'cell#2', 'trim#1', 'trim#3']
