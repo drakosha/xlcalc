@@ -17,7 +17,7 @@ import { engineHas, engineOutcome, localFormulas, shownFile, type Shown } from '
 import './locales.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops', 'array-ops', 'merging-rules', 'merging-mac', 'fit-borders', 'painter-double']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops', 'array-ops', 'array-ops-held', 'merging-rules', 'merging-mac', 'fit-borders', 'painter-double']
 
 /** An operation onto a formula written as a dynamic array formula. */
 const DYNAMIC =
@@ -55,6 +55,8 @@ export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'merging-held/all-into-merged': INTO_MERGED,
   'kinds-held/valuesAndNumberFormats-column': COLUMNS,
   'kinds-held/formulasAndNumberFormats-column': COLUMNS,
+  'array-ops-held/array-formulas-onto-plain':
+    "a legacy array formula copied with formulas and an operation onto other cells: Excel gives each of its cells the array's formula moved there as an ordinary one, with @ (1+(@H3:H4*10)); the engine combines the array's cell alone, without @",
 }
 
 /**
