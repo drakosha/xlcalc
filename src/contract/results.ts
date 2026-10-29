@@ -5,15 +5,52 @@ import type { Book, ExternalBook, NumberFormat } from './book.js'
 import type { Color } from './looks.js'
 
 /**
- * External functions (host functions evaluated outside the workbook): their values are resolved in
- * advance, in a single request, and passed to the calculation. The key of a call is its canonical text
- * (`BALANCE("2025-01")`); arguments must be literals. They are options of the calculation, not part of the
- * workbook, so `inputHash` does not include them.
+ * External functions (host functions evaluated outside the workbook) and the answers to the calls a workbook makes
+ * outside itself. `values` gives answers in advance, by the call's text with its arguments (`BALANCE("2025-01")`);
+ * without `resolve` the arguments of the host's `functions` must be literals, and a call without a value is `#N/A`.
+ * `resolve` answers, at the time of the calculation, a call of the host's `functions` without an entry in `values`,
+ * whatever its arguments, and a call of a function of connections (`CUBEVALUE` and the other cube functions, `RTD`,
+ * `WEBSERVICE`, `IMAGE`, `STOCKHISTORY`, `TRANSLATE`, `DETECTLANGUAGE`, `CALL`, `REGISTER.ID`, `EUROCONVERT`), which
+ * without an answer gives what Excel gives where it reaches nothing. They are options of the calculation, not part of
+ * the workbook, so `inputHash` does not include them; their answers are values of cells, so `hash` does.
  */
 export interface Externals {
   functions: string[]
   values?: Record<string, CellValue>
+  resolve?: ExternalResolver
 }
+
+/**
+ * Answers a call. A calculation asks once for each call text (`ExternalCall.key`); a session keeps the answers until
+ * `refreshConnections`. An answer given as a promise leaves the cell `#BUSY!` (a cube function's `#GETTING_DATA`) until
+ * it arrives: `createInlineCalc` and a pool wait for it within the call's `timeoutMs`, a session takes it by
+ * `settleConnections`. A thrown error or a rejected promise is the function's answer without its connection.
+ */
+export type ExternalResolver = (call: ExternalCall) => ExternalAnswer | PromiseLike<ExternalAnswer>
+
+/** A call `ExternalResolver` answers. */
+export interface ExternalCall {
+  /** The function, upper-case. */
+  name: string
+  /** The call's text with its arguments' values, as `Externals.values` takes it: `BALANCE("2025-01")`. */
+  key: string
+  /**
+   * The arguments' values: a range or an array as rows of values, an argument left out undefined; a cell a cube
+   * function answered with a member (`CUBEMEMBER`, `CUBESET`) gives the member's name to another cube function.
+   */
+  args: (CellValue | CellValue[][] | undefined)[]
+  /** The cell of the formula. */
+  sheet: string
+  cell: string
+  /** Aborted when the calculation that asks is: its call aborted or past its deadline. */
+  signal: AbortSignal
+}
+
+/**
+ * A call's answer: a value, an array (spilled as a formula's array), a cube member as the caption its cell shows and the
+ * name the cube functions take, or undefined for none: the function's answer without its connection.
+ */
+export type ExternalAnswer = CellValue | CellValue[][] | { value: CellValue; member: string } | undefined
 
 /**
  * How formulas are executed; values, issues and hashes are the same either way. `closures` (the default) builds each
@@ -203,6 +240,8 @@ export interface ComputeResult {
   inputHash: string
   configVersion: string
   ms: number
+  /** Cells whose answer from `Externals.resolve` is on its way (`#BUSY!` or `#GETTING_DATA`); none when it is empty. */
+  pending?: CellRef[]
 }
 
 /** What `validateFormula` checks a formula against: the workbook's sheets, names and tables; whatever is omitted is not checked. */

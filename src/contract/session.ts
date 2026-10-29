@@ -159,6 +159,14 @@ export interface Session {
   setExternalBooks(books: ExternalBook[], opts?: EditOptions): EditResult
   /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
+  /**
+   * Asks `Externals.resolve` again for every call of the functions `names` (upper-case), of every function of
+   * connections and host's function when none are given, as Excel's Refresh All does: the answers kept are dropped and
+   * the formulas calling them calculated, those keeping the value their file stores too.
+   */
+  refreshConnections(names?: string[], opts?: EditOptions): EditResult
+  /** Waits for the answers on their way from `Externals.resolve` and calculates the cells that wait for them. */
+  settleConnections(): Promise<EditResult>
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
   editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** Replaces the workbook's style table; every style that cells, rows and columns use must remain in it. Recalculates nothing; displayed text does not depend on styles. */
@@ -488,6 +496,8 @@ export interface AsyncSession {
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
   setExternalBooks(books: ExternalBook[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
+  refreshConnections(names?: string[], opts?: AsyncEditOptions): Promise<EditResult>
+  settleConnections(opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
