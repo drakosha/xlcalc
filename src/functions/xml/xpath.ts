@@ -1,8 +1,9 @@
 /**
  * XPath 1.0 over the nodes of `dom.ts`, this engine's own after the W3C's recommendation
- * (https://www.w3.org/TR/1999/REC-xpath-19991116/): every axis but namespace, the node tests, predicates, the
- * operators and the core function library. There are no variables and no namespace prefixes, as FILTERXML gives MSXML
- * none: either is an error, and so is anything outside the grammar.
+ * (https://www.w3.org/TR/1999/REC-xpath-19991116/): the axes, node tests, predicates, operators and the core function
+ * library. A name test compares the name as written, prefix and all, whatever namespace it is in, as Excel's FILTERXML
+ * does (`//b` finds `b` under a default namespace, `//x:a` finds `x:a`). There are no variables; an expression outside
+ * the grammar is an error.
  */
 import { stringValue, type XNode } from './dom.js'
 
@@ -118,9 +119,19 @@ function axis(name: string, n: XNode): XNode[] {
       return name === 'following' ? all.filter((x) => x.order >= end) : all.filter((x) => x.order < at.order && !anc.has(x)).reverse()
     }
     case 'namespace':
-      return []
+      return namespaces(n)
   }
   return fail('axis')
+}
+
+/** The namespace nodes of an element: its prefixes in scope, `xml` first, each its URI. */
+function namespaces(n: XNode): XNode[] {
+  if (n.kind !== 'element') return []
+  const scope = new Map<string, string>([['xml', 'http://www.w3.org/XML/1998/namespace']])
+  const chain: XNode[] = []
+  for (let p: XNode | null = n; p; p = p.parent) chain.unshift(p)
+  for (const p of chain) for (const [k, v] of Object.entries(p.declared)) scope.set(k, v)
+  return [...scope].filter(([, v]) => v).map(([k, v], i) => ({ ...n, kind: 'namespace', name: k, qname: k, ns: '', value: v, parent: n, children: [], attrs: [], declared: {}, order: n.order + (i + 1) / 1024 }))
 }
 
 /** How many nodes and attributes lie inside a node, so that its following nodes start past them. */
@@ -265,7 +276,7 @@ function compile(src: string): Eval {
     const test = take()
     if (test === undefined) fail('step')
     let match: (n: XNode) => boolean
-    const principal = ax === 'attribute' ? 'attribute' : 'element'
+    const principal = ax === 'attribute' ? 'attribute' : ax === 'namespace' ? 'namespace' : 'element'
     if (NODE_TYPES.has(test) && peek() === '(') {
       take('(')
       let target: string | undefined
@@ -273,10 +284,9 @@ function compile(src: string): Eval {
       take(')')
       match = test === 'node' ? () => true : test === 'text' ? (n) => n.kind === 'text' : test === 'comment' ? (n) => n.kind === 'comment' : (n) => n.kind === 'pi' && (target === undefined || n.name === target)
     } else if (test === '*') match = (n) => n.kind === principal
-    else if (isName(test)) {
-      if (test.includes(':')) fail('namespace prefix')
-      match = (n) => n.kind === principal && n.name === test && n.ns === ''
-    } else return fail('node test')
+    else if (test.endsWith(':*')) match = (n) => n.kind === principal && n.qname.startsWith(test.slice(0, -1))
+    else if (isName(test)) match = (n) => n.kind === principal && n.qname === test
+    else return fail('node test')
     const preds: Eval[] = []
     while (peek() === '[') {
       take('[')

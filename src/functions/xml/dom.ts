@@ -7,7 +7,7 @@
  */
 import { decodeXml } from '../../xlsx/xml/text.js'
 
-export type Kind = 'root' | 'element' | 'attribute' | 'text' | 'comment' | 'pi'
+export type Kind = 'root' | 'element' | 'attribute' | 'namespace' | 'text' | 'comment' | 'pi'
 
 export interface XNode {
   kind: Kind
@@ -22,17 +22,19 @@ export interface XNode {
   parent: XNode | null
   children: XNode[]
   attrs: XNode[]
+  /** The namespaces an element declares, by prefix ('' the default). */
+  declared: Record<string, string>
   /** The place in document order. */
   order: number
 }
 
 const XML_NS = 'http://www.w3.org/XML/1998/namespace'
-const NAME = /[A-Za-z_À-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�][\w.\-·À-ÖØ-öø-ͽͿ-῿‌‍‿⁀⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�]*/y
+const NAME = /[:A-Za-z_À-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�][\w.:\-·À-ÖØ-öø-ͽͿ-῿‌‍‿⁀⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�]*/y
 /** A character XML 1.0 does not allow, a reference that is no entity of the five or a character. */
 const BAD_CHAR = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/
 const REFERENCE = /&(?!(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9A-Fa-f]+);)/
 
-const node = (kind: Kind, parent: XNode | null, value = ''): XNode => ({ kind, name: '', qname: '', ns: '', value, parent, children: [], attrs: [], order: 0 })
+const node = (kind: Kind, parent: XNode | null, value = ''): XNode => ({ kind, name: '', qname: '', ns: '', value, parent, children: [], attrs: [], declared: {}, order: 0 })
 
 /** Character data with its references: null for a bare `&`, an unknown entity or a reference to a character XML lacks. */
 function text(s: string): string | null {
@@ -71,11 +73,17 @@ export function parseXml(src: string): XNode | null {
     if (parts.length > 2 || parts.some((x) => x === '')) return null
     return parts.length === 2 ? [parts[0], parts[1]] : ['', q]
   }
-  const pushText = (t: string) => {
+  /** Character data joins the text before it; a CDATA section is a text node of its own, as MSXML keeps it. */
+  const pushText = (t: string, cdata = false) => {
     const last = cur.children.at(-1)
-    if (last?.kind === 'text') last.value += t
-    else cur.children.push(node('text', cur, t))
+    if (!cdata && last?.kind === 'text' && !last.name) last.value += t
+    else {
+      const n = node('text', cur, t)
+      if (cdata) n.name = '#cdata'
+      cur.children.push(n)
+    }
   }
+
 
   if (s.startsWith('<?xml', p) && /[\s?]/.test(s[p + 5] ?? '')) {
     const end = s.indexOf('?>', p)
@@ -105,7 +113,7 @@ export function parseXml(src: string): XNode | null {
     } else if (s.startsWith('<![CDATA[', p)) {
       const end = s.indexOf(']]>', p + 9)
       if (end < 0 || cur === root) return null
-      pushText(s.slice(p + 9, end))
+      pushText(s.slice(p + 9, end), true)
       p = end + 3
     } else if (s.startsWith('<?', p)) {
       p += 2
@@ -160,6 +168,7 @@ export function parseXml(src: string): XNode | null {
         } else raw.push([a, t])
       }
       scopes.push(scope)
+      el.declared = scope
       const qn = split(q)
       if (!qn) return null
       const ns = lookup(qn[0]) ?? (qn[0] ? undefined : '')
@@ -193,10 +202,10 @@ export function parseXml(src: string): XNode | null {
     n.order = order++
     for (const a of n.attrs) a.order = order++
     for (const c of n.children) {
-      if (c.kind === 'text' && !/\S/.test(c.value)) continue
+      if (c.kind === 'text' && !c.name && !/\S/.test(c.value)) continue
       number(c)
     }
-    n.children = n.children.filter((c) => c.kind !== 'text' || /\S/.test(c.value))
+    n.children = n.children.filter((c) => c.kind !== 'text' || c.name || /\S/.test(c.value))
   }
   number(root)
   return root
