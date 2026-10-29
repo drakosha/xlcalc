@@ -109,4 +109,4 @@ An array that has spilled and that an edit pulls into a cycle keeps only its fir
 
 ## Checked against Excel
 
-Tested in Excel 16 for Windows, en-US, on 27 workbooks, 6 of them predicted before Excel ran them. The engine matches all of them except the cycles through `INDIRECT` and `OFFSET`, which are not in the whitelist, and iteration from stored values ([Limitations](limitations.md)).
+Tested in Excel 16 for Windows, en-US, on 27 workbooks, 6 of them predicted before Excel ran them. The engine matches all of them, the cycles through `INDIRECT` and `OFFSET` too, except iteration from stored values ([Limitations](limitations.md)). The set `place-cycles-held` checked which formulas over their own cell Excel takes as circular: those that read the cell's value (`SUM`, `CELL`'s contents and type, `INDIRECT` of it), not those that read its place, look or formula (`ROW`, `COLUMNS`, `ISREF`, `AREAS`, `SHEET`, `CELL`'s address, row and width, `FORMULATEXT`, `ISFORMULA`, `OFFSET` from it).

@@ -57,12 +57,12 @@ const cells = {
   A3: { value: 'North' }, B3: { value: 45.5 },
   D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
   D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
-  D3: { formula: 'INDIRECT("B2")' },
+  D3: { formula: 'B1/(B2-80)' },
 }
 const { sheets, diagnostics } = compute({ sheets: [{ name: 'Sales', cells }] })
 console.log(sheets[0].cells.D1.value) // → 165.5
 console.log(sheets[0].cells.D2.value) // → 80
-console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'NAME' } unknown function INDIRECT
+console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'DIV0' } division by zero
 ```
 
 A formula goes in `formula` without the leading `=` (one given is dropped, with the same `inputHash`), apart from `value`, so text from your data never becomes a formula; the same holds for the formulas of names, tables, conditional formats and data validation. A date is `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and becomes an Excel serial number. `numberFormat` and `meta` pass through to the result, whose `text` is the value in its number format.
