@@ -32,20 +32,36 @@ export type NoteShown = [sheet: string, cell: string, shown: boolean]
 /** A cell whose text is turned: its sheet and cell, and the rotation. */
 export type Turned = [sheet: string, cell: string, rotation: number | 'vertical']
 
-/** What Excel read: the sheets' fields, the calculation option (`automatic`, `manual`, `autoNoTable`) since the set `book`, the notes since `notes`, the turned cells since `rotation`. */
+/** A sheet's window as Excel read it: its name, frozen or not, split or not, each pane's first row and column (from 1) in Excel's order, the active pane's number. */
+export type SheetPanes = [name: string, frozen: boolean, split: boolean, panes: [row: number, column: number][], active: number]
+
+/** A sheet's window as Excel read it, and where its object model puts the lines, in points (`SplitHorizontal`, `SplitVertical`). */
+export interface PanesAnswer {
+  panes: SheetPanes
+  points: [x: number, y: number]
+}
+
+/** A sheet's window as both Excels' steps read it: name, frozen, split, the lines in points, each pane's first row and column, the active pane. */
+export type RawPanes = [name: string, frozen: boolean, split: boolean, x: number, y: number, panes: [number, number][], active: number]
+
+export const panesAnswer = ([name, frozen, split, x, y, panes, active]: RawPanes): PanesAnswer => ({ panes: [name, frozen, split, panes, active], points: [x, y] })
+
+/** What Excel read: the sheets' fields, the calculation option (`automatic`, `manual`, `autoNoTable`) since the set `book`, the notes since `notes`, the turned cells since `rotation`, the windows since `split`. */
 export interface FieldsAnswer {
   sheets: SheetFields[]
   calculation?: string
   notes?: NoteShown[]
   turned?: Turned[]
+  panes?: PanesAnswer[]
 }
 
 export interface FieldsSet {
   buildFieldsCases(): FieldsCase[]
 }
 
-export const fieldsFile = (set: string) => join(ROOT, 'test/excel/win/fields', `${set}.json`)
-export const savedDir = (set: string) => join(ROOT, 'test/excel/win/fields', set)
+/** The answers of a set and the folder of the files Excel saved: Excel for Windows's (`win/fields`) or for Mac's (`fields`). */
+export const fieldsFile = (set: string, dir = 'win/fields') => join(ROOT, 'test/excel', dir, `${set}.json`)
+export const savedDir = (set: string, dir = 'win/fields') => join(ROOT, 'test/excel', dir, set)
 
 /** A book with the views and the calculation option a host set on it. */
 function hostSet(b: BookInput, kept: NonNullable<FieldsCase['kept']>): BookInput {
@@ -102,6 +118,31 @@ export const bookTurned = (b: BookInput): Turned[] =>
 
 /** The calculation option of a book, as Excel names it. */
 export const bookCalculation = (b: BookInput): string => b.calculation ?? 'automatic'
+
+/** The panes in Excel's order (top left, top right, bottom left, bottom right) of the lines a split has. */
+const PANES = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] as const
+
+/**
+ * The window of each sheet of a book as Excel reads it: one pane at the view's scroll, or a pane on each side of each
+ * line of its split, those after a line scrolled on its axis as the split's top left cell; frozen panes by that alone.
+ */
+export const bookPanes = (b: BookInput): SheetPanes[] =>
+  b.sheets.map((s): SheetPanes => {
+    if (s.frozen) return [s.name, true, false, [], 0]
+    const at = (a: string | undefined) => (a ? parseAddress(a) : { row: 0, col: 0 })
+    const [v, split] = [at(s.view?.topLeft), s.view?.split]
+    if (!split) return [s.name, false, false, [[v.row + 1, v.col + 1]], 1]
+    const t = at(split.topLeft)
+    const names = PANES.filter((p) => (split.x || !p.endsWith('Right')) && (split.y || !p.startsWith('bottom')))
+    const panes = names.map((p): [number, number] => [(p.startsWith('bottom') ? t.row : v.row) + 1, (p.endsWith('Right') ? t.col : v.col) + 1])
+    return [s.name, false, true, panes, names.indexOf(split.activePane ?? 'topLeft') + 1]
+  })
+
+/** What Excel read of a window, as `bookPanes` gives it: of frozen panes only that they are. */
+export const seenPanes = (p: SheetPanes): SheetPanes => (p[1] ? [p[0], true, false, [], 0] : p)
+
+/** The split of each sheet's window where frozen panes do not take its place. */
+export const splitOf = (b: BookInput) => b.sheets.map((s) => (s.frozen ? undefined : s.view?.split))
 
 /** What the sheets of a book hold of the fields, as Excel reads them. */
 export const bookFields = (b: BookInput): SheetFields[] => b.sheets.map((s) => [s.name, s.tabColor ?? null, s.view?.gridlines !== false, s.view?.headings !== false])

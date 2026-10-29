@@ -1,15 +1,15 @@
 /**
  * Fields of a workbook the model holds for a host, against Excel for Windows (`test/excel/win/fields/`,
  * `bench/coverage/fields/`): Excel read from each file `writeXlsx` or `writeKept` wrote what the workbook holds, and the
- * reader reads it back from the file Excel saved.
+ * reader reads it back from the file Excel saved: a split window with the same lines.
  */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { bookCalculation, bookFields, bookNotes, bookTurned, caseBook, fieldsFile, savedDir, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
+import { bookCalculation, bookFields, bookNotes, bookPanes, bookTurned, caseBook, fieldsFile, savedDir, seenPanes, splitOf, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
 import { readXlsx } from '../src/xlsx.js'
 
-describe.each(['sheets', 'book', 'notes', 'rotation'])('the set %s', (set) => {
+describe.each(['sheets', 'book', 'notes', 'rotation', 'split'])('the set %s', (set) => {
   const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { answers: Record<string, FieldsAnswer> }
   it('Excel reads what the workbook holds, and saves it so', async () => {
     const cases = ((await import(`../bench/coverage/fields/${set}.ts`)) as FieldsSet).buildFieldsCases()
@@ -28,6 +28,12 @@ describe.each(['sheets', 'book', 'notes', 'rotation'])('the set %s', (set) => {
       // the turned cells, read since the set rotation
       const turned = stored.answers[c.id].turned
       if (turned !== undefined) expect([turned, bookTurned(saved.book)], c.id).toEqual([bookTurned(caseBook(c)), turned])
+      // the windows, read since the set split: as the workbook holds them, and the split saved as it was written
+      const panes = stored.answers[c.id].panes
+      if (panes !== undefined) {
+        expect([panes.map((p) => seenPanes(p.panes)), bookPanes(saved.book)], c.id).toEqual([bookPanes(caseBook(c)), bookPanes(caseBook(c))])
+        expect(splitOf(saved.book), c.id).toEqual(splitOf(caseBook(c)))
+      }
     }
   })
 })
