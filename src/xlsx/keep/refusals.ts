@@ -70,14 +70,15 @@ export interface Identity {
   deleted: boolean[]
   /** The edits that write the moved references back to the parts. */
   edits: Edit[]
-  /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
+  /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (where they were, on it or on another sheet), and the addresses they left. */
   cells: Map<number, Moved>
   /** By sheet of the book read: the rectangles of its cell formats that look as earlier ones where they lie now on its sheet of the book written; none for a sheet past `KEPT_FORMATS` or whose carriers a host dropped. */
   formats: Map<number, FormatArea[]>
 }
 
+/** The cells with what only the file holds that came to a sheet, by address now (from where: their address, and their sheet of the book read where it is another), and those that left it. */
 export interface Moved {
-  to: Map<string, string>
+  to: Map<string, { addr: string; sheet?: number }>
   left: Set<string>
 }
 
@@ -122,21 +123,20 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       if (own) throw new KeptRefusal({ key: 'keptSheetParts', sheet: was, kind: own.kind, path: own.target }, 'deleted')
     }
   }
-  // the cells with what only the file holds: where each went on its sheet (one moved to another sheet, or deleted, leaves it)
+  // the cells with what only the file holds: where each went, on its sheet or another the file has (one deleted, or on a new sheet, goes)
+  const movedOf = (k: number) => out.cells.get(k) ?? out.cells.set(k, { to: new Map(), left: new Set() }).get(k)!
   for (const [k, list] of c.cells.entries()) {
-    const j = out.target.get(k)
-    if (j === undefined || !list.length) continue
-    const moved: Moved = { to: new Map(), left: new Set() }
     for (const cell of list) {
       const n = names.get(caseKey(cell.carrier.name))
       if (!n) throw new KeptRefusal({ key: 'keptNoCellCarrier', name: cell.carrier.name, cell: cell.addr, sheet: book0.sheets[k].name }, 'carriers')
       const area = areasOf(n.ref)?.[0]
-      const at = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(book1.sheets[j].name) ? formatAddress(area.rect.r1, area.rect.c1) : undefined
-      if (at === cell.addr) continue
-      moved.left.add(cell.addr)
-      if (at !== undefined) moved.to.set(at, cell.addr)
+      const j = area && 'rect' in area ? index.get(sheetKey(area.sheet)) : undefined
+      const to = j === undefined ? undefined : out.source[j]
+      const at = to === undefined || !('rect' in area!) ? undefined : formatAddress(area.rect.r1, area.rect.c1)
+      if (to === k && at === cell.addr) continue
+      movedOf(k).left.add(cell.addr)
+      if (to !== undefined) movedOf(to).to.set(at!, to === k ? { addr: cell.addr } : { addr: cell.addr, sheet: k })
     }
-    if (moved.left.size) out.cells.set(k, moved)
   }
   // the rectangles of cell formats on their sheet now; a carrier gone leaves the sheet's cells their formats by address
   for (const [k, list] of c.formats.entries()) {

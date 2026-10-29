@@ -202,7 +202,7 @@ describe('writeKept moves the cells that hold what only the file holds', () => {
     const w = await writeKept(data, s.getSnapshot())
     const cells = (xml: string) => Object.fromEntries([...xml.matchAll(/<c r="(\w+)"[^>]*?(?:\/>|>.*?<\/c>)/g)].map((m) => [m[1], m[0]]))
     const [was, now] = [await partsOf(data), await partsOf(w.data)]
-    return { was: cells(was.get('xl/worksheets/sheet1.xml')!), now: cells(now.get('xl/worksheets/sheet1.xml')!), strings: now.get('xl/sharedStrings.xml') === was.get('xl/sharedStrings.xml'), issues: w.issues }
+    return { was: cells(was.get('xl/worksheets/sheet1.xml')!), now: cells(now.get('xl/worksheets/sheet1.xml')!), other: cells(now.get('xl/worksheets/sheet2.xml')!), strings: now.get('xl/sharedStrings.xml') === was.get('xl/sharedStrings.xml'), issues: w.issues }
   }
   const at = (xml: string, addr: string) => xml.replace(/^<c r="\w+"/, `<c r="${addr}"`)
 
@@ -226,6 +226,24 @@ describe('writeKept moves the cells that hold what only the file holds', () => {
     // the row of North deleted: South moves up into A2, written from the workbook
     r = await after((s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 2 }))
     expect([r.now.A2, r.now.B2]).toEqual(['<c r="A2" t="inlineStr"><is><t>South</t></is></c>', at(r.was.B3, 'B2')])
+  })
+
+  it("a range moved to another sheet: the file's cells at their new addresses there; a formula's cell is written from the workbook", async () => {
+    let r = await after((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2:B3' }, to: { sheet: 'Other', cell: 'D10' } }))
+    expect([r.other.D10, r.other.E11, r.now.A2, r.now.B3]).toEqual([at(r.was.A2, 'D10'), at(r.was.B3, 'E11'), undefined, undefined])
+    expect([r.strings, r.issues]).toEqual([true, []])
+    // moved back over the cell's own sheet after another range moved it there: the file's cell again
+    r = await after((s) => {
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Other', cell: 'C1' } })
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'C1' }, to: { sheet: 'Data', cell: 'F2' } })
+    })
+    expect([r.now.F2, r.other.C1]).toEqual([at(r.was.A2, 'F2'), undefined])
+    // changed after the move, or moved over a cell of a formula: written from the workbook
+    r = await after((s) => {
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Other', cell: 'D10' } })
+      s.setCells([{ sheet: 'Other', cell: 'D10', input: { value: 'Northeast' } }])
+    })
+    expect(r.other.D10).toBe('<c r="D10" t="inlineStr"><is><t>Northeast</t></is></c>')
   })
 
   it('a cell changed after it moved is written from the workbook; one that stayed is the file\'s', async () => {
