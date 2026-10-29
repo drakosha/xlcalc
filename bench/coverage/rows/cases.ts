@@ -43,8 +43,12 @@ export interface RowCase {
   fillTo?: number
   /** The cells of the row below are read too (a paste may fill it). */
   below?: true
-  /** AutoFit after the texts are typed. */
+  /** AutoFit after the texts are typed (after `patched` too). */
   fitAfter?: boolean
+  /** A font size or a rotation set through the object model on the case's columns `cols` whole, after the texts; the row is fitted only with `fitAfter`. */
+  patched?: { cols: [number, number]; size?: number; rotation?: number | 'vertical' }
+  /** Rows of the sheet, by number, whose heights are read after too (`RowAnswer.more`). */
+  more?: number[]
 }
 
 /** What Excel made of a case's row. */
@@ -59,6 +63,8 @@ export interface RowAnswer {
   cells: Record<string, { formula: string; wrap: boolean }>
   /** A typed text Excel did not take, by its index: Excel's error. */
   refused?: Record<number, string>
+  /** The heights of the rows `RowCase.more` names after, by number. */
+  more?: Record<string, number>
 }
 
 export interface RowSet {
@@ -71,6 +77,12 @@ export const caseRow = (k: number) => 2 + 3 * k
 
 /** The first column of the k-th case of a book, zero-based: B, F, J… */
 export const caseColumn = (k: number) => 1 + 4 * k
+
+/** Whether a case's row is fitted after its texts: a case that types nothing or patches nothing, else with `fitAfter`. */
+export const fitsRow = (c: RowCase): boolean => (!c.typed && !c.patched) || !!c.fitAfter
+
+/** A case whose column has a style or that patches whole columns has a book of its own, as the style reaches every row. */
+export const ownBook = (c: RowCase): boolean => !!c.patched || Object.values(c.columns ?? {}).some((x) => x.look)
 
 /** The columns a case has a cell in, its cells' and those typed into (a fill's selection whole). */
 export function caseCols(c: RowCase): number[] {
