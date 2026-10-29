@@ -22,17 +22,31 @@ function Press($hwnd, $name) {
   }
   $b.GetCurrentPattern($Invoke).Invoke()
 }
-# the texts of the windows of Excel's process other than its own window, joined
+# the texts of the windows of Excel's process other than its own window, and of the windows inside its own, joined
 function Windows($proc, $hwnd) {
   $byPid = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $proc)
   $byText = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, [System.Windows.Automation.ControlType]::Text)
-  @($UIA::RootElement.FindAll([System.Windows.Automation.TreeScope]::Children, $byPid)) | Where-Object { $_.Current.NativeWindowHandle -ne $hwnd } | ForEach-Object {
+  $byWindow = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, [System.Windows.Automation.ControlType]::Window)
+  $own = @($UIA::FromHandle([IntPtr]$hwnd).FindAll([System.Windows.Automation.TreeScope]::Descendants, $byWindow))
+  @(@($UIA::RootElement.FindAll([System.Windows.Automation.TreeScope]::Children, $byPid)) | Where-Object { $_.Current.NativeWindowHandle -ne $hwnd }) + $own | ForEach-Object {
     $texts = @($_.FindAll([System.Windows.Automation.TreeScope]::Descendants, $byText)) | ForEach-Object { $_.Current.Name } | Where-Object { $_ }
     "$($_.Current.Name): $($texts -join ' ')"
   }
 }
-# whether Excel takes a call: a window of its own waiting for an answer makes it reject them
-function Takes { try { [void]$xl.Ready; $true } catch { $false } }
+# a window Excel brought, read and answered with Return (OK), and the cell's editing left with Escape, at most three
+# times while Excel is not ready, once at least with `$always`
+function Answer($always) {
+  for ($k = 0; $k -lt 3 -and (($always -and $k -eq 0) -or -not (Takes)); $k++) {
+    $script:dialog += (@(Windows $proc $hwnd) -join ' | ')
+    [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
+    Start-Sleep 1
+    [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+    Start-Sleep 1
+  }
+}
+# whether Excel is ready for a call: not while a window of its own waits for an answer or a cell is in editing (Ready
+# false, or the call rejected)
+function Takes { try { [bool]$xl.Ready } catch { $false } }
 $books = [IO.File]::ReadAllText($job, [Text.Encoding]::UTF8) | ConvertFrom-Json
 $dir = Split-Path $job
 $res = [ordered]@{ answers = New-Object System.Collections.ArrayList }
@@ -45,7 +59,7 @@ try {
   $hwnd = [int64]$xl.Hwnd
   $proc = (Get-Process EXCEL | Where-Object { [int64]$_.MainWindowHandle -eq $hwnd } | Select-Object -First 1).Id
   foreach ($b in $books) {
-    $dialog = ''
+    $script:dialog = ''
     $wb = $xl.Workbooks.Open((Join-Path $dir $b.file), 0, $false)
     $err = ''
     try {
@@ -63,23 +77,19 @@ try {
         [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
         Start-Sleep 1
       }
-      for ($k = 0; $k -lt 3 -and -not (Takes); $k++) {
-        $dialog += (@(Windows $proc $hwnd) -join ' | ')
-        Front $hwnd
-        [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
-        Start-Sleep 1
-        [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
-        Start-Sleep 1
-      }
+      Start-Sleep 2
+      Answer
     } catch { $err = 'press: ' + [string]$_.Exception.Message + ' at line ' + [string]$_.InvocationInfo.ScriptLineNumber }
-    # a book Excel does not save is the step's failure for it alone, its editing left for the next
-    try { $wb.SaveAs((Join-Path $dir $b.out), 51); $wb.Close($false) } catch {
+    # a window that came late is answered before the save is tried again; a book Excel does not save is the step's
+    # failure for it alone, its editing left for the next
+    try { $wb.SaveAs((Join-Path $dir $b.out), 51) } catch { Start-Sleep 1; Answer $true }
+    try { if (-not (Test-Path (Join-Path $dir $b.out))) { $wb.SaveAs((Join-Path $dir $b.out), 51) }; $wb.Close($false) } catch {
       $err += ' save: ' + [string]$_.Exception.Message
       [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
       Start-Sleep 1
       try { $wb.Close($false) } catch {}
     }
-    [void]$res.answers.Add([ordered]@{ error = $err; dialog = $dialog })
+    [void]$res.answers.Add([ordered]@{ error = $err; dialog = $script:dialog })
   }
 } catch { $res.error = [string]$_.Exception.Message + ' ' + [string]$_.InvocationInfo.PositionMessage } finally {
   $xl.Quit()
