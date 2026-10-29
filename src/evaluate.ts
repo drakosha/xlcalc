@@ -18,7 +18,7 @@ import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
 import { sheetKey } from './syntax.js'
-import { E, isErr, Rng, type V } from './values.js'
+import { E, isErr, Lambda, Rng, type V } from './values.js'
 
 export function same(a: V, b: V): boolean {
   // two numbers, the most frequent pair, compare without looking for errors (NaN is the same as NaN, as Object.is has it)
@@ -27,8 +27,11 @@ export function same(a: V, b: V): boolean {
   return Object.is(a, b) || a === b
 }
 
-/** A value as a cell shows it: blank is 0 (a formula over an empty cell, an empty element of an array), not finite is #NUM!. */
-export const shown = (v: V): V => (v === null || v === undefined ? 0 : typeof v === 'number' && !Number.isFinite(v) ? E.NUM : v)
+/**
+ * A value as a cell shows it: blank is 0 (a formula over an empty cell, an empty element of an array), not finite is
+ * #NUM!, a function (a LAMBDA without its call) #CALC!.
+ */
+export const shown = (v: V): V => (v === null || v === undefined ? 0 : typeof v === 'number' ? (Number.isFinite(v) ? v : E.NUM) : v instanceof Lambda ? E.CALC : v)
 
 /** Drops the cached large ranges and indexes that meet an area of a sheet. */
 export function invalidate(ctx: RuntimeContext, x: Area) {

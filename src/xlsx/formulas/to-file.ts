@@ -1,6 +1,7 @@
 /**
  * A formula of the book in a file's spelling, printed from its syntax tree: functions newer than Excel 2007 with
- * their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.FILTER`), LET as `_xlfn.LET` with its names as `_xlpm.x`, a spill
+ * their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.FILTER`), LET and LAMBDA as `_xlfn.LET` and `_xlfn.LAMBDA` with their names
+ * as `_xlpm.x`, a function as a value as `_xleta.SUM`, a spill
  * reference `E2#` as `_xlfn.ANCHORARRAY(E2)`, `@x` as `_xlfn.SINGLE(x)`, sheets always quoted, numbers with an upper-case exponent,
  * another workbook's sheet by its link's number in quotes only where its name needs them, as Excel writes it
  * (`[1]Sheet1!A1`, `'[1]My Sheet'!A1`, `[1]Sheet1!Local`, `[1]Sheet1!#REF!`), a reference to a deleted sheet as `#REF!`
@@ -51,6 +52,10 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
       return `_xlfn.${usual({ ...n, binds: n.binds.map((b) => ({ ...b, name: `_xlpm.${b.name}` })) })}`
     case 'local':
       return `_xlpm.${n.name}`
+    case 'lambda':
+      return `_xlfn.${usual({ ...n, params: n.params.map((x) => ({ ...x, name: `_xlpm.${x.name}` })) })}`
+    case 'eta':
+      return `_xleta.${n.name}`
     case 'xref':
       return typeof n.book === 'number' ? `${fileLinkSheet(n.book, n.sheet)}!${n.ref.text}` : undefined
     case 'xname':

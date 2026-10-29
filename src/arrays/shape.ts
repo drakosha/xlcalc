@@ -124,6 +124,17 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
         return n.body ? go(n.body) : bound[n.binds[n.binds.length - 1].slot]
       case 'local':
         return bound[n.slot]
+      // a function is one value; its parameters, and what its call answers, may be arrays
+      case 'lambda':
+        for (const p of n.params) bound[p.slot] = { s: 1, ref: false }
+        go(n.body)
+        return { s: 0, ref: false }
+      case 'call':
+        go(n.fn)
+        n.args.forEach(go)
+        return { s: 1, ref: false }
+      case 'eta':
+        return { s: 0, ref: false }
     }
   }
   const call = (name: string, args: Info[], nodes: Ast[]): Info => {

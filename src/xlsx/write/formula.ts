@@ -6,8 +6,9 @@
 import type { ExternalBook } from '../../contract.js'
 import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parseTokens } from '../../syntax/parse.js'
-import { sheetKey, walk } from '../../syntax/print.js'
-import { bindTables } from '../../syntax/check.js'
+import { mapAst, sheetKey, walk } from '../../syntax/print.js'
+import { bindable, bindCalls, bindTables } from '../../syntax/check.js'
+import { caseKey } from '../../collate.js'
 import { bindLinks } from '../../syntax/links.js'
 import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
@@ -21,6 +22,8 @@ export interface FileNames {
   tables: { name: string; columns: string[] }[]
   /** The book's links to other workbooks, which `[1]Sheet1!A1` names. */
   externalBooks?: ExternalBook[]
+  /** The book's defined names by `caseKey`, as the book spells them: a call of one is the name's (`MyFn(1,2)`). */
+  defined?: ReadonlyMap<string, string>
 }
 
 /**
@@ -40,7 +43,7 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   }
   const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
-  ast = bound.ast
+  ast = bindable(bound.ast) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name))), names) : bound.ast
   let ok = true
   // a defined name's ref may name a sheet the book does not have; its links are bound without the walk
   let linked = !!opts.anySheet
@@ -54,6 +57,12 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   if (!ok || !linked) return ok ? ast : null
   const links = bindLinks(ast, names.externalBooks, [...names.sheets])
   return links.ok ? links.ast : null
+}
+
+/** A call of a defined name with the name as the book spells it, as a file holds it (`MyFn(1,2)`, not `MYFN(1,2)`). */
+function spellCalls(ast: Ast, names: FileNames): Ast {
+  if (!names.defined?.size) return ast
+  return mapAst(ast, (n) => (n.k === 'call' && n.fn.k === 'name' ? { ...n, fn: { ...n.fn, name: names.defined!.get(caseKey(n.fn.name)) ?? n.fn.name } } : undefined))
 }
 
 /** The shapes of a book's formulas written, by the table they are in and their key: a template, or null for a shape written formula by formula. */

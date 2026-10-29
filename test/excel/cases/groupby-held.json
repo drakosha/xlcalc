@@ -1,0 +1,452 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 5.564,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "GROUPBY#1",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:A11,G!E1:E11,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#2",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!B2:B11,G!A2:A11,_xleta.COUNTA),1)"
+  },
+  {
+   "id": "GROUPBY#3",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!B1:B11,G!A1:A11,_xleta.COUNTA),1)"
+  },
+  {
+   "id": "GROUPBY#4",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,1),1)"
+  },
+  {
+   "id": "GROUPBY#5",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,2),1)"
+  },
+  {
+   "id": "GROUPBY#6",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,3,,,,),1)"
+  },
+  {
+   "id": "GROUPBY#7",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A1:B11,G!D1:D11,_xleta.SUM,3,2),1)"
+  },
+  {
+   "id": "GROUPBY#8",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY({\"x\",\"A\";\"x\",\"a\";\"y\",\"a\";\"y\",\"B\"},{1;2;3;4},_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#9",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY({\"x\",\"A\";\"x\",\"a\";\"y\",\"a\";\"y\",\"B\"},{1;2;3;4},_xleta.SUM,0,1,,,1),1)"
+  },
+  {
+   "id": "GROUPBY#10",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,3),1)"
+  },
+  {
+   "id": "GROUPBY#11",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,0,-1),1)"
+  },
+  {
+   "id": "GROUPBY#12",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,0,1,2),1)"
+  },
+  {
+   "id": "GROUPBY#13",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,2,-2),1)"
+  },
+  {
+   "id": "GROUPBY#14",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:B11,G!D2:D11,_xleta.SUM,0,2,3),1)"
+  },
+  {
+   "id": "GROUPBY#15",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.VSTACK(_xleta.SUM,_xleta.MAX),3),1)"
+  },
+  {
+   "id": "GROUPBY#16",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,TRANSPOSE(G!F2:F11)),1)"
+  },
+  {
+   "id": "GROUPBY#17",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,G!F1:F11),1)"
+  },
+  {
+   "id": "GROUPBY#18",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.PERCENTOF,,,,G!F2:F11),1)"
+  },
+  {
+   "id": "GROUPBY#19",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,_xlpm.y,SUM(_xlpm.x)/SUM(_xlpm.y))),1)"
+  },
+  {
+   "id": "GROUPBY#20",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,ROWS(_xlpm.x))),1)"
+  },
+  {
+   "id": "GROUPBY#21",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,INDEX(_xlpm.x,1))),1)"
+  },
+  {
+   "id": "GROUPBY#22",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY({1;2;1;2},{\"a\";\"b\";\"c\";\"d\"},_xleta.ARRAYTOTEXT),1)"
+  },
+  {
+   "id": "GROUPBY#23",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A13,G!D2:D13,_xleta.SUM),1)"
+  },
+  {
+   "id": "GROUPBY#24",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,G!F2:F11*1),1)"
+  },
+  {
+   "id": "GROUPBY#25",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xlfn.HSTACK(_xleta.SUM,_xlfn.LAMBDA(_xlpm.x,MIN(_xlpm.x)))),1)"
+  },
+  {
+   "id": "GROUPBY#26",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,{1}),1)"
+  },
+  {
+   "id": "GROUPBY#27",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,3),1)"
+  },
+  {
+   "id": "GROUPBY#28",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:E11,_xleta.SUM,,,-3),1)"
+  },
+  {
+   "id": "GROUPBY#29",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,,,,,2),1)"
+  },
+  {
+   "id": "GROUPBY#30",
+   "group": "GROUPBY",
+   "fn": "GROUPBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.GROUPBY(G!A2:A11,G!D2:D11,_xleta.SUM,1.9),1)"
+  },
+  {
+   "id": "PIVOTBY#1",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!B2:C11,G!D2:D11,_xleta.SUM,0,0,,2),1)"
+  },
+  {
+   "id": "PIVOTBY#2",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!B2:C11,G!D2:D11,_xleta.SUM,0,0,,-2),1)"
+  },
+  {
+   "id": "PIVOTBY#3",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:B11,G!C2:C11,G!D2:D11,_xleta.SUM,0,2),1)"
+  },
+  {
+   "id": "PIVOTBY#4",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,2),1)"
+  },
+  {
+   "id": "PIVOTBY#5",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A1:A11,G!B1:C11,G!D1:D11,_xleta.SUM,3,0,,0),1)"
+  },
+  {
+   "id": "PIVOTBY#6",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xlfn.VSTACK(_xleta.SUM,_xleta.COUNT)),1)"
+  },
+  {
+   "id": "PIVOTBY#7",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xlfn.HSTACK(_xleta.SUM,_xleta.COUNT),3),1)"
+  },
+  {
+   "id": "PIVOTBY#8",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:B11,G!B2:B11,G!D2:D11,_xleta.PERCENTOF,0,2,,,,,3),1)"
+  },
+  {
+   "id": "PIVOTBY#9",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:B11,G!C2:C11,G!D2:D11,_xleta.PERCENTOF,0,2,,,,,4),1)"
+  },
+  {
+   "id": "PIVOTBY#10",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,,,2),1)"
+  },
+  {
+   "id": "PIVOTBY#11",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,,,-3),1)"
+  },
+  {
+   "id": "PIVOTBY#12",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xlfn.LAMBDA(_xlpm.x,ROWS(_xlpm.x))),1)"
+  },
+  {
+   "id": "PIVOTBY#13",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,0,-1,,-1),1)"
+  },
+  {
+   "id": "PIVOTBY#14",
+   "group": "PIVOTBY",
+   "fn": "PIVOTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.PIVOTBY(G!A2:A11,G!C2:C11,G!D2:D11,_xleta.SUM,,,,,,,5),1)"
+  }
+ ],
+ "values": {
+  "GROUPBY#1": {
+   "t": "s",
+   "v": "{\"East\",20;\"North\",13;\"West\",15;,7;\"Total\",55}"
+  },
+  "GROUPBY#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#4": {
+   "t": "s",
+   "v": "{\"East\",19;\"North\",3;\"West\",39;,4;\"Total\",65}"
+  },
+  "GROUPBY#5": {
+   "t": "s",
+   "v": "{\"Row Field 1\",\"Row Field 2\",\"Value 1\";\"East\",\"A\",18;\"East\",\"B\",5;\"East\",\"C\",6;\"North\",\"A\",3;\"North\",\"C\",0;\"west\",\"A\",7;\"west\",\"B\",20;\"west\",\"C\",12;,\"B\",4;\"Total\",\"\",75}"
+  },
+  "GROUPBY#6": {
+   "t": "s",
+   "v": "{\"East\",\"A\",10;\"East\",\"A\",8;\"East\",\"B\",5;\"East\",\"C\",6;\"North\",\"A\",3;\"North\",\"C\",0;\"west\",\"A\",7;\"west\",\"B\",20;\"west\",\"C\",12;,\"B\",4;\"Total\",\"\",65}"
+  },
+  "GROUPBY#7": {
+   "t": "s",
+   "v": "{\"Region\",\"Product\",\"Sales\";\"East\",\"A\",18;\"East\",\"B\",5;\"East\",\"C\",6;\"East\",\"\",29;\"North\",\"A\",3;\"North\",\"C\",0;\"North\",\"\",3;\"west\",\"A\",7;\"west\",\"B\",20;\"west\",\"C\",12;\"west\",\"\",39;,\"B\",4;,\"\",4;\"Grand Total\",\"\",75}"
+  },
+  "GROUPBY#8": {
+   "t": "s",
+   "v": "{\"x\",\"A\",3;\"y\",\"a\",3;\"y\",\"B\",4;\"Total\",\"\",10}"
+  },
+  "GROUPBY#9": {
+   "t": "s",
+   "v": "{\"x\",\"A\",3;\"y\",\"a\",3;\"y\",\"B\",4;\"Total\",\"\",10}"
+  },
+  "GROUPBY#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#11": {
+   "t": "s",
+   "v": "{\"Total\",75;\"East\",29;\"North\",3;\"West\",39;,4}"
+  },
+  "GROUPBY#12": {
+   "t": "s",
+   "v": "{\"North\",3;,4;\"East\",29;\"West\",39;\"Total\",75}"
+  },
+  "GROUPBY#13": {
+   "t": "s",
+   "v": "{\"East\",\"C\",6;\"East\",\"B\",5;\"East\",\"A\",18;\"East\",\"\",29;\"North\",\"C\",0;\"North\",\"A\",3;\"North\",\"\",3;\"West\",\"C\",12;\"West\",\"B\",20;\"West\",\"A\",7;\"West\",\"\",39;,\"B\",4;,\"\",4;\"Grand Total\",\"\",75}"
+  },
+  "GROUPBY#14": {
+   "t": "s",
+   "v": "{\"North\",\"C\",0;\"North\",\"A\",3;\"North\",\"\",3;,\"B\",4;,\"\",4;\"East\",\"B\",5;\"East\",\"C\",6;\"East\",\"A\",18;\"East\",\"\",29;\"west\",\"A\",7;\"west\",\"C\",12;\"west\",\"B\",20;\"west\",\"\",39;\"Grand Total\",\"\",75}"
+  },
+  "GROUPBY#15": {
+   "t": "s",
+   "v": "{\"East\",\"\",10;\"East\",\"SUM\",19;\"East\",\"MAX\",8;\"North\",\"SUM\",3;\"North\",\"MAX\",3;\"West\",\"SUM\",39;\"West\",\"MAX\",20;,\"SUM\",4;,\"MAX\",4;\"Total\",\"SUM\",65;\"Total\",\"MAX\",20}"
+  },
+  "GROUPBY#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#18": {
+   "t": "s",
+   "v": "{\"East\",0.446808510638298;\"North\",0.0638297872340425;\"west\",0.404255319148936;,0.0851063829787234;\"Total\",1}"
+  },
+  "GROUPBY#19": {
+   "t": "s",
+   "v": "{\"East\",0.386666666666667;\"North\",0.04;\"West\",0.52;,0.0533333333333333;\"Total\",1}"
+  },
+  "GROUPBY#20": {
+   "t": "s",
+   "v": "{\"East\",4;\"North\",2;\"West\",3;,1;\"Total\",10}"
+  },
+  "GROUPBY#21": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "GROUPBY#22": {
+   "t": "s",
+   "v": "{1,\"a, c\";2,\"b, d\";\"Total\",\"a, b, c, d\"}"
+  },
+  "GROUPBY#23": {
+   "t": "s",
+   "v": "{\"East\",29;\"North\",3;\"West\",39;,4;\"Total\",75}"
+  },
+  "GROUPBY#24": {
+   "t": "s",
+   "v": "{\"East\",21;\"North\",3;\"west\",19;,4;\"Total\",47}"
+  },
+  "GROUPBY#25": {
+   "t": "s",
+   "v": "{\"\",\"SUM\",\"CUSTOM\";\"East\",29,5;\"North\",3,3;\"West\",39,7;,4,4;\"Total\",75,3}"
+  },
+  "GROUPBY#26": {
+   "t": "s",
+   "v": "{\"East\",29;\"North\",3;\"West\",39;,4;\"Total\",75}"
+  },
+  "GROUPBY#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#28": {
+   "t": "s",
+   "v": "{\"East\",29,20;\"West\",39,15;\"North\",3,13;,4,7;\"Total\",75,55}"
+  },
+  "GROUPBY#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROUPBY#30": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PIVOTBY#1": {
+   "t": "s",
+   "v": "{\"\",\"A\",\"A\",\"A\",\"B\",\"B\",\"B\",\"C\",\"C\",\"C\",\"Grand Total\";\"\",2024,2025,\"\",2024,2025,\"\",2024,2025,\"\",\"\";\"East\",10,8,18,\"\",5,5,\"\",6,6,29;\"North\",3,\"\",3,\"\",\"\",\"\",\"\",0,0,3;\"West\",\"\",7,7,20,\"\",20,12,\"\",12,39;,\"\",\"\",\"\",4,\"\",4,\"\",\"\",\"\",4}"
+  },
+  "PIVOTBY#2": {
+   "t": "s",
+   "v": "{\"\",\"Grand Total\",\"A\",\"A\",\"A\",\"B\",\"B\",\"B\",\"C\",\"C\",\"C\";\"\",\"\",\"\",2024,2025,\"\",2024,2025,\"\",2024,2025;\"East\",29,18,10,8,5,\"\",5,6,\"\",6;\"North\",3,3,3,\"\",\"\",\"\",\"\",0,\"\",0;\"West\",39,7,\"\",7,20,20,\"\",12,12,\"\";,4,\"\",\"\",\"\",4,4,\"\",\"\",\"\",\"\"}"
+  },
+  "PIVOTBY#3": {
+   "t": "s",
+   "v": "{\"\",\"\",2024,2025,\"Total\";\"East\",\"A\",10,8,18;\"East\",\"B\",\"\",5,5;\"East\",\"C\",\"\",6,6;\"East\",\"\",10,19,29;\"North\",\"A\",3,\"\",3;\"North\",\"C\",\"\",0,0;\"North\",\"\",3,0,3;\"west\",\"A\",\"\",7,7;\"west\",\"B\",20,\"\",20;\"west\",\"C\",12,\"\",12;\"west\",\"\",32,7,39;,\"B\",4,\"\",4;,\"\",4,\"\",4;\"Grand Total\",\"\",49,26,75}"
+  },
+  "PIVOTBY#4": {
+   "t": "s",
+   "v": "{\"\",\"Column Field 1\",\"\",\"\";\"\",2024,2025,\"Total\";\"Row Field 1\",\"Value 1\",\"Value 1\",\"Value 1\";\"East\",10,19,29;\"North\",3,0,3;\"West\",32,7,39;,4,\"\",4;\"Total\",49,26,75}"
+  },
+  "PIVOTBY#5": {
+   "t": "s",
+   "v": "{\"\",\"Product, Year\",\"\",\"\",\"\",\"\",\"\";\"\",\"A\",\"A\",\"B\",\"B\",\"C\",\"C\";\"\",2024,2025,2024,2025,2024,2025;\"Region\",\"Sales\",\"Sales\",\"Sales\",\"Sales\",\"Sales\",\"Sales\";\"East\",10,8,\"\",5,\"\",6;\"North\",3,\"\",\"\",\"\",\"\",0;\"West\",\"\",7,20,\"\",12,\"\";,\"\",\"\",4,\"\",\"\",\"\"}"
+  },
+  "PIVOTBY#6": {
+   "t": "s",
+   "v": "{\"\",\"\",2024,2025,\"Total\";\"East\",\"SUM\",10,19,29;\"East\",\"COUNT\",1,3,4;\"North\",\"SUM\",3,0,3;\"North\",\"COUNT\",1,0,1;\"West\",\"SUM\",32,7,39;\"West\",\"COUNT\",2,1,3;,\"SUM\",4,\"\",4;,\"COUNT\",1,\"\",1;\"Total\",\"SUM\",49,26,75;\"Total\",\"COUNT\",5,4,9}"
+  },
+  "PIVOTBY#7": {
+   "t": "s",
+   "v": "{\"\",\"2024\",\"\",\"\",\"\",\"\",\"\";\"\",2024,2024,2025,2025,\"Total\",\"Total\";\"\",\"SUM\",\"COUNT\",\"SUM\",\"COUNT\",\"SUM\",\"COUNT\";\"East\",10,10,10,10,10,10;\"East\",\"\",\"\",19,3,19,3;\"North\",3,1,0,0,3,1;\"West\",32,2,7,1,39,3;,4,1,\"\",\"\",4,1;\"Total\",39,4,26,4,65,8}"
+  },
+  "PIVOTBY#8": {
+   "t": "s",
+   "v": "{\"\",\"\",\"A\",\"B\",\"C\",\"Total\";\"East\",\"A\",1,\"\",\"\",1;\"East\",\"B\",\"\",1,\"\",1;\"East\",\"C\",\"\",\"\",1,1;\"East\",\"\",0.620689655172414,0.172413793103448,0.206896551724138,1;\"North\",\"A\",1,\"\",\"\",1;\"North\",\"C\",\"\",\"\",#DIV/0!,#DIV/0!;\"North\",\"\",1,\"\",0,1;\"west\",\"A\",1,\"\",\"\",1;\"west\",\"B\",\"\",1,\"\",1;\"west\",\"C\",\"\",\"\",1,1;\"west\",\"\",0.179487179487179,0.512820512820513,0.307692307692308,1;,\"B\",\"\",1,\"\",1;,\"\",\"\",1,\"\",1;\"Grand Total\",\"\",0.373333333333333,0.386666666666667,0.24,1}"
+  },
+  "PIVOTBY#9": {
+   "t": "s",
+   "v": "{\"\",\"\",2024,2025,\"Total\";\"East\",\"A\",1,0.421052631578947,0.620689655172414;\"East\",\"B\",\"\",0.263157894736842,0.172413793103448;\"East\",\"C\",\"\",0.315789473684211,0.206896551724138;\"East\",\"\",0.204081632653061,0.730769230769231,0.386666666666667;\"North\",\"A\",1,\"\",1;\"North\",\"C\",\"\",#DIV/0!,0;\"North\",\"\",0.0612244897959184,0,0.04;\"west\",\"A\",\"\",1,0.179487179487179;\"west\",\"B\",0.625,\"\",0.512820512820513;\"west\",\"C\",0.375,\"\",0.307692307692308;\"west\",\"\",0.653061224489796,0.269230769230769,0.52;,\"B\",1,\"\",1;,\"\",0.0816326530612245,\"\",0.0533333333333333;\"Grand Total\",\"\",1,1,1}"
+  },
+  "PIVOTBY#10": {
+   "t": "s",
+   "v": "{\"\",2025,2024,\"Total\";\"East\",19,10,29;\"North\",0,3,3;\"West\",7,32,39;,\"\",4,4;\"Total\",26,49,75}"
+  },
+  "PIVOTBY#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PIVOTBY#12": {
+   "t": "s",
+   "v": "{\"\",2024,2025,\"Total\";\"East\",1,3,4;\"North\",1,1,2;\"West\",2,1,3;,1,\"\",1;\"Total\",5,5,10}"
+  },
+  "PIVOTBY#13": {
+   "t": "s",
+   "v": "{\"\",\"Total\",2024,2025;\"Total\",75,49,26;\"East\",29,10,19;\"North\",3,3,0;\"West\",39,32,7;,4,4,\"\"}"
+  },
+  "PIVOTBY#14": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

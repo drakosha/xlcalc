@@ -5,29 +5,14 @@
   "date": "2026-10-29"
  },
  "books": {
-  "accrint-ironcalc-held-1": {
-   "sent": "afe4130db2e2f8ce2a2de8a5b19d0c8b3546b0c4a395f7dd1f4f64185661aaa8"
+  "probes-1": {
+   "sent": "241a5822037c143d61a640ea5b62709f8fb62bcda842d8ab1ecdfef98f84fb96"
   },
-  "areas-1": {
-   "sent": "087e7a63cfc90d1a59dd5f7e25fec5c4221c6ff56a306d1bfbba02d9c09e63b4"
+  "probes-2": {
+   "sent": "b73b84e3a922add6f0bdec0f864154382f75aadbdd0be527862439d7c933cf3b"
   },
-  "areas-2": {
-   "sent": "0594f4caa7834cc36c2ee029d62b7c1bbfa18cdeaf758c375177f2f4bf918d9a"
-  },
-  "areas-3": {
-   "sent": "19ae84eec0ea31088d062ff7fcf1aa0f187d228ecc655b0c5f80810387c40681"
-  },
-  "areas-each-1": {
-   "sent": "da345bcaf6466a7ab39cfa154a1b2b4bf1afad3c6634e31bdf34c269f3d1a197"
-  },
-  "arity-1": {
-   "sent": "308a26e8f2c270766be9b1e515d57a747402a88950d950311311aae7a1ba05be"
-  },
-  "array-size-held-1": {
-   "sent": "2ebb87f0fac8b4aa439bcc99f1a2d6eee82c110b91403a0f2f7502f48f2c3218"
-  },
-  "array-size-held-2-1": {
-   "sent": "c36f066e87e8352f4e1917d7125e520a41f87bd5e5b215c63aa217b69a468da4"
+  "probes-3": {
+   "sent": "b7c24a5812ae5d72a21b988673260e9c65e9dcdf4f485523b8ff96db7d04e657"
   },
   "arrays-1": {
    "sent": "1f1e9b08211eb8761f57616c3ffa258bbabeee6408b6f13c930857a66bf3e0ad"
@@ -50,38 +35,11 @@
   "arrays-7": {
    "sent": "cfa3cbce39cfc0e1b5a9c1bf19d2995c5f5c30291a8ae8a8367f4fb5090aac16"
   },
-  "binom-sumx-held-1": {
-   "sent": "c6ba20d334ae6c19a3fb78819604aafcfc1fd45f9356ebc89f4169066d28cc9e"
-  },
-  "char-code-1": {
-   "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
-  },
   "collation-1": {
    "sent": "391ad6327ac9c4f27636c66c33e36e0ad6f523e8c16ba91dda1ae6b6c9277887"
   },
-  "complex-text-1": {
-   "sent": "47cde8b9dddeb1de2897779d8b5b303c094d12e14bf7a0f8c842c56c9cc5ed4c"
-  },
   "core-1": {
    "sent": "3fe7a082ea0ab2ee78c57e1b760f5e3da31e5a0a414ef7718b1d796a1ee859d0"
-  },
-  "countif-ironcalc-held-1": {
-   "sent": "15d9d7fcbe348ab76b6007c5d62a3c8442d1553a6c2837640d3c66192e29efe9"
-  },
-  "coupdays-vdb-1": {
-   "sent": "3b55179bbfa9b714d84557ac243645fec85508bb1d54d87e9caf06861baaad62"
-  },
-  "coupdays-vdb-2": {
-   "sent": "1d316d9fc0e7fc855fdd3859586c84ee8d5d6d0f436a4a4608eb1c62e2332339"
-  },
-  "coupdays-vdb-held-1": {
-   "sent": "6732264f8872f538ea7bfaaa6543f52d85b9d918827c3134bb942a0c3c7a6f49"
-  },
-  "coupdays-vdb-held-2-1": {
-   "sent": "3c9b430d9acee89cd1537dbc0e853857604d794d058939cf1cd318bb405b0d01"
-  },
-  "coupdays-vdb-held-3-1": {
-   "sent": "ab88f14e7838c936c4e289077f4bfe426744fffb808c606e79d2d6ab00769c30"
   },
   "criteria-1": {
    "sent": "b237ba2620137fff77009efdfd649d622ca55580d7f2edbe3c5c8ba618050bbb"
@@ -89,38 +47,8 @@
   "criteria-text-1": {
    "sent": "c605211a5d58610217c5d36c4cd9bbb0ded0cac94fbb099e3ea219bfc148cc20"
   },
-  "currency-held-1": {
-   "sent": "095e0abe78e4752ea411917e61007f65524bf2c1fb2309209a982476eb3d81f2"
-  },
-  "database-ironcalc-held-1": {
-   "sent": "2dd3a771ea2222f29cca0c9716fda7f762c00945bc455af628a78974b967cc39"
-  },
   "date-day-1": {
    "sent": "2672304ce2931c686690f3feef00c01f1785f33cedf722682415c732b631f34f"
-  },
-  "date-ironcalc-held-1": {
-   "sent": "cd94ccefd03ec26a14b2d9e87ac8dab75bfd5f5db09af5c39bad996ee5c1f772"
-  },
-  "date-noyear-1": {
-   "sent": "e139f1ece594dc47785db568a3e73cba47c7052f08da56e69946bfa52297f426"
-  },
-  "east-asian-held-1": {
-   "sent": "e4d6d688b304b045aa5a75457e882e0e081b5f85714504606fd2bf4429ad16da"
-  },
-  "euro-ironcalc-held-1": {
-   "sent": "9d5ad33b0689c39ccf5a06cf717659669aaa696493925f437a8c3a374dbb4761"
-  },
-  "euro-ironcalc-held-2-1": {
-   "sent": "5e52311eb5092aad09b6a86494f8bbda501287bfbc06c32616cd83bf7d154ae8"
-  },
-  "euro-ironcalc-held-3-1": {
-   "sent": "516d3d1660f3c52533d04b978c1ebbaa733ef96eb7747f7149a3a1ecf52caae7"
-  },
-  "finance-ironcalc-held-1": {
-   "sent": "6081726132901e3b480b251e1b8006868449d2ead14246db4a7e46adc9bc67aa"
-  },
-  "finance-ironcalc-held-2-1": {
-   "sent": "dca47f32baf3c7c872e66407a16e1610c5bd86b2e19ae6913bd69edf35ff9180"
   },
   "findate-1": {
    "sent": "91570049c66354424982af94cfeb878401307cb4d821c6732e30da064e5ba4ce"
@@ -137,20 +65,11 @@
   "findate-5": {
    "sent": "33dad464dab1367355224fd283d81773449558dec7c4c33b851cba4927ed006f"
   },
-  "findate-edges-1": {
-   "sent": "c8b21538d04b8e476186c063c6bae9e43de8e8f6cd93acc15bb241988631e60c"
-  },
-  "fit-offset-held-1": {
-   "sent": "9ded67d6b2c38bb3251e9622304e29200cfdc69c4e01694e546fceda5ee7ed7d"
-  },
   "format-scale-1": {
    "sent": "db06ed616114b138740da76703f2402f5df33de7550f83dd13f20707dc4a5567"
   },
   "fuzz-1": {
    "sent": "02bcb3658ba711a185d5b61f38c35dc62fa2044f4650adeb51a1fff1eb3a47e0"
-  },
-  "fuzz-10": {
-   "sent": "1568be4ba415d77122487b1021f6b6cafe6f045b855157328c7c5921e458e40e"
   },
   "fuzz-2": {
    "sent": "2afb4c0a6f44263f8530167eb985198b7bb213067ef080bec863551f11d4c5fc"
@@ -176,26 +95,11 @@
   "fuzz-9": {
    "sent": "34a3ee79ed658952df5669a4bdc4b7e12bffb78832156ecc51dfebda5c2a0bcc"
   },
+  "fuzz-10": {
+   "sent": "1568be4ba415d77122487b1021f6b6cafe6f045b855157328c7c5921e458e40e"
+  },
   "fuzz-rules-1": {
    "sent": "6c50f55e578ec2abaa0fe0177c94a3d8ab289fe6e893aefaac6d5e3702829e20"
-  },
-  "indirect-1": {
-   "sent": "db9d6272a7ad0e8bb03b568edbe6fd4b97f947e2ee6fd165484af970c2a2b7e2"
-  },
-  "indirect-held-1": {
-   "sent": "c30a7c90af7d4a9a8563a468795bc59097a18cd61e597fb7b6225b9de5c85e7e"
-  },
-  "indirect-held-3-1": {
-   "sent": "3d67eca60b992ef08938a17bbc979a0100b0e2d364fa1e88998bf514f9cb5459"
-  },
-  "intersect-1": {
-   "sent": "3962c4fe776db32cac644549742845fe3b7a417cded97dc499328f16fb7b1318"
-  },
-  "known-held-1": {
-   "sent": "93d9c03d7a1394b452a475a7166b0686975126f56784b59a76eb559bf8d168ee"
-  },
-  "lead-spaces-1": {
-   "sent": "ccbc0485b22d606e9443d547130ca17656f377e83877b50f1b43c2b8f40665d3"
   },
   "let-1": {
    "sent": "be924d6bf7c330424cfb0c6a83826543f5489db601c7c44361fc1934d949b18e"
@@ -205,21 +109,6 @@
   },
   "logical-text-1": {
    "sent": "f6505d52f8f6f87656956a78a1154d884c253722b652813179123bf2feecc2b4"
-  },
-  "lookup-held-1": {
-   "sent": "4610c82985194a5a31e5af3ca02fc4ed5f376c2ef0aba8d4161b2a454412a3ac"
-  },
-  "lookup-own-held-1": {
-   "sent": "9e3619e73857e5500996e895bdca9e6a5dcc58de9a3d3704eebc2e55ab119d5c"
-  },
-  "lookup-rules-1": {
-   "sent": "a7b8c7f8f94a48dd29e71a09bfb136387f58ae46327bba44981d84b60d0e9128"
-  },
-  "low-values-held-1": {
-   "sent": "7c6739a7227032bd6efab99bff11d28cb5703e116e1c6f0cb25498136629ad59"
-  },
-  "math-ironcalc-held-1": {
-   "sent": "341cad6ff99292dac6564bb2c335bb799fa4928d3e75f0b11f664ef1704722fd"
   },
   "matheng-1": {
    "sent": "7d2197b54a2319a8261dd093e5b7ad20a20d9355695f1cfbb1e1c6744229a475"
@@ -245,17 +134,8 @@
   "matheng-8": {
    "sent": "8e44953b4a8c15f23c8c19d9004d59f98a528e601e4634a4a1f9cb5049c57dea"
   },
-  "name-case-held-1": {
-   "sent": "94c6fa34bf279677c1778218afe843dcbc07a8f2699652376e11d04c7459418a"
-  },
   "near-integer-1": {
    "sent": "f149abfbaa96780603bf4797b025773c4ac0115ec726f8d837f19eb4e2986c4b"
-  },
-  "near-integer-10": {
-   "sent": "fbf59cbfd064ad66a84f1d76edd0f01533b20dd442bb95838a560b49965dccaf"
-  },
-  "near-integer-11": {
-   "sent": "29f463ad62aebe3d3f0c0b4a39c80b7ea7f39f4f2621713ec91b61b451a23f40"
   },
   "near-integer-2": {
    "sent": "8186181459dc0e9a45973326b49d02f3a6251eab4b849fc2f1b7b9467ca00294"
@@ -281,17 +161,14 @@
   "near-integer-9": {
    "sent": "989a21363818e132a085b46c2aac84e6711d8166c6a60a945808cc01d82f94ad"
   },
-  "near-zero-held-1": {
-   "sent": "8975e09ed013fe585e0c55b1edf303f31c73741dd6932d0e5283dd780bfc39f9"
+  "near-integer-10": {
+   "sent": "fbf59cbfd064ad66a84f1d76edd0f01533b20dd442bb95838a560b49965dccaf"
+  },
+  "near-integer-11": {
+   "sent": "29f463ad62aebe3d3f0c0b4a39c80b7ea7f39f4f2621713ec91b61b451a23f40"
   },
   "omit-1": {
    "sent": "afacf808dcb06ad9cdaeb7a951ce8389e2035f90c9fd6afa21092469ad4c56f9"
-  },
-  "omit-10": {
-   "sent": "3acba62d50d845a10e5ce43ac418ba7c26bbabf50038f449d76e17bb6491b179"
-  },
-  "omit-11": {
-   "sent": "5c052310efb6c94723ffbb3f46a7995885000cd6f42ec96c30a2b3542cefa0cf"
   },
   "omit-2": {
    "sent": "9fbca82cbc9dae138ce8b541c3090f2a3805fd820dd964ad7223dc85c8d1797e"
@@ -317,56 +194,14 @@
   "omit-9": {
    "sent": "34fa5aa7843fd0e108ef6abd2c356b6f6af17294ec8db890219293f8803d14f1"
   },
+  "omit-10": {
+   "sent": "3acba62d50d845a10e5ce43ac418ba7c26bbabf50038f449d76e17bb6491b179"
+  },
+  "omit-11": {
+   "sent": "5c052310efb6c94723ffbb3f46a7995885000cd6f42ec96c30a2b3542cefa0cf"
+  },
   "omit-held-1": {
    "sent": "12f1deeaeb370a76acd6def817744aefd946dca7074e414fb6de426f6b426781"
-  },
-  "pct-text-1": {
-   "sent": "8b8cd78dd01af25b22651b88fadf4f02cc5963ba52101f7abab006c6e38b4a08"
-  },
-  "power-bound-held-1": {
-   "sent": "78a12da5e174cf80702dee1c906cb9108e4274a21332e30a63eb8c895fbd6094"
-  },
-  "power-edges-held-1": {
-   "sent": "814aa2c2bdca3e20daee11d2cb5fb4ef2448befdf1ce6be7b8b36071f7a41d3a"
-  },
-  "power-neg-held-1": {
-   "sent": "6011cf1a8a1549a8fc22820932267a06c3dc128deef393bf193840da3eaa9b7c"
-  },
-  "probes-1": {
-   "sent": "241a5822037c143d61a640ea5b62709f8fb62bcda842d8ab1ecdfef98f84fb96"
-  },
-  "probes-2": {
-   "sent": "b73b84e3a922add6f0bdec0f864154382f75aadbdd0be527862439d7c933cf3b"
-  },
-  "probes-3": {
-   "sent": "b7c24a5812ae5d72a21b988673260e9c65e9dcdf4f485523b8ff96db7d04e657"
-  },
-  "ref-deps-1": {
-   "sent": "2dd1377b461e9389ee23c83a81e56473270d3d4ab1878e0d418cdfce4c8f91ab"
-  },
-  "refs-ironcalc-held-1": {
-   "sent": "60388cb4a445baf13ace85069283016ecc1fa7f7efca384c8d8f72f77ce42604"
-  },
-  "refs-ironcalc-held-2-1": {
-   "sent": "fe5ed2b1c909db18564eb13d28c1b003e72d672bd9ce3ca99afcd1601bf97018"
-  },
-  "rounding-ironcalc-held-1": {
-   "sent": "6873b0990d371c67531cd924082839a454c224743b4ccac945fbc6191ace86d6"
-  },
-  "seconds-held-1": {
-   "sent": "79a8672adf7a2bd4e9f660feb43ce59a36489284ae0cbda5d5360a30c212fd44"
-  },
-  "seconds-held-2": {
-   "sent": "764308f4c2af00dc1713dd4c1c2d335488fe3e207c3e4a6692210b2d9120e779"
-  },
-  "sheet-cells-1": {
-   "sent": "030ae0179049df6ee8936c55eefacf26a7b5d625dcf8d3c6e0823cdd7f1fbc8a"
-  },
-  "single-values-1": {
-   "sent": "50546acf72456f1327844f182ea8832a13303558056261a31c69b9222c6efb69"
-  },
-  "sortby-one-held-1": {
-   "sent": "e064c5b73550383ed32efb42a88d830866795476b806047bd00374cb599550f8"
   },
   "stat-1": {
    "sent": "3c45a86bc300df53d1f8d67b268cc24b92acfba5a3a55191935d2d9527c367a2"
@@ -389,29 +224,11 @@
   "stat-7": {
    "sent": "fc9ebe756c517ea9f7f0577741d7d9cab0c16fa0aabb5593fcb000c12060db31"
   },
-  "stat-edges-held-1": {
-   "sent": "1551e65290b614813f3405c0645f727fd8ac7954590843fa651d5487f7ed17c7"
-  },
   "subtotal-1": {
    "sent": "d7dae728a7ec614166e10d7328e17fa0917203dac013d1997d15079bc9953417"
   },
   "subtotal-2": {
    "sent": "c8ea4adfb4da8ed77676f3aa11a7320ba59fd012d66da66a2f2281a3048cc992"
-  },
-  "sum-zero-held-1": {
-   "sent": "192cfefe8aa4d1ebfb3d8c758a794a7fcf21124a9bd3addcf99bfe191185920a"
-  },
-  "sumif-own-held-1": {
-   "sent": "28e71e39845d43f755cc48522108a8a3fc7b095ae461023ea6a97c7b6a483e4f"
-  },
-  "sumproduct-held-1": {
-   "sent": "813647129e1bea6cb437759d6fdea186be996c29f6311c700c26e351d29bbc87"
-  },
-  "sumx-cell-held-1": {
-   "sent": "2d4bcb10c5e064360ff326577c60ad39e8e3b03317cd49d2ae72ac982d96b8fa"
-  },
-  "tests-cell-held-1": {
-   "sent": "70d7fc3487542ce88bec92d0f89787a1d4b8b00a6ebdd50b4f1f5d9e1f20bec9"
   },
   "text-1": {
    "sent": "db324e64a2f69319d246afbc1ebab28d8d01ce89164f454cae9a612353d4f075"
@@ -425,17 +242,20 @@
   "text-4": {
    "sent": "3a5b82b87cbed77dec9fc3a76216e19fe5362a8f7660b4b06458f487da0f0900"
   },
-  "text-date-ironcalc-held-1": {
-   "sent": "c28bd5b2cd935b0fe17c68ff9831b816527e1b280465e13208b1931c0c826a5a"
+  "arity-1": {
+   "sent": "6cd4f4c05e425dfd9c9ef0f5a3f8717cf16b80c937cdcc40bb9b76ffad1f62d2"
   },
-  "text-date-ironcalc-held-2-1": {
-   "sent": "d86f5188f9cef7233d6e6fd5f8797ffa89879f256f1e01d736e78df8111b61de"
+  "char-code-1": {
+   "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
   },
-  "text-date-ironcalc-held-3-1": {
-   "sent": "b3407e983c932e037793004cbde410ff6bb75284e1c724cd97da22f6c1591c56"
+  "complex-text-1": {
+   "sent": "47cde8b9dddeb1de2897779d8b5b303c094d12e14bf7a0f8c842c56c9cc5ed4c"
   },
-  "text-date-ironcalc-held-4-1": {
-   "sent": "2e6404d28f5282b1e3fa5a2b0bc7fdd4686fbddfd56111eb9e59ceb43c0e05fb"
+  "date-noyear-1": {
+   "sent": "e139f1ece594dc47785db568a3e73cba47c7052f08da56e69946bfa52297f426"
+  },
+  "lead-spaces-1": {
+   "sent": "ccbc0485b22d606e9443d547130ca17656f377e83877b50f1b43c2b8f40665d3"
   },
   "text-format-1": {
    "sent": "c02bc7c1cb8dff2b34476d416ce06f1ad7ee92deb7732a99b58842d3ac9851c2"
@@ -446,29 +266,161 @@
   "text-format-more-1": {
    "sent": "2e826680fa6d88171d4d41e1104f7092375fe667f9856dc5222815890eb9bd6e"
   },
+  "time-text-1": {
+   "sent": "f6196c3a370a8cb37d8e1eac5971a80409995821a1463342d247f969389a7501"
+  },
+  "areas-1": {
+   "sent": "087e7a63cfc90d1a59dd5f7e25fec5c4221c6ff56a306d1bfbba02d9c09e63b4"
+  },
+  "areas-2": {
+   "sent": "0594f4caa7834cc36c2ee029d62b7c1bbfa18cdeaf758c375177f2f4bf918d9a"
+  },
+  "areas-3": {
+   "sent": "19ae84eec0ea31088d062ff7fcf1aa0f187d228ecc655b0c5f80810387c40681"
+  },
+  "areas-each-1": {
+   "sent": "da345bcaf6466a7ab39cfa154a1b2b4bf1afad3c6634e31bdf34c269f3d1a197"
+  },
+  "findate-edges-1": {
+   "sent": "c8b21538d04b8e476186c063c6bae9e43de8e8f6cd93acc15bb241988631e60c"
+  },
+  "intersect-1": {
+   "sent": "3962c4fe776db32cac644549742845fe3b7a417cded97dc499328f16fb7b1318"
+  },
+  "sheet-cells-1": {
+   "sent": "030ae0179049df6ee8936c55eefacf26a7b5d625dcf8d3c6e0823cdd7f1fbc8a"
+  },
+  "single-values-1": {
+   "sent": "50546acf72456f1327844f182ea8832a13303558056261a31c69b9222c6efb69"
+  },
+  "ref-deps-1": {
+   "sent": "2dd1377b461e9389ee23c83a81e56473270d3d4ab1878e0d418cdfce4c8f91ab"
+  },
+  "known-held-1": {
+   "sent": "93d9c03d7a1394b452a475a7166b0686975126f56784b59a76eb559bf8d168ee"
+  },
+  "lookup-held-1": {
+   "sent": "4610c82985194a5a31e5af3ca02fc4ed5f376c2ef0aba8d4161b2a454412a3ac"
+  },
+  "lookup-rules-1": {
+   "sent": "a7b8c7f8f94a48dd29e71a09bfb136387f58ae46327bba44981d84b60d0e9128"
+  },
+  "stat-edges-held-1": {
+   "sent": "1551e65290b614813f3405c0645f727fd8ac7954590843fa651d5487f7ed17c7"
+  },
+  "lookup-own-held-1": {
+   "sent": "9e3619e73857e5500996e895bdca9e6a5dcc58de9a3d3704eebc2e55ab119d5c"
+  },
+  "pct-text-1": {
+   "sent": "8b8cd78dd01af25b22651b88fadf4f02cc5963ba52101f7abab006c6e38b4a08"
+  },
+  "fit-offset-held-1": {
+   "sent": "9ded67d6b2c38bb3251e9622304e29200cfdc69c4e01694e546fceda5ee7ed7d"
+  },
+  "sortby-one-held-1": {
+   "sent": "e064c5b73550383ed32efb42a88d830866795476b806047bd00374cb599550f8"
+  },
+  "binom-sumx-held-1": {
+   "sent": "c6ba20d334ae6c19a3fb78819604aafcfc1fd45f9356ebc89f4169066d28cc9e"
+  },
+  "sumproduct-held-1": {
+   "sent": "813647129e1bea6cb437759d6fdea186be996c29f6311c700c26e351d29bbc87"
+  },
+  "sumx-cell-held-1": {
+   "sent": "2d4bcb10c5e064360ff326577c60ad39e8e3b03317cd49d2ae72ac982d96b8fa"
+  },
+  "tests-cell-held-1": {
+   "sent": "70d7fc3487542ce88bec92d0f89787a1d4b8b00a6ebdd50b4f1f5d9e1f20bec9"
+  },
+  "name-case-held-1": {
+   "sent": "94c6fa34bf279677c1778218afe843dcbc07a8f2699652376e11d04c7459418a"
+  },
+  "seconds-held-1": {
+   "sent": "79a8672adf7a2bd4e9f660feb43ce59a36489284ae0cbda5d5360a30c212fd44"
+  },
+  "seconds-held-2": {
+   "sent": "764308f4c2af00dc1713dd4c1c2d335488fe3e207c3e4a6692210b2d9120e779"
+  },
+  "near-zero-held-1": {
+   "sent": "8975e09ed013fe585e0c55b1edf303f31c73741dd6932d0e5283dd780bfc39f9"
+  },
+  "power-bound-held-1": {
+   "sent": "78a12da5e174cf80702dee1c906cb9108e4274a21332e30a63eb8c895fbd6094"
+  },
+  "power-edges-held-1": {
+   "sent": "814aa2c2bdca3e20daee11d2cb5fb4ef2448befdf1ce6be7b8b36071f7a41d3a"
+  },
+  "power-neg-held-1": {
+   "sent": "6011cf1a8a1549a8fc22820932267a06c3dc128deef393bf193840da3eaa9b7c"
+  },
+  "sum-zero-held-1": {
+   "sent": "192cfefe8aa4d1ebfb3d8c758a794a7fcf21124a9bd3addcf99bfe191185920a"
+  },
+  "accrint-ironcalc-held-1": {
+   "sent": "afe4130db2e2f8ce2a2de8a5b19d0c8b3546b0c4a395f7dd1f4f64185661aaa8"
+  },
+  "countif-ironcalc-held-1": {
+   "sent": "15d9d7fcbe348ab76b6007c5d62a3c8442d1553a6c2837640d3c66192e29efe9"
+  },
+  "database-ironcalc-held-1": {
+   "sent": "2dd3a771ea2222f29cca0c9716fda7f762c00945bc455af628a78974b967cc39"
+  },
+  "euro-ironcalc-held-1": {
+   "sent": "9d5ad33b0689c39ccf5a06cf717659669aaa696493925f437a8c3a374dbb4761"
+  },
+  "euro-ironcalc-held-2-1": {
+   "sent": "5e52311eb5092aad09b6a86494f8bbda501287bfbc06c32616cd83bf7d154ae8"
+  },
+  "euro-ironcalc-held-3-1": {
+   "sent": "516d3d1660f3c52533d04b978c1ebbaa733ef96eb7747f7149a3a1ecf52caae7"
+  },
+  "rounding-ironcalc-held-1": {
+   "sent": "6873b0990d371c67531cd924082839a454c224743b4ccac945fbc6191ace86d6"
+  },
+  "text-date-ironcalc-held-1": {
+   "sent": "c28bd5b2cd935b0fe17c68ff9831b816527e1b280465e13208b1931c0c826a5a"
+  },
+  "text-date-ironcalc-held-2-1": {
+   "sent": "d86f5188f9cef7233d6e6fd5f8797ffa89879f256f1e01d736e78df8111b61de"
+  },
+  "text-date-ironcalc-held-3-1": {
+   "sent": "b3407e983c932e037793004cbde410ff6bb75284e1c724cd97da22f6c1591c56"
+  },
   "textafter-ironcalc-held-1": {
    "sent": "5637720d938507ced6f6646bc12b64250b88b22c9d13b5a8000cb8a5e9663993"
   },
   "textafter-ironcalc-held-2-1": {
    "sent": "65894affcb5244c0f4e28bcd87edffb0bc9b4b96dff7d92c5d43c379ee80a7a5"
   },
-  "time-text-1": {
-   "sent": "f6196c3a370a8cb37d8e1eac5971a80409995821a1463342d247f969389a7501"
-  },
-  "values-held-1": {
-   "sent": "d29f4f11e1b4fdc54e518d36c3ff346af0625b3d088c6344482bf2ccb1bb9460"
-  },
-  "values-held-2-1": {
-   "sent": "e2f4f78743ec3c19d3bf7ceb9da17d85fa74b8ced273f5fa85074fa2e2b60564"
-  },
-  "values-held-3-1": {
-   "sent": "31a0f423e15429bf6e00f156a962284894f4745e3c06429d9da4ef9d1a7aacb0"
-  },
   "xlookup-ironcalc-held-1": {
    "sent": "184fc1bba44a5fa005204b59dc64a8441fdf34c67ccb3fcb3855c74a8de0d428"
   },
   "xlookup-ironcalc-held-2-1": {
    "sent": "c8259f07435f72bbcdee6b47ba0b4f1685b84d18e0d68ba53fb1182a5f14f3c2"
+  },
+  "currency-held-1": {
+   "sent": "095e0abe78e4752ea411917e61007f65524bf2c1fb2309209a982476eb3d81f2"
+  },
+  "text-date-ironcalc-held-4-1": {
+   "sent": "2e6404d28f5282b1e3fa5a2b0bc7fdd4686fbddfd56111eb9e59ceb43c0e05fb"
+  },
+  "date-ironcalc-held-1": {
+   "sent": "cd94ccefd03ec26a14b2d9e87ac8dab75bfd5f5db09af5c39bad996ee5c1f772"
+  },
+  "finance-ironcalc-held-1": {
+   "sent": "6081726132901e3b480b251e1b8006868449d2ead14246db4a7e46adc9bc67aa"
+  },
+  "finance-ironcalc-held-2-1": {
+   "sent": "dca47f32baf3c7c872e66407a16e1610c5bd86b2e19ae6913bd69edf35ff9180"
+  },
+  "math-ironcalc-held-1": {
+   "sent": "341cad6ff99292dac6564bb2c335bb799fa4928d3e75f0b11f664ef1704722fd"
+  },
+  "refs-ironcalc-held-1": {
+   "sent": "60388cb4a445baf13ace85069283016ecc1fa7f7efca384c8d8f72f77ce42604"
+  },
+  "refs-ironcalc-held-2-1": {
+   "sent": "fe5ed2b1c909db18564eb13d28c1b003e72d672bd9ce3ca99afcd1601bf97018"
   },
   "xmatch-regex-held-1": {
    "sent": "cf40eab90d173572217e3af4d51f5b0fa9c9077589e3dccbb04ee60e39d136d5"
@@ -479,11 +431,77 @@
   "xmatch-regex-held-3-1": {
    "sent": "7b38a8ed0c13d4bb496a305e5e3ed6b83fc49c27ff655dfd2b0e33747ce3eec4"
   },
+  "values-held-1": {
+   "sent": "d29f4f11e1b4fdc54e518d36c3ff346af0625b3d088c6344482bf2ccb1bb9460"
+  },
+  "values-held-2-1": {
+   "sent": "e2f4f78743ec3c19d3bf7ceb9da17d85fa74b8ced273f5fa85074fa2e2b60564"
+  },
+  "values-held-3-1": {
+   "sent": "31a0f423e15429bf6e00f156a962284894f4745e3c06429d9da4ef9d1a7aacb0"
+  },
+  "sumif-own-held-1": {
+   "sent": "28e71e39845d43f755cc48522108a8a3fc7b095ae461023ea6a97c7b6a483e4f"
+  },
+  "low-values-held-1": {
+   "sent": "7c6739a7227032bd6efab99bff11d28cb5703e116e1c6f0cb25498136629ad59"
+  },
+  "array-size-held-1": {
+   "sent": "2ebb87f0fac8b4aa439bcc99f1a2d6eee82c110b91403a0f2f7502f48f2c3218"
+  },
+  "array-size-held-2-1": {
+   "sent": "c36f066e87e8352f4e1917d7125e520a41f87bd5e5b215c63aa217b69a468da4"
+  },
   "xmatch-regex-syntax-1": {
    "sent": "6e5a7ab560bdd52cedf213d6baa789991f779c0d86a1da6fed807bd2f6ae0829"
   },
   "xmatch-regex-syntax-2-1": {
    "sent": "ec3723033c090d07a22f48d2a08f4429b3ad5b886ff4e2dc4a4ffd88a57532fd"
+  },
+  "groupby-1": {
+   "sent": "0687afa8575488e3f6c52cc9e10009f2dafd48928b42c82f9de870216c04f142"
+  },
+  "lambda-1": {
+   "sent": "08556b22733edf28ac785ea40b1ae6743a22e589c46a618d57d8750afa89ceea"
+  },
+  "lambda-depth-1": {
+   "sent": "b438a0e5a6312b264c257772c6bbf9efb92660e249292302a9800f099c00c0d2"
+  },
+  "groupby-held-1": {
+   "sent": "4cbf5d31afcba0ba784047483b2dcfae5916c33637464b9b8d3e3e4fdeb2dd0b"
+  },
+  "groupby-held-2-1": {
+   "sent": "c1331aa0a4177151b599abec4f69b0c09805b552979dce9571f426648817a10a"
+  },
+  "lambda-held-1": {
+   "sent": "cfe301a24b54f8a10099229ba8c36940d189a00ddf4094214c696443ca6a4f1d"
+  },
+  "indirect-1": {
+   "sent": "db9d6272a7ad0e8bb03b568edbe6fd4b97f947e2ee6fd165484af970c2a2b7e2"
+  },
+  "indirect-held-1": {
+   "sent": "c30a7c90af7d4a9a8563a468795bc59097a18cd61e597fb7b6225b9de5c85e7e"
+  },
+  "indirect-held-3-1": {
+   "sent": "3d67eca60b992ef08938a17bbc979a0100b0e2d364fa1e88998bf514f9cb5459"
+  },
+  "coupdays-vdb-1": {
+   "sent": "3b55179bbfa9b714d84557ac243645fec85508bb1d54d87e9caf06861baaad62"
+  },
+  "coupdays-vdb-2": {
+   "sent": "1d316d9fc0e7fc855fdd3859586c84ee8d5d6d0f436a4a4608eb1c62e2332339"
+  },
+  "coupdays-vdb-held-1": {
+   "sent": "6732264f8872f538ea7bfaaa6543f52d85b9d918827c3134bb942a0c3c7a6f49"
+  },
+  "coupdays-vdb-held-2-1": {
+   "sent": "3c9b430d9acee89cd1537dbc0e853857604d794d058939cf1cd318bb405b0d01"
+  },
+  "coupdays-vdb-held-3-1": {
+   "sent": "ab88f14e7838c936c4e289077f4bfe426744fffb808c606e79d2d6ab00769c30"
+  },
+  "east-asian-held-1": {
+   "sent": "e4d6d688b304b045aa5a75457e882e0e081b5f85714504606fd2bf4429ad16da"
   }
  }
 }

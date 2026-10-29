@@ -72,6 +72,7 @@ The rules below were verified in Excel 16.113 for Mac (en-US).
 | `INDEX('Data'!$A$1:$C$9,0,2)` | `=SUMIF(col,">1")` | a reference, which functions that accept ranges accept |
 | `'Data'!$A$1:$A$3,'Data'!$C$1:$C$3` | `=SUM(both)` | a union: see [References](references.md) |
 | `'Data'!$B$1#` | `=SUM(sp)` | the spill range of B1 |
+| `LAMBDA(x,x*2)` | `=Twice(A1)` | a function, called with its arguments: see [Functions of your own](formulas.md#functions-of-your-own-lambda) |
 
 A name's formula is written as a file stores it, without `=` (a leading `=` is dropped, although Excel's "Refers to" shows one), and `readXlsx` reads it that way. Every reference in it includes its sheet. A name whose formula does not parse, or contains a reference without a sheet, is left out with a name issue.
 

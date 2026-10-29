@@ -8,6 +8,7 @@ import { arr } from '../arrays/value.js'
 import type { Rules } from '../locale/rules.js'
 import { Areas, E, isErr, sameType, type CErr, type V } from '../values.js'
 import { NEWER_MAX_ARGS } from './common.js'
+import { functions as lambda } from './lambda.js'
 
 /**
  * The booleans of AND, OR, XOR: numbers and booleans count, a direct text argument that is the locale's word for
@@ -39,6 +40,7 @@ const logical = (f: (bs: boolean[]) => boolean): FnDef => ({
 })
 
 export const functions: Record<string, FnDef> = {
+  ...lambda,
   AND: logical((bs) => bs.every(Boolean)),
   FALSE: { args: '', fn: () => false },
   // the branch taken as it is, a reference too (SUM(IF(TRUE,A2)) skips text in A2)

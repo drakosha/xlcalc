@@ -89,10 +89,10 @@ export function aritiesOf(table: Readonly<Record<string, ArityDef>>): (name: str
 export const arityFor = (name: string): Arity | undefined => arities(name)
 
 /**
- * Whitelisted functions that are syntax rather than calls: LET's names are bound by the parser
- * (`syntax/parse.ts`) and its values computed by the walk (`exec/walk.ts`).
+ * Whitelisted functions that are syntax rather than calls: LET's names and LAMBDA's parameters are bound by the parser
+ * (`syntax/parse.ts`) and their values computed by the walk (`exec/walk.ts`).
  */
-export const SYNTAX: readonly string[] = ['LET']
+export const SYNTAX: readonly string[] = ['LAMBDA', 'LET']
 
 /** A whitelisted function, a call or syntax. */
 export const isFunction = (name: string): boolean => arities(name) !== undefined || SYNTAX.includes(name)

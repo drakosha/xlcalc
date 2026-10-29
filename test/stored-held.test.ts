@@ -105,6 +105,19 @@ describe('formulas keeping their file values beside dynamic references (OFFSET)'
   })
 })
 
+describe('formulas keeping their file values beside names the book defines as LAMBDA', () => {
+  it("a name defined as a LAMBDA is called, not taken for a function the engine does not know; a formula with both keeps the file's value", () => {
+    const named: BookInput = {
+      sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { formula: 'DOUBLE(A1)' }, C1: { formula: 'DOUBLE(A1)+MYADDIN(A1)' }, D1: { formula: 'C1+1' } } }],
+      names: [{ name: 'DOUBLE', ref: 'LAMBDA(x,x*2)' }],
+    }
+    const file: CachedValues = { sheets: [{ name: 'S', cells: { B1: { value: 99 }, C1: { value: 10 } } }] }
+    const r = compute(named, { clock: CLOCK, cached: file, unknownFunctions: 'held' })
+    expect(['B1', 'C1', 'D1'].map((a) => r.sheets[0].cells[a].value)).toEqual([4, 10, 11])
+    expect(marks(r.diagnostics)).toEqual(['C1 NAME file unknown_function'])
+  })
+})
+
 describe('unknownFunctions: the option checked', () => {
   it('takes name or held only', () => {
     expect(() => compute(book, { unknownFunctions: 'keep' as 'held' })).toThrow('opts.unknownFunctions: expected "name" or "held", got the string "keep"')

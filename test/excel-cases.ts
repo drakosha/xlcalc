@@ -39,8 +39,7 @@ function dataInput(c: Cell): CellInput {
   return { value: c.text }
 }
 
-/** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
-/** A case's formula as the engine takes it (`plainFormula`). */
+/** A case's formula as the engine takes it (`plainFormula`): Excel's storage prefixes of newer functions, of LET's and LAMBDA's names and of functions as values removed. */
 export const engineFormula = plainFormula
 
 /** The measurement's data sheet, as in every book sent to Excel. */
@@ -144,6 +143,10 @@ export const REASONS = {
   cellBookName:
     "`CELL(\"address\")` of another sheet's cell names the file the workbook was opened from, which a host passes as `file`; without it the engine names `Book1`, as Excel does for a workbook not saved yet, where Excel names the file it opened (`[book.xlsx]R!$B$3`).",
   quotedLastSheet: "A reference across sheets whose last sheet alone is quoted (`R:'Two Words'!A1`) is `#NAME?` in a file Excel opens; the engine reads it as `'R:Two Words'!A1`.",
+  lambdaDepth:
+    'Recursion of LAMBDAs ends in `#NUM!` at a fixed budget of calls, about 200 calls of a short calculation (`LET(f,LAMBDA(g,n,IF(n<=0,0,1+g(g,n-1))),f(f,500))`), fewer of a longer one; Excel goes on as far as its stack holds, 4,000 calls of that one, 2,000 with a LET in the calculation. The engine computes in the JavaScript stack, which runs out sooner and where it runs out depends on the process, so the budget keeps the answer the same everywhere.',
+  indexRowOfOne:
+    '`INDEX` of an array with a row alone (`INDEX(x,1)`) answers the value at that row of a column here; Excel answers the row as an array of one value, which GROUPBY does not take as the function\'s answer, so `GROUPBY(A2:A11,D2:D11,LAMBDA(x,INDEX(x,1)))` is `#CALC!` in Excel and a summary here (`INDEX(x,1,1)` is the value in both).',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel returns when it stands alone; inside one generated workbook of the random check, Excel 16.113 returned a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, in two runs).',
 } as const
@@ -281,6 +284,22 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fit-offset-held:TREND#2': { reason: 'linestMean', engine: { t: 'n', v: 0.030029296875 } },
   'fit-offset-held:GROWTH#2': { reason: 'growthRange', engine: { t: 'n', v: 313.83972099924 } },
   'fit-offset-held:GROWTH#3': { reason: 'growthRange', engine: { t: 'n', v: 285.309168434641 } },
+  'groupby-held:GROUPBY#21': { reason: 'indexRowOfOne', engine: { t: 's', v: '{"East",10;"North",3;"West",20;,4;"Total",10}' } },
+  'lambda:LAMBDA#42': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#43': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#44': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#45': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#46': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#3': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#4': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#5': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#3': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:named#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:named#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives the pinned answer (`samePin`). */

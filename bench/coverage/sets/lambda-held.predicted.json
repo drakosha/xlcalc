@@ -1,0 +1,194 @@
+{
+ "LAMBDA#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "LAMBDA#2": {
+  "t": "n",
+  "v": 1
+ },
+ "LAMBDA#3": {
+  "t": "n",
+  "v": 2
+ },
+ "LAMBDA#4": {
+  "t": "n",
+  "v": 128
+ },
+ "LAMBDA#5": {
+  "t": "b",
+  "v": false
+ },
+ "LAMBDA#6": {
+  "t": "b",
+  "v": true
+ },
+ "LAMBDA#7": {
+  "t": "b",
+  "v": false
+ },
+ "LAMBDA#8": {
+  "t": "b",
+  "v": false
+ },
+ "LAMBDA#9": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "LAMBDA#10": {
+  "t": "e",
+  "v": "CALC"
+ },
+ "LAMBDA#11": {
+  "t": "e",
+  "v": "CALC"
+ },
+ "LAMBDA#12": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "LAMBDA#13": {
+  "t": "n",
+  "v": 2
+ },
+ "LAMBDA#14": {
+  "t": "s",
+  "v": "λ"
+ },
+ "LAMBDA#15": {
+  "t": "s",
+  "v": "λ"
+ },
+ "LAMBDA#16": {
+  "t": "n",
+  "v": 5
+ },
+ "LAMBDA#17": {
+  "t": "e",
+  "v": "CALC"
+ },
+ "LAMBDA#18": {
+  "t": "s",
+  "v": "{\"λ\";\"λ\"}"
+ },
+ "LAMBDA#19": {
+  "t": "n",
+  "v": 15
+ },
+ "LAMBDA#20": {
+  "t": "n",
+  "v": 3
+ },
+ "LAMBDA#21": {
+  "t": "s",
+  "v": "big"
+ },
+ "LAMBDA#22": {
+  "t": "n",
+  "v": 54
+ },
+ "SUM#1": {
+  "t": "n",
+  "v": 6
+ },
+ "SUM#2": {
+  "t": "n",
+  "v": 9
+ },
+ "ABS#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "ROUND#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "ROUND#2": {
+  "t": "s",
+  "v": "{1.3,3}"
+ },
+ "MAP#1": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "MAP#2": {
+  "t": "s",
+  "v": "{10;15;15}"
+ },
+ "MAP#3": {
+  "t": "s",
+  "v": "{TRUE;TRUE}"
+ },
+ "MAP#4": {
+  "t": "s",
+  "v": "{10,20;30,40}"
+ },
+ "MAP#5": {
+  "t": "s",
+  "v": "{FALSE;FALSE;FALSE}"
+ },
+ "REDUCE#1": {
+  "t": "s",
+  "v": "abc"
+ },
+ "REDUCE#2": {
+  "t": "n",
+  "v": 5
+ },
+ "REDUCE#3": {
+  "t": "b",
+  "v": false
+ },
+ "REDUCE#4": {
+  "t": "b",
+  "v": false
+ },
+ "REDUCE#5": {
+  "t": "b",
+  "v": false
+ },
+ "SCAN#1": {
+  "t": "s",
+  "v": "{1,12}"
+ },
+ "SCAN#2": {
+  "t": "s",
+  "v": "{5}"
+ },
+ "SCAN#3": {
+  "t": "s",
+  "v": "{4;12;27}"
+ },
+ "MAKEARRAY#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MAKEARRAY#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MAKEARRAY#3": {
+  "t": "s",
+  "v": "{1,2,3}"
+ },
+ "MAKEARRAY#4": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "BYCOL#1": {
+  "t": "s",
+  "v": "{4,6}"
+ },
+ "BYCOL#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "ISOMITTED#1": {
+  "t": "n",
+  "v": 2
+ },
+ "ISOMITTED#2": {
+  "t": "b",
+  "v": false
+ }
+}

@@ -280,6 +280,11 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   letName: { position: number }
   letEmpty: object
   letTooMany: { max: number }
+  lambdaTwice: { name: string }
+  lambdaName: { position: number }
+  lambdaDot: { name: string }
+  lambdaEmpty: object
+  lambdaTooMany: { max: number }
   // structured references
   specUnterminated: object
   specBracketInColumn: object

@@ -62,7 +62,7 @@ function takeDrop(take: boolean): FnDef {
 
 /** An argument of HSTACK, VSTACK as arrays: a value, a reference or an array; each area of a union or of a reference across sheets. */
 const stackParts = (cx: Cx, x: Arg): Arr[] =>
-  x instanceof Arr ? [x] : x instanceof Rng ? [fromGrid(cx.grid(x))] : x instanceof Areas ? x.list.flatMap((g) => stackParts(cx, g)) : [asArray(x)]
+  x instanceof Arr ? [x] : x instanceof Rng ? [fromGrid(cx.grid(x))] : x instanceof Areas ? x.list.flatMap((g) => stackParts(cx, g)) : [asArray(cx.view(x))]
 
 /**
  * Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. An error given as a
