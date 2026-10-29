@@ -3582,6 +3582,14 @@ interface PageOptions extends EditOptions {
 }
 ```
 
+### `PaneName`
+
+A pane of a window split in two or four: the first is the top left one, the others lie right of or below a line.
+
+```ts
+type PaneName = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
+```
+
 ### `PasteKind`
 
 What a copy pastes of its source ([`StructureOp`](#structureop) `copyRange`), as Excel's Paste Special. `all`, the default, pastes
@@ -4515,6 +4523,8 @@ interface SheetView {
   gridlines?: boolean
   /** False hides the row and column headings (View > Show > Headings, xlsx `showRowColHeaders="0"`); shown by default. */
   headings?: boolean
+  /** The window split into panes without freezing them (View > Split); frozen panes (`SheetInput.frozen`) take its place while the sheet has them. */
+  split?: SplitPanes
 }
 ```
 
@@ -4534,6 +4544,28 @@ What a cell holds by the kinds of Excel's Go To Special: a number, text, a boole
 
 ```ts
 type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
+```
+
+### `SplitPanes`
+
+A window split into panes ([`SheetView.split`](#sheetview), xlsx `<pane>` without `state="frozen"`): a vertical line `x` points from
+the window's left edge, a horizontal one `y` points from its top, at least one of them. As Excel saves them, the
+points count the row and column headings in and are points on the screen at the view's zoom (xlsx `xSplit` and
+`ySplit` in twentieths of a point): a grid draws a line at `x` less the width of its own row headings.
+
+```ts
+interface SplitPanes {
+  x?: number
+  y?: number
+  /**
+   * The top left cell of the pane after both lines (right of the vertical one, below the horizontal one), which also
+   * gives the scroll of the other panes on its axes; the first pane's is the view's `topLeft`. Without it Excel scrolls
+   * the panes after the lines to A1.
+   */
+  topLeft?: string
+  /** The pane that holds the active cell and the selection; the first without it. */
+  activePane?: PaneName
+}
 ```
 
 ### `StructureOp`
