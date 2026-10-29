@@ -92,6 +92,19 @@ describe.each(['closures', 'eval'] as const)('formats by reference, %s', (execut
       await s.close()
     })
 
+    it('a formula among several typed at once refers to the cells typed before it as they are then', async () => {
+      const s = await open(BOOK, { clock: CLOCK, execution })
+      await s.setCellTexts([
+        { sheet: 'S', cell: 'C1', text: '5%' },
+        { sheet: 'S', cell: 'C2', text: '=C1+1' },
+        { sheet: 'S', cell: 'A1', text: '' },
+        { sheet: 'S', cell: 'C3', text: '=A1' },
+      ])
+      const cells = (await s.getBook()).sheets[0].cells
+      expect([cells.C2, cells.C3]).toEqual([{ formula: 'C1+1', numberFormat: 9 }, { formula: 'A1', numberFormat: 9 }])
+      await s.close()
+    })
+
     it("a fill takes its active cell's format in every cell, AutoSum its range's first cell's", async () => {
       const s = await open(BOOK, { clock: CLOCK, execution })
       await s.fillCellText('S', 'B1:B3', '=A1+A3')
