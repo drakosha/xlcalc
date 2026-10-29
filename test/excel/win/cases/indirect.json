@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 26.1,
+  "seconds": 15.9,
   "dynamic": true
  },
  "cases": [
@@ -1323,7 +1323,7 @@
    "id": "tro#4",
    "group": "tro",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(_xlfn._TRO_ALL(R!G1,R!H9))"
+   "formula": "ROWS(_xlfn._TRO_TRAILING(R!A:A))"
   }
  ],
  "values": {
