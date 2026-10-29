@@ -46,6 +46,8 @@ export const OMITTED: Readonly<Record<string, Omission>> = {
   LOGEST: defaults(1, 2),
   MATCH: { at: { 1: 'blank' } },
   MIRR: { at: { 0: 'VALUE' } },
+  // the reference's own height and width
+  OFFSET: defaults(3, 4),
   PERCENTRANK: defaults(2),
   'PERCENTRANK.EXC': defaults(2),
   'PERCENTRANK.INC': defaults(2),

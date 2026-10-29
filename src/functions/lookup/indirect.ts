@@ -40,5 +40,5 @@ export const functions: Record<string, FnDef> = {
     array: true,
     fn: (cx: Cx, s: number, r: number, c: number, text: string, a1 = true) => found(cx, cx.refer(text, a1, s, r, c)),
   },
-  OFFSET: { args: 'R w w w? w?', cx: true, dynamic: true, array: true, fn: offset },
+  OFFSET: { args: 'R i i i? i?', cx: true, dynamic: true, array: true, fn: offset },
 }

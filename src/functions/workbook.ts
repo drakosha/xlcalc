@@ -5,7 +5,6 @@
  */
 import type { Arg, Cx, FnDef } from '../args.js'
 import { arr } from '../arrays/value.js'
-import { quoteSheetIfNeeded } from '../a1.js'
 import { indexToCol } from '../model.js'
 import { quoteSheet } from '../syntax.js'
 import { Areas, E, isErr, Rng, type V } from '../values.js'
@@ -14,20 +13,20 @@ import { formatCodes } from './cell-format.js'
 /** The longest formula text FORMULATEXT gives: a longer one is #N/A. */
 const LONGEST = 8192
 
-/** A reference's top-left cell on one of the book's sheets, or the error a function answers for anything else. */
-function topLeft(cx: Cx, x: Arg): Rng | V {
+/** A reference's top-left cell on one of the book's sheets, of its first area with `areas`, or the error a function answers for anything else. */
+function topLeft(cx: Cx, x: Arg, areas = false): Rng | V {
   if (isErr(x)) return x
-  if (!(x instanceof Rng)) return x instanceof Areas && !x.cube ? new Rng(x.list[0].s, x.list[0].r1, x.list[0].c1, x.list[0].r1, x.list[0].c1) : E.VALUE
-  return x.s < cx.book.sheets ? new Rng(x.s, x.r1, x.c1, x.r1, x.c1) : E.VALUE
+  const g = x instanceof Rng ? x : areas && x instanceof Areas ? x.list[0] : undefined
+  return g && g.s < cx.book.sheets ? new Rng(g.s, g.r1, g.c1, g.r1, g.c1) : E.VALUE
 }
 
 /** A cell's address as CELL gives it: `$A$1`, on another sheet with the book's name (`[Book1]Sheet2!$A$1`). */
 function address(cx: Cx, g: Rng, s: number): string {
   const a = `$${indexToCol(g.c1)}$${g.r1 + 1}`
   if (g.s === s) return a
-  const [book, sheet] = [cx.book.file?.name ?? 'Book1', cx.book.sheetName(g.s)!]
-  const both = `[${book}]${sheet}`
-  return `${quoteSheetIfNeeded(sheet) !== sheet || !/^[\p{L}\p{N}_.]+$/u.test(book) ? quoteSheet(both) : both}!${a}`
+  // quoted where the book's or the sheet's name has more than letters, digits, `_` and `.` (`[1.xlsx]R!$B$3`)
+  const both = `[${cx.book.file?.name ?? 'Book1'}]${cx.book.sheetName(g.s)}`
+  return `${/^\[[\p{L}\p{N}_.]+\][\p{L}\p{N}_.]+$/u.test(both) ? both : quoteSheet(both)}!${a}`
 }
 
 /** CELL's `prefix`: a text's alignment as the label prefix of old spreadsheets. */
@@ -40,7 +39,7 @@ function cell(cx: Cx, s: number, r: number, c: number, info: string, ref?: Arg):
     const a = cx.book.activeCell()
     g = new Rng(a.s, a.r, a.c, a.r, a.c)
     cx.found(g)
-  } else g = topLeft(cx, ref)
+  } else g = topLeft(cx, ref, true)
   if (!(g instanceof Rng)) return g
   const v = () => cx.scalar(g)
   switch (info.toLowerCase()) {
@@ -132,7 +131,8 @@ function sheets(cx: Cx, x?: Arg): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  CELL: { args: 's R?', cx: true, cell: true, dynamic: true, looks: true, array: true, fn: (cx: Cx, s: number, r: number, c: number, type: string, ref?: Arg) => cell(cx, s, r, c, type, ref) },
+  // a union's or a reference across sheets' first area
+  CELL: { args: 's R?', cx: true, cell: true, dynamic: true, looks: true, array: true, areas: true, fn: (cx: Cx, s: number, r: number, c: number, type: string, ref?: Arg) => cell(cx, s, r, c, type, ref) },
   FORMULATEXT: {
     args: 'R',
     cx: true,
