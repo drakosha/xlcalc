@@ -7,16 +7,20 @@
  */
 import type { BookInput, CellInput, CellStyle, ColumnInput } from '../../../src/contract.js'
 import { formatAddress } from '../../../src/model.js'
+import { internStyle } from '../../../src/style-table.js'
 import { takenPart, type StoredCell, type StoredColumn } from '../stored.js'
 import { groupCollector } from '../collect.js'
 
 /** How a text is typed: Excel's `Value` with the text, `Formula2Local` (Excel 365's typing in the user's language), or keys (Excel for Mac only). */
 export type Via = 'value' | 'local' | 'keys'
 
+/** A cell of a case: a stored cell, its style a place in `STYLES` or by its fields (`look`), which the book's table takes. */
+export type FitCell = StoredCell & { look?: CellStyle }
+
 export interface FitCase {
   id: string
   /** The column's cells by row number, as a stored case names their fields (errors come from formulas). */
-  cells?: Record<number, StoredCell>
+  cells?: Record<number, FitCell>
   /** The column before: a width set by hand (xlsx `customWidth`), its format, hidden; the default width without them. */
   column?: StoredColumn
   /** Rows whose cell is merged with the cell to its right. */
@@ -62,19 +66,25 @@ export const caseColumn = (k: number) => 1 + 2 * k
 /** The rows a case shows something in: its cells and the cells typed into. */
 export const caseRows = (c: FitCase): number[] => [...new Set([...Object.keys(c.cells ?? {}).map(Number), ...(c.typed ?? []).map(([r]) => r)])].sort((a, b) => a - b)
 
-/** The book of a part, as the engine takes it: each case's cells, column and merged areas in its column of the sheet `S`. */
+/** The book of a part, as the engine takes it: each case's cells, column and merged areas in its column of the sheet `S`; the looks of cells after `STYLES` in its table. */
 export function fitBook(cases: FitCase[]): BookInput {
   const cells: Record<string, CellInput> = {}
   const columns: Record<string, ColumnInput> = {}
   const merges: string[] = []
+  let styles = STYLES
+  const styleOf = (look: CellStyle) => {
+    const r = internStyle(styles, look)
+    styles = r.styles
+    return r.index
+  }
   cases.forEach((c, k) => {
     const col = caseColumn(k)
-    for (const [r, cell] of Object.entries(c.cells ?? {})) cells[formatAddress(Number(r) - 1, col)] = takenPart(cell)
+    for (const [r, { look, ...cell }] of Object.entries(c.cells ?? {})) cells[formatAddress(Number(r) - 1, col)] = { ...takenPart(cell), ...(look ? { style: styleOf(look) } : {}) }
     if (c.column) columns[formatAddress(0, col).replace(/\d+$/, '')] = takenPart(c.column)
     for (const r of c.merged ?? []) merges.push(`${formatAddress(r - 1, col)}:${formatAddress(r - 1, col + 1)}`)
     if (c.mergedDown) merges.push(`${formatAddress(c.mergedDown[0] - 1, col)}:${formatAddress(c.mergedDown[1] - 1, col)}`)
   })
-  return { sheets: [{ name: 'S', cells, columns, rows: { [HIDDEN]: { hidden: true } }, ...(merges.length ? { merges } : {}) }], styles: STYLES }
+  return { sheets: [{ name: 'S', cells, columns, rows: { [HIDDEN]: { hidden: true } }, ...(merges.length ? { merges } : {}) }], styles }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */

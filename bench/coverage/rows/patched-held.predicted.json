@@ -1,0 +1,169 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "rotation-1": {
+    "before": 15,
+    "height": 56,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "rotation-2": {
+    "before": 15,
+    "height": 37,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "2": {
+      "formula": "a",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "both-1": {
+    "before": 15,
+    "height": 55,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   }
+  },
+  "ru-RU": {
+   "rotation-1": {
+    "before": 15,
+    "height": 56,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "rotation-2": {
+    "before": 15,
+    "height": 37,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "2": {
+      "formula": "a",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   },
+   "both-1": {
+    "before": 15,
+    "height": 55,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    },
+    "more": {
+     "1": 15,
+     "3": 15,
+     "200": 15,
+     "1048576": 15
+    }
+   }
+  }
+ }
+}

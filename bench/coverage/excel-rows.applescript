@@ -1,15 +1,17 @@
 -- Open a rows part's book, read each case's row height, and case by case (a row of the sheet "S") type its texts in
--- turn and fit the row (`autofit` of its entire row) when it has no texts or the case says so: texts through `value` or
+-- turn, set a font size or a rotation (`text orientation`) on its columns whole when it patches them, and fit the row
+-- (`autofit` of its entire row) when it has no texts and no patch or the case says so: texts through `value` or
 -- `formula2 local` with alerts off, or with Excel in front (System Events): typed into the cell and Return (`keys`), into
 -- a selection and Control+Return (`fill`), a line break typed as Control+Option+Return, or put on the clipboard as plain
 -- text and pasted with Cmd+V (`paste`); the windows Excel shows for them are answered. Then read each case's row: `row
--- height`, `use standard height`, and its cells' `formula` and `wrap text`; save the book as xlsx under another name and
--- close it.
+-- height`, `use standard height`, its cells' `formula` and `wrap text` and the heights of the other rows it names; save
+-- the book as xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the cases as
--- a JSON array of [row, fit (0 or 1), [[cell, text, via, last cell of a fill's selection], ...], [cells to read]], the
--- path of excel-keys.applescript.
+-- a JSON array of [row, fit (0 or 1), [[cell, text, via, last cell of a fill's selection], ...], [cells to read],
+-- [columns patched, font size or 0, rotation: degrees, "vertical" or ""] or [], [rows read after]], the path of
+-- excel-keys.applescript.
 -- Output: JSON {"before": [row height, ...], "refused": [[Excel's error for each text, "" when it took it], ...],
--- "rows": [[row height, standard, [[formula, wrap], ...]], ...]}.
+-- "rows": [[row height, standard, [[formula, wrap], ...], [row height of each row read after]], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -78,6 +80,16 @@ on run argv
 					set end of ers to er
 				end repeat
 				set end of refusedOut to ers
+				set pt to item 5 of c
+				if (count of pt) is 3 then
+					set cols to range ((item 1 of pt) as text) of ws
+					if (item 2 of pt) as integer > 0 then set font size of font object of cols to (item 2 of pt) as integer
+					if (item 3 of pt) as text is "vertical" then
+						set text orientation of cols to orientation vertical
+					else if (item 3 of pt) as text is not "" then
+						set text orientation of cols to ((item 3 of pt) as integer)
+					end if
+				end if
 				if (item 2 of c) is 1 then autofit rw
 			end repeat
 			calculate
@@ -88,7 +100,11 @@ on run argv
 					set cl to range (a as text) of ws
 					set end of wraps to {formula of cl, wrap text of cl}
 				end repeat
-				set end of rowsOut to {row height of rw, use standard height of rw, wraps}
+				set others to {}
+				repeat with r in (item 6 of c)
+					set end of others to row height of (entire row of range ("A" & (r as integer)) of ws)
+				end repeat
+				set end of rowsOut to {row height of rw, use standard height of rw, wraps, others}
 			end repeat
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no

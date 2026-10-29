@@ -1,7 +1,8 @@
 /**
  * What the cells of a book show (`CellResult.text`, `color`): a cell's value by its format (its own, else its
  * row's, else its column's), in the book's locale, in the room of its column (of a merged area's columns from its
- * top-left cell), as `numfmt.ts` shows it.
+ * top-left cell), as `numfmt.ts` shows it; turned text (`alignment.rotation`) runs across its column, in the room of
+ * the widest one.
  */
 import type { BookInput, CellDisplay, CellInput, CellValue, NumberFormat } from './contract.js'
 import type { EngineState } from './engine.js'
@@ -10,6 +11,8 @@ import type { Rules } from './locale/rules.js'
 import { mergedOf } from './layout/merges.js'
 import { MAX_COLS } from './model.js'
 import { columnPoints, room } from './numfmt.js'
+import { turnedStyles } from './layout/turned.js'
+import { MAX_POINTS } from './column-width.js'
 
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
 export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellInput) => CellDisplay
@@ -36,8 +39,13 @@ function sheetLooks(book: BookInput, state?: EngineState): (s: number) => SheetL
   }
 }
 
-/** A cell's room in points: its column's, a merged area's columns' from its top-left cell. */
-function pointsAt(x: SheetLook, r: number, c: number): number {
+/**
+ * A cell's room in points: its column's, a merged area's columns' from its top-left cell; a turned cell's (a style of
+ * `turned`) the widest column's, as Excel shows a number turned whole in a column narrower than its text
+ * (`test/excel/fit/rotation.json`).
+ */
+function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null, own?: CellInput): number {
+  if (turned?.has(x.lines.look(r, c, own).style!)) return MAX_POINTS
   const last = x.merges.size ? (x.merges.get(r * MAX_COLS + c) ?? c) : c
   let points = 0
   for (let k = c; k <= last; k++) points += columnPoints(x.lines.column(k)?.width)
@@ -47,11 +55,12 @@ function pointsAt(x: SheetLook, r: number, c: number): number {
 /** The looks of cells of `book` by `rules` (a saved book's, without a session); with a session's `state`, its lines read once for it. */
 export function bookLooks(book: BookInput, rules: Rules, state?: EngineState): Looks {
   const sheetLook = sheetLooks(book, state)
+  const turned = turnedStyles(book.styles)
   // a cell without `own` shows by the sheet's input there, or its look of the sheet's looks (`sheetLines`)
   return (s, r, c, v, own) => {
     const x = sheetLook(s)
     const format = x.lines.format(r, c, own)
-    return rules.display(v, format, room(pointsAt(x, r, c)))
+    return rules.display(v, format, room(pointsAt(x, r, c, turned, own)))
   }
 }
 
@@ -61,8 +70,9 @@ export function bookLooks(book: BookInput, rules: Rules, state?: EngineState): L
  */
 export function lookParts(state: EngineState): (s: number, r: number, c: number, own?: CellInput) => [NumberFormat | undefined, number] {
   const sheetLook = sheetLooks(state.input, state)
+  const turned = turnedStyles(state.input.styles)
   return (s, r, c, own) => {
     const x = sheetLook(s)
-    return [x.lines.format(r, c, own), pointsAt(x, r, c)]
+    return [x.lines.format(r, c, own), pointsAt(x, r, c, turned, own)]
   }
 }

@@ -38,8 +38,8 @@ describe.each(MAC)('rows $tag $name (Excel for Mac)', (set) => {
     expect(now.find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
     const a = set.answers[c.id]
     const e = engine(set, c)
-    const got = { height: e.height, cells: e.cells }
-    const excel = { height: a.height, cells: a.cells }
+    const got = { height: e.height, cells: e.cells, more: e.more }
+    const excel = { height: a.height, cells: a.cells, more: a.more }
     const reason = ROWS_KNOWN.get(`${set.tag}:${set.name}:${c.id}`)
     if (reason) expect(got, `${c.id} is known to differ: ${ROWS_REASONS[reason]}`).not.toEqual(excel)
     else expect(got).toEqual(excel)
@@ -65,6 +65,13 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:lines': 79,
   'en-US:keys': 19,
   'en-US:quotes': 12,
+  'en-US:rotation': 7,
+  'en-US:rotation-2': 0,
+  'en-US:patched': 4,
+  'en-US:rotation-held': 78,
+  'en-US:patched-held': 4,
+  'en-US:rotation-held-2': 43,
+  'en-US:rotation-held-3': 14,
 }
 
 /** The cases whose height Excel for Windows gave as the Mac did, by `<tag>:<set>`. */
@@ -75,6 +82,11 @@ const WIN_SAME_HEIGHT: Record<string, number> = {
   'en-US:keys': 6,
   'en-US:lines': 7,
   'en-US:quotes': 12,
+  'en-US:rotation': 14,
+  'en-US:rotation-2': 8,
+  'en-US:rotation-held': 4,
+  'en-US:rotation-held-2': 1,
+  'en-US:rotation-held-3': 2,
 }
 
 describe('rows sets', () => {

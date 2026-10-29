@@ -1,0 +1,2386 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-29",
+  "seconds": 21.6
+ },
+ "cases": [
+  {
+   "id": "angle-1",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 7
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-2",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 7
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-3",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-4",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-5",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-6",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-7",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 16
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-8",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 16
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-9",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 33
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-10",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 33
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-11",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 47
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-12",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 47
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-13",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 49
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-14",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 49
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-15",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 52
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-16",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 52
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-17",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": 77
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-18",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": 77
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-19",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": -7
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-20",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": -7
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-21",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": -33
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-22",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": -33
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-23",
+   "cells": {
+    "0": {
+     "value": "bbba",
+     "look": {
+      "alignment": {
+       "rotation": -52
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-24",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbba",
+     "look": {
+      "alignment": {
+       "rotation": -52
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-1",
+   "cells": {
+    "0": {
+     "value": "bD",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-2",
+   "cells": {
+    "0": {
+     "value": "bbbbi",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-3",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbD",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-4",
+   "cells": {
+    "0": {
+     "value": "bD",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-5",
+   "cells": {
+    "0": {
+     "value": "bbbbi",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "half-6",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbD",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-1",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 11.5
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-2",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 11.5
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-3",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 11.5
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-4",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 11.5
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-5",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 17
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-6",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 17
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-7",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 17
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-8",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 17
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-9",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 22
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-10",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 22
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-11",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 22
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-12",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 22
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-13",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 26
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-14",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 26
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-15",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 26
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-16",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 26
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-17",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 30
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-18",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 30
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-19",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 30
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-20",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 30
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-21",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 40
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-22",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 40
+      },
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-23",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 40
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-24",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbb",
+     "look": {
+      "font": {
+       "size": 40
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-1",
+   "cells": {
+    "0": {
+     "value": "Итого",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-2",
+   "cells": {
+    "0": {
+     "value": "Итого",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-3",
+   "cells": {
+    "0": {
+     "value": "Итого",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-4",
+   "cells": {
+    "0": {
+     "value": "Сумма к оплате",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-5",
+   "cells": {
+    "0": {
+     "value": "Сумма к оплате",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-6",
+   "cells": {
+    "0": {
+     "value": "Сумма к оплате",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-7",
+   "cells": {
+    "0": {
+     "value": "Ag Ag",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-8",
+   "cells": {
+    "0": {
+     "value": "Ag Ag",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "script-9",
+   "cells": {
+    "0": {
+     "value": "Ag Ag",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-1",
+   "cells": {
+    "0": {
+     "value": 0.1234,
+     "format": "0.00%",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-2",
+   "cells": {
+    "0": {
+     "value": 1234.5,
+     "format": "#,##0.00",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-3",
+   "cells": {
+    "0": {
+     "value": 46096,
+     "format": "d mmmm yyyy",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-4",
+   "cells": {
+    "0": {
+     "value": false,
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-5",
+   "cells": {
+    "0": {
+     "value": -1234567,
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-6",
+   "cells": {
+    "0": {
+     "value": 0.1234,
+     "format": "0.00%",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-7",
+   "cells": {
+    "0": {
+     "value": 1234.5,
+     "format": "#,##0.00",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-8",
+   "cells": {
+    "0": {
+     "value": 46096,
+     "format": "d mmmm yyyy",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-9",
+   "cells": {
+    "0": {
+     "value": false,
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "format-10",
+   "cells": {
+    "0": {
+     "value": -1234567,
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "cells-1",
+   "cells": {
+    "0": {
+     "value": "bbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    },
+    "1": {
+     "value": "Ag",
+     "look": {
+      "font": {
+       "size": 36
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "cells-2",
+   "cells": {
+    "0": {
+     "value": "bbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    },
+    "1": {
+     "value": "a\nb\nc\nd",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    },
+    "2": {
+     "value": "bbb",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "cells-3",
+   "row": {
+    "look": {
+     "font": {
+      "size": 20
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "bbw",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "cells-4",
+   "row": {
+    "look": {
+     "font": {
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "bbw",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "merged-1",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   },
+   "mergedDown": [
+    0
+   ]
+  },
+  {
+   "id": "blank-1",
+   "cells": {
+    "0": {
+     "value": "",
+     "look": {
+      "font": {
+       "size": 36
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "blank-2",
+   "cells": {
+    "0": {
+     "value": "",
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "typed-1",
+   "cells": {
+    "0": {
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     0,
+     "bbbbbbbw"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "typed-4",
+   "cells": {
+    "0": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     0,
+     "bb"
+    ]
+   ],
+   "via": "value"
+  }
+ ],
+ "answers": {
+  "angle-1": {
+   "before": 18.75,
+   "height": 18.75,
+   "standard": true,
+   "saved": {
+    "ht": 18.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-2": {
+   "before": 24.75,
+   "height": 24.75,
+   "standard": true,
+   "saved": {
+    "ht": 24.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-3": {
+   "before": 20.25,
+   "height": 20.25,
+   "standard": true,
+   "saved": {
+    "ht": 20.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-4": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-5": {
+   "before": 21,
+   "height": 21,
+   "standard": true,
+   "saved": {
+    "ht": 21
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-6": {
+   "before": 33.75,
+   "height": 33.75,
+   "standard": true,
+   "saved": {
+    "ht": 33.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-7": {
+   "before": 23.25,
+   "height": 23.25,
+   "standard": true,
+   "saved": {
+    "ht": 23.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-8": {
+   "before": 38.25,
+   "height": 38.25,
+   "standard": true,
+   "saved": {
+    "ht": 38.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-9": {
+   "before": 27.75,
+   "height": 27.75,
+   "standard": true,
+   "saved": {
+    "ht": 27.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-10": {
+   "before": 57,
+   "height": 57,
+   "standard": true,
+   "saved": {
+    "ht": 57
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-11": {
+   "before": 29.25,
+   "height": 29.25,
+   "standard": true,
+   "saved": {
+    "ht": 29.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-12": {
+   "before": 69,
+   "height": 69,
+   "standard": true,
+   "saved": {
+    "ht": 69
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-13": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-14": {
+   "before": 72,
+   "height": 72,
+   "standard": true,
+   "saved": {
+    "ht": 72
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-15": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-16": {
+   "before": 73.5,
+   "height": 73.5,
+   "standard": true,
+   "saved": {
+    "ht": 73.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-17": {
+   "before": 30,
+   "height": 30,
+   "standard": true,
+   "saved": {
+    "ht": 30
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-18": {
+   "before": 82.5,
+   "height": 82.5,
+   "standard": true,
+   "saved": {
+    "ht": 82.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-19": {
+   "before": 18.75,
+   "height": 18.75,
+   "standard": true,
+   "saved": {
+    "ht": 18.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-20": {
+   "before": 24.75,
+   "height": 24.75,
+   "standard": true,
+   "saved": {
+    "ht": 24.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-21": {
+   "before": 27.75,
+   "height": 27.75,
+   "standard": true,
+   "saved": {
+    "ht": 27.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-22": {
+   "before": 57,
+   "height": 57,
+   "standard": true,
+   "saved": {
+    "ht": 57
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-23": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbba",
+     "wrap": false
+    }
+   }
+  },
+  "angle-24": {
+   "before": 73.5,
+   "height": 73.5,
+   "standard": true,
+   "saved": {
+    "ht": 73.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbbbba",
+     "wrap": false
+    }
+   }
+  },
+  "half-1": {
+   "before": 21.75,
+   "height": 21.75,
+   "standard": true,
+   "saved": {
+    "ht": 21.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bD",
+     "wrap": false
+    }
+   }
+  },
+  "half-2": {
+   "before": 28.5,
+   "height": 28.5,
+   "standard": true,
+   "saved": {
+    "ht": 28.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbi",
+     "wrap": false
+    }
+   }
+  },
+  "half-3": {
+   "before": 45.75,
+   "height": 45.75,
+   "standard": true,
+   "saved": {
+    "ht": 45.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbD",
+     "wrap": false
+    }
+   }
+  },
+  "half-4": {
+   "before": 22.5,
+   "height": 22.5,
+   "standard": true,
+   "saved": {
+    "ht": 22.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bD",
+     "wrap": false
+    }
+   }
+  },
+  "half-5": {
+   "before": 34.5,
+   "height": 34.5,
+   "standard": true,
+   "saved": {
+    "ht": 34.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbi",
+     "wrap": false
+    }
+   }
+  },
+  "half-6": {
+   "before": 63.75,
+   "height": 63.75,
+   "standard": true,
+   "saved": {
+    "ht": 63.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbD",
+     "wrap": false
+    }
+   }
+  },
+  "size-1": {
+   "before": 39,
+   "height": 39,
+   "standard": true,
+   "saved": {
+    "ht": 39
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-2": {
+   "before": 54,
+   "height": 54,
+   "standard": true,
+   "saved": {
+    "ht": 54
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-3": {
+   "before": 53.25,
+   "height": 53.25,
+   "standard": true,
+   "saved": {
+    "ht": 53.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-4": {
+   "before": 121.5,
+   "height": 121.5,
+   "standard": true,
+   "saved": {
+    "ht": 121.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-5": {
+   "before": 59.25,
+   "height": 59.25,
+   "standard": true,
+   "saved": {
+    "ht": 59.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-6": {
+   "before": 80.25,
+   "height": 80.25,
+   "standard": true,
+   "saved": {
+    "ht": 80.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-7": {
+   "before": 79.5,
+   "height": 79.5,
+   "standard": true,
+   "saved": {
+    "ht": 79.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-8": {
+   "before": 181.5,
+   "height": 181.5,
+   "standard": true,
+   "saved": {
+    "ht": 181.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-9": {
+   "before": 73.5,
+   "height": 73.5,
+   "standard": true,
+   "saved": {
+    "ht": 73.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-10": {
+   "before": 101.25,
+   "height": 101.25,
+   "standard": true,
+   "saved": {
+    "ht": 101.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-11": {
+   "before": 99.75,
+   "height": 99.75,
+   "standard": true,
+   "saved": {
+    "ht": 99.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-12": {
+   "before": 229.5,
+   "height": 229.5,
+   "standard": true,
+   "saved": {
+    "ht": 229.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-13": {
+   "before": 88.5,
+   "height": 88.5,
+   "standard": true,
+   "saved": {
+    "ht": 88.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-14": {
+   "before": 121.5,
+   "height": 121.5,
+   "standard": true,
+   "saved": {
+    "ht": 121.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-15": {
+   "before": 120,
+   "height": 120,
+   "standard": true,
+   "saved": {
+    "ht": 120
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-16": {
+   "before": 271.5,
+   "height": 271.5,
+   "standard": true,
+   "saved": {
+    "ht": 271.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-17": {
+   "before": 102,
+   "height": 102,
+   "standard": true,
+   "saved": {
+    "ht": 102
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-18": {
+   "before": 140.25,
+   "height": 140.25,
+   "standard": true,
+   "saved": {
+    "ht": 140.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-19": {
+   "before": 138.75,
+   "height": 138.75,
+   "standard": true,
+   "saved": {
+    "ht": 138.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-20": {
+   "before": 313.5,
+   "height": 313.5,
+   "standard": true,
+   "saved": {
+    "ht": 313.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-21": {
+   "before": 135,
+   "height": 135,
+   "standard": true,
+   "saved": {
+    "ht": 135
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-22": {
+   "before": 186.75,
+   "height": 186.75,
+   "standard": true,
+   "saved": {
+    "ht": 186.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-23": {
+   "before": 185.25,
+   "height": 185.25,
+   "standard": true,
+   "saved": {
+    "ht": 185.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "size-24": {
+   "before": 409.5,
+   "height": 409.5,
+   "standard": true,
+   "saved": {
+    "ht": 409.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "script-1": {
+   "before": 32.25,
+   "height": 32.25,
+   "standard": true,
+   "saved": {
+    "ht": 32.25
+   },
+   "cells": {
+    "0": {
+     "formula": "Итого",
+     "wrap": false
+    }
+   }
+  },
+  "script-2": {
+   "before": 33,
+   "height": 33,
+   "standard": true,
+   "saved": {
+    "ht": 33
+   },
+   "cells": {
+    "0": {
+     "formula": "Итого",
+     "wrap": false
+    }
+   }
+  },
+  "script-3": {
+   "before": 76.5,
+   "height": 76.5,
+   "standard": true,
+   "saved": {
+    "ht": 76.5
+   },
+   "cells": {
+    "0": {
+     "formula": "Итого",
+     "wrap": false
+    }
+   }
+  },
+  "script-4": {
+   "before": 66,
+   "height": 66,
+   "standard": true,
+   "saved": {
+    "ht": 66
+   },
+   "cells": {
+    "0": {
+     "formula": "Сумма к оплате",
+     "wrap": false
+    }
+   }
+  },
+  "script-5": {
+   "before": 81,
+   "height": 81,
+   "standard": true,
+   "saved": {
+    "ht": 81
+   },
+   "cells": {
+    "0": {
+     "formula": "Сумма к оплате",
+     "wrap": false
+    }
+   }
+  },
+  "script-6": {
+   "before": 211.5,
+   "height": 211.5,
+   "standard": true,
+   "saved": {
+    "ht": 211.5
+   },
+   "cells": {
+    "0": {
+     "formula": "Сумма к оплате",
+     "wrap": false
+    }
+   }
+  },
+  "script-7": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "Ag Ag",
+     "wrap": false
+    }
+   }
+  },
+  "script-8": {
+   "before": 31.5,
+   "height": 31.5,
+   "standard": true,
+   "saved": {
+    "ht": 31.5
+   },
+   "cells": {
+    "0": {
+     "formula": "Ag Ag",
+     "wrap": false
+    }
+   }
+  },
+  "script-9": {
+   "before": 76.5,
+   "height": 76.5,
+   "standard": true,
+   "saved": {
+    "ht": 76.5
+   },
+   "cells": {
+    "0": {
+     "formula": "Ag Ag",
+     "wrap": false
+    }
+   }
+  },
+  "format-1": {
+   "before": 33,
+   "height": 33,
+   "standard": true,
+   "saved": {
+    "ht": 33
+   },
+   "cells": {
+    "0": {
+     "formula": "0.1234",
+     "wrap": false
+    }
+   }
+  },
+  "format-2": {
+   "before": 35.25,
+   "height": 35.25,
+   "standard": true,
+   "saved": {
+    "ht": 35.25
+   },
+   "cells": {
+    "0": {
+     "formula": "1234.5",
+     "wrap": false
+    }
+   }
+  },
+  "format-3": {
+   "before": 47.25,
+   "height": 47.25,
+   "standard": true,
+   "saved": {
+    "ht": 47.25
+   },
+   "cells": {
+    "0": {
+     "formula": "46096",
+     "wrap": false
+    }
+   }
+  },
+  "format-4": {
+   "before": 28.5,
+   "height": 28.5,
+   "standard": true,
+   "saved": {
+    "ht": 28.5
+   },
+   "cells": {
+    "0": {
+     "formula": "FALSE",
+     "wrap": false
+    }
+   }
+  },
+  "format-5": {
+   "before": 54.75,
+   "height": 54.75,
+   "standard": true,
+   "saved": {
+    "ht": 54.75
+   },
+   "cells": {
+    "0": {
+     "formula": "-1234567",
+     "wrap": false
+    }
+   }
+  },
+  "format-6": {
+   "before": 37.5,
+   "height": 37.5,
+   "standard": true,
+   "saved": {
+    "ht": 37.5
+   },
+   "cells": {
+    "0": {
+     "formula": "0.1234",
+     "wrap": false
+    }
+   }
+  },
+  "format-7": {
+   "before": 42.75,
+   "height": 42.75,
+   "standard": true,
+   "saved": {
+    "ht": 42.75
+   },
+   "cells": {
+    "0": {
+     "formula": "1234.5",
+     "wrap": false
+    }
+   }
+  },
+  "format-8": {
+   "before": 70.5,
+   "height": 70.5,
+   "standard": true,
+   "saved": {
+    "ht": 70.5
+   },
+   "cells": {
+    "0": {
+     "formula": "46096",
+     "wrap": false
+    }
+   }
+  },
+  "format-9": {
+   "before": 32.25,
+   "height": 32.25,
+   "standard": true,
+   "saved": {
+    "ht": 32.25
+   },
+   "cells": {
+    "0": {
+     "formula": "FALSE",
+     "wrap": false
+    }
+   }
+  },
+  "format-10": {
+   "before": 69,
+   "height": 69,
+   "standard": true,
+   "saved": {
+    "ht": 69
+   },
+   "cells": {
+    "0": {
+     "formula": "-1234567",
+     "wrap": false
+    }
+   }
+  },
+  "cells-1": {
+   "before": 46.5,
+   "height": 46.5,
+   "standard": true,
+   "saved": {
+    "ht": 46.5
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbb",
+     "wrap": false
+    },
+    "1": {
+     "formula": "Ag",
+     "wrap": false
+    }
+   }
+  },
+  "cells-2": {
+   "before": 60,
+   "height": 60,
+   "standard": true,
+   "saved": {
+    "ht": 60
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbb",
+     "wrap": false
+    },
+    "1": {
+     "formula": "a\nb\nc\nd",
+     "wrap": true
+    },
+    "2": {
+     "formula": "bbb",
+     "wrap": false
+    }
+   }
+  },
+  "cells-3": {
+   "before": 26.25,
+   "height": 26.25,
+   "standard": true,
+   "saved": {
+    "ht": 26.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bbw",
+     "wrap": false
+    }
+   }
+  },
+  "cells-4": {
+   "before": 27,
+   "height": 27,
+   "standard": true,
+   "saved": {
+    "ht": 27
+   },
+   "cells": {
+    "0": {
+     "formula": "bbw",
+     "wrap": false
+    }
+   }
+  },
+  "merged-1": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbbbb",
+     "wrap": false
+    }
+   }
+  },
+  "blank-1": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  },
+  "blank-2": {
+   "before": 20.25,
+   "height": 20.25,
+   "standard": true,
+   "saved": {
+    "ht": 20.25
+   },
+   "cells": {
+    "0": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  },
+  "typed-1": {
+   "before": 15,
+   "height": 75.75,
+   "standard": true,
+   "saved": {
+    "ht": 75.75
+   },
+   "cells": {
+    "0": {
+     "formula": "bbbbbbbw",
+     "wrap": false
+    }
+   }
+  },
+  "typed-4": {
+   "before": 127.5,
+   "height": 17.25,
+   "standard": true,
+   "saved": {
+    "ht": 17.25
+   },
+   "cells": {
+    "0": {
+     "formula": "bb",
+     "wrap": false
+    }
+   }
+  }
+ }
+}
