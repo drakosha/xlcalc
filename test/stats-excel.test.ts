@@ -7,8 +7,11 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { engineStats, statsDifferences, statsFile, type StatsAnswer, type StatsSet } from '../bench/coverage/stats/cases.js'
 
+/** Excel for Mac shows the notes of the current sheet and never the workbook's, which the engine counts. */
+const bookNotes = (n: number) => [`workbook Notes: not shown, engine ${n}`]
+
 /** `<set>:<case id>` → the difference lines pinned between Excel and the engine, each with its reason. */
-const KNOWN: Readonly<Record<string, string[]>> = {}
+const KNOWN: Readonly<Record<string, string[]>> = { 'fit:sheets': bookNotes(2), 'fit:notes': bookNotes(4) }
 
 const SETS = ['fit']
 

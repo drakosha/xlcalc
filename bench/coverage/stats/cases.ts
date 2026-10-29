@@ -48,7 +48,7 @@ const COUNTS = [['Cells with data', 'cells'], ['Tables', 'tables'], ['PivotTable
 /** The rows of the engine's statistics as the window labels them, a count the workbook does not hold as `null`. */
 export function statsRows(st: WorkbookStatistics): StatsAnswer {
   const rows = (x: StatisticsCounts) => COUNTS.map(([label, k]): StatsRow => [label, String(x[k])])
-  return { sheet: [['End of sheet', st.sheet.end], ...rows(st.sheet)], workbook: [['Sheets', String(st.workbook.sheets)], ...rows(st.workbook)] }
+  return { sheet: [['End of sheet', String(st.sheet.end)], ...rows(st.sheet)], workbook: [['Sheets', String(st.workbook.sheets)], ...rows(st.workbook)] }
 }
 
 /** The engine's statistics of a case: over the book the reader reads from the case's file, with its sheet active. */

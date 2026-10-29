@@ -20,15 +20,15 @@ on run argv
 	tell application "Microsoft Excel" to activate
 	delay 1.5
 	-- the Review tab, then its button
-	my pressNamed({"AXRadioButton", "AXTab"}, "Review")
-	delay 1
-	my pressNamed({"AXButton", "AXMenuButton"}, "Workbook Statistics")
+	-- pressed again while the window has not come (the ribbon laid out again under a press)
+	repeat 3 times
+		my pressNamed({"AXRadioButton", "AXTab"}, "Review")
+		delay 1
+		my pressNamed({"AXButton", "AXMenuButton"}, "Workbook Statistics")
+		if my opened() then exit repeat
+	end repeat
 	set out to {}
 	tell application "System Events" to tell process "Microsoft Excel"
-		repeat 20 times
-			if exists window "Workbook Statistics" then exit repeat
-			delay 0.5
-		end repeat
 		set w to window "Workbook Statistics"
 		set els to entire contents of w
 		repeat with e in els
@@ -45,6 +45,15 @@ on run argv
 	set AppleScript's text item delimiters to linefeed
 	return out as text
 end run
+
+-- whether the window has come within 5 seconds
+on opened()
+	repeat 10 times
+		tell application "System Events" to if exists window "Workbook Statistics" of process "Microsoft Excel" then return true
+		delay 0.5
+	end repeat
+	return false
+end opened
 
 -- an element of Excel's windows of one of `roles` pressed by its name, description or title (the list of a window's
 -- elements taken once, as excel-ui.applescript's pressButton takes it)

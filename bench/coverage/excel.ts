@@ -75,6 +75,17 @@ export async function withExcelLock<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
+/** Closes unsaved the books Excel has open from a step's folder in the sandbox (`folder`, as `runWatched` names it, of this process), which a script cut short leaves. */
+export function closeOwnBooks(folder: string): void {
+  if (!excelProcess()) return
+  const dir = join(SANDBOX, `${folder}-${process.pid}`)
+  osa(`tell application "Microsoft Excel"
+    repeat with wb in (get workbooks)
+      if (full name of wb) starts with ${JSON.stringify(dir + '/')} then close wb saving no
+    end repeat
+  end tell`)
+}
+
 /** Excel's process and its arguments; null when it is not running. */
 export function excelProcess(): { pid: number; args: string } | null {
   const ps = execFileSync('ps', ['-axo', 'pid=,args='], { encoding: 'utf8' })
