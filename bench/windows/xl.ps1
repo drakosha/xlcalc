@@ -483,6 +483,9 @@ function Step($xl, $wb, $s) {
     'hideColumns' { (Rg $wb $s.sheet $s.range).EntireColumn.Hidden = [bool]$s.hidden; 'null' }
     'filter' { [void](Rg $wb $s.sheet $s.range).AutoFilter([int]$s.field, [string]$s.criterion); 'null' }
     'struct' { try { Struct $wb $s; 'null' } catch { Err $_ } }
+    # criteria on a field of a sheet's AutoFilter, and its range read, empty without one (bench/windows/filter.ts)
+    'autoFilter' { try { [void](Rg $wb $s.sheet $s.range).AutoFilter([int]$s.field, [string]$s.value); 'null' } catch { Err $_ } }
+    'filterRange' { $ws = $wb.Worksheets.Item($s.sheet); if ($ws.AutoFilterMode) { Str $ws.AutoFilter.Range.Address($false, $false) } else { Str '' } }
     # Paste Special as excel-paste.applescript pastes it (bench/windows/paste.ts): the range copied, the target's sheet
     # active, PasteSpecial with the XlPasteType, the operation (none when left out), Skip Blanks and Transpose; with copy,
     # Range.Copy with a destination
