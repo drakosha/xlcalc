@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 2.8,
-  "date": "2026-10-28"
+  "seconds": 4.4,
+  "date": "2026-10-29"
  },
  "books": {
   "probes-1": {
@@ -243,7 +243,7 @@
    "sent": "3a5b82b87cbed77dec9fc3a76216e19fe5362a8f7660b4b06458f487da0f0900"
   },
   "arity-1": {
-   "sent": "308a26e8f2c270766be9b1e515d57a747402a88950d950311311aae7a1ba05be"
+   "sent": "6cd4f4c05e425dfd9c9ef0f5a3f8717cf16b80c937cdcc40bb9b76ffad1f62d2"
   },
   "char-code-1": {
    "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
@@ -457,6 +457,15 @@
   },
   "xmatch-regex-syntax-2-1": {
    "sent": "ec3723033c090d07a22f48d2a08f4429b3ad5b886ff4e2dc4a4ffd88a57532fd"
+  },
+  "groupby-1": {
+   "sent": "0687afa8575488e3f6c52cc9e10009f2dafd48928b42c82f9de870216c04f142"
+  },
+  "lambda-1": {
+   "sent": "08556b22733edf28ac785ea40b1ae6743a22e589c46a618d57d8750afa89ceea"
+  },
+  "lambda-depth-1": {
+   "sent": "b438a0e5a6312b264c257772c6bbf9efb92660e249292302a9800f099c00c0d2"
   }
  }
 }
