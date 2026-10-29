@@ -181,30 +181,34 @@ function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean 
   return (name) => names.has(caseKey(name))
 }
 
-/** Whether a formula has what `bindCalls` binds: a name, a call of a function no list has, a call of a value; most have none. */
-export function bindable(ast: Ast): boolean {
+/**
+ * Whether a formula has what `bindCalls` binds: a name, a call of a function no list has (`isFn` tells the functions), a
+ * call of a value; most have none.
+ */
+export function bindable(ast: Ast, isFn: (name: string) => boolean = isFunction): boolean {
   let found = false
   walk(ast, (n) => {
-    found ||= (n.k === 'name' && n.sheet === undefined) || n.k === 'call' || (n.k === 'fn' && !isFunction(n.name))
+    found ||= (n.k === 'name' && n.sheet === undefined) || n.k === 'call' || (n.k === 'fn' && !isFn(n.name))
   })
   return found
 }
 
 /** Whether a word names a function a formula can take as a value: a whitelisted one, not syntax (LET, LAMBDA). */
-export const etaName = (word: string) => isFunction(wordKey(word)) && !SYNTAX.includes(wordKey(word))
+export const etaName = (word: string, isFn: (name: string) => boolean = isFunction) => isFn(wordKey(word)) && !SYNTAX.includes(wordKey(word))
 
 /**
  * Calls of defined names and functions as values: a call of a function no list has whose name the book defines is a
  * call of the name (`MyFn(1,2)`), a LET name's or a parameter's call by a function's name a call of the function; with
  * `eta`, as a file writes them, a function's word the book does not define is the function as a value (`_xleta.SUM`).
- * A formula's own text keeps such a word as typed: the book may define it later.
+ * A formula's own text keeps such a word as typed: the book may define it later. `isFn` tells the functions (the
+ * engine's by default).
  */
-export function bindCalls(ast: Ast, defined: (name: string) => boolean, external: ReadonlySet<string> = new Set(), eta = false): Ast {
+export function bindCalls(ast: Ast, defined: (name: string) => boolean, external: ReadonlySet<string> = new Set(), eta = false, isFn: (name: string) => boolean = isFunction): Ast {
   return mapAst(ast, (n) => {
     // a function's name calls the function, a LET name or a parameter of that name aside (`LET(sum,5,SUM(sum,1))`)
-    if (n.k === 'call' && n.fn.k === 'local' && isFunction(wordKey(n.fn.name)) && !SYNTAX.includes(wordKey(n.fn.name))) return { k: 'fn', name: wordKey(n.fn.name), args: n.args }
-    if (n.k === 'fn' && !isFunction(n.name) && !external.has(n.name) && defined(n.name)) return { k: 'call', fn: { k: 'name', name: n.name }, args: n.args }
-    return eta && n.k === 'name' && n.sheet === undefined && !defined(n.name) && etaName(n.name) ? { k: 'eta', name: wordKey(n.name) } : undefined
+    if (n.k === 'call' && n.fn.k === 'local' && etaName(n.fn.name, isFn)) return { k: 'fn', name: wordKey(n.fn.name), args: n.args }
+    if (n.k === 'fn' && !isFn(n.name) && !external.has(n.name) && defined(n.name)) return { k: 'call', fn: { k: 'name', name: n.name }, args: n.args }
+    return eta && n.k === 'name' && n.sheet === undefined && !defined(n.name) && etaName(n.name, isFn) ? { k: 'eta', name: wordKey(n.name) } : undefined
   })
 }
 
