@@ -1,0 +1,83 @@
+/**
+ * What CELL, INFO, SHEET, SHEETS, FORMULATEXT and ISFORMULA read of a book beside its values (`Cx.book`): its sheets,
+ * the formula a cell holds as Excel's formula bar shows it, a cell's look and its column's width, the file it was
+ * opened from (`EngineOptions.file`) and the active sheet's window.
+ */
+import type { BookFacts, CellFacts } from './args.js'
+import { charsOfPoints, columnPoints } from './column-width.js'
+import type { BookFile } from './contract.js'
+import { sheetIndexOf, type EngineState } from './engine.js'
+import { sheetLines, type SheetLines } from './layout/lines.js'
+import { showFormula } from './locale/index.js'
+import { formatAddress, parseAddress, placeOf } from './model.js'
+import { enCode } from './numfmt.js'
+import { tableAt } from './tables/model.js'
+
+/** The book's facts over a state, read as they are when asked: a session changes them in place. */
+export function bookFacts(state: EngineState, file: BookFile | undefined): BookFacts {
+  // a sheet's lines are read once for the state's input as it is (a change of looks or layout gives the sheet new ones)
+  const lines = new WeakMap<object, SheetLines>()
+  const linesOf = (s: number) => {
+    const sh = state.input.sheets[s]
+    let x = lines.get(sh)
+    if (!x) lines.set(sh, (x = sheetLines(sh, state)))
+    return x
+  }
+  // the old kind of array formula whose area holds the cell: each of its cells shows its formula
+  const arrayAt = (s: number, r: number, c: number) => {
+    const id = state.at.get(placeOf(s, r, c))
+    if (id !== undefined || !state.arrays) return id
+    return state.formulas.find((f) => f?.area && f.s === s && r >= f.area.r1 && r <= f.area.r2 && c >= f.area.c1 && c <= f.area.c2)?.id
+  }
+  const textAt = (s: number, r: number, c: number): string | undefined => {
+    const id = arrayAt(s, r, c)
+    if (id !== undefined) return state.formulas[id]!.text
+    return s < state.sheetNames.length ? state.input.sheets[s].cells[formatAddress(r, c)]?.formula : undefined
+  }
+  const active = () => {
+    const name = state.input.activeSheet
+    const s = name === undefined ? state.input.sheets.findIndex((x) => !x.hidden) : sheetIndexOf(state, name)!
+    return { s, view: state.input.sheets[s].view }
+  }
+  return {
+    get sheets() {
+      return state.sheetNames.length
+    },
+    sheetOf: (name) => sheetIndexOf(state, name),
+    sheetName: (s) => state.sheetNames[s],
+    hasFormula: (s, r, c) => textAt(s, r, c) !== undefined,
+    formula: (s, r, c) => {
+      const text = textAt(s, r, c)
+      if (text === undefined) return undefined
+      const t = showFormula(text, state.input.locale ?? 'en-US', tableAt(state.tables, s, r, c)?.name, state.input.externalBooks)
+      const shown = `=${t.ok ? t.formula : text}`
+      const id = arrayAt(s, r, c)
+      return id !== undefined && state.formulas[id]!.area ? `{${shown}}` : shown
+    },
+    cell: (s, r, c): CellFacts => {
+      const x = linesOf(s)
+      const look = x.look(r, c)
+      const style = look.style === undefined ? undefined : state.input.styles?.[look.style]
+      const width = x.column(c)?.width
+      return {
+        format: look.numberFormat === undefined ? 'General' : enCode(look.numberFormat),
+        horizontal: style?.alignment?.horizontal,
+        locked: style?.protection?.locked !== false,
+        width: charsOfPoints(columnPoints(width)),
+        defaultWidth: width === undefined,
+      }
+    },
+    file,
+    manual: state.input.calculation === 'manual',
+    activeCell: () => {
+      const { s, view } = active()
+      const at = view?.activeCell ? parseAddress(view.activeCell.split(':')[0]) : { row: 0, col: 0 }
+      return { s, r: at.row, c: at.col }
+    },
+    topLeft: () => {
+      const at = active().view?.topLeft
+      const p = at ? parseAddress(at) : { row: 0, col: 0 }
+      return { r: p.row, c: p.col }
+    },
+  }
+}

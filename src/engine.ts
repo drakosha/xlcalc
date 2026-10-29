@@ -7,7 +7,7 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
+import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
@@ -41,6 +41,7 @@ import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/
 import { E, fromCellValue, isErr, type Rng, type V } from './values.js'
 import { newDynamic, type Dynamic } from './graph/dynamic.js'
 import { referrer } from './indirect.js'
+import { bookFacts } from './book-facts.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -82,6 +83,8 @@ export interface EngineOptions {
   prior?: (f: Formula) => V | undefined
   /** Gets the sheets whose cells the state copied to change a held value: the book given holds other inputs there. */
   rewritten?: Set<number>
+  /** The file the book was opened from (`ComputeOptions.file`). */
+  file?: BookFile
 }
 
 export interface EngineState {
@@ -314,6 +317,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     bare: new Map(),
     links: linked.links,
   }
+  ctx.book = bookFacts(state, opts.file)
   const pending: Formula[] = []
   // the formulas of one shape are prepared once while this state is built
   const shapes: Shapes = new Map()
@@ -492,6 +496,15 @@ export function* applyClock(state: EngineState, now: number, seed: number): Step
   setNow(state, now, seed)
   const track = tracker()
   yield* recompute(state, new Set(state.volatile), track)
+  return changed(state, track)
+}
+
+/** Cells' looks, columns' widths or the windows changed: the formulas that read them (CELL) are computed again. */
+export function* applyLooks(state: EngineState): Steps<number[]> {
+  const ids = state.formulas.flatMap((f) => (f?.looks ? [f.id] : []))
+  if (!ids.length) return []
+  const track = tracker()
+  yield* recompute(state, new Set(ids), track)
   return changed(state, track)
 }
 

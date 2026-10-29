@@ -148,6 +148,8 @@ export interface FormulaInfo {
   volatile: boolean
   /** Calls a function that finds its reference as it computes (INDIRECT, OFFSET); absent otherwise. */
   dynamic?: true
+  /** Calls a function that reads cells' looks (CELL); absent otherwise. */
+  looks?: true
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
   nested: boolean
   /** Calls an external function (its missing value is #N/A). */
@@ -496,6 +498,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (spec.dynamic) info.dynamic = true
+        if (spec.looks) info.looks = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
         const open = OPEN_REFERENCE[n.name]
         if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)

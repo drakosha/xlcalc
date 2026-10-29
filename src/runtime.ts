@@ -4,7 +4,7 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Arg, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
+import { makeCaller, type Arg, type BookFacts, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
@@ -67,6 +67,8 @@ export interface RuntimeContext {
   spillRef: (s: number, r: number, c: number) => Rng | CErr
   /** While a dynamic formula computes: the references it finds (`graph/dynamic.ts`). */
   reads?: Rng[]
+  /** What the book holds beside its values (`book-facts.ts`). */
+  book?: BookFacts
   /** INDIRECT's reading of a text as a reference (`indirect.ts`); without it every text is #REF!. */
   refer?: (text: string, a1: boolean, s: number, r: number, c: number) => Rng | CErr
 }
@@ -318,6 +320,9 @@ export function makeRuntime(ctx: RuntimeContext) {
       return ctx.now
     },
     rules,
+    get book() {
+      return ctx.book!
+    },
     refer: (text, a1, s, r, c) => ctx.refer?.(text, a1, s, r, c) ?? E.REF,
     found: (g) => ctx.reads?.push(g),
     rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),

@@ -22,11 +22,6 @@ const PLATFORMS = [
   ['Excel for Windows', 'win/'],
 ] as const
 
-/** Functions the engine does not have (`#NAME?` in any book): Excel's answer over a closed book is in the comment. */
-const UNSUPPORTED: Record<string, string> = {
-  'functions-held/functions/S!A11': 'CELL over a closed book gives no text',
-}
-
 /**
  * Predictions Excel did not confirm, and why. A cell a link does not store was predicted blank: it is, until a formula
  * with that link is entered, which marks the link's sheets as Excel cannot read them (`refreshError`), and `#REF!` after.
@@ -96,8 +91,7 @@ describe.each(PLATFORMS)('links against %s', (_, root) => {
           const result = compute(book, { display: false })
           for (const [key, excel] of Object.entries(set.answers[c.id].reads[0].values)) {
             const got = valueIn(book, result, key)
-            if (UNSUPPORTED[at(c, key)]) expect(got, at(c, key)).toEqual({ t: 'e', v: 'NAME' })
-            else expect(agrees(excel, got), `${at(c, key)}: engine ${JSON.stringify(got)}, Excel ${JSON.stringify(excel)}`).toBe(true)
+            expect(agrees(excel, got), `${at(c, key)}: engine ${JSON.stringify(got)}, Excel ${JSON.stringify(excel)}`).toBe(true)
           }
         }
       })
@@ -115,8 +109,7 @@ describe.each(PLATFORMS)('links against %s', (_, root) => {
             const [sheet, cell] = key.split('!')
             const moved = root === '' ? maps.reduce((ref, m) => m(ref), { sheet, cell }) : { sheet, cell }
             const got = valueIn(book, result, `${moved.sheet}!${moved.cell}`)
-            if (UNSUPPORTED[at(c, key)]) expect(got, at(c, key)).toEqual({ t: 'e', v: 'NAME' })
-            else expect(agrees(excel, got), `${at(c, key)}: session ${JSON.stringify(got)}, Excel ${JSON.stringify(excel)}`).toBe(true)
+            expect(agrees(excel, got), `${at(c, key)}: session ${JSON.stringify(got)}, Excel ${JSON.stringify(excel)}`).toBe(true)
           }
           // targets as Excel resolves them from the opened book's folder are its file system's: `targets` is shown as stored
           if (c.id === 'targets') continue
