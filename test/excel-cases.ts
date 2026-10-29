@@ -134,7 +134,7 @@ export const REASONS = {
   macLongS:
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
   macPhonetic:
-    '`PHONETIC` of a reference is `#N/A` here, as Excel for Windows answers in a workbook without readings (the workbook keeps none of those a file stores with Japanese text); Excel for Mac answers `#NUM!`.',
+    '`PHONETIC` of a reference is `#N/A` here, as Excel for Windows answers in a workbook without readings (the workbook keeps none of those a file stores with Japanese text); Excel for Mac answers `#NUM!`, though the file it saves stores `#N/A`.',
   vdbSalvageAboveCost:
     '`VDB` with a salvage above the cost and a fractional start: the engine takes the negative amount in the period the start cuts, Excel in the next one, so `VDB(2400,3000,10,0.5,5)` is -600 in Excel and -300 here (with a whole start both give -600 or 0).',
   excelContext:

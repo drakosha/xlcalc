@@ -142,7 +142,10 @@ const SAVED_KNOWN: Record<string, string> = {
 }
 
 /** Cases where the value Excel stored on saving differs from its stored answer: Excel does not repeat it. */
-const SAVED_UNSTABLE: Record<string, string> = { 'fuzz:1#1263': 'DAY(WEEKNUM(40977,1E+3)<>2.5): 1 or #NUM! from run to run (bench/coverage/README.md)' }
+const SAVED_UNSTABLE: Record<string, string> = {
+  'fuzz:1#1263': 'DAY(WEEKNUM(40977,1E+3)<>2.5): 1 or #NUM! from run to run (bench/coverage/README.md)',
+  ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [`east-asian-held:PHONETIC#${i + 1}`, "PHONETIC: Excel for Mac answers the case's reading #NUM! and stores #N/A, Excel for Windows's answer"])),
+}
 
 /** Cells Excel left uncomputed, in a circular reference without iterative calculation: the file stores empty text for them. */
 const SAVED_UNCOMPUTED: Record<string, string> = Object.fromEntries(['SUMIF#1', 'SUMIF#2', 'SUMIF#3'].map((id) => [`sumif-own-held:${id}`, "SUMIF inside its own resized sum range (OPEN in test/excel-open.ts)"]))
