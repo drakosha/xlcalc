@@ -17,7 +17,7 @@ import { folded, matcher, replacer } from './find-text.js'
 import { sameType, sortOrder } from './sort-order.js'
 import { textOrder } from './collate.js'
 import { optionalLocale } from './locale/load.js'
-import { charsOfPoints, columnPoints, MAX_FILE_WIDTH, MAX_POINTS, pointsOfChars, widthOf } from './column-width.js'
+import { charsOfPoints, columnPoints, MAX_POINTS, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as decimals from './numfmt/decimals.js'
@@ -99,6 +99,9 @@ export const formatClipboard = /* @__PURE__ */ strict(function formatClipboard(r
   })
   return lines.join('\r\n') + (lines.length && o.trailingNewline !== false ? '\r\n' : '')
 })
+
+/** The widest stored width Excel for Mac writes, 255 digits and the padding (`MAX_POINTS` its points). */
+const MAX_FILE_WIDTH = 255.83203125
 
 /** A stored xlsx width in the library's Mac point model; null or undefined is the default 53 points. */
 export const columnWidthToPoints = /* @__PURE__ */ strict(function columnWidthToPoints(width?: number | null): number {
