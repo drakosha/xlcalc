@@ -93,8 +93,13 @@ on doubleClick(e)
 		set {x, y} to position of e
 		set {w, h} to size of e
 	end tell
-	set js to "ObjC.import('CoreGraphics'); var p = $.CGPointMake(" & (x + w / 2) & "," & (y + h / 2) & "); [[1,1],[2,1],[1,2],[2,2]].forEach(function (t) { var e = $.CGEventCreateMouseEvent(null, t[0], p, 0); $.CGEventSetIntegerValueField(e, 1, t[1]); $.CGEventPost(0, e); delay(0.05) })"
-	do shell script "osascript -l JavaScript -e " & quoted form of js
+	-- whole numbers: a real is written with the system's decimal separator, a comma in ru-RU
+	set js to "ObjC.import('CoreGraphics'); var p = $.CGPointMake(" & ((x + w div 2) as integer) & "," & ((y + h div 2) as integer) & "); [[1,1],[2,1],[1,2],[2,2]].forEach(function (t) { var e = $.CGEventCreateMouseEvent(null, t[0], p, 0); $.CGEventSetIntegerValueField(e, 1, t[1]); $.CGEventPost(0, e); delay(0.05) })"
+	try
+		do shell script "osascript -l JavaScript -e " & quoted form of js
+	on error msg
+		error "harness: the double click: " & msg
+	end try
 end doubleClick
 
 -- The source selected on its sheet, the Format Painter on (double-clicked for more targets), each target selected with
@@ -130,11 +135,13 @@ on paint(wb, ws, wt, op, bookName)
 		my shiftKey(item 3 of t)
 		delay 1
 	end repeat
+	-- Escape turns a double-clicked painter off, while its button reads on until the window closes; one clicked once turns off as it applies
 	if (count of more) is not 0 then
 		tell application "System Events" to key code 53
 		delay 0.8
+	else
+		tell application "System Events" to if (value of b as integer) is not 0 then error "harness: the Format Painter stayed on"
 	end if
-	tell application "System Events" to if (value of b as integer) is not 0 then error "harness: the Format Painter stayed on"
 end paint
 
 -- The window's radio button or check box (`kind`, its role) named `n`, clicked when its value is not `v`.
