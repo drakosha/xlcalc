@@ -9,7 +9,7 @@
 import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { caseFile, fileName, type CsvAnswer, type CsvCase, type CsvSet } from './csv/cases.js'
+import { caseFile, fileName, type CsvAnswer, type CsvCase, type CsvCases, type CsvSet } from './csv/cases.js'
 import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { HERE, ROOT } from './paths.js'
@@ -19,10 +19,20 @@ import { partsHash } from './xlsx/sent.js'
 const SCRIPT = join(HERE, 'excel-csv.applescript')
 
 /** The set's cases, the file of each case and what identifies it. */
-export async function csvSet(set: string): Promise<{ locale: string; cases: CsvCase[]; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
-  const built = (await setModule<CsvSet>('csv', set)).buildCsvCases()
+export async function csvSet(set: string): Promise<CsvFiles> {
+  return csvFiles((await setModule<CsvSet>('csv', set)).buildCsvCases())
+}
+
+export interface CsvFiles {
+  locale: string
+  cases: CsvCase[]
+  files: Map<string, Uint8Array>
+  sent: Record<string, string>
+}
+
+/** A set's cases with their files and what identifies each: a book by its parts, as the other steps send it, a CSV file by its bytes and name. */
+export async function csvFiles(built: CsvCases): Promise<CsvFiles> {
   const files = new Map(await Promise.all(built.cases.map(async (c) => [c.id, await caseFile(c)] as const)))
-  // a book by its parts, as the other steps send it; a CSV file by its bytes
   const hash = async (c: CsvCase) => (c.book ? partsHash(files.get(c.id)!) : createHash('sha256').update(files.get(c.id)!).update(fileName(c)).digest('hex'))
   const sent = Object.fromEntries(await Promise.all(built.cases.map(async (c) => [c.id, await hash(c)] as const)))
   return { locale: built.locale ?? 'en-US', cases: built.cases, files, sent }

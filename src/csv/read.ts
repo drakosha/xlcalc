@@ -3,7 +3,7 @@
  * (`fields.ts`), and each field is read as text pasted into a cell in the book's locale (`readEntry`, the way of a
  * paste): a number, a date, a time, a percentage or money with the format Excel sets, a boolean, an error, text, or a
  * formula; an apostrophe before text stays part of it, a formula that does not parse is text, and a field with a line
- * break wraps its cell. Where the book holds
+ * feed wraps its cell. Where the book holds
  * a field otherwise than Excel would by the options, an issue says so.
  */
 import type { BookInput, CellInput, EntryOptions } from '../contract.js'
@@ -18,6 +18,8 @@ import type { Locale } from '../locale/types.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, MAX_TEXT } from '../model.js'
 import { fileBytes } from '../xlsx/read/book.js'
 import { repairedName } from '../xlsx/read/sheet-names.js'
+import { legacyConverter } from '../legacy/convert.js'
+import { canonical, parse } from '../syntax.js'
 import { decodeCsv, encodingName } from './decode.js'
 import { csvRows, guessDelimiter, sepLine } from './fields.js'
 import { CsvIssues } from './issues.js'
@@ -90,8 +92,8 @@ export function readCsv(data: Uint8Array | ArrayBuffer | string, opts?: ReadCsvO
         issues.add('textLength', { key: 'csvTextCut' }, at)
       }
       const cell = cellOf(field, entry, o, issues, at)
-      // a field with a line break wraps its cell, as Excel opens it
-      cells[at] = /[\r\n]/.test(field) ? { ...cell, style: 0 } : cell
+      // a field with a line feed wraps its cell, as Excel opens it (a carriage return alone does not)
+      cells[at] = field.includes('\n') ? { ...cell, style: 0 } : cell
       wraps ||= cell !== cells[at]
     }
   }
@@ -102,22 +104,33 @@ export function readCsv(data: Uint8Array | ArrayBuffer | string, opts?: ReadCsvO
 }
 
 /**
- * A field as its cell's input: as pasted into the cell, and begun by `@` as a formula (Excel takes `@SUM(1)` so, as Lotus
- * did); a formula kept as text unless `formulas`, a code kept as text with `codesAsText`.
+ * A field as its cell's input: as pasted into the cell, and begun by `@` and a function's call as a formula (Excel takes
+ * `@SUM(1)` so, as Lotus did; `@A1` is text). Excel enters the formula as one of the old kind, so `A1:A2` takes the
+ * value in its row (`@A1:A2`, as `fromLegacy` reads it). A formula is kept as text unless `formulas`, a code with `codesAsText`.
  */
 function cellOf(field: string, entry: EntryOptions, o: Record<string, unknown>, issues: CsvIssues, at: string): CellInput {
   if (o.codesAsText === true && isCode(field)) return { value: field }
   const formulas = o.formulas === true
-  const typed = field.length > 1 && (field[0] === '=' || field[0] === '@')
+  const lotus = /^@[\p{L}_][\p{L}\p{N}_.]*\(/u.test(field)
+  const typed = lotus || (field.length > 1 && field[0] === '=')
   if (typed && !formulas) return text(field, issues, at)
   // pasted, a formula that does not parse is text; an error value (`#N/A`) is a formula of the error alone
-  const r = readEntry(typed ? `=${field.slice(1)}` : field, entry, 'pasted')
+  const r = readEntry(lotus ? `=${field.slice(1)}` : field, entry, 'pasted')
   const input = (r.ok && r.input) || { value: field }
   if (input.formula === undefined && typed) {
     issues.add('formula', { key: 'csvFormulaUnparsed' }, at)
     return { value: field }
   }
-  return input.formula !== undefined && field[0] !== '#' && !formulas ? text(field, issues, at) : input
+  if (input.formula === undefined || field[0] === '#') return input
+  return formulas ? { ...input, formula: oldKind(input.formula) } : text(field, issues, at)
+}
+
+const toDynamic = legacyConverter()
+
+/** A formula of the old kind as the dynamic formula Excel shows for it (`@A1:A2`), as written where it needs no `@`. */
+function oldKind(formula: string): string {
+  const ast = toDynamic(parse(formula))
+  return ast ? canonical(ast) : formula
 }
 
 /** A field Excel takes as a formula, kept as text. */
