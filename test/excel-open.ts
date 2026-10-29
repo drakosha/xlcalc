@@ -11,7 +11,14 @@ const SUMIF_OWN = "a circular reference through SUMIF's resized sum range: Excel
 /** Excel for Mac 16.114 answered #NUM! in the first run of the set `indirect`, a run beside other workbooks' calculations; the same formulas in the book of `indirect-held` gave the engine's answer. */
 const MAC_NUM = 'Excel for Mac 16.114 answered #NUM! in the first run of indirect, not in the book of indirect-held (the same formulas, again#1 to again#6): not repeated'
 
+/** The harness wrote a spill reference's file form inside INDIRECT's quotes (`bench/coverage/book.ts`, fixed): the set indirect-held-3 sent it as typed, and Excel answers as the engine. */
+const SENT = 'the harness sent INDIRECT("_xlfn.ANCHORARRAY(R!E1)") for INDIRECT("R!E1#"), which Excel answers #REF!; sent as typed (indirect-held-3), Excel answers as the engine'
+
 export const OPEN: Readonly<Record<string, { why: string; engine: Val }>> = {
+  'indirect:a1#32': { why: SENT, engine: { t: 'n', v: 6 } },
+  'indirect-held:again#7': { why: SENT, engine: { t: 'n', v: 6 } },
+  'indirect-held:again#8': { why: SENT, engine: { t: 'n', v: 3 } },
+  'indirect-held:again#9': { why: SENT, engine: { t: 'n', v: 2 } },
   'indirect:a1#26': { why: MAC_NUM, engine: { t: 'e', v: 'DIV0' } },
   'indirect:offset#37': { why: MAC_NUM, engine: { t: 'n', v: 30 } },
   'indirect:arrays#1': { why: MAC_NUM, engine: { t: 'n', v: 30 } },

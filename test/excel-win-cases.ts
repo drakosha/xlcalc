@@ -44,6 +44,7 @@ export const WIN_SETS: WinSet[] = [
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
 export const WIN_REASONS = {
+  winSentText: 'The harness sent `INDIRECT("_xlfn.ANCHORARRAY(R!E1)")` for `INDIRECT("R!E1#")` (the sets indirect and indirect-held), which Excel answers `#REF!`; sent as typed (indirect-held-3), Excel answers as the engine.',
   winTrimRange: '`TRIMRANGE` and the trim references (`A1:.C9`) are Excel for Mac\'s as of 16.114; Excel for Windows 16.0.20430 returns `#NAME?` for them.',
   winRegexMatch: 'Match mode 3 of `XMATCH` and `XLOOKUP`, regular expressions: Excel for Windows 16.0.20430 has none and answers `#VALUE!`; Excel for Mac 16.114 and the engine find the pattern (`XMATCH("[A-Z][a-z]+y",A2:A9,3)`, IronCalc\'s `XMATCH.xlsx`).',
   winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',

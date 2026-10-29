@@ -1,0 +1,82 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.832,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "spill#1",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT(\"R!E1#\"))"
+  },
+  {
+   "id": "spill#2",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "ROWS(INDIRECT(\"R!E1#\"))"
+  },
+  {
+   "id": "spill#3",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "INDEX(INDIRECT(\"R!E1#\"),2)"
+  },
+  {
+   "id": "spill#4",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT(\"R!A1#\"))"
+  },
+  {
+   "id": "spill#5",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "SUM(INDIRECT(\"R!E2#\"))"
+  },
+  {
+   "id": "spill#6",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "SUM(OFFSET(INDIRECT(\"R!E1#\"),1,0))"
+  },
+  {
+   "id": "spill#7",
+   "group": "spill",
+   "fn": "INDIRECT",
+   "formula": "COUNT(INDIRECT(\"R!$E$1#\"))"
+  }
+ ],
+ "values": {
+  "spill#1": {
+   "t": "n",
+   "v": 6
+  },
+  "spill#2": {
+   "t": "n",
+   "v": 3
+  },
+  "spill#3": {
+   "t": "n",
+   "v": 2
+  },
+  "spill#4": {
+   "t": "e",
+   "v": "REF"
+  },
+  "spill#5": {
+   "t": "e",
+   "v": "REF"
+  },
+  "spill#6": {
+   "t": "n",
+   "v": 5
+  },
+  "spill#7": {
+   "t": "n",
+   "v": 3
+  }
+ }
+}

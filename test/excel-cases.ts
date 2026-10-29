@@ -6,7 +6,7 @@
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
  */
-import { fromFile } from '../src/xlsx/formulas/from-file.js'
+import { plainFormula } from '../bench/coverage/xlsx/saved.js'
 import { readFileSync } from 'node:fs'
 import { compare, samePin } from '../bench/coverage/compare.js'
 import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
@@ -40,8 +40,8 @@ function dataInput(c: Cell): CellInput {
 }
 
 /** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
-// a trim reference's file form (`_xlfn._TRO_ALL(A1:C9)`) as the reader reads it (`A1.:.C9`)
-export const engineFormula = (f: string) => (f.includes('_TRO_') ? fromFile(f).formula : f).replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+/** A case's formula as the engine takes it (`plainFormula`). */
+export const engineFormula = plainFormula
 
 /** The measurement's data sheet, as in every book sent to Excel. */
 export function dataSheet(): BookInput['sheets'][number] {
@@ -137,8 +137,6 @@ export const REASONS = {
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
   infoConstants:
     "`INFO` returns Excel for Windows' constants (`system` `pcdos`, `release` `16.0`), where Excel for Mac returns `mac` and its version, and `numfile` counts the workbook's sheets, where Excel counts those of every open workbook.",
-  indirectSpillText:
-    "A spill reference typed in `INDIRECT`'s text (`INDIRECT(\"E1#\")`) is `#REF!` in Excel for Mac and for Windows, while the same text read from a cell gives the array's range (`INDIRECT(B5)` with `E1#` in B5); the engine gives the range both ways.",
   cellBookName:
     "`CELL(\"address\")` of another sheet's cell names the file the workbook was opened from, which a host passes as `file`; without it the engine names `Book1`, as Excel does for a workbook not saved yet, where Excel names the file it opened (`[book.xlsx]R!$B$3`).",
   quotedLastSheet: "A reference across sheets whose last sheet alone is quoted (`R:'Two Words'!A1`) is `#NAME?` in a file Excel opens; the engine reads it as `'R:Two Words'!A1`.",
@@ -167,10 +165,6 @@ export const BOTH_KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS;
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  'indirect:a1#32': { reason: 'indirectSpillText', engine: { t: 'n', v: 6 } },
-  'indirect-held:again#7': { reason: 'indirectSpillText', engine: { t: 'n', v: 6 } },
-  'indirect-held:again#8': { reason: 'indirectSpillText', engine: { t: 'n', v: 3 } },
-  'indirect-held:again#9': { reason: 'indirectSpillText', engine: { t: 'n', v: 2 } },
   'indirect:cell#1': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$B$3' } },
   'indirect:cell#3': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$A$1' } },
   'indirect:info#1': { reason: 'infoConstants', engine: { t: 's', v: 'pcdos' } },

@@ -6,7 +6,7 @@
  */
 import { wordKey } from '../collate.js'
 import { literal } from '../wildcards.js'
-import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
+import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource, TRIM_END } from '../syntax/scan.js'
 import type { Message } from './messages.js'
 
 /** Separators of formula text on one side of a translation. */
@@ -41,8 +41,7 @@ export interface LexFail {
 const IDENT = new RegExp(IDENT_RULE, 'uy')
 
 /** A trim reference's ends and operator: cells, columns or rows around `.:`, `:.` or `.:.`. */
-const END = '(?:\\$?[A-Za-z]{1,3}\\$?[0-9]+|\\$?[A-Za-z]{1,3}|\\$?[0-9]+)'
-const TRIM_REF = new RegExp(`${END}(?:\\.:\\.|\\.:|:\\.)${END}(?![\\p{L}\\p{N}_.(!])`, 'uy')
+const TRIM_REF = new RegExp(`${TRIM_END}(?:\\.:\\.|\\.:|:\\.)${TRIM_END}(?![\\p{L}\\p{N}_.(!])`, 'uy')
 /** A character a reference cannot follow: one of a name's. */
 const IDENT_AFTER = /[\p{L}\p{N}_.\\]/u
 

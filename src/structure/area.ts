@@ -22,8 +22,8 @@ export interface Area {
   trim?: 1 | 2 | 3
 }
 
-/** The dots of a trim reference's operator by its codes. */
-const TRIM_OPS = ['', '.:', ':.', '.:.'] as const
+/** A trim reference's operator, its dots by TRIMRANGE's codes: 1 leading, 2 trailing, 3 both. */
+export const TRIM_OPS = ['', '.:', ':.', '.:.'] as const
 
 /** What a reference's text trims (`Area.trim`), 0 for nothing. */
 export function trimOf(text: string): number {

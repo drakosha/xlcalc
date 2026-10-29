@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 2.8,
-  "date": "2026-10-28"
+  "seconds": 1.4,
+  "date": "2026-10-29"
  },
  "books": {
   "probes-1": {
@@ -457,6 +457,15 @@
   },
   "xmatch-regex-syntax-2-1": {
    "sent": "ec3723033c090d07a22f48d2a08f4429b3ad5b886ff4e2dc4a4ffd88a57532fd"
+  },
+  "indirect-1": {
+   "sent": "db9d6272a7ad0e8bb03b568edbe6fd4b97f947e2ee6fd165484af970c2a2b7e2"
+  },
+  "indirect-held-1": {
+   "sent": "c30a7c90af7d4a9a8563a468795bc59097a18cd61e597fb7b6225b9de5c85e7e"
+  },
+  "indirect-held-3-1": {
+   "sent": "3d67eca60b992ef08938a17bbc979a0100b0e2d364fa1e88998bf514f9cb5459"
   }
  }
 }

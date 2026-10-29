@@ -8,7 +8,8 @@
  */
 import { FormulaError } from '../../syntax/ast.js'
 import { letNameClash, parse } from '../../syntax/parse.js'
-import { bracketEnd, closingQuote, FILE_WORD_CHAR, IDENT_RULE } from '../../syntax/scan.js'
+import { bracketEnd, closingQuote, FILE_WORD_CHAR, IDENT_RULE, TRIM_END, TRIM_FUNCTIONS } from '../../syntax/scan.js'
+import { TRIM_OPS } from '../../structure/area.js'
 
 export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
 
@@ -27,10 +28,7 @@ const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
 /** A range of cells, columns or rows, with its sheet or without: what a trim reference's file form takes (`_xlfn._TRO_ALL(A1:C9)`). */
-const RANGE_END = '(?:\\$?[A-Za-z]{1,3}\\$?\\d+|\\$?[A-Za-z]{1,3}|\\$?\\d+)'
-const TRIMMED = new RegExp(`^((?:(?:'(?:[^']|'')+'|[^\\s'!(),]+)!)?${RANGE_END}):(${RANGE_END})$`)
-/** A trim reference's operator by its file form's name. */
-const TRIM_OP: Readonly<Record<string, string>> = { _TRO_LEADING: '.:', _TRO_TRAILING: ':.', _TRO_ALL: '.:.' }
+const TRIMMED = new RegExp(`^((?:(?:'(?:[^']|'')+'|[^\\s'!(),]+)!)?${TRIM_END}):(${TRIM_END})$`)
 /** A link's number at the start of a bracketed run (`[1]`), quoted or not. */
 const LINK = /^'?\[(\d+)\]/
 
@@ -120,17 +118,17 @@ export function fromFile(src: string): Converted {
     }
     if (kind === '_xlpm.' && letNameClash(name)) found.add('letName')
     const open = i + name.length
-    const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY' || upper in TRIM_OP) ? closing(src, open) : -1
+    const trim = TRIM_FUNCTIONS.indexOf(upper as (typeof TRIM_FUNCTIONS)[number])
+    const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY' || trim > 0) ? closing(src, open) : -1
     if (close >= 0) {
       const inner = fromFile(src.slice(open + 1, close).trim())
       inner.found.forEach((x) => found.add(x))
       links.push(...(inner.links ?? []))
       inner.userFunctions?.forEach((x) => udfs.add(x))
       // a trim reference: its range with the operator's dots, else TRIMRANGE over what it trims
-      if (upper in TRIM_OP) {
+      if (trim > 0) {
         const m = TRIMMED.exec(inner.formula)
-        const code = Object.keys(TRIM_OP).indexOf(upper) + 1
-        out += m ? `${m[1]}${TRIM_OP[upper]}${m[2]}` : `TRIMRANGE(${inner.formula},${code},${code})`
+        out += m ? `${m[1]}${TRIM_OPS[trim]}${m[2]}` : `TRIMRANGE(${inner.formula},${trim},${trim})`
         i = close + 1
         continue
       }

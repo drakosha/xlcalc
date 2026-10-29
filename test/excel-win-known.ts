@@ -7,7 +7,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import type { Reason } from './excel-win-cases.js'
 
 export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: Val }>> = {
-  'en-US:indirect:a1#32': { reason: 'indirectSpillText', engine: { t: 'n', v: 6 } },
+  'en-US:indirect:a1#32': { reason: 'winSentText', engine: { t: 'n', v: 6 } },
   'en-US:indirect:cell#1': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$B$3' } },
   'en-US:indirect:cell#3': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$A$1' } },
   'en-US:indirect:sheets#3': { reason: 'quotedLastSheet', engine: { t: 'n', v: 2 } },
@@ -38,9 +38,9 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:indirect:tro#2': { reason: 'winTrimRange', engine: { t: 'n', v: 8 } },
   'en-US:indirect:tro#3': { reason: 'winTrimRange', engine: { t: 'n', v: 5 } },
   'en-US:indirect:tro#4': { reason: 'winTrimRange', engine: { t: 'n', v: 6 } },
-  'en-US:indirect-held:again#7': { reason: 'indirectSpillText', engine: { t: 'n', v: 6 } },
-  'en-US:indirect-held:again#8': { reason: 'indirectSpillText', engine: { t: 'n', v: 3 } },
-  'en-US:indirect-held:again#9': { reason: 'indirectSpillText', engine: { t: 'n', v: 2 } },
+  'en-US:indirect-held:again#7': { reason: 'winSentText', engine: { t: 'n', v: 6 } },
+  'en-US:indirect-held:again#8': { reason: 'winSentText', engine: { t: 'n', v: 3 } },
+  'en-US:indirect-held:again#9': { reason: 'winSentText', engine: { t: 'n', v: 2 } },
   'en-US:indirect-held:trim#1': { reason: 'winTrimRange', engine: { t: 'n', v: 5 } },
   'en-US:indirect-held:trim#2': { reason: 'winTrimRange', engine: { t: 'n', v: 8 } },
   'en-US:indirect-held:trim#3': { reason: 'winTrimRange', engine: { t: 'n', v: 5 } },

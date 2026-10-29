@@ -9,7 +9,7 @@ import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, MIN_NORMAL, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
 import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
-import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource } from './scan.js'
+import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource, TRIM_END } from './scan.js'
 import { readSpec, type TableSpec } from './table.js'
 
 export type Tok =
@@ -66,7 +66,7 @@ function colNo(s: string, at: number): number {
 const lowFirst = (a: string, i: number, b: string, j: number): [string, string] => (i <= j ? [a, b] : [b, a])
 
 /** A trim reference's operator after its first end (`A1.:C9`, `A1:.C9`, `A1.:.C9`, Excel 365's): the first end and the dots. */
-const TRIM_OP = /^(\$?[A-Za-z]{1,3}\$?[0-9]+|\$?[A-Za-z]{1,3}|\$?[0-9]+)(\.:\.|\.:|:\.)/
+const TRIM_OP = new RegExp(`^(${TRIM_END})(\\.:\\.|\\.:|:\\.)`)
 
 /**
  * A reference without a sheet at position `at` in `rest`, or null; a trim reference's dots stay in its text, which
