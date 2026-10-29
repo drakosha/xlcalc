@@ -26,6 +26,11 @@ const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
 const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
+/** A range of cells, columns or rows, with its sheet or without: what a trim reference's file form takes (`_xlfn._TRO_ALL(A1:C9)`). */
+const RANGE_END = '(?:\\$?[A-Za-z]{1,3}\\$?\\d+|\\$?[A-Za-z]{1,3}|\\$?\\d+)'
+const TRIMMED = new RegExp(`^((?:(?:'(?:[^']|'')+'|[^\\s'!(),]+)!)?${RANGE_END}):(${RANGE_END})$`)
+/** A trim reference's operator by its file form's name. */
+const TRIM_OP: Readonly<Record<string, string>> = { _TRO_LEADING: '.:', _TRO_TRAILING: ':.', _TRO_ALL: '.:.' }
 /** A link's number at the start of a bracketed run (`[1]`), quoted or not. */
 const LINK = /^'?\[(\d+)\]/
 
@@ -115,12 +120,20 @@ export function fromFile(src: string): Converted {
     }
     if (kind === '_xlpm.' && letNameClash(name)) found.add('letName')
     const open = i + name.length
-    const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY') ? closing(src, open) : -1
+    const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY' || upper in TRIM_OP) ? closing(src, open) : -1
     if (close >= 0) {
       const inner = fromFile(src.slice(open + 1, close).trim())
       inner.found.forEach((x) => found.add(x))
       links.push(...(inner.links ?? []))
       inner.userFunctions?.forEach((x) => udfs.add(x))
+      // a trim reference: its range with the operator's dots, else TRIMRANGE over what it trims
+      if (upper in TRIM_OP) {
+        const m = TRIMMED.exec(inner.formula)
+        const code = Object.keys(TRIM_OP).indexOf(upper) + 1
+        out += m ? `${m[1]}${TRIM_OP[upper]}${m[2]}` : `TRIMRANGE(${inner.formula},${code},${code})`
+        i = close + 1
+        continue
+      }
       if (upper === 'SINGLE' || ANCHOR.test(inner.formula)) {
         out += upper === 'SINGLE' ? single(inner.formula) : `${inner.formula}#`
         i = close + 1

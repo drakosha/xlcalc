@@ -11,7 +11,7 @@ import { holds } from '../arity.js'
 import { FUNCTIONS } from '../functions.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
+import { decode, trimOf, type Area, type Bound, type Rect } from '../structure/area.js'
 import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
@@ -429,6 +429,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return b.moving!(at, n.ref.spill ? 'spill' : n.ref.kind === 'cell' && !rangeOk ? 'cell' : rangeOk ? 'range' : 'value')
         }
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
+        // a trim reference (`A1:.C9`) is TRIMRANGE over its range
+        const trim = trimOf(n.ref.text)
+        if (trim) return b.call('TRIMRANGE', [b.range(g, false), b.value(trim), b.value(trim)], false)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
       }

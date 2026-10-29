@@ -65,8 +65,24 @@ function colNo(s: string, at: number): number {
 /** An axis's two bounds as written, `$` and all, the lower first: Excel orders each axis of a typed `B2:A1` on its own (`A1:B2`). */
 const lowFirst = (a: string, i: number, b: string, j: number): [string, string] => (i <= j ? [a, b] : [b, a])
 
-/** A reference without a sheet at position `at` in `rest`, or null. */
+/** A trim reference's operator after its first end (`A1.:C9`, `A1:.C9`, `A1.:.C9`, Excel 365's): the first end and the dots. */
+const TRIM_OP = /^(\$?[A-Za-z]{1,3}\$?[0-9]+|\$?[A-Za-z]{1,3}|\$?[0-9]+)(\.:\.|\.:|:\.)/
+
+/**
+ * A reference without a sheet at position `at` in `rest`, or null; a trim reference's dots stay in its text, which
+ * `structure/area.ts` reads (`trimOf`).
+ */
 function readRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
+  const t = TRIM_OP.exec(rest)
+  if (!t) return readPlainRef(rest, at)
+  const r = readPlainRef(t[1] + ':' + rest.slice(t[0].length), at)
+  if (!r || r.ref.kind === 'cell' || r.ref.spill) return null
+  const i = r.ref.text.indexOf(':')
+  r.ref.text = r.ref.text.slice(0, i) + t[2] + r.ref.text.slice(i + 1)
+  return { ref: r.ref, len: r.len + t[2].length - 1 }
+}
+
+function readPlainRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
   const next = (len: number) => rest[len] ?? ''
   let m = CELL_RANGE.exec(rest)
   // the second cell of `S1:S3!A1` is a sheet's name, of `A1:E2#` a spill reference: the first is a cell alone, before the range operator

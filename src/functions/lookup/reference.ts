@@ -52,7 +52,7 @@ const position = (row: boolean): FnDef => ({
  */
 function trimRange(cx: Cx, x: Arg, rows = 3, cols = 3): Arg {
   if (isErr(x)) return x
-  if (rows < 0 || rows > 3 || cols < 0 || cols > 3) return E.VALUE
+  if (![rows, cols].every((x) => Number.isInteger(x) && x >= 0 && x <= 3)) return E.VALUE
   if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
   const b = cx.bounds(x)
   const v = cx.flat(x)
@@ -85,5 +85,5 @@ export const functions: Record<string, FnDef> = {
   HYPERLINK: { args: 'v v?', cx: true, fn: (cx: Cx, link: V, name?: V) => (name === undefined ? cx.rules.toText(link) : name) },
   ROW: position(true),
   ROWS: { args: 'G', fn: (g: Grid) => g.rows },
-  TRIMRANGE: { args: 'R w? w?', cx: true, array: true, fn: trimRange },
+  TRIMRANGE: { args: 'R n? n?', cx: true, array: true, fn: trimRange },
 }

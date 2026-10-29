@@ -12,10 +12,14 @@ import { plain } from '../../syntax/links.js'
 import { linkedSheet, printFormula, quoteSheet, type PrintOptions } from '../../syntax/print.js'
 import { specText } from '../../syntax/table.js'
 import { XLFN, XLWS } from './prefixes.js'
+import { trimOf } from '../../structure/area.js'
 
 
 /** Another workbook's sheet before `!`: quoted unless its name is a plain one that reads as no cell. */
 const fileLinkSheet = (book: number | string, sheet: string) => (plain(sheet) ? linkedSheet(book, sheet) : quoteSheet(linkedSheet(book, sheet)))
+
+/** The file's functions of the trim references by TRIMRANGE's codes. */
+const TRIMS = ['_TRO_LEADING', '_TRO_TRAILING', '_TRO_ALL']
 
 const fn = (name: string) => (XLWS.has(name) ? `_xlfn._xlws.${name}` : XLFN.has(name) ? `_xlfn.${name}` : name)
 
@@ -32,6 +36,9 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
       if (n.ref?.endsWith('#')) return `_xlfn.ANCHORARRAY(${usual({ ...n, ref: n.ref.slice(0, -1) })})`
       return typeof n.book === 'number' && n.sheet !== undefined ? `${fileLinkSheet(n.book, n.sheet)}!${ERROR_TEXT[n.code]}${n.ref ?? ''}` : undefined
     case 'ref': {
+      // a trim reference is its range under the function of its operator (`A1:.C9` is `_xlfn._TRO_TRAILING(A1:C9)`)
+      const trim = trimOf(n.ref.text)
+      if (trim) return `_xlfn.${TRIMS[trim - 1]}(${usual({ ...n, ref: { ...n.ref, text: n.ref.text.replace(/\.?:\.?/, ':') } })})`
       if (!n.ref.spill) return undefined
       const { spill: _spill, ...ref } = n.ref
       return `_xlfn.ANCHORARRAY(${usual({ ...n, ref })})`
