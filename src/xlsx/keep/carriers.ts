@@ -74,8 +74,8 @@ export interface Item {
   /** The sheet of the source the part lies on: deleted with it, its references go too. */
   on?: number
   carriers: Carrier[]
-  /** The edits; `at` gives the lines' sizes of the sheet the part lies on. */
-  fix(now: string[], at: Geometry): Fix
+  /** The edits; `at` gives the lines' sizes of the sheet the part lies on, as the book read and the book written have them. */
+  fix(now: string[], at: { was: Geometry; now: Geometry }): Fix
 }
 
 /** A cell of the file with what only the file holds, and its carrier. */
@@ -100,7 +100,12 @@ export const KEPT_FORMATS = 5_000
 /** The length of a carrier of a format's rectangles, past which they go to another. */
 const FORMAT_TEXT = 2_000
 
+/** The version of the carriers' layout: raised when the carriers of the same file come to mean other things to `writeKept`. */
+const LAYOUT = 1
+
 export interface Carriers {
+  /** The name whose text is the layout's fingerprint: its version and what the carriers are, of which file's parts (`layoutOf`). */
+  layout: { name: string; ref: string }
   /** Each of the source's sheets' carrier, in the book's order of them. */
   sheets: Carrier[]
   /** By sheet of the source: its cells with what only the file holds; none past `KEPT_CELLS`, their count in `uncarried`. */
@@ -187,7 +192,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   }
   const parts = { n: 0 }
   const carrier = (ref: string, kind: Carrier['kind']): Carrier => ({ name: fresh('', parts), ref, kind })
-  const out: Carriers = { sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []), rules: [] }
+  const out: Carriers = { layout: { name: '', ref: '' }, sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []), rules: [] }
   for (const [i, sheet] of names.entries()) {
     let name = `${PREFIX}s${i}`
     for (let k = 2; taken.has(caseKey(name)); k++) name = `${PREFIX}s${i}.${k}`
@@ -298,6 +303,9 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   for (const part of types.parts((t) => /pivotCacheDefinition\+xml$/i.test(t))) pivotCache((await src.archive.text(part)) ?? '', part)
   // macro and dialog sheets hold formulas over the worksheets
   for (const d of src.decls) if (d.kind !== undefined && d.kind !== 'worksheet' && d.kind !== 'chartsheet') out.anywhere.push({ part: 'sheetKind', kind: d.kind, name: d.name })
+  let layout = `${PREFIX}layout`
+  for (let k = 2; taken.has(caseKey(layout)); k++) layout = `${PREFIX}layout${k}`
+  out.layout = { name: layout, ref: `"${layoutOf(out)}"` }
   return out
 
   /**
@@ -423,14 +431,20 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
               if (r2 === undefined) set(to.rowOff, 0)
               if (c2 === undefined) set(to.colOff, 0)
             } else if (to) {
-              // its size kept: a corner that lost its offset takes it off the other corner too
-              const keep = (lo: number, line: number, off: number, was: number, size: (i: number) => number): [number, number] => {
-                let [n, o] = [lo + line, off - was]
-                while (o < 0 && n > lo) o += size(--n)
-                return [n, Math.max(0, o)]
+              // its size kept in EMUs, as Excel keeps it (the set keep/struct): where lines under it were inserted or
+              // deleted, or its first lost its offset, the far corner is laid out again over the lines' sizes now
+              const keep = (a: 'row' | 'col', lo: number, lost: boolean, lines: number | undefined): [number, number] => {
+                const [f, t, fo, tOff] = [from[a].value, to[a].value, from[`${a}Off`].value, to[`${a}Off`].value]
+                if (!lost && lines === t - f) return [lo + (t - f), tOff]
+                let o = (lost ? 0 : fo) + tOff - fo
+                for (let i = f; i < t; i++) o += at.was[a](i)
+                const last = (a === 'row' ? MAX_ROWS : MAX_COLS) - 1
+                let n = lo
+                while (n < last && o >= at.now[a](n)) o -= at.now[a](n++)
+                return [n, o]
               }
-              const [row, rowOff] = r1 === undefined ? keep(top, to.row.value - from.row.value, to.rowOff.value, from.rowOff.value, at.row) : [top + (to.row.value - from.row.value), to.rowOff.value]
-              const [col, colOff] = c1 === undefined ? keep(left, to.col.value - from.col.value, to.colOff.value, from.colOff.value, at.col) : [left + (to.col.value - from.col.value), to.colOff.value]
+              const [row, rowOff] = keep('row', top, r1 === undefined, r ? r.r2 - r.r1 : undefined)
+              const [col, colOff] = keep('col', left, c1 === undefined, r ? r.c2 - r.c1 : undefined)
               set(to.row, row)
               set(to.col, col)
               if (rowOff !== to.rowOff.value) set(to.rowOff, rowOff)
@@ -484,8 +498,8 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
             if (!area) return { refuse: { key: 'keptNoRef', what }, code: 'deleted' }
             // its sheet deleted, Excel makes the source a link to the file by its path (`r:id` of an external link path,
             // the set keep/struct), which writeKept does not know, and does not open the source left as it was (keep
-            // struct-open); its cells deleted is not measured
-            if ('lost' in area) return { refuse: { key: area.sheet === undefined ? 'keptCacheSheet' : 'keptCellsDeleted', what }, code: 'deleted' }
+            // struct-open); its cells deleted, Excel keeps the source as it was (keep/struct)
+            if ('lost' in area) return area.sheet === undefined ? { refuse: { key: 'keptCacheSheet', what }, code: 'deleted' } : { edits: [] }
             return { edits: [{ part, start: ref[0], end: ref[1], text: plainArea(area.rect) }, { part, start: sheet[0], end: sheet[1], text: escapeAttr(area.sheet) }] }
           },
         })
@@ -583,7 +597,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
     }
   }
 
-  /** Sparklines (the sheet's extension `e`): each one's data (`xm:f`, a formula) and its cell (`xm:sqref`); a cell deleted is refused. */
+  /** Sparklines (the sheet's extension `e`): each one's data (`xm:f`, a formula) and its cell (`xm:sqref`), `#REF!` where it was deleted, as Excel keeps it (keep/struct); some of its cells deleted is refused. */
   function sparklines(xml: string, e: Span, i: number, part: string) {
     const what: KeptPart = { part: 'sparklines', sheet: names[i] }
     for (const f of within(xml, e.start, e.end, 'f')) formula(part, [f.open, f.close], readText(f.body ?? ''), what, escapeText, i)
@@ -599,7 +613,8 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
         carriers: [carrier(ref, 'place')],
         fix([now]) {
           const xs = rectsNow(now)
-          if (!xs || xs.some((x) => x === null)) return { refuse: { key: 'keptSparkline', sheet: names[i] }, code: 'deleted' }
+          if (!xs || xs.every((x) => x === null)) return { edits: [{ part, start: q.open, end: q.close, text: '#REF!' }] }
+          if (xs.some((x) => x === null)) return { refuse: { key: 'keptSparkline', sheet: names[i] }, code: 'deleted' }
           return { edits: [{ part, start: q.open, end: q.close, text: (xs as Rect[]).map(plainArea).join(' ') }] }
         },
       })
@@ -634,9 +649,33 @@ function refersToBook(ast: Ast, known: Set<string>): boolean {
   return found
 }
 
-/** The carriers as the book's names, hidden ones. */
+/**
+ * The fingerprint of the carriers' layout: the version and each carrier's name, kind and reference, by what it carries
+ * (a sheet, a cell, a format, the part of an item), in two lanes of FNV-1a (a check of identity, not of trust). A book
+ * opened by another version of `openKept`, whose names are given in another order, or over another file has another;
+ * `writeKept` refuses it rather than read its names wrong.
+ */
+function layoutOf(c: Carriers): string {
+  let [a, b] = [0x811c9dc5, 0x9e3779b9]
+  const add = (text: string) => {
+    for (let i = 0; i < text.length; i++) {
+      const x = text.charCodeAt(i)
+      a = Math.imul(a ^ x, 0x01000193)
+      b = Math.imul(b ^ x, 0x5bd1e995)
+    }
+  }
+  const line = (tag: string, x: Carrier) => add(`${tag} ${x.name} ${x.kind} ${x.ref}\n`)
+  c.sheets.forEach((x) => line('s', x))
+  c.cells.forEach((list, i) => list.forEach((x) => line(`c${i} ${x.addr}`, x.carrier)))
+  c.formats.forEach((list, i) => (list ? list.forEach((x) => line(`x${i} ${x.kind} ${x.s}`, x.carrier)) : add(`x${i} none\n`)))
+  c.items.forEach((item) => item.carriers.forEach((x, k) => line(`${k ? '+' : 'i'} ${item.what.part}`, x)))
+  const hex = (h: number) => (h >>> 0).toString(16).padStart(8, '0')
+  return `${LAYOUT} ${hex(a)}${hex(b)}`
+}
+
+/** The carriers as the book's names, hidden ones, the layout's fingerprint last. */
 export function carrierNames(c: Carriers): NameInput[] {
-  return [...c.sheets, ...c.cells.flat().map((x) => x.carrier), ...c.formats.flatMap((x) => x ?? []).map((x) => x.carrier), ...c.items.flatMap((x) => x.carriers)].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
+  return [...c.sheets, ...c.cells.flat().map((x) => x.carrier), ...c.formats.flatMap((x) => x ?? []).map((x) => x.carrier), ...c.items.flatMap((x) => x.carriers), c.layout].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
 }
 
 /** A carrier's reference as it compares: its canonical text; of a part on a sheet, without the sheet. Null when it does not parse. */

@@ -33,7 +33,7 @@ import { carrierNames, carriersOf, type Carriers, type Edit } from './carriers.j
 import { keptRules } from './rules.js'
 import { conditionalXml } from '../write/conditional.js'
 import { edited, KeptRefusal, refusalIn, refusals, type Identity } from './refusals.js'
-import { spliceSheet } from './sheet.js'
+import { FileCells, spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
@@ -220,6 +220,9 @@ class Kept {
   private readonly w1: BookWriting
   /** The workbook's relationship id of each sheet of the book written. */
   private readonly sheetRels: string[] = []
+  /** By sheet of the file: the model's pieces of it as read, and its cells, for those that moved to other sheets. */
+  private readonly read0 = new Map<number, SheetPieces>()
+  private readonly files = new Map<number, FileCells | null>()
   private block: number
   private tableId: number
   /** The file's parts removed, by name in lower case. */
@@ -289,7 +292,7 @@ class Kept {
       const d = src.decls[ss.decl]
       this.sheetRels[j] = attr(d.attrs, 'id') ?? ''
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
-      const p0 = sheetPieces(s0, k, this.context(book0, this.w0, k, this.cached?.[k], new Issues()))
+      const p0 = this.pieces0(k)
       const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
       // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never lost
       const name = book0.sheets[k].name
@@ -310,7 +313,7 @@ class Kept {
       }
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
@@ -320,6 +323,23 @@ class Kept {
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
+  }
+
+  /** The model's pieces of the file's sheet `k` as read. */
+  private pieces0(k: number): SheetPieces {
+    let p = this.read0.get(k)
+    if (!p) this.read0.set(k, (p = sheetPieces(this.book0.sheets[k], k, this.context(this.book0, this.w0, k, this.cached?.[k], new Issues()))))
+    return p
+  }
+
+  /** The cells of the file's sheet `k`, as the file and the model read have them; null where its rows are out of order. */
+  private fileCells(k: number): FileCells | null {
+    if (!this.files.has(k)) {
+      const xml = this.src.sheets[k].xml
+      const data = childrenOf(xml, rootOf(xml)!).find((c) => c.local === 'sheetData')
+      this.files.set(k, data ? FileCells.of(xml, data, this.pieces0(k)) : null)
+    }
+    return this.files.get(k)!
   }
 
   /**

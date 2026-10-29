@@ -17,7 +17,7 @@ import { columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
 import { formatAddress } from '../../model.js'
 import { entryAt, lines } from '../../layout/spans.js'
 import { attributes } from '../xml/scan.js'
-import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
+import { compared, PREFIX, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
 import type { FormatArea } from './formats.js'
 import { areasOf } from './refs.js'
 import type { Source } from './source.js'
@@ -32,9 +32,10 @@ import type { Source } from './source.js'
  * the data validation of a sheet changed and the file has rules of it the workbook could not read (its `readXlsx` issues
  * `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
  * it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
- * would need making for a new first cell).
+ * would need making for a new first cell); `layout`, the workbook's carriers were laid out by another version of
+ * openKept or for another file, or their layout's name is gone while carriers stay.
  */
-export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
+export type KeptRefusalCode = 'file' | 'carriers' | 'layout' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 
 /** The message of each refusal, which `writeKept` gives in the language of its `locale`. */
 const MESSAGES = new WeakMap<KeptRefusal, KeptMessage>()
@@ -69,14 +70,15 @@ export interface Identity {
   deleted: boolean[]
   /** The edits that write the moved references back to the parts. */
   edits: Edit[]
-  /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
+  /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (where they were, on it or on another sheet), and the addresses they left. */
   cells: Map<number, Moved>
   /** By sheet of the book read: the rectangles of its cell formats that look as earlier ones where they lie now on its sheet of the book written; none for a sheet past `KEPT_FORMATS` or whose carriers a host dropped. */
   formats: Map<number, FormatArea[]>
 }
 
+/** The cells with what only the file holds that came to a sheet, by address now (from where: their address, and their sheet of the book read where it is another), and those that left it. */
 export interface Moved {
-  to: Map<string, string>
+  to: Map<string, { addr: string; sheet?: number }>
   left: Set<string>
 }
 
@@ -90,6 +92,10 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
   const index = new Map(book1.sheets.map((s, j) => [sheetKey(s.name), j]))
   const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], deleted: [], edits: [], cells: new Map(), formats: new Map() }
+  // the carriers' names are read by their place in the layout: a book with carriers of another layout, or without its fingerprint, would read them wrong
+  const layout = names.get(caseKey(c.layout.name))
+  const carried = layout !== undefined || (book1.names ?? []).some((n) => n.scope === undefined && n.hidden && n.name.startsWith(PREFIX))
+  if (carried && layout?.ref !== c.layout.ref) throw new KeptRefusal({ key: 'keptLayout', name: c.layout.name }, 'layout')
   for (const [k, carrier] of c.sheets.entries()) {
     const was = book0.sheets[k].name
     const n = names.get(caseKey(carrier.name))
@@ -117,21 +123,20 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       if (own) throw new KeptRefusal({ key: 'keptSheetParts', sheet: was, kind: own.kind, path: own.target }, 'deleted')
     }
   }
-  // the cells with what only the file holds: where each went on its sheet (one moved to another sheet, or deleted, leaves it)
+  // the cells with what only the file holds: where each went, on its sheet or another the file has (one deleted, or on a new sheet, goes)
+  const movedOf = (k: number) => out.cells.get(k) ?? out.cells.set(k, { to: new Map(), left: new Set() }).get(k)!
   for (const [k, list] of c.cells.entries()) {
-    const j = out.target.get(k)
-    if (j === undefined || !list.length) continue
-    const moved: Moved = { to: new Map(), left: new Set() }
     for (const cell of list) {
       const n = names.get(caseKey(cell.carrier.name))
       if (!n) throw new KeptRefusal({ key: 'keptNoCellCarrier', name: cell.carrier.name, cell: cell.addr, sheet: book0.sheets[k].name }, 'carriers')
       const area = areasOf(n.ref)?.[0]
-      const at = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(book1.sheets[j].name) ? formatAddress(area.rect.r1, area.rect.c1) : undefined
-      if (at === cell.addr) continue
-      moved.left.add(cell.addr)
-      if (at !== undefined) moved.to.set(at, cell.addr)
+      const j = area && 'rect' in area ? index.get(sheetKey(area.sheet)) : undefined
+      const to = j === undefined ? undefined : out.source[j]
+      const at = to === undefined || !('rect' in area!) ? undefined : formatAddress(area.rect.r1, area.rect.c1)
+      if (to === k && at === cell.addr) continue
+      movedOf(k).left.add(cell.addr)
+      if (to !== undefined) movedOf(to).to.set(at!, to === k ? { addr: cell.addr } : { addr: cell.addr, sheet: k })
     }
-    if (moved.left.size) out.cells.set(k, moved)
   }
   // the rectangles of cell formats on their sheet now; a carrier gone leaves the sheet's cells their formats by address
   for (const [k, list] of c.formats.entries()) {
@@ -145,9 +150,9 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     })
     if (kept) out.formats.set(k, areas)
   }
-  /** A sheet's lines in EMUs as the book written has them: a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
-  const geometry = (k: number | undefined): Geometry => {
-    const s = k === undefined ? undefined : book1.sheets[out.target.get(k)!]
+  /** A sheet's lines in EMUs as a book has them (the one read, `book0`, or the one written): a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
+  const geometry = (k: number | undefined, read: boolean): Geometry => {
+    const s = k === undefined ? undefined : read ? book0.sheets[k] : book1.sheets[out.target.get(k)!]
     const rows = lines(s?.rows, 'r')
     const cols = lines(s?.columns, 'c')
     const fp = k === undefined ? {} : attributes(/<(?:[\w.-]+:)?sheetFormatPr\b([^>]*)>/.exec(src.sheets[k].xml)?.[1] ?? '')
@@ -172,7 +177,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       return n.ref
     })
     if (item.carriers.every((x, k) => compared(now[k], x.kind) === compared(x.ref, x.kind))) continue
-    const fix = item.fix(now, geometry(item.on))
+    const fix = item.fix(now, { was: geometry(item.on, true), now: geometry(item.on, false) })
     if ('refuse' in fix) throw new KeptRefusal(fix.refuse, fix.code)
     out.edits.push(...fix.edits)
   }

@@ -30,12 +30,17 @@ export function baseBook(): BookInput {
   return { sheets: [{ name: 'Data', cells }, { name: 'Pivot', cells: {} }, { name: 'Plain', cells: { A1: { value: 'plain' }, A2: { formula: 'Data!E2*2' } } }] }
 }
 
-/** A file Excel makes: the features its script adds (`excel-keep.applescript`), whether it holds a pivot table the step writes into it, and a table on Plain (A1:A2). */
+/**
+ * A file Excel makes: the features its script adds (`excel-keep.applescript`), whether it holds a pivot table or
+ * sparklines the step writes into it, a table on Plain (A1:A2), and widths of Data's columns.
+ */
 export interface Made {
   id: string
   features: string[]
   pivot?: boolean
+  sparklines?: boolean
   table?: boolean
+  columns?: Record<string, { width: number }>
 }
 
 export const MADE: Made[] = [
@@ -81,12 +86,28 @@ export async function withPivot(data: Uint8Array): Promise<Uint8Array> {
   return zip([...parts].map(([name, text]) => ({ name, data: new TextEncoder().encode(text) })))
 }
 
+/**
+ * A group of two sparklines on Data, G2 over B2:B11 and G3 over B12:B21, in the sheet's extension as Excel writes them:
+ * Excel's object model on the Mac makes none.
+ */
+export async function withSparklines(data: Uint8Array): Promise<Uint8Array> {
+  const a = openArchive(data)
+  const parts = new Map<string, string>()
+  for (const n of a.names) parts.set(n, (await a.text(n))!)
+  const colors = ['Series', 'Negative', 'Axis', 'Markers', 'First', 'Last', 'High', 'Low'].map((c) => `<x14:color${c} rgb="FF376092"/>`).join('')
+  const line = (f: string, cell: string) => `<x14:sparkline><xm:f>${f}</xm:f><xm:sqref>${cell}</xm:sqref></x14:sparkline>`
+  const ext = `<extLst><ext uri="{05C60535-1F16-4FD2-B633-F4F36F0B64E0}" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"><x14:sparklineGroups xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><x14:sparklineGroup displayEmptyCellsAs="gap">${colors}<x14:sparklines>${line('Data!B2:B11', 'G2')}${line('Data!B12:B21', 'G3')}</x14:sparklines></x14:sparklineGroup></x14:sparklineGroups></ext></extLst>`
+  parts.set('xl/worksheets/sheet1.xml', parts.get('xl/worksheets/sheet1.xml')!.replace('</worksheet>', `${ext}</worksheet>`))
+  return zip([...parts].map(([name, text]) => ({ name, data: new TextEncoder().encode(text) })))
+}
+
 /** The book's file as the step sends it to Excel to be made. */
 export async function baseFile(m: Made): Promise<Uint8Array> {
   const book = baseBook()
   if (m.table) book.sheets[2].tables = [{ name: 'Plain', range: 'A1:A2', columns: [{ name: 'plain' }] }]
+  if (m.columns) book.sheets[0].columns = m.columns
   const { data } = await writeXlsx({ book, result: compute(book) })
-  return m.pivot ? withPivot(data) : data
+  return m.pivot ? withPivot(data) : m.sparklines ? withSparklines(data) : data
 }
 
 /** An edit written over a made file: what it does to a session over the file's book; over the made files `made` alone where it names them. */
@@ -162,6 +183,12 @@ export const EDITS: Edit[] = [
     edit: (s) => void s.setLayout([{ sheet: 'Data', autoFilter: null }, { sheet: 'Data', filtered: false }, { sheet: 'Data', rows: '1:21', set: { hidden: null } }]),
     made: ['criteria'],
   },
+  {
+    id: 'rich-sheet',
+    what: 'the cells with formatted runs moved by a range to another sheet',
+    edit: (s) => ok(s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2:A5' }, to: { sheet: 'Plain', cell: 'D1' } })),
+    made: ['picture'],
+  },
 ]
 
 /** What a file holds of the parts the model does not have, counted: charts, chart sheets, drawings, pictures, pivot tables and caches, formatted strings, theme colours, the print area, page breaks, notes, and the sheets' AutoFilters where it has any. */
@@ -201,6 +228,9 @@ export const MADE_STRUCT: Made[] = [
   { id: 'sized', features: ['chart', 'picture', 'sized', 'floating'] },
   { id: 'moving', features: ['chart', 'chartmove', 'picture'] },
   { id: 'filter', features: ['autofilter'] },
+  // the chart and the picture of moving over columns of other widths than Excel's default, and sparklines
+  { id: 'wide', features: ['chart', 'chartmove', 'picture'], columns: { F: { width: 20 }, G: { width: 4 }, H: { width: 30 } } },
+  { id: 'sparklines', features: [], sparklines: true },
 ]
 
 /**
@@ -247,6 +277,12 @@ const rows = (sheet: string, row: number, count: number, op: 'insertRows' | 'del
 
 const filter = (id: string, op: StructureOp, excel: Struct['excel']): Struct => ({ id: `filter-${id}`, made: 'filter', op, excel })
 
+/** Columns of Data inserted or deleted, from `column` on, over a made file. */
+const cols = (id: string, made: string, column: string, count: number, op: 'insertColumns' | 'deleteColumns'): Struct => {
+  const last = String.fromCharCode(column.charCodeAt(0) + count - 1)
+  return { id, made, op: { op, sheet: 'Data', column, count }, excel: [op, 'Data', `${column}1:${last}1`, '', ''] }
+}
+
 export const STRUCT: Struct[] = [
   { id: 'chart-insert-in', made: 'chart', ...rows('Data', 3, 2, 'insertRows') },
   { id: 'chart-delete-in', made: 'chart', ...rows('Data', 3, 2, 'deleteRows') },
@@ -289,12 +325,33 @@ export const STRUCT: Struct[] = [
   filter('delete-first-column', { op: 'deleteColumns', sheet: 'Data', column: 'A' }, ['deleteColumns', 'Data', 'A1', '', '']),
   filter('move-over-end', { op: 'moveRange', from: { sheet: 'Data', range: 'H1:J5' }, to: { sheet: 'Data', cell: 'A17' } }, ['moveRange', 'Data', 'H1:J5', 'Data', 'A17']),
   filter('move-end-down', { op: 'moveRange', from: { sheet: 'Data', range: 'A15:C21' }, to: { sheet: 'Data', cell: 'A30' } }, ['moveRange', 'Data', 'A15:C21', 'Data', 'A30']),
+  // the rules for columns: a drawing whose columns are all deleted, the size of one that moves without sizing by the
+  // columns' widths; and the refusals for deleted cells of a pivot cache's source and of sparklines
+  cols('sized-delete-picture-cols', 'sized', 'F', 3, 'deleteColumns'),
+  cols('moving-delete-picture-cols', 'moving', 'F', 3, 'deleteColumns'),
+  cols('moving-delete-from-col', 'moving', 'F', 1, 'deleteColumns'),
+  cols('moving-insert-cols-in', 'moving', 'G', 2, 'insertColumns'),
+  cols('wide-delete-from-col', 'wide', 'F', 1, 'deleteColumns'),
+  cols('wide-delete-cols-in', 'wide', 'G', 1, 'deleteColumns'),
+  cols('wide-insert-cols-in', 'wide', 'G', 2, 'insertColumns'),
+  cols('wide-delete-picture-cols', 'wide', 'F', 3, 'deleteColumns'),
+  cols('wide-delete-before', 'wide', 'D', 2, 'deleteColumns'),
+  cols('pivot-delete-source-cells', 'pivot', 'A', 3, 'deleteColumns'),
+  { id: 'sparklines-delete-cell', made: 'sparklines', ...rows('Data', 2, 1, 'deleteRows') },
+  { id: 'sparklines-delete-data', made: 'sparklines', ...rows('Data', 12, 10, 'deleteRows') },
+  cols('sparklines-delete-data-col', 'sparklines', 'B', 1, 'deleteColumns'),
+  // held out after the rules for a drawing's size by the columns' widths, a pivot cache's source and a sparkline's cell were fitted to the cases above
+  cols('wide-delete-wide-col', 'wide', 'H', 1, 'deleteColumns'),
+  cols('wide-delete-to-col', 'wide', 'I', 1, 'deleteColumns'),
+  cols('moving-delete-cols-in', 'moving', 'G', 2, 'deleteColumns'),
+  { id: 'pivot-delete-source-rows', made: 'pivot', ...rows('Data', 1, 21, 'deleteRows') },
+  { id: 'sparklines-delete-both', made: 'sparklines', ...rows('Data', 2, 2, 'deleteRows') },
 ]
 
 /**
  * What a file's parts the model does not have refer to: the series of its charts (canonical, sorted), each sheet's
  * drawing anchors (kind, `editAs`, each corner's column and row with their offsets), its pivot tables' places and their
- * caches' sources, the built-in names, each sheet's page breaks and, where a sheet has one, its AutoFilter's range. What `keep struct` compares between Excel's file and
+ * caches' sources, the built-in names, each sheet's page breaks and, where a sheet has them, its AutoFilter's range and its sparklines (cell and data). What `keep struct` compares between Excel's file and
  * the one `writeKept` writes.
  */
 export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>> {
@@ -331,10 +388,13 @@ export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>>
     const a = attributes(element((await src.archive.text(part)) ?? '', 'worksheetSource')?.attrs ?? '')
     pivots.push(`source ${a.name !== undefined ? `name ${a.name}` : `${a.sheet ?? '-'}!${a.ref ?? '-'}`}`)
   }
+  const sparklines: Record<string, string[]> = {}
+  for (const [i, s] of src.sheets.entries())
+    for (const x of elements(s.xml, 'sparkline')) (sparklines[sheetName(i)] ??= []).push(`${element(x.body ?? '', 'sqref')?.body ?? '?'} ${canon(readText(element(x.body ?? '', 'f')?.body ?? ''))}`)
   const names: string[] = []
   for (const d of elements(element(src.wb, 'definedNames')?.body ?? '', 'definedName')) {
     const a = attributes(d.attrs)
     if (/^_xlnm\./.test(a.name ?? '')) names.push(`${a.name}@${a.localSheetId === undefined ? '' : src.decls[Number(a.localSheetId)]?.name}=${canon(readText(d.body ?? ''))}`)
   }
-  return { series: series.sort(), anchors, pivots, names: names.sort(), breaks, ...(Object.keys(filters).length ? { filters } : {}) }
+  return { series: series.sort(), anchors, pivots, names: names.sort(), breaks, ...(Object.keys(filters).length ? { filters } : {}), ...(Object.keys(sparklines).length ? { sparklines } : {}) }
 }

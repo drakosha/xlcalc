@@ -6,7 +6,7 @@
  * does not parse) and takes the new value; a cell, a row or a column keeps a cell format of the file that looks the
  * same, where rows or columns moved the format of the block it lies in now (`formats.ts`), and a row the attributes the
  * model does not have. A cell with what only the file holds that moved (rows or columns
- * inserted or deleted, a range moved) takes the file's XML at its new address where the model has it as it was. The
+ * inserted or deleted, a range moved, to another sheet too) takes the file's XML at its new address where the model has it as it was. The
  * elements the model does not have stay in their place, in the order of the schema; an element the model adds goes
  * where the schema puts it.
  */
@@ -52,6 +52,8 @@ export interface SpliceInput {
   lines: boolean
   /** The file's cells with what only it holds that moved (`refusals.ts`). */
   moved?: Moved
+  /** The cells of the file's other sheets, for those that moved here from them; none for an out-of-order sheet. */
+  from?: (sheet: number) => FileCells | null
   /** The sheet's conditional formats written over the file's (`rules.ts`), in place of the workbook's. */
   conditional?: { main: string; ext: string }
   /** The rectangles of the file's cell formats that look as earlier ones where they lie now (`formats.ts`); none past their limit. */
@@ -227,11 +229,10 @@ interface DataOut {
  * cells are out of order: the model's rows are written then.
  */
 function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>): DataOut | null {
-  const rows = data.end === data.open ? [] : srcRows(xml, data.open, data.end)
-  if (!rows) return null
-  const g0 = new Map(x.p0.rows.map((r) => [r.row, r]))
+  const file = FileCells.of(xml, data, x.p0)
+  if (!file) return null
+  const { rows, src, g0 } = file
   const g1 = new Map(x.p1.rows.map((r) => [r.row, r]))
-  const src = new Map(rows.map((r) => [r.r, r]))
   const same = (r: number) => {
     const [a, b] = [g0.get(r), g1.get(r)]
     return a === b || (a !== undefined && b !== undefined && a.attrs === b.attrs && a.cells === b.cells)
@@ -240,29 +241,17 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
   let changed = false
   // the groups of shared formulas whose master was written anew, and the rows that hold their copies
   const broken = new Set<string>()
-  const parsed = new Map<number, Map<number, Src>>()
   const cellsOf = (r: SrcRow) => {
-    let m = parsed.get(r.r)
-    if (!m) {
-      const got = srcCells(xml, r)
-      if (!got) throw OUT_OF_ORDER
-      parsed.set(r.r, (m = got))
-    }
+    const m = file.cells(r)
+    if (!m) throw OUT_OF_ORDER
     return m
   }
   const rowOut = new Map<number, string>()
-  const gen0 = new Map<number, Map<number, Gen>>()
-  /** The file's cell that moved to `at` from `from`, at its new address, where the model's cell there (`g`) is as it was. */
-  const carried = (from: string, at: string, g: Gen): string | undefined => {
-    const { row, col } = parseAddress(from)
-    const [s, a] = [src.get(row), g0.get(row)]
-    if (!s || !a) return undefined
-    let cells = gen0.get(row)
-    if (!cells) gen0.set(row, (cells = genCells(a.cells)))
-    const [own, was] = [cellsOf(s).get(col), cells.get(col)]
-    // a shared formula's cell means another formula elsewhere
-    if (!own || !was || own.si !== undefined || was.text.replace(GEN_ADDR, '') !== g.text.replace(GEN_ADDR, '')) return undefined
-    return own.text.replace(SRC_ADDR, `$1${at}"`)
+  /** The file's cell that moved to `at` from `from` (of this sheet or another), at its new address, where the model's cell there (`g`) is as it was. */
+  const carried = (from: { addr: string; sheet?: number }, at: string, g: Gen): string | undefined => {
+    const c = (from.sheet === undefined ? file : x.from?.(from.sheet))?.at(from.addr)
+    if (!c || c.was.text.replace(GEN_ADDR, '') !== g.text.replace(GEN_ADDR, '')) return undefined
+    return c.own.text.replace(SRC_ADDR, `$1${at}"`)
   }
   // with rows or columns inserted or deleted, a cell or row takes the format of the rectangle it lies in now, not the file's at its address
   const placed = x.lines && x.formats ? x.formats.index(all) : undefined
@@ -371,6 +360,46 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
 }
 
 const OUT_OF_ORDER = Symbol('out of order')
+
+/** A sheet's cells as the file has them and as the model read from it writes them, by row: what a cell that moved takes along. */
+export class FileCells {
+  readonly src: Map<number, SrcRow>
+  readonly g0: Map<number, RowWritten>
+  private readonly parsed = new Map<number, Map<number, Src> | null>()
+  private readonly gen = new Map<number, Map<number, Gen>>()
+
+  private constructor(
+    private readonly xml: string,
+    readonly rows: SrcRow[],
+    p0: SheetPieces,
+  ) {
+    this.src = new Map(rows.map((r) => [r.r, r]))
+    this.g0 = new Map(p0.rows.map((r) => [r.row, r]))
+  }
+
+  /** The cells of a sheet's `<sheetData>` (`data`), null when its rows are out of order. */
+  static of(xml: string, data: Placed, p0: SheetPieces): FileCells | null {
+    const rows = data.end === data.open ? [] : srcRows(xml, data.open, data.end)
+    return rows && new FileCells(xml, rows, p0)
+  }
+
+  /** A row's cells by column, null when they are out of order. */
+  cells(r: SrcRow): Map<number, Src> | null {
+    if (!this.parsed.has(r.r)) this.parsed.set(r.r, srcCells(this.xml, r))
+    return this.parsed.get(r.r)!
+  }
+
+  /** The file's cell at an address and the model's as read, where both have it; none for a shared formula's cell, which means another formula elsewhere. */
+  at(addr: string): { own: Src; was: Gen } | undefined {
+    const { row, col } = parseAddress(addr)
+    const [s, a] = [this.src.get(row), this.g0.get(row)]
+    if (!s || !a) return undefined
+    let cells = this.gen.get(row)
+    if (!cells) this.gen.set(row, (cells = genCells(a.cells)))
+    const [own, was] = [this.cells(s)?.get(col), cells.get(col)]
+    return own && was && own.si === undefined ? { own, was } : undefined
+  }
+}
 
 /**
  * A row written from the model's cells (`body`): the file's tag where its attributes did not change, else the model's
