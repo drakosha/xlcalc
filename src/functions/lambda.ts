@@ -60,13 +60,13 @@ function answers(cx: Cx, rows: number, cols: number, answer: (r: number, c: numb
 }
 
 /**
- * MAP(array1, …, function): the function of the arrays' values at each position; a smaller array's missing ones are
- * #N/A. An array that is an error is the answer, before the function is looked at.
+ * MAP(array1, …, function): the function of the arrays' values at each position; where a smaller array has none, #N/A
+ * without a call. The first array an error is the answer, before the function is looked at; a later one #VALUE!.
  */
 function map(cx: Cx, first: Arg, rest: Arg[]): Arg {
+  if (isErr(first)) return first
   const arrays = [first, ...rest.slice(0, -1)]
-  const error = arrays.find(isErr)
-  if (error) return error
+  if (arrays.some(isErr)) return E.VALUE
   const f = taking(rest.at(-1), rest.length)
   if (!f) return E.VALUE
   const all = arrays.map(itemsOf)
@@ -74,7 +74,7 @@ function map(cx: Cx, first: Arg, rest: Arg[]): Arg {
   const items = all as Items[]
   const rows = Math.max(...items.map((x) => x.rows))
   const cols = Math.max(...items.map((x) => x.cols))
-  return answers(cx, rows, cols, (r, c) => callValue(f, items.map((x) => (r < x.rows && c < x.cols ? x.at(r, c) : E.NA))))
+  return answers(cx, rows, cols, (r, c) => (items.every((x) => r < x.rows && c < x.cols) ? callValue(f, items.map((x) => x.at(r, c))) : E.NA))
 }
 
 /**

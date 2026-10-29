@@ -212,6 +212,8 @@ export function makeRuntime(ctx: RuntimeContext) {
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
+    // a function (a LAMBDA), the one object past the errors, compares with nothing
+    if ((typeof a === 'object' && a !== null) || (typeof b === 'object' && b !== null)) return E.VALUE
     return holds(op, compareOp(a, b))
   }
 
@@ -400,7 +402,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   /**
    * A function by its name as a value (`BYROW(A1:C3,SUM)`), made once: called with the counts it takes, it is its call
    * over those arguments, lifted as a formula's call is; an argument left out is not given; called with other counts
-   * #CALC!, as Excel answers `LET(f,SUM,f())`. RAND and its kin get the book's first cell.
+   * #CALC!, as Excel answers `LET(f,SUM,f())` and `LET(f,ABS,f(1,2))`. RAND and its kin get the book's first cell.
    */
   const etas = new Map<string, Lambda>()
   const ETA = (name: string): Lambda => {
@@ -408,7 +410,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (f) return f
     const spec = FUNCTIONS[name]
     const call = spec.lazy ? (args: readonly Arg[]) => F[name](...args.map((a) => () => a)) : spec.cell ? (args: readonly Arg[]) => FL[name](0, 0, 0, ...args) : (args: readonly Arg[]) => FL[name](...args)
-    f = new Lambda(0, spec.max, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes, name)
+    f = new Lambda(0, Infinity, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes, name)
     etas.set(name, f)
     return f
   }

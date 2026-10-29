@@ -147,7 +147,8 @@ function countable(v: V, inRange: boolean, rules: Rules): boolean {
   if (typeof v === 'number') return true
   if (inRange || isErr(v)) return false
   if (v === null || typeof v === 'boolean') return true
-  return !isErr(rules.toNum(v)) || rules.dateText(v) !== null
+  // text that reads as a number or a date; a function (a LAMBDA) is not counted
+  return typeof v === 'string' && (!isErr(rules.toNum(v)) || rules.dateText(v) !== null)
 }
 
 export const functions: Record<string, FnDef> = {
