@@ -3,7 +3,7 @@
   "version": "16.114.3",
   "locale": "ru-RU (the system language and locale)",
   "date": "2026-10-29",
-  "seconds": 345.2
+  "seconds": 356.2
  },
  "cases": [
   {
@@ -2824,16 +2824,17 @@
    "cells": {
     "A4": {
      "cell": {
-      "formula": "СУММ(3)"
+      "formula": "SUM(A3)"
      },
      "computed": 3,
-     "text": "",
+     "text": "3",
      "code": "General",
      "local": "Основной",
-     "formula": "",
-     "formulaLocal": "",
-     "formula2": "",
-     "formula2Local": "",
+     "value2": 3,
+     "formula": "=SUM(A3)",
+     "formulaLocal": "=СУММ(A3)",
+     "formula2": "=SUM(A3)",
+     "formula2Local": "=СУММ(A3)",
      "hasArray": false
     }
    },
