@@ -80,3 +80,12 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./groupby-held.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: headers left out are found where the first row field and the first
+ * value are text and every value under them a number or blank (#VALUE! where another is not); a value is spelled as the
+ * row that sorts first by the sort order given, in the table relationship too; the function gets a group's values in the
+ * data's order; a LAMBDA's label is `CUSTOM`; a number not whole is no option; PIVOTBY joins the column fields' headers in
+ * one cell and takes a column of functions down its rows; `LAMBDA(x,INDEX(x,1))` makes the summary #CALC!.
+ */
+export const MISSED: readonly string[] = ['GROUPBY#1', 'GROUPBY#2', 'GROUPBY#3', 'GROUPBY#9', 'GROUPBY#13', 'GROUPBY#21', 'GROUPBY#22', 'GROUPBY#25', 'GROUPBY#30', 'PIVOTBY#5', 'PIVOTBY#6', 'PIVOTBY#7']
