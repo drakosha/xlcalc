@@ -11,6 +11,7 @@ export const EXTRA_NAMES: Readonly<Record<string, Readonly<Record<string, string
     CALL: 'ВЫЗВАТЬ',
     ENCODEURL: 'КОДИР.URL',
     EUROCONVERT: 'ПЕРЕСЧЕТЕВРО',
+    FILTERXML: 'ФИЛЬТР.XML',
     REGEXEXTRACT: 'РЕГИЗВЛЕЧЬ',
     REGEXREPLACE: 'РЕГЗАМЕНИТЬ',
     REGEXTEST: 'РЕГТЕСТ',
