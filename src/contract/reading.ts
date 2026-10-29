@@ -390,8 +390,11 @@ export interface StatisticsCounts {
 
 /** Excel's Workbook Statistics (`Session.getWorkbookStatistics`): the counts of a sheet and of the whole workbook. */
 export interface WorkbookStatistics {
-  /** The sheet's counts and its end: the last cell of its used range, where Control+End goes (`A1` on an empty sheet). */
-  sheet: StatisticsCounts & { end: string }
+  /**
+   * The sheet's counts and its end: the cell of the last row and the last column that hold data or a note (`E9` for
+   * data in B9 and E2), not reached by styles, hyperlinks alone or tables as the used range is; null on a sheet without.
+   */
+  sheet: StatisticsCounts & { end: string | null }
   /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
   workbook: StatisticsCounts & { sheets: number }
 }
