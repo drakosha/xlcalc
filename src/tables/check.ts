@@ -110,6 +110,7 @@ export function checkTables(book: BookInput, path = 'book'): void {
     const rects: [Rect, string][] = []
     // walked once for all the sheet's tables, where the first table gets to it
     let arrays: [Rect, string][] | undefined
+    let merges: [Rect, string][] | undefined
     sheet.tables.forEach((t, i) => {
       const tp = `${p}[${i}]`
       const x = table(t, tp, sheet.cells, booleans)
@@ -121,8 +122,8 @@ export function checkTables(book: BookInput, path = 'book'): void {
       const over = rects.find(([y]) => meets(x, y))
       if (over) throw new InputError(`${tp}.range`, `${range} overlaps the table ${over[1]}`)
       rects.push([x, name])
-      const merge = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, x))
-      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
+      const merge = (merges ??= (sheet.merges ?? []).map((m) => [parseMerge(m)!, m])).find(([a]) => meets(a, x))
+      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge[1]} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
       const array = (arrays ??= wideArrays(sheet.cells)).find(([a]) => meets(a, x))
       if (array) throw new InputError(`${tp}.range`, `the array formula over ${array[1]} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
     })

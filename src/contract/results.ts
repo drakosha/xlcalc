@@ -1,6 +1,6 @@
 /** A computation and what it reports: its options and limits, a cell's result and how it shows, the issues of cells and names, the checks of formulas and names, why a cell holds its value, a book with its result. */
 import type { Locale } from '../locale/types.js'
-import type { CellRef, CellValue, CheckCode, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
+import type { BookFile, CellRef, CellValue, CheckCode, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
 import type { Book, ExternalBook, NumberFormat } from './book.js'
 import type { Color } from './looks.js'
 
@@ -93,7 +93,22 @@ export interface ComputeOptions {
    * it, or empty text when the file stores none. Nothing else is read from them.
    */
   cached?: CachedValues
+  /** How a formula calling a function the engine does not know is calculated: `name` by default (`UnknownFunctions`). */
+  unknownFunctions?: UnknownFunctions
+  /** The file the workbook was opened from (`BookFile`): what CELL and INFO tell of it. A workbook not saved yet without it. */
+  file?: BookFile
 }
+
+/**
+ * A formula that calls a function the engine does not know (an add-in's, a host's not given as `externals`), whose check
+ * is `unknown_function`: `name` makes it `#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell
+ * holds (`CellInput.held`) or its file stores (`cached`), as Excel shows a file's value until it calculates the cell, and
+ * the cells that depend on it are calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once
+ * the cell is edited or a cell it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at
+ * once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
+ * same way, whatever this option.
+ */
+export type UnknownFunctions = 'name' | 'held'
 
 /** A cell's value and, by default (`display`), what the cell displays: `text` and `color`, as in `CellDisplay`. */
 export interface CellResult extends Partial<CellDisplay> {
@@ -139,6 +154,11 @@ export interface CellIssue extends CellRef {
   at?: number
   /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
   fn?: string
+  /**
+   * The formula is not calculated and shows the value its file stores (`cached`) or its cell holds: it calls a function
+   * the engine does not know (`unknownFunctions: 'held'`, `error` NAME) or a function of connections (`error` CONNECT).
+   */
+  fromFile?: true
 }
 
 /** Why a defined name returns no value: the name, its scope (none for a global name) and the reason. */
@@ -262,6 +282,8 @@ export interface CellIssueDetail {
   check?: CheckCode
   at?: number
   fn?: string
+  /** As `CellIssue.fromFile`: the formula shows the value its file stores, not calculated. */
+  fromFile?: true
   origin: CellRef
 }
 

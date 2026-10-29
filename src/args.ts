@@ -49,13 +49,13 @@
  *    takes only an array's numbers, `Y` counts its text as 0); a one-value kind given an array or a range
  *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
-import type { ErrorCode } from './contract.js'
+import type { BookFile, ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
 import { arityOf, type Positions } from './arity.js'
 import type { Counts } from './locale/messages.js'
 import type { Rules } from './locale/rules.js'
-import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, asValue, E, fitNumber, isErr, Lambda, Rng, whole, type CErr, type V } from './values.js'
 import { CalcError } from './exec/budget.js'
 import type { Line } from './functions/lookup/search.js'
 
@@ -71,7 +71,7 @@ export interface Grid {
 }
 
 /** What the runtime passes a function: a value, a reference, an array, or a reference of several areas. */
-export type Arg = V | Rng | Arr | Areas
+export type Arg = V | Rng | Arr | Areas | Lambda
 
 /** A value from a `V` argument: a direct value, or the values of a range (row by row) as one segment. */
 export type Segment = V | readonly V[]
@@ -94,12 +94,46 @@ export interface Selection {
 /** Which hidden rows SUBTOTAL and AGGREGATE skip: all of them, those of a filtered sheet, none. */
 export type HiddenRule = 'all' | 'filtered' | 'none'
 
+/** A cell's look as CELL reads it (`book-facts.ts`): its number format's code, alignment, protection and column's width. */
+export interface CellFacts {
+  format: string
+  horizontal?: string
+  locked: boolean
+  /** The column's width in characters, as Excel's Column Width box shows it, and whether it is the sheet's default. */
+  width: number
+  defaultWidth: boolean
+}
+
+/** What a book holds beside its values, for CELL, INFO, SHEET, SHEETS, FORMULATEXT and ISFORMULA (`book-facts.ts`). */
+export interface BookFacts {
+  /** The book's own sheets, without the linked workbooks'. */
+  readonly sheets: number
+  sheetOf(name: string): number | undefined
+  sheetName(s: number): string | undefined
+  hasFormula(s: number, r: number, c: number): boolean
+  /** The formula of a cell as Excel's formula bar shows it, with `=` (`{=…}` an array formula of the old kind). */
+  formula(s: number, r: number, c: number): string | undefined
+  cell(s: number, r: number, c: number): CellFacts
+  readonly file?: BookFile
+  /** The book's calculation is manual (`BookInput.calculation`). */
+  readonly manual: boolean
+  /** The active cell of the active sheet, and the top-left cell of its window. */
+  activeCell(): { s: number; r: number; c: number }
+  topLeft(): { r: number; c: number }
+}
+
 /** What a function declared with `cx` gets as its first argument. */
 export interface Cx {
   /** The clock moment, a serial number with a day fraction (UTC). */
   readonly now: number
   /** The rules of computation of the book's locale: text as numbers and dates, numbers as text, formats. */
   readonly rules: Rules
+  /** What the book holds beside its values. */
+  readonly book: BookFacts
+  /** INDIRECT: the reference a text names from the formula at sheet `s`, row `r`, column `c` (`indirect.ts`); #REF! for none. */
+  refer(text: string, a1: boolean, s: number, r: number, c: number): Rng | CErr
+  /** A reference a dynamic formula found as it computes (INDIRECT, OFFSET): the graph learns it (`graph/dynamic.ts`). */
+  found(g: Rng): void
   /** Pseudo-random [0, 1) from the clock seed, a cell and an element of an array (RANDARRAY). */
   rand(s: number, r: number, c: number, k?: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
@@ -150,6 +184,10 @@ export interface FnDef {
   /** `fn` gets every argument as a function evaluated on demand, without coercion: IF, IFERROR. */
   lazy?: boolean
   volatile?: boolean
+  /** The answer is a reference the call finds as it computes (INDIRECT, OFFSET): the graph learns it then (`graph/dynamic.ts`). */
+  dynamic?: boolean
+  /** The answer reads cells' looks or columns' widths (CELL): computed again when they change (`applyLooks`). */
+  looks?: boolean
   /** The answer can be an array (`Arr`) or a reference of several cells. */
   array?: boolean
   /**
@@ -220,6 +258,8 @@ export interface FunctionSpec {
   /** The counts it takes, for a message (SUMIFS 3 to 255, odd). */
   counts: Counts
   volatile?: boolean
+  dynamic?: boolean
+  looks?: boolean
   lazy?: boolean
   cell?: boolean
   /** A range of criteria (`FnDef.criteria`): an array there makes the call an array of #VALUE!. */
@@ -277,6 +317,8 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     mode,
     rangeAt,
     volatile: def.volatile,
+    dynamic: def.dynamic,
+    looks: def.looks,
     lazy: def.lazy,
     cell: def.cell,
     criteriaAt: (i) => def.criteria === true && kindAt(i) === 'R',
@@ -365,7 +407,7 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther,
       }
       return out
     }
-    const n = direct(x, rules)
+    const n = direct(x instanceof Lambda ? asValue(x) : x, rules)
     if (isErr(n)) return n
     out.push(n)
     return out

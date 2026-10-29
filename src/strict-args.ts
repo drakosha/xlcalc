@@ -52,11 +52,17 @@ const TAKEN_BY: Record<string, string> = {
   execution: 'compute and createSession',
   display: 'compute and createSession',
   cached: 'compute and createSession',
+  unknownFunctions: 'compute and createSession',
   limits: 'compute, createSession, the calculators and readXlsx',
   live: 'createSession',
   undo: 'createSession',
   values: 'writeXlsx',
   mode: 'writeXlsx',
+  delimiter: 'readCsv and writeCsv',
+  encoding: 'readCsv and writeCsv',
+  formulas: 'readCsv',
+  codesAsText: 'readCsv',
+  bom: 'writeCsv',
 }
 
 /** Where the fields of an options object that `allowed` does not hold go, as a refusal's hint: ` (formulaLocal is an option of getViewport)`. */

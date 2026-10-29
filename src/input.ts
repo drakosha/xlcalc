@@ -386,6 +386,10 @@ function checkExecution(v: unknown, path: string) {
   if (!EXECUTIONS.includes(v as Execution)) throw new InputError(path, `expected "closures" or "eval", got ${what(v)}`)
 }
 
+function checkUnknownFunctions(v: unknown, path: string) {
+  if (v !== 'name' && v !== 'held') throw new InputError(path, `expected "name" or "held", got ${what(v)}`)
+}
+
 const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 
 const LIMITS = ['formulas', 'cells', 'spill', 'writes']
@@ -414,8 +418,17 @@ function checkCached(v: unknown, path: string): CachedValues {
   return o as unknown as CachedValues
 }
 
+/** `file`: the name of the workbook's file and the folder it is in. */
+function checkFile(v: unknown, path: string) {
+  const o = object(v, path, "the workbook's file such as { name: 'Budget.xlsx', path: '/Users/me/' }")
+  onlyKeys(o, path, ['name', 'path'])
+  checkString(o.name, `${path}.name`)
+  if (!o.name) throw new InputError(`${path}.name`, 'expected the name of a file, got empty text')
+  if (o.path !== undefined) checkString(o.path, `${path}.path`)
+}
+
 /** The run fields the compute and session options both check, each with its checker. */
-const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean }
+const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { file: checkFile, cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean, unknownFunctions: checkUnknownFunctions }
 
 /** The run fields `keys`, each checked when given, in the caller's own order (undo and the live clock stay with their calls). */
 const runFields = (o: Record<string, unknown>, path: string, keys: readonly string[]) => {
@@ -425,17 +438,17 @@ const runFields = (o: Record<string, unknown>, path: string, keys: readonly stri
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
-  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display'])
+  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached', 'file', 'unknownFunctions'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display', 'file', 'unknownFunctions'])
   return o as ComputeOptions
 }
 
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached', 'file', 'unknownFunctions'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
-  runFields(o, path, ['cached', 'limits'])
+  runFields(o, path, ['cached', 'limits', 'file'])
   if (o.undo !== undefined) {
     const u = object(o.undo, `${path}.undo`, 'undo options such as { depth: 100, maxMb: 64 }')
     onlyKeys(u, `${path}.undo`, ['depth', 'maxMb'])
@@ -444,7 +457,7 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   }
   runFields(o, path, ['display'])
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
-  runFields(o, path, ['clock', 'externals', 'execution'])
+  runFields(o, path, ['clock', 'externals', 'execution', 'unknownFunctions'])
   return o as SessionOptions
 }
 

@@ -45,7 +45,7 @@ describe('xlsx links: reading', () => {
     expect(r.issues).toEqual([])
   })
 
-  it('values of every kind; a cell stored empty is null; text stays text when empty; an unknown error is reported', async () => {
+  it('values of every kind; a cell stored empty is null; text stays text when empty; #GETTING_DATA is read', async () => {
     const cells =
       '<row r="1"><cell r="A1"><v>1.5</v></cell><cell r="B1" t="n"><v>-2</v></cell><cell r="C1" t="str"><v>a &amp; b</v></cell><cell r="D1" t="s"><v>s</v></cell><cell r="E1" t="inlineStr"><is><t>i</t></is></cell></row>' +
       '<row r="2"><cell r="A2" t="b"><v>1</v></cell><cell r="B2" t="b"><v>0</v></cell><cell r="C2" t="e"><v>#N/A</v></cell><cell r="D2" t="e"><v>#DIV/0!</v></cell><cell r="E2" t="e"><v>#GETTING_DATA</v></cell></row>' +
@@ -61,13 +61,13 @@ describe('xlsx links: reading', () => {
       B2: false,
       C2: { error: 'NA' },
       D2: { error: 'DIV0' },
-      E2: { error: 'ERROR' },
+      E2: { error: 'GETTING_DATA' },
       A4: null,
       B4: null,
       C4: '',
       D4: 4,
     })
-    expect(r.issues.map((i) => `${i.code} ${i.cells}`)).toEqual(['errorValue [1]Sheet1!E2'])
+    expect(r.issues).toEqual([])
     // a rich value (a data type, an error's) is read as the value the cell stores, which Excel shows, reported
     const typed = await readXlsx(await linked([book2('<sheetNames><sheetName val="Sheet1"/></sheetNames><sheetDataSet><sheetData sheetId="0"><row r="1"><cell r="A1" t="str" vm="1"><v>Paris</v></cell><cell r="B1" t="e" vm="2"><v>#VALUE!</v></cell></row></sheetData></sheetDataSet>')]))
     expect(typed.book.externalBooks![0].sheets[0].cells).toEqual({ A1: 'Paris', B1: { error: 'VALUE' } })

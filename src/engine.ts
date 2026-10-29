@@ -7,14 +7,14 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
+import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput, UnknownFunctions } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { externalNames } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
-import { builtAnew, putHeld } from './held.js'
+import { builtAnew, holdStored, putHeld, storedOf } from './held.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
@@ -34,11 +34,14 @@ import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
 import { quoteSheet, sheetKey } from './syntax.js'
-import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js'
+import { prepare, preparedHolding, prepareShaped, type Prepared, type Shapes } from './prepare.js'
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
-import { E, fromCellValue, isErr, type V } from './values.js'
+import { E, fromCellValue, isErr, type Rng, type V } from './values.js'
+import { newDynamic, type Dynamic } from './graph/dynamic.js'
+import { referrer } from './indirect.js'
+import { bookFacts } from './book-facts.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -49,6 +52,10 @@ export interface Formula extends FormulaCode {
   text: string
   /** An array formula of the old kind: its area (`CellInput.array`, `spill/fixed.ts`). */
   area?: Rect
+  /** A call to a function the engine does not know, which the formula keeps a value over: the check's refusal, reported once it is calculated. */
+  unknown?: Invalid
+  /** A dynamic formula's references found in its last computation (`graph/dynamic.ts`); none on any other formula. */
+  reads?: Rng[]
 }
 
 export interface Invalid {
@@ -72,12 +79,16 @@ export interface EngineOptions {
   own?: (cells: Record<string, CellInput>) => boolean
   /** The addresses of cells objects in their order, listed already (`checkBook`): the state reads those it takes by them. */
   keys?: Map<object, string[]>
-  /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none. */
+  /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none, and those that keep the file's value (`held.ts`). */
   cached?: CachedValues
+  /** `ComputeOptions.unknownFunctions`. */
+  unknownFunctions?: UnknownFunctions
   /** What a formula showed before a session's book was built again, for one a circular reference stops now that holds none (`held.ts`). */
   prior?: (f: Formula) => V | undefined
   /** Gets the sheets whose cells the state copied to change a held value: the book given holds other inputs there. */
   rewritten?: Set<number>
+  /** The file the book was opened from (`ComputeOptions.file`). */
+  file?: BookFile
 }
 
 export interface EngineState {
@@ -90,6 +101,8 @@ export interface EngineState {
   nameIssues: NameIssue[]
   tables: Tables
   externalFunctions: string[]
+  /** A formula calling a function the engine does not know keeps the value its cell holds or its file stores (`unknownFunctions: 'held'`). */
+  unknownHeld: boolean
   ctx: RuntimeContext
   rt: Runtime
   compiler: Compiler
@@ -139,6 +152,8 @@ export interface EngineState {
   bare: Map<number, Set<number>>
   /** The linked workbooks' sheets in the runtime after the book's own, and their names (`links.ts`). */
   links: LinkState
+  /** The references dynamic formulas found as they computed, in the graph (`graph/dynamic.ts`): only once the book has such a formula. */
+  dyn?: Dynamic
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -194,7 +209,7 @@ function emptySheet(name: string): SheetData {
 
 // ---------- preparation ----------
 
-export const codegenContext = (state: EngineState, s: number, area?: Rect): CodegenContext => ({
+export const codegenContext = (state: EngineState, s: number, area?: Rect, unknown?: boolean): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
   table: (n, r) => {
@@ -204,6 +219,7 @@ export const codegenContext = (state: EngineState, s: number, area?: Rect): Code
   },
   link: (book, sheet) => linkedSheet(state.links, book, sheet),
   ...(area ? { area } : {}),
+  ...(unknown ? { unknown: (name: string) => !state.externalFunctions.includes(name) } : {}),
 })
 
 /** The area of a formula cell's array formula of the old kind, if it is one. */
@@ -216,15 +232,15 @@ const areaOf = (cell: CellInput, row: number, col: number) => (cell.array === un
 const erring = (cell: CellInput, invalid: Invalid): Extract<Prepared, { ok: true }> => ({ ok: true, text: cell.formula!, ast: { k: 'err', code: invalid.error } })
 
 /** A formula cell compiled: its code, and the area of an old-kind array formula. */
-function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }>): Formula {
+function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }> & { unknown?: Invalid }): Formula {
   const area = areaOf(cell, row, col)
-  const g = state.compiler.formula(codegenContext(state, s, area), p.ast, s, row, col)
-  return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}) }
+  const g = state.compiler.formula(codegenContext(state, s, area, !!p.unknown), p.ast, s, row, col)
+  return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}), ...(p.unknown ? { unknown: p.unknown } : {}) }
 }
 
 /** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
 function sameDependencies(a: Formula, b: Formula): boolean {
-  return !a.area && !b.area && !a.spans && !b.spans && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
+  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
     && a.refs.length === b.refs.length && a.refs.every((g, i) => {
       const h = b.refs[i]
       return g.s === h.s && g.r1 === h.r1 && g.c1 === h.c1 && g.r2 === h.r2 && g.c2 === h.c2
@@ -255,6 +271,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock = markingClock(() => ymd(Math.floor(ctx.now) + epoch).y)
   const cache = opts.cache ?? heapCaches
+  let refer: ReturnType<typeof referrer> | undefined
   const ctx: RuntimeContext = {
     sheets: [...sheetNames.map(emptySheet), ...linked.data],
     now: opts.now - epoch,
@@ -270,6 +287,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     nested: new Map(),
     hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),
+    refer: (...a) => (refer ??= referrer(state))(...a),
   }
   input.sheets.forEach((sh, s) => setHidden(ctx, s, sh))
   const rt = makeRuntime(ctx)
@@ -281,6 +299,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     nameIssues: prepared.issues,
     tables,
     externalFunctions,
+    unknownHeld: opts.unknownFunctions === 'held',
     ctx,
     rt,
     compiler: makeCompiler(rt, opts.execution ?? 'closures'),
@@ -306,7 +325,10 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     bare: new Map(),
     links: linked.links,
   }
+  ctx.book = bookFacts(state, opts.file)
   const pending: Formula[] = []
+  // the value the file stores for a formula that keeps it (a function of connections, one the engine does not know)
+  const stored = opts.cached && storedOf(state, opts.cached)
   // the formulas of one shape are prepared once while this state is built
   const shapes: Shapes = new Map()
   for (let s = 0; s < input.sheets.length; s++) {
@@ -327,7 +349,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (due()) yield
       step()
       count(pending.length + state.invalid.size + 1)
-      let p = prepareShaped(state, shapes, s, row, col, cellIn.formula)
+      const kept = cellIn.held ?? stored?.(s, addr)
+      let p = preparedHolding(state, s, row, col, cellIn.formula, prepareShaped(state, shapes, s, row, col, cellIn.formula), kept)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         if (cellIn.array !== undefined) p = erring(cellIn, p.invalid)
@@ -339,6 +362,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
       if (cellIn.held !== undefined) state.held.set(f.id, fromCellValue(cellIn.held))
+      else if (f.stored !== undefined && kept !== undefined) holdStored(state, f, fromCellValue(kept))
       pending.push(f)
       if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
@@ -346,6 +370,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   }
   state.compiler.link(pending)
   state.formulas = pending
+  if (pending.some((f) => f.dynamic)) state.dyn = newDynamic()
   if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
   for (const f of state.formulas) state.at.set(placeOf(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
@@ -400,7 +425,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
-      let p = prepare(state, s, row, col, input.formula)
+      let p = preparedHolding(state, s, row, col, input.formula, prepare(state, s, row, col, input.formula), input.held)
       if (!p.ok) {
         state.invalid.set(k, p.invalid)
         if (input.array !== undefined) p = erring(input, p.invalid)
@@ -415,6 +440,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       if (input.held !== undefined) state.held.set(f.id, fromCellValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
       if (f.area) state.arrays++
+      if (f.dynamic) state.dyn ??= newDynamic()
       state.formulas[f.id] = f
       state.at.set(n, f.id)
       fresh.push(f)
@@ -482,6 +508,15 @@ export function* applyClock(state: EngineState, now: number, seed: number): Step
   setNow(state, now, seed)
   const track = tracker()
   yield* recompute(state, new Set(state.volatile), track)
+  return changed(state, track)
+}
+
+/** Cells' looks, columns' widths or the windows changed: the formulas that read them (CELL) are computed again. */
+export function* applyLooks(state: EngineState): Steps<number[]> {
+  const ids = state.formulas.flatMap((f) => (f?.looks ? [f.id] : []))
+  if (!ids.length) return []
+  const track = tracker()
+  yield* recompute(state, new Set(ids), track)
   return changed(state, track)
 }
 

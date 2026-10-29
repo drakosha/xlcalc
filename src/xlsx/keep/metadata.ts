@@ -4,14 +4,15 @@
  * free ones, planned before the sheets are written. What a written cell takes of those the file lacks is added to its
  * metadata and rich values, or to new parts as `writeXlsx` writes them.
  */
-import { cellMetadata } from '../read/metadata.js'
-import { DYNAMIC, DYNAMIC_BLOCK, ERROR_STRUCTURE, metadata, metadataType, RICH, richBlock, richError, richValuesXml, RICH_TYPE } from '../write/book.js'
+import { ERROR_TEXT } from '../../syntax/errors.js'
+import { cellMetadata, RICH_TYPE } from '../read/metadata.js'
+import { DYNAMIC, DYNAMIC_BLOCK, ERROR_STRUCTURE, metadata, metadataType, RICH, richBlock, richError, richValuesXml } from '../write/book.js'
 import { HEAD } from '../write/xml.js'
 import { attributes, element, elements } from '../xml/scan.js'
 import { appended, childrenOf, opening, rootOf, setAttrs, type Placed } from './xml.js'
 
 type Rich = keyof typeof RICH_TYPE
-const CODES: Rich[] = ['SPILL', 'CALC']
+const CODES = Object.keys(RICH_TYPE) as Rich[]
 
 /** A part with items added at the end of its root element, its `count` set. */
 function appendRoot(xml: string, items: string, count: number): string {
@@ -36,7 +37,7 @@ export function planMeta(xml: string | undefined, values: string | undefined, st
     if (e) found.set(e, vm)
   }
   let next = count('valueMetadata')
-  const rich = Object.fromEntries(CODES.map((c) => [c, found.has(`#${c}!`) ? { vm: found.get(`#${c}!`)!, has: true } : { vm: ++next, has: false }])) as MetaPlan['rich']
+  const rich = Object.fromEntries(CODES.map((c) => [c, found.has(ERROR_TEXT[c]) ? { vm: found.get(ERROR_TEXT[c])!, has: true } : { vm: ++next, has: false }])) as MetaPlan['rich']
   return { dynamic: mark ? { mark, has: true } : { mark: count('cellMetadata') + 1, has: false }, rich }
 }
 
@@ -47,12 +48,17 @@ export interface MetaAdded {
   structures?: string
 }
 
-/** What the written cells take that the file lacks, added: the dynamic arrays' mark (`dynamic`), the errors' (`rich`). */
-export function addMeta(plan: MetaPlan, need: { dynamic: boolean; rich: boolean }, xml: string | undefined, values: string | undefined, structures: string | undefined): MetaAdded {
-  const missing = CODES.filter((c) => !plan.rich[c].has)
+/**
+ * What the written cells take that the file lacks, added: the dynamic arrays' mark (`dynamic`), the errors' (`rich`, those
+ * written that the file lacks). The errors the file lacks are added in the plan's order up to the last one written, as the
+ * plan numbered them, #SPILL! and #CALC! always.
+ */
+export function addMeta(plan: MetaPlan, need: { dynamic: boolean; rich: readonly Rich[] }, xml: string | undefined, values: string | undefined, structures: string | undefined): MetaAdded {
+  const upto = Math.max(1, ...need.rich.map((c) => CODES.indexOf(c)))
+  const missing = need.rich.length ? CODES.filter((c, i) => i <= upto && !plan.rich[c].has) : []
   if (!xml) {
     if (values || structures) throw new Error('xlsx/keep: the file has rich values without cell metadata')
-    const rich = need.rich ? missing : []
+    const rich = missing
     return { metadata: metadata(need.dynamic, rich), ...(rich.length ? { values: richValuesXml(rich), structures: `${HEAD}<rvStructures xmlns="${RICH}" count="1">${ERROR_STRUCTURE}</rvStructures>` } : {}) }
   }
   const root = rootOf(xml)!
@@ -102,7 +108,7 @@ export function addMeta(plan: MetaPlan, need: { dynamic: boolean; rich: boolean 
     block('cellMetadata', `<bk><rc t="${t}" v="${future('XLDAPR', DYNAMIC_BLOCK)}"/></bk>`)
   }
   const out: MetaAdded = { metadata: '' }
-  if (need.rich && missing.length) {
+  if (missing.length) {
     const t = typeOf('XLRICHVALUE')
     const s = structures ? kids(structures, 's') : 0
     out.structures = structures ? appendRoot(structures, ERROR_STRUCTURE, s + 1) : `${HEAD}<rvStructures xmlns="${RICH}" count="1">${ERROR_STRUCTURE}</rvStructures>`

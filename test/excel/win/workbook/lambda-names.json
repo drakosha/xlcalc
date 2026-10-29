@@ -1,0 +1,716 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 19.1
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "LAMBDAs in names called from cells, then the cell PlusA1 reads set to 10",
+   "book": {
+    "names": [
+     {
+      "name": "Twice",
+      "ref": "LAMBDA(x,x*2)"
+     },
+     {
+      "name": "Fact",
+      "ref": "LAMBDA(n,IF(n<=1,1,n*Fact(n-1)))"
+     },
+     {
+      "name": "AddOpt",
+      "ref": "LAMBDA(a,b,IF(ISOMITTED(b),a,a+b))"
+     },
+     {
+      "name": "Pct",
+      "ref": "0.1"
+     },
+     {
+      "name": "Scaled",
+      "ref": "LAMBDA(x,x*Pct)"
+     },
+     {
+      "name": "IsEven",
+      "ref": "LAMBDA(n,IF(n=0,TRUE,IsOdd(n-1)))"
+     },
+     {
+      "name": "IsOdd",
+      "ref": "LAMBDA(n,IF(n=0,FALSE,IsEven(n-1)))"
+     },
+     {
+      "name": "Cnt",
+      "ref": "LAMBDA(n,IF(n<=0,0,1+Cnt(n-1)))"
+     },
+     {
+      "name": "PlusA1",
+      "ref": "LAMBDA(x,x+'S'!$A$1)"
+     },
+     {
+      "name": "Local",
+      "ref": "LAMBDA(x,x+100)",
+      "scope": "S"
+     },
+     {
+      "name": "Rows2",
+      "ref": "LAMBDA(r,ROWS(r)*10+COLUMNS(r))"
+     }
+    ],
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 5
+       },
+       "B3": {
+        "value": 6
+       },
+       "C1": {
+        "formula": "Local(1)"
+       }
+      }
+     },
+     {
+      "name": "F",
+      "cells": {
+       "A1": {
+        "formula": "Twice(3)"
+       },
+       "A2": {
+        "formula": "Fact(5)"
+       },
+       "A3": {
+        "formula": "Fact(20)"
+       },
+       "A4": {
+        "formula": "AddOpt(1)"
+       },
+       "A5": {
+        "formula": "AddOpt(1,)"
+       },
+       "A6": {
+        "formula": "AddOpt(1,2)"
+       },
+       "A7": {
+        "formula": "Twice(1,2)"
+       },
+       "A8": {
+        "formula": "Pct(2)"
+       },
+       "A9": {
+        "formula": "Scaled(10)"
+       },
+       "A10": {
+        "formula": "IsEven(10)"
+       },
+       "A11": {
+        "formula": "IsOdd(7)"
+       },
+       "A12": {
+        "formula": "Cnt(100)"
+       },
+       "A13": {
+        "formula": "Cnt(150)"
+       },
+       "A14": {
+        "formula": "Cnt(300)"
+       },
+       "A15": {
+        "formula": "PlusA1(1)"
+       },
+       "A16": {
+        "formula": "Twice"
+       },
+       "A17": {
+        "formula": "Local(1)"
+       },
+       "A18": {
+        "formula": "S!Local"
+       },
+       "A19": {
+        "formula": "ARRAYTOTEXT(MAP(S!A1:A3,Twice),1)"
+       },
+       "A20": {
+        "formula": "ARRAYTOTEXT(BYROW(S!A1:B3,Rows2),1)"
+       },
+       "A21": {
+        "formula": "ARRAYTOTEXT(Twice(S!A1:A3),1)"
+       },
+       "A22": {
+        "formula": "Rows2(S!A1:B3)"
+       },
+       "A23": {
+        "formula": "twice(4)"
+       },
+       "A24": {
+        "formula": "Fact(Twice(2))"
+       },
+       "A25": {
+        "formula": "LET(f,Twice,f(5))"
+       },
+       "A26": {
+        "formula": "ISREF(LAMBDA(r,r)(S!A1))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "F",
+     "range": "A1:A26"
+    },
+    {
+     "sheet": "S",
+     "range": "C1"
+    }
+   ],
+   "steps": [
+    "full",
+    "read",
+    {
+     "set": {
+      "sheet": "S",
+      "cell": "A1",
+      "value": 10
+     }
+    },
+    "calc",
+    "read"
+   ],
+   "predicted": [
+    {
+     "F!A1": {
+      "t": "n",
+      "v": 6
+     },
+     "F!A2": {
+      "t": "n",
+      "v": 120
+     },
+     "F!A3": {
+      "t": "n",
+      "v": 2432902008176640000
+     },
+     "F!A4": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A5": {
+      "t": "n",
+      "v": 1
+     },
+     "F!A6": {
+      "t": "n",
+      "v": 3
+     },
+     "F!A7": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A8": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A9": {
+      "t": "n",
+      "v": 1
+     },
+     "F!A10": {
+      "t": "b",
+      "v": true
+     },
+     "F!A11": {
+      "t": "b",
+      "v": true
+     },
+     "F!A12": {
+      "t": "n",
+      "v": 100
+     },
+     "F!A13": {
+      "t": "n",
+      "v": 150
+     },
+     "F!A14": {
+      "t": "e",
+      "v": "NUM"
+     },
+     "F!A15": {
+      "t": "n",
+      "v": 2
+     },
+     "F!A16": {
+      "t": "e",
+      "v": "CALC"
+     },
+     "F!A17": {
+      "t": "e",
+      "v": "NAME"
+     },
+     "F!A18": {
+      "t": "e",
+      "v": "CALC"
+     },
+     "F!A19": {
+      "t": "s",
+      "v": "{2;4;6}"
+     },
+     "F!A20": {
+      "t": "s",
+      "v": "{12;12;12}"
+     },
+     "F!A21": {
+      "t": "s",
+      "v": "{2;4;6}"
+     },
+     "F!A22": {
+      "t": "n",
+      "v": 32
+     },
+     "F!A23": {
+      "t": "n",
+      "v": 8
+     },
+     "F!A24": {
+      "t": "n",
+      "v": 24
+     },
+     "F!A25": {
+      "t": "n",
+      "v": 10
+     },
+     "F!A26": {
+      "t": "b",
+      "v": true
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 101
+     }
+    },
+    {
+     "F!A1": {
+      "t": "n",
+      "v": 6
+     },
+     "F!A2": {
+      "t": "n",
+      "v": 120
+     },
+     "F!A3": {
+      "t": "n",
+      "v": 2432902008176640000
+     },
+     "F!A4": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A5": {
+      "t": "n",
+      "v": 1
+     },
+     "F!A6": {
+      "t": "n",
+      "v": 3
+     },
+     "F!A7": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A8": {
+      "t": "e",
+      "v": "VALUE"
+     },
+     "F!A9": {
+      "t": "n",
+      "v": 1
+     },
+     "F!A10": {
+      "t": "b",
+      "v": true
+     },
+     "F!A11": {
+      "t": "b",
+      "v": true
+     },
+     "F!A12": {
+      "t": "n",
+      "v": 100
+     },
+     "F!A13": {
+      "t": "n",
+      "v": 150
+     },
+     "F!A14": {
+      "t": "e",
+      "v": "NUM"
+     },
+     "F!A15": {
+      "t": "n",
+      "v": 11
+     },
+     "F!A16": {
+      "t": "e",
+      "v": "CALC"
+     },
+     "F!A17": {
+      "t": "e",
+      "v": "NAME"
+     },
+     "F!A18": {
+      "t": "e",
+      "v": "CALC"
+     },
+     "F!A19": {
+      "t": "s",
+      "v": "{20;4;6}"
+     },
+     "F!A20": {
+      "t": "s",
+      "v": "{12;12;12}"
+     },
+     "F!A21": {
+      "t": "s",
+      "v": "{20;4;6}"
+     },
+     "F!A22": {
+      "t": "n",
+      "v": 32
+     },
+     "F!A23": {
+      "t": "n",
+      "v": 8
+     },
+     "F!A24": {
+      "t": "n",
+      "v": 24
+     },
+     "F!A25": {
+      "t": "n",
+      "v": 10
+     },
+     "F!A26": {
+      "t": "b",
+      "v": true
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 101
+     }
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "names": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "F!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "F!A2": {
+       "t": "n",
+       "v": 120
+      },
+      "F!A3": {
+       "t": "n",
+       "v": 2432902008176640000
+      },
+      "F!A4": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A5": {
+       "t": "n",
+       "v": 1
+      },
+      "F!A6": {
+       "t": "n",
+       "v": 3
+      },
+      "F!A7": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A8": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A9": {
+       "t": "n",
+       "v": 1
+      },
+      "F!A10": {
+       "t": "b",
+       "v": true
+      },
+      "F!A11": {
+       "t": "b",
+       "v": true
+      },
+      "F!A12": {
+       "t": "n",
+       "v": 100
+      },
+      "F!A13": {
+       "t": "n",
+       "v": 150
+      },
+      "F!A14": {
+       "t": "n",
+       "v": 300
+      },
+      "F!A15": {
+       "t": "n",
+       "v": 2
+      },
+      "F!A16": {
+       "t": "e",
+       "v": "CALC"
+      },
+      "F!A17": {
+       "t": "e",
+       "v": "NAME"
+      },
+      "F!A18": {
+       "t": "e",
+       "v": "CALC"
+      },
+      "F!A19": {
+       "t": "s",
+       "v": "{2;4;6}"
+      },
+      "F!A20": {
+       "t": "s",
+       "v": "{12;12;12}"
+      },
+      "F!A21": {
+       "t": "s",
+       "v": "{2;4;6}"
+      },
+      "F!A22": {
+       "t": "n",
+       "v": 32
+      },
+      "F!A23": {
+       "t": "n",
+       "v": 8
+      },
+      "F!A24": {
+       "t": "n",
+       "v": 24
+      },
+      "F!A25": {
+       "t": "n",
+       "v": 10
+      },
+      "F!A26": {
+       "t": "b",
+       "v": true
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 101
+      }
+     },
+     "formulas": {
+      "F!A1": "=Twice(3)",
+      "F!A2": "=FACT(5)",
+      "F!A3": "=FACT(20)",
+      "F!A4": "=AddOpt(1)",
+      "F!A5": "=AddOpt(1,)",
+      "F!A6": "=AddOpt(1,2)",
+      "F!A7": "=Twice(1,2)",
+      "F!A8": "=Pct(2)",
+      "F!A9": "=Scaled(10)",
+      "F!A10": "=ISEVEN(10)",
+      "F!A11": "=ISODD(7)",
+      "F!A12": "=Cnt(100)",
+      "F!A13": "=Cnt(150)",
+      "F!A14": "=Cnt(300)",
+      "F!A15": "=PlusA1(1)",
+      "F!A16": "=Twice",
+      "F!A17": "=Local(1)",
+      "F!A18": "=S!Local",
+      "F!A19": "=ARRAYTOTEXT(MAP(S!A1:A3,Twice),1)",
+      "F!A20": "=ARRAYTOTEXT(BYROW(S!A1:B3,Rows2),1)",
+      "F!A21": "=ARRAYTOTEXT(Twice(S!A1:A3),1)",
+      "F!A22": "=Rows2(S!A1:B3)",
+      "F!A23": "=Twice(4)",
+      "F!A24": "=FACT(Twice(2))",
+      "F!A25": "=LET(f,Twice,f(5))",
+      "F!A26": "=ISREF(LAMBDA(r,r)(S!A1))",
+      "S!C1": "=Local(1)"
+     }
+    },
+    {
+     "values": {
+      "F!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "F!A2": {
+       "t": "n",
+       "v": 120
+      },
+      "F!A3": {
+       "t": "n",
+       "v": 2432902008176640000
+      },
+      "F!A4": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A5": {
+       "t": "n",
+       "v": 1
+      },
+      "F!A6": {
+       "t": "n",
+       "v": 3
+      },
+      "F!A7": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A8": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "F!A9": {
+       "t": "n",
+       "v": 1
+      },
+      "F!A10": {
+       "t": "b",
+       "v": true
+      },
+      "F!A11": {
+       "t": "b",
+       "v": true
+      },
+      "F!A12": {
+       "t": "n",
+       "v": 100
+      },
+      "F!A13": {
+       "t": "n",
+       "v": 150
+      },
+      "F!A14": {
+       "t": "n",
+       "v": 300
+      },
+      "F!A15": {
+       "t": "n",
+       "v": 11
+      },
+      "F!A16": {
+       "t": "e",
+       "v": "CALC"
+      },
+      "F!A17": {
+       "t": "e",
+       "v": "NAME"
+      },
+      "F!A18": {
+       "t": "e",
+       "v": "CALC"
+      },
+      "F!A19": {
+       "t": "s",
+       "v": "{20;4;6}"
+      },
+      "F!A20": {
+       "t": "s",
+       "v": "{12;12;12}"
+      },
+      "F!A21": {
+       "t": "s",
+       "v": "{20;4;6}"
+      },
+      "F!A22": {
+       "t": "n",
+       "v": 32
+      },
+      "F!A23": {
+       "t": "n",
+       "v": 8
+      },
+      "F!A24": {
+       "t": "n",
+       "v": 24
+      },
+      "F!A25": {
+       "t": "n",
+       "v": 10
+      },
+      "F!A26": {
+       "t": "b",
+       "v": true
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 101
+      }
+     },
+     "formulas": {
+      "F!A1": "=Twice(3)",
+      "F!A2": "=FACT(5)",
+      "F!A3": "=FACT(20)",
+      "F!A4": "=AddOpt(1)",
+      "F!A5": "=AddOpt(1,)",
+      "F!A6": "=AddOpt(1,2)",
+      "F!A7": "=Twice(1,2)",
+      "F!A8": "=Pct(2)",
+      "F!A9": "=Scaled(10)",
+      "F!A10": "=ISEVEN(10)",
+      "F!A11": "=ISODD(7)",
+      "F!A12": "=Cnt(100)",
+      "F!A13": "=Cnt(150)",
+      "F!A14": "=Cnt(300)",
+      "F!A15": "=PlusA1(1)",
+      "F!A16": "=Twice",
+      "F!A17": "=Local(1)",
+      "F!A18": "=S!Local",
+      "F!A19": "=ARRAYTOTEXT(MAP(S!A1:A3,Twice),1)",
+      "F!A20": "=ARRAYTOTEXT(BYROW(S!A1:B3,Rows2),1)",
+      "F!A21": "=ARRAYTOTEXT(Twice(S!A1:A3),1)",
+      "F!A22": "=Rows2(S!A1:B3)",
+      "F!A23": "=Twice(4)",
+      "F!A24": "=FACT(Twice(2))",
+      "F!A25": "=LET(f,Twice,f(5))",
+      "F!A26": "=ISREF(LAMBDA(r,r)(S!A1))",
+      "S!C1": "=Local(1)"
+     }
+    }
+   ]
+  }
+ }
+}

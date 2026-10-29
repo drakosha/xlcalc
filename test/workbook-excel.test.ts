@@ -14,12 +14,13 @@ const SETS = storedSets<StoredWorkbook>('workbook')
 
 /** Cells whose answer differs from Excel's for a reason outside the case's feature: `<set>:<case>` → cell → why. */
 const OUTSIDE = {
-  'F!A82': 'COUPDAYS is not in the whitelist (#NAME?)',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets)',
 }
 /** Excel starts a cycle from the value the file stores for its cells; a book stores none and the engine starts from 0. */
 const START = 'Excel starts a cycle from what the file stores: 50 here, empty text (#VALUE! in arithmetic) where it stores no value; the engine starts from 0'
+const DEPTH = 'a recursion of LAMBDAs past the engine\'s budget of calls is #NUM! (300 calls of `Cnt`), where Excel goes on to its stack (the reason lambdaDepth)'
 const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'lambda-names:names': { 'F!A14': DEPTH },
   'date1904:d1900': OUTSIDE,
   'date1904:d1904': OUTSIDE,
   'iterate:counter-blank': { 'S!A1': START, 'S!B1': START },

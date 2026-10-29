@@ -7,7 +7,7 @@
  * checks (`check.ts`).
  */
 export { ERROR_TEXT, FormulaError, isRefOp, type Ast, type BinOp, type Lit, type RangeRef, type RefOp } from './syntax/ast.js'
-export { bindTables, checkCalls, nameProblem, nameRule, reservedName, validate, validateName } from './syntax/check.js'
+export { bindCalls, bindTables, checkCalls, nameProblem, nameRule, reservedName, validate, validateName } from './syntax/check.js'
 export { parse } from './syntax/parse.js'
 export { canonical, linkedSheet, mapAst, printFormula, quoteSheet, sheetKey, walk, type PrintOptions } from './syntax/print.js'
 export { tokenize, type Tok } from './syntax/tokens.js'

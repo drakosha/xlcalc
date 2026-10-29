@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 2.8,
-  "date": "2026-10-28"
+  "seconds": 1.4,
+  "date": "2026-10-29"
  },
  "books": {
   "probes-1": {
@@ -243,7 +243,7 @@
    "sent": "3a5b82b87cbed77dec9fc3a76216e19fe5362a8f7660b4b06458f487da0f0900"
   },
   "arity-1": {
-   "sent": "308a26e8f2c270766be9b1e515d57a747402a88950d950311311aae7a1ba05be"
+   "sent": "6cd4f4c05e425dfd9c9ef0f5a3f8717cf16b80c937cdcc40bb9b76ffad1f62d2"
   },
   "char-code-1": {
    "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
@@ -457,6 +457,51 @@
   },
   "xmatch-regex-syntax-2-1": {
    "sent": "ec3723033c090d07a22f48d2a08f4429b3ad5b886ff4e2dc4a4ffd88a57532fd"
+  },
+  "groupby-1": {
+   "sent": "0687afa8575488e3f6c52cc9e10009f2dafd48928b42c82f9de870216c04f142"
+  },
+  "lambda-1": {
+   "sent": "08556b22733edf28ac785ea40b1ae6743a22e589c46a618d57d8750afa89ceea"
+  },
+  "lambda-depth-1": {
+   "sent": "b438a0e5a6312b264c257772c6bbf9efb92660e249292302a9800f099c00c0d2"
+  },
+  "groupby-held-1": {
+   "sent": "4cbf5d31afcba0ba784047483b2dcfae5916c33637464b9b8d3e3e4fdeb2dd0b"
+  },
+  "groupby-held-2-1": {
+   "sent": "c1331aa0a4177151b599abec4f69b0c09805b552979dce9571f426648817a10a"
+  },
+  "lambda-held-1": {
+   "sent": "cfe301a24b54f8a10099229ba8c36940d189a00ddf4094214c696443ca6a4f1d"
+  },
+  "indirect-1": {
+   "sent": "db9d6272a7ad0e8bb03b568edbe6fd4b97f947e2ee6fd165484af970c2a2b7e2"
+  },
+  "indirect-held-1": {
+   "sent": "c30a7c90af7d4a9a8563a468795bc59097a18cd61e597fb7b6225b9de5c85e7e"
+  },
+  "indirect-held-3-1": {
+   "sent": "3d67eca60b992ef08938a17bbc979a0100b0e2d364fa1e88998bf514f9cb5459"
+  },
+  "coupdays-vdb-1": {
+   "sent": "3b55179bbfa9b714d84557ac243645fec85508bb1d54d87e9caf06861baaad62"
+  },
+  "coupdays-vdb-2": {
+   "sent": "1d316d9fc0e7fc855fdd3859586c84ee8d5d6d0f436a4a4608eb1c62e2332339"
+  },
+  "coupdays-vdb-held-1": {
+   "sent": "6732264f8872f538ea7bfaaa6543f52d85b9d918827c3134bb942a0c3c7a6f49"
+  },
+  "coupdays-vdb-held-2-1": {
+   "sent": "3c9b430d9acee89cd1537dbc0e853857604d794d058939cf1cd318bb405b0d01"
+  },
+  "coupdays-vdb-held-3-1": {
+   "sent": "ab88f14e7838c936c4e289077f4bfe426744fffb808c606e79d2d6ab00769c30"
+  },
+  "east-asian-held-1": {
+   "sent": "e4d6d688b304b045aa5a75457e882e0e081b5f85714504606fd2bf4429ad16da"
   }
  }
 }

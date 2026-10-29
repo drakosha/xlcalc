@@ -26,6 +26,10 @@ export const E: Record<ErrorCode, CErr> = {
   SPILL: new CErr('SPILL'),
   CALC: new CErr('CALC'),
   ERROR: new CErr('ERROR'),
+  CONNECT: new CErr('CONNECT'),
+  BLOCKED: new CErr('BLOCKED'),
+  BUSY: new CErr('BUSY'),
+  GETTING_DATA: new CErr('GETTING_DATA'),
 }
 
 export type V = number | string | boolean | null | CErr
@@ -60,6 +64,27 @@ export class Areas {
 }
 
 export const isErr = (x: unknown): x is CErr => x instanceof CErr
+
+/** A function where a value goes, in a one-value position or an array, as it is: the coercions make it #VALUE!. */
+export const asValue = (f: Lambda): V => f as unknown as V
+
+/**
+ * A function as a value: a LAMBDA, or a function by its name (`BYROW(A1:C3,SUM)`). A call gives it its arguments; any
+ * other use reads it as Excel does: an operator or a function's value #VALUE!, a cell #CALC!, TYPE 128, and it is no
+ * error (ISERROR FALSE, IFERROR keeps it). `run` takes arguments within min…max, undefined for one left out. Where one
+ * value goes and in an array it passes as a value (`asValue`), which a cell shows as #CALC! (`shown`).
+ */
+export class Lambda {
+  constructor(
+    readonly min: number,
+    readonly max: number,
+    readonly run: (args: readonly unknown[]) => unknown,
+    /** Whether MAP and its kin may call it with `n` arguments: a LAMBDA's parameters, a function's counts. */
+    readonly takes: (n: number) => boolean = (n) => n >= min && n <= max,
+    /** A built-in function's name, which GROUPBY and PIVOTBY label its column with. */
+    readonly name?: string,
+  ) {}
+}
 
 /** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
@@ -97,20 +122,22 @@ export function coercions(number: (text: string) => number | null, words: { read
       if (v === null) return 0
       if (typeof v === 'boolean') return v ? 1 : 0
       if (isErr(v)) return v
-      return number(v) ?? E.VALUE
+      // a function (a LAMBDA) is no number
+      return typeof v === 'string' ? (number(v) ?? E.VALUE) : E.VALUE
     },
     toText(v: V): string | CErr {
       if (typeof v === 'string') return v
       if (v === null) return ''
       if (typeof v === 'boolean') return v ? words.TRUE : words.FALSE
       if (isErr(v)) return v
-      return numberText(v)
+      return typeof v === 'number' ? numberText(v) : E.VALUE
     },
     toBool(v: V): boolean | CErr {
       if (typeof v === 'boolean') return v
       if (typeof v === 'number') return v !== 0
       if (v === null) return false
       if (isErr(v)) return v
+      if (typeof v !== 'string') return E.VALUE
       const u = wordKey(v)
       return u === T ? true : u === F ? false : E.VALUE
     },

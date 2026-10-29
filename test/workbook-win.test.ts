@@ -16,17 +16,15 @@ const SETS = storedSets<StoredWorkbook>('win/workbook')
 /** `<set>:<case>` → cell → why it differs from Excel for Windows (at any read). */
 const PIXELS = 'a date that does not fit shows `#` across the cell: Excel for Windows measures the column in pixels, the engine in the Mac\'s points, so the count of `#` differs'
 const OUTSIDE = {
-  'F!A82': 'COUPDAYS is not in the whitelist (#NAME?), as on the Mac',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets), as on the Mac',
 }
 /** Excel starts a cycle from what the file stores, on Windows as on the Mac; the engine from 0. */
 const START = 'Excel starts a cycle from what the file stores (50 in counter-cached, the fixed point 2 in cycles:iterate-file), empty text (#VALUE! in arithmetic) where it stores none; the engine starts from 0'
-const UNLISTED = 'INDIRECT and OFFSET are not in the whitelist (#NAME?); Excel keeps the cycle through them as any other'
 /** The one miss of the predictions of `cycles-held`: the engine still answers as predicted there. */
 const ARRAY = 'a spilled array a cycle comes to holds its first value here and spills no more (a held value is one value a cell); Excel keeps its whole spill as it was'
+const DEPTH = 'a recursion of LAMBDAs past the engine\'s budget of calls is #NUM! (300 calls of `Cnt`), where Excel goes on to its stack (the reason lambdaDepth)'
 const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
-  'cycles:indirect': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
-  'cycles:offset': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
+  'lambda-names:names': { 'F!A14': DEPTH },
   'cycles:iterate-file': { 'S!A1': START, 'S!B1': START, 'S!C1': START },
   'cycles-held:array-enters': { 'S!A2': ARRAY, 'S!A3': ARRAY },
   'date1904-held:held': { 'S!A9': PIXELS },
@@ -59,13 +57,18 @@ const WIN_CASES: Readonly<Record<string, string>> = {
 
 /** Predictions of held-out cases that Excel for Windows answered otherwise: `<set>:<case>` → cell → why; the engine gives Excel's answer since. */
 const RANKED = 'the engine left the cells of a cycle through a spill empty before an array closing such a cycle gave way to one that closes none (x-fuzz-modes-6)'
-const WIN_MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = Object.fromEntries(
-  Object.entries({
-    'munit-file': ['S!D11'],
-    'sheets-file-Sheet2-Q_data': ['Sheet2!E5', 'Q data!D4', 'Q data!E4', 'Q data!D5', 'Q data!E5', 'Q data!D6', 'Q data!E6'],
-    'wait-typed-B1-A2-C1-C2': ['S!A2'],
-  }).map(([id, cells]) => [`spill-cycles-off-held:${id}`, Object.fromEntries(cells.map((k) => [k, RANKED]))]),
-)
+/** A formula over its own cell that reads its place, look or formula alone: Excel finds no circular reference, which the engine found by the reference. */
+const PLACED = 'a reference used for its place, look or formula alone is no circular reference in Excel; the engine took it for one before (exec/placed.ts)'
+const WIN_MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  ...Object.fromEntries(
+    Object.entries({
+      'munit-file': ['S!D11'],
+      'sheets-file-Sheet2-Q_data': ['Sheet2!E5', 'Q data!D4', 'Q data!E4', 'Q data!D5', 'Q data!E5', 'Q data!D6', 'Q data!E6'],
+      'wait-typed-B1-A2-C1-C2': ['S!A2'],
+    }).map(([id, cells]) => [`spill-cycles-off-held:${id}`, Object.fromEntries(cells.map((k) => [k, RANKED]))]),
+  ),
+  ...Object.fromEntries(['row', 'columns', 'isref', 'areas', 'sheet', 'cell-address', 'cell-row', 'cell-width', 'formulatext', 'isformula', 'rows-offset', 'offset-below'].map((id) => [`place-cycles-held:${id}`, { 'S!A1': PLACED }])),
+}
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()

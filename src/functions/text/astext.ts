@@ -4,11 +4,13 @@
  */
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type V } from '../../values.js'
+import { E, isErr, Lambda, type V } from '../../values.js'
 import { capped, MAX_TEXT } from './common.js'
 
 const asText = (v: V, strict: boolean, rules: Rules): string => {
   if (isErr(v)) return rules.errorText(v.code)
+  // a function is λ, as text in quotes when strict (`{"λ";"λ"}`), as Excel writes it
+  if ((v as unknown) instanceof Lambda) return strict ? '"λ"' : 'λ'
   if (typeof v === 'string') return strict ? `"${v.replace(/"/g, '""')}"` : v
   return rules.toText(v) as string
 }

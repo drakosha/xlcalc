@@ -22,7 +22,7 @@ const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp
 const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url))
 
 /** ERROR.TYPE → error code. */
-const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
+const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 10: 'CONNECT', 11: 'BLOCKED', 14: 'CALC' }
 
 /** A cell read through its type code (`READ_COLUMNS` in `book.ts`: 0 number, -1 TRUE, -2 FALSE, -3 text, > 0 ERROR.TYPE), number and text. */
 export function typedValue(type: number, num: unknown, text: unknown): Val {
@@ -304,8 +304,9 @@ export interface Watch<T> {
   label?: string
   /** The book's folder in the sandbox, before the pid: each step has its own (`fsave`). */
   folder: string
-  /** Writes the book at the path given. */
+  /** Writes the book at the path given, in the folder by the name `file` (`book.xlsx` by default). */
   book: (file: string) => void | Promise<void>
+  file?: string
   /** The script's arguments after the book's path; `dir` is the folder, for a file the script saves. */
   args: (dir: string) => string[]
   /** No answer in `timeout` ms stops the run; Excel's windows are looked at every `poll` ms. */
@@ -374,7 +375,7 @@ export async function runWatched<T>(w: Watch<T>): Promise<T> {
   const dir = join(SANDBOX, `${w.folder}-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
-    const file = join(dir, 'book.xlsx')
+    const file = join(dir, w.file ?? 'book.xlsx')
     await w.book(file)
     const child = spawn('osascript', [w.script, file, ...w.args(dir)])
     let out = ''

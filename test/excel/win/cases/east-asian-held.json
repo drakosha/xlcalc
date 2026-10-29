@@ -1,0 +1,677 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "ASC#1",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ＡＢＣ１２３\")"
+  },
+  {
+   "id": "ASC#2",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ガギグヴパ\")"
+  },
+  {
+   "id": "ASC#3",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"　\")"
+  },
+  {
+   "id": "ASC#4",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"￥￠￡￢￣￤￦\")"
+  },
+  {
+   "id": "ASC#5",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ｱｲｳ\")"
+  },
+  {
+   "id": "ASC#6",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"アイウ\")"
+  },
+  {
+   "id": "ASC#7",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ａ－ｂ\")"
+  },
+  {
+   "id": "ASC#8",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"Excel２０１６\")"
+  },
+  {
+   "id": "ASC#9",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"゛゜\")"
+  },
+  {
+   "id": "ASC#10",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ー・、。「」\")"
+  },
+  {
+   "id": "ASC#11",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ァィゥェォャュョッ\")"
+  },
+  {
+   "id": "ASC#12",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"ヰヱヵヶ\")"
+  },
+  {
+   "id": "ASC#13",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"é\")"
+  },
+  {
+   "id": "ASC#14",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(\"\")"
+  },
+  {
+   "id": "DBCS#1",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"abc 123\")"
+  },
+  {
+   "id": "DBCS#2",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"~\\\")"
+  },
+  {
+   "id": "DBCS#3",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ｶﾞｷﾞｸﾞ\")"
+  },
+  {
+   "id": "DBCS#4",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ｳﾞ\")"
+  },
+  {
+   "id": "DBCS#5",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ﾊﾟﾋﾟﾌﾟ\")"
+  },
+  {
+   "id": "DBCS#6",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ｱﾞ\")"
+  },
+  {
+   "id": "DBCS#7",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ﾊﾞﾟ\")"
+  },
+  {
+   "id": "DBCS#8",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"¥¢£¬¯¦₩\")"
+  },
+  {
+   "id": "DBCS#9",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"é\")"
+  },
+  {
+   "id": "DBCS#10",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"\"\"'\")"
+  },
+  {
+   "id": "DBCS#11",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ｰ･､｡｢｣\")"
+  },
+  {
+   "id": "DBCS#12",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ﾞ\")"
+  },
+  {
+   "id": "DBCS#13",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"ﾡ\")"
+  },
+  {
+   "id": "DBCS#14",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(\"\")"
+  },
+  {
+   "id": "JIS#1",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"abc 123\")"
+  },
+  {
+   "id": "JIS#2",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"~\\\")"
+  },
+  {
+   "id": "JIS#3",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ｶﾞｷﾞｸﾞ\")"
+  },
+  {
+   "id": "JIS#4",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ｳﾞ\")"
+  },
+  {
+   "id": "JIS#5",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ﾊﾟﾋﾟﾌﾟ\")"
+  },
+  {
+   "id": "JIS#6",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ｱﾞ\")"
+  },
+  {
+   "id": "JIS#7",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ﾊﾞﾟ\")"
+  },
+  {
+   "id": "JIS#8",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"¥¢£¬¯¦₩\")"
+  },
+  {
+   "id": "JIS#9",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"é\")"
+  },
+  {
+   "id": "JIS#10",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"\"\"'\")"
+  },
+  {
+   "id": "JIS#11",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ｰ･､｡｢｣\")"
+  },
+  {
+   "id": "JIS#12",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ﾞ\")"
+  },
+  {
+   "id": "JIS#13",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"ﾡ\")"
+  },
+  {
+   "id": "JIS#14",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(\"\")"
+  },
+  {
+   "id": "ASC#15",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(1.5)"
+  },
+  {
+   "id": "ASC#16",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(TRUE)"
+  },
+  {
+   "id": "ASC#17",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(NA())"
+  },
+  {
+   "id": "ASC#18",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "ASC(W!A1)"
+  },
+  {
+   "id": "ASC#19",
+   "group": "ASC",
+   "fn": "ASC",
+   "formula": "LEN(ASC(W!A6))"
+  },
+  {
+   "id": "JIS#15",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(1.5)"
+  },
+  {
+   "id": "JIS#16",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(TRUE)"
+  },
+  {
+   "id": "JIS#17",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(NA())"
+  },
+  {
+   "id": "JIS#18",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "JIS(W!A1)"
+  },
+  {
+   "id": "JIS#19",
+   "group": "JIS",
+   "fn": "JIS",
+   "formula": "LEN(JIS(W!A6))"
+  },
+  {
+   "id": "DBCS#15",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(1.5)"
+  },
+  {
+   "id": "DBCS#16",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(TRUE)"
+  },
+  {
+   "id": "DBCS#17",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(NA())"
+  },
+  {
+   "id": "DBCS#18",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "DBCS(W!A1)"
+  },
+  {
+   "id": "DBCS#19",
+   "group": "DBCS",
+   "fn": "DBCS",
+   "formula": "LEN(DBCS(W!A6))"
+  },
+  {
+   "id": "PHONETIC#1",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A1)"
+  },
+  {
+   "id": "PHONETIC#2",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A2)"
+  },
+  {
+   "id": "PHONETIC#3",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A3)"
+  },
+  {
+   "id": "PHONETIC#4",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A4)"
+  },
+  {
+   "id": "PHONETIC#5",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A5)"
+  },
+  {
+   "id": "PHONETIC#6",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A1:A3)"
+  },
+  {
+   "id": "PHONETIC#7",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A1:B2)"
+  },
+  {
+   "id": "PHONETIC#8",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC((W!A1,W!A2))"
+  },
+  {
+   "id": "PHONETIC#9",
+   "group": "PHONETIC",
+   "fn": "PHONETIC",
+   "formula": "PHONETIC(W!A6)"
+  }
+ ],
+ "values": {
+  "ASC#1": {
+   "t": "s",
+   "v": "ＡＢＣ１２３"
+  },
+  "ASC#2": {
+   "t": "s",
+   "v": "ガギグヴパ"
+  },
+  "ASC#3": {
+   "t": "s",
+   "v": "　"
+  },
+  "ASC#4": {
+   "t": "s",
+   "v": "￥￠￡￢￣￤￦"
+  },
+  "ASC#5": {
+   "t": "s",
+   "v": "ｱｲｳ"
+  },
+  "ASC#6": {
+   "t": "s",
+   "v": "アイウ"
+  },
+  "ASC#7": {
+   "t": "s",
+   "v": "ａ－ｂ"
+  },
+  "ASC#8": {
+   "t": "s",
+   "v": "Excel２０１６"
+  },
+  "ASC#9": {
+   "t": "s",
+   "v": "゛゜"
+  },
+  "ASC#10": {
+   "t": "s",
+   "v": "ー・、。「」"
+  },
+  "ASC#11": {
+   "t": "s",
+   "v": "ァィゥェォャュョッ"
+  },
+  "ASC#12": {
+   "t": "s",
+   "v": "ヰヱヵヶ"
+  },
+  "ASC#13": {
+   "t": "s",
+   "v": "é"
+  },
+  "ASC#14": {
+   "t": "s",
+   "v": ""
+  },
+  "DBCS#1": {
+   "t": "s",
+   "v": "abc 123"
+  },
+  "DBCS#2": {
+   "t": "s",
+   "v": "~\\"
+  },
+  "DBCS#3": {
+   "t": "s",
+   "v": "ｶﾞｷﾞｸﾞ"
+  },
+  "DBCS#4": {
+   "t": "s",
+   "v": "ｳﾞ"
+  },
+  "DBCS#5": {
+   "t": "s",
+   "v": "ﾊﾟﾋﾟﾌﾟ"
+  },
+  "DBCS#6": {
+   "t": "s",
+   "v": "ｱﾞ"
+  },
+  "DBCS#7": {
+   "t": "s",
+   "v": "ﾊﾞﾟ"
+  },
+  "DBCS#8": {
+   "t": "s",
+   "v": "¥¢£¬¯¦₩"
+  },
+  "DBCS#9": {
+   "t": "s",
+   "v": "é"
+  },
+  "DBCS#10": {
+   "t": "s",
+   "v": "\"'"
+  },
+  "DBCS#11": {
+   "t": "s",
+   "v": "ｰ･､｡｢｣"
+  },
+  "DBCS#12": {
+   "t": "s",
+   "v": "ﾞ"
+  },
+  "DBCS#13": {
+   "t": "s",
+   "v": "ﾡ"
+  },
+  "DBCS#14": {
+   "t": "s",
+   "v": ""
+  },
+  "JIS#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#6": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#7": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#9": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#10": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#11": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#12": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#13": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#14": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "ASC#15": {
+   "t": "s",
+   "v": "1.5"
+  },
+  "ASC#16": {
+   "t": "s",
+   "v": "TRUE"
+  },
+  "ASC#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "ASC#18": {
+   "t": "s",
+   "v": "東京"
+  },
+  "ASC#19": {
+   "t": "n",
+   "v": 7
+  },
+  "JIS#15": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#16": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#17": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#18": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "JIS#19": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "DBCS#15": {
+   "t": "s",
+   "v": "1.5"
+  },
+  "DBCS#16": {
+   "t": "s",
+   "v": "TRUE"
+  },
+  "DBCS#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DBCS#18": {
+   "t": "s",
+   "v": "東京"
+  },
+  "DBCS#19": {
+   "t": "n",
+   "v": 7
+  },
+  "PHONETIC#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#7": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#8": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PHONETIC#9": {
+   "t": "e",
+   "v": "NA"
+  }
+ }
+}

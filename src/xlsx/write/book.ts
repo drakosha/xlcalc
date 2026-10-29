@@ -29,7 +29,7 @@ import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
 import { HEAD, MAIN } from './xml.js'
-import { RICH_ERRORS } from '../read/metadata.js'
+import { RICH_TYPE } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseRange } from '../../structure/area.js'
 import { areaText, sheetPrefix } from '../keep/refs.js'
@@ -41,8 +41,6 @@ const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 export const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
 export const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
 export const DYNAMIC = 'http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray'
-/** The rich value `errorType` of the errors Excel keeps as rich values. */
-export const RICH_TYPE = { SPILL: RICH_ERRORS.indexOf('#SPILL!'), CALC: RICH_ERRORS.indexOf('#CALC!') }
 
 /** A type of cell metadata as Excel 365 writes it: XLDAPR (dynamic arrays, a cell's) or XLRICHVALUE (a value's). */
 export const metadataType = (t: 'XLDAPR' | 'XLRICHVALUE') =>
@@ -144,7 +142,7 @@ export interface BookWriting {
 export function bookWriting(book: BookInput): BookWriting {
   const tables = tablesOf(book)
   return {
-    names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks },
+    names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks, defined: new Map((book.names ?? []).map((n) => [caseKey(n.name), n.name])) },
     tableAt: (i) => (row, col) => {
       const t = tableAt(tables, i, row, col)
       return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }

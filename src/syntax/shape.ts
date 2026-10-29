@@ -3,7 +3,7 @@
  * `A2*1.1+1`, `A3*1.1+2`) read, check and print alike, so one of them is parsed, checked and printed as the shape's
  * template and each other is the template with its own references and numbers put in. No check reads where a reference
  * points or what a number is, and both print as written (a number as Excel prints it). The numbers of an array constant
- * stay in the key, as one literal with a sign; a LET has no shape, since a cell's word in it may be a name.
+ * stay in the key, as one literal with a sign; a LET or a LAMBDA has no shape, since a cell's word in it may be a name.
  */
 import { MAX_FORMULA_LENGTH } from '../contract.js'
 import { FormulaError, type Ast, type RangeRef } from './ast.js'
@@ -37,7 +37,7 @@ export const tableShapeKey = (table: string | undefined, key: string) => `${tabl
 
 /**
  * A formula's tokens and shape, for a cache of shapes: `null` for a text too long or blank, which fails before it is
- * read and is taken on its own; `'unread'` for one that does not tokenize; `shape` null for a LET.
+ * read and is taken on its own; `'unread'` for one that does not tokenize; `shape` null for a LET or a LAMBDA.
  */
 export function shaped(text: string): { toks: Tok[]; shape: ReturnType<typeof shapeOf> } | 'unread' | null {
   if (text.length > MAX_FORMULA_LENGTH || text.trim() === '') return null
@@ -51,7 +51,7 @@ export function shaped(text: string): { toks: Tok[]; shape: ReturnType<typeof sh
   return { toks, shape: shapeOf(toks) }
 }
 
-/** A formula's shape by its tokens: a key every token but a hole is spelled into, and the holes in the text's order; null for a LET. */
+/** A formula's shape by its tokens: a key every token but a hole is spelled into, and the holes in the text's order; null for a LET or a LAMBDA. */
 export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
   let key = ''
   const holes: Hole[] = []
@@ -89,7 +89,7 @@ export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
         key += `t${t.table === null ? '-' : sized(t.table)}${t.spec.areas.join(',')};${t.spec.cols ? t.spec.cols.map(sized).join('') : '-'}`
         break
       case 'fn':
-        if (t.v === 'LET') return null
+        if (t.v === 'LET' || t.v === 'LAMBDA') return null
         key += `f${sized(t.v)}`
         break
       case 'op':

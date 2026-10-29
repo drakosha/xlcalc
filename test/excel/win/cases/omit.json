@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 423.5,
+  "seconds": 14.7,
   "dynamic": true
  },
  "cases": [
@@ -5326,6 +5326,102 @@
    "group": "all:COUPDAYBS",
    "fn": "COUPDAYBS",
    "formula": "COUPDAYBS(DATE(2011,1,25),DATE(2011,11,15),2,FALSE)"
+  },
+  {
+   "id": "all:COUPDAYS#1",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(,40862,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#2",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(0,40862,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#3",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(\"\",40862,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#4",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(FALSE,40862,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#5",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#6",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,0,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#7",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,\"\",2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#8",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,FALSE,2,1)"
+  },
+  {
+   "id": "all:COUPDAYS#9",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,,1)"
+  },
+  {
+   "id": "all:COUPDAYS#10",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,0,1)"
+  },
+  {
+   "id": "all:COUPDAYS#11",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,\"\",1)"
+  },
+  {
+   "id": "all:COUPDAYS#12",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,FALSE,1)"
+  },
+  {
+   "id": "all:COUPDAYS#13",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,)"
+  },
+  {
+   "id": "all:COUPDAYS#14",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,0)"
+  },
+  {
+   "id": "all:COUPDAYS#15",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,\"\")"
+  },
+  {
+   "id": "all:COUPDAYS#16",
+   "group": "all:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,FALSE)"
   },
   {
    "id": "all:COUPDAYSNC#1",
@@ -28388,6 +28484,70 @@
    "v": "VALUE"
   },
   "all:COUPDAYBS#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "all:COUPDAYS#2": {
+   "t": "n",
+   "v": 181
+  },
+  "all:COUPDAYS#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "all:COUPDAYS#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:COUPDAYS#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#9": {
+   "t": "e",
+   "v": "NA"
+  },
+  "all:COUPDAYS#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:COUPDAYS#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#13": {
+   "t": "n",
+   "v": 180
+  },
+  "all:COUPDAYS#14": {
+   "t": "n",
+   "v": 180
+  },
+  "all:COUPDAYS#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:COUPDAYS#16": {
    "t": "e",
    "v": "VALUE"
   },

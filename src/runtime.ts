@@ -4,7 +4,7 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Arg, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
+import { makeCaller, type Arg, type BookFacts, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
@@ -23,10 +23,11 @@ import type { Index as LookupIndex } from './functions/lookup/exact.js'
 import type { Line } from './functions/lookup/search.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
+import { QUIET, QUIET_RANGE } from './exec/placed.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, asValue, E, fitNumber, fromCellValue, holds, isErr, Lambda, nearZero, Rng, whole, type CErr, type V } from './values.js'
 import type { Column } from './column.js'
 
 export interface SheetData {
@@ -65,6 +66,12 @@ export interface RuntimeContext {
   aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
+  /** While a dynamic formula computes: the references it finds (`graph/dynamic.ts`). */
+  reads?: Rng[]
+  /** What the book holds beside its values (`book-facts.ts`). */
+  book?: BookFacts
+  /** INDIRECT's reading of a text as a reference (`indirect.ts`); without it every text is #REF!. */
+  refer?: (text: string, a1: boolean, s: number, r: number, c: number) => Rng | CErr
 }
 
 /** Whether SUBTOTAL and AGGREGATE skip a sheet's hidden rows by their rule: all of them, or those of a filtered sheet. */
@@ -156,12 +163,12 @@ export function makeRuntime(ctx: RuntimeContext) {
   const scalar = (x: Arg): V => {
     if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
     if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
-    return x instanceof Areas ? E.VALUE : x
+    return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
   }
 
   /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are; several areas #VALUE!. */
   const view = (x: Arg): V | Arr => {
-    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
+    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
     const b = bounds(x)
     return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
   }
@@ -212,6 +219,8 @@ export function makeRuntime(ctx: RuntimeContext) {
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
+    // a function (a LAMBDA), the one object past the errors, compares with nothing
+    if ((typeof a === 'object' && a !== null) || (typeof b === 'object' && b !== null)) return E.VALUE
     return holds(op, compareOp(a, b))
   }
 
@@ -314,6 +323,11 @@ export function makeRuntime(ctx: RuntimeContext) {
       return ctx.now
     },
     rules,
+    get book() {
+      return ctx.book!
+    },
+    refer: (text, a1, s, r, c) => ctx.refer?.(text, a1, s, r, c) ?? E.REF,
+    found: (g) => ctx.reads?.push(g),
     rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),
     flat,
     counted,
@@ -390,12 +404,33 @@ export function makeRuntime(ctx: RuntimeContext) {
       }
     return caller
   }
+  // a dynamic function's quiet form tells the graph nothing it finds (`exec/placed.ts`)
+  const quiet: Cx = Object.create(cx, { found: { value: () => {} } })
   for (const [name, def] of Object.entries(DEFS)) {
     F[name] = route(name, makeCaller(def, cx))
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
+    if (!def.dynamic) continue
+    F[name + QUIET] = makeCaller(def, quiet)
+    FL[name + QUIET] = liftCaller(FUNCTIONS[name], def.cell === true, F[name + QUIET], quiet)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */
   const LZ = (name: string, check: number[], ...thunks: (() => Arg)[]): Arg => liftLazy(F[name], FUNCTIONS[name], check, thunks, cx)
+
+  /**
+   * A function by its name as a value (`BYROW(A1:C3,SUM)`), made once: called with the counts it takes, it is its call
+   * over those arguments, lifted as a formula's call is; an argument left out is not given; called with other counts
+   * #CALC!, as Excel answers `LET(f,SUM,f())` and `LET(f,ABS,f(1,2))`. RAND and its kin get the book's first cell.
+   */
+  const etas = new Map<string, Lambda>()
+  const ETA = (name: string): Lambda => {
+    let f = etas.get(name)
+    if (f) return f
+    const spec = FUNCTIONS[name]
+    const call = spec.lazy ? (args: readonly Arg[]) => F[name](...args.map((a) => () => a)) : spec.cell ? (args: readonly Arg[]) => FL[name](0, 0, 0, ...args) : (args: readonly Arg[]) => FL[name](...args)
+    f = new Lambda(0, Infinity, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes, name)
+    etas.set(name, f)
+    return f
+  }
 
   const ext = (key: string): V => (key in ctx.externals ? fromCellValue(ctx.externals[key]) : E.NA)
 
@@ -430,16 +465,19 @@ export function makeRuntime(ctx: RuntimeContext) {
    * A reference operator: the intersection (`' '`) of the areas of two references, #NULL! where none meet, or the
    * range operator (`':'`), the rectangle around both. Anything but references on one sheet is #VALUE!.
    */
-  const RO = (op: RefOp, x: Arg, y: Arg): Arg => {
+  const RO = (op: RefOp | typeof QUIET_RANGE, x: Arg, y: Arg): Arg => {
     if (isErr(x)) return x
     if (isErr(y)) return y
     const parts = (z: Arg) => (z instanceof Rng ? [z] : z instanceof Areas && !z.cube ? z.list : null)
     const a = parts(x)
     const b = parts(y)
     if (!a || !b || [...a, ...b].some((g) => g.s !== a[0].s)) return E.VALUE
-    if (op === ':') {
+    if (op !== ' ') {
       const all = [...a, ...b]
-      return new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
+      const g = new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
+      // in a dynamic formula an end may be found as it computes (`A1:OFFSET(…)`): the graph learns the range, unless its place alone is used
+      if (op === ':') ctx.reads?.push(g)
+      return g
     }
     const met: Rng[] = []
     for (const g of a)
@@ -450,7 +488,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return !met.length ? E.NULL : met.length === 1 ? met[0] : new Areas(met)
   }
 
-  return { cell, spill, flat, bounds, scalar, view, add, sub, addLast, subLast, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, E, cx }
+  return { cell, spill, flat, bounds, scalar, view, add, sub, addLast, subLast, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ETA, ext, I, U, RO, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

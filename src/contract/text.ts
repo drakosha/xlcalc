@@ -219,9 +219,10 @@ export interface FunctionSignature {
 
 /**
  * A function category, as Excel's Insert Function dialog lists them; `compatibility` holds the old names Excel keeps
- * alongside their newer versions (`NORMDIST` alongside `NORM.DIST`).
+ * alongside their newer versions (`NORMDIST` alongside `NORM.DIST`); `user` the functions of add-ins (`EUROCONVERT`,
+ * `CALL`), `cube` those of an OLAP cube's connection, `web` those over web addresses (`WEBSERVICE`, `ENCODEURL`).
  */
-export type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'engineering' | 'compatibility'
+export type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'user' | 'engineering' | 'cube' | 'compatibility' | 'web'
 
 /** An argument in a function's signature: its name in the locale and whether a call can omit it. */
 export interface FunctionArgument {

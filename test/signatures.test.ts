@@ -28,8 +28,9 @@ describe('functionSignature', () => {
     for (const name of FUNCTION_NAMES) {
       const sig = functionSignature(name)!
       const required = sig.args.filter((a) => !a.optional).length
-      // LET is syntax: a name, its value and the calculation at least, then pairs
-      const spec = FUNCTIONS[name] ?? { min: 3, max: 253 }
+      // LET and LAMBDA are syntax: LET a name, its value and the calculation at least, then pairs; LAMBDA a calculation
+      // after up to 253 parameters
+      const spec = FUNCTIONS[name] ?? (name === 'LAMBDA' ? { min: 1, max: 254 } : { min: 3, max: 253 })
       expect(required, name).toBe(spec.min)
       if (sig.repeat) expect(spec.max, name).toBeGreaterThan(sig.args.length)
       else expect(sig.args.length, name).toBe(spec.max)
@@ -52,7 +53,7 @@ describe('functionSignature', () => {
   })
 
   it('gives every function a category of the window and a line in en-US and ru-RU', () => {
-    expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'engineering', 'compatibility'])
+    expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'user', 'engineering', 'cube', 'compatibility', 'web'])
     for (const name of FUNCTION_NAMES) {
       expect(FUNCTION_CATEGORIES, name).toContain(functionSignature(name)!.category)
       for (const locale of [undefined, ru]) expect(functionDescription(name, locale), `${locale ? 'ru' : 'en'} ${name}`).toMatch(/^\S.*\.$/)
@@ -66,7 +67,7 @@ describe('functionSignature', () => {
     expect(functionSignature('СЧЁТЕСЛИ', ru)).toMatchObject({ fn: 'COUNTIF', category: 'statistical', categoryName: 'Статистические' })
     expect(functionDescription('countif', ru)).toBe('Сколько ячеек отвечают условию.')
     expect(functionDescription('VLOOKUP')).toBe('A value from a column of a table, found in its first column.')
-    expect(functionDescription('CELL')).toBeNull()
+    expect(functionDescription('SUMM')).toBeNull()
     // the ru-RU locale alone, as a host that only computes takes it, has none of the tips' words
     expect(ruRU.argumentWords).toBeUndefined()
     expect(functionSignature('ВПР', ruRU)!.text).toBe('ВПР(lookup_value;table;column_index;[approximate])')
@@ -96,7 +97,7 @@ describe('functionSignature', () => {
   })
 
   it('answers null for a name that is no function of the whitelist', () => {
-    for (const name of ['', 'SUMM', 'CELL', 'СУММ']) expect(functionSignature(name), name).toBeNull()
+    for (const name of ['', 'SUMM', 'SUMX', 'СУММ']) expect(functionSignature(name), name).toBeNull()
   })
 
   it('checks its input', () => {

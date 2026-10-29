@@ -1,0 +1,331 @@
+{
+ "now": "2026-10-29T12:00:00Z",
+ "answers": {
+  "at": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "B1": {
+     "value": 2
+    },
+    "A2": {
+     "formula": "A1"
+    },
+    "B2": {
+     "formula": "abc"
+    },
+    "C2": {
+     "formula": "1"
+    },
+    "D2": {
+     "value": "@"
+    },
+    "E2": {
+     "formula": "A1+B1"
+    },
+    "F2": {
+     "formula": "SUM(A1:B1)"
+    }
+   },
+   "csv": "1,2,,,,\r\n1,#NAME?,1,@,3,3"
+  },
+  "quoted-values": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 123
+    },
+    "B1": {
+     "value": 1234,
+     "numberFormat": 3
+    },
+    "C1": {
+     "value": true
+    },
+    "D1": {
+     "formula": "1+2"
+    },
+    "E1": {
+     "value": 5
+    },
+    "F1": {
+     "value": 5
+    }
+   },
+   "csv": "123,\"1,234\",TRUE,3,5,5"
+  },
+  "numbers": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 1500,
+     "numberFormat": 11
+    },
+    "B1": {
+     "value": 1.5,
+     "numberFormat": 12
+    },
+    "C1": {
+     "value": -0.05,
+     "numberFormat": 9
+    },
+    "D1": {
+     "value": 0
+    },
+    "E1": {
+     "value": 1
+    },
+    "F1": {
+     "value": 12345678,
+     "numberFormat": 3
+    },
+    "G1": {
+     "value": "1e-400",
+     "numberFormat": 11
+    },
+    "H1": {
+     "value": "0x1F"
+    },
+    "I1": {
+     "value": "1_000"
+    },
+    "J1": {
+     "value": "5-"
+    }
+   },
+   "csv": "1.50E+03,1 1/2,-5%,0,1,\"12,345,678\",1e-400,0x1F,1_000,5-"
+  },
+  "dates": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Mar 15 2026"
+    },
+    "B1": {
+     "value": 46096,
+     "numberFormat": 15
+    },
+    "C1": {
+     "value": 46024,
+     "numberFormat": 16
+    },
+    "D1": {
+     "value": "2026-13-01"
+    },
+    "E1": {
+     "value": 0,
+     "numberFormat": 18
+    },
+    "F1": {
+     "value": 0,
+     "numberFormat": 20
+    },
+    "G1": {
+     "value": 0.999988425925926,
+     "numberFormat": 21
+    },
+    "H1": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "I1": {
+     "value": 46096,
+     "numberFormat": 16
+    },
+    "J1": {
+     "value": 46096,
+     "numberFormat": 15
+    }
+   },
+   "csv": "Mar 15 2026,15-Mar-26,2-Jan,2026-13-01,12:00 AM,0:00,23:59:59,3/15/2026,15-Mar,15-Mar-26"
+  },
+  "words": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "TRUE "
+    },
+    "B1": {
+     "value": false
+    },
+    "C1": {
+     "value": "yes"
+    },
+    "D1": {
+     "value": "#N/A "
+    },
+    "E1": {
+     "formula": "#NULL!"
+    },
+    "F1": {
+     "value": "#SPILL!"
+    },
+    "G1": {
+     "value": "#CALC!"
+    },
+    "H1": {
+     "value": "#GETTING_DATA"
+    }
+   },
+   "csv": "TRUE ,FALSE,yes,#N/A ,#NULL!,#SPILL!,#CALC!,#GETTING_DATA"
+  },
+  "euro-bom": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 5,
+     "numberFormat": "[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0"
+    },
+    "B1": {
+     "value": 5
+    },
+    "C1": {
+     "value": -5
+    },
+    "D1": {
+     "value": -5
+    },
+    "E1": {
+     "value": "£5"
+    },
+    "F1": {
+     "value": "¥5"
+    }
+   },
+   "csv": "€ 5,5,-5,-5,£5,¥5"
+  },
+  "sep-upper": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    }
+   },
+   "csv": "a,b"
+  },
+  "sep-comma": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    }
+   },
+   "csv": "a,b"
+  },
+  "sep-late": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    },
+    "A2": {
+     "value": "sep=;"
+    }
+   },
+   "csv": "a,b\r\nsep=;,"
+  },
+  "cr-wrap": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a\rb",
+     "style": 0
+    },
+    "B1": {
+     "value": "c"
+    }
+   },
+   "styles": [
+    {
+     "alignment": {
+      "wrap": true
+     }
+    }
+   ],
+   "csv": "\"a\rb\",c"
+  },
+  "formulas": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "B1": {
+     "formula": "A1*3"
+    },
+    "C1": {
+     "formula": "\"a\"&\"b\""
+    },
+    "D1": {
+     "formula": "+A1*2"
+    },
+    "E1": {
+     "value": "=IF(A1>1"
+    },
+    "F1": {
+     "value": "big\"\""
+    },
+    "G1": {
+     "value": "small\"\")"
+    },
+    "H1": {
+     "formula": "IF(A1>1,\"big\",\"small\")"
+    },
+    "I1": {
+     "formula": "A1:A2"
+    }
+   },
+   "csv": "2,6,ab,4,=IF(A1>1,\"big\"\"\"\"\",\"small\"\"\"\")\",big,2\r\n,,,,,,,,0"
+  },
+  "ragged": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "A2": {
+     "value": "b"
+    },
+    "B2": {
+     "value": "c"
+    },
+    "C2": {
+     "value": "d"
+    },
+    "A3": {
+     "value": "e"
+    },
+    "B3": {
+     "value": "f"
+    }
+   },
+   "csv": "a,,\r\nb,c,d\r\ne,f,"
+  },
+  "w-formats": {
+   "csv": "1.500,30:00,12,\" 1,234 \",1 1/2,\"-1,234.50\", - ,<x>"
+  },
+  "w-formulas": {
+   "csv": "2,TRUE,#N/A,ab,0.666666667,"
+  },
+  "w-hidden": {
+   "csv": "1,2,3"
+  },
+  "w-formatted-first": {
+   "csv": ",,\r\n,,\r\n,,c"
+  },
+  "w-long-text": {
+   "csv": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,\"tab\there\""
+  }
+ }
+}

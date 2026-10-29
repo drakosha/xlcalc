@@ -16,6 +16,10 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   SPILL: '#SPILL!',
   CALC: '#CALC!',
   ERROR: '#ERROR!',
+  CONNECT: '#CONNECT!',
+  BLOCKED: '#BLOCKED!',
+  BUSY: '#BUSY!',
+  GETTING_DATA: '#GETTING_DATA',
 }
 
 /** Error codes by their text. */
@@ -33,8 +37,8 @@ export const TYPED_ERRORS: readonly string[] = texts(['NULL', 'DIV0', 'VALUE', '
  */
 export const FORMULA_ERRORS: readonly string[] = [...TYPED_ERRORS, ERROR_TEXT.SPILL]
 
-/** The errors a file's cell may hold as its value or a formula's that the model has a code for: a formula's and `#CALC!`. */
-export const CELL_ERRORS: readonly string[] = [...FORMULA_ERRORS, ERROR_TEXT.CALC]
+/** The errors a file's cell may hold as its value or a formula's that the model has a code for: a formula's, `#CALC!` and those of connections. */
+export const CELL_ERRORS: readonly string[] = [...FORMULA_ERRORS, ERROR_TEXT.CALC, ERROR_TEXT.CONNECT, ERROR_TEXT.BLOCKED, ERROR_TEXT.GETTING_DATA]
 
 /**
  * Excel's error literals in invariant spelling, which a locale may translate (`Locale.errors`): the model's but its own

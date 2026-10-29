@@ -300,7 +300,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
   return {
     sheets,
     diagnostics: [
-      ...issues(state).map((i): Diagnostic => ({ kind: 'cell', sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), ...(i.fn !== undefined ? { fn: i.fn } : {}) })),
+      ...issues(state).map((i): Diagnostic => ({ kind: 'cell', sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), ...(i.fn !== undefined ? { fn: i.fn } : {}), ...(i.fromFile ? { fromFile: true } : {}) })),
       ...state.nameIssues.map((n): Diagnostic => ({ kind: 'name', ...n })),
     ],
     volatile,

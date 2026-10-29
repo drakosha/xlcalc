@@ -1,7 +1,8 @@
 /**
  * The xlsx steps through Excel for Windows. Filters (`bench/coverage/xlsx/filters.ts`): each file, as the Mac step sends
  * it, computed fully and saved by Excel (`SaveAs`, xlsx) into `test/excel/win/xlsx/filters/`, with `filters.json`
- * recording what was sent (a hash per file) or Excel's refusal. Formats (`bench/coverage/xlsx/formats.ts`): the codes
+ * recording what was sent (a hash per file) or Excel's refusal; the books of `bench/coverage/xlsx/stored.ts` the same
+ * way into `xlsx/stored/`. Formats (`bench/coverage/xlsx/formats.ts`): the codes
  * Excel shows for the built-in number formats 1 to 58 of the Mac step's book, `NumberFormat` and `NumberFormatLocal`,
  * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. `test/xlsx-win.test.ts`
  * reads them.
@@ -11,19 +12,21 @@ import { join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
+import { STORED_FILES, storedFile } from '../coverage/xlsx/stored.js'
 import { partsHash } from '../coverage/xlsx/sent.js'
 import { localeDir } from '../coverage/locales.js'
 import { loadStored, secondsSince, writeAnswers } from '../coverage/stored.js'
 import { winFile } from './functions.js'
 import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
 
-export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
-  const dir = winFile('xlsx/filters')
-  const file = winFile('xlsx/filters.json')
+/** Files of `files`, each computed fully and saved by Excel into `xlsx/<kind>/`, recorded with what was sent in `xlsx/<kind>.json`. */
+async function savedFiles<F extends { id: string }>(kind: string, files: readonly F[], bytes: (f: F) => Promise<Uint8Array>, tag: Tag, e: WinEnv): Promise<void> {
+  const dir = winFile(`xlsx/${kind}`)
+  const file = winFile(`xlsx/${kind}.json`)
   const run: StoredRun = loadStored<StoredRun>(file) ?? { meta: {}, books: {} }
   const books = await Promise.all(
-    FILTER_FILES.map(async (c) => {
-      const data = await filterFile(c)
+    files.map(async (c) => {
+      const data = await bytes(c)
       return { id: c.id, data, hash: await partsHash(data) }
     }),
   )
@@ -36,7 +39,7 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
     writeAnswers(file, run)
   }
   await inJobs(
-    'xlsx-filters',
+    `xlsx-${kind}`,
     todo,
     async (b, f) => {
       writeFileSync(f, b.data)
@@ -53,8 +56,13 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
     save,
   )
   save()
-  console.log(`xlsx filters: ${todo.length} files sent, ${Object.values(run.books).filter((x) => x.rejected).length} refused`)
+  console.log(`xlsx ${kind}: ${todo.length} files sent, ${Object.values(run.books).filter((x) => x.rejected).length} refused`)
 }
+
+export const stepXlsxFilters = (tag: Tag, e: WinEnv) => savedFiles('filters', FILTER_FILES, filterFile, tag, e)
+
+/** The books over functions the engine computes no value for (`bench/coverage/xlsx/stored.ts`), as Excel saves them. */
+export const stepXlsxStored = (tag: Tag, e: WinEnv) => savedFiles('stored', STORED_FILES, storedFile, tag, e)
 
 /** The codes Excel for Windows shows for the built-in formats 1 to 58 in `tag`: `formats` in English (`NumberFormat`), `local` in the user's language. */
 export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {

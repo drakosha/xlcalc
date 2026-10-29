@@ -140,3 +140,21 @@ console.log(now.volatile.map((c) => c.cell).join(',')) // → A1,A2,A3
 ```
 
 `volatile` lists the cells that depend on volatile functions, directly or through other cells, and on the clock's year through date text without a year ([Localization](locale.md)). A session created without a clock keeps the moment it was created until `setClock` is called; `createSession(book, { live: true })` takes a fresh clock on every recalculation instead.
+
+`INDIRECT`, `OFFSET` and `CELL`, which Excel recalculates on every edit, are not in `volatile`: the engine recalculates them when what they read changes ([References](references.md#references-a-formula-finds-as-it-calculates)), and a `CELL` that reads a look or a column's width when that changes.
+
+## The workbook's file
+
+`CELL("filename")`, `CELL("address")` of another sheet's cell and `INFO("directory")` tell the file the workbook was opened from, which a host passes as `file`, as it passes the clock. It is not part of `inputHash`; the values calculated from it are part of `hash` as any others.
+
+```js
+import { compute } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'CELL("filename",A1)' }, A2: { formula: 'CELL("address",T!B3)' } } }, { name: 'T', cells: {} }] }
+const saved = compute(book, { file: { name: 'Budget.xlsx', path: '/Users/me/' } }).sheets[0].cells
+console.log(saved.A1.value, saved.A2.value) // → /Users/me/[Budget.xlsx]S [Budget.xlsx]T!$B$3
+const fresh = compute(book).sheets[0].cells
+console.log(JSON.stringify(fresh.A1.value), fresh.A2.value) // → "" [Book1]T!$B$3
+```
+
+Without `file` the workbook is one not saved yet, as in Excel: `CELL("filename")` is empty text and another sheet's address names `Book1`. `createSession` takes `file` too.

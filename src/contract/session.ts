@@ -1,8 +1,8 @@
 /** Sessions: their options, the synchronous `Session`, the live objects over one, and asynchronous computation in portions or in threads with its calculators. */
-import type { CellValue, Clock, RangeRef, Scalar } from './values.js'
+import type { BookFile, CellValue, Clock, RangeRef, Scalar } from './values.js'
 import type { Book, BookInput, BookLayout, CellInput, ExternalBook, NameInput, NumberFormat } from './book.js'
 import type { CellStyle, StylePatch } from './looks.js'
-import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOptions, ComputeResult, Execution, ExplainOptions, Explanation, Externals } from './results.js'
+import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOptions, ComputeResult, Execution, ExplainOptions, Explanation, Externals, UnknownFunctions } from './results.js'
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
 import type { CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, FillTextOptions, FillTextPreview, FillTextResult, PasteTextPreview, PasteTextResult } from './typing.js'
 import type { SessionStructureResult, StructureOp } from './structure.js'
@@ -15,9 +15,10 @@ import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, Dependent
  * default). With `display` (the default), results and changes include what the cells display. `limits` apply to every
  * call; a call that exceeds them throws `CalcError` and leaves the session unchanged. `undo` limits the steps
  * `Session.undo` keeps. `cached`, as `compute` accepts it, gives the formulas stopped by a circular reference the values
- * stored in the workbook's file; from then on, the session's workbook holds them as `held`.
+ * stored in the workbook's file; from then on, the session's workbook holds them as `held`. `file`, as `compute` accepts
+ * it, is the file the workbook was opened from (`BookFile`).
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions; cached?: CachedValues }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions; cached?: CachedValues; unknownFunctions?: UnknownFunctions; file?: BookFile }
 
 /**
  * The steps a session keeps for `undo`: up to `depth` of them, 100 by default as in Excel (0 keeps none), taking at most

@@ -3,15 +3,17 @@
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
 import { lifts } from '../arrays/lift.js'
-import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
+import { Areas, E, isErr, Lambda, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import { ERROR_TYPE } from '../error-type.js'
+import { functions as workbook } from './workbook.js'
 
 const typeOf = (v: V) => (typeof v === 'number' || v === null ? 1 : typeof v === 'string' ? 2 : typeof v === 'boolean' ? 4 : 16)
 
 const is = (test: (v: V) => boolean): FnDef => ({ args: 'a', fn: test })
 
 export const functions: Record<string, FnDef> = {
+  ...workbook,
   'ERROR.TYPE': { args: 'a', fn: (v: V) => (isErr(v) ? (ERROR_TYPE[v.code] ?? E.NA) : E.NA) },
   ISBLANK: is((v) => v === null),
   ISERR: is((v) => isErr(v) && v.code !== 'NA'),
@@ -21,6 +23,8 @@ export const functions: Record<string, FnDef> = {
   ISEVEN: { args: 'x', fn: (x: number) => whole(x, 1e-10) % 2 === 0 },
   ISLOGICAL: is((v) => typeof v === 'boolean'),
   ISNA: is((v) => isErr(v) && v.code === 'NA'),
+  // of a LAMBDA's parameter the call left out TRUE (the walk answers it there), of anything else FALSE
+  ISOMITTED: is(() => false),
   ISNONTEXT: is((v) => typeof v !== 'string'),
   ISNUMBER: is((v) => typeof v === 'number'),
   // a reference, a union too; a reference across sheets is not one here, as in Excel
@@ -30,6 +34,6 @@ export const functions: Record<string, FnDef> = {
   // a range of several cells gives its top-left cell (an array is lifted)
   N: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },
   NA: { args: '', fn: () => E.NA },
-  // an array, even of one value, or a range of several cells is type 64
-  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (lifts(x) ? 64 : typeOf(cx.scalar(x))) },
+  // an array, even of one value, or a range of several cells is type 64, a function (a LAMBDA) 128
+  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (x instanceof Lambda ? 128 : lifts(x) ? 64 : typeOf(cx.scalar(x))) },
 }

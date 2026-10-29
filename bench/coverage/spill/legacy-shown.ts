@@ -7,6 +7,7 @@
 import { dataCells } from '../data.js'
 import { fromLegacy } from '../../../src/xlsx.js'
 import { sheet, type CellSpec, type SpillCase } from './cases.js'
+import { plainFormula } from '../xlsx/saved.js'
 import NESTING from '../../../test/excel/legacy/nesting.json' with { type: 'json' }
 import PARAMS from '../../../test/excel/legacy/params.json' with { type: 'json' }
 
@@ -26,7 +27,7 @@ export function buildSpillCases(): SpillCase[] {
   const sets = { params: PARAMS, nesting: NESTING } as Record<string, { cases: { id: string; formula: string }[]; rows: Record<string, number> }>
   return Object.entries(PARTED).map(([set, ids]) => {
     const { cases, rows } = sets[set]
-    const cells = Object.fromEntries(ids.map((id) => [`A${rows[id]}`, `=${fromLegacy(cases.find((c) => c.id === id)!.formula.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, ''))}`]))
+    const cells = Object.fromEntries(ids.map((id) => [`A${rows[id]}`, `=${fromLegacy(plainFormula(cases.find((c) => c.id === id)!.formula))}`]))
     return { id: set, about: `the dynamic text of the ${set} cases that part`, book: { sheets: [sheet('D', data()), sheet('C', cells)] }, read: ids.map((id) => ({ sheet: 'C', range: `A${rows[id]}` })) }
   })
 }

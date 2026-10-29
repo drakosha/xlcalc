@@ -266,7 +266,7 @@ class Kept {
       ...w.names,
       mode: 'formulas',
       ...(result ? { result } : {}),
-      richError: (code) => this.setup.meta.rich[code].vm,
+      richError: (code: keyof typeof this.setup.meta.rich) => this.setup.meta.rich[code].vm,
       tableAt: w.tableAt(i),
       tableParts: [],
       epoch: w.epoch,
@@ -818,9 +818,9 @@ class Kept {
     const used = (mark: string) => written.some((t) => t.includes(mark))
     const need = {
       dynamic: !meta.dynamic.has && used(` cm="${meta.dynamic.mark}"`),
-      rich: Object.values(meta.rich).some((r) => !r.has && used(` vm="${r.vm}"`)),
+      rich: (Object.keys(meta.rich) as (keyof typeof meta.rich)[]).filter((c) => !meta.rich[c].has && used(` vm="${meta.rich[c].vm}"`)),
     }
-    if (!need.dynamic && !need.rich) return
+    if (!need.dynamic && !need.rich.length) return
     const added = addMeta(meta, need, metaParts.sheetMetadata, metaParts.rdRichValue, metaParts.rdRichValueStructure)
     const put = (kind: (typeof META)[number], text: string | undefined, name: string, type: string, rel: string) => {
       if (text === undefined) return

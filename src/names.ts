@@ -21,6 +21,9 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
   const issues: NameIssue[] = []
   const seen = new Set<string>()
   const sheets = [...sheetIdx.keys()]
+  // a name's formula calls a name the book defines (a LAMBDA's, itself too), not a function no list has
+  const keys = new Set(names.map((n) => caseKey(n.name)))
+  const defined = (name: string) => keys.has(caseKey(name))
   for (const n of names) {
     const issue = (reason: string, dropped = true) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason, dropped })
     const problem = nameProblem(n.name, booleans)
@@ -52,7 +55,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
       continue
     }
     // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)
-    const v = validate(n.ref, { sheets, externalFunctions, union: true, tables, externalBooks })
+    const v = validate(n.ref, { sheets, externalFunctions, union: true, tables, externalBooks, defined })
     if (!v.ok) {
       issue(v.message, false)
       ast = { k: 'err', code: v.code === 'unknown_sheet' || v.code === 'external_ref' ? 'REF' : v.code === 'unknown_function' || v.code === 'unknown_name' ? 'NAME' : 'ERROR' }

@@ -1,0 +1,167 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "simple#1",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,2048))"
+  },
+  {
+   "id": "simple#2",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,2500))"
+  },
+  {
+   "id": "simple#3",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,3000))"
+  },
+  {
+   "id": "simple#4",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,3500))"
+  },
+  {
+   "id": "simple#5",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,4000))"
+  },
+  {
+   "id": "simple#6",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,4096))"
+  },
+  {
+   "id": "simple#7",
+   "group": "simple",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,4500))"
+  },
+  {
+   "id": "heavy#1",
+   "group": "heavy",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,ROUND(ABS(SUM(1,MAX(0,_xlpm.g(_xlpm.g,_xlpm.n-1)))),0))),_xlpm.f(_xlpm.f,1000))"
+  },
+  {
+   "id": "heavy#2",
+   "group": "heavy",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,ROUND(ABS(SUM(1,MAX(0,_xlpm.g(_xlpm.g,_xlpm.n-1)))),0))),_xlpm.f(_xlpm.f,2000))"
+  },
+  {
+   "id": "heavy#3",
+   "group": "heavy",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,ROUND(ABS(SUM(1,MAX(0,_xlpm.g(_xlpm.g,_xlpm.n-1)))),0))),_xlpm.f(_xlpm.f,3000))"
+  },
+  {
+   "id": "heavy#4",
+   "group": "heavy",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,ROUND(ABS(SUM(1,MAX(0,_xlpm.g(_xlpm.g,_xlpm.n-1)))),0))),_xlpm.f(_xlpm.f,4000))"
+  },
+  {
+   "id": "named#1",
+   "group": "named",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,_xlfn.LET(_xlpm.a,1,_xlpm.b,_xlpm.a+_xlpm.g(_xlpm.g,_xlpm.n-1),_xlpm.b))),_xlpm.f(_xlpm.f,1000))"
+  },
+  {
+   "id": "named#2",
+   "group": "named",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,_xlfn.LET(_xlpm.a,1,_xlpm.b,_xlpm.a+_xlpm.g(_xlpm.g,_xlpm.n-1),_xlpm.b))),_xlpm.f(_xlpm.f,2000))"
+  },
+  {
+   "id": "named#3",
+   "group": "named",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,_xlfn.LET(_xlpm.a,1,_xlpm.b,_xlpm.a+_xlpm.g(_xlpm.g,_xlpm.n-1),_xlpm.b))),_xlpm.f(_xlpm.f,3000))"
+  },
+  {
+   "id": "named#4",
+   "group": "named",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,_xlfn.LET(_xlpm.a,1,_xlpm.b,_xlpm.a+_xlpm.g(_xlpm.g,_xlpm.n-1),_xlpm.b))),_xlpm.f(_xlpm.f,4000))"
+  }
+ ],
+ "values": {
+  "simple#1": {
+   "t": "n",
+   "v": 2048
+  },
+  "simple#2": {
+   "t": "n",
+   "v": 2500
+  },
+  "simple#3": {
+   "t": "n",
+   "v": 3000
+  },
+  "simple#4": {
+   "t": "n",
+   "v": 3500
+  },
+  "simple#5": {
+   "t": "n",
+   "v": 4000
+  },
+  "simple#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "simple#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "heavy#1": {
+   "t": "n",
+   "v": 1000
+  },
+  "heavy#2": {
+   "t": "n",
+   "v": 2000
+  },
+  "heavy#3": {
+   "t": "n",
+   "v": 3000
+  },
+  "heavy#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "named#1": {
+   "t": "n",
+   "v": 1000
+  },
+  "named#2": {
+   "t": "n",
+   "v": 2000
+  },
+  "named#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "named#4": {
+   "t": "e",
+   "v": "NUM"
+  }
+ }
+}

@@ -9,12 +9,14 @@ import { shapes, sizeOf, type NameRef, type Size } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { holds } from '../arity.js'
 import { FUNCTIONS } from '../functions.js'
+import { STORED_FUNCTIONS } from '../functions/connections.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
+import { decode, trimOf, type Area, type Bound, type Rect } from '../structure/area.js'
 import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
+import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {
@@ -41,6 +43,11 @@ export interface CodegenContext {
   table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
   /** The runtime index of a linked workbook's sheet (`links.ts`), undefined for none: the reference is `#REF!`. */
   link?(book: number, sheet: string): number | undefined
+  /**
+   * Whether a call is to a function the engine does not know, in a formula that keeps the value its file stores
+   * (`unknownFunctions: 'held'`): its value is #NAME?, and its arguments are read for the cells they refer to.
+   */
+  unknown?(name: string): boolean
 }
 
 export type Operator = 'add' | 'sub' | 'addLast' | 'subLast' | 'mul' | 'div' | 'pow' | 'cat'
@@ -79,8 +86,8 @@ export interface Backend<T> {
   areas(list: Rng[]): T
   /** A union of references (#VALUE! unless they are references on one sheet). */
   union(items: T[]): T
-  /** The intersection (a space) or the range operator (`:`) of two references. */
-  refOp(op: RefOp, a: T, b: T): T
+  /** The intersection (a space) or the range operator (`:`) of two references; `QUIET_RANGE` the range operator whose range the graph does not learn. */
+  refOp(op: RefOp | typeof QUIET_RANGE, a: T, b: T): T
   /** `@x` at row `r`, column `c`: a reference's cell there, an array's top-left value. */
   at(a: T, r: number, c: number): T
   /** An external function, by the canonical text of its call. */
@@ -97,6 +104,17 @@ export interface Backend<T> {
    * and of the result. A value is computed on its first use, once in each computation of the LET.
    */
   let(count: number, build: (local: (i: number) => T) => { values: T[]; body: T }): T
+  /**
+   * A LAMBDA of `count` parameters: `build` gets the code of a use of its i-th parameter and of ISOMITTED of it, and gives
+   * the code of its calculation, computed at each call, and how deep that code nests (`lambdaOf`).
+   */
+  lambda(count: number, build: (param: (i: number) => T, omitted: (i: number) => T) => { body: T; height: number }): T
+  /** A call of a value as a function (`callValue`); an argument left out is `absent`. */
+  invoke(fn: T, args: T[]): T
+  /** A definition that calls itself (a defined name's LAMBDA): `build` gets the code that stands for it inside and gives its code. */
+  recursive(build: (self: T) => T): T
+  /** A built-in function by its name as a value. */
+  eta(name: string): T
 }
 
 /** A LET value: computed on its first use, then kept. */
@@ -146,10 +164,21 @@ export interface FormulaInfo {
   spans?: Span[]
   /** Calls a volatile function directly. */
   volatile: boolean
+  /** Calls a function that finds its reference as it computes (INDIRECT, OFFSET); absent otherwise. */
+  dynamic?: true
+  /** References used for their place or their formulas alone (`exec/placed.ts`): listeners of the graph, no edges; absent without them. */
+  near?: Rng[]
+  /** Calls a function that reads cells' looks (CELL); absent otherwise. */
+  looks?: true
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
   nested: boolean
   /** Calls an external function (its missing value is #N/A). */
   external: boolean
+  /**
+   * The first function it calls whose value comes from outside the workbook, so that the formula can keep the value its
+   * file stores (`held.ts`): one of connections (`CUBEVALUE`), or one the engine does not know (`CodegenContext.unknown`).
+   */
+  stored?: string
   /** An array formula: the most rows and columns it answers, where the formula tells them (`arrays/shape.ts`). */
   size?: Size
 }
@@ -183,6 +212,12 @@ function relative(ref: RangeRef): Area | null {
   return a
 }
 
+/** A reference of a name's formula used at row `r`, column `c`: its relative bounds moved from A1 there. */
+export function nameRect(ref: RangeRef, r: number, c: number): Rect {
+  const a = relative(ref)
+  return a ? placed(a, r, c) : ref
+}
+
 /** The rectangle around a sheet's rectangles, by sheet. */
 export function bySheet(list: readonly Rng[]): Map<number, Rng> {
   const out = new Map<number, Rng>()
@@ -204,23 +239,33 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
-  // the code of a use of each LET name, and its value, by slot (a name's formula has its own LET names)
+  // the code of a use of each LET name and parameter, a LET name's value and ISOMITTED of a parameter, by slot (a
+  // name's formula has its own LET names and parameters)
   let uses: T[] = []
-  let bound: Ast[] = []
+  let bound: (Ast | undefined)[] = []
+  let omits: (T | undefined)[] = []
+  // a LET name (its value) or a parameter (ISOMITTED of it) seen from now on
+  const see = (slot: number, use: T, value?: Ast, omitted?: T) => {
+    uses[slot] = use
+    bound[slot] = value
+    omits[slot] = omitted
+  }
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
+  // the code that stands for a defined name's LAMBDA inside its own calculation, by the names being walked
+  const selves = new Map<NameDef, T>()
   /**
    * A definition's formula entered: at the global scope (a name's names are the global ones, its LET names its own), a
    * name that goes through it to itself caught by `inside`. The walk's state is per call, so a throw leaves it as is.
    */
   const enter = <R>(d: NameDef, visit: () => R): R => {
-    const outer: [T[], Ast[], number] = [uses, bound, scope]
-    ;[uses, bound, scope] = [[], [], -1]
+    const outer: [T[], (Ast | undefined)[], (T | undefined)[], number] = [uses, bound, omits, scope]
+    ;[uses, bound, omits, scope] = [[], [], [], -1]
     inside.add(d)
     const out = visit()
     inside.delete(d)
-    ;[uses, bound, scope] = outer
+    ;[uses, bound, omits, scope] = outer
     return out
   }
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
@@ -237,7 +282,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   }
   /**
    * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
-   * references a call can answer (INDEX's, TAKE's and DROP's array, XLOOKUP's return array and `if_not_found`, the
+   * references a call can answer (INDEX's, TAKE's, DROP's and TRIMRANGE's array, XLOOKUP's return array and `if_not_found`, the
    * passed arguments of CHOOSE, IF, IFS and SWITCH), not those it reads; a spill reference's cell goes to `anchors` too.
    * `parts` collects the rectangles of which a part may be answered (`part`): under INDEX, TAKE, DROP, XLOOKUP, `@`, an
    * intersection or the range operator.
@@ -295,13 +340,16 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         bound = outer
         return
       }
-      case 'local':
-        return on(bound[n.slot])
+      case 'local': {
+        const x = bound[n.slot]
+        if (x) on(x)
+        return
+      }
       case 'fn': {
         const spec = FUNCTIONS[n.name]
-        const cut = n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' || n.name === 'XLOOKUP'
-        const answers = (i: number) =>
-          n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' ? i === 0 : n.name === 'XLOOKUP' ? i >= 2 && i <= 3 : !!spec?.refs && spec.mode(i) === 'pass'
+        const first = n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' || n.name === 'TRIMRANGE'
+        const cut = first || n.name === 'XLOOKUP'
+        const answers = (i: number) => (first ? i === 0 : n.name === 'XLOOKUP' ? i >= 2 && i <= 3 : !!spec?.refs && spec.mode(i) === 'pass')
         n.args.forEach((a, i) => answers(i) && on(a, part || cut))
         return
       }
@@ -313,7 +361,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     const anchors: Rng[] = []
     reach(n, reached, anchors)
     const boxes = [...bySheet(reached).values()]
-    info.refs.push(...boxes)
+    read(n, ...boxes)
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
   /**
@@ -369,6 +417,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     info.refs.push(g)
     return b.range(g, false)
   }
+  // the nodes whose reference is used for its place or its formulas alone, found once the formula calls a function that so uses one
+  let placeOnly: Map<Ast, Use> | undefined
+  // a reference read, or one of them where its place or its formulas alone are used: a listener of the graph alone
+  const read = (n: Ast, ...gs: Rng[]) => (placeOnly?.has(n) ? (info.near ??= []) : info.refs).push(...gs)
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
   const linked = (n: Extract<Ast, { k: 'xref' }>) => (typeof n.book === 'number' ? ctx.link?.(n.book, n.sheet) : undefined)
@@ -377,7 +429,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const closed = (n: Ast): boolean => {
     if (n.k === 'xref') return true
     if (n.k === 'paren') return closed(n.a)
-    if (n.k === 'local') return closed(bound[n.slot])
+    if (n.k === 'local') return !!bound[n.slot] && closed(bound[n.slot]!)
     if (n.k !== 'name') return false
     const d = resolve(n, scope)
     if (!d || inside.has(d)) return false
@@ -390,7 +442,16 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // a value that may be a reference, read as a value where one value goes
   const value = (code: T, n: Ast, rangeOk: boolean) => (!rangeOk && !many(n) ? b.read(code) : code)
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
+  // how deep the walk is in the formula and in the names it expands, and the deepest it went: a LAMBDA's calculation's height
+  let level = 0
+  let deepest = 0
   const go = (n: Ast, rangeOk = false): T => {
+    if (++level > deepest) deepest = level
+    const code = node(n, rangeOk)
+    level--
+    return code
+  }
+  const node = (n: Ast, rangeOk: boolean): T => {
     switch (n.k) {
       case 'num':
       case 'str':
@@ -404,7 +465,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       }
       case 'ref': {
         const g = rng(n, ctx.sheet(n.sheet))
-        info.refs.push(g)
+        // a trim reference reads its cells to trim them
+        const trim = trimOf(n.ref.text)
+        if (trim) info.refs.push(g)
+        else read(n, g)
         // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
         const a = ctx.here && relative(n.ref)
         if (a) {
@@ -416,6 +480,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return b.moving!(at, n.ref.spill ? 'spill' : n.ref.kind === 'cell' && !rangeOk ? 'cell' : rangeOk ? 'range' : 'value')
         }
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
+        // a trim reference (`A1:.C9`) is TRIMRANGE over its range
+        if (trim) return b.call('TRIMRANGE', [b.range(g, false), b.value(trim), b.value(trim)], false)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
       }
@@ -434,7 +500,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const x = table(n)
         if (typeof x === 'string') return b.value(E[x])
         const g = new Rng(x.s, x.r1, x.c1, x.r2, x.c2)
-        info.refs.push(g)
+        read(n, g)
         const one = g.r2 === g.r1 && g.c2 === g.c1
         return one && !rangeOk ? b.cell(g.s, g.r1, g.c1) : b.range(g, false)
       }
@@ -445,15 +511,21 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const [i, j] = [ctx.sheet(n.first), ctx.sheet(n.last)]
         const list: Rng[] = []
         for (let k = Math.min(i, j); k <= Math.max(i, j); k++) list.push(new Rng(k, x.r1, x.c1, x.r2, x.c2))
-        info.refs.push(...list)
+        read(n, ...list)
         return b.areas(list)
       }
       case 'name': {
         const d = resolve(n, scope)
         if (!d) return b.value(E.NAME)
-        // a name that uses itself, through other names or not
-        if (inside.has(d)) return b.value(E.CYCLE)
-        return enter(d, () => go(d.ast, rangeOk))
+        // a name that uses itself, through other names or not: a LAMBDA's calls itself, any other is a cycle
+        if (inside.has(d)) return selves.get(d) ?? b.value(E.CYCLE)
+        if (d.ast.k !== 'lambda') return enter(d, () => go(d.ast, rangeOk))
+        return b.recursive((self) => {
+          selves.set(d, self)
+          const code = enter(d, () => go(d.ast))
+          selves.delete(d)
+          return code
+        })
       }
       case 'at':
         return value(b.at(go(n.a, true), r, c), n, rangeOk)
@@ -474,19 +546,32 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (isRefOp(n.op)) {
           // the cells between the range's ends are read too, not only the operands'
           if (n.op === ':') around(n)
-          return value(b.refOp(n.op, go(n.a, true), go(n.b, true)), n, rangeOk)
+          const [x, y] = [go(n.a, true), go(n.b, true)]
+          return value(b.refOp(n.op === ':' && placeOnly?.get(n) === 'place' ? QUIET_RANGE : n.op, x, y), n, rangeOk)
         }
         const x = go(n.a)
         return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
       }
       case 'fn': {
         if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
+        // ISOMITTED of a parameter: whether its call left it out
+        const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
+        if (param) return param
         const spec = FUNCTIONS[n.name]
+        if (!spec && ctx.unknown?.(n.name)) {
+          info.stored ??= n.name
+          for (const a of n.args) if (a.k !== 'missing') go(a, true)
+          return b.value(E.NAME)
+        }
         if (!spec) {
           info.external = true
           return b.external(canonical(n))
         }
+        if (STORED_FUNCTIONS.has(n.name)) info.stored ??= n.name
         if (spec.volatile) info.volatile = true
+        if (spec.dynamic) info.dynamic = true
+        if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)
+        if (spec.looks) info.looks = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
         const open = OPEN_REFERENCE[n.name]
         if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
@@ -502,7 +587,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           // RAND gets its cell, or the cell the code runs at
           const here = ctx.here
           if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
-          code = b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+          // a reference found for its place alone is not learnt by the graph: the function's quiet form
+          code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
         // a reference answered where one value goes is read here; a range position takes it as a reference
         return spec.refs ? value(code, n, rangeOk) : code
@@ -512,15 +598,34 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'let':
         // the values are kept as references; the result is read where one value goes
         return b.let(n.binds.length, (local) => {
-          n.binds.forEach((x, i) => {
-            uses[x.slot] = local(i)
-            bound[x.slot] = x.value
-          })
+          n.binds.forEach((x, i) => see(x.slot, local(i), x.value))
           const values = n.binds.map((x) => go(x.value, true))
           return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
         })
       case 'local':
         return value(uses[n.slot], n, rangeOk)
+      case 'lambda':
+        // the calculation keeps a reference it answers: its call reads it where one value goes
+        return b.lambda(n.params.length, (param, omitted) => {
+          n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
+          const [from, outer] = [level, deepest]
+          deepest = level
+          const body = go(n.body, true)
+          const height = deepest - from
+          deepest = Math.max(outer, deepest)
+          return { body, height }
+        })
+      case 'call':
+        return value(
+          b.invoke(
+            go(n.fn),
+            n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true))),
+          ),
+          n,
+          rangeOk,
+        )
+      case 'eta':
+        return b.eta(n.name)
     }
   }
   const code = go(ast)

@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.113.4",
+  "version": "16.114.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.148,
+  "seconds": 1.751,
   "dynamic": true
  },
  "cases": [
@@ -301,6 +301,12 @@
    "formula": "ROWS(_xlfn.HSTACK(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))"
   },
   {
+   "id": "MAP:254",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "ROWS(_xlfn.MAP(D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,D!B1:B2,_xlfn.LAMBDA(_xlpm.p_1,_xlpm.p_2,_xlpm.p_3,_xlpm.p_4,_xlpm.p_5,_xlpm.p_6,_xlpm.p_7,_xlpm.p_8,_xlpm.p_9,_xlpm.p_10,_xlpm.p_11,_xlpm.p_12,_xlpm.p_13,_xlpm.p_14,_xlpm.p_15,_xlpm.p_16,_xlpm.p_17,_xlpm.p_18,_xlpm.p_19,_xlpm.p_20,_xlpm.p_21,_xlpm.p_22,_xlpm.p_23,_xlpm.p_24,_xlpm.p_25,_xlpm.p_26,_xlpm.p_27,_xlpm.p_28,_xlpm.p_29,_xlpm.p_30,_xlpm.p_31,_xlpm.p_32,_xlpm.p_33,_xlpm.p_34,_xlpm.p_35,_xlpm.p_36,_xlpm.p_37,_xlpm.p_38,_xlpm.p_39,_xlpm.p_40,_xlpm.p_41,_xlpm.p_42,_xlpm.p_43,_xlpm.p_44,_xlpm.p_45,_xlpm.p_46,_xlpm.p_47,_xlpm.p_48,_xlpm.p_49,_xlpm.p_50,_xlpm.p_51,_xlpm.p_52,_xlpm.p_53,_xlpm.p_54,_xlpm.p_55,_xlpm.p_56,_xlpm.p_57,_xlpm.p_58,_xlpm.p_59,_xlpm.p_60,_xlpm.p_61,_xlpm.p_62,_xlpm.p_63,_xlpm.p_64,_xlpm.p_65,_xlpm.p_66,_xlpm.p_67,_xlpm.p_68,_xlpm.p_69,_xlpm.p_70,_xlpm.p_71,_xlpm.p_72,_xlpm.p_73,_xlpm.p_74,_xlpm.p_75,_xlpm.p_76,_xlpm.p_77,_xlpm.p_78,_xlpm.p_79,_xlpm.p_80,_xlpm.p_81,_xlpm.p_82,_xlpm.p_83,_xlpm.p_84,_xlpm.p_85,_xlpm.p_86,_xlpm.p_87,_xlpm.p_88,_xlpm.p_89,_xlpm.p_90,_xlpm.p_91,_xlpm.p_92,_xlpm.p_93,_xlpm.p_94,_xlpm.p_95,_xlpm.p_96,_xlpm.p_97,_xlpm.p_98,_xlpm.p_99,_xlpm.p_100,_xlpm.p_101,_xlpm.p_102,_xlpm.p_103,_xlpm.p_104,_xlpm.p_105,_xlpm.p_106,_xlpm.p_107,_xlpm.p_108,_xlpm.p_109,_xlpm.p_110,_xlpm.p_111,_xlpm.p_112,_xlpm.p_113,_xlpm.p_114,_xlpm.p_115,_xlpm.p_116,_xlpm.p_117,_xlpm.p_118,_xlpm.p_119,_xlpm.p_120,_xlpm.p_121,_xlpm.p_122,_xlpm.p_123,_xlpm.p_124,_xlpm.p_125,_xlpm.p_126,_xlpm.p_127,_xlpm.p_128,_xlpm.p_129,_xlpm.p_130,_xlpm.p_131,_xlpm.p_132,_xlpm.p_133,_xlpm.p_134,_xlpm.p_135,_xlpm.p_136,_xlpm.p_137,_xlpm.p_138,_xlpm.p_139,_xlpm.p_140,_xlpm.p_141,_xlpm.p_142,_xlpm.p_143,_xlpm.p_144,_xlpm.p_145,_xlpm.p_146,_xlpm.p_147,_xlpm.p_148,_xlpm.p_149,_xlpm.p_150,_xlpm.p_151,_xlpm.p_152,_xlpm.p_153,_xlpm.p_154,_xlpm.p_155,_xlpm.p_156,_xlpm.p_157,_xlpm.p_158,_xlpm.p_159,_xlpm.p_160,_xlpm.p_161,_xlpm.p_162,_xlpm.p_163,_xlpm.p_164,_xlpm.p_165,_xlpm.p_166,_xlpm.p_167,_xlpm.p_168,_xlpm.p_169,_xlpm.p_170,_xlpm.p_171,_xlpm.p_172,_xlpm.p_173,_xlpm.p_174,_xlpm.p_175,_xlpm.p_176,_xlpm.p_177,_xlpm.p_178,_xlpm.p_179,_xlpm.p_180,_xlpm.p_181,_xlpm.p_182,_xlpm.p_183,_xlpm.p_184,_xlpm.p_185,_xlpm.p_186,_xlpm.p_187,_xlpm.p_188,_xlpm.p_189,_xlpm.p_190,_xlpm.p_191,_xlpm.p_192,_xlpm.p_193,_xlpm.p_194,_xlpm.p_195,_xlpm.p_196,_xlpm.p_197,_xlpm.p_198,_xlpm.p_199,_xlpm.p_200,_xlpm.p_201,_xlpm.p_202,_xlpm.p_203,_xlpm.p_204,_xlpm.p_205,_xlpm.p_206,_xlpm.p_207,_xlpm.p_208,_xlpm.p_209,_xlpm.p_210,_xlpm.p_211,_xlpm.p_212,_xlpm.p_213,_xlpm.p_214,_xlpm.p_215,_xlpm.p_216,_xlpm.p_217,_xlpm.p_218,_xlpm.p_219,_xlpm.p_220,_xlpm.p_221,_xlpm.p_222,_xlpm.p_223,_xlpm.p_224,_xlpm.p_225,_xlpm.p_226,_xlpm.p_227,_xlpm.p_228,_xlpm.p_229,_xlpm.p_230,_xlpm.p_231,_xlpm.p_232,_xlpm.p_233,_xlpm.p_234,_xlpm.p_235,_xlpm.p_236,_xlpm.p_237,_xlpm.p_238,_xlpm.p_239,_xlpm.p_240,_xlpm.p_241,_xlpm.p_242,_xlpm.p_243,_xlpm.p_244,_xlpm.p_245,_xlpm.p_246,_xlpm.p_247,_xlpm.p_248,_xlpm.p_249,_xlpm.p_250,_xlpm.p_251,_xlpm.p_252,_xlpm.p_253,1)))"
+  },
+  {
    "id": "VSTACK:254",
    "group": "VSTACK",
    "fn": "VSTACK",
@@ -575,6 +581,10 @@
   "HSTACK:254": {
    "t": "n",
    "v": 1
+  },
+  "MAP:254": {
+   "t": "n",
+   "v": 2
   },
   "VSTACK:254": {
    "t": "n",

@@ -1,6 +1,7 @@
 /** Coupon schedules and the COUP* functions, on Excel's serial numbers. */
 import type { FnDef } from '../../args.js'
-import { addMonths, daysInMonth, serialExcel, ymd } from '../../dates.js'
+import { addMonths, daysInMonth, lastDayExcel, serialExcel, utcDays, ymd } from '../../dates.js'
+import { spend } from '../../exec/budget.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { d360, euro360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
@@ -83,9 +84,45 @@ export function bondDays(c: Coupons, basis: number, freq: number) {
   return { e, a, dsc: e - a }
 }
 
+/** The day of the month of the date `steps` periods before maturity, each date stepped from the one before it. */
+function steppedDay(mat: Ymd, steps: number, freq: number): number {
+  let { y, m, d } = mat
+  for (let i = 0; i < steps && d > 28; i++) {
+    ;({ y, m } = addMonths(y, m, -12 / freq))
+    d = Math.min(d, daysInMonth(y, m))
+  }
+  return d
+}
+
+/** Days from `a` to `b` as COUPDAYS counts them: serial numbers, 1900-02-29 included, or the real calendar's from before 1900. */
+const daysTo = (a: Ymd, b: Ymd) => (a.y < 1900 ? utcDays(b.y, b.m, b.d) - utcDays(a.y, a.m, a.d) : serialOfYmd(b) - serialOfYmd(a))
+
+/**
+ * COUPDAYS on basis 1. Excel steps the coupon dates back from maturity each from the one before it, so a day a shorter
+ * month cuts stays cut (a 31st that meets February stays the 28th), and takes the first such date after settlement.
+ * From there it steps back a period at a time, to the month's last day from a date on its last day (Excel's own, 29
+ * February 1900 included), to the first date not after settlement, and counts the period that date starts. So
+ * `COUPDAYS(DATE(2011,3,15),DATE(2015,8,31),2,1)` is 181, 28 February to 28 August, where COUPPCD and COUPNCD give
+ * 28 February and 31 August.
+ */
+function actualPeriod(c: Coupons, mat: Ymd, freq: number): number {
+  // the periods from the next coupon date to maturity (COUPNUM less one, also before 1900)
+  const steps = (((mat.y - c.ncd.y) * 12 + mat.m - c.ncd.m) * freq) / 12
+  const at = { ...c.ncd, d: steppedDay(mat, steps, freq) }
+  let next = cmp(at, c.settle) > 0 ? at : { ...couponDate(c.ncd, 1, freq), d: steppedDay(mat, steps - 1, freq) }
+  const back = (x: Ymd) => couponDate(x, -1, freq, x.d === lastDayExcel(x.y, x.m))
+  let from = back(next)
+  while (cmp(from, c.settle) > 0) {
+    spend(1)
+    next = from
+    from = back(next)
+  }
+  return daysTo(from, next)
+}
+
 /** The COUP* functions check each argument as they read it: the dates' order, then the frequency, then the basis. */
-function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr, date?: FnDef['date']): FnDef {
-  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq), {
+function coup(answer: (c: Coupons, basis: number, freq: number, mat: Ymd) => number | CErr, date?: FnDef['date']): FnDef {
+  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq, ymd(maturity)), {
     check: { 1: need((maturity, a) => a[0] < maturity), 2: need(validFreq), 3: need(validBasis) },
     date,
   })
@@ -93,6 +130,7 @@ function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr
 
 export const functions: Record<string, FnDef> = {
   COUPDAYBS: coup((c, basis, freq) => couponDays(c, basis, freq).a),
+  COUPDAYS: coup((c, basis, freq, mat) => (basis === 1 ? actualPeriod(c, mat, freq) : normalDays(basis, freq))),
   COUPDAYSNC: coup((c, basis, freq) => couponDays(c, basis, freq).dsc),
   COUPNCD: coup((c) => serialOfYmd(c.ncd), 'calendar'),
   COUPNUM: coup((c) => c.n || E.NUM),

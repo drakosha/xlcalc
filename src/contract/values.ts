@@ -10,9 +10,12 @@ export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that matches nothing) or text longer than 32,767 characters
  * (`CONCAT`). `SPILL`: an array that cannot spill from its formula's cell (the range is not empty, overlaps a merged
  * area or runs off the sheet). `NULL`: Excel's #NULL!, ranges that do not intersect under the intersection operator
- * (`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse).
+ * (`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse). The errors of
+ * the functions that reach outside the workbook (`WEBSERVICE`, `STOCKHISTORY`, the cube functions): `CONNECT`, Excel's
+ * #CONNECT!, a service that cannot be reached; `BLOCKED`, #BLOCKED!, a service that is not allowed or needs a sign-in;
+ * `BUSY`, #BUSY!, and `GETTING_DATA`, #GETTING_DATA (a cube function's), an answer still on its way.
  */
-export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
+export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR' | 'CONNECT' | 'BLOCKED' | 'BUSY' | 'GETTING_DATA'
 
 /** A calculated value. Dates are returned as serial numbers, and numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
@@ -40,6 +43,19 @@ export type CheckCode =
 export interface Clock {
   now: string
   seed: number
+}
+
+/**
+ * The file a workbook was opened from, as Excel knows it: its name (`Budget.xlsx`) and the folder it is in as the host
+ * names it, with the separator at its end (`C:\Users\me\`, `/Users/me/`). `CELL("filename")` gives the folder, the
+ * name in brackets and the sheet (`/Users/me/[Budget.xlsx]Sheet1`), `CELL("address")` of another sheet's cell
+ * the name in brackets (`[Budget.xlsx]Sheet2!$A$1`), `INFO("directory")` the folder. Without it they are those of a
+ * workbook not saved yet: `CELL("filename")` is empty text, the name `Book1`, no folder. Not part of `inputHash`, as the
+ * clock is not; the values computed with it are part of `hash` as any others.
+ */
+export interface BookFile {
+  name: string
+  path?: string
 }
 
 /** A cell of a workbook: its sheet's name and its A1 address (`B2`). */

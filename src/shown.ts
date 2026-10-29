@@ -52,15 +52,18 @@ function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null
   return points
 }
 
-/** The looks of cells of `book` by `rules` (a saved book's, without a session); with a session's `state`, its lines read once for it. */
-export function bookLooks(book: BookInput, rules: Rules, state?: EngineState): Looks {
+/**
+ * The looks of cells of `book` by `rules` (a saved book's, without a session); with a session's `state`, its lines read
+ * once for it. `wide`: in no column's room, as Excel writes a cell to a CSV file (General as in a wide column, no `#`, no fill).
+ */
+export function bookLooks(book: BookInput, rules: Rules, state?: EngineState, wide = false): Looks {
   const sheetLook = sheetLooks(book, state)
   const turned = turnedStyles(book.styles)
   // a cell without `own` shows by the sheet's input there, or its look of the sheet's looks (`sheetLines`)
   return (s, r, c, v, own) => {
     const x = sheetLook(s)
     const format = x.lines.format(r, c, own)
-    return rules.display(v, format, room(pointsAt(x, r, c, turned, own)))
+    return rules.display(v, format, wide ? Infinity : room(pointsAt(x, r, c, turned, own)))
   }
 }
 

@@ -18,7 +18,7 @@ import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
 import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, ExternalBook, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, SelectionLabels, Session, SpecialCells, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions, WorkbookStatistics } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyLooks, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { InputError } from './input-error.js'
@@ -172,7 +172,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
-  const { externals, execution } = o
+  const { externals, execution, unknownFunctions } = o
   const display = o.display !== false
   // the cells a host was given (`getBook`; `getSnapshot` gives a copy), which it may keep: a state built later copies
   // them, so they change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
@@ -183,7 +183,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const unlent = (cells: object) => !lent.has(cells)
   /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
-  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, own, ...more })
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, unknownFunctions, file: o.file, own, ...more })
   let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
@@ -230,6 +230,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /** A call that changed the book answered: the revision one more, and what changed. */
   const answer = (s: EngineState, x: Outcome): EditResult => {
+    // a look, a width or a window changed: what CELL tells of them
+    if (x.styles || x.layout.size || x.looks.length || [...x.fields.values()].some((f) => 'style' in f || 'numberFormat' in f)) {
+      const keys = run(applyLooks(s))
+      if (keys.length) x = { ...x, keys: inOrder(x.keys, keys), valued: true }
+    }
     textsChanged(s, x)
     return { revision: ++revision, changes: changes(s, x.keys, x.fields), ...told(s, x, x.moved) }
   }

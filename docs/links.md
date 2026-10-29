@@ -81,7 +81,7 @@ console.log(cell?.formula, cell?.value) // → '[1]Sheet'!$I$8*2 84
 - Only entering or pasting a formula with a link was verified to mark the link. Whether moving such a formula, undoing the edit, or entering a formula that reads a link only through a name marks it was not verified: the engine marks the link for formulas whose text names it, on entering and pasting, and an undo keeps the marker.
 - On a marked sheet, a range is read only to one row and one column beyond the stored values, so that an entire column stays cheap; a sum over it is `#REF!` as in Excel, but a count of errors over it (`COUNTA`) counts one `#REF!` where Excel counts every cell missing from the values.
 - A reference across sheets of another workbook (`[1]Jan:Mar!A1`) and a spill reference into one (`[1]Sheet1!A1#`) are rejected.
-- `INDIRECT`, `OFFSET` and `CELL` are not in the engine (`#NAME?` in any workbook): over a closed workbook Excel returns `#REF!`, `#VALUE!` and no text, respectively.
+- `INDIRECT` into a linked workbook is `#REF!`, and `OFFSET` and `CELL` over one are `#VALUE!`, as Excel calculates them over a closed workbook.
 - A link of a kind other than a workbook (DDE, OLE) keeps its number and is reported by `readXlsx`; its references are `#REF!`.
 
 ## Checked against Excel
