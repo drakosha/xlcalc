@@ -44,6 +44,8 @@ export function rebuildGraph(state: EngineState) {
       listeners.add({ s: g.s, r1: g.r1, r2: g.r2, c1: g.c1, c2: g.c2, id: f.id })
       graph.add(g, f.id)
     }
+    // references used for their place or formulas alone: an edit there computes the formula again, in no order (`exec/placed.ts`)
+    if (f.near) for (const g of f.near) listeners.add({ s: g.s, r1: g.r1, r2: g.r2, c1: g.c1, c2: g.c2, id: f.id })
   }
   // each list of successors as an array of its own length: one filled by pushes keeps room for many more, for each vertex
   for (let i = 0; i < succ.length; i++) if (succ[i].length) succ[i] = succ[i].slice()

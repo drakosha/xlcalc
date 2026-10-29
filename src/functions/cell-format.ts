@@ -1,8 +1,8 @@
 /**
- * CELL's codes of a number format (`CELL("format")`, `"color"`, `"parentheses"`), by Microsoft's table of them and the
- * same rules for the formats it does not list: `G` General, text or a fraction; `F`, `,` (thousands), `C` (currency),
- * `P` (percent) and `S` (scientific) with the decimals of the positive section; `D1` to `D9` the dates and times; `-`
- * after it when negatives show in a color, `()` when positives show in parentheses.
+ * CELL's codes of a number format (`CELL("format")`, `"color"`, `"parentheses"`), as Excel 365 for Windows and for Mac
+ * answer them (the set `indirect-held`): `G` General, text, a fraction, an elapsed time or a date with the year first;
+ * `F`, `,` (thousands, a currency's too), `P` (percent) and `S` (scientific) with the decimals of the positive section;
+ * `D1` to `D9` the dates and times; `-` after it when negatives show in a color, `()` when positives show in parentheses.
  */
 
 /** The sections of a format code (`;` outside quotes and brackets). */
@@ -33,18 +33,20 @@ function sections(code: string): string[] {
   return out
 }
 
-/** A section without its literal text, padding, fills and brackets, a currency in brackets (`[$€-407]`) kept as `$`. */
+/** A section without its literal text, padding, fills and brackets. */
 const plain = (s: string) =>
   s
     .replace(/"[^"]*"?/g, '')
     .replace(/\\./g, '')
     .replace(/[_*]./g, '')
-    .replace(/\[\$[^\]]*\]/g, '$')
     .replace(/\[[^\]]*\]/g, '')
 
 const COLORED = /\[(black|blue|cyan|green|magenta|red|white|yellow|color\s*\d+)\]/i
 
-/** The date or time code of a section's date and time tokens, or undefined for none. */
+/**
+ * The date or time code of a section's date and time tokens, or undefined for none: by the first of day, month and year
+ * (`d-mmm-yy` D1, `m/d/yy` D4, a year first or an elapsed time General), the time codes by seconds and AM/PM.
+ */
 function dateCode(p: string): string | undefined {
   const t = p.toLowerCase()
   const ampm = /am\/pm|a\/p/.test(t)
@@ -53,9 +55,10 @@ function dateCode(p: string): string | undefined {
   if (!d && !m && !y && !h && !sec) return undefined
   // a time: h with minutes or seconds; m after h or before s is minutes
   if (h && !d && !y) return sec ? (ampm ? 'D6' : 'D8') : ampm ? 'D7' : 'D9'
-  const textMonth = /mmm/.test(s)
-  if (y && d) return textMonth ? 'D1' : 'D4'
-  if (d && m) return textMonth ? 'D2' : 'D5'
+  const first = s.search(/[dmy]/)
+  if (s[first] === 'y') return 'G'
+  if (y && d) return s[first] === 'd' ? 'D1' : 'D4'
+  if (d && m) return s[first] === 'd' ? 'D2' : 'D5'
   if (m && y) return 'D3'
   return 'D4'
 }
@@ -69,10 +72,11 @@ export function formatCodes(code: string): { format: string; color: number; pare
   const suffix = (color ? '-' : '') + (parentheses ? '()' : '')
   const general = /^\s*general\s*$/i.test(p) || /^[\s@]*$/.test(p) || /\?\s*\/|#\s*\/|0\s*\//.test(p)
   if (general) return { format: 'G' + suffix, color, parentheses }
-  const date = dateCode(p.replace(/e[+-]/gi, ''))
+  const date = /\[(h+|m+|s+)\]/i.test(secs[0]) ? 'G' : dateCode(p.replace(/e[+-]/gi, ''))
   if (date && !/[0#?]/.test(p)) return { format: date + suffix, color, parentheses }
   const dot = p.indexOf('.')
   const decimals = dot < 0 ? 0 : (p.slice(dot + 1).match(/^[0#?]*/)?.[0].length ?? 0)
-  const kind = p.includes('%') ? 'P' : /e[+-]/i.test(p) ? 'S' : p.includes('$') ? 'C' : /[0#?],[0#?]/.test(p) ? ',' : 'F'
+  // a currency's symbol counts for nothing: Excel 365 answers `,0` for `$#,##0_);($#,##0)`, which Microsoft's table has as C0
+  const kind = p.includes('%') ? 'P' : /e[+-]/i.test(p) ? 'S' : /[0#?],[0#?]/.test(p) ? ',' : 'F'
   return { format: kind + decimals + suffix, color, parentheses }
 }

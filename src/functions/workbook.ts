@@ -31,7 +31,7 @@ function address(cx: Cx, g: Rng, s: number): string {
 }
 
 /** CELL's `prefix`: a text's alignment as the label prefix of old spreadsheets. */
-const PREFIX: Record<string, string> = { general: "'", left: "'", right: '"', center: '^', fill: '\\' }
+const PREFIX: Record<string, string> = { general: "'", left: "'", justify: "'", right: '"', center: '^', fill: '\\' }
 
 function cell(cx: Cx, s: number, r: number, c: number, info: string, ref?: Arg): Arg {
   let g: Rng | V

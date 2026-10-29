@@ -104,7 +104,10 @@ export function referrer(state: EngineState) {
         const sheet = sheetOf(ast.sheet, s)
         if (sheet === undefined) return E.REF
         const x = ast.ref
-        return x.spill ? state.ctx.spillRef(sheet, x.r1, x.c1) : new Rng(sheet, x.r1, x.c1, x.r2, x.c2)
+        if (!x.spill) return new Rng(sheet, x.r1, x.c1, x.r2, x.c2)
+        // how far the array spills is known once its formula is computed: the graph learns its cell, for its place alone too
+        state.ctx.reads?.push(new Rng(sheet, x.r1, x.c1, x.r1, x.c1))
+        return state.ctx.spillRef(sheet, x.r1, x.c1)
       }
       case 'table':
         return table(ast, s, r)

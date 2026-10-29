@@ -15,7 +15,7 @@ import { decode, trimOf, type Area, type Bound, type Rect } from '../structure/a
 import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
-import { placedOnly, QUIET, QUIET_RANGE } from './placed.js'
+import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {
@@ -149,6 +149,8 @@ export interface FormulaInfo {
   volatile: boolean
   /** Calls a function that finds its reference as it computes (INDIRECT, OFFSET); absent otherwise. */
   dynamic?: true
+  /** References used for their place or their formulas alone (`exec/placed.ts`): listeners of the graph, no edges; absent without them. */
+  near?: Rng[]
   /** Calls a function that reads cells' looks (CELL); absent otherwise. */
   looks?: true
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
@@ -324,7 +326,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     const anchors: Rng[] = []
     reach(n, reached, anchors)
     const boxes = [...bySheet(reached).values()]
-    info.refs.push(...boxes)
+    read(n, ...boxes)
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
   /**
@@ -380,8 +382,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     info.refs.push(g)
     return b.range(g, false)
   }
-  // the nodes whose reference is used for its place alone, found once the formula calls a dynamic function
-  let placeOnly: Set<Ast> | undefined
+  // the nodes whose reference is used for its place or its formulas alone, found once the formula calls a function that so uses one
+  let placeOnly: Map<Ast, Use> | undefined
+  // a reference read, or one of them where its place or its formulas alone are used: a listener of the graph alone
+  const read = (n: Ast, ...gs: Rng[]) => (placeOnly?.has(n) ? (info.near ??= []) : info.refs).push(...gs)
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
   const linked = (n: Extract<Ast, { k: 'xref' }>) => (typeof n.book === 'number' ? ctx.link?.(n.book, n.sheet) : undefined)
@@ -417,7 +421,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       }
       case 'ref': {
         const g = rng(n, ctx.sheet(n.sheet))
-        info.refs.push(g)
+        // a trim reference reads its cells to trim them
+        const trim = trimOf(n.ref.text)
+        if (trim) info.refs.push(g)
+        else read(n, g)
         // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
         const a = ctx.here && relative(n.ref)
         if (a) {
@@ -430,7 +437,6 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
         // a trim reference (`A1:.C9`) is TRIMRANGE over its range
-        const trim = trimOf(n.ref.text)
         if (trim) return b.call('TRIMRANGE', [b.range(g, false), b.value(trim), b.value(trim)], false)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
@@ -450,7 +456,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const x = table(n)
         if (typeof x === 'string') return b.value(E[x])
         const g = new Rng(x.s, x.r1, x.c1, x.r2, x.c2)
-        info.refs.push(g)
+        read(n, g)
         const one = g.r2 === g.r1 && g.c2 === g.c1
         return one && !rangeOk ? b.cell(g.s, g.r1, g.c1) : b.range(g, false)
       }
@@ -461,7 +467,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const [i, j] = [ctx.sheet(n.first), ctx.sheet(n.last)]
         const list: Rng[] = []
         for (let k = Math.min(i, j); k <= Math.max(i, j); k++) list.push(new Rng(k, x.r1, x.c1, x.r2, x.c2))
-        info.refs.push(...list)
+        read(n, ...list)
         return b.areas(list)
       }
       case 'name': {
@@ -491,7 +497,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           // the cells between the range's ends are read too, not only the operands'
           if (n.op === ':') around(n)
           const [x, y] = [go(n.a, true), go(n.b, true)]
-          return value(b.refOp(n.op === ':' && placeOnly?.has(n) ? QUIET_RANGE : n.op, x, y), n, rangeOk)
+          return value(b.refOp(n.op === ':' && placeOnly?.get(n) === 'place' ? QUIET_RANGE : n.op, x, y), n, rangeOk)
         }
         const x = go(n.a)
         return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
@@ -504,10 +510,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return b.external(canonical(n))
         }
         if (spec.volatile) info.volatile = true
-        if (spec.dynamic) {
-          info.dynamic = true
-          placeOnly ??= placedOnly(ast)
-        }
+        if (spec.dynamic) info.dynamic = true
+        if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)
         if (spec.looks) info.looks = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
         const open = OPEN_REFERENCE[n.name]
@@ -525,7 +529,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           const here = ctx.here
           if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
           // a reference found for its place alone is not learnt by the graph: the function's quiet form
-          code = b.call(spec.dynamic && placeOnly?.has(n) ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+          code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
         // a reference answered where one value goes is read here; a range position takes it as a reference
         return spec.refs ? value(code, n, rangeOk) : code
