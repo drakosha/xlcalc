@@ -1,0 +1,181 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "key-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "key-2": {
+    "ok": true,
+    "input": {
+     "formula": "D6+D12",
+     "numberFormat": 9
+    }
+   },
+   "key-3": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D6",
+     "numberFormat": 9
+    }
+   },
+   "key-4": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D7"
+    }
+   },
+   "key-5": {
+    "ok": true,
+    "input": {
+     "formula": "D12*2"
+    }
+   },
+   "key-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(D6,D3)",
+     "numberFormat": 5
+    }
+   },
+   "key-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(E:E)",
+     "numberFormat": 9
+    }
+   },
+   "key-8": {
+    "ok": true,
+    "input": {
+     "formula": "ROUNDUP(D3,0)",
+     "numberFormat": 5
+    }
+   },
+   "key-9": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D3)"
+    }
+   },
+   "key-10": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1",
+     "numberFormat": 14
+    }
+   },
+   "key-11": {
+    "ok": true,
+    "input": {
+     "formula": "Rate"
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 10
+    }
+   }
+  },
+  "ru-RU": {
+   "key-1": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 9
+    }
+   },
+   "key-2": {
+    "ok": true,
+    "input": {
+     "formula": "D6+D12",
+     "numberFormat": 9
+    }
+   },
+   "key-3": {
+    "ok": true,
+    "input": {
+     "formula": "D12-D6",
+     "numberFormat": 9
+    }
+   },
+   "key-4": {
+    "ok": true,
+    "input": {
+     "formula": "D11-D7"
+    }
+   },
+   "key-5": {
+    "ok": true,
+    "input": {
+     "formula": "D12*2"
+    }
+   },
+   "key-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 7
+   },
+   "key-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(E:E)",
+     "numberFormat": 9
+    }
+   },
+   "key-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «D3» читается иначе",
+    "at": 9
+   },
+   "key-9": {
+    "ok": true,
+    "input": {
+     "formula": "ABS(D3)"
+    }
+   },
+   "key-10": {
+    "ok": true,
+    "input": {
+     "formula": "'U'!C1",
+     "numberFormat": 14
+    }
+   },
+   "key-11": {
+    "ok": true,
+    "input": {
+     "formula": "Rate"
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "formula": "D3",
+     "numberFormat": 5
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "formula": "D12",
+     "numberFormat": 10
+    }
+   }
+  }
+ }
+}
