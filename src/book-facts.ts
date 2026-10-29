@@ -8,11 +8,32 @@ import { charsOfPoints, columnPoints } from './column-width.js'
 import type { BookFile } from './contract.js'
 import { sheetIndexOf, type EngineState } from './engine.js'
 import { sheetLines, type SheetLines } from './layout/lines.js'
-import { showFormula } from './locale/index.js'
+import { quoteSheetIfNeeded } from './a1.js'
+import { closingQuote } from './syntax/scan.js'
 import { formatAddress, parseAddress, placeOf } from './model.js'
 import { enCode } from './numfmt.js'
-import { tableAt } from './tables/model.js'
 import { parseRange } from './structure/area.js'
+
+/**
+ * A formula's canonical text with its sheets quoted only where Excel quotes them (`'Sales'!A1` is `Sales!A1`), outside
+ * text in quotes; a linked workbook's sheet keeps its quotes. FORMULATEXT shows en-US's text in every locale.
+ */
+function shownSheets(text: string): string {
+  let out = ''
+  for (let i = 0; i < text.length; ) {
+    const q = text[i]
+    const j = q === '"' || q === "'" ? closingQuote(text, i) : -1
+    if (j < 0) {
+      out += text[i++]
+      continue
+    }
+    const name = text.slice(i + 1, j).replaceAll("''", "'")
+    const plain = q === "'" && text[j + 1] === '!' && !name.includes('[') && name.split(':').every((x) => x && quoteSheetIfNeeded(x) === x)
+    out += plain ? name : text.slice(i, j + 1)
+    i = j + 1
+  }
+  return out
+}
 
 /** The book's facts over a state, read as they are when asked: a session changes them in place. */
 export function bookFacts(state: EngineState, file: BookFile | undefined): BookFacts {
@@ -50,8 +71,7 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
     formula: (s, r, c) => {
       const text = textAt(s, r, c)
       if (text === undefined) return undefined
-      const t = showFormula(text, state.input.locale ?? 'en-US', tableAt(state.tables, s, r, c)?.name, state.input.externalBooks)
-      const shown = `=${t.ok ? t.formula : text}`
+      const shown = `=${shownSheets(text)}`
       const id = arrayAt(s, r, c)
       return id !== undefined && state.formulas[id]!.area ? `{${shown}}` : shown
     },

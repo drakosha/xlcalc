@@ -51,6 +51,7 @@ Where the engine behaves differently from Excel, and what it does not do.
   - `INFO` returns Excel for Windows' constants (`system` `pcdos`, `release` `16.0`), where Excel for Mac returns `mac` and its version, and `numfile` counts the workbook's sheets, where Excel counts those of every open workbook.
   - A spill reference typed in `INDIRECT`'s text (`INDIRECT("E1#")`) is `#REF!` in Excel for Mac and for Windows, while the same text read from a cell gives the array's range (`INDIRECT(B5)` with `E1#` in B5); the engine gives the range both ways.
   - Excel does not load a workbook with a value where `FORMULATEXT`, `ISFORMULA`, `OFFSET` and `CELL` take a reference (`FORMULATEXT(1)`, `OFFSET({1,2},0,0)`); the engine returns `#N/A` and `#VALUE!` there.
+  - `FORMULATEXT` returns the formula in en-US's text in every workbook locale; Excel returns it in its interface's language (`=СУММ(A1:A3)` in Excel ru-RU), which was not measured.
   - `TRIMRANGE` and the trim references (`A1:.C9`) are Excel for Mac's as of 16.114; Excel for Windows 16.0.20430 returns `#NAME?` for them.
   - `CELL("address")` of another sheet's cell names the file the workbook was opened from, which a host passes as `file`; without it the engine names `Book1`, as Excel does for a workbook not saved yet, where Excel names the file it opened (`[book.xlsx]R!$B$3`).
   - A reference across sheets whose last sheet alone is quoted (`R:'Two Words'!A1`) is `#NAME?` in a file Excel opens; the engine reads it as `'R:Two Words'!A1`.
