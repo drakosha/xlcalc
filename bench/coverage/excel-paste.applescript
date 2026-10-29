@@ -223,14 +223,13 @@ on run argv
 	set hfs to (POSIX file p) as text
 	set out to (POSIX file q) as text
 	set opError to ""
+	-- the other book beside the book, its path made outside Excel's tell, which runs no shell
+	set src to (POSIX file ((do shell script "dirname " & quoted form of p) & "/source.xlsx")) as text
 	tell application "Microsoft Excel"
 		with timeout of 120 seconds
 			set wb to open workbook workbook file name hfs
 			set wf to wb
-			if (item 12 of op) is "1" then
-				set src to (POSIX file ((do shell script "dirname " & quoted form of p) & "/source.xlsx")) as text
-				set wf to open workbook workbook file name src
-			end if
+			if (item 12 of op) is "1" then set wf to open workbook workbook file name src
 			set stage to "copy"
 			try
 				set display alerts to false
