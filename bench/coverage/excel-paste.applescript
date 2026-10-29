@@ -1,14 +1,19 @@
 -- Open a book, copy a range to the clipboard, paste it with Paste Special at a target, then save the book as xlsx under
--- another name. Alerts are off around the paste; a paste Excel refuses comes back as `error`, not a dialog. The Format
--- Painter (painter) takes Excel to the front: the source selected, the Home tab's Format button clicked (System Events),
--- the selection given (the target and one more line) and Shift with the key shrinking it onto the target, as the painter
--- applies at a change of the selection by the keyboard, not by the object model.
+-- another name. Alerts are off around the paste; a paste Excel refuses comes back as `error`, not a dialog. All Merging
+-- Conditional Formats, which AppleScript does not name, goes through the Paste Special window (Command+Control+V, Excel in
+-- front): its kind, operation, Skip Blanks and Transpose clicked through System Events and OK; an alert after it is read
+-- as `error` and dismissed. The Format Painter (painter) takes Excel to the front: the source selected, the Home tab's
+-- Format button clicked (System Events), the selection given (the target and one more line) and Shift with the key
+-- shrinking it onto the target, as the painter applies at a change of the selection by the keyboard, not by the object
+-- model; with more targets the button is double-clicked (a mouse event), which keeps it on, each target taken the same
+-- way and Escape turning it off. A source in another book: `source.xlsx` beside the book, opened, copied from and closed.
 -- Arguments: the book's path and the path to save to (inside Excel's sandbox), the saved file's name, the paste as JSON
 -- ([source sheet, source range, target sheet, target range, what (all, values, formulas, formats, validation,
--- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes, allUsingSourceTheme; copy: a
--- plain copy to the target, Range.Copy with a destination; painter: the Format Painter), transpose "1" or "0", the
--- operation (none, add, subtract, multiply, divide), skip blanks "1" or "0", the painter's key (left or up), cells of
--- the target sheet whose formula local is read after the paste, separated by commas]).
+-- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders, notes, allUsingSourceTheme,
+-- allMergingConditionalFormats; copy: a plain copy to the target, Range.Copy with a destination; painter: the Format
+-- Painter), transpose "1" or "0", the operation (none, add, subtract, multiply, divide), skip blanks "1" or "0", the
+-- painter's key (left or up), cells of the target sheet whose formula local is read after the paste, separated by commas,
+-- the painter's further targets ([sheet, selection, key]), "1" when the source is in source.xlsx]).
 -- Output: JSON {"error": text, "local": [formula local of each cell]}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -70,30 +75,139 @@ on painterButton(bookName)
 	error "no Format Painter in the window of " & bookName
 end painterButton
 
--- The source selected on its sheet, the Format Painter on, the target selected with one more line and the key shrinking it.
-on paint(wb, ws, wt, op, bookName)
-	tell application "Microsoft Excel"
-		activate object ws
-		select range (item 2 of op) of ws
-	end tell
-	set b to my painterButton(bookName)
-	tell application "System Events" to click b
-	delay 0.8
-	tell application "Microsoft Excel"
-		activate object wt
-		select range (item 4 of op) of wt
-	end tell
-	delay 0.5
+-- Excel in front, a key with Shift: the painter applies at the change of the selection it makes.
+on shiftKey(k)
 	tell application "System Events"
-		if (item 9 of op) is "up" then
+		if k is "up" then
 			key code 126 using shift down
 		else
 			key code 123 using shift down
 		end if
 	end tell
+end shiftKey
+
+-- A double click of the left button at the middle of an element, as a mouse event (System Events clicks once).
+on doubleClick(e)
+	tell application "System Events"
+		set {x, y} to position of e
+		set {w, h} to size of e
+	end tell
+	set js to "ObjC.import('CoreGraphics'); var p = $.CGPointMake(" & (x + w / 2) & "," & (y + h / 2) & "); [[1,1],[2,1],[1,2],[2,2]].forEach(function (t) { var e = $.CGEventCreateMouseEvent(null, t[0], p, 0); $.CGEventSetIntegerValueField(e, 1, t[1]); $.CGEventPost(0, e); delay(0.05) })"
+	do shell script "osascript -l JavaScript -e " & quoted form of js
+end doubleClick
+
+-- The source selected on its sheet, the Format Painter on (double-clicked for more targets), each target selected with
+-- one more line and the key shrinking it; Escape turns a double-clicked painter off.
+on paint(wb, ws, wt, op, bookName)
+	set more to item 11 of op
+	tell application "Microsoft Excel"
+		activate object ws
+		select range (item 2 of op) of ws
+	end tell
+	set b to my painterButton(bookName)
+	if (count of more) is 0 then
+		tell application "System Events" to click b
+	else
+		my doubleClick(b)
+	end if
+	delay 0.8
+	tell application "System Events" to if (value of b as integer) is 0 then error "the Format Painter did not turn on"
+	tell application "Microsoft Excel"
+		activate object wt
+		select range (item 4 of op) of wt
+	end tell
+	delay 0.5
+	my shiftKey(item 9 of op)
 	delay 1
+	repeat with t in more
+		tell application "System Events" to if (value of b as integer) is 0 then error "the Format Painter turned off before " & (item 2 of t)
+		tell application "Microsoft Excel"
+			activate object (worksheet (item 1 of t) of wb)
+			select range (item 2 of t) of (worksheet (item 1 of t) of wb)
+		end tell
+		delay 0.5
+		my shiftKey(item 3 of t)
+		delay 1
+	end repeat
+	if (count of more) is not 0 then
+		tell application "System Events" to key code 53
+		delay 0.8
+	end if
 	tell application "System Events" to if (value of b as integer) is not 0 then error "the Format Painter stayed on"
 end paint
+
+-- The window's radio button or check box (`kind`, its role) named `n`, clicked when its value is not `v`.
+on setControl(w, kind, n, v)
+	tell application "System Events" to tell process "Microsoft Excel"
+		-- a list: a repeat over the reference itself fails
+		set els to entire contents of w
+		repeat with e in els
+			try
+				if (role of e as text) is kind and (name of e as text) is n then
+					if (value of e as integer) is not v then click e
+					return
+				end if
+			end try
+		end repeat
+	end tell
+	error "no " & n & " in the Paste Special window"
+end setControl
+
+-- The window of Excel named `n`, waited for up to `secs` seconds; missing value if it did not come.
+on excelWindow(n, secs)
+	repeat (secs * 5) times
+		tell application "System Events" to tell process "Microsoft Excel"
+			if exists window n then return window n
+		end tell
+		delay 0.2
+	end repeat
+	return missing value
+end excelWindow
+
+-- The text of Excel's windows that are not books, joined; the window answered with Return (its default button).
+on alertText()
+	set t to ""
+	tell application "System Events" to tell process "Microsoft Excel"
+		repeat with w in windows
+			if (subrole of w as text) is not "AXStandardWindow" then
+				repeat with e in (entire contents of w)
+					try
+						if role of e is "AXStaticText" then set t to t & (value of e as text) & " "
+					end try
+				end repeat
+				perform action "AXRaise" of w
+				key code 36
+			end if
+		end repeat
+	end tell
+	return t
+end alertText
+
+-- Paste Special through its window: the target selected, the window opened, the kind, operation, Skip Blanks and
+-- Transpose set and OK; an alert after it comes back as the error.
+on pasteInWindow(wt, op)
+	tell application "Microsoft Excel"
+		activate object wt
+		select range (item 4 of op) of wt
+		activate
+	end tell
+	tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+	delay 1
+	tell application "System Events" to keystroke "v" using {command down, control down}
+	set w to my excelWindow("Paste Special", 10)
+	if w is missing value then error "no Paste Special window"
+	set ops to {{"none", "None"}, {"add", "Add"}, {"subtract", "Subtract"}, {"multiply", "Multiply"}, {"divide", "Divide"}}
+	repeat with o in ops
+		if (item 1 of o) is (item 7 of op) then my setControl(w, "AXRadioButton", item 2 of o, 1)
+	end repeat
+	my setControl(w, "AXRadioButton", "All, merge conditional formats", 1)
+	my setControl(w, "AXCheckBox", "Skip Blanks", (item 8 of op) as integer)
+	my setControl(w, "AXCheckBox", "Transpose", (item 6 of op) as integer)
+	tell application "System Events" to tell process "Microsoft Excel" to click button "OK" of w
+	delay 1.5
+	set t to my alertText()
+	if t is not "" then error t
+end pasteInWindow
 
 on run argv
 	set p to item 1 of argv
@@ -106,10 +220,15 @@ on run argv
 	tell application "Microsoft Excel"
 		with timeout of 120 seconds
 			set wb to open workbook workbook file name hfs
+			set wf to wb
+			if (item 12 of op) is "1" then
+				set src to (POSIX file ((do shell script "dirname " & quoted form of p) & "/source.xlsx")) as text
+				set wf to open workbook workbook file name src
+			end if
 			set stage to "copy"
 			try
 				set display alerts to false
-				set ws to worksheet (item 1 of op) of wb
+				set ws to worksheet (item 1 of op) of wf
 				activate object ws
 				set wt to worksheet (item 3 of op) of wb
 				if (item 5 of op) is "painter" then
@@ -118,6 +237,10 @@ on run argv
 				else if (item 5 of op) is "copy" then
 					set stage to "paste"
 					copy range (range (item 2 of op) of ws) destination (range (item 4 of op) of wt)
+				else if (item 5 of op) is "allMergingConditionalFormats" then
+					copy range (range (item 2 of op) of ws)
+					set stage to "paste"
+					my pasteInWindow(wt, op)
 				else
 					copy range (range (item 2 of op) of ws)
 					set stage to "paste"
@@ -143,6 +266,7 @@ on run argv
 			select range "A1" of (worksheet 1 of wb)
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no
+			if (item 12 of op) is "1" then close workbook "source.xlsx" saving no
 		end timeout
 	end tell
 	set d0 to current application's NSDictionary's dictionaryWithObjects:{opError, locals} forKeys:{"error", "local"}

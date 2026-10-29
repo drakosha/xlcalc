@@ -8,7 +8,7 @@
 import { execFileSync, spawn } from 'node:child_process'
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { ErrCode } from './data.js'
 import type { Val } from './formulajs.js'
@@ -430,22 +430,31 @@ export async function runScriptWatched(script: string, book: string, n: number, 
   })
 }
 
+/** More of `runSavingScript`: files written beside the book (another workbook the script opens); `fatal: false` for a script that answers the windows it opens itself (Paste Special's). */
+export interface SavingOptions {
+  beside?: Record<string, Uint8Array>
+  fatal?: boolean
+}
+
 /**
  * One case of a step that saves the book: `data` goes into the sandbox, the AppleScript `script` takes its path, the path
  * to save to, the saved file's name and `args`, and answers its output and the saved file, or the repair window's text
  * (declined). A window that is not a book stops the run, as does no answer in `timeoutMs`.
  */
-export async function runSavingScript(id: string, script: string, data: Uint8Array, args: string[], timeoutMs = 180_000): Promise<{ out: string; saved: Uint8Array } | { rejected: string }> {
+export async function runSavingScript(id: string, script: string, data: Uint8Array, args: string[], timeoutMs = 180_000, o: SavingOptions = {}): Promise<{ out: string; saved: Uint8Array } | { rejected: string }> {
   return runWatched<{ out: string; saved: Uint8Array } | { rejected: string }>({
     script,
     label: id,
     folder: 'fsave',
-    book: (file) => writeFileSync(file, data),
+    book: (file) => {
+      writeFileSync(file, data)
+      for (const [name, bytes] of Object.entries(o.beside ?? {})) writeFileSync(join(dirname(file), name), bytes)
+    },
     args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...args],
     timeout: timeoutMs,
     poll: 1000,
     after: 'case',
-    fatal: true,
+    fatal: o.fatal ?? true,
     // the window declined once more, no book closed
     repair: async (stop) => {
       await stop()

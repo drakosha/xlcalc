@@ -485,20 +485,31 @@ function Step($xl, $wb, $s) {
     'struct' { try { Struct $wb $s; 'null' } catch { Err $_ } }
     # Paste Special as excel-paste.applescript pastes it (bench/windows/paste.ts): the range copied, the target's sheet
     # active, PasteSpecial with the XlPasteType, the operation (none when left out), Skip Blanks and Transpose; with copy,
-    # Range.Copy with a destination
+    # Range.Copy with a destination; with source (an xlsx in base64), the range copied from that book, opened beside and
+    # closed after the paste
     'pasteSpecial' {
+      $other = $null
       try {
-        $src = Rg $wb $s.sheet $s.range
+        $from = $wb
+        if ($s.source) {
+          $f = Join-Path $dir "source-$([guid]::NewGuid().ToString('N')).xlsx"
+          [IO.File]::WriteAllBytes($f, [Convert]::FromBase64String($s.source))
+          $other = $xl.Workbooks.Open($f, 0, $true)
+          $from = $other
+        }
+        $src = Rg $from $s.sheet $s.range
         $dst = Rg $wb $s.target $s.to
         if ($s.copy) { [void]$src.Copy($dst) }
         else {
           [void]$src.Copy()
+          [void]$wb.Activate()
           [void]$wb.Worksheets.Item($s.target).Activate()
           $op = if ($null -ne $s.operation) { [int]$s.operation } else { -4142 }
           [void]$dst.PasteSpecial([int]$s.paste, $op, [bool]$s.skipBlanks, [bool]$s.transpose)
         }
         'null'
       } catch { Err $_ } finally {
+        if ($other) { $xl.CutCopyMode = 0; $other.Close($false) }
         [void]$wb.Worksheets.Item(1).Activate()
         [void]$wb.Worksheets.Item(1).Range('A1').Select()
       }
