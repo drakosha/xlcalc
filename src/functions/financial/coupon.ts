@@ -83,7 +83,7 @@ export function bondDays(c: Coupons, basis: number, freq: number) {
   return { e, a, dsc: e - a }
 }
 
-/** The day of the month of the date `steps` periods before maturity, each date stepped from the one before it (a 31st that meets February stays the 28th). */
+/** The day of the month of the date `steps` periods before maturity, each date stepped from the one before it. */
 function steppedDay(mat: Ymd, steps: number, freq: number): number {
   let { y, m, d } = mat
   for (let i = 0; i < steps && d > 28; i++) {
@@ -93,18 +93,23 @@ function steppedDay(mat: Ymd, steps: number, freq: number): number {
   return d
 }
 
+/** Days from `a` to `b` as COUPDAYS counts them: serial numbers, 1900-02-29 included, or the real calendar's from before 1900. */
+const daysTo = (a: Ymd, b: Ymd) => (a.y < 1900 ? utcDays(b.y, b.m, b.d) - utcDays(a.y, a.m, a.d) : serialOfYmd(b) - serialOfYmd(a))
+
 /**
- * COUPDAYS on basis 1, in the real calendar (before 1900 without 29 February): Excel steps the coupon dates back from
- * maturity each from the one before it, so a 31st that meets February stays the 28th, and counts from the date a
- * period before the next one, the month's last day where that next date is one. The next date is COUPNCD's on the
- * stepped day while that is still after settlement (`COUPDAYS(DATE(2011,3,15),DATE(2015,8,31),2,1)` is 181, 28 February
- * to 28 August, where COUPPCD and COUPNCD are 28 February and 31 August).
+ * COUPDAYS on basis 1. Excel steps the coupon dates back from maturity each from the one before it, so a day a shorter
+ * month cuts stays cut (a 31st that meets February stays the 28th), takes the first such date after settlement, and
+ * counts from the date a period before it: on
+ * the month's last day where that date is on one, unless that comes after settlement. So
+ * `COUPDAYS(DATE(2011,3,15),DATE(2015,8,31),2,1)` is 181, 28 February to 28 August, where COUPPCD and COUPNCD give
+ * 28 February and 31 August.
  */
 function actualPeriod(c: Coupons, mat: Ymd, freq: number): number {
-  const stepped = { ...c.ncd, d: steppedDay(mat, c.n - 1, freq) }
-  const next = cmp(stepped, c.settle) > 0 ? stepped : c.ncd
-  const from = couponDate(next, -1, freq)
-  return utcDays(next.y, next.m, next.d) - utcDays(from.y, from.m, from.d)
+  const at = { ...c.ncd, d: steppedDay(mat, c.n - 1, freq) }
+  const next = cmp(at, c.settle) > 0 ? at : { ...couponDate(c.ncd, 1, freq), d: steppedDay(mat, c.n - 2, freq) }
+  const back = couponDate(next, -1, freq)
+  const from = cmp(back, c.settle) > 0 ? couponDate(next, -1, freq, false) : back
+  return daysTo(from, next)
 }
 
 /** The COUP* functions check each argument as they read it: the dates' order, then the frequency, then the basis. */

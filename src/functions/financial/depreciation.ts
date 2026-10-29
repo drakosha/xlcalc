@@ -33,10 +33,10 @@ function amorFirst(purchased: number, first: number, basis: number): number {
 }
 
 /** AMORDEGRC's coefficient by asset life 1/rate; a life of 2 years or less is #NUM!. */
-/** The double-declining amount of a (possibly fractional) period before any limit: the book value's fall over it. */
-function declined(cost: number, life: number, period: number, factor: number): number {
+/** The double-declining amount of a period before the salvage limits it: the book value's fall over it; at a rate of 1 or more, all but the salvage in the first. */
+function declined(cost: number, salvage: number, life: number, period: number, factor: number): number {
   const rate = factor / life
-  if (rate >= 1) return period === 1 ? cost : 0
+  if (rate >= 1) return period === 1 ? cost - salvage : 0
   return cost * Math.pow(1 - rate, period - 1) - cost * Math.pow(1 - rate, period)
 }
 
@@ -56,7 +56,7 @@ function declining(book: number, salvage: number, life: number, rest: number, le
     spend(1)
     let term = sln
     if (!straight) {
-      const d = declined(book, life, i, factor)
+      const d = declined(book, salvage, life, i, factor)
       sln = left / (rest - (i - 1))
       straight = sln > d
       term = straight ? sln : limit ? Math.min(d, left) : d

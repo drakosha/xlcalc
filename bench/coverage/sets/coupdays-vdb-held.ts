@@ -148,5 +148,8 @@ const CASES: [string, string, Val][] = [
   ['VDB', 'VDB(2400,300,10,0,1,2,2)', n(480)],
 ]
 
+/** The predictions Excel answered otherwise: the rules' parts these cases led to are checked by \`coupdays-vdb-held-2\`. */
+export const MISSED = ['COUPDAYS#6', 'COUPDAYS#7', 'COUPDAYS#8', 'COUPDAYS#9', 'COUPDAYS#11', 'COUPDAYS#12', 'COUPDAYS#13', 'COUPDAYS#14', 'COUPDAYS#77', 'COUPDAYS#78', 'VDB#13', 'VDB#14', 'VDB#16', 'VDB#17']
+
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
