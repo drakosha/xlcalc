@@ -29,9 +29,12 @@ export interface XNode {
 }
 
 const XML_NS = 'http://www.w3.org/XML/1998/namespace'
-const NAME = /[:A-Za-z_À-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�][\w.:\-·À-ÖØ-öø-ͽͿ-῿‌‍‿⁀⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�]*/y
+/** The characters of XML's names without the colon (NCName): the first, and the others besides them. */
+export const NAME_START = 'A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD'
+export const NAME_MORE = '\\w.\\-\\u00B7\\u0300-\\u036F\\u203F\\u2040'
+const NAME = new RegExp(`[:${NAME_START}][:${NAME_START}${NAME_MORE}]*`, 'y')
 /** A character XML 1.0 does not allow, a reference that is no entity of the five or a character. */
-const BAD_CHAR = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/
+const BAD_CHAR = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/
 const REFERENCE = /&(?!(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9A-Fa-f]+);)/
 
 const node = (kind: Kind, parent: XNode | null, value = ''): XNode => ({ kind, name: '', qname: '', ns: '', value, parent, children: [], attrs: [], declared: {}, order: 0 })

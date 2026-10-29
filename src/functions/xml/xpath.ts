@@ -5,13 +5,13 @@
  * does (`//b` finds `b` under a default namespace, `//x:a` finds `x:a`). There are no variables; an expression outside
  * the grammar is an error.
  */
-import { stringValue, type XNode } from './dom.js'
+import { NAME_MORE, NAME_START, stringValue, type XNode } from './dom.js'
 
 export type XValue = XNode[] | number | string | boolean
 
 class XPathError extends Error {}
-const fail = (what: string): never => {
-  throw new XPathError(what)
+const fail = (): never => {
+  throw new XPathError()
 }
 
 interface Context {
@@ -22,7 +22,9 @@ interface Context {
 type Eval = (c: Context) => XValue
 
 // tokens: numbers, literals, names (with a prefix or `*`), two-character operators, single characters
-const TOKEN = /\s*(\d+(?:\.\d*)?|\.\d+|"[^"]*"|'[^']*'|[A-Za-z_À-�][\w.\-·À-�]*(?::(?:\*|[A-Za-z_À-�][\w.\-·À-�]*))?|\/\/|::|\.\.|!=|<=|>=|\$|[/()[\]@,|+\-=<>*.])/y
+const NCNAME = `[${NAME_START}][${NAME_START}${NAME_MORE}]*`
+const START = new RegExp(`^[${NAME_START}]`)
+const TOKEN = new RegExp(`\\s*(\\d+(?:\\.\\d*)?|\\.\\d+|"[^"]*"|'[^']*'|${NCNAME}(?::(?:\\*|${NCNAME}))?|//|::|\\.\\.|!=|<=|>=|\\$|[/()[\\]@,|+\\-=<>*.])`, 'y')
 
 function tokens(src: string): string[] {
   const out: string[] = []
@@ -32,7 +34,7 @@ function tokens(src: string): string[] {
     const m = TOKEN.exec(src)
     if (!m) {
       if (/^\s*$/.test(src.slice(at))) break
-      fail('token')
+      fail()
     }
     out.push(m![1])
   }
@@ -53,14 +55,8 @@ const toNumber = (v: XValue): number => {
 function numberText(n: number): string {
   if (Number.isNaN(n)) return 'NaN'
   if (!Number.isFinite(n)) return n > 0 ? 'Infinity' : '-Infinity'
-  if (Object.is(n, -0) || n === 0) return '0'
-  const s = String(n)
-  if (!s.includes('e')) return s
-  const [m, e] = s.split('e')
-  const digits = m.replace('-', '').replace('.', '')
-  const point = (m.replace('-', '').indexOf('.') + 1 || m.replace('-', '').length + 1) - 1 + Number(e)
-  const body = point <= 0 ? '0.' + '0'.repeat(-point) + digits : point >= digits.length ? digits + '0'.repeat(point - digits.length) : digits.slice(0, point) + '.' + digits.slice(point)
-  return (n < 0 ? '-' : '') + body
+  const s = String(n === 0 ? 0 : n)
+  return s.includes('e') ? n.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 }) : s
 }
 
 const toString = (v: XValue): string =>
@@ -121,7 +117,7 @@ function axis(name: string, n: XNode): XNode[] {
     case 'namespace':
       return namespaces(n)
   }
-  return fail('axis')
+  return fail()
 }
 
 /** The namespace nodes of an element: its prefixes in scope, `xml` first, each its URI. */
@@ -175,13 +171,13 @@ function compare(op: string, a: XValue, b: XValue): boolean {
 const FUNCTIONS: Record<string, (c: Context, a: XValue[]) => XValue> = {
   last: (c) => c.size,
   position: (c) => c.pos,
-  count: (_, [v]) => (isNodes(v) ? v.length : fail('count')),
+  count: (_, [v]) => (isNodes(v) ? v.length : fail()),
   id: () => [],
   'local-name': (c, a) => nameOf(a.length ? a[0] : [c.node], (n) => n.name),
   'namespace-uri': (c, a) => nameOf(a.length ? a[0] : [c.node], (n) => n.ns),
   name: (c, a) => nameOf(a.length ? a[0] : [c.node], (n) => n.qname),
   string: (c, a) => toString(a.length ? a[0] : [c.node]),
-  concat: (_, a) => (a.length < 2 ? fail('concat') : a.map(toString).join('')),
+  concat: (_, a) => a.map(toString).join(''),
   'starts-with': (_, [s, t]) => toString(s).startsWith(toString(t)),
   contains: (_, [s, t]) => toString(s).includes(toString(t)),
   'substring-before': (_, [s, t]) => around(toString(s), toString(t), false),
@@ -211,7 +207,7 @@ const FUNCTIONS: Record<string, (c: Context, a: XValue[]) => XValue> = {
     return false
   },
   number: (c, a) => toNumber(a.length ? a[0] : [c.node]),
-  sum: (_, [v]) => (isNodes(v) ? v.reduce((s, n) => s + toNumber(stringValue(n)), 0) : fail('sum')),
+  sum: (_, [v]) => (isNodes(v) ? v.reduce((s, n) => s + toNumber(stringValue(n)), 0) : fail()),
   floor: (_, [v]) => Math.floor(toNumber(v)),
   ceiling: (_, [v]) => Math.ceil(toNumber(v)),
   round: (_, [v]) => {
@@ -220,13 +216,12 @@ const FUNCTIONS: Record<string, (c: Context, a: XValue[]) => XValue> = {
   },
 }
 
-/** The argument counts of the core functions: [least, most]. */
-const ARITY: Record<string, [number, number]> = {
-  last: [0, 0], position: [0, 0], count: [1, 1], id: [1, 1], 'local-name': [0, 1], 'namespace-uri': [0, 1], name: [0, 1],
-  string: [0, 1], concat: [2, Infinity], 'starts-with': [2, 2], contains: [2, 2], 'substring-before': [2, 2], 'substring-after': [2, 2],
-  substring: [2, 3], 'string-length': [0, 1], 'normalize-space': [0, 1], translate: [3, 3], boolean: [1, 1], not: [1, 1], true: [0, 0],
-  false: [0, 0], lang: [1, 1], number: [0, 1], sum: [1, 1], floor: [1, 1], ceiling: [1, 1], round: [1, 1],
-}
+/** The argument counts of the core functions: each name with its least and most (9 for any number). */
+const ARITY: Record<string, [number, number]> = Object.fromEntries(
+  'last00 position00 count11 id11 local-name01 namespace-uri01 name01 string01 concat29 starts-with22 contains22 substring-before22 substring-after22 substring23 string-length01 normalize-space01 translate33 boolean11 not11 true00 false00 lang11 number01 sum11 floor11 ceiling11 round11'
+    .split(' ')
+    .map((w) => [w.slice(0, -2), [+w[w.length - 2], w.endsWith('9') ? Infinity : +w[w.length - 1]]]),
+)
 
 /** The text before or after the first occurrence of a part, '' without one. */
 function around(x: string, y: string, after: boolean): string {
@@ -234,7 +229,7 @@ function around(x: string, y: string, after: boolean): string {
   return i < 0 ? '' : after ? x.slice(i + y.length) : x.slice(0, i)
 }
 
-const nameOf = (v: XValue, f: (n: XNode) => string): string => (isNodes(v) ? (v.length && v[0].kind !== 'text' && v[0].kind !== 'comment' && v[0].kind !== 'root' ? f(v[0]) : '') : fail('name'))
+const nameOf = (v: XValue, f: (n: XNode) => string): string => (isNodes(v) ? (v.length && v[0].kind !== 'text' && v[0].kind !== 'comment' && v[0].kind !== 'root' ? f(v[0]) : '') : fail())
 
 /** The parser: recursive descent over the tokens, building the evaluation as closures. */
 function compile(src: string): Eval {
@@ -242,10 +237,10 @@ function compile(src: string): Eval {
   let i = 0
   const peek = (k = 0) => t[i + k]
   const take = (s?: string) => {
-    if (s !== undefined && t[i] !== s) fail(`expected ${s}`)
+    if (s !== undefined && t[i] !== s) fail()
     return t[i++]
   }
-  const isName = (s: string | undefined) => !!s && /^[A-Za-z_À-�]/.test(s)
+  const isName = (s: string | undefined) => !!s && START.test(s)
 
   const binary = (next: () => Eval, ops: string[], apply: (op: string, a: XValue, b: XValue) => XValue) => (): Eval => {
     let left = next()
@@ -271,10 +266,10 @@ function compile(src: string): Eval {
     else if (isName(peek()) && peek(1) === '::') {
       ax = take()
       take('::')
-      if (!AXES.has(ax)) fail('axis')
+      if (!AXES.has(ax)) fail()
     }
     const test = take()
-    if (test === undefined) fail('step')
+    if (test === undefined) fail()
     let match: (n: XNode) => boolean
     const principal = ax === 'attribute' ? 'attribute' : ax === 'namespace' ? 'namespace' : 'element'
     if (NODE_TYPES.has(test) && peek() === '(') {
@@ -286,7 +281,7 @@ function compile(src: string): Eval {
     } else if (test === '*') match = (n) => n.kind === principal
     else if (test.endsWith(':*')) match = (n) => n.kind === principal && n.qname.startsWith(test.slice(0, -1))
     else if (isName(test)) match = (n) => n.kind === principal && n.qname === test
-    else return fail('node test')
+    else return fail()
     const preds: Eval[] = []
     while (peek() === '[') {
       take('[')
@@ -309,7 +304,7 @@ function compile(src: string): Eval {
       const prev = cur
       cur = (c) => {
         const v = prev(c)
-        if (!isNodes(v)) return fail('path over a value')
+        if (!isNodes(v)) return fail()
         const from = deep ? ordered(v.flatMap((n) => axis('descendant-or-self', n))) : v
         return ordered(from.flatMap(s))
       }
@@ -343,7 +338,7 @@ function compile(src: string): Eval {
         const prev = v
         v = (c) => {
           const x = prev(c)
-          return isNodes(x) ? filter(x, p) : fail('predicate over a value')
+          return isNodes(x) ? filter(x, p) : fail()
         }
       }
       return relative(v)
@@ -354,8 +349,8 @@ function compile(src: string): Eval {
 
   const isPrimary = (): Eval | null => {
     const tok = peek()
-    if (tok === undefined) return fail('end')
-    if (tok === '$') return fail('variable')
+    if (tok === undefined) return fail()
+    if (tok === '$') return fail()
     if (tok === '(') {
       take()
       const e = expr()
@@ -379,12 +374,12 @@ function compile(src: string): Eval {
       while (peek() !== ')') {
         args.push(expr())
         if (peek() === ',') take()
-        else if (peek() !== ')') fail('arguments')
+        else if (peek() !== ')') fail()
       }
       take(')')
       const f = FUNCTIONS[tok]
       const arity = ARITY[tok]
-      if (!f || args.length < arity[0] || args.length > arity[1]) fail(`function ${tok}`)
+      if (!f || args.length < arity[0] || args.length > arity[1]) fail()
       return (c) => f(c, args.map((a) => a(c)))
     }
     return null
@@ -399,7 +394,7 @@ function compile(src: string): Eval {
       left = (c) => {
         const a = l(c)
         const b = r(c)
-        return isNodes(a) && isNodes(b) ? ordered([...a, ...b]) : fail('union of values')
+        return isNodes(a) && isNodes(b) ? ordered([...a, ...b]) : fail()
       }
     }
     return left
@@ -430,7 +425,7 @@ function compile(src: string): Eval {
   const expr: () => Eval = binary(and, ['or'], (_, a, b) => toBoolean(a) || toBoolean(b))
 
   const e = expr()
-  if (i < t.length) fail('trailing tokens')
+  if (i < t.length) fail()
   return e
 }
 
