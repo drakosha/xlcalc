@@ -1122,6 +1122,352 @@
      "Data": "A1:C21"
     }
    }
+  },
+  "sized-delete-picture-cols": {
+   "sent": "846cbc8d0d700134e4fc6af52f190a8f151da32c9d3d1dcdbc62fbdbd986b01e",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor : 5 0 0 127000 / 8 215900 12 127000",
+      "twoCellAnchor absolute: 2 177800 20 0 / 3 266700 22 127000"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-picture-cols": {
+   "sent": "dfd2a606415e30fdefaf0360fb55f9a2c565887d2d2e0b8db7e0c8598e97f318",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-from-col": {
+   "sent": "dfd2a606415e30fdefaf0360fb55f9a2c565887d2d2e0b8db7e0c8598e97f318",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-insert-cols-in": {
+   "sent": "5b308ef7ea0e9ab8cb16a0bf8c3d56f0b9e27f8fd08d15fa4bf442647eb6c5ca",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 11 215900 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 7 114300 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-from-col": {
+   "sent": "3c37e6f3163830aa3afd2ed4415992ce67fe8255e502d5ff2c6f8c289d47bde9",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 7 368300 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 5 1016000 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-cols-in": {
+   "sent": "148c83171428d9b3017a57156f853e09c79866b246490d239e4fbe4b89beb179",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-insert-cols-in": {
+   "sent": "f8ec8a19d4a3a8a5baed0bfe3d843020fa0f7e46166f0af250c80226f3266ba6",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-picture-cols": {
+   "sent": "3e68329729a89eba3d13ede54d935b9a3614cd5c4a55324a586a2e832fa7b4e9",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 7 368300 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 5 1016000 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-before": {
+   "sent": "004867b9ee2136b99a838392ee6e353e5d45a0b61c4e43724daadfafe9c287e5",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 3 444500 0 127000 / 6 139700 12 127000",
+      "twoCellAnchor oneCell: 3 444500 14 127000 / 3 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-data": {
+   "sent": "2c71b252af8cf094b569c7fe03af4c6a6fbf998c1a8a2f44f27789e5dfde3c40",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "G2 'Data'!B2:B11",
+      "G3 'Data'!#REF!"
+     ]
+    }
+   }
+  },
+  "sparklines-delete-data-col": {
+   "sent": "fd5565e1870d3d57bae89060d0f457a6158f68acafe3ed50353afe38160474d7",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "F2 'Data'!#REF!",
+      "F3 'Data'!#REF!"
+     ]
+    }
+   }
   }
  }
 }

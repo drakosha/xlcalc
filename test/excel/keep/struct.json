@@ -669,6 +669,257 @@
      "Data": "A1:C21"
     }
    }
+  },
+  "sized-delete-picture-cols": {
+   "sent": "3e1b1b0a34261668ad39544240dab380d50e9f9806cead9dfb18a41688f6a78d",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor : 5 0 0 127000 / 8 215900 12 127000",
+      "twoCellAnchor absolute: 2 177800 20 0 / 3 266700 22 127000"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-picture-cols": {
+   "sent": "aba89e86c8dad299c906fea982f981626ca4ed31c74b3144214c2d725ff8e4ad",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-from-col": {
+   "sent": "aaa9eeb3df26a595e2e3ac804905dddbd8f13d40c2e3105401bf826eac0db2f3",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-insert-cols-in": {
+   "sent": "40d6d49de95df92e81bce750c0632c62aa0702d2c18d16149e92da3463c415a4",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 11 215900 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 7 114300 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-from-col": {
+   "sent": "4f3a008bb97f7b2a5f1ea5e266d53f50e757db295ded3932152c2962dbb736ff",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 8 546100 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 711200 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-cols-in": {
+   "sent": "1773f2680f7fe22ca33fc3c5cfcf43e2b6050d0cc1ad0276a5619082cc120a8c",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 7 444500 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-insert-cols-in": {
+   "sent": "d7c690f00b7a122fb9745804c685e2e42cfb7db7ef7bdd7bb4162ed5fa1f9856",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 7 1206500 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-picture-cols": {
+   "sent": "eebb0857639d3c9450fcb51117284d687f88489f412ba100784798985e6b41c0",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-before": {
+   "sent": "d49b5fd423ce3b318778a9a3ccc7acc5a46072a26dcd2364691119d17b119720",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 3 444500 0 127000 / 6 139700 12 127000",
+      "twoCellAnchor oneCell: 3 444500 14 127000 / 3 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "pivot-delete-source-cells": {
+   "sent": "0d0e982df341ad87f3f4df1c86de14f920f01106be22902f3de7842468f175a5",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!#REF!"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor : 2 444500 0 127000 / 8 215900 12 127000"
+     ]
+    },
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-cell": {
+   "sent": "034df3c4aba18d1d046eaa59021702584bf0598b3ed0f5710aca22d568e67a4b",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B10",
+      "G2 'Data'!B11:B20"
+     ]
+    }
+   }
+  },
+  "sparklines-delete-data": {
+   "sent": "630a7902cf7704f32dd751096563408bdc385b307cb501af19dd56dc4830bb0d",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "G2 'Data'!B2:B11",
+      "G3 'Data'!#REF!"
+     ]
+    }
+   }
+  },
+  "sparklines-delete-data-col": {
+   "sent": "b6cb66223331525a362451142704c299ad9ae9f41394134a4a7ee768cf43a452",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "F2 'Data'!#REF!",
+      "F3 'Data'!#REF!"
+     ]
+    }
+   }
   }
  }
 }

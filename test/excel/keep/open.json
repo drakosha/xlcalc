@@ -1480,6 +1480,35 @@
     "breaks": 0,
     "notes": 0
    }
+  },
+  "picture-rich-sheet": {
+   "sent": "ee5706571d0fad5dd0419e3e8c41d5facbffb79764cfb63ca8e62bd86003be5e",
+   "written": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
   }
  }
 }
