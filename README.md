@@ -126,41 +126,45 @@ await pool.close()
 
 Each library calculated the 5,275 formulas of xlcalc's coverage run over the same data, and its results were compared with Excel 16's, which this repository stores, by the same tolerance and with no allowance for known differences:
 
-| | xlcalc | Univer 1.0.4 | IronCalc 0.9.0 | HyperFormula 3.5.0 |
-|---|---:|---:|---:|---:|
-| Formulas with Excel's result | 99.5% | 94.5% | 93.0% | 80.5% |
-| Functions with Excel's result in every case (of 402) | 395 | 240 | 241 | 171 |
+| | Formulas with Excel's result | Functions with Excel's result in every case (of 402) |
+|---|---:|---:|
+| xlcalc 0.67.0 | 99.5% | 395 |
+| Univer 1.3.0 | 95.3% | 249 |
+| Univer 1.0.4 | 94.5% | 240 |
+| IronCalc 0.9.1 | 92.9% | 237 |
+| IronCalc 0.9.0 | 93.0% | 241 |
+| HyperFormula 3.5.0 | 80.5% | 171 |
 
 These are the cases xlcalc's functions were checked against, so they favor it.
 
-Speed and memory on Node 26.7 and an Apple M5 Pro, each case in its own process, with xlcalc's faster mode of execution, HyperFormula's best configuration and IronCalc's WebAssembly build; IronCalc's memory is its heap with the WebAssembly memory it grew to, an upper bound. A dash marks values that differ from xlcalc's full calculation: IronCalc's after a row is inserted in the SUMIFS workbook. The protocol and every case are in `bench/compare` in the repository.
+Speed and memory, measured on 29.10.2026 with xlcalc 0.67.0, HyperFormula 3.5.0, IronCalc 0.9.0, SheetJS 0.18.5 and ExcelJS 4.4.0 on Node 26.7 and an Apple M5 Pro, each case in its own process, with xlcalc's faster mode of execution, HyperFormula's best configuration and IronCalc's WebAssembly build; IronCalc's memory is its heap with the WebAssembly memory it grew to, an upper bound. A dash marks values that differ from xlcalc's full calculation: IronCalc's after a row is inserted in the SUMIFS workbook. The protocol and every case are in `bench/compare` in the repository.
 
 | Milliseconds, median | xlcalc | HyperFormula | IronCalc |
 |---|---:|---:|---:|
-| Open a 3,400-row workbook of 3,907 SUMIFS formulas | 98.6 | 3,765 | 2,207 |
-| Edit a criterion of its SUMIFS | 0.151 | 0.956 | 2,070 |
-| Edit an amount it sums | 8.51 | 2,810 | 2,134 |
-| Open 50,000 lookups | 46.9 | 1,119 | 13,648 |
-| Edit a lookup key | 0.156 | 0.095 | 12,875 |
-| Open a chain of 10,000 formulas | 32.8 | 30.2 | 24.9 |
-| Edit its first cell | 2.21 | 4.51 | 2.30 |
-| Open 50,000 formulas over one cell | 128 | 362 | 111 |
-| Edit that cell | 15.2 | 40.6 | 16.1 |
-| Set 2,000 inputs at once | 2.58 | 2.92 | 2.50 |
-| Insert a row in the SUMIFS workbook | 107 | 2,669 | – |
-| Insert a row among 5,000 cumulative SUMs | 24.3 | 6.36 | 187 |
+| Open a 3,400-row workbook of 3,907 SUMIFS formulas | 104 | 3,765 | 2,208 |
+| Edit a criterion of its SUMIFS | 0.163 | 0.964 | 2,046 |
+| Edit an amount it sums | 6.46 | 2,800 | 2,065 |
+| Open 50,000 lookups | 44.5 | 1,272 | 13,478 |
+| Edit a lookup key | 0.146 | 0.100 | 13,599 |
+| Open a chain of 10,000 formulas | 34.8 | 31.0 | 25.0 |
+| Edit its first cell | 2.30 | 4.51 | 1.96 |
+| Open 50,000 formulas over one cell | 131 | 366 | 113 |
+| Edit that cell | 16.0 | 42.3 | 18.1 |
+| Set 2,000 inputs at once | 2.85 | 3.31 | 2.62 |
+| Insert a row in the SUMIFS workbook | 91.0 | 2,805 | – |
+| Insert a row among 5,000 cumulative SUMs | 25.2 | 6.36 | 185 |
 
-| Retained heap after opening, MB | xlcalc | HyperFormula | IronCalc |
+| Retained heap after opening, MiB | xlcalc | HyperFormula | IronCalc |
 |---|---:|---:|---:|
-| The SUMIFS workbook | 13.6 | 17.7 | 22.0 |
-| 50,000 lookups | 8.66 | 20.4 | 26.5 |
-| A chain of 10,000 formulas | 7.19 | 4.76 | 6.52 |
-| 1,000 values 97 rows apart | 1.16 | 0.842 | 3.77 |
+| The SUMIFS workbook | 14.2 | 17.7 | 22.0 |
+| 50,000 lookups | 7.42 | 20.4 | 26.5 |
+| A chain of 10,000 formulas | 7.41 | 4.76 | 6.52 |
+| 1,000 values 97 rows apart | 1.36 | 0.848 | 3.77 |
 
 | xlsx, 34,000 rows | xlcalc | SheetJS | ExcelJS |
 |---|---:|---:|---:|
-| Read, ms | 446 | 546 | 596 |
-| Write, ms | 664 | 347 (compressed 461) | 1,068 |
+| Read, ms | 408 | 527 | 579 |
+| Write, ms | 518 | 368 (compressed 473) | 1,068 |
 | File written, MB | 3.50 | 20.0 (compressed 8.69) | 3.54 |
 
 SheetJS writes without compression by default.
