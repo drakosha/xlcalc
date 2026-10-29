@@ -86,11 +86,15 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
   return out
 }
 
+/** The calculation option the book keeps (`calcMode`), automatic without one. */
+function calcMode(xml: string): BookInput['calculation'] {
+  const mode = attributes(element(xml, 'calcPr')?.attrs ?? '').calcMode
+  return mode === 'manual' || mode === 'autoNoTable' ? mode : undefined
+}
+
 /** The calculation settings the book keeps (iterative calculation), and the others reported. */
 function calculation(xml: string, issues: Issues): BookInput['iteration'] {
   const calc = attributes(element(xml, 'calcPr')?.attrs ?? '')
-  if (calc.calcMode === 'manual') issues.add('calculation', { key: 'manualCalculation' })
-  if (calc.calcMode === 'autoNoTable') issues.add('calculation', { key: 'autoNoTable' })
   if (!flag(calc.fullPrecision, true)) issues.add('calculation', { key: 'precisionAsDisplayed' })
   if (!flag(calc.iterate)) return undefined
   const out: NonNullable<BookInput['iteration']> = {}
@@ -248,6 +252,8 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   if (tag) book.locale = tag
   if (dateSystem === 1904) book.dateSystem = 1904
   if (iteration) book.iteration = iteration
+  const mode = calcMode(wb)
+  if (mode) book.calculation = mode
   if (links.books.length) book.externalBooks = links.books
   // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time),
   // by a locale not loaded as by en-US

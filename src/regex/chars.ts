@@ -29,9 +29,6 @@ export function cpBefore(s: string, i: number): number {
   return d
 }
 
-/** UTF-16 units of code point `c`. */
-export const width = (c: number) => (c > 0xffff ? 2 : 1)
-
 /** `t` remembered for the characters of the BMP it was asked about: a property's regular expression runs once a character. */
 export function remembered(t: CharTest): CharTest {
   // ASCII in a small table, the rest of the BMP in one made at its first character

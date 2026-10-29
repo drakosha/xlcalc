@@ -1,0 +1,280 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 35.5
+ },
+ "cases": [
+  {
+   "id": "written",
+   "book": {
+    "styles": [
+     {
+      "alignment": {
+       "rotation": 45
+      }
+     },
+     {
+      "alignment": {
+       "rotation": -30
+      }
+     },
+     {
+      "alignment": {
+       "rotation": 90
+      }
+     },
+     {
+      "alignment": {
+       "rotation": -90
+      }
+     },
+     {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "center",
+       "rotation": 15
+      }
+     }
+    ],
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "up",
+        "style": 0
+       },
+       "B1": {
+        "value": "down",
+        "style": 1
+       },
+       "C1": {
+        "value": "up all",
+        "style": 2
+       },
+       "D1": {
+        "value": "down all",
+        "style": 3
+       },
+       "E1": {
+        "value": "stack",
+        "style": 4
+       },
+       "F1": {
+        "value": "c",
+        "style": 5
+       },
+       "G1": {
+        "value": "level"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept",
+   "book": {
+    "styles": [
+     {
+      "alignment": {
+       "rotation": 45
+      }
+     },
+     {
+      "alignment": {
+       "rotation": -30
+      }
+     },
+     {
+      "alignment": {
+       "rotation": 90
+      }
+     },
+     {
+      "alignment": {
+       "rotation": -90
+      }
+     },
+     {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "center",
+       "rotation": 15
+      }
+     }
+    ],
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "up",
+        "style": 0
+       },
+       "B1": {
+        "value": "down",
+        "style": 1
+       },
+       "C1": {
+        "value": "up all",
+        "style": 2
+       },
+       "D1": {
+        "value": "down all",
+        "style": 3
+       },
+       "E1": {
+        "value": "stack",
+        "style": 4
+       },
+       "F1": {
+        "value": "c",
+        "style": 5
+       },
+       "G1": {
+        "value": "level"
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "patches": [
+     {
+      "sheet": "S",
+      "range": "G1",
+      "set": {
+       "style": {
+        "alignment": {
+         "rotation": 60
+        }
+       }
+      }
+     },
+     {
+      "sheet": "S",
+      "range": "A1",
+      "set": {
+       "style": {
+        "alignment": {
+         "rotation": "vertical"
+        }
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "written": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [],
+   "turned": [
+    [
+     "S",
+     "A1",
+     45
+    ],
+    [
+     "S",
+     "B1",
+     -30
+    ],
+    [
+     "S",
+     "C1",
+     90
+    ],
+    [
+     "S",
+     "D1",
+     -90
+    ],
+    [
+     "S",
+     "E1",
+     "vertical"
+    ],
+    [
+     "S",
+     "F1",
+     15
+    ]
+   ]
+  },
+  "kept": {
+   "sheets": [
+    [
+     "S",
+     null,
+     true,
+     true
+    ]
+   ],
+   "calculation": "automatic",
+   "notes": [],
+   "turned": [
+    [
+     "S",
+     "A1",
+     "vertical"
+    ],
+    [
+     "S",
+     "B1",
+     -30
+    ],
+    [
+     "S",
+     "C1",
+     90
+    ],
+    [
+     "S",
+     "D1",
+     -90
+    ],
+    [
+     "S",
+     "E1",
+     "vertical"
+    ],
+    [
+     "S",
+     "F1",
+     15
+    ],
+    [
+     "S",
+     "G1",
+     60
+    ]
+   ]
+  }
+ }
+}

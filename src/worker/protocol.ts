@@ -13,7 +13,7 @@ export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['applyChanges', 'setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'pasteText', 'fillCellText', 'replaceInCells', 'setNames', 'setExternalBooks', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'previewChanges' | 'readCells' | 'findCells' | 'getDependents' | 'summarizeRanges' | 'previewCellText' | 'previewCellTexts' | 'previewPasteText' | 'previewFillCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'getEnd' | 'getAutoSum' | 'explain' | 'getCells' | 'copyText' | 'getValues' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
+export type Op = (typeof CHANGING)[number] | 'previewChanges' | 'readCells' | 'findCells' | 'getDependents' | 'summarizeRanges' | 'previewCellText' | 'previewCellTexts' | 'previewPasteText' | 'previewFillCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'getEnd' | 'getAutoSum' | 'getNamesFromSelection' | 'getSpecialCells' | 'explain' | 'getCells' | 'copyText' | 'getValues' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
 
 /** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
 export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChanges: 1, readCells: 1, findCells: 2, getDependents: 1, summarizeRanges: 1, setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, pasteText: 3, previewPasteText: 3, fillCellText: 3, previewFillCellText: 3, replaceInCells: 3, setNames: 1, setExternalBooks: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
@@ -48,7 +48,7 @@ export type ToThread =
   | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind'] }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
-  /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/locales.ts`). */
+  /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
   | { t: 'regex'; kind: RegexLevel['kind'] }
   | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number }
   | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number }

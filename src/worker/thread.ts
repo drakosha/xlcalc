@@ -19,7 +19,7 @@ import { heapCaches } from '../range-cache.js'
 import type { HistoryData } from '../session/undo.js'
 import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
-import { LOCALE_MODULES, REGEX_MODULE } from './locales.js'
+import { LOCALE_MODULES } from '../locale/modules.js'
 import { setRegexLevel } from '../regex-level.js'
 import type { RegexLevel } from '../contract.js'
 import { workerThreads } from './platform.js'
@@ -57,9 +57,14 @@ function load(list: Locale[]) {
     .catch(() => {})
 }
 
-/** Loads the level of match mode 3 the pool has registered, before the next task. */
+/** Loads the level of match mode 3 the pool has registered, its module imported by the thread (a functions' object no message carries), before the next task. */
 function loadRegex(kind: RegexLevel['kind']) {
-  loading = loading.then(async () => setRegexLevel(await REGEX_MODULE(kind))).catch(() => {})
+  loading = loading
+    .then(async () => {
+      const m = await import('../regex/index.js')
+      setRegexLevel(kind === 'xlcalc-pcre-syntax' ? m.pcreSyntax : m.pcreEngine)
+    })
+    .catch(() => {})
 }
 
 /** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
@@ -92,6 +97,12 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       break
     case 'getAutoSum':
       value = await s.getAutoSum(args[0] as string, args[1] as string)
+      break
+    case 'getNamesFromSelection':
+      value = await s.getNamesFromSelection(args[0] as string, args[1] as string, args[2] as never)
+      break
+    case 'getSpecialCells':
+      value = await s.getSpecialCells(args[0] as string, args[1] as string, args[2] as never)
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })

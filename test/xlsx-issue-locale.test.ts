@@ -52,7 +52,7 @@ const LOSSES = pack(
     styles:
       '<fonts count="2"><font><sz val="12"/><name val="Arial"/></font><font><vertAlign val="superscript"/><sz val="12"/><name val="Arial"/></font></fonts>' +
       '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="darkGray"><fgColor rgb="FF00FF00"/></patternFill></fill></fills>' +
-      '<borders count="1"><border/></borders><cellXfs count="2"><xf/><xf fontId="1" fillId="2"><alignment textRotation="45"/></xf></cellXfs>',
+      '<borders count="1"><border/></borders><cellXfs count="2"><xf/><xf fontId="1" fillId="2"><alignment shrinkToFit="1"/></xf></cellXfs>',
     workbook: {
       before: '<workbookProtection lockStructure="1"/>',
       after:
@@ -64,7 +64,6 @@ const LOSSES = pack(
 
 const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['defaultFont', { key: 'defaultFont', name: 'Arial', size: 12 }],
-  ['calculation', { key: 'manualCalculation' }],
   ['calculation', { key: 'precisionAsDisplayed' }],
   ['calculation', { key: 'iterationCount', count: '0' }],
   ['calculation', { key: 'iterationChange', change: '-1' }],
@@ -73,7 +72,7 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['richText', { key: 'richText' }],
   ['style', { key: 'styleLost', part: 'superscript' }],
   ['style', { key: 'styleLost', part: 'patternFill' }],
-  ['style', { key: 'styleLost', part: 'textRotation' }],
+  ['style', { key: 'styleLost', part: 'shrinkToFit' }],
   ['errorValue', { key: 'errorUnspelled' }],
   ['errorConstant', { key: 'errorTyped' }],
   ['userFunction', { key: 'userFunction' }],
@@ -115,7 +114,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
   it('a locale object needs no loading; the tag of a locale not loaded, an unknown option and options that are no object are refused', async () => {
     const data = await LOSSES
     expect((await readXlsx(data, { locale: ruRU })).issues.find((i) => i.code === 'richText')?.message).toBe('Форматированный текст прочитан как простой')
-    await expect(readXlsx(data, { locale: 'ru-RU' })).rejects.toThrow("opts.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)")
+    await expect(readXlsx(data, { locale: 'ru-RU' })).rejects.toThrow("opts.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)")
     await expect(readXlsx(data, { lang: 'ru-RU' } as never)).rejects.toThrow('opts: unknown field "lang" (expected locale, limits)')
     await expect(readXlsx(data, 'ru-RU' as never)).rejects.toThrow("opts: expected options such as { locale: 'ru-RU' }, got the string \"ru-RU\"")
     await expect(writeXlsx({ book: WRITTEN }, { locale: 'ru-RU' })).rejects.toThrow('opts.locale: the locale ru-RU is not loaded')
@@ -137,7 +136,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     expect(ru.issues.filter((i) => i.code === 'style').map((i) => [i.message, i.cells])).toEqual([
       ['Надстрочный шрифт в стиле не поддерживается', ['B1']],
       ['Заливка узором в стиле не поддерживается', ['B1']],
-      ['Поворот текста в стиле не поддерживается', ['B1']],
+      ['Автоподбор ширины в стиле не поддерживается', ['B1']],
     ])
     // the hidden name is read hidden, without an issue; the built-in one is left out
     expect(ru.book.names).toEqual([{ name: 'ставка', ref: '0.1', hidden: true }])

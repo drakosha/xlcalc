@@ -3,7 +3,7 @@ import type { BookInput, FrozenPanes, SheetInput, SheetView } from '../contract.
 import { checkSheetView } from '../input-view.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { attributes, element, elements, type Element } from './xml/scan.js'
+import { attributes, element, elements, flag, type Element } from './xml/scan.js'
 import { escapeAttr } from './xml/text.js'
 
 export function readSheetView(first: Element | undefined): SheetView | undefined {
@@ -18,6 +18,7 @@ export function readSheetView(first: Element | undefined): SheetView | undefined
   const topLeft = scrollOf(attrs.topLeftCell, pane)
   if (topLeft !== undefined) out.topLeft = topLeft
   if (attrs.zoomScale !== undefined) out.zoom = Number(attrs.zoomScale)
+  for (const [key, attr] of VIEW_FLAGS) if (attrs[attr] !== undefined && !flag(attrs[attr])) out[key] = false
   if (selected.activeCell !== undefined) out.activeCell = selected.activeCell
   if (selected.sqref?.trim()) out.selection = selected.sqref.trim().split(/\s+/)
   // Malformed optional view fields do not make a valid workbook unreadable.
@@ -28,6 +29,9 @@ export function readSheetView(first: Element | undefined): SheetView | undefined
 }
 
 const CELL = /^[A-Z]{1,3}[1-9]\d*$/
+
+/** The view's flags shown by default, by their attributes: written as `0` where the model has false. */
+export const VIEW_FLAGS = [['gridlines', 'showGridLines'], ['headings', 'showRowColHeaders']] as const
 
 /**
  * The scroll position a view saved: its top left cell, but over frozen panes whose pane after the split is scrolled past
@@ -73,7 +77,7 @@ export function activeSheetIndex(book: BookInput): number {
  * sheet's tab is selected: a group of selected tabs, kept apart from `activeSheet`, would open the book grouped.
  */
 export function sheetViewXml(view: SheetView | undefined, pane: string, active: boolean): string {
-  const attrs = ` workbookViewId="0"${active ? ' tabSelected="1"' : ''}${view?.topLeft ? ` topLeftCell="${escapeAttr(view.topLeft)}"` : ''}${view?.zoom !== undefined ? ` zoomScale="${view.zoom}"` : ''}`
+  const attrs = ` workbookViewId="0"${active ? ' tabSelected="1"' : ''}${view?.topLeft ? ` topLeftCell="${escapeAttr(view.topLeft)}"` : ''}${view?.zoom !== undefined ? ` zoomScale="${view.zoom}"` : ''}${VIEW_FLAGS.map(([key, attr]) => (view?.[key] === false ? ` ${attr}="0"` : '')).join('')}`
   let body = pane
   if (view?.activeCell !== undefined || view?.selection !== undefined) {
     const paneName = attributes(element(pane, 'pane')?.attrs ?? '').activePane

@@ -1,0 +1,110 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-28",
+  "seconds": 17.3
+ },
+ "books": {
+  "lines": {
+   "styles": [
+    {
+     "font": {
+      "italic": true
+     }
+    }
+   ],
+   "cells": {
+    "D5": {
+     "value": 45000,
+     "numberFormat": 14
+    },
+    "E5": {
+     "formula": "D5+1"
+    },
+    "F5": {
+     "formula": "T(D5)"
+    },
+    "D6": {
+     "value": "x"
+    },
+    "F6": {
+     "formula": "VLOOKUP(9,D5:E5,2,FALSE)"
+    },
+    "D7": {
+     "formula": "IF(D5,\"\",\"n\")"
+    },
+    "E7": {
+     "value": 0
+    }
+   },
+   "rows": {
+    "2": {
+     "style": 0
+    },
+    "6": {
+     "hidden": true
+    },
+    "9": {
+     "hidden": true
+    },
+    "12": {
+     "style": 0
+    }
+   },
+   "columns": {
+    "B": {
+     "width": 20
+    },
+    "H": {
+     "style": 0
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "visible-one-cell",
+   "book": "lines",
+   "range": "A1",
+   "special": {
+    "type": "visible"
+   }
+  },
+  {
+   "id": "visible-column",
+   "book": "lines",
+   "range": "D:D",
+   "special": {
+    "type": "visible"
+   }
+  }
+ ],
+ "answers": {
+  "visible-one-cell": {
+   "cells": [
+    "17179836416 cells"
+   ],
+   "areas": [
+    "1:5",
+    "7:8",
+    "10:1048576"
+   ]
+  },
+  "visible-column": {
+   "cells": [
+    "1048574 cells"
+   ],
+   "areas": [
+    "D1:D5",
+    "D7:D8",
+    "D10:D1048576"
+   ]
+  }
+ }
+}

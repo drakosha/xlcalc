@@ -6,7 +6,7 @@ import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOp
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
 import type { CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, FillTextOptions, FillTextPreview, FillTextResult, PasteTextPreview, PasteTextResult } from './typing.js'
 import type { SessionStructureResult, StructureOp } from './structure.js'
-import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
+import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, SelectionLabels, SpecialCells, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
 
 /**
  * Session options. A session keeps a single clock, `clock` or by default the time it was opened and a random
@@ -174,7 +174,9 @@ export interface Session {
   setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
    * The session's workbook with every change so far: what a host saves as a version. Its objects belong to the
-   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved.
+   * session and later calls change them, so do not modify it; serialize or copy whatever must be preserved. The order
+   * of its objects' keys (a sheet's fields, a sheet's cells) is not part of the workbook: it can differ between kinds
+   * of session and after undo and redo, while the hash, the values and a file written from it do not.
    */
   getBook(): Book
   /**
@@ -209,6 +211,20 @@ export interface Session {
    * is `SUM()`, which Excel opens for editing and refuses to enter. It reads the cells along the cell's column and row.
    */
   getAutoSum(sheet: string, cell: string): AutoSumGuess
+  /**
+   * The names Excel's Create from Selection (Formulas > Defined Names) makes over a range (`SelectionLabels`): each
+   * label of the chosen sides, its text made a name as Excel makes it, refers to the cells of its column or row in the
+   * range past the labels; with a row and a column of labels, the label in their corner refers to all of them. A label
+   * without text makes none, and of two labels with one name the later one stays. A host passes the names to
+   * `setNames`, asking first, as Excel does, about a name the workbook already has.
+   */
+  getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): NameInput[]
+  /**
+   * The cells of a kind (`SpecialCells`) Excel's Go To Special selects in a range, as rectangles (`B2:C9`, `E4`); none
+   * where Excel says no cells were found. A range of one cell stands for the sheet's used range, as in Excel, and a
+   * larger one is taken within it.
+   */
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -464,13 +480,15 @@ export interface AsyncSession {
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
-  /** The session's workbook; from a thread, a copy. */
+  /** The session's workbook; from a thread, a copy. The order of its objects' keys is not part of it (`Session.getBook`). */
   getBook(): Promise<Book>
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
+  getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
+  getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>

@@ -1,13 +1,11 @@
-/** Parameters of each message of xlsx issues, for the catalog's tests: a key without samples does not compile. */
-import type { XlsxMessageParams } from '../../src/locale/messages.js'
+/** Parameters of each message of xlsx issues and of writeKept's refusals, for the catalog's tests: a key without samples does not compile. */
+import type { KeptMessageParams, XlsxMessageParams } from '../../src/locale/messages.js'
 
 export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K][] } = {
   localeUnknown: [{ tag: 'xx-XX' }],
   builtInName: [{}],
   nameOfSheetLeftOut: [{}],
   hiddenName: [{}],
-  manualCalculation: [{}],
-  autoNoTable: [{}],
   precisionAsDisplayed: [{}],
   iterationCount: [{ count: '0' }],
   iterationChange: [{ change: '-1' }],
@@ -92,7 +90,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   noteCell: [{}],
   noteThread: [{}],
   noteFormatted: [{}],
-  noteShown: [{}],
   linkAddress: [{}],
   linkCells: [{}],
   nameNotTaken: [{}],
@@ -117,4 +114,53 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   filterModeOut: [{}],
   keptCells: [{ count: 5001 }, { count: 12000 }],
   keptFormats: [{ count: 1 }, { count: 22 }, { count: 12000 }],
+}
+
+const sheet = 'Plan'
+/** Parameters of each refusal of `writeKept`, one sample of each part of a file among them. */
+export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K][] } = {
+  keptStrict: [{}],
+  keptSheetName: [{ name: 'History', sheet: 'History (2)' }],
+  keptFont: [{}],
+  keptValidation: [{ sheet }],
+  keptThreads: [{ sheet }],
+  keptTableParts: [{ table: 'Sales', path: 'xl/tables/_rels/table1.xml.rels' }],
+  keptLinkKind: [{ link: 2 }],
+  keptLinks: [{}],
+  keptNoCarrier: [{ name: '_xlcalc_keep_s1', sheet }],
+  keptNoCellCarrier: [{ name: '_xlcalc_keep_c1', cell: 'B2', sheet }],
+  keptNoPartCarrier: [{ name: '_xlcalc_keep_p1', what: { part: 'name', name: 'Rate' } }, { name: '_xlcalc_keep_p2', what: { part: 'chart', path: 'xl/charts/chart1.xml' } }],
+  keptUnread: [
+    { sheet, what: { part: 'element', sheet, element: 'oleObjects' } },
+    { sheet, what: { part: 'extension', sheet, uri: '{01252117-D84E-4E92-8308-4BE1C098FCBB}' } },
+    { sheet, what: { part: 'formControls', sheet } },
+    { sheet, what: { part: 'sheetKind', kind: 'macrosheet', name: 'Macro1' } },
+    { sheet, what: { part: 'unreadRule', sheet, range: 'B2:B9' } },
+  ],
+  keptNamedSheet: [{ sheet, what: { part: 'pivotChart', path: 'xl/charts/chart2.xml' } }],
+  keptSheetParts: [{ sheet, kind: 'pivotTable', path: 'xl/pivotTables/pivotTable1.xml' }],
+  keptSourceGone: [{ what: { part: 'pivotSource', path: 'xl/pivotCache/pivotCacheDefinition1.xml' }, name: 'Sales' }],
+  keptNoRef: [{ what: { part: 'unreadRule', sheet, range: 'C2:C9' } }],
+  keptMovedSheet: [{ what: { part: 'unreadRule', sheet, range: 'H2:H21' } }],
+  keptFirstCell: [{ what: { part: 'unreadRule', sheet, range: 'D2:D9' } }],
+  keptTakenApart: [{ what: { part: 'unreadRule', sheet, range: 'E2:E9' } }],
+  keptRulesPivot: [{ sheet }],
+  keptRulesPart: [{ sheet, range: 'F2:F9', lost: 'condStyleLost' }],
+  keptRulesPrefixes: [{ sheet, range: 'G2:G9' }],
+  keptRulesBar: [{ sheet, range: 'E2:E21' }],
+  keptNamespace: [{ namespace: 'urn:example' }],
+  keptRelPrefix: [{ namespace: 'urn:example:r' }],
+  keptAlternate: [{ what: { part: 'drawing', sheet, path: 'xl/drawings/drawing1.xml' } }],
+  keptDrawingMoved: [{ what: { part: 'drawing', sheet, path: 'xl/drawings/drawing1.xml' } }],
+  keptDrawingDeleted: [{ what: { part: 'drawing', sheet, path: 'xl/drawings/drawing2.xml' } }],
+  keptCut: [{ what: { part: 'pivotTable', sheet, path: 'xl/pivotTables/pivotTable1.xml' } }],
+  keptCacheSheet: [{ what: { part: 'pivotSource', path: 'xl/pivotCache/pivotCacheDefinition1.xml' } }],
+  keptCellsDeleted: [
+    { what: { part: 'autoFilter', sheet } },
+    { what: { part: 'sort', sheet } },
+    { what: { part: 'pageBreaks', sheet } },
+    { what: { part: 'protectedRanges', sheet } },
+  ],
+  keptSparkline: [{ sheet }],
+  keptWouldMove: [{ what: { part: 'threads', sheet }, path: 'xl/threadedComments/threadedComment1.xml' }, { what: { part: 'sparklines', sheet }, path: 'xl/worksheets/sheet1.xml' }],
 }

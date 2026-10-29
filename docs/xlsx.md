@@ -142,7 +142,7 @@ Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that name
 
 ### Styles and number formats
 
-Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
+Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Its alignment holds the text's orientation too, `rotation`: degrees from -90 to 90, up for positive ones, or `vertical`, the letters one above the other (xlsx `textRotation`, 91 to 180 for the degrees down, 255 for the letters); Excel 16.0.20430 for Windows read each kind from files `writeXlsx` and `writeKept` wrote as the style holds it and saved it so (`bench/windows/run.ts fields rotation`). The engine fits widths and heights as for level text. Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
 
 Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors.
 
@@ -198,7 +198,7 @@ A sheet marked `state="hidden"` in a file gets `hidden: true`, and one marked `s
 
 ### The saved active sheet and view
 
-A grid can reopen a workbook on its saved sheet, with its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, and `zoom` (a percentage, 10 to 400). The active sheet's tab is the selected one.
+A grid can reopen a workbook on its saved sheet, with its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, `zoom` (a percentage, 10 to 400), and `gridlines` and `headings`, false where View > Show hides the sheet's gridlines or its row and column headings (xlsx `showGridLines`, `showRowColHeaders`). The active sheet's tab is the selected one, and a sheet's `tabColor` (`#RRGGBB`, xlsx `<tabColor>`, a theme color read as its color) colors its tab.
 
 ```js
 const book = {
@@ -209,13 +209,13 @@ const book = {
 }
 ```
 
-The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane, and a scroll position past the split from the pane after it, where Excel keeps it and the writer writes it, so frozen panes and `topLeft` round-trip together. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
+The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane, and a scroll position past the split from the pane after it, where Excel keeps it and the writer writes it, so frozen panes and `topLeft` round-trip together. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and the gridlines' color are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
 
-Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots keep them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it selects the first visible sheet. The host tracks the live selection and scrolling itself, and applies `activeSheet` and `view` to the workbook before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
+Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots keep them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it selects the first visible sheet. The host tracks the live selection and scrolling itself, and applies `activeSheet` and `view` to the workbook before saving. They have no `setLayout` edit, so moving around a grid and showing or hiding gridlines create no undo steps. A tab color is the workbook's own: `setLayout` sets it with `{ sheet, tabColor: '#FF0000' }` and removes it with `{ sheet, tabColor: null }`, one undo step, without changing a value or `inputHash`.
 
 #### How it is tested
 
-By round trips through the writer and the reader, in every kind of session; not tested in Excel.
+By round trips through the writer and the reader, in every kind of session. Tab colors, gridlines and headings also in Excel 16.0.20430 for Windows (`bench/windows/run.ts fields sheets`, `test/fields-win.test.ts`): for files `writeXlsx` wrote, and `writeKept` wrote setting, changing and removing them, Excel read through its object model each sheet's tab color, gridlines and headings as the workbook holds them, and saved them so, as the reader reads them back.
 
 ### Filters
 
@@ -243,7 +243,7 @@ A file with `workbookPr date1904` gives a workbook with `dateSystem: 1904`. Numb
 iteration: { maxIterations: 7, maxChange: 0.5 }
 ```
 
-The manual calculation mode, "automatic except for data tables" and precision as displayed are reported.
+The calculation option is kept as `calculation`: `manual`, or `autoNoTable` (automatic except for data tables), and `writeXlsx` and `writeKept` write it; the engine calculates every edit whatever it says, and a host that offers manual calculation keeps the values it showed until the user calculates. Excel 16.0.20430 for Windows took each value from a file `writeXlsx` wrote and from files `writeKept` wrote setting and removing it, and saved it so (`bench/windows/run.ts fields book`). Precision as displayed is reported.
 
 ### Names
 
@@ -279,7 +279,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `dataTable` | a what-if data table, read as its stored values |
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
-| `style` | pattern and gradient fills, diagonal borders, rotation, shrink to fit, subscript and superscript |
+| `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
 | `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
@@ -287,7 +287,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `autoFilter` | an AutoFilter's criteria and sort, a table's criteria, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture, or among a link's stored values |
-| `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text; a note shown all the time, read as one shown on hover |
+| `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text |
 | `hyperlink` | a hyperlink whose address is not an external relationship of the sheet; one over more than 4,096 cells, read on its cells that contain something |
 | `frozenPanes` | split panes that are not frozen; panes frozen on a sheet scrolled down or right, read from the first row and column |
 | `conditionalFormat` | a rule of a kind the model does not support, a pivot table's rules, a rule without its formulas or thresholds; anything in a rule's differential format beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and standard deviations, read with equal |
@@ -307,7 +307,7 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 | code | en-US | ru-RU |
 |---|---|---|
 | `richText` | formatted runs of text are read as plain text | Форматированный текст прочитан как простой |
-| `style` | a style's text rotation is not in the model | Поворот текста в стиле не поддерживается |
+| `style` | a style's shrink to fit is not in the model | Автоподбор ширины в стиле не поддерживается |
 | `calculation` | the maximum number of iterations "0" is not between 1 and 32,767: the default, 100, is used | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
 | `noCachedValues` | no result was passed: the file stores no formula values, and Excel calculates them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |
 
@@ -479,7 +479,7 @@ A cell's note and hyperlink and a sheet's frozen panes round-trip, so a grid can
 
 ### Notes
 
-A note has its author and its text, with lines separated by `\n`. Excel keeps notes in a comments part with a VML drawing that displays them, and the reader takes the comments part. The text is read as plain text: a note created in Excel's window has its author's name in bold at the start, and such formatting is reported. A note shown all the time comes back as one shown when the pointer hovers over its cell, which is also reported. The size and position of a note's box are not kept. A note's cell is read as Excel reads it: `A01`, `$A$1`, `a1` and `A1:A1` all mean A1; a note on a range of cells is left out and reported, since Excel does not open such a file.
+A note has its author and its text, with lines separated by `\n`. Excel keeps notes in a comments part with a VML drawing that displays them, and the reader takes the comments part. The text is read as plain text: a note created in Excel's window has its author's name in bold at the start, and such formatting is reported. A note shown all the time (Review > Notes > Show/Hide Note, `<x:Visible/>` in the drawing) has `shown: true`, and the writer writes it so; Excel 16.0.20430 for Windows read each note `writeXlsx` and `writeKept` wrote as shown or not as the workbook holds it, and saved it so (`bench/windows/run.ts fields notes`). The size and position of a note's box are not kept. A note's cell is read as Excel reads it: `A01`, `$A$1`, `a1` and `A1:A1` all mean A1; a note on a range of cells is left out and reported, since Excel does not open such a file.
 
 The writer writes both parts, as Excel writes them: each note gets a hidden box next to its cell. A note without an author is written with an empty one, as Excel keeps it.
 

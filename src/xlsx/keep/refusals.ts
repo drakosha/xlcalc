@@ -7,6 +7,8 @@
  * changed. The file would point at the wrong cells: no file is written then.
  */
 import type { BookInput } from '../../contract.js'
+import type { Locale } from '../../locale/types.js'
+import { keptText, type KeptMessage } from './messages.js'
 import { caseKey } from '../../collate.js'
 import { quoteSheet, sheetKey } from '../../syntax/print.js'
 import { plain } from '../../syntax/links.js'
@@ -34,15 +36,26 @@ import type { Source } from './source.js'
  */
 export type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 
+/** The message of each refusal, which `writeKept` gives in the language of its `locale`. */
+const MESSAGES = new WeakMap<KeptRefusal, KeptMessage>()
+
 /** `writeKept`'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells; `code` says why. */
 export class KeptRefusal extends Error {
   override readonly name = 'KeptRefusal'
   constructor(
-    why: string,
+    why: KeptMessage,
     readonly code: KeptRefusalCode,
   ) {
-    super(`xlsx/keep: ${why}`)
+    super(`xlsx/keep: ${keptText(undefined, why)}`)
+    MESSAGES.set(this, why)
   }
+}
+
+/** The refusal with its message in the language of a locale (`WriteKeptOptions.locale`). */
+export function refusalIn(e: KeptRefusal, locale: string | Locale | undefined): KeptRefusal {
+  const m = MESSAGES.get(e)
+  if (m && locale !== undefined) e.message = `xlsx/keep: ${keptText(locale, m)}`
+  return e
 }
 
 export interface Identity {
@@ -52,6 +65,8 @@ export interface Identity {
   target: Map<number, number>
   /** By sheet of the book read: rows or columns were inserted or deleted on it. */
   lines: boolean[]
+  /** By sheet of the book read: rows or columns were deleted on it, and none inserted. */
+  deleted: boolean[]
   /** The edits that write the moved references back to the parts. */
   edits: Edit[]
   /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
@@ -68,15 +83,13 @@ export interface Moved {
 /** The relationships a sheet deleted may have: parts of its own the model has or that go with it, or that hold no reference. */
 const DELETABLE = new Set(['table', 'comments', 'vmlDrawing', 'printerSettings', 'hyperlink', 'threadedComment', 'drawing'])
 
-const OPEN_KEPT = 'open the file with openKept and keep the hidden names it adds'
-
 /** EMUs in a point. */
 const EMU = 12_700
 
 export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Carriers): Identity {
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
   const index = new Map(book1.sheets.map((s, j) => [sheetKey(s.name), j]))
-  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], edits: [], cells: new Map(), formats: new Map() }
+  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], deleted: [], edits: [], cells: new Map(), formats: new Map() }
   for (const [k, carrier] of c.sheets.entries()) {
     const was = book0.sheets[k].name
     const n = names.get(caseKey(carrier.name))
@@ -87,20 +100,21 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       out.target.set(k, j)
     }
     out.lines[k] = !!at?.moved
+    out.deleted[k] = !!at?.deleted
     const renamed = j === undefined || book1.sheets[j].name !== was
     const changed = renamed || out.lines[k]
     const unread = [...c.unparsed[k], ...c.anywhere]
-    if (!n && (unread.length || c.named[k].length)) throw new KeptRefusal(`the workbook has no name ${carrier.name}, which tells what became of the sheet '${was}': ${OPEN_KEPT}`, 'carriers')
-    if (changed && unread.length) throw new KeptRefusal(`the sheet '${was}' had rows or columns inserted or deleted, or was renamed or deleted, and ${unread[0]} holds references writeKept does not read`, 'unread')
+    if (!n && (unread.length || c.named[k].length)) throw new KeptRefusal({ key: 'keptNoCarrier', name: carrier.name, sheet: was }, 'carriers')
+    if (changed && unread.length) throw new KeptRefusal({ key: 'keptUnread', sheet: was, what: unread[0] }, 'unread')
     for (const p of renamed ? c.named[k] : []) {
-      if (j === undefined) throw new KeptRefusal(`the sheet '${was}' was deleted, and ${p.what} names it`, 'deleted')
+      if (j === undefined) throw new KeptRefusal({ key: 'keptNamedSheet', sheet: was, what: p.what }, 'deleted')
       // a pivot chart's table by its sheet's new name, quoted as Excel quotes it
       const name = book1.sheets[j].name
       out.edits.push({ part: p.part, start: p.at[0], end: p.at[1], text: escapeText(`${plain(name) ? p.prefix + name : quoteSheet(p.prefix + name)}!${p.rest}`) })
     }
     if (j === undefined) {
       const own = src.sheets[k].rels.find((r) => !DELETABLE.has(r.kind))
-      if (own) throw new KeptRefusal(`the sheet '${was}' was deleted, and it has a part the workbook does not hold (${own.kind} ${own.target})`, 'deleted')
+      if (own) throw new KeptRefusal({ key: 'keptSheetParts', sheet: was, kind: own.kind, path: own.target }, 'deleted')
     }
   }
   // the cells with what only the file holds: where each went on its sheet (one moved to another sheet, or deleted, leaves it)
@@ -110,7 +124,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     const moved: Moved = { to: new Map(), left: new Set() }
     for (const cell of list) {
       const n = names.get(caseKey(cell.carrier.name))
-      if (!n) throw new KeptRefusal(`the workbook has no name ${cell.carrier.name}, which tells where the cell ${cell.addr} of '${book0.sheets[k].name}' went: ${OPEN_KEPT}`, 'carriers')
+      if (!n) throw new KeptRefusal({ key: 'keptNoCellCarrier', name: cell.carrier.name, cell: cell.addr, sheet: book0.sheets[k].name }, 'carriers')
       const area = areasOf(n.ref)?.[0]
       const at = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(book1.sheets[j].name) ? formatAddress(area.rect.r1, area.rect.c1) : undefined
       if (at === cell.addr) continue
@@ -154,7 +168,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     if (item.on !== undefined && !out.target.has(item.on)) continue
     const now = item.carriers.map((x) => {
       const n = names.get(caseKey(x.name))
-      if (!n) throw new KeptRefusal(`the workbook has no name ${x.name}, which holds a reference of ${item.what}: ${OPEN_KEPT}`, 'carriers')
+      if (!n) throw new KeptRefusal({ key: 'keptNoPartCarrier', name: x.name, what: item.what }, 'carriers')
       return n.ref
     })
     if (item.carriers.every((x, k) => compared(now[k], x.kind) === compared(x.ref, x.kind))) continue
@@ -170,13 +184,13 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     const was = k < 0 ? undefined : book0.sheets[k].tables!.find((t) => caseKey(t.name) === caseKey(b.name))!
     const j = k < 0 ? undefined : out.target.get(k)
     const now = was && j !== undefined ? book1.sheets[j].tables?.find((t) => t.range === was.range && !book0.sheets[k].tables!.some((x) => caseKey(x.name) === caseKey(t.name))) : undefined
-    if (!now) throw new KeptRefusal(`${b.what} is the table or name ${b.name}, which the workbook no longer has`, 'deleted')
+    if (!now) throw new KeptRefusal({ key: 'keptSourceGone', what: b.what, name: b.name }, 'deleted')
     out.edits.push({ part: b.part, start: b.at[0], end: b.at[1], text: escapeAttr(now.name) })
   }
   // formulas read a link by its number: the file's links keep theirs, a new one comes after them
   const [l0, l1] = [book0.externalBooks ?? [], book1.externalBooks ?? []]
   if (l1.length < l0.length || l0.some((b, i) => b.target !== l1[i].target))
-    throw new KeptRefusal("a link to another workbook was removed, moved or pointed at another file, which the file's formulas would read by another number", 'links')
+    throw new KeptRefusal({ key: 'keptLinks' }, 'links')
   return out
 }
 

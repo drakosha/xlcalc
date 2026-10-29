@@ -10,7 +10,7 @@ export const DEFAULT_LOCALE = 'en-US'
 
 /**
  * The package's locales: en-US in the root, each other one the module `xlcalc/locales/<tag>`, which exports it by its tag
- * without the hyphen (`ruRU`). A thread of the pool imports the same modules (`worker/locales.ts`).
+ * without the hyphen (`ruRU`). A thread of the pool imports the same modules (`modules.ts`).
  */
 export const PACKAGE_LOCALES: readonly string[] = ['en-US', 'ru-RU']
 

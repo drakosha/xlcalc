@@ -3,7 +3,7 @@
  * a host does (`registerLocale`). The tests of a locale not loaded do not import it, and the tests of en-US need it not.
  */
 import { registerLocale, type Locale } from '../src/index.js'
-import { LOCALE_MODULES } from '../src/worker/locales.js'
+import { LOCALE_MODULES } from '../src/locale/modules.js'
 
 export { ruRU } from '../src/locales/ru-RU.js'
 

@@ -118,14 +118,14 @@ describe('xlsx reader: names', () => {
 })
 
 describe('xlsx reader: the workbook and the sheet around the cells', () => {
-  it('calculation settings the book does not keep, protection, links and macros are reported', async () => {
+  it('the manual calculation option is kept; protection, links and macros are reported', async () => {
     const r = await read({
       sheets: [{ name: 'S', body: one(1) }],
       workbook: { before: '<workbookProtection lockStructure="1"/>', after: '<calcPr iterate="1" calcMode="manual" fullCalcOnLoad="1"/><externalReferences><externalReference r:id="rIdX"/></externalReferences>' },
       parts: { 'xl/externalLinks/externalLink1.xml': '<externalLink/>' },
     })
-    expect(r.book.iteration).toEqual({})
-    expect(codes(r.issues)).toEqual(['calculation', 'protection', 'externalLink'])
+    expect([r.book.iteration, r.book.calculation]).toEqual([{}, 'manual'])
+    expect(codes(r.issues)).toEqual(['protection', 'externalLink'])
   })
 
   it('iterative calculation with its count and change; settings out of range read as the defaults and reported; precision as displayed reported', async () => {
@@ -142,7 +142,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     })
     expect(await calc('calcMode="autoNoTable" fullPrecision="0"')).toEqual({
       iteration: undefined,
-      issues: ['the calculation mode "automatic except for data tables" is not kept', 'the engine does not support precision as displayed: values keep their full precision'],
+      issues: ['the engine does not support precision as displayed: values keep their full precision'],
     })
   })
 

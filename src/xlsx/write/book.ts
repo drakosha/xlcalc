@@ -124,10 +124,12 @@ function definedNames(book: BookInput, issues: Issues, names: FileNames): string
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }
 
-/** Iterative calculation as `calcPr`'s attributes; what the book leaves out is Excel's default (100 rounds, a change of 0.001). */
-export function iterationAttrs(it: BookInput['iteration']): string {
-  if (!it) return ''
-  return ' iterate="1"' + (it.maxIterations !== undefined ? ` iterateCount="${it.maxIterations}"` : '') + (it.maxChange !== undefined ? ` iterateDelta="${it.maxChange}"` : '')
+/** The calculation option and iterative calculation as `calcPr`'s attributes; what the book leaves out is Excel's default (automatic, 100 rounds, a change of 0.001). */
+export function calcAttrs(book: Pick<BookInput, 'iteration' | 'calculation'>): string {
+  const it = book.iteration
+  const mode = book.calculation ? ` calcMode="${book.calculation}"` : ''
+  if (!it) return mode
+  return mode + ' iterate="1"' + (it.maxIterations !== undefined ? ` iterateCount="${it.maxIterations}"` : '') + (it.maxChange !== undefined ? ` iterateDelta="${it.maxChange}"` : '')
 }
 
 /** What each sheet of a book is written with: the names its formulas may use, the table of a cell, the filtered sheets' tables that hold their filters, the active sheet and the date system's day 0. */
@@ -254,7 +256,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   })
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
-  const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
+  const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
   files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })

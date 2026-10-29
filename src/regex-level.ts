@@ -1,7 +1,7 @@
 /**
  * The matcher of match mode 3's regular expressions (`XLOOKUP`, `XMATCH`): JavaScript's own over the pattern as
  * `rewrite` gives it, or the level of `xlcalc/regex` that `registerRegex` loaded (the full translation, or the PCRE2
- * engine). A pool's threads load the same level (`worker/locales.ts`).
+ * engine). A pool's threads load the same level (`worker/thread.ts`).
  */
 import type { RegexLevel } from './contract.js'
 import { rewrite } from './functions/lookup/regex-syntax.js'

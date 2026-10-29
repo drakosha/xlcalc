@@ -51,7 +51,9 @@ const FORMULAS = new Set(['formula', 'formula1', 'formula2', 'ref'])
 function formulas(v: unknown): unknown {
   if (Array.isArray(v)) return v.map(formulas)
   if (v === null || typeof v !== 'object') return v
-  return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, typeof x === 'string' && FORMULAS.has(k) ? canon(x) : k === 'formulas' && Array.isArray(x) ? x.map(canon) : formulas(x)]))
+  // a rule's threshold (a value beside its type) is a formula too
+  const formula = (k: string) => FORMULAS.has(k) || (k === 'value' && 'type' in v)
+  return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, typeof x === 'string' && formula(k) ? canon(x) : k === 'formulas' && Array.isArray(x) ? x.map(canon) : formulas(x)]))
 }
 
 /**

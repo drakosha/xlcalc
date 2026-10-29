@@ -18,6 +18,7 @@ import { MAIN } from '../write/xml.js'
 import { attributes } from '../xml/scan.js'
 import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
+import { VIEW_FLAGS } from '../view.js'
 import { KeptRefusal, type Moved } from './refusals.js'
 import type { Formats } from './formats.js'
 import type { KeptStyles } from './styles.js'
@@ -462,7 +463,7 @@ export function spliceSheet(x: SpliceInput): Spliced {
   if (p0.sheetPr !== p1.sheetPr) {
     changed = true
     const e = own('sheetPr')
-    put('sheetPr', e ? sheetPr(e.text, p1.sheetPr) : p1.sheetPr)
+    put('sheetPr', e ? sheetPr(e.text, p0.sheetPr, p1.sheetPr) : p1.sheetPr)
   }
   if (p0.views !== p1.views) {
     changed = true
@@ -547,9 +548,9 @@ function rootTag(tag: string, qname: string): string {
   const a = attributes(tag.slice(qname.length + 1))
   const add: Record<string, string> = {}
   if (a.xmlns === undefined) add.xmlns = MAIN
-  else if (a.xmlns !== MAIN) throw new KeptRefusal(`the worksheet's default namespace is ${a.xmlns}, not SpreadsheetML's`, 'file')
+  else if (a.xmlns !== MAIN) throw new KeptRefusal({ key: 'keptNamespace', namespace: a.xmlns }, 'file')
   if (a['xmlns:r'] === undefined) add['xmlns:r'] = DOC_REL
-  else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal(`the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`, 'file')
+  else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal({ key: 'keptRelPrefix', namespace: a['xmlns:r'] }, 'file')
   return Object.keys(add).length ? setAttrs(tag, add) : tag
 }
 
@@ -560,8 +561,14 @@ function protectionOver(text: string, p: SheetProtection): string {
   return e.body ? `${opening(tag)}${e.body}</${e.name}>` : closing(tag)
 }
 
-/** The file's `<sheetPr>` with the model's filter mode and outline settings. */
-function sheetPr(text: string, model: string): string {
+/** The tab colour of a writer's `<sheetPr>`. */
+const tabOf = (text: string) => /<tabColor[^>]*\/>/.exec(text)?.[0]
+
+/**
+ * The file's `<sheetPr>` with the model's filter mode and outline settings, and its tab colour where the model's
+ * changed (`was` and `model`, the writer's of the book read and written).
+ */
+function sheetPr(text: string, was: string, model: string): string {
   const e = split(text)
   const tag = attrsFrom(e.tag, model, ['filterMode'])
   const mine = /<outlinePr[^>]*\/>/.exec(model)?.[0] ?? '<outlinePr/>'
@@ -572,6 +579,12 @@ function sheetPr(text: string, model: string): string {
     // after the tab colour, the first of the children
     const tab = find(body, 'tabColor')
     body = tab ? body.slice(0, tab.end) + mine + body.slice(tab.end) : mine + body
+  }
+  const color = tabOf(model)
+  if (tabOf(was) !== color) {
+    // the first of the children
+    const tab = find(body, 'tabColor')
+    body = (color ?? '') + (tab ? body.slice(0, tab.start) + body.slice(tab.end) : body)
   }
   return body ? `${opening(tag)}${body}</${e.name}>` : closing(tag)
 }
@@ -586,7 +599,7 @@ function views(text: string, was: string, model: string): string {
   const mine = find(model, 'sheetView', tagEnd(model, 0))
   const before = find(was, 'sheetView', tagEnd(was, 0))
   if (!first || !mine || !before) return model
-  const tag = attrsFrom(text.slice(first.start, first.open), model.slice(mine.start, mine.open), ['tabSelected', 'topLeftCell', 'zoomScale'])
+  const tag = attrsFrom(text.slice(first.start, first.open), model.slice(mine.start, mine.open), ['tabSelected', 'topLeftCell', 'zoomScale', ...VIEW_FLAGS.map(([, attr]) => attr)])
   const body = split(model.slice(mine.start, mine.end)).body
   const view =
     body === split(was.slice(before.start, before.end)).body

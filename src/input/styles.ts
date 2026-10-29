@@ -84,11 +84,12 @@ export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
   if (given(s, 'alignment')) {
     const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
-    onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])
+    onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent', 'rotation'])
     if (given(a, 'horizontal')) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, HORIZONTAL)
     if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, VERTICAL)
     if (given(a, 'wrap')) checkBoolean(a.wrap, `${p}.alignment.wrap`)
     if (given(a, 'indent')) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
+    if (given(a, 'rotation') && a.rotation !== 'vertical') checkNumber(a.rotation, `${p}.alignment.rotation`, -90, 90, true)
   }
   if (given(s, 'protection')) {
     const pr = object(s.protection, `${p}.protection`, 'a protection such as { locked: false }')

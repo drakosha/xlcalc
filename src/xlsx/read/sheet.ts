@@ -30,6 +30,7 @@ import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
 import { readSheetView } from '../view.js'
 import { readProtection } from '../protection.js'
+import { colorOf } from '../styles/color.js'
 
 export interface SheetSource {
   name: string
@@ -434,5 +435,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (validations) sheet.validations = validations
   const settings = outline(head, name, ctx.issues)
   if (settings) sheet.outline = settings
+  const tab = colorOf(element(element(head, 'sheetPr')?.body ?? '', 'tabColor'), src.cond.palette)
+  if (tab) sheet.tabColor = tab
   return { sheet, cached: read.cached }
 }

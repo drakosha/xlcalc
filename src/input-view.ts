@@ -1,11 +1,12 @@
 /** Saved view metadata checked at the book boundary; it does not enter computation. */
 import { InputError } from './input-error.js'
-import { array, checkNumber, object, onlyKeys } from './input/basic.js'
+import { array, checkBoolean, checkNumber, object, onlyKeys } from './input/basic.js'
 import { checkAddress } from './input/range.js'
 
 export function checkSheetView(v: unknown, path: string): void {
   const view = object(v, path, 'a sheet view such as { activeCell: "B2", zoom: 125 }')
-  onlyKeys(view, path, ['activeCell', 'selection', 'topLeft', 'zoom'])
+  onlyKeys(view, path, ['activeCell', 'selection', 'topLeft', 'zoom', 'gridlines', 'headings'])
+  for (const field of ['gridlines', 'headings']) if (view[field] !== undefined) checkBoolean(view[field], `${path}.${field}`)
   for (const field of ['activeCell', 'topLeft']) if (view[field] !== undefined) checkAddress(view[field], `${path}.${field}`)
   if (view.zoom !== undefined) checkNumber(view.zoom, `${path}.zoom`, 10, 400, true)
   if (view.selection !== undefined) {

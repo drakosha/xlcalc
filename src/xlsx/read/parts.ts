@@ -118,8 +118,9 @@ function threads(src: PartsSource, placed: Map<string, string>, issues: Issues):
 }
 
 /**
- * Notes by cell from the comments part; formatted text is read as its plain text, a note always shown as one shown on
- * hover. Excel's placeholder notes of the threads, which the threads take the place of, are left out.
+ * Notes by cell from the comments part; formatted text is read as its plain text, and a note its VML shape shows all
+ * the time (`<x:Visible/>`) is `shown`. Excel's placeholder notes of the threads, which the threads take the place of,
+ * are left out.
  */
 function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>, issues: Issues): Map<string, CellNote> {
   const out = new Map<string, CellNote>()
@@ -128,7 +129,7 @@ function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>
     if (c.formatted) issues.add('comment', { key: 'noteFormatted' }, { sheet: src.sheet, cell: c.cell })
     out.set(c.cell, c.author ? { author: c.author, text: c.text } : { text: c.text })
   }
-  // the VML drawing shows the notes; one shown all the time is read as one shown on hover
+  // the VML drawing shows the notes, some all the time
   for (const shape of elements(src.vml ?? '', 'shape')) {
     const data = element(shape.body ?? '', 'ClientData')
     if (!data) continue
@@ -140,7 +141,8 @@ function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>
     if (!has(data.body ?? '', 'Visible')) continue
     const [row, col] = ['Row', 'Column'].map((k) => Number(element(data.body ?? '', k)?.body))
     const cell = Number.isInteger(row) && Number.isInteger(col) && row >= 0 && col >= 0 ? formatAddress(row, col) : undefined
-    if (cell && !threads.has(cell)) issues.add('comment', { key: 'noteShown' }, { sheet: src.sheet, cell })
+    const note = cell === undefined ? undefined : out.get(cell)
+    if (note) note.shown = true
   }
   return out
 }
