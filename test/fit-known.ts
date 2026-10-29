@@ -37,6 +37,7 @@ export const FIT_KNOWN: ReadonlyMap<string, FitReason> = new Map([
   ...cases('advances', {
     'en-US:glyphs': ['94', '103', '107', '109', '118', '121', '122', '123', '128', '129', '130', '131', '134', '137', '142', '143', '147', '148', '150'].map((n) => `many-${n}`),
     'en-US:held': ['text-7'],
+    'en-US:rotation-held': ['script-3'],
     'ru-RU:autofit': ['format-18'],
     'ru-RU:held': ['text-7'],
   }),

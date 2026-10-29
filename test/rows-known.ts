@@ -13,6 +13,8 @@ export const ROWS_REASONS = {
     'wrapped text turned: Excel wraps text turned by 90 degrees at the height the row had (409.5 points as the book opened, 401 after AutoFit) and gives wrapped letters one above the other two points more; the engine fits wrapped text turned up or down to nothing and its letters by its longest line',
   patchedEmpty:
     "a font size set on whole columns: Excel fits every row of the sheet to the font, those without a cell too, and saves none of them; the engine fits the rows that hold a cell, as a height over every row would be written into the file row by row",
+  emptyTurned:
+    'empty text turned by 30 degrees in Calibri 16: Excel for Mac fitted the row to 23 points as the book opened and to 29 on AutoFit, the engine fits text of no width (21), as Excel does for empty text at 45 and 90 degrees',
 } as const
 
 export type RowsReason = keyof typeof ROWS_REASONS
@@ -23,7 +25,8 @@ export const ROWS_KNOWN: ReadonlyMap<string, RowsReason> = new Map([
   ...cases('formulaText', { 'en-US:held': ['typed-2'], 'ru-RU:held': ['typed-2'], 'en-US:keys': ['keys-7'], 'en-US:quotes': ['paste-12'] }),
   ...cases('macDate', { 'en-US:rotation': ['value-2', 'value-6'] }),
   ...cases('turnedWrap', { 'en-US:rotation': ['wrap-2', 'wrap-3', 'wrap-7', 'wrap-10'] }),
-  ...cases('patchedEmpty', { 'en-US:patched': ['size-1', 'size-2', 'size-3', 'size-4'] }),
+  ...cases('patchedEmpty', { 'en-US:patched': ['size-1', 'size-2', 'size-3', 'size-4'], 'en-US:patched-held': ['size-2'] }),
+  ...cases('emptyTurned', { 'en-US:rotation-held': ['blank-2'] }),
 ])
 
 /** Against Excel for Windows, the cells alone. */

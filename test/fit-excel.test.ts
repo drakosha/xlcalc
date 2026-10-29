@@ -35,6 +35,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:held': 76,
   'en-US:rotation': 14,
   'en-US:rotation-2': 3,
+  'en-US:rotation-held': 73,
   'ru-RU:held': 74,
 }
 
