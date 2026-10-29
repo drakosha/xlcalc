@@ -42,10 +42,14 @@ export interface Snapshot {
   revision?: number
 }
 
-/** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
+/** To a thread. A thread runs one task at a time; `cancel` may come while it runs, and is read between its steps. */
 export type ToThread =
-  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those loaded but en-US; `regex`: the kind of match mode 3's registered level. */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind'] }
+  /**
+   * `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those
+   * loaded but en-US; `regex`: the kind of match mode 3's registered level; `cancelled`: shared memory where the pool
+   * writes the task it cancels, which the thread reads inside a formula.
+   */
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; cancelled?: Int32Array }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
   /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
