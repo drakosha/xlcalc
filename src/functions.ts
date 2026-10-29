@@ -5,6 +5,7 @@
  */
 import { specOf, type FnDef, type FunctionSpec } from './args.js'
 import { SYNTAX, useArities } from './arity.js'
+import { functions as connections } from './functions/connections.js'
 import { functions as database } from './functions/database.js'
 import { functions as date } from './functions/date.js'
 import { functions as engineering } from './functions/engineering.js'
@@ -21,7 +22,7 @@ import { functions as text } from './functions/text.js'
 export type { FunctionSpec } from './args.js'
 export { isFunction, SYNTAX } from './arity.js'
 
-const CATEGORIES = { database, date, engineering, financial, information, logical, lookup, math, statistical, text }
+const CATEGORIES = { connections, database, date, engineering, financial, information, logical, lookup, math, statistical, text }
 
 /**
  * The former Analysis ToolPak's functions, with NETWORKDAYS.INTL and WORKDAY.INTL. Excel 365 takes an argument

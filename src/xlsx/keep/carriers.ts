@@ -152,7 +152,7 @@ const RUNS = /<(?:[\w.-]+:)?(?:r|rPh)[\s>]/
 /** A cell of a sheet's XML: its attributes and content. */
 const CELL_XML = /<(?:[\w.-]+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?c>)/g
 /** The rich values of errors the writer writes itself (`write/book.ts`). */
-const OWN_ERRORS = new Set(['#SPILL!', '#CALC!'])
+const OWN_ERRORS = new Set(['#SPILL!', '#CALC!', '#CONNECT!', '#BLOCKED!', '#GETTING_DATA'])
 
 /** Rows taken below an anchor to tell where it lands when its rows are deleted, and columns beside it. */
 const BELOW = 100_000

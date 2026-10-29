@@ -70,5 +70,8 @@ const CASES: [string, string, Val][] = [
   ['ECMA.CEILING', 'ECMA.CEILING(-4.3,2)', n(-4)],
 ]
 
+/** The predictions Excel for Windows answered otherwise: the cube functions are #N/A, IMAGE #BLOCKED!, and TRANSLATE and DETECTLANGUAGE unknown (#NAME?) in 16.0.20430. */
+export const MISSED = ['CUBEMEMBER#1', 'CUBEMEMBER#2', 'CUBEMEMBER#4', 'CUBEVALUE#1', 'CUBEVALUE#2', 'CUBEVALUE#4', 'CUBESET#1', 'CUBESET#2', 'CUBESET#3', 'CUBESETCOUNT#1', 'CUBESETCOUNT#2', 'CUBESETCOUNT#3', 'CUBERANKEDMEMBER#1', 'CUBERANKEDMEMBER#2', 'CUBEMEMBERPROPERTY#1', 'CUBEKPIMEMBER#1', 'CUBEKPIMEMBER#2', 'IMAGE#1', 'TRANSLATE#1', 'TRANSLATE#2', 'DETECTLANGUAGE#1', 'DETECTLANGUAGE#2']
+
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)

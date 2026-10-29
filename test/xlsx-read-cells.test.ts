@@ -72,11 +72,11 @@ describe('xlsx reader: cells', () => {
     expect(codes(r.issues)).toEqual(['richText A1 B1 D1'])
   })
 
-  it('an error typed into a cell is read as a formula of that error; an error the model has no code for is reported', async () => {
+  it('an error typed into a cell is read as a formula of that error; one no formula writes is reported, a formula value that is a connection error is read', async () => {
     const r = await sheet('<row r="1"><c r="A1" t="e"><v>#N/A</v></c><c r="B1" t="e"><v>#NULL!</v></c><c r="C1" t="e"><v>#GETTING_DATA</v></c><c r="D1" t="e"><f>X()</f><v>#BLOCKED!</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '#N/A' }, B1: { formula: '#NULL!' }, D1: { formula: 'X()' } })
-    expect(storedValues(r)).toEqual({ A1: { error: 'NA' }, B1: { error: 'NULL' }, D1: { error: 'ERROR' } })
-    expect(codes(r.issues)).toEqual(['errorValue C1', 'errorValue D1', 'errorConstant A1 B1'])
+    expect(storedValues(r)).toEqual({ A1: { error: 'NA' }, B1: { error: 'NULL' }, D1: { error: 'BLOCKED' } })
+    expect(codes(r.issues)).toEqual(['errorValue C1', 'errorConstant A1 B1'])
   })
 
   it('numbers stay numbers whatever their format; a built-in format is read by its number', async () => {

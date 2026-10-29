@@ -44,5 +44,8 @@ const CASES: [string, string, Val][] = [
   ['ENCODEURL', 'ENCODEURL({"a b","c"})', e('SPILL')],
 ]
 
+/** The prediction Excel for Windows answered otherwise: it writes `~` as %7E. */
+export const MISSED = ['ENCODEURL#3']
+
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)

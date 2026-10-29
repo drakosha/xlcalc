@@ -1,0 +1,287 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "ENCODEURL#1",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"a b\")"
+  },
+  {
+   "id": "ENCODEURL#2",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"!*'();:@&=+$,/?#[]\")"
+  },
+  {
+   "id": "ENCODEURL#3",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"~-_.\")"
+  },
+  {
+   "id": "ENCODEURL#4",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"%\")"
+  },
+  {
+   "id": "ENCODEURL#5",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"é\")"
+  },
+  {
+   "id": "ENCODEURL#6",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"中文\")"
+  },
+  {
+   "id": "ENCODEURL#7",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"Ünïcödé\")"
+  },
+  {
+   "id": "ENCODEURL#8",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"ÿ\")"
+  },
+  {
+   "id": "ENCODEURL#9",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"a\"\"b\")"
+  },
+  {
+   "id": "ENCODEURL#10",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"\")"
+  },
+  {
+   "id": "ENCODEURL#11",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(\"ABCxyz019\")"
+  },
+  {
+   "id": "ENCODEURL#12",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(1.5)"
+  },
+  {
+   "id": "ENCODEURL#13",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(TRUE)"
+  },
+  {
+   "id": "ENCODEURL#14",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(1E+21)"
+  },
+  {
+   "id": "ENCODEURL#15",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(NA())"
+  },
+  {
+   "id": "ENCODEURL#16",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(_xlfn.UNICHAR(128512))"
+  },
+  {
+   "id": "ENCODEURL#17",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(CHAR(10)&CHAR(9))"
+  },
+  {
+   "id": "ENCODEURL#18",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(MID(_xlfn.UNICHAR(128512),1,1))"
+  },
+  {
+   "id": "ENCODEURL#19",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(MID(_xlfn.UNICHAR(128512),2,1))"
+  },
+  {
+   "id": "ENCODEURL#20",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(W!A1)"
+  },
+  {
+   "id": "ENCODEURL#21",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL(W!A2)"
+  },
+  {
+   "id": "ENCODEURL#22",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "LEN(_xlfn.ENCODEURL(REPT(\"a\",2048)))"
+  },
+  {
+   "id": "ENCODEURL#23",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "LEN(_xlfn.ENCODEURL(REPT(\"a\",2049)))"
+  },
+  {
+   "id": "ENCODEURL#24",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "LEN(_xlfn.ENCODEURL(REPT(\"é\",5461)))"
+  },
+  {
+   "id": "ENCODEURL#25",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "LEN(_xlfn.ENCODEURL(REPT(\"é\",5462)))"
+  },
+  {
+   "id": "ENCODEURL#26",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "LEN(_xlfn.ENCODEURL(REPT(\" \",10923)))"
+  },
+  {
+   "id": "ENCODEURL#27",
+   "group": "ENCODEURL",
+   "fn": "ENCODEURL",
+   "formula": "_xlfn.ENCODEURL({\"a b\",\"c\"})"
+  }
+ ],
+ "values": {
+  "ENCODEURL#1": {
+   "t": "s",
+   "v": "a%20b"
+  },
+  "ENCODEURL#2": {
+   "t": "s",
+   "v": "%21%2A%27%28%29%3B%3A%40%26%3D%2B%24%2C%2F%3F%23%5B%5D"
+  },
+  "ENCODEURL#3": {
+   "t": "s",
+   "v": "%7E-_."
+  },
+  "ENCODEURL#4": {
+   "t": "s",
+   "v": "%25"
+  },
+  "ENCODEURL#5": {
+   "t": "s",
+   "v": "%C3%A9"
+  },
+  "ENCODEURL#6": {
+   "t": "s",
+   "v": "%E4%B8%AD%E6%96%87"
+  },
+  "ENCODEURL#7": {
+   "t": "s",
+   "v": "%C3%9Cn%C3%AFc%C3%B6d%C3%A9"
+  },
+  "ENCODEURL#8": {
+   "t": "s",
+   "v": "%C3%BF"
+  },
+  "ENCODEURL#9": {
+   "t": "s",
+   "v": "a%22b"
+  },
+  "ENCODEURL#10": {
+   "t": "s",
+   "v": ""
+  },
+  "ENCODEURL#11": {
+   "t": "s",
+   "v": "ABCxyz019"
+  },
+  "ENCODEURL#12": {
+   "t": "s",
+   "v": "1.5"
+  },
+  "ENCODEURL#13": {
+   "t": "s",
+   "v": "TRUE"
+  },
+  "ENCODEURL#14": {
+   "t": "s",
+   "v": "1E%2B21"
+  },
+  "ENCODEURL#15": {
+   "t": "e",
+   "v": "NA"
+  },
+  "ENCODEURL#16": {
+   "t": "s",
+   "v": "%F0%9F%98%80"
+  },
+  "ENCODEURL#17": {
+   "t": "s",
+   "v": "%0A%09"
+  },
+  "ENCODEURL#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ENCODEURL#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ENCODEURL#20": {
+   "t": "s",
+   "v": "x%20y"
+  },
+  "ENCODEURL#21": {
+   "t": "s",
+   "v": "42"
+  },
+  "ENCODEURL#22": {
+   "t": "n",
+   "v": 2048
+  },
+  "ENCODEURL#23": {
+   "t": "n",
+   "v": 2049
+  },
+  "ENCODEURL#24": {
+   "t": "n",
+   "v": 32766
+  },
+  "ENCODEURL#25": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ENCODEURL#26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ENCODEURL#27": {
+   "t": "e",
+   "v": "SPILL"
+  }
+ }
+}

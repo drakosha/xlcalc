@@ -1,7 +1,7 @@
 /**
  * ASC, DBCS, JIS and PHONETIC held out: full-width and half-width forms both ways (ASCII, the space, katakana with
  * their sound marks, the signs of U+FFE0–U+FFE6, characters with no other form), numbers, booleans, errors and cells;
- * PHONETIC of cells without readings (the workbook keeps none), ranges, a union and values that are no reference.
+ * PHONETIC of cells without readings (the workbook keeps none), ranges and a union.
  * \`PREDICTED\` was committed before Excel ran the set.
  */
 import type { Val } from '../formulajs.js'
@@ -76,7 +76,7 @@ const CASES: [string, string, Val][] = [
   ['DBCS', 'DBCS(NA())', e('NA')],
   ['DBCS', 'DBCS(W!A1)', s("東京")],
   ['DBCS', 'LEN(DBCS(W!A6))', n(5)],
-  // PHONETIC: the cell's own text, joined over a range; values that are no reference
+  // PHONETIC: the cell's own text, joined over a range (Excel loads no PHONETIC of a value that is no reference)
   ['PHONETIC', 'PHONETIC(W!A1)', s("東京")],
   ['PHONETIC', 'PHONETIC(W!A2)', s("")],
   ['PHONETIC', 'PHONETIC(W!A3)', s("")],
@@ -86,12 +86,10 @@ const CASES: [string, string, Val][] = [
   ['PHONETIC', 'PHONETIC(W!A1:B2)', s("東京とうきょうｶﾅ")],
   ['PHONETIC', 'PHONETIC((W!A1,W!A2))', e('VALUE')],
   ['PHONETIC', 'PHONETIC(W!A6)', s("ｶﾞｷﾞ ab")],
-  ['PHONETIC', 'PHONETIC("abc")', e('NA')],
-  ['PHONETIC', 'PHONETIC(5)', e('NA')],
-  ['PHONETIC', 'PHONETIC(TRUE)', e('NA')],
-  ['PHONETIC', 'PHONETIC(NA())', e('NA')],
-  ['PHONETIC', 'PHONETIC({"a","b"})', e('NA')],
 ]
+
+/** The predictions Excel answered otherwise: in en-US both Excels give ASC's and DBCS's text as it is, know no JIS and give PHONETIC an error. */
+export const MISSED = ['ASC#1', 'ASC#2', 'ASC#3', 'ASC#4', 'ASC#6', 'ASC#7', 'ASC#8', 'ASC#9', 'ASC#10', 'ASC#11', 'DBCS#1', 'DBCS#2', 'DBCS#3', 'DBCS#4', 'DBCS#5', 'DBCS#6', 'DBCS#7', 'DBCS#8', 'DBCS#10', 'DBCS#11', 'DBCS#12', 'JIS#1', 'JIS#2', 'JIS#3', 'JIS#4', 'JIS#5', 'JIS#6', 'JIS#7', 'JIS#8', 'JIS#9', 'JIS#10', 'JIS#11', 'JIS#12', 'JIS#13', 'JIS#14', 'JIS#15', 'JIS#16', 'JIS#17', 'JIS#18', 'JIS#19', 'DBCS#15', 'DBCS#16', 'DBCS#19', 'PHONETIC#1', 'PHONETIC#2', 'PHONETIC#3', 'PHONETIC#4', 'PHONETIC#5', 'PHONETIC#6', 'PHONETIC#7', 'PHONETIC#8', 'PHONETIC#9']
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)

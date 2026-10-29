@@ -34,8 +34,9 @@ describe('case sets predicted before Excel ran them', async () => {
     const mod = (await import(`../bench/coverage/${dir}/${name}.ts`)) as { PREDICTED: Readonly<Record<string, Val>>; MISSED?: readonly string[] }
     const set = dir === 'sets' ? (STORED_SETS.find((s) => s.name === name) ?? winSet(name)) : legacySet(name)
     it.skipIf(!set)(`${name}: the predictions Excel did not confirm are the ones in MISSED`, () => {
+      // a case Excel for Windows did not take has no answer (WIN_REJECTED)
       const missed = Object.entries(mod.PREDICTED)
-        .filter(([id, v]) => !matches(set!.cases.find((c) => c.id === id)?.fn, set!.values[id], v))
+        .filter(([id, v]) => set!.values[id] !== undefined && !matches(set!.cases.find((c) => c.id === id)?.fn, set!.values[id], v))
         .map(([id, v]) => `${id}: predicted ${show(v)}, Excel ${show(set!.values[id])}`)
       expect(missed.map((m) => m.slice(0, m.indexOf(': predicted')))).toEqual([...(mod.MISSED ?? [])])
       expect(Object.keys(mod.PREDICTED).length).toBeGreaterThan(0)
