@@ -147,12 +147,11 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
 const LAID = new WeakMap<Style, Style>()
 
 /**
- * The points of the column AutoFit gives a cell (`test/excel/fit/`): its text as `fitText` measures it, a padding `_x` as
- * wide as `x` and a `?` with no digit as a digit; General at its full length, each character a digit and a leading minus
- * by its width, two points past the padding, a scientific form with the padding alone. Null when the cell shows nothing:
- * a blank, empty text, a number its section cannot show (`#` in any width).
+ * The text AutoFit lays out of a cell (`Style.layout`: paddings, fills and blanks marked), and whether it is a number in
+ * General at its full length, sign first. Null when the cell shows nothing: a blank, empty text, a number its section
+ * cannot show (`#` in any width).
  */
-export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
+export function fitLaid(value: CellValue, format: NumberFormat | undefined, style: Style): { text: string; general: boolean } | null {
   if (value === null) return null
   let laid = LAID.get(style)
   if (!laid) LAID.set(style, (laid = { ...style, layout: true }))
@@ -165,14 +164,24 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
     text = sec ? asText(sec, word, laid) : word
   } else {
     const chosen = byFormat(value, secs, laid)
-    if (chosen.general !== undefined) {
-      const g = style.general(Math.abs(chosen.general))
-      const w = (chosen.general < 0 ? glyph('-') : 0) + DIGIT * g.length
-      return g.includes('E') ? w + 5 : w + 7
-    }
+    if (chosen.general !== undefined) return { text: (chosen.general < 0 ? '-' : '') + style.general(Math.abs(chosen.general)), general: true }
     text = chosen.text
   }
-  return text ? fitText(text) : null
+  return text ? { text, general: false } : null
+}
+
+/**
+ * The points of the column AutoFit gives a cell (`test/excel/fit/`): its text (`fitLaid`) as `fitText` measures it, a
+ * padding `_x` as wide as `x` and a `?` with no digit as a digit; General at its full length, each character a digit and
+ * a leading minus by its width, two points past the padding, a scientific form with the padding alone. Null when the
+ * cell shows nothing.
+ */
+export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
+  const x = fitLaid(value, format, style)
+  if (!x?.general) return x && fitText(x.text)
+  const minus = x.text.startsWith('-')
+  const w = (minus ? glyph('-') : 0) + DIGIT * (x.text.length - (minus ? 1 : 0))
+  return x.text.includes('E') ? w + 5 : w + 7
 }
 
 /**
