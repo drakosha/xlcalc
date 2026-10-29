@@ -15,7 +15,6 @@ import { hiddenRows } from '../layout/hidden.js'
 import { checkArrayEdits } from '../spill/fixed.js'
 import { headerEdits } from '../tables/headers.js'
 import { checkTables } from '../tables/check.js'
-import { filterGrowth } from './autofilter.js'
 import { checkStylesUsed, applyLayout, inputAt } from './book.js'
 import { checkFieldEdits, resolveEdits } from './cells.js'
 import { clearPlan } from './clear.js'
@@ -188,9 +187,6 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
     }
   }
   checkArrayEdits(s, final)
-  // the AutoFilters the batch's cells fill the rows under grow with them, as the session's other calls grow them
-  const grown = filterGrowth(book, final, (name) => index(name)!)
-  if (grown.length) applyLayout(book, grown, (name) => index(name)!)
   const layout = new Map<number, SheetInput>()
   book.sheets.forEach((sh, i) => {
     const old = s.input.sheets[i]

@@ -30,7 +30,6 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
-import { filterGrowth, grownByOp } from './session/autofilter.js'
 import { pastedHeights, patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
@@ -358,24 +357,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * Cells' new inputs (checked) written, as `call`, over the sheets' looks of a plan set whole (`relook`): a table's
    * header cell typed over renames its column and the references to it, which builds the book again; a plan's sheets,
    * looks and style table (`plan`) go in first then, so that the rename rewrites the plan's rules too and one step takes
-   * all of it back. An AutoFilter the cells fill the rows under grows in the same step (`filterGrowth`), unless `grow`
-   * is false (a batch, whose plan grows it). The state after and what changed, and the way back.
+   * all of it back. The state after and what changed, and the way back.
    */
-  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], plan?: Pick<Plan, 'sheets' | 'styles' | 'layers'>, grow = true): Steps<[EngineState, Outcome, () => Step | null]> {
+  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], plan?: Pick<Plan, 'sheets' | 'styles' | 'layers'>): Steps<[EngineState, Outcome, () => Step | null]> {
     checkArrayEdits(s, edits)
     const laid = plan?.sheets.size || plan?.layers ? { ...s.input, sheets: s.input.sheets.map((x, i) => planned(x, i, plan)) } : s.input
     const renamed = headerEdits(laid, edits, (v, format) => headerText(s, v, format))
-    let written: [EngineState, Outcome, () => Step | null]
     if (renamed) {
       if (plan?.styles) renamed.styles = plan.styles
       const [next, out, diff] = yield* rebuild(s, renamed, [], true, history.on)
-      written = [next, plan?.styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
-    } else written = yield* lookCells(s, edits, plan, call)
-    const [next, out, back] = written
-    const filters = grow ? filterGrowth(next.input, edits, (name) => sheetIndex(next)(name)!) : []
-    if (!filters.length) return written
-    const steps = [back]
-    return [next, yield* fitted(next, filters, out, steps, call), () => manyStep(call, steps.map((f) => f()))]
+      return [next, plan?.styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
+    }
+    return yield* lookCells(s, edits, plan, call)
   }
   /** A session's sheet with a plan's lines and rules, and its looks set whole, if the plan has them. */
   const planned = (x: SheetInput, i: number, plan: Pick<Plan, 'sheets' | 'layers'>) => {
@@ -564,7 +557,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         outcome = { ...out, styles: plan.styles }
         back = () => diff && bookStep('applyChanges', diff, plan.book)
       } else {
-        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges', { sheets: new Map(), ...(plan.layers.size ? { layers: plan.layers } : {}) }, false)
+        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges', { sheets: new Map(), ...(plan.layers.size ? { layers: plan.layers } : {}) })
         next = built
         outcome = out
         const steps: (() => Step | null)[] = [cellsBack]
@@ -812,12 +805,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         keep(() => layoutStep('editStructure', before, next))
         return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(old, out) }
       }
-      // the simple way: the state is built again from the new book, with the AutoFilter a copy or a fill grows
+      // the simple way: the state is built again from the new book
       const before = old.sheetNames
-      const book = op.op === 'copyRange' || op.op === 'fillRange' ? grownByOp(r.book, op, (name) => sheetIndex(old)(name)!) : r.book
-      const [next, out, diff] = yield* rebuild(old, book, r.geometry, true, history.on)
+      const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, history.on)
       const moved = movesOf(r.geometry, before, next.sheetNames)
-      const steps = [() => (diff ? bookStep('editStructure', diff, book) : null)]
+      const steps = [() => (diff ? bookStep('editStructure', diff, r.book) : null)]
       // a copy that laid its looks fits the rows of its area that Excel keeps fitted to their fonts, as a patch of styles
       // does, in the same step (the paste set `fit`)
       const o = r.looked ? yield* fitted(next, pastedHeights(next, r.looked.s, r.looked.area), { ...out, moved }, steps, 'editStructure') : { ...out, moved }
