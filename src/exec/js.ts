@@ -58,8 +58,8 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
       const first = names
       names += count
       const v = (i: number) => `v${first + i}`
-      const body = build((i) => `${v(i)}()`, (i) => `(${v(i)}===OM)`)
-      return `LAM(${count},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body})`
+      const { body, height } = build((i) => `${v(i)}()`, (i) => `(${v(i)}===OM)`)
+      return `LAM(${count},${height},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body})`
     },
     invoke: (fn, args) => `CALL(${fn},[${args.join(',')}])`,
     recursive: (build) => {
@@ -89,6 +89,6 @@ export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T
     throw e
   }
   // a LAMBDA's calculation gets its parameters as the uses of LET's names read them
-  const LAM = (count: number, f: (...vals: (() => Arg)[]) => Arg) => lambdaOf(count, (args) => f(...given(args, count)))
+  const LAM = (count: number, height: number, f: (...vals: (() => Arg)[]) => Arg) => lambdaOf(count, height, (args) => f(...given(args, count)))
   return make({ ...rt, R, A, X, M: once, LAM, CALL: callValue, OM: OMITTED }) as T[]
 }

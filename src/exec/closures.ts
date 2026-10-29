@@ -39,11 +39,12 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
     while (e.scope !== scope) e = e.up!
     return e.vals
   }
-  const within = (e: Env | null, f: () => Arg): Arg => {
+  // `f` computed among the values of `e` (few frames: a deep recursion of LAMBDAs runs through it)
+  const inside = (e: Env, f: Fn, p: readonly Arg[] | undefined): Arg => {
     const outer = env
     env = e
     try {
-      return f()
+      return f(p)
     } finally {
       env = outer
     }
@@ -165,19 +166,20 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       return (p) => {
         const vals = new Array<() => Arg>(count)
         const e: Env = { scope, vals, up: env }
-        for (let i = 0; i < count; i++) vals[i] = once(() => within(e, () => values[i](p)))
-        return within(e, () => body(p))
+        for (let i = 0; i < count; i++) vals[i] = once(() => inside(e, values[i], p))
+        return inside(e, body, p)
       }
     },
     lambda: (count, build) => {
       const scope = {}
-      const body = build(
+      const { body, height } = build(
         (i) => () => find(scope)[i](),
         (i) => () => find(scope)[i] === OMITTED,
       )
       return (p) => {
         const up = env
-        return lambdaOf(count, (args) => within({ scope, vals: given(args, count), up }, () => body(p)))
+        // the call's parameters among the values around the LAMBDA where it was made
+        return lambdaOf(count, height, (args) => inside({ scope, vals: given(args, count), up }, body, p))
       }
     },
     invoke: (fn, args) => (p) => callValue(fn(p), args.map((a) => a(p))),

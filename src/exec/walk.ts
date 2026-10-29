@@ -99,9 +99,9 @@ export interface Backend<T> {
   let(count: number, build: (local: (i: number) => T) => { values: T[]; body: T }): T
   /**
    * A LAMBDA of `count` parameters: `build` gets the code of a use of its i-th parameter and of ISOMITTED of it, and gives
-   * the code of its calculation, computed at each call.
+   * the code of its calculation, computed at each call, and how deep that code nests (`lambdaOf`).
    */
-  lambda(count: number, build: (param: (i: number) => T, omitted: (i: number) => T) => T): T
+  lambda(count: number, build: (param: (i: number) => T, omitted: (i: number) => T) => { body: T; height: number }): T
   /** A call of a value as a function (`callValue`); an argument left out is `absent`. */
   invoke(fn: T, args: T[]): T
   /** A definition that calls itself (a defined name's LAMBDA): `build` gets the code that stands for it inside and gives its code. */
@@ -408,7 +408,16 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // a value that may be a reference, read as a value where one value goes
   const value = (code: T, n: Ast, rangeOk: boolean) => (!rangeOk && !many(n) ? b.read(code) : code)
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
+  // how deep the walk is in the formula and in the names it expands, and the deepest it went: a LAMBDA's calculation's height
+  let level = 0
+  let deepest = 0
   const go = (n: Ast, rangeOk = false): T => {
+    if (++level > deepest) deepest = level
+    const code = node(n, rangeOk)
+    level--
+    return code
+  }
+  const node = (n: Ast, rangeOk: boolean): T => {
     switch (n.k) {
       case 'num':
       case 'str':
@@ -556,7 +565,12 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             omits[x.slot] = omitted(i)
             bound[x.slot] = undefined
           })
-          return go(n.body, true)
+          const [from, outer] = [level, deepest]
+          deepest = level
+          const body = go(n.body, true)
+          const height = deepest - from
+          deepest = Math.max(outer, deepest)
+          return { body, height }
         })
       case 'call':
         return value(
