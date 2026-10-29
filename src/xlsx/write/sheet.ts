@@ -16,7 +16,7 @@
  * and columns carry their outline levels.
  */
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
-import { frozenScroll, sheetViewXml } from '../view.js'
+import { frozenScroll, sheetViewXml, splitXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
@@ -323,9 +323,10 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   }
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
-  // over frozen panes the scroll goes to the pane after the split: the view's top left cell is where they start
+  // over frozen panes the scroll goes to the pane after the split: the view's top left cell is where they start; frozen
+  // panes take the place of a split window
   const scroll = sheet.frozen && frozenScroll(sheet.view?.topLeft, sheet.frozen)
-  const pane = scroll ? paneXml(sheet.frozen, scroll.pane) : ''
+  const pane = scroll ? paneXml(sheet.frozen, scroll.pane) : splitXml(sheet.view?.split)
   const view = scroll && sheet.view ? { ...sheet.view, topLeft: scroll.view } : sheet.view
   const cond = conditionalXml(sheet, index, ctx)
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for

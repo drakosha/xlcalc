@@ -69,6 +69,18 @@ export class Column {
     if (r >= this.length) this.length = r + 1
   }
 
+  /** Whether a row from `r1` to `r2` holds a value (not null), read by its chunks: one never written is passed over. */
+  holds(r1: number, r2: number): boolean {
+    for (let k = r1 >> BITS; k <= r2 >> BITS && k < Math.max(this.dense.length, this.sparse.length); k++) {
+      const [lo, hi] = [k === r1 >> BITS ? r1 & MASK : 0, k === r2 >> BITS ? r2 & MASK : MASK]
+      const d = this.dense[k]
+      if (d !== undefined) {
+        for (let i = lo; i <= hi; i++) if (d[i] != null) return true
+      } else if (this.sparse[k]?.rows.some((row, j) => row >= lo && row <= hi && this.sparse[k]!.values[j] != null)) return true
+    }
+    return false
+  }
+
   /** Each row written, in order, with its value. */
   forEach(f: (v: V, r: number) => void): void {
     const n = Math.max(this.dense.length, this.sparse.length)

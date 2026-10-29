@@ -1,9 +1,10 @@
 /** Scalar aggregates over shared range prefixes, with unrounded sums and the original row-major order. */
 import type { Bounds } from './args.js'
 import { criterionMatcher, critKey, errorCrit, matches, parseCrit, type CritRules } from './criteria.js'
-import { canAllot } from './exec/budget.js'
+import { canAllot, spend } from './exec/budget.js'
 import { CompensatedSum, meanOf } from './functions/statistical/sum.js'
 import { readsClock } from './locale/rules/data.js'
+import { MAX_COLS } from './model.js'
 import { KEY_BYTES, POSITION_BYTES, RangeCache, VALUE_BYTES, type CacheBudget } from './range-cache.js'
 import { RangePrefixes } from './range-prefix.js'
 import type { Area } from './spill/state.js'
@@ -35,6 +36,22 @@ interface Count { count: number; seen: number }
 type Cell = (s: number, r: number, c: number) => V
 const CRITERIA = 64
 
+const NUMBERS = {
+  create: (): Partial => ({ sum: 0, before: 0, count: 0, filled: 0, min: Infinity, max: -Infinity }),
+  copy: (value: Partial) => ({ ...value }), bytes: 104,
+}
+const MEANS = {
+  create: (): Mean => ({ sum: new CompensatedSum(), plain: 0, before: 0, count: 0, first: 0, constant: true }),
+  copy: (value: Mean) => ({ ...value, sum: value.sum.copy() }), bytes: 144,
+}
+
+/** What SUBTOTAL and AGGREGATE skip in a range: its hidden rows (spans, ascending), the cells of `nested`, errors. */
+export interface Skipped {
+  spans: readonly (readonly [number, number])[]
+  nested?: ReadonlySet<number>
+  errors: boolean
+}
+
 function addNumber(result: Partial, value: V): void {
   if (value !== null) result.filled++
   if (typeof value === 'number') {
@@ -44,6 +61,21 @@ function addNumber(result: Partial, value: V): void {
     if (value < result.min) result.min = value
     if (value > result.max) result.max = value
   } else if (isErr(value)) result.error ??= value
+}
+
+function meanAnswer(result: Mean): V | undefined {
+  if (result.error) return result.error
+  if (!result.count) return E.DIV0
+  if (zeroed(result.before, result.plain)) return 0
+  const value = meanOf(result.sum, result.count, result.first, result.constant)
+  return value === undefined ? undefined : fitNumber(value)
+}
+
+function numbersAnswer(name: AggregateName, result: Partial): V {
+  if (name === 'COUNT') return result.count
+  if (name === 'COUNTA') return result.filled
+  if (result.error) return result.error
+  return fitNumber(name === 'SUM' ? nearZero(result.before, result.sum) : result.count === 0 ? 0 : name === 'MIN' ? result.min : result.max)
 }
 
 function addMean(result: Mean, value: V): void {
@@ -65,14 +97,8 @@ export class RangeAggregates {
 
   constructor(private readonly budget: CacheBudget) {
     this.queried = new RangeCache(budget)
-    this.numbers = new RangePrefixes<Partial>({
-      create: () => ({ sum: 0, before: 0, count: 0, filled: 0, min: Infinity, max: -Infinity }),
-      copy: (value: Partial) => ({ ...value }), bytes: 104,
-    }, budget)
-    this.means = new RangePrefixes<Mean>({
-      create: () => ({ sum: new CompensatedSum(), plain: 0, before: 0, count: 0, first: 0, constant: true }),
-      copy: (value: Mean) => ({ ...value, sum: value.sum.copy() }), bytes: 144,
-    }, budget)
+    this.numbers = new RangePrefixes<Partial>(NUMBERS, budget)
+    this.means = new RangePrefixes<Mean>(MEANS, budget)
   }
 
   invalidate(area: Area): void {
@@ -98,19 +124,34 @@ export class RangeAggregates {
 
   /** Undefined retains AVERAGE's existing exact fallback when the compensated sum overflows. */
   read(name: AggregateName, range: Rng, bounds: () => Bounds, cell: Cell): V | undefined {
-    if (name === 'AVERAGE') {
-      const result = this.means.read(range, bounds, cell, addMean)
-      if (result.error) return result.error
-      if (!result.count) return E.DIV0
-      if (zeroed(result.before, result.plain)) return 0
-      const value = meanOf(result.sum, result.count, result.first, result.constant)
-      return value === undefined ? undefined : fitNumber(value)
+    return name === 'AVERAGE' ? meanAnswer(this.means.read(range, bounds, cell, addMean)) : numbersAnswer(name, this.numbers.read(range, bounds, cell, addNumber))
+  }
+
+  /**
+   * As `read`, the cells `skip` names taken as blank, as SUBTOTAL and AGGREGATE skip them: folded once in the same
+   * row-major order, hidden rows passed over whole, nothing shared or kept, the range never made whole.
+   */
+  skipping(name: AggregateName, range: Rng, b: Bounds, cell: Cell, skip: Skipped): V | undefined {
+    const mean = name === 'AVERAGE'
+    const result = mean ? MEANS.create() : NUMBERS.create()
+    const { nested, errors } = skip
+    let k = 0
+    for (let r = range.r1; r <= b.r2; r++) {
+      while (k < skip.spans.length && skip.spans[k][1] < r) k++
+      if (k < skip.spans.length && skip.spans[k][0] <= r) {
+        r = skip.spans[k][1]
+        continue
+      }
+      if (((r - range.r1) & 255) === 0) spend(Math.min(256, b.r2 - r + 1) * b.w)
+      for (let c = b.c1; c <= b.c2; c++) {
+        if (nested?.has(r * MAX_COLS + c)) continue
+        const v = cell(range.s, r, c)
+        if (errors && isErr(v)) continue
+        if (mean) addMean(result as Mean, v)
+        else addNumber(result as Partial, v)
+      }
     }
-    const result = this.numbers.read(range, bounds, cell, addNumber)
-    if (name === 'COUNT') return result.count
-    if (name === 'COUNTA') return result.filled
-    if (result.error) return result.error
-    return fitNumber(name === 'SUM' ? nearZero(result.before, result.sum) : result.count === 0 ? 0 : name === 'MIN' ? result.min : result.max)
+    return mean ? meanAnswer(result as Mean) : numbersAnswer(name, result as Partial)
   }
 
   countIf(range: Rng, value: V, rules: CritRules, bounds: () => Bounds, cell: Cell): number | undefined {

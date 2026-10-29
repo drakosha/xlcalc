@@ -1,0 +1,70 @@
+{
+ "cases": {
+  "diagonal-1": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C8"
+   ],
+   "saved": "A1:C5"
+  },
+  "diagonal-2": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C8",
+    "A1:C9"
+   ],
+   "saved": "A1:C5"
+  },
+  "diagonal-3": {
+   "after": [
+    "A1:C6",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "island-1": {
+   "after": [
+    "A1:C9"
+   ],
+   "saved": "A1:C5"
+  },
+  "island-2": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "above-1": {
+   "after": [
+    "A2:C7"
+   ],
+   "saved": "A2:C6"
+  },
+  "above-2": {
+   "after": [
+    "A3:C10"
+   ],
+   "saved": "A3:C7"
+  },
+  "column-1": {
+   "after": [
+    "A1:C9"
+   ],
+   "saved": "A1:C5"
+  },
+  "column-2": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "column-3": {
+   "after": [
+    "B1:D9"
+   ],
+   "saved": "B1:D5"
+  }
+ }
+}

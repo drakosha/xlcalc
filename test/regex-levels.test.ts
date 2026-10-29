@@ -3,7 +3,7 @@
  * constructs rewritten), `pcreSyntax` and `pcreEngine` of `xlcalc/regex`, each against Excel's answers on the recorded
  * sets with its own known differences, registered in this order; a pool loads the registered level in its threads,
  * whether registered before the pool or after it; the engine's match limit is `#VALUE!` and `timeoutMs` stops a heavy
- * pattern in every kind of session, the calculator going on.
+ * pattern in every kind of session, the calculator going on, as `abort()` does inside it in a pool's thread.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, InputError, registerRegex, type BookInput, type CalcError } from '../src/index.js'
@@ -144,7 +144,7 @@ describe('pcreEngine', () => {
     const long = Object.entries(rows(2000, 'a'.repeat(18) + 'b')).map(([cell, input]) => ({ sheet: 'S', cell, input }))
     expect((await fails(s.setCells(long, { timeoutMs: 200 })))?.code).toBe('soft_timeout')
     expect((await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'aa' } }])).changes.find((c) => c.cell === 'B1')?.value).toBe(1)
-    // a signal is seen between formulas (docs/async.md): one aborted before the call stops it at once
+    // the platform's signal fires between formulas on the same thread (docs/async.md): one aborted before the call stops it at once
     expect((await fails(calc.compute(heavy, { signal: AbortSignal.abort() })))?.code).toBe('aborted')
     await s.close()
   }, 30_000)
@@ -154,6 +154,16 @@ describe('pcreEngine', () => {
     expect((await fails(early.compute(heavy, { timeoutMs: 200 })))?.code).toBe('soft_timeout')
     expect(performance.now() - t0).toBeLessThan(2000)
     expect((await fails(early.compute(heavy, { signal: AbortSignal.abort() })))?.code).toBe('aborted')
+    expect(b1(await early.compute(book('a*+b')))).toBe(1)
+  }, 30_000)
+
+  it("abort() stops it inside the formula in a pool's thread, without hardTimeoutMs, and the thread goes on", async () => {
+    const ac = new AbortController()
+    setTimeout(() => ac.abort('stop'), 50)
+    const t0 = performance.now()
+    const e = await fails(early.compute(heavy, { signal: ac.signal }))
+    expect([e?.code, e?.cause]).toEqual(['aborted', 'stop'])
+    expect(performance.now() - t0).toBeLessThan(500)
     expect(b1(await early.compute(book('a*+b')))).toBe(1)
   }, 30_000)
 })

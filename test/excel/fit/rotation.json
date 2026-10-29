@@ -1,0 +1,2214 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-29",
+  "seconds": 12.7
+ },
+ "cases": [
+  {
+   "id": "angle-1",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-2",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-3",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-4",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-5",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-6",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-7",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-8",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-9",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-10",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-11",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-12",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-13",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-14",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-15",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-16",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-17",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-18",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 75
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-19",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 89
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-20",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 89
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-21",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 89
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-22",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-23",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-24",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-25",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-26",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-27",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-28",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-29",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-30",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -15
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-31",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-32",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-33",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-34",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-35",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-36",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-37",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-38",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-39",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -60
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-40",
+   "cells": {
+    "1": {
+     "value": "bb",
+     "look": {
+      "alignment": {
+       "rotation": -90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-41",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "angle-42",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": -90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-1",
+   "cells": {
+    "1": {
+     "value": "b",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-2",
+   "cells": {
+    "1": {
+     "value": "bbbbb",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-3",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-4",
+   "cells": {
+    "1": {
+     "value": "W",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-5",
+   "cells": {
+    "1": {
+     "value": "Wij",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-6",
+   "cells": {
+    "1": {
+     "value": "a b",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-7",
+   "cells": {
+    "1": {
+     "value": "a\nb",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "vertical-8",
+   "cells": {
+    "1": {
+     "value": "12345",
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-1",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 8
+      },
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-2",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 8
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-3",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 8
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-4",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-5",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-6",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 16
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-7",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 24
+      },
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-8",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 24
+      },
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "size-9",
+   "cells": {
+    "1": {
+     "value": "bbbbbb",
+     "look": {
+      "font": {
+       "size": 24
+      },
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "wrap-1",
+   "cells": {
+    "1": {
+     "value": "The quick brown fox jumps over the lazy dog.",
+     "look": {
+      "alignment": {
+       "wrap": true,
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "wrap-2",
+   "cells": {
+    "1": {
+     "value": "The quick brown fox jumps over the lazy dog.",
+     "look": {
+      "alignment": {
+       "wrap": true,
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "wrap-3",
+   "cells": {
+    "1": {
+     "value": "The quick brown fox jumps over the lazy dog.",
+     "look": {
+      "alignment": {
+       "wrap": true,
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "wrap-4",
+   "cells": {
+    "1": {
+     "value": "a\nb",
+     "look": {
+      "alignment": {
+       "wrap": true,
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "wrap-5",
+   "cells": {
+    "1": {
+     "value": "a\nb",
+     "look": {
+      "alignment": {
+       "wrap": true,
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "cells-1",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    },
+    "2": {
+     "value": "bbbbb"
+    }
+   }
+  },
+  {
+   "id": "cells-2",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    },
+    "2": {
+     "value": "bbbbbbbbbbbbbbbbbbbb"
+    }
+   }
+  },
+  {
+   "id": "cells-3",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    },
+    "2": {
+     "value": "bbbbbbbr",
+     "look": {
+      "alignment": {
+       "rotation": -30
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "value-1",
+   "cells": {
+    "1": {
+     "value": 1234567890,
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "value-2",
+   "cells": {
+    "1": {
+     "value": 46096,
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     },
+     "format": "d mmmm yyyy"
+    }
+   }
+  },
+  {
+   "id": "value-3",
+   "cells": {
+    "1": {
+     "value": true,
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "value-4",
+   "cells": {
+    "1": {
+     "value": 1234567890,
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "value-5",
+   "cells": {
+    "1": {
+     "value": 46096,
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     },
+     "format": "d mmmm yyyy"
+    }
+   }
+  },
+  {
+   "id": "value-6",
+   "cells": {
+    "1": {
+     "value": true,
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "value-7",
+   "cells": {
+    "1": {
+     "value": 1234567890,
+     "look": {
+      "alignment": {
+       "rotation": "vertical"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "merged-1",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   },
+   "merged": [
+    1
+   ]
+  },
+  {
+   "id": "merged-2",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   },
+   "mergedDown": [
+    1,
+    3
+   ]
+  },
+  {
+   "id": "blank-1",
+   "cells": {
+    "1": {
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "blank-2",
+   "cells": {
+    "1": {
+     "value": "",
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "hand-1",
+   "column": {
+    "width": 2
+   },
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb",
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "typed-1",
+   "cells": {
+    "1": {
+     "look": {
+      "alignment": {
+       "rotation": 45
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "typed-2",
+   "cells": {
+    "1": {
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "typed-3",
+   "cells": {
+    "1": {
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "typed-4",
+   "cells": {
+    "1": {
+     "look": {
+      "alignment": {
+       "rotation": 90
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     1,
+     "bbbbbbbbbbbbbbbbbbbb"
+    ]
+   ],
+   "via": "keys"
+  }
+ ],
+ "answers": {
+  "angle-1": {
+   "columnWidth": 2.33,
+   "points": 19,
+   "standard": false,
+   "saved": {
+    "width": 3.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-3": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-4": {
+   "columnWidth": 2.83,
+   "points": 22,
+   "standard": false,
+   "saved": {
+    "width": 3.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-5": {
+   "columnWidth": 8.33,
+   "points": 55,
+   "standard": false,
+   "saved": {
+    "width": 9.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-6": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-7": {
+   "columnWidth": 3.33,
+   "points": 25,
+   "standard": false,
+   "saved": {
+    "width": 4.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-8": {
+   "columnWidth": 8.17,
+   "points": 54,
+   "standard": false,
+   "saved": {
+    "width": 9,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-9": {
+   "columnWidth": 19,
+   "points": 119,
+   "standard": false,
+   "saved": {
+    "width": 19.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-10": {
+   "columnWidth": 3.5,
+   "points": 26,
+   "standard": false,
+   "saved": {
+    "width": 4.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-11": {
+   "columnWidth": 7.5,
+   "points": 50,
+   "standard": false,
+   "saved": {
+    "width": 8.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-12": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-13": {
+   "columnWidth": 3.5,
+   "points": 26,
+   "standard": false,
+   "saved": {
+    "width": 4.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-14": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-15": {
+   "columnWidth": 12.5,
+   "points": 80,
+   "standard": false,
+   "saved": {
+    "width": 13.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-16": {
+   "columnWidth": 3.33,
+   "points": 25,
+   "standard": false,
+   "saved": {
+    "width": 4.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-17": {
+   "columnWidth": 4.67,
+   "points": 33,
+   "standard": false,
+   "saved": {
+    "width": 5.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-18": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-19": {
+   "columnWidth": 2.83,
+   "points": 22,
+   "standard": false,
+   "saved": {
+    "width": 3.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-20": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-21": {
+   "columnWidth": 3.17,
+   "points": 24,
+   "standard": false,
+   "saved": {
+    "width": 4,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-22": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-23": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-24": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-25": {
+   "columnWidth": 2.33,
+   "points": 19,
+   "standard": false,
+   "saved": {
+    "width": 3.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-26": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-27": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-28": {
+   "columnWidth": 2.83,
+   "points": 22,
+   "standard": false,
+   "saved": {
+    "width": 3.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-29": {
+   "columnWidth": 8.33,
+   "points": 55,
+   "standard": false,
+   "saved": {
+    "width": 9.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-30": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-31": {
+   "columnWidth": 3.33,
+   "points": 25,
+   "standard": false,
+   "saved": {
+    "width": 4.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-32": {
+   "columnWidth": 8.17,
+   "points": 54,
+   "standard": false,
+   "saved": {
+    "width": 9,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-33": {
+   "columnWidth": 19,
+   "points": 119,
+   "standard": false,
+   "saved": {
+    "width": 19.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-34": {
+   "columnWidth": 3.5,
+   "points": 26,
+   "standard": false,
+   "saved": {
+    "width": 4.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-35": {
+   "columnWidth": 7.5,
+   "points": 50,
+   "standard": false,
+   "saved": {
+    "width": 8.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-36": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-37": {
+   "columnWidth": 3.5,
+   "points": 26,
+   "standard": false,
+   "saved": {
+    "width": 4.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-38": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-39": {
+   "columnWidth": 12.5,
+   "points": 80,
+   "standard": false,
+   "saved": {
+    "width": 13.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "angle-40": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bb"
+   }
+  },
+  "angle-41": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbr"
+   }
+  },
+  "angle-42": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "vertical-1": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "b"
+   }
+  },
+  "vertical-2": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbb"
+   }
+  },
+  "vertical-3": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "vertical-4": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "W"
+   }
+  },
+  "vertical-5": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Wij"
+   }
+  },
+  "vertical-6": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "a b"
+   }
+  },
+  "vertical-7": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "a\nb"
+   }
+  },
+  "vertical-8": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12345"
+   }
+  },
+  "size-1": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-2": {
+   "columnWidth": 1.67,
+   "points": 15,
+   "standard": false,
+   "saved": {
+    "width": 2.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-3": {
+   "columnWidth": 1.5,
+   "points": 14,
+   "standard": false,
+   "saved": {
+    "width": 2.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-4": {
+   "columnWidth": 8.5,
+   "points": 56,
+   "standard": false,
+   "saved": {
+    "width": 9.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-5": {
+   "columnWidth": 3.67,
+   "points": 27,
+   "standard": false,
+   "saved": {
+    "width": 4.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-6": {
+   "columnWidth": 3.5,
+   "points": 26,
+   "standard": false,
+   "saved": {
+    "width": 4.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-7": {
+   "columnWidth": 13.5,
+   "points": 86,
+   "standard": false,
+   "saved": {
+    "width": 14.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-8": {
+   "columnWidth": 5.67,
+   "points": 39,
+   "standard": false,
+   "saved": {
+    "width": 6.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "size-9": {
+   "columnWidth": 5.5,
+   "points": 38,
+   "standard": false,
+   "saved": {
+    "width": 6.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbb"
+   }
+  },
+  "wrap-1": {
+   "columnWidth": 26.33,
+   "points": 163,
+   "standard": false,
+   "saved": {
+    "width": 27.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "The quick brown fox jumps over the lazy dog."
+   }
+  },
+  "wrap-2": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "The quick brown fox jumps over the lazy dog."
+   }
+  },
+  "wrap-3": {
+   "columnWidth": 5.33,
+   "points": 37,
+   "standard": false,
+   "saved": {
+    "width": 6.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "The quick brown fox jumps over the lazy dog."
+   }
+  },
+  "wrap-4": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "a\nb"
+   }
+  },
+  "wrap-5": {
+   "columnWidth": 5.17,
+   "points": 36,
+   "standard": false,
+   "saved": {
+    "width": 6,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "a\nb"
+   }
+  },
+  "cells-1": {
+   "columnWidth": 5.33,
+   "points": 37,
+   "standard": false,
+   "saved": {
+    "width": 6.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb",
+    "2": "bbbbb"
+   }
+  },
+  "cells-2": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb",
+    "2": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "cells-3": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb",
+    "2": "bbbbbbbr"
+   }
+  },
+  "value-1": {
+   "columnWidth": 9.17,
+   "points": 60,
+   "standard": false,
+   "saved": {
+    "width": 10,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "value-2": {
+   "columnWidth": 10.17,
+   "points": 66,
+   "standard": false,
+   "saved": {
+    "width": 11,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15 March 2026"
+   }
+  },
+  "value-3": {
+   "columnWidth": 4.83,
+   "points": 34,
+   "standard": false,
+   "saved": {
+    "width": 5.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "TRUE"
+   }
+  },
+  "value-4": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "value-5": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15 March 2026"
+   }
+  },
+  "value-6": {
+   "columnWidth": 2.67,
+   "points": 21,
+   "standard": false,
+   "saved": {
+    "width": 3.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "TRUE"
+   }
+  },
+  "value-7": {
+   "columnWidth": 2.5,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 3.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "merged-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "merged-2": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "blank-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": ""
+   }
+  },
+  "blank-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": ""
+   }
+  },
+  "hand-1": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "typed-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "typed-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "typed-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "typed-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  }
+ }
+}

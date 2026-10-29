@@ -1,0 +1,1047 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "angle-1": {
+    "width": 5.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-2": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-3": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-4": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-5": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-6": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-7": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-8": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-9": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-10": {
+    "width": 13.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-11": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-12": {
+    "width": 11.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-13": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-14": {
+    "width": 11.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-15": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-16": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-17": {
+    "width": 4.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-18": {
+    "width": 6.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-19": {
+    "width": 5.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-20": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-21": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-22": {
+    "width": 13.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-23": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-24": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "half-1": {
+    "width": 4.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bD"
+    }
+   },
+   "half-2": {
+    "width": 6.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbi"
+    }
+   },
+   "half-3": {
+    "width": 11.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbD"
+    }
+   },
+   "half-4": {
+    "width": 4.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bD"
+    }
+   },
+   "half-5": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbi"
+    }
+   },
+   "half-6": {
+    "width": 8.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbD"
+    }
+   },
+   "size-1": {
+    "width": 9.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-2": {
+    "width": 5.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-3": {
+    "width": 3.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-4": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-5": {
+    "width": 13.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-6": {
+    "width": 8.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-7": {
+    "width": 5.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-8": {
+    "width": 5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-9": {
+    "width": 18,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-10": {
+    "width": 10.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-11": {
+    "width": 6.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-12": {
+    "width": 6,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-13": {
+    "width": 21,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-14": {
+    "width": 12.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-15": {
+    "width": 7.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-16": {
+    "width": 7.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-17": {
+    "width": 23.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-18": {
+    "width": 13.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-19": {
+    "width": 8.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-20": {
+    "width": 8,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-21": {
+    "width": 31.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-22": {
+    "width": 18,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-23": {
+    "width": 10.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-24": {
+    "width": 10.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "script-1": {
+    "width": 6.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "Итого"
+    }
+   },
+   "script-2": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "Итого"
+    }
+   },
+   "script-3": {
+    "width": 11.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "Сумма к оплате"
+    }
+   },
+   "script-4": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "Сумма к оплате"
+    }
+   },
+   "format-1": {
+    "width": 7.5,
+    "fitted": true,
+    "texts": {
+     "1": "12.34%"
+    }
+   },
+   "format-2": {
+    "width": 8.5,
+    "fitted": true,
+    "texts": {
+     "1": "1,234.50"
+    }
+   },
+   "format-3": {
+    "width": 6.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "FALSE"
+    }
+   },
+   "format-4": {
+    "width": 11.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "format-5": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "12.34%"
+    }
+   },
+   "format-6": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "1,234.50"
+    }
+   },
+   "format-7": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "FALSE"
+    }
+   },
+   "format-8": {
+    "width": 4.5,
+    "fitted": true,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "wrap-1": {
+    "width": 8.5,
+    "fitted": true,
+    "texts": {
+     "1": "a\nb\nc"
+    }
+   },
+   "wrap-2": {
+    "width": 8.5,
+    "fitted": true,
+    "texts": {
+     "1": "a\nb\nc"
+    }
+   },
+   "wrap-3": {
+    "width": 8,
+    "fitted": true,
+    "texts": {
+     "1": "one\ntwo"
+    }
+   },
+   "cells-1": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbb",
+     "2": "bbbbbbbbbbbbw",
+     "3": "bbbbbbr"
+    }
+   },
+   "cells-2": {
+    "width": 12.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbw",
+     "2": "bbb"
+    }
+   },
+   "hidden-1": {
+    "width": 17.83203125,
+    "fitted": true,
+    "texts": {
+     "30": "bbbbbbbbbbbbbbbbr"
+    }
+   },
+   "typed-1": {
+    "width": null,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "typed-2": {
+    "width": null,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   }
+  },
+  "ru-RU": {
+   "angle-1": {
+    "width": 5.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-2": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-3": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-4": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-5": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-6": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-7": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-8": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-9": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-10": {
+    "width": 13.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-11": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-12": {
+    "width": 11.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-13": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-14": {
+    "width": 11.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-15": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-16": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-17": {
+    "width": 4.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-18": {
+    "width": 6.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-19": {
+    "width": 5.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-20": {
+    "width": 14.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-21": {
+    "width": 5.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-22": {
+    "width": 13.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "angle-23": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbba"
+    }
+   },
+   "angle-24": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbba"
+    }
+   },
+   "half-1": {
+    "width": 4.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bD"
+    }
+   },
+   "half-2": {
+    "width": 6.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbi"
+    }
+   },
+   "half-3": {
+    "width": 11.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbD"
+    }
+   },
+   "half-4": {
+    "width": 4.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bD"
+    }
+   },
+   "half-5": {
+    "width": 5.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbi"
+    }
+   },
+   "half-6": {
+    "width": 8.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbD"
+    }
+   },
+   "size-1": {
+    "width": 9.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-2": {
+    "width": 5.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-3": {
+    "width": 3.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-4": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-5": {
+    "width": 13.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-6": {
+    "width": 8.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-7": {
+    "width": 5.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-8": {
+    "width": 5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-9": {
+    "width": 18,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-10": {
+    "width": 10.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-11": {
+    "width": 6.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-12": {
+    "width": 6,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-13": {
+    "width": 21,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-14": {
+    "width": 12.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-15": {
+    "width": 7.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-16": {
+    "width": 7.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-17": {
+    "width": 23.83203125,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-18": {
+    "width": 13.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-19": {
+    "width": 8.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-20": {
+    "width": 8,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-21": {
+    "width": 31.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-22": {
+    "width": 18,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-23": {
+    "width": 10.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "size-24": {
+    "width": 10.5,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbb"
+    }
+   },
+   "script-1": {
+    "width": 6.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "Итого"
+    }
+   },
+   "script-2": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "Итого"
+    }
+   },
+   "script-3": {
+    "width": 11.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "Сумма к оплате"
+    }
+   },
+   "script-4": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "Сумма к оплате"
+    }
+   },
+   "format-1": {
+    "width": 7.5,
+    "fitted": true,
+    "texts": {
+     "1": "12,34%"
+    }
+   },
+   "format-2": {
+    "width": 8.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "1 234,50"
+    }
+   },
+   "format-3": {
+    "width": 6.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "ЛОЖЬ"
+    }
+   },
+   "format-4": {
+    "width": 11.6640625,
+    "fitted": true,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "format-5": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "12,34%"
+    }
+   },
+   "format-6": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "1 234,50"
+    }
+   },
+   "format-7": {
+    "width": 3.5,
+    "fitted": true,
+    "texts": {
+     "1": "ЛОЖЬ"
+    }
+   },
+   "format-8": {
+    "width": 4.5,
+    "fitted": true,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "wrap-1": {
+    "width": 8.5,
+    "fitted": true,
+    "texts": {
+     "1": "a\nb\nc"
+    }
+   },
+   "wrap-2": {
+    "width": 8.5,
+    "fitted": true,
+    "texts": {
+     "1": "a\nb\nc"
+    }
+   },
+   "wrap-3": {
+    "width": 8,
+    "fitted": true,
+    "texts": {
+     "1": "one\ntwo"
+    }
+   },
+   "cells-1": {
+    "width": 11,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbb",
+     "2": "bbbbbbbbbbbbw",
+     "3": "bbbbbbr"
+    }
+   },
+   "cells-2": {
+    "width": 12.1640625,
+    "fitted": true,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbw",
+     "2": "bbb"
+    }
+   },
+   "hidden-1": {
+    "width": 17.83203125,
+    "fitted": true,
+    "texts": {
+     "30": "bbbbbbbbbbbbbbbbr"
+    }
+   },
+   "typed-1": {
+    "width": null,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "typed-2": {
+    "width": null,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   }
+  }
+ }
+}

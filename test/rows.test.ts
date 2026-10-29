@@ -199,3 +199,40 @@ describe.each(['closures', 'eval'] as const)('patchCells fits the rows of a styl
     expect(s.patchCells([{ sheet: 'S', range: '10:12', set: { style: { font: { size: 20 } } } }]).fitted).toEqual([{ sheet: 'S', rows: '10:12', height: 26 }])
   })
 })
+
+/** A sheet of turned text: 46 points turned up in B2, the letters of `bbbbb` one above the other in C3, a number to type into the turned D4. */
+const turnedBook = (): BookInput => ({
+  sheets: [{ name: 'S', cells: { B2: { value: 'bbbbbbbr' }, C3: { value: 'bbbbb', style: 1 }, D4: { style: 0 } } }],
+  styles: [{ alignment: { rotation: 90 } }, { alignment: { rotation: 'vertical' } }],
+})
+
+describe.each(['closures', 'eval'] as const)('turned text, execution %s', (execution) => {
+  it('a rotation patched fits its rows in the step of the patch, and undo takes both back', () => {
+    const s = createSession(turnedBook(), { clock, execution })
+    const r = s.patchCells([{ sheet: 'S', cell: 'B2', set: { style: { alignment: { rotation: 45 } } } }])
+    expect(r.fitted).toEqual([{ sheet: 'S', rows: '2', height: 46 }])
+    s.undo()
+    expect(s.getBook()).toEqual(createSession(turnedBook(), { clock, execution }).getBook())
+  })
+  it('AutoFit of rows and columns, and a number typed into a turned cell fits its row and widens no column', () => {
+    const s = createSession(turnedBook(), { clock, execution })
+    s.setLayout([{ sheet: 'S', rows: '3', fit: true }, { sheet: 'S', columns: 'C', fit: true }])
+    expect(s.getLayout().sheets[0]).toMatchObject({ rows: { 3: { height: 77, bestFit: true } }, columns: { C: { width: 3.33203125, bestFit: true } } })
+    const t = s.setCellText('S', 'D4', '1234567890')
+    expect([t.ok && t.width, s.getLayout().sheets[0].rows?.[4]]).toEqual([undefined, { height: 67, bestFit: true }])
+    expect(s.getViewport('S', 'D4').cells.D4?.text).toBe('1234567890')
+    s.undo()
+    expect(s.getLayout().sheets[0].rows?.[4]).toBeUndefined()
+  })
+})
+
+describe.each(ASYNC_CALCS)('turned text in an asynchronous session, %s', (_, make) => {
+  it('a rotation patched fits its row, and typing into a turned cell fits its row', async () => {
+    const calc = await make()
+    keep(calc)
+    const s = await calc.createSession(turnedBook(), { clock })
+    expect((await s.patchCells([{ sheet: 'S', cell: 'B2', set: { style: { alignment: { rotation: 90 } } } }])).fitted).toEqual([{ sheet: 'S', rows: '2', height: 53 }])
+    await s.setCellText('S', 'D4', '1234567890')
+    expect((await s.getLayout()).sheets[0].rows?.[4]).toEqual({ height: 67, bestFit: true })
+  })
+})

@@ -39,6 +39,15 @@ interface WorkerThreads {
   Worker: new (url: ScriptUrl, opts: { execArgv: string[]; resourceLimits?: { maxOldGenerationSizeMb?: number } }) => NodeWorker
 }
 
+/**
+ * A word of memory shared with a thread, where the platform shares memory between threads: Node, and a browser page
+ * that is cross-origin isolated. Elsewhere none (`docs/async.md`).
+ */
+export function sharedWord(): Int32Array | undefined {
+  const g = globalThis as { SharedArrayBuffer?: typeof SharedArrayBuffer; crossOriginIsolated?: boolean }
+  return g.SharedArrayBuffer && g.crossOriginIsolated !== false ? new Int32Array(new g.SharedArrayBuffer(4)) : undefined
+}
+
 /** Node's `worker_threads`, or undefined outside Node. */
 export const workerThreads = (): WorkerThreads | undefined =>
   (globalThis as { process?: { getBuiltinModule?(id: string): unknown } }).process?.getBuiltinModule?.('node:worker_threads') as WorkerThreads | undefined

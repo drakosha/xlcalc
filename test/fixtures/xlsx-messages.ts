@@ -85,7 +85,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   ruleIme: [{}],
   ruleNoRange: [{}],
   ruleShared: [{}],
-  splitPanes: [{}],
   frozenScrolled: [{}],
   noteCell: [{}],
   noteThread: [{}],

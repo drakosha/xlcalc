@@ -1,0 +1,929 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US",
+  "date": "2026-10-29",
+  "seconds": 193.6
+ },
+ "cases": [
+  {
+   "id": "empty",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "kinds",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": "a"
+       },
+       "A3": {
+        "value": true
+       },
+       "A4": {
+        "formula": "#N/A"
+       },
+       "A5": {
+        "value": {
+         "date": "2025-01-31"
+        }
+       },
+       "B1": {
+        "value": ""
+       },
+       "B2": {
+        "formula": "\"\""
+       },
+       "B3": {
+        "formula": "Z99"
+       },
+       "B4": {
+        "formula": "1/0"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "styled",
+   "book": {
+    "styles": [
+     {
+      "font": {
+       "bold": true
+      }
+     }
+    ],
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "H20": {
+        "style": 0
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "row-own",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "value": 1
+       }
+      },
+      "rows": {
+       "30": {
+        "height": 30
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "column-own",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "value": 1
+       }
+      },
+      "columns": {
+       "K": {
+        "width": 20
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "link-only",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "C3": {
+        "link": {
+         "url": "https://example.com/"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "spill",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3,2)"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "spill-blocked",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "A3": {
+        "value": "x"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "spill-large",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(5000)"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "legacy-array",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "formula": "ROW(B2:B4)*2",
+        "array": "B2:B4"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "merged",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "m"
+       },
+       "D4": {
+        "value": 1
+       }
+      },
+      "merges": [
+       "A1:C2"
+      ]
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "tables",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": 1
+       },
+       "E1": {
+        "value": "c"
+       }
+      },
+      "tables": [
+       {
+        "name": "Left",
+        "range": "A1:B5",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       },
+       {
+        "name": "Right",
+        "range": "E1:E3",
+        "columns": [
+         {
+          "name": "c"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "sheets",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "A1+T!A1"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": 2
+       },
+       "A2": {
+        "formula": "SEQUENCE(2)"
+       },
+       "C3": {
+        "note": {
+         "text": "n"
+        }
+       }
+      }
+     },
+     {
+      "name": "H",
+      "hidden": true,
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "B2": {
+        "formula": "A1*2"
+       },
+       "D4": {
+        "note": {
+         "text": "h"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "T"
+  },
+  {
+   "id": "notes",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1,
+        "note": {
+         "text": "on a value"
+        }
+       },
+       "B2": {
+        "note": {
+         "text": "alone",
+         "author": "Ann"
+        }
+       },
+       "C3": {
+        "value": "x",
+        "note": {
+         "text": "shown",
+         "shown": true
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S",
+   "threads": [
+    {
+     "sheet": "S",
+     "cell": "E5",
+     "comments": [
+      {
+       "author": "A",
+       "text": "thread"
+      },
+      {
+       "author": "B",
+       "text": "reply"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "empty": {
+   "sheet": [
+    [
+     "Cells with data",
+     "0"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "0"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "kinds": {
+   "sheet": [
+    [
+     "End of sheet",
+     "B5"
+    ],
+    [
+     "Cells with data",
+     "9"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "4"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "9"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "4"
+    ]
+   ]
+  },
+  "styled": {
+   "sheet": [
+    [
+     "End of sheet",
+     "A1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "row-own": {
+   "sheet": [
+    [
+     "End of sheet",
+     "B2"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "column-own": {
+   "sheet": [
+    [
+     "End of sheet",
+     "B2"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "link-only": {
+   "sheet": [
+    [
+     "End of sheet",
+     "A1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "spill": {
+   "sheet": [
+    [
+     "End of sheet",
+     "B3"
+    ],
+    [
+     "Cells with data",
+     "6"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "6"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "6"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "6"
+    ]
+   ]
+  },
+  "spill-blocked": {
+   "sheet": [
+    [
+     "End of sheet",
+     "A3"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "1"
+    ]
+   ]
+  },
+  "spill-large": {
+   "sheet": [
+    [
+     "End of sheet",
+     "A5000"
+    ],
+    [
+     "Cells with data",
+     "5000"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "5000"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "5000"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "5000"
+    ]
+   ]
+  },
+  "legacy-array": {
+   "sheet": [
+    [
+     "End of sheet",
+     "B4"
+    ],
+    [
+     "Cells with data",
+     "3"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "3"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "3"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "3"
+    ]
+   ]
+  },
+  "merged": {
+   "sheet": [
+    [
+     "End of sheet",
+     "D4"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "tables": {
+   "sheet": [
+    [
+     "End of sheet",
+     "E2"
+    ],
+    [
+     "Cells with data",
+     "4"
+    ],
+    [
+     "Tables",
+     "2"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "4"
+    ],
+    [
+     "Tables",
+     "2"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "sheets": {
+   "sheet": [
+    [
+     "End of sheet",
+     "C3"
+    ],
+    [
+     "Cells with data",
+     "3"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "2"
+    ],
+    [
+     "Notes",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "3"
+    ],
+    [
+     "Cells with data",
+     "7"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "4"
+    ]
+   ]
+  },
+  "notes": {
+   "sheet": [
+    [
+     "End of sheet",
+     "E5"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ],
+    [
+     "Notes",
+     "4"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  }
+ }
+}
