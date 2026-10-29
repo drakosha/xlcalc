@@ -57,6 +57,11 @@ const TAKEN_BY: Record<string, string> = {
   undo: 'createSession',
   values: 'writeXlsx',
   mode: 'writeXlsx',
+  delimiter: 'readCsv and writeCsv',
+  encoding: 'readCsv and writeCsv',
+  formulas: 'readCsv',
+  codesAsText: 'readCsv',
+  bom: 'writeCsv',
 }
 
 /** Where the fields of an options object that `allowed` does not hold go, as a refusal's hint: ` (formulaLocal is an option of getViewport)`. */
