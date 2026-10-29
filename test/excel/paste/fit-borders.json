@@ -1,0 +1,374 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US",
+  "seconds": 21
+ },
+ "books": {
+  "fit": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "size": 20,
+      "bold": true
+     }
+    },
+    {
+     "font": {
+      "size": 8
+     }
+    },
+    {
+     "font": {
+      "size": 16
+     }
+    },
+    {
+     "font": {
+      "size": 20
+     },
+     "border": {
+      "bottom": {
+       "style": "thin"
+      }
+     }
+    },
+    {
+     "border": {
+      "top": {
+       "style": "thick"
+      }
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": "big",
+       "style": 1
+      },
+      "A2": {
+       "value": "small",
+       "style": 2
+      },
+      "A3": {
+       "value": "plain"
+      },
+      "A4": {
+       "value": "mid",
+       "style": 3
+      },
+      "C5": {
+       "value": "x"
+      },
+      "C7": {
+       "value": "y",
+       "style": 1
+      },
+      "C9": {
+       "value": "z"
+      },
+      "C13": {
+       "value": 1
+      },
+      "C14": {
+       "value": 2
+      },
+      "C15": {
+       "value": 3
+      },
+      "C17": {
+       "value": "v"
+      },
+      "D17": {
+       "value": "w",
+       "style": 1
+      },
+      "A6": {
+       "value": "edge",
+       "style": 4
+      },
+      "C19": {
+       "value": "u",
+       "style": 5
+      }
+     },
+     "rows": {
+      "1": {
+       "height": 26,
+       "bestFit": true
+      },
+      "4": {
+       "height": 21,
+       "bestFit": true
+      },
+      "6": {
+       "height": 26,
+       "bestFit": true
+      },
+      "7": {
+       "height": 26,
+       "bestFit": true
+      },
+      "9": {
+       "height": 30
+      },
+      "17": {
+       "height": 26,
+       "bestFit": true
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "all"
+  },
+  {
+   "id": "down",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C7"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-down",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C7"
+   },
+   "what": "all"
+  },
+  {
+   "id": "small",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-small",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "all"
+  },
+  {
+   "id": "own",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C9"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-own",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C9"
+   },
+   "what": "all"
+  },
+  {
+   "id": "tiled",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C13:C15"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-tiled",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C13:C15"
+   },
+   "what": "all"
+  },
+  {
+   "id": "under-larger",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C17"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-under-larger",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C17"
+   },
+   "what": "all"
+  },
+  {
+   "id": "column",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A:A"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G:G"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-column",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A:A"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G:G"
+   },
+   "what": "all"
+  },
+  {
+   "id": "bordered",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C19"
+   },
+   "what": "allExceptBorders"
+  },
+  {
+   "id": "all-bordered",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C19"
+   },
+   "what": "all"
+  }
+ ],
+ "sent": {
+  "up": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-up": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "down": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-down": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "small": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-small": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "own": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-own": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "tiled": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-tiled": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "under-larger": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-under-larger": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "column": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-column": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "bordered": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40",
+  "all-bordered": "06b766d20e6dab8bbeb54a99a494f4ccf5b01e640f2352c2e9122046c7be4c40"
+ },
+ "answers": {
+  "up": {},
+  "all-up": {},
+  "down": {},
+  "all-down": {},
+  "small": {},
+  "all-small": {},
+  "own": {},
+  "all-own": {},
+  "tiled": {},
+  "all-tiled": {},
+  "under-larger": {},
+  "all-under-larger": {},
+  "column": {},
+  "all-column": {},
+  "bordered": {},
+  "all-bordered": {}
+ }
+}
