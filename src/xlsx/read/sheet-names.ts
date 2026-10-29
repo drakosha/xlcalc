@@ -17,6 +17,14 @@ function cut(s: string, n: number): string {
   return s.slice(0, last >= 0xd800 && last <= 0xdbff ? n - 1 : n)
 }
 
+/** A name Excel would not take as the name of the sheet at place `i`, repaired as `repairNames` repairs it, apart from the names `taken` holds by their keys. */
+export function repairedName(n: string, i: number, taken: ReadonlySet<string> = new Set()): string {
+  const base = cut(n.replace(/[:\\/?*[\]]/g, '_'), MAX).replace(/^'|'$/g, '_') || `Sheet${i + 1}`
+  let name = base
+  for (let x = 2; taken.has(sheetKey(name)) || sheetNameProblem(name); x++) name = cut(base, MAX - ` (${x})`.length) + ` (${x})`
+  return name
+}
+
 export interface Repaired {
   /** The names, in order, as the book takes them. */
   names: string[]
@@ -33,9 +41,7 @@ export function repairNames(names: string[]): Repaired {
   const renamed = new Map<string, string>()
   const out = names.map((n, i) => {
     if (kept[i]) return n
-    const base = cut(n.replace(/[:\\/?*[\]]/g, '_'), MAX).replace(/^'|'$/g, '_') || `Sheet${i + 1}`
-    let name = base
-    for (let x = 2; taken.has(sheetKey(name)) || sheetNameProblem(name); x++) name = cut(base, MAX - ` (${x})`.length) + ` (${x})`
+    const name = repairedName(n, i, taken)
     taken.add(sheetKey(name))
     if (first[i]) renamed.set(sheetKey(n), name)
     return name

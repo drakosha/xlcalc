@@ -1,7 +1,7 @@
 /**
  * Smoke test of the built package (`npm run build` first): every `exports` subpath exists in `dist` with
  * `.d.ts`, plain node imports them by package name, the synthetic hash, the session and the synthetic book through
- * xlsx match the sources,
+ * xlsx match the sources, a book goes through CSV and back,
  * `dist` cannot be reached around `exports`, ported code keeps its attribution, and the tarball holds only
  * `dist` and the documents, every link between which leads to a file it holds.
  */
@@ -26,7 +26,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/keep', './worker', './worker/thread', './locales', './locales/ru-RU', './regex'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/keep', './csv', './worker', './worker/thread', './locales', './locales/ru-RU', './regex'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -59,6 +59,7 @@ describe('built package', () => {
     // and in a thread of the pool, which an open pool does not keep the process alive for
     expect(out.threads).toEqual({ hash: out.hash, edited: out.edited })
     expect(out.loaded).toEqual({ tag: 'ru-RU', same: true, inRoot: false, read: 'ru-RU', thread: 4 })
+    expect(out.csv).toEqual({ delimiter: ';', encoding: 'utf-8', cells: { A1: { value: 2 }, B1: { value: 4 } } })
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.removed).toEqual([])
