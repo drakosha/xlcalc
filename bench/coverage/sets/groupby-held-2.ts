@@ -55,3 +55,9 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./groupby-held-2.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: GROUPBY takes no array of one value as the function's answer (the
+ * summary is #CALC!; MAP takes it), which `INDEX(x,1)` answers there; a fractional sort order is #VALUE!.
+ */
+export const MISSED: readonly string[] = ['GROUPBY#2', 'GROUPBY#5', 'GROUPBY#11']
