@@ -23,8 +23,8 @@ const DOC = '<a id="1"><b k="v" n="2">one</b><b>two</b><!-- note --><c><d>4</d><
 /** Many nodes in one text: 300 elements. */
 const MANY = `<r>${Array.from({ length: 300 }, (_, i) => `<i>${i}</i>`).join('')}</r>`
 
-/** Sheet X: XML in cells. */
-export const SHEETS: SheetCells = { X: { A1: '<a><b>1</b><b>2</b></a>', A2: '//b', A3: 5, A4: '<a>7</a>', A5: MANY } }
+/** Sheet X: XML in cells, a text longer than a formula's literal may hold. */
+export const SHEETS: SheetCells = { X: { A1: '<a><b>1</b><b>2</b></a>', A2: '//b', A3: 5, A4: '<a>7</a>', A5: MANY, A6: `<a>${'z'.repeat(300)}</a>` } }
 
 function build(): Probe[] {
   const { out, add } = collector()
@@ -36,7 +36,7 @@ function build(): Probe[] {
     add('values', F, fx(`<a>${t}</a>`, '/a'))
   add('values', F, fx('<a> </a>', '/a'), fx('<a>  x  y  </a>', '/a'), fx('<a>x\ny</a>', '/a'), `LEN(${fx('<a> x </a>', '/a')})`, `ISTEXT(${fx('<a>1</a>', '/a')})`, `ISNUMBER(${fx('<a> 1 </a>', '/a')})`)
   add('values', F, fx('<a>x<b>1</b>y</a>', '/a'), fx('<a> <b>1</b> </a>', '/a/text()'), fx('<a><b>1</b> <b>2</b></a>', '/a'), fx('<a>x <b>1</b></a>', '/a'), fx('<a><![CDATA[ c ]]></a>', '/a'), fx('<a b=" 1 "/>', '/a/@b'), fx('<a b="x&#10;y"/>', '/a/@b'))
-  add('values', F, fx('<a>&lt;&amp;&gt;&quot;&apos;</a>', '/a'), fx('<a>&#65;&#x42;</a>', '/a'), fx('<a>&#160;1</a>', '/a'), `LEN(${fx(`<a>${'z'.repeat(300)}</a>`, '/a')})`)
+  add('values', F, fx('<a>&lt;&amp;&gt;&quot;&apos;</a>', '/a'), fx('<a>&#65;&#x42;</a>', '/a'), fx('<a>&#160;1</a>', '/a'), `LEN(${F}(X!A6,"/a"))`)
   // XPath: predicates, axes, operators, functions
   for (const x of ['//i[2]', '(//i)[5]', '//i[last()]', '//i[position()<3][2]', '//i[.>1]', '//i[.="x"]', '//i[@k]', '//i[not(@k)][3]', '//i[@k="a"]', '//g/i', '//g/..', '//i[4]/following-sibling::*', '//i[3]/preceding-sibling::i[1]', '//g/i/ancestor::*[last()]', '//i/parent::g', '//i[contains(.,"x")]', '//i[starts-with(.,"3")]', '//i[string-length(.)=1][4]', '//i[number(.)=4]', '//*[count(i)>1]', '//*[sum(i)=6]', '/r/*[name()="g"]', '//i[. mod 2 = 1][2]', '//i[.*2 = 4]', '//i[. div 2 = 1.5]', '//i[-. = -2]', '//i[.=2 or .=4][2]', '//i[.>1 and .<4]', '//i[normalize-space(.)="x"]', '//i[translate(.,"x","y")="y"]', '//i[substring(.,1,1)="3"]', '//i[concat(.,"!")="2!"]', '//i[floor(.)=2]', '//i[round(.)=4]', '//i[boolean(@k)]', '//i[true()][1]', '//i[1] | //g', '//g | //i[1]', 'r/i[1]', './/i[2]', '//self::g', '//i[1]/self::i', '/descendant::i[3]', '/descendant-or-self::g', '//i[1]/following::i[1]', '//g/preceding::i[1]', '//i[@k]/@k', '//@*/..', '//i[lang("en")]', '//*[local-name()="g"]'])
     add('xpath', F, x.includes('|') || x.includes('/*') || x.includes('/@*') ? rows(LIST, x) : fx(LIST, x))

@@ -167,9 +167,10 @@ export function parseXml(src: string): XNode | null {
       ;[el.name, el.ns] = [qn[1], ns]
       for (const [a, v] of raw) {
         const an = split(a)
+        if (!an) return null
         // an attribute without a prefix is in no namespace, whatever the default
-        const ans = an && (an[0] ? lookup(an[0]) : '')
-        if (!an || ans === undefined) return null
+        const ans = an[0] ? lookup(an[0]) : ''
+        if (ans === undefined) return null
         const at = node('attribute', el, v)
         ;[at.name, at.qname, at.ns] = [an[1], a, ans]
         if (el.attrs.some((x) => x.name === at.name && x.ns === at.ns)) return null
