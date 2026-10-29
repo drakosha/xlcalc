@@ -59,18 +59,18 @@ function unmarked16(b: Uint8Array): string | undefined {
 }
 
 /**
- * A file's text and its encoding: `encoding` as given (a byte order mark of it skipped), else as the bytes show it,
+ * A file's text, its encoding and whether a byte order mark gave it: `encoding` as given (a byte order mark of it skipped), else as the bytes show it,
  * a file without a mark that is no valid UTF-8 in `page`. Malformed bytes in the encoding taken become U+FFFD.
  */
-export function decodeCsv(b: Uint8Array, page: CodePage, encoding?: string): { text: string; encoding: string } {
+export function decodeCsv(b: Uint8Array, page: CodePage, encoding?: string): { text: string; encoding: string; marked: boolean } {
   const mark = MARKS.find(([m, name]) => (encoding === undefined || encoding === name) && marked(b, m))
   const body = mark ? b.subarray(mark[0].length) : b
   const name = encoding ?? mark?.[1] ?? unmarked16(b)
-  if (name !== undefined) return { text: decoder(name, false)!.decode(body), encoding: name }
+  if (name !== undefined) return { text: decoder(name, false)!.decode(body), encoding: name, marked: !!mark }
   try {
-    return { text: decoder('utf-8', true)!.decode(b), encoding: 'utf-8' }
+    return { text: decoder('utf-8', true)!.decode(b), encoding: 'utf-8', marked: false }
   } catch {
-    return { text: decoder(page.name, false)!.decode(b), encoding: page.name }
+    return { text: decoder(page.name, false)!.decode(b), encoding: page.name, marked: false }
   }
 }
 

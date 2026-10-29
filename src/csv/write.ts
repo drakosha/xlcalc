@@ -1,8 +1,8 @@
 /**
  * `writeCsv`: a sheet of a book as a CSV file, as Excel saves it. Each cell is written as it shows its value (a value's,
- * or a formula's and its array's from the result) by its number format in the locale, from A1 to the last row and
- * column with a value, every row as wide as the widest; fields are quoted where they need it (`fields.ts`), rows end
- * in CRLF, and the text is encoded as asked (`decode.ts`).
+ * or a formula's and its array's from the result) by its number format in the locale, in no column's room (no `#`),
+ * over the used range (from its first cell with a value or a format to its last), every row as wide as it; fields are
+ * quoted where they need it (`fields.ts`), rows are joined by CRLF, and the text is encoded as asked (`decode.ts`).
  */
 import type { CellInput, CellValue } from '../contract.js'
 import { epochOf } from '../dates.js'
@@ -41,7 +41,7 @@ export function writeCsv(snapshot: CsvSnapshot, opts?: WriteCsvOptions): CsvWrit
   if (o.bom !== undefined) checkBoolean(o.bom, 'opts.bom')
   const epoch = epochOf(book.dateSystem)
   const rules = displayRules(locale, epoch)
-  const looks = bookLooks(book, rules)
+  const looks = bookLooks(book, rules, undefined, true)
   // each cell's value: its own, its formula's from the result, or one an array of the result fills
   const values = new Map<string, { v: CellValue; own?: CellInput }>()
   const result = cells?.[s] ?? {}
@@ -54,20 +54,20 @@ export function writeCsv(snapshot: CsvSnapshot, opts?: WriteCsvOptions): CsvWrit
       values.set(a, { v: r.value, own })
     } else if (own.value !== undefined && own.value !== null) values.set(a, { v: bookScalar(own.value, epoch), own })
   }
-  const rows: string[][] = []
-  let width = 0
-  for (const [a, { v, own }] of values) {
-    if (v === null) continue
+  // Excel's used range: from the first row and column of a cell, formatted ones too, to the last
+  let [r1, c1, r2, c2] = [Infinity, Infinity, -1, -1]
+  for (const a of [...keys[s], ...Object.keys(result)]) {
     const { row, col } = parseAddress(a)
-    width = Math.max(width, col + 1)
-    ;(rows[row] ??= [])[col] = quoted(looks(s, row, col, v, own).text, delimiter)
+    ;[r1, c1, r2, c2] = [Math.min(r1, row), Math.min(c1, col), Math.max(r2, row), Math.max(c2, col)]
   }
-  let text = ''
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] ?? []
-    for (let c = 0; c < width; c++) text += (c ? delimiter : '') + (row[c] ?? '')
-    text += '\r\n'
+  const grid: string[][] = []
+  for (let r = r1; r <= r2; r++) grid.push(Array<string>(c2 - c1 + 1).fill(''))
+  for (const [a, { v, own }] of values) {
+    const { row, col } = parseAddress(a)
+    if (v !== null) grid[row - r1][col - c1] = quoted(looks(s, row, col, v, own).text, delimiter)
   }
+  // rows joined by CRLF, the last without one, as Excel saves the file
+  const text = grid.map((row) => row.join(delimiter)).join('\r\n')
   const issues = new CsvIssues(sheet.name)
   if (book.sheets.length > 1) issues.add('sheets', { key: 'csvSheets', sheet: sheet.name })
   const encoding = (o.encoding as WriteEncoding | undefined) ?? 'utf-8'

@@ -3,7 +3,7 @@
  * is no row; otherwise a host's delimiter, tabs for a `.tsv` file, Excel's list separator of the locale, or a guess over
  * the first lines: of `;`, `,` and a tab, the one that splits them most evenly (`guessDelimiter`). Fields are read as
  * RFC 4180 and Excel read them (`delimitedRows`); a line break after the last row is no row. Written, a field is quoted
- * when it holds the delimiter, a quote or a line break, a quote in it doubled.
+ * when it holds the delimiter, a quote, a tab or a line break, a quote in it doubled.
  */
 import { delimitedRows } from '../delimited.js'
 
@@ -45,7 +45,7 @@ export function csvRows(text: string, delimiter: string): string[][] {
   return rows
 }
 
-/** A field as written: in quotes, a quote in it doubled, when it holds the delimiter, a quote or a line break. */
+/** A field as written: in quotes, a quote in it doubled, when it holds the delimiter, a quote, a tab or a line break. */
 export function quoted(field: string, delimiter: string): string {
-  return field.includes(delimiter) || /["\r\n]/.test(field) ? `"${field.replaceAll('"', '""')}"` : field
+  return field.includes(delimiter) || /["\t\r\n]/.test(field) ? `"${field.replaceAll('"', '""')}"` : field
 }

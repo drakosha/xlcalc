@@ -2,7 +2,8 @@
  * `readCsv`: a CSV file as a book of one sheet, as Excel opens it. The text (`decode.ts`) is split into rows and fields
  * (`fields.ts`), and each field is read as text pasted into a cell in the book's locale (`readEntry`, the way of a
  * paste): a number, a date, a time, a percentage or money with the format Excel sets, a boolean, an error, text, or a
- * formula; an apostrophe before text stays part of it, and a formula that does not parse is text. Where the book holds
+ * formula; an apostrophe before text stays part of it, a formula that does not parse is text, and a field with a line
+ * break wraps its cell. Where the book holds
  * a field otherwise than Excel would by the options, an issue says so.
  */
 import type { BookInput, CellInput, EntryOptions } from '../contract.js'
@@ -64,17 +65,19 @@ export function readCsv(data: Uint8Array | ArrayBuffer | string, opts?: ReadCsvO
   const encoding = o.encoding === undefined ? undefined : encodingName(checkString(o.encoding, 'opts.encoding'), 'opts.encoding')
   for (const k of ['formulas', 'codesAsText'] as const) if (o[k] !== undefined) checkBoolean(o[k], `opts.${k}`)
   const limit = o.limits === undefined ? Infinity : (checkLimits(o.limits).cells ?? Infinity)
-  const decoded = typeof data === 'string' ? { text: data.replace(/^﻿/, ''), encoding: null } : decodeCsv(fileBytes(data), displayRules(locale).codePage, encoding)
+  const decoded = typeof data === 'string' ? { text: data.replace(/^\uFEFF/, ''), encoding: null, marked: false } : decodeCsv(fileBytes(data), displayRules(locale).codePage, encoding)
   // a first line `sep=X` names the delimiter, as Excel takes it, unless the host gives its own
   const sep = sepLine(decoded.text)
   const text = sep ? sep.rest : decoded.text
-  const delimiter =
-    given !== undefined && given !== 'locale' ? given : (sep?.delimiter ?? (given === 'locale' ? locale.listSeparator : file.tabs ? '\t' : (guessDelimiter(text) ?? locale.listSeparator)))
+  // Excel reads a file marked as UTF-16 as Unicode text, at tabs
+  const excel = () => (decoded.marked && decoded.encoding?.startsWith('utf-16') ? '\t' : locale.listSeparator)
+  const delimiter = given !== undefined && given !== 'locale' ? given : (sep?.delimiter ?? (given === 'locale' ? excel() : file.tabs ? '\t' : (guessDelimiter(text) ?? locale.listSeparator)))
   const issues = new CsvIssues(file.sheet)
   const cells: Record<string, CellInput> = {}
   const rows = csvRows(text, delimiter)
   if (rows.length > MAX_ROWS || rows.some((r) => r.length > MAX_COLS)) issues.add('size', { key: 'csvOutside' })
   let count = 0
+  let wraps = false
   for (let r = 0; r < Math.min(rows.length, MAX_ROWS); r++) {
     const row = rows[r]
     for (let c = 0; c < Math.min(row.length, MAX_COLS); c++) {
@@ -86,24 +89,34 @@ export function readCsv(data: Uint8Array | ArrayBuffer | string, opts?: ReadCsvO
         field = field.slice(0, MAX_TEXT)
         issues.add('textLength', { key: 'csvTextCut' }, at)
       }
-      cells[at] = cellOf(field, entry, o, issues, at)
+      const cell = cellOf(field, entry, o, issues, at)
+      // a field with a line break wraps its cell, as Excel opens it
+      cells[at] = /[\r\n]/.test(field) ? { ...cell, style: 0 } : cell
+      wraps ||= cell !== cells[at]
     }
   }
   const book: BookInput = { sheets: [{ name: file.sheet, cells }] }
+  if (wraps) book.styles = [{ alignment: { wrap: true } }]
   if (locale.tag !== DEFAULT_LOCALE) book.locale = locale.tag
   return { book, issues: issues.list(locale), delimiter, encoding: decoded.encoding }
 }
 
-/** A field as its cell's input: as pasted into the cell, a formula kept as text unless `formulas`, a code kept as text with `codesAsText`. */
+/**
+ * A field as its cell's input: as pasted into the cell, and begun by `@` as a formula (Excel takes `@SUM(1)` so, as Lotus
+ * did); a formula kept as text unless `formulas`, a code kept as text with `codesAsText`.
+ */
 function cellOf(field: string, entry: EntryOptions, o: Record<string, unknown>, issues: CsvIssues, at: string): CellInput {
   if (o.codesAsText === true && isCode(field)) return { value: field }
   const formulas = o.formulas === true
-  const typed = field.length > 1 && field[0] === '='
+  const typed = field.length > 1 && (field[0] === '=' || field[0] === '@')
   if (typed && !formulas) return text(field, issues, at)
   // pasted, a formula that does not parse is text; an error value (`#N/A`) is a formula of the error alone
-  const r = readEntry(field, entry, 'pasted')
+  const r = readEntry(typed ? `=${field.slice(1)}` : field, entry, 'pasted')
   const input = (r.ok && r.input) || { value: field }
-  if (input.formula === undefined && typed) issues.add('formula', { key: 'csvFormulaUnparsed' }, at)
+  if (input.formula === undefined && typed) {
+    issues.add('formula', { key: 'csvFormulaUnparsed' }, at)
+    return { value: field }
+  }
   return input.formula !== undefined && field[0] !== '#' && !formulas ? text(field, issues, at) : input
 }
 

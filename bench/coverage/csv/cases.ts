@@ -71,6 +71,7 @@ export async function caseFile(c: CsvCase): Promise<Uint8Array> {
 export interface CsvEngine {
   sheet?: string
   cells?: Record<string, CellInput>
+  styles?: BookInput['styles']
   csv: string
 }
 
@@ -80,5 +81,5 @@ export function engineAnswer(c: CsvCase, data: Uint8Array, locale: string, now: 
   const read = c.book ? undefined : readCsv(data, { locale: loc, name: fileName(c), delimiter: 'locale', formulas: true, now })
   const b = c.book ?? read!.book
   const csv = writeCsv({ book: b, result: compute(b) }, { encoding: 'ansi', ...(loc ? { locale: loc } : {}) }).text
-  return read ? { sheet: read.book.sheets[0].name, cells: read.book.sheets[0].cells, csv } : { csv }
+  return read ? { sheet: read.book.sheets[0].name, cells: read.book.sheets[0].cells, ...(read.book.styles ? { styles: read.book.styles } : {}), csv } : { csv }
 }
