@@ -236,7 +236,6 @@ export interface KeptMessageParams {
   keptDrawingDeleted: { what: KeptPart }
   keptCut: { what: KeptPart }
   keptCacheSheet: { what: KeptPart }
-  keptCellsDeleted: { what: KeptPart }
   keptSparkline: { sheet: string }
   keptWouldMove: { what: KeptPart; path: string }
 }
@@ -393,7 +392,7 @@ export const KEPT_MESSAGE_KEYS: Readonly<Record<keyof KeptMessageParams, 0>> = {
   keptStrict: 0, keptSheetName: 0, keptFont: 0, keptValidation: 0, keptThreads: 0, keptTableParts: 0, keptLinkKind: 0, keptLinks: 0, keptNoCarrier: 0, keptLayout: 0,
   keptNoCellCarrier: 0, keptNoPartCarrier: 0, keptUnread: 0, keptNamedSheet: 0, keptSheetParts: 0, keptSourceGone: 0, keptNoRef: 0, keptMovedSheet: 0,
   keptFirstCell: 0, keptTakenApart: 0, keptRulesPivot: 0, keptRulesPart: 0, keptRulesPrefixes: 0, keptRulesBar: 0, keptNamespace: 0, keptRelPrefix: 0,
-  keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptCellsDeleted: 0, keptSparkline: 0, keptWouldMove: 0,
+  keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptSparkline: 0, keptWouldMove: 0,
 }
 
 /** A message: its key and its parameters; the engine's other than an edit's by default (an edit's is `Message<EngineKey>`, an issue of xlsx `XlsxMessage`). */

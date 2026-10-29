@@ -38,6 +38,7 @@ const KNOWN: Record<string, Record<string, unknown>> = {
   'chart-delete-series': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!$B$1"] },
   'chartsheet-source-deleted': { series: ['#REF!', '#REF!'] },
   'filter-move-sheet': { names: [] },
+  'pivot-delete-source-cells': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!#REF!"] },
 }
 /**
  * The operations `writeKept` refuses, by case: the refusal. A pivot cache whose source sheet is deleted: Excel keeps

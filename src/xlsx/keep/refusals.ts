@@ -150,9 +150,9 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     })
     if (kept) out.formats.set(k, areas)
   }
-  /** A sheet's lines in EMUs as the book written has them: a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
-  const geometry = (k: number | undefined): Geometry => {
-    const s = k === undefined ? undefined : book1.sheets[out.target.get(k)!]
+  /** A sheet's lines in EMUs as a book has them (the one read, `book0`, or the one written): a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
+  const geometry = (k: number | undefined, read: boolean): Geometry => {
+    const s = k === undefined ? undefined : read ? book0.sheets[k] : book1.sheets[out.target.get(k)!]
     const rows = lines(s?.rows, 'r')
     const cols = lines(s?.columns, 'c')
     const fp = k === undefined ? {} : attributes(/<(?:[\w.-]+:)?sheetFormatPr\b([^>]*)>/.exec(src.sheets[k].xml)?.[1] ?? '')
@@ -177,7 +177,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       return n.ref
     })
     if (item.carriers.every((x, k) => compared(now[k], x.kind) === compared(x.ref, x.kind))) continue
-    const fix = item.fix(now, geometry(item.on))
+    const fix = item.fix(now, { was: geometry(item.on, true), now: geometry(item.on, false) })
     if ('refuse' in fix) throw new KeptRefusal(fix.refuse, fix.code)
     out.edits.push(...fix.edits)
   }

@@ -516,8 +516,7 @@ const MESSAGES: Messages = {
   keptDrawingDeleted: (p) => `Часть файла (${keptPart(p.what)}) лежит в ячейках, удалённых вместе со всеми ячейками ниже или правее`,
   keptCut: (p) => `Изменение разрезало бы часть файла (${keptPart(p.what)}), а Excel этого не допускает`,
   keptCacheSheet: (p) => `Часть файла (${keptPart(p.what)}) была на удалённом листе, а Excel заменяет её связью с самим файлом по его пути`,
-  keptCellsDeleted: (p) => `Часть файла (${keptPart(p.what)}) лежит в удалённых ячейках`,
-  keptSparkline: (p) => `Удалена ячейка спарклайна на листе ${q(p.sheet)}`,
+  keptSparkline: (p) => `Удалена часть ячеек спарклайна на листе ${q(p.sheet)}`,
   keptWouldMove: (p) => `Часть файла (${keptPart(p.what)}, ${p.path}) сместилась бы, а writeKept этого не записывает`,
 }
 

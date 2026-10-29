@@ -84,8 +84,7 @@ export const KEPT_EN_MESSAGES: { readonly [K in keyof KeptMessageParams]: (p: Ke
   keptDrawingDeleted: (p) => `${partText(p.what)} lies in cells deleted with all those below or beside it`,
   keptCut: (p) => `${partText(p.what)} would be cut by the change, which Excel refuses`,
   keptCacheSheet: (p) => `${partText(p.what)} is on a sheet the change deleted, which Excel makes a link to the file by its path`,
-  keptCellsDeleted: (p) => `${partText(p.what)} lies in cells the change deleted`,
-  keptSparkline: (p) => `a sparkline's cell on '${p.sheet}' was deleted`,
+  keptSparkline: (p) => `some of the cells of a sparkline on '${p.sheet}' were deleted`,
   keptWouldMove: (p) => `${partText(p.what)} (${p.path}) would move, which writeKept does not write`,
 }
 
