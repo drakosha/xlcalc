@@ -21,6 +21,8 @@ export const functions: Record<string, FnDef> = {
   ISEVEN: { args: 'x', fn: (x: number) => whole(x, 1e-10) % 2 === 0 },
   ISLOGICAL: is((v) => typeof v === 'boolean'),
   ISNA: is((v) => isErr(v) && v.code === 'NA'),
+  // of a LAMBDA's parameter the call left out TRUE (the walk answers it there), of anything else FALSE
+  ISOMITTED: is(() => false),
   ISNONTEXT: is((v) => typeof v !== 'string'),
   ISNUMBER: is((v) => typeof v === 'number'),
   // a reference, a union too; a reference across sheets is not one here, as in Excel

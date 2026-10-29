@@ -28,8 +28,9 @@ describe('functionSignature', () => {
     for (const name of FUNCTION_NAMES) {
       const sig = functionSignature(name)!
       const required = sig.args.filter((a) => !a.optional).length
-      // LET is syntax: a name, its value and the calculation at least, then pairs
-      const spec = FUNCTIONS[name] ?? { min: 3, max: 253 }
+      // LET and LAMBDA are syntax: LET a name, its value and the calculation at least, then pairs; LAMBDA a calculation
+      // after up to 253 parameters
+      const spec = FUNCTIONS[name] ?? (name === 'LAMBDA' ? { min: 1, max: 254 } : { min: 3, max: 253 })
       expect(required, name).toBe(spec.min)
       if (sig.repeat) expect(spec.max, name).toBeGreaterThan(sig.args.length)
       else expect(sig.args.length, name).toBe(spec.max)

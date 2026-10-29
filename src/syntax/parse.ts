@@ -6,7 +6,7 @@
 import { wordKey } from '../collate.js'
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
 import type { Found } from '../locale/messages.js'
-import { bad, type Ast, type BinOp, type Bind, type Lit } from './ast.js'
+import { bad, type Ast, type BinOp, type Bind, type Lit, type Param } from './ast.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
 
 const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-'], ['*', '/'], ['^']]
@@ -14,6 +14,8 @@ const REF_OPS = [' ', ':'] as const
 
 /** Excel loads a LET of 254 arguments at most (126 names and the calculation, or 127 names). */
 const MAX_LET_ARGS = 254
+/** LAMBDA takes 253 parameters at most, as Microsoft's documentation says. */
+const MAX_PARAMS = 253
 
 /**
  * A word LET does not take as a name: a boolean, or a cell that reads as R1C1's row or column too (`R2`, `C5`, `RC5`).
@@ -107,7 +109,17 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     }
     return { k: 'union', items }
   }
+  // a value called as a function right after it: `LAMBDA(x,x*2)(3)`, `f(1)(2)`
   const primary = (): Ast => {
+    let a = atom()
+    while (peek().t === '(' && (a.k === 'fn' || a.k === 'let' || a.k === 'lambda' || a.k === 'call' || a.k === 'paren' || a.k === 'local')) {
+      const at = peek().at
+      p++
+      a = { k: 'call', fn: a, args: callArgs(at) }
+    }
+    return a
+  }
+  const atom = (): Ast => {
     const t = toks[p++]
     switch (t.t) {
       case 'num':
@@ -149,36 +161,45 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
       case 'fn': {
         expect('(')
         enter(t.at)
-        if (t.v === 'LET') {
-          const n = let_(t.at)
+        if (t.v === 'LET' || t.v === 'LAMBDA') {
+          const n = t.v === 'LET' ? let_(t.at) : lambda_(t.at)
           depth--
           expect(')')
           return n
         }
-        const args: Ast[] = []
-        if (peek().t !== ')') {
-          for (;;) {
-            args.push(arg())
-            if (peek().t === ',') {
-              p++
-              continue
-            }
-            break
-          }
-        }
-        depth--
-        expect(')')
-        return { k: 'fn', name: t.v, args }
+        // a LET name or a parameter called (`f(2)`)
+        const bind = scope.get(t.v)
+        const args = callArgs(t.at, false)
+        return bind ? { k: 'call', fn: { k: 'local', name: bind.name, slot: bind.slot }, args } : { k: 'fn', name: t.v, args }
       }
       default:
         return bad(t.at, t.t === 'eof' ? { key: 'unexpectedEnd' } : { key: 'unexpected', found: found(t) })
     }
   }
+  // the arguments of a call up to its `)`, its `(` read already; `open`: its nesting not entered yet
+  const callArgs = (at: number, open = true): Ast[] => {
+    if (open) enter(at)
+    const args: Ast[] = []
+    if (peek().t !== ')') {
+      for (;;) {
+        args.push(arg())
+        if (peek().t === ',') {
+          p++
+          continue
+        }
+        break
+      }
+    }
+    depth--
+    expect(')')
+    return args
+  }
   // an argument, or nothing before the next `,` or `)`: left out
   const arg = (): Ast => (peek().t === ',' || peek().t === ')' ? { k: 'missing' } : binary(0))
-  // LET's names in scope by upper-case name: a name is seen from the end of its value to the end of its LET
-  const scope = new Map<string, Bind>()
-  // a cell written without `$` that LET takes as a name, as typed; undefined for any other token
+  // LET's names and LAMBDA's parameters in scope by upper-case name: a LET name is seen from the end of its value to
+  // the end of its LET, a parameter in its LAMBDA's calculation
+  const scope = new Map<string, Param>()
+  // a cell written without `$` that LET and LAMBDA take as a name, as typed; undefined for any other token
   const cellWord = (t: Tok): string | undefined => {
     if (t.t !== 'ref' || t.sheet !== null || t.ref.kind !== 'cell' || t.ref.spill) return undefined
     const word = src.slice(t.at, t.at + t.ref.text.length)
@@ -188,7 +209,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
   // LET(name, value, …, calculation); the calculation may be left off (Excel loads `LET(x,1)`: 1)
   const let_ = (at: number): Ast => {
     const binds: Bind[] = []
-    const outer: [string, Bind | undefined][] = []
+    const outer: [string, Param | undefined][] = []
     let body: Ast | undefined
     for (;;) {
       const t = peek()
@@ -209,13 +230,39 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
       if (peek().t === ',') bad(t.at, { key: 'letName', position: binds.length * 2 + 1 })
       break
     }
+    restore(outer)
+    if (!binds.length) bad(at, { key: 'letEmpty' })
+    if (binds.length * 2 + (body ? 1 : 0) > MAX_LET_ARGS) bad(at, { key: 'letTooMany', max: MAX_LET_ARGS })
+    return body ? { k: 'let', binds, body } : { k: 'let', binds }
+  }
+  // the names a LET or a LAMBDA declared out of scope again, the outer ones they shadowed back
+  const restore = (outer: [string, Param | undefined][]) => {
     for (const [up, bind] of outer.reverse()) {
       if (bind) scope.set(up, bind)
       else scope.delete(up)
     }
-    if (!binds.length) bad(at, { key: 'letEmpty' })
-    if (binds.length * 2 + (body ? 1 : 0) > MAX_LET_ARGS) bad(at, { key: 'letTooMany', max: MAX_LET_ARGS })
-    return body ? { k: 'let', binds, body } : { k: 'let', binds }
+  }
+  // LAMBDA(parameter, …, calculation): the parameters are seen in the calculation
+  const lambda_ = (at: number): Ast => {
+    const params: Param[] = []
+    for (;;) {
+      const t = peek()
+      const name = t.t === 'ident' && boolWord(t.v) === undefined ? t.v : cellWord(t)
+      if (name === undefined || toks[p + 1].t !== ',') break
+      if (name.includes('.')) bad(t.at, { key: 'lambdaDot', name })
+      if (params.some((x) => wordKey(x.name) === wordKey(name))) bad(t.at, { key: 'lambdaTwice', name })
+      params.push({ name, slot: slots++ })
+      p += 2
+    }
+    if (params.length > MAX_PARAMS) bad(at, { key: 'lambdaTooMany', max: MAX_PARAMS })
+    const outer = params.map((x): [string, Param | undefined] => [wordKey(x.name), scope.get(wordKey(x.name))])
+    for (const x of params) scope.set(wordKey(x.name), x)
+    const first = peek()
+    const body = arg()
+    restore(outer)
+    if (peek().t === ',') bad(first.at, { key: 'lambdaName', position: params.length + 1 })
+    if (body.k === 'missing') bad(at, { key: 'lambdaEmpty' })
+    return { k: 'lambda', params, body }
   }
   // rows separated by `;`, values by `,`, all rows of one length, as Excel requires
   const constant = (at: number): Ast => {

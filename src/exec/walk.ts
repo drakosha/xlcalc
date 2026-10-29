@@ -97,6 +97,17 @@ export interface Backend<T> {
    * and of the result. A value is computed on its first use, once in each computation of the LET.
    */
   let(count: number, build: (local: (i: number) => T) => { values: T[]; body: T }): T
+  /**
+   * A LAMBDA of `count` parameters: `build` gets the code of a use of its i-th parameter and of ISOMITTED of it, and gives
+   * the code of its calculation, computed at each call.
+   */
+  lambda(count: number, build: (param: (i: number) => T, omitted: (i: number) => T) => T): T
+  /** A call of a value as a function (`callValue`); an argument left out is `absent`. */
+  invoke(fn: T, args: T[]): T
+  /** A definition that calls itself (a defined name's LAMBDA): `build` gets the code that stands for it inside and gives its code. */
+  recursive(build: (self: T) => T): T
+  /** A built-in function by its name as a value. */
+  eta(name: string): T
 }
 
 /** A LET value: computed on its first use, then kept. */
@@ -204,23 +215,27 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
-  // the code of a use of each LET name, and its value, by slot (a name's formula has its own LET names)
+  // the code of a use of each LET name and parameter, a LET name's value and ISOMITTED of a parameter, by slot (a
+  // name's formula has its own LET names and parameters)
   let uses: T[] = []
-  let bound: Ast[] = []
+  let bound: (Ast | undefined)[] = []
+  let omits: (T | undefined)[] = []
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
+  // the code that stands for a defined name's LAMBDA inside its own calculation, by the names being walked
+  const selves = new Map<NameDef, T>()
   /**
    * A definition's formula entered: at the global scope (a name's names are the global ones, its LET names its own), a
    * name that goes through it to itself caught by `inside`. The walk's state is per call, so a throw leaves it as is.
    */
   const enter = <R>(d: NameDef, visit: () => R): R => {
-    const outer: [T[], Ast[], number] = [uses, bound, scope]
-    ;[uses, bound, scope] = [[], [], -1]
+    const outer: [T[], (Ast | undefined)[], (T | undefined)[], number] = [uses, bound, omits, scope]
+    ;[uses, bound, omits, scope] = [[], [], [], -1]
     inside.add(d)
     const out = visit()
     inside.delete(d)
-    ;[uses, bound, scope] = outer
+    ;[uses, bound, omits, scope] = outer
     return out
   }
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
@@ -295,8 +310,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         bound = outer
         return
       }
-      case 'local':
-        return on(bound[n.slot])
+      case 'local': {
+        const x = bound[n.slot]
+        if (x) on(x)
+        return
+      }
       case 'fn': {
         const spec = FUNCTIONS[n.name]
         const cut = n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' || n.name === 'XLOOKUP'
@@ -377,7 +395,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const closed = (n: Ast): boolean => {
     if (n.k === 'xref') return true
     if (n.k === 'paren') return closed(n.a)
-    if (n.k === 'local') return closed(bound[n.slot])
+    if (n.k === 'local') return !!bound[n.slot] && closed(bound[n.slot]!)
     if (n.k !== 'name') return false
     const d = resolve(n, scope)
     if (!d || inside.has(d)) return false
@@ -451,9 +469,15 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'name': {
         const d = resolve(n, scope)
         if (!d) return b.value(E.NAME)
-        // a name that uses itself, through other names or not
-        if (inside.has(d)) return b.value(E.CYCLE)
-        return enter(d, () => go(d.ast, rangeOk))
+        // a name that uses itself, through other names or not: a LAMBDA's calls itself, any other is a cycle
+        if (inside.has(d)) return selves.get(d) ?? b.value(E.CYCLE)
+        if (d.ast.k !== 'lambda') return enter(d, () => go(d.ast, rangeOk))
+        return b.recursive((self) => {
+          selves.set(d, self)
+          const code = enter(d, () => go(d.ast))
+          selves.delete(d)
+          return code
+        })
       }
       case 'at':
         return value(b.at(go(n.a, true), r, c), n, rangeOk)
@@ -481,6 +505,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       }
       case 'fn': {
         if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
+        // ISOMITTED of a parameter: whether its call left it out
+        const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
+        if (param) return param
         const spec = FUNCTIONS[n.name]
         if (!spec) {
           info.external = true
@@ -521,6 +548,27 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         })
       case 'local':
         return value(uses[n.slot], n, rangeOk)
+      case 'lambda':
+        // the calculation keeps a reference it answers: its call reads it where one value goes
+        return b.lambda(n.params.length, (param, omitted) => {
+          n.params.forEach((x, i) => {
+            uses[x.slot] = param(i)
+            omits[x.slot] = omitted(i)
+            bound[x.slot] = undefined
+          })
+          return go(n.body, true)
+        })
+      case 'call':
+        return value(
+          b.invoke(
+            go(n.fn),
+            n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true))),
+          ),
+          n,
+          rangeOk,
+        )
+      case 'eta':
+        return b.eta(n.name)
     }
   }
   const code = go(ast)

@@ -8,6 +8,7 @@ import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, isErr, Rng, type V } from '../values.js'
+import { callValue, lambdaOf, OMITTED, parameters as given } from './lambda.js'
 import { once, operator, type Backend } from './walk.js'
 
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
@@ -16,8 +17,9 @@ const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: string): string } {
   const hoisted: string[] = []
   const hoist = (code: string) => `h${hoisted.push(code) - 1}`
-  // LET's names of the formula: v0, v1, …
+  // LET's names and LAMBDA's parameters of the formula: v0, v1, …; the definitions that call themselves: r0, r1, …
   let names = 0
+  let selves = 0
   const bound = (v: Arg) => parameters ? `p[${parameters.push(v) - 1}]` : lit(v as V)
   return {
     value: bound,
@@ -52,13 +54,26 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
       const { values, body } = build((i) => `v${first + i}()`)
       return `(()=>{const ${values.map((v, i) => `v${first + i}=M(()=>${v})`).join(',')};return ${body}})()`
     },
+    lambda: (count, build) => {
+      const first = names
+      names += count
+      const v = (i: number) => `v${first + i}`
+      const body = build((i) => `${v(i)}()`, (i) => `(${v(i)}===OM)`)
+      return `LAM(${count},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body})`
+    },
+    invoke: (fn, args) => `CALL(${fn},[${args.join(',')}])`,
+    recursive: (build) => {
+      const self = `r${selves++}`
+      return `(()=>{const ${self}=()=>${build(`${self}()`)};return ${self}()})()`
+    },
+    eta: (name) => `ETA(${JSON.stringify(name)})`,
     source: (root) => `${parameters ? '(p)=>' : '(()=>'}{${hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''}return ()=>${root}}${parameters ? '' : ')()'}`,
   }
 }
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,addLast,subLast,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,addLast,subLast,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M,LAM,CALL,ETA,OM}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T[] {
@@ -73,5 +88,7 @@ export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
     throw e
   }
-  return make({ ...rt, R, A, X, M: once }) as T[]
+  // a LAMBDA's calculation gets its parameters as the uses of LET's names read them
+  const LAM = (count: number, f: (...vals: (() => Arg)[]) => Arg) => lambdaOf(count, (args) => f(...given(args, count)))
+  return make({ ...rt, R, A, X, M: once, LAM, CALL: callValue, OM: OMITTED }) as T[]
 }
