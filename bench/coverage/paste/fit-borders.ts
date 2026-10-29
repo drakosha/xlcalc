@@ -5,17 +5,23 @@
  * The book of the set `fit`, its rows as a session fits them. Predicted by the engine before Excel ran them
  * (`fit-borders.predicted.json`): it fits them as for All.
  */
-import type { CellStyle } from '../../../src/contract.js'
+import type { BookInput, CellStyle } from '../../../src/contract.js'
+import { createSession } from '../../../src/index.js'
 import type { PasteCase, PasteCases, PasteWhat } from './cases.js'
 import { fitBook } from './fit.js'
 
-export function buildPasteCases(): PasteCases {
+/** The book of `fit` with A6 large and a thin bottom border, C19 with a thick top border, patched in a session as a host patches them, which fits row 6. */
+function bordersBook(): BookInput {
   const book = fitBook()
-  // A6 large with a thin bottom border, over C19 with a thick top border of its own
   const styles: CellStyle[] = [...(book.styles ?? []), { font: { size: 20 }, border: { bottom: { style: 'thin' } } }, { border: { top: { style: 'thick' } } }]
   const sheet = book.sheets[0]
-  const cells = { ...sheet.cells, A6: { value: 'edge', style: styles.length - 2 }, C19: { value: 'u', style: styles.length - 1 } }
-  const fit = { ...book, styles, sheets: [{ ...sheet, cells }] }
+  const s = createSession({ ...book, styles, sheets: [{ ...sheet, cells: { ...sheet.cells, A6: { value: 'edge' }, C19: { value: 'u' } } }] }, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
+  s.patchCells([{ sheet: 'S', range: 'A6', set: { style: styles.length - 2 } }, { sheet: 'S', range: 'C19', set: { style: styles.length - 1 } }])
+  return s.getBook()
+}
+
+export function buildPasteCases(): PasteCases {
+  const fit = bordersBook()
   const cases: PasteCase[] = []
   const add = (id: string, from: string, to: string) => {
     for (const what of ['allExceptBorders', 'all'] as PasteWhat[]) cases.push({ id: what === 'all' ? `all-${id}` : id, book: 'fit', from: { sheet: 'S', range: from }, to: { sheet: 'S', range: to }, what })
