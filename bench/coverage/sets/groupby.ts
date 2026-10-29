@@ -100,3 +100,14 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./groupby.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: field headers left out are found nowhere, and where the documentation
+ * would find them (text above a number) the call is #VALUE!; made-up headers are numbered (`Value 1`); totals left out
+ * are the grand total alone, `Grand Total` beside subtotals; a value spelled two ways (`West`, `west`) is spelled as the
+ * row that sorts first by every field; a column of functions repeats each group's line for each function; a filter that
+ * keeps no row, and several sort keys with a value column among them, are #VALUE!; a function's answer of several values
+ * makes the whole summary #CALC!; PIVOTBY shows the column fields' headers above their keys, and with several value
+ * columns labels none and leaves its total columns empty. Excel for Windows 16.0.20430 knows neither function (`#NAME?`).
+ */
+export const MISSED: readonly string[] = ['GROUPBY#2', 'GROUPBY#4', 'GROUPBY#5', 'GROUPBY#6', 'GROUPBY#7', 'GROUPBY#8', 'GROUPBY#9', 'GROUPBY#15', 'GROUPBY#17', 'GROUPBY#22', 'GROUPBY#25', 'GROUPBY#27', 'GROUPBY#28', 'GROUPBY#35', 'GROUPBY#36', 'PIVOTBY#2', 'PIVOTBY#3', 'PIVOTBY#8', 'PIVOTBY#9', 'PIVOTBY#13']
