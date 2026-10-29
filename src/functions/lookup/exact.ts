@@ -1,5 +1,5 @@
 /** Exact searches of an immutable line: numeric/boolean keys, and text groups ordered by the book's comparator. */
-import { spend } from '../../exec/budget.js'
+import { spend, STRIDE } from '../../exec/budget.js'
 import type { V } from '../../values.js'
 import type { Compare, Key, Line } from './search.js'
 import { KEPT_RANGE, KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
@@ -35,7 +35,6 @@ function counted(line: Line, index: Index): void {
 
 // Range arrays are immutable and replaced on invalidation; their indexes disappear with them.
 const caches = new WeakMap<readonly V[], WeakMap<Compare, Map<string, Index>>>()
-const STRIDE = 0xffff
 
 function indexFor(line: Line, compare: Compare): Index {
   if (line.store) {

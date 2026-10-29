@@ -18,7 +18,7 @@ const STYLES: CellStyle[] = [
 ]
 
 /** S: the source A1:B2 (a rule and a validation over it, B2 unlocked), A4:B4 merged, row 6 and column D of their own; targets with values. */
-function painterBook(): BookInput {
+export function painterBook(): BookInput {
   return {
     styles: STYLES,
     sheets: [

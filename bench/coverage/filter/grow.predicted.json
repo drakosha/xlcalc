@@ -1,0 +1,225 @@
+{
+ "cases": {
+  "under-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "under-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "under-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "under-4": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-5": {
+   "after": [
+    "B1:D5"
+   ],
+   "saved": "B1:D5"
+  },
+  "under-6": {
+   "after": [
+    "A1:C6",
+    "A1:C7"
+   ],
+   "saved": "A1:C7"
+  },
+  "under-7": {
+   "after": [
+    "A1:C5",
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "gap-1": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "gap-2": {
+   "after": [
+    "A1:C5",
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "paste-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "paste-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C7"
+  },
+  "paste-3": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "paste-4": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "copy-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "copy-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C7"
+  },
+  "copy-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "fill-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "fill-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C7"
+  },
+  "fill-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "entry-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "entry-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "entry-3": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "criteria-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "criteria-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "full-1": {
+   "after": [
+    "A1:C1048576",
+    "A1:C1048576"
+   ],
+   "saved": "A1:C1048576"
+  },
+  "header-1": {
+   "after": [
+    "A1:C2"
+   ],
+   "saved": "A1:C2"
+  },
+  "clear-1": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "clear-2": {
+   "after": [
+    "A1:C6",
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "clear-3": {
+   "after": [
+    "A1:C5",
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "undo-1": {
+   "after": [
+    "A1:C6",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "undo-2": {
+   "after": [
+    "A1:C7",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "undo-3": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "set-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C6"
+  },
+  "set-2": {
+   "after": [
+    "A1:C6",
+    "A1:C7"
+   ],
+   "saved": "A1:C7"
+  }
+ }
+}

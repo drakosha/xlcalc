@@ -1,0 +1,1869 @@
+{
+ "up": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "5:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-up": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "5:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "down": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "plain"
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "6": 26,
+     "9": 30,
+     "17": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-down": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "plain"
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "6": 26,
+     "9": 30,
+     "17": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "small": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-small": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "own": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-own": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "tiled": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C14": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C15": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26,
+     "13:15": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-tiled": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C14": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C15": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26,
+     "13:15": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "under-larger": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-under-larger": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "column": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "G1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "G2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "G3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "G4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "G6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-column": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "G1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "G2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "G3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "G4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "G6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "u",
+      "style": {
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "bordered": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "top": {
+         "style": "thick"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "19": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ },
+ "all-bordered": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": "big",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "A2": {
+      "value": "small",
+      "style": {
+       "font": {
+        "size": 8
+       }
+      }
+     },
+     "A3": {
+      "value": "plain"
+     },
+     "A4": {
+      "value": "mid",
+      "style": {
+       "font": {
+        "size": 16
+       }
+      }
+     },
+     "C5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     },
+     "C7": {
+      "value": "y",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C9": {
+      "value": "z"
+     },
+     "C13": {
+      "value": 1
+     },
+     "C14": {
+      "value": 2
+     },
+     "C15": {
+      "value": 3
+     },
+     "C17": {
+      "value": "v"
+     },
+     "D17": {
+      "value": "w",
+      "style": {
+       "font": {
+        "size": 20,
+        "bold": true
+       }
+      }
+     },
+     "C19": {
+      "value": "edge",
+      "style": {
+       "font": {
+        "size": 20
+       },
+       "border": {
+        "bottom": {
+         "style": "thin"
+        }
+       }
+      }
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {
+     "1": 26,
+     "4": 21,
+     "9": 30,
+     "17": 26,
+     "19": 26,
+     "6:7": 26
+    },
+    "tables": []
+   }
+  }
+ }
+}

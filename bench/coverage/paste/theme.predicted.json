@@ -1,0 +1,173 @@
+{
+ "allUsingSourceTheme": {
+  "shown": {
+   "S": {
+    "cells": {
+     "C1": {
+      "value": 1,
+      "style": {
+       "fill": {
+        "color": "#8E44AD"
+       }
+      }
+     },
+     "C2": {
+      "value": 2,
+      "style": {
+       "font": {
+        "color": "#16A085"
+       }
+      }
+     },
+     "C3": {
+      "value": "minor",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C4": {
+      "value": 4,
+      "style": {
+       "fill": {
+        "color": "#00B050"
+       }
+      }
+     },
+     "C5": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#BC89D1"
+       }
+      }
+     },
+     "C6": {
+      "value": "named"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "all": {
+  "shown": {
+   "S": {
+    "cells": {
+     "C1": {
+      "value": 1,
+      "style": {
+       "fill": {
+        "color": "#8E44AD"
+       }
+      }
+     },
+     "C2": {
+      "value": 2,
+      "style": {
+       "font": {
+        "color": "#16A085"
+       }
+      }
+     },
+     "C3": {
+      "value": "minor",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C4": {
+      "value": 4,
+      "style": {
+       "fill": {
+        "color": "#00B050"
+       }
+      }
+     },
+     "C5": {
+      "value": 5,
+      "style": {
+       "fill": {
+        "color": "#BC89D1"
+       }
+      }
+     },
+     "C6": {
+      "value": "named"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "formats": {
+  "shown": {
+   "S": {
+    "cells": {
+     "C1": {
+      "value": "old",
+      "style": {
+       "fill": {
+        "color": "#8E44AD"
+       }
+      }
+     },
+     "C2": {
+      "value": "old",
+      "style": {
+       "font": {
+        "color": "#16A085"
+       }
+      }
+     },
+     "C3": {
+      "value": "old",
+      "style": {
+       "font": {
+        "bold": true
+       }
+      }
+     },
+     "C4": {
+      "value": "old",
+      "style": {
+       "fill": {
+        "color": "#00B050"
+       }
+      }
+     },
+     "C5": {
+      "value": "old",
+      "style": {
+       "fill": {
+        "color": "#BC89D1"
+       }
+      }
+     },
+     "C6": {
+      "value": "old"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}

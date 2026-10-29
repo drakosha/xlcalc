@@ -220,12 +220,14 @@ function takenSheet(s: StoredSheet): SheetInput {
  * Runs the cases to do of a step whose cases go to Excel as files, as `runCases` does: each answer or refusal goes into
  * `store` (a refusal named as it comes) and the answers are saved after each case and at the end.
  */
-export function runFileCases<C extends { id: string }, A>(label: string, store: FileAnswers<C, A>, todo: C[], only: string, run: (c: C) => Promise<FileAnswer<A>>, save: () => void, t0: number): Promise<void> {
+export function runFileCases<C extends { id: string }, A>(label: string, store: FileAnswers<C, A>, todo: C[], only: string, run: (c: C) => Promise<FileAnswer<A> | { again: string }>, save: () => void, t0: number): Promise<void> {
   return runCases(
     todo,
     only,
     async (c) => {
       const r = await run(c)
+      // the step's own failure, no answer of Excel's: the case waits for the next run
+      if ('again' in r) return void console.log(`${c.id}: ${r.again}, left to do`)
       if ('rejected' in r) console.log(`${c.id}: ${r.rejected}`)
       store.got(c.id, r)
       save()

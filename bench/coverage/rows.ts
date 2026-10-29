@@ -10,12 +10,12 @@ import JSZip from 'jszip'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { formatAddress } from '../../src/model.js'
+import { formatAddress, indexToCol } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { answeredLine, answerSaver, chosen, keptSame, loadStored, setModule, took } from './stored.js'
-import { caseCells, caseColumn, caseRow, cellKey, rowsBook, type RowAnswer, type RowCase, type RowSet } from './rows/cases.js'
+import { caseCells, caseColumn, caseRow, cellKey, fitsRow, ownBook, rowsBook, type RowAnswer, type RowCase, type RowSet } from './rows/cases.js'
 import { HERE, ROOT } from './paths.js'
 
 const SCRIPT = join(HERE, 'excel-rows.applescript')
@@ -39,13 +39,18 @@ export function keptRows(file: string, cases: RowCase[]): { answers: Record<stri
   return { answers, meta: prev?.meta }
 }
 
-/** The rows of the first sheet of a saved book with a height, as their `<row>` elements give them, by number. */
-export async function savedRows(saved: Uint8Array): Promise<Map<number, NonNullable<RowAnswer['saved']>>> {
+/** The attributes of an element's opening tag. */
+const attrsOf = (tag: string): Record<string, string> => Object.fromEntries([...tag.matchAll(/(\w+)="([^"]*)"/g)].map((x) => [x[1], x[2]]))
+
+/** The rows of the first sheet of a saved book with a height, as their `<row>` elements give them, by number, and the sheet's `<sheetFormatPr>`. */
+export async function savedRows(saved: Uint8Array): Promise<Map<number, NonNullable<RowAnswer['saved']>> & { format?: Record<string, string> }> {
   const zip = await JSZip.loadAsync(saved)
   const xml = await zip.file('xl/worksheets/sheet1.xml')!.async('string')
-  const out = new Map<number, NonNullable<RowAnswer['saved']>>()
+  const out: Map<number, NonNullable<RowAnswer['saved']>> & { format?: Record<string, string> } = new Map()
+  const fp = /<sheetFormatPr\s([^>]*?)\/?>/.exec(xml)
+  if (fp) out.format = attrsOf(fp[1])
   for (const m of xml.matchAll(/<row\s([^>]*?)\/?>/g)) {
-    const a = Object.fromEntries([...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((x) => [x[1], x[2]]))
+    const a = attrsOf(m[1])
     const on = (k: string) => a[k] === '1' || a[k] === 'true'
     if (a.ht !== undefined) out.set(Number(a.r), { ht: Number(a.ht), ...(on('customHeight') ? { customHeight: true } : {}), ...(on('hidden') ? { hidden: true } : {}) })
   }
@@ -55,21 +60,29 @@ export async function savedRows(saved: Uint8Array): Promise<Map<number, NonNulla
 /** A cell of the k-th case of a part, by the case's column and the row's offset from the case's. */
 export const cellOf = (k: number, col: number, dr = 0) => formatAddress(caseRow(k) - 1 + dr, caseColumn(k) + col)
 
-/** The cases of a part as the script takes them: [row, fit, [[cell, text, via, last cell of a fill]], [cells to read]]. */
+/** The columns `cols` of the k-th case of a part whole, as Excel names them (`B:C`). */
+const columnsOf = (k: number, [a, b]: [number, number]) => `${indexToCol(caseColumn(k) + a)}:${indexToCol(caseColumn(k) + b)}`
+
+/**
+ * The cases of a part as the script takes them: [row, fit, [[cell, text, via, last cell of a fill]], [cells to read],
+ * [columns patched, font size or 0, rotation or ""] or [], [rows read after]].
+ */
 export const partSpec = (part: RowCase[]) =>
   part.map((c, k) => [
     caseRow(k),
-    !c.typed || c.fitAfter ? 1 : 0,
+    fitsRow(c) ? 1 : 0,
     (c.typed ?? []).map(([col, t]) => [cellOf(k, col), t, c.via ?? 'local', cellOf(k, c.fillTo ?? col)]),
     caseCells(c).map(([dr, col]) => cellOf(k, col, dr)),
+    c.patched ? [columnsOf(k, c.patched.cols), c.patched.size ?? 0, String(c.patched.rotation ?? '')] : [],
+    c.more ?? [],
   ])
 
 /** The answers of a part from what Excel read of each case's row and the file it saved. */
-export async function partAnswers(part: RowCase[], before: number[], refused: string[][], read: [number, boolean, [string, boolean][]][], saved: Uint8Array): Promise<Record<string, RowAnswer>> {
+export async function partAnswers(part: RowCase[], before: number[], refused: string[][], read: [number, boolean, [string, boolean][], number[]?][], saved: Uint8Array): Promise<Record<string, RowAnswer>> {
   const rows = await savedRows(saved)
   const out: Record<string, RowAnswer> = {}
   part.forEach((c, k) => {
-    const [height, standard, cells] = read[k]
+    const [height, standard, cells, more] = read[k]
     const why = Object.fromEntries(refused[k].flatMap((e, i) => (e ? [[i, e]] : [])))
     out[c.id] = {
       before: before[k],
@@ -78,6 +91,8 @@ export async function partAnswers(part: RowCase[], before: number[], refused: st
       saved: rows.get(caseRow(k)) ?? null,
       cells: Object.fromEntries(caseCells(c).map((x, i) => [cellKey(x), { formula: cells[i][0], wrap: cells[i][1] }])),
       ...(Object.keys(why).length ? { refused: why } : {}),
+      ...(c.more ? { more: Object.fromEntries(c.more.map((r, i) => [r, more![i]])) } : {}),
+      ...(c.patched && rows.format ? { format: rows.format } : {}),
     }
   })
   return out
@@ -90,7 +105,7 @@ async function runPart(part: RowCase[], label: string): Promise<Record<string, R
   return runWatched<Record<string, RowAnswer>>({
     ...keyedPart(`rows ${label}`, SCRIPT, 'frows', rowsBook(part), partSpec(part), keys),
     done: (out, dir) => {
-      const raw = JSON.parse(out) as { before: number[]; refused: string[][]; rows: [number, boolean, [string, boolean][]][] }
+      const raw = JSON.parse(out) as { before: number[]; refused: string[][]; rows: [number, boolean, [string, boolean][], number[]][] }
       return partAnswers(part, raw.before, raw.refused, raw.rows, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
     },
   })
@@ -112,9 +127,7 @@ export async function stepRows(set: string, tag: string): Promise<void> {
   const clipboard = pastes ? execFileSync('pbpaste', { encoding: 'utf8', env: UTF8 }) : ''
   await ensureExcel(tag)
   try {
-    // a column's style reaches every row of the sheet: such a case has a book of its own
-    const alone = (c: RowCase) => Object.values(c.columns ?? {}).some((x) => x.look)
-    const parts = [...inParts(todo.filter((c) => !alone(c)), ROWS_PART), ...todo.filter(alone).map((c) => [c])]
+    const parts = [...inParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
     for (const [k, part] of parts.entries()) {
       Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`))
       save()

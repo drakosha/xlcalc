@@ -22,7 +22,8 @@ export interface DisplayOptions {
 
 /**
  * Options of `entryWidth`: the format used to display the value (the cell's format after the entry), the workbook's
- * locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into.
+ * locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into. A cell
+ * whose text is turned (`AlignmentStyle.rotation`) widens no column, so a host does not call it for one.
  */
 export interface EntryWidthOptions extends DisplayOptions {
   /** The column's width was fitted by Excel (`ColumnInput.bestFit`), so typing widens it as it widens the default width. */

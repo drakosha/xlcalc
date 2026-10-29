@@ -1,12 +1,13 @@
 /**
  * Text with a line break typed into cells (`setCellText`, `setCellTexts`, `fillCellText`) or pasted (`pasteText`), as
  * Excel takes it (`test/excel/rows/`): the cell wraps its text, its style taking `alignment.wrap` (a style of the book's
- * table found or added); a formula typed over lines does not. Typed, the row of a cell that wraps fits it as AutoFit
- * does, unless its height was set by hand or it is hidden; a paste fits no row.
+ * table found or added); a formula typed over lines does not. Typed, the row of a cell that wraps or turns its text
+ * fits it as AutoFit does, unless its height was set by hand or it is hidden; a paste fits no row.
  */
 import type { CellInput, CellStyle } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { fitHeights, stateRows } from '../layout/heights.js'
+import { turnOf } from '../layout/turned.js'
 import { sheetLines } from '../layout/lines.js'
 import { inner, MAX_ROWS } from '../model.js'
 import { outCell } from '../result.js'
@@ -38,7 +39,7 @@ export function wrapTyped(s: EngineState, cells: Typed[]): CellStyle[] | undefin
   return table.table
 }
 
-/** The heights the rows of the typed cells that wrap take now, as AutoFit gives them, where a row's height is the default or one Excel fitted and it shows: row by row. */
+/** The heights the rows of the typed cells that wrap or turn their text take now, as AutoFit gives them, where a row's height is the default or one Excel fitted and it shows: row by row. */
 export function typedHeights(s: EngineState, cells: Typed[]): SetLayoutEdit[] {
   const styles = s.input.styles ?? []
   const rows = new Map<number, Set<number>>()
@@ -47,7 +48,7 @@ export function typedHeights(s: EngineState, cells: Typed[]): SetLayoutEdit[] {
     let lines = linesOf.get(i)
     if (!lines) linesOf.set(i, (lines = sheetLines(s.input.sheets[i], s)))
     const style = lines.look(r, c).style
-    if (style === undefined || !styles[style]?.alignment?.wrap) continue
+    if (style === undefined || (!styles[style]?.alignment?.wrap && turnOf(styles[style]) === undefined)) continue
     inner(rows, i, () => new Set()).add(r)
   }
   return [...rows].flatMap(([i, set]) => fittedHeights(s, i, spansOf([...set]), false))
@@ -98,7 +99,7 @@ export function fittedHeights(s: EngineState, i: number, spans: [number, number]
   const [lo, hi] = [spans[0][0], spans[spans.length - 1][1]]
   const sheet = s.input.sheets[i]
   const { cells, spans: spills } = stateRows(s, i, lo, hi)
-  const fits = lines(fitHeights(s.input.styles ?? [], sheet, cells, lo, hi, spills), 'r')
+  const fits = lines(fitHeights(s.ctx.rules, s.input.styles ?? [], sheet, cells, lo, hi, spills), 'r')
   const rows = lines(sheet.rows, 'r')
   const out: SetLayoutEdit[] = []
   let run: [a: number, b: number, height: number | null] | null = null

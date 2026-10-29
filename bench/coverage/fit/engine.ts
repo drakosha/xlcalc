@@ -47,7 +47,9 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     if (!r.ok) continue
     if (r.input) sheet.cells[addr] = r.input as CellInput
     else delete sheet.cells[addr]
-    if (!widen) continue
+    // a host widens no column for a turned cell (`entryWidth`)
+    const style = sheet.cells[addr]?.style
+    if (!widen || (style !== undefined && book.styles?.[style]?.alignment?.rotation)) continue
     const value = e.compute(book).sheets[0].cells[addr]?.value ?? null
     const col = columns[COL] ?? {}
     const numberFormat = numberFormatOf(sheet.cells[addr]) ?? numberFormatOf(col)

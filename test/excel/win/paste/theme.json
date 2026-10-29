@@ -1,0 +1,123 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.7
+ },
+ "books": {
+  "target": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C1": {
+       "value": "old"
+      },
+      "C2": {
+       "value": "old"
+      },
+      "C3": {
+       "value": "old"
+      },
+      "C4": {
+       "value": "old"
+      },
+      "C5": {
+       "value": "old"
+      },
+      "C6": {
+       "value": "old"
+      }
+     }
+    }
+   ]
+  },
+  "source": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 1
+      },
+      "A3": {
+       "value": 1
+      },
+      "A4": {
+       "value": 1
+      },
+      "A5": {
+       "value": 1
+      },
+      "A6": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "allUsingSourceTheme",
+   "book": "target",
+   "fromBook": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "allUsingSourceTheme"
+  },
+  {
+   "id": "all",
+   "book": "target",
+   "fromBook": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "all"
+  },
+  {
+   "id": "formats",
+   "book": "target",
+   "fromBook": "source",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A6"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "formats"
+  }
+ ],
+ "made": {},
+ "sent": {
+  "allUsingSourceTheme": "2b00d08862263917f4cd96f3f041bd8b67af6cf512d6c63ec3aad83cacbb2db9 f2ab7e15e8e858184e4dcaf835c1e5c48a4046635bd40252ab7f6924fe5e8616",
+  "all": "2b00d08862263917f4cd96f3f041bd8b67af6cf512d6c63ec3aad83cacbb2db9 f2ab7e15e8e858184e4dcaf835c1e5c48a4046635bd40252ab7f6924fe5e8616",
+  "formats": "2b00d08862263917f4cd96f3f041bd8b67af6cf512d6c63ec3aad83cacbb2db9 f2ab7e15e8e858184e4dcaf835c1e5c48a4046635bd40252ab7f6924fe5e8616"
+ },
+ "answers": {
+  "allUsingSourceTheme": {},
+  "all": {},
+  "formats": {}
+ }
+}

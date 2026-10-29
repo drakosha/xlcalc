@@ -1,8 +1,8 @@
 /**
  * A thread of the pool (`docs/async.md`): it holds sessions as the same thread does and runs one task at a time in
- * portions, so a `cancel` gets through between them. A session's changing calls carry sequence numbers: the last
- * one again gets the same answer, so a repeated message never applies an edit twice. A restore opens a snapshot and
- * replays the journal with the clocks the session had.
+ * portions, so a `cancel` gets through between them, and inside a formula through memory shared with the pool. A
+ * session's changing calls carry sequence numbers: the last one again gets the same answer, so a repeated message
+ * never applies an edit twice. A restore opens a snapshot and replays the journal with the clocks the session had.
  */
 import { abortable } from '../async/queue.js'
 import { callLimits } from '../async/options.js'
@@ -45,6 +45,29 @@ let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
 const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'cancel' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
+/** Where the pool writes the task it cancels (`init`), none where threads share no memory: the engine's checks read it inside a formula. */
+let cancelled: Int32Array | undefined
+const CANCELLED = 'cancelled by the pool'
+
+/** The signal of task `task`: aborted by the pool's `cancel`, or as soon as a check reads the task in the shared word. */
+function taskSignal(task: number): { signal: AbortSignalLike; abort(reason?: unknown): void } {
+  const ac = abortable()
+  const word = cancelled
+  if (!word) return ac
+  const s = ac.signal
+  const signal: AbortSignalLike = {
+    get aborted() {
+      if (!s.aborted && Atomics.load(word, 0) === task) ac.abort(CANCELLED)
+      return s.aborted
+    },
+    get reason() {
+      return s.reason
+    },
+    addEventListener: s.addEventListener,
+    removeEventListener: s.removeEventListener,
+  }
+  return { signal, abort: ac.abort }
+}
 /** The locales and the engine the pool sent, loaded before the next task. */
 let loading: Promise<void> = Promise.resolve()
 
@@ -92,6 +115,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'getUsedRange':
       value = await s.getUsedRange(args[0] as string)
       break
+    case 'getAutoFilterRange':
+      value = await s.getAutoFilterRange(args[0] as string)
+      break
     case 'getEnd':
       value = await s.getEnd(args[0] as string, args[1] as string, args[2] as never)
       break
@@ -103,6 +129,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       break
     case 'getSpecialCells':
       value = await s.getSpecialCells(args[0] as string, args[1] as string, args[2] as never)
+      break
+    case 'getWorkbookStatistics':
+      value = await s.getWorkbookStatistics(args[0] as string)
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
@@ -237,7 +266,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
 async function next() {
   const m = waiting.shift()
   if (!m) return
-  const ac = abortable()
+  const ac = taskSignal(m.task)
   current = { task: m.task, abort: ac.abort }
   try {
     await loading
@@ -262,12 +291,13 @@ function receive(m: ToThread) {
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
     if (m.locales) load(m.locales)
     if (m.regex) loadRegex(m.regex)
+    cancelled = m.cancelled
   } else if (m.t === 'locales') {
     load(m.locales)
   } else if (m.t === 'regex') {
     loadRegex(m.kind)
   } else if (m.t === 'cancel') {
-    if (current?.task === m.task) current.abort('cancelled by the pool')
+    if (current?.task === m.task) current.abort(CANCELLED)
   } else {
     waiting.push(m)
     if (!current) void next()

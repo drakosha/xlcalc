@@ -7,7 +7,7 @@ import type { ErrorCode } from '../../contract.js'
 import { textOrder } from '../../collate.js'
 import { errorWords } from '../../criteria.js'
 import { inSystem, parseDateWith, textReaders, type DateSyntax } from '../../dates.js'
-import { displayWith, fitPoints, formatWith, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../../numfmt.js'
+import { displayWith, fitLaid, fitPoints, formatWith, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../../numfmt.js'
 import { errorIn } from '../../syntax/errors.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
@@ -17,12 +17,13 @@ import { regionalDates } from './dates.js'
 import { formatDialects } from './format.js'
 import { cellNumberOf, numberReader } from './numbers.js'
 
-/** The five members of `Rules` that show a value by its format, wired to the text dialect, the cell's style and date reading. */
-export function shownBy(text: Dialect, cell: Style, dates: DateSyntax): Pick<Rules, 'dateText' | 'formatText' | 'display' | 'fitPoints' | 'typedPoints'> {
+/** The members of `Rules` that show a value by its format, wired to the text dialect, the cell's style and date reading. */
+export function shownBy(text: Dialect, cell: Style, dates: DateSyntax): Pick<Rules, 'dateText' | 'formatText' | 'display' | 'fitLaid' | 'fitPoints' | 'typedPoints'> {
   return {
     dateText: (t) => parseDateWith(t, dates),
     formatText: (value, format) => formatWith(value, format, text),
     display: (value, format, space) => displayWith(value, format, cell, space),
+    fitLaid: (value, format) => fitLaid(value, format, cell),
     fitPoints: (value, format) => fitPoints(value, format, cell),
     typedPoints: (value, format, now) => typedPoints(value, format, cell, now),
   }

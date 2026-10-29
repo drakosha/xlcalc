@@ -1,6 +1,7 @@
 /**
  * SUBTOTAL and AGGREGATE beyond the Excel case set (`bench/coverage/sets/subtotal.ts`): a session follows the
- * cells that become or stop being nested (a formula with SUBTOTAL or AGGREGATE) the same as a full computation.
+ * cells that become or stop being nested (a formula with SUBTOTAL or AGGREGATE) the same as a full computation; one
+ * range read cell by cell, skipping what they skip, answers as the range made whole.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
@@ -63,5 +64,36 @@ describe('SUBTOTAL and AGGREGATE beyond the Excel cases', () => {
     session.setCells([{ sheet: 'S', cell: 'A1', input: { formula: 'SUBTOTAL(9,A2:A3)' } }])
     expect(sum()).toBe(3 * (78 - 1 - 4 - 8) + 100)
     session.close()
+  })
+
+  it('one range read cell by cell, skipping hidden rows, nested cells and errors, answers as the range made whole', () => {
+    const rnd = mulberry32(5)
+    const pick = <T>(xs: T[]): T => xs[Math.floor(rnd() * xs.length)]
+    for (let n = 0; n < 60; n++) {
+      const cells: Record<string, CellInput> = {}
+      const rows: Record<string, { hidden: boolean }> = {}
+      const height = 5 + Math.floor(rnd() * 40)
+      for (let r = 1; r <= height; r++) {
+        if (rnd() < 0.2) rows[r] = { hidden: true }
+        for (const col of 'ABC') {
+          const x = rnd()
+          const input = x < 0.5 ? { value: Math.round((rnd() - 0.3) * 1000) / 10 } : x < 0.6 ? { value: pick<string | boolean>(['t', true]) } : x < 0.65 ? { formula: pick(['1/0', 'NA()']) } : x < 0.7 ? { formula: pick(['SUBTOTAL(9,A1:A2)', 'AGGREGATE(9,6,B1:B2)']) } : x < 0.76 ? { value: pick([1e308, -1e308, 0.1, 0.2, 1e-310]) } : undefined
+          if (input) cells[`${col}${r}`] = input
+        }
+      }
+      // the same call with a blank cell as a second reference: the range made whole (`counted`)
+      const calls: [string, string][] = []
+      for (let i = 0; i < 40; i++) {
+        const r1 = 1 + Math.floor(rnd() * height)
+        const r2 = r1 + Math.floor(rnd() * (height - r1 + 3))
+        const range = pick([`A${r1}:A${r2}`, `A${r1}:C${r2}`, 'B:B', `A${r1}:C${r1}`, 'A:C'])
+        const code = pick([1, 2, 3, 4, 5, 9])
+        const call = rnd() < 0.5 ? `SUBTOTAL(${pick([code, code + 100])},${range}` : `AGGREGATE(${code},${Math.floor(rnd() * 8)},${range}`
+        calls.push([`${call})`, `${call},Z999)`])
+      }
+      calls.forEach(([one, whole], i) => Object.assign(cells, { [`E${i + 1}`]: { formula: one }, [`F${i + 1}`]: { formula: whole } }))
+      const out = compute({ sheets: [{ name: 'S', cells, rows, filtered: rnd() < 0.5 }] }, { clock }).sheets[0].cells
+      calls.forEach(([one], i) => expect(out[`E${i + 1}`].value, `book ${n}: ${one}`).toEqual(out[`F${i + 1}`].value))
+    }
   })
 })

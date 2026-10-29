@@ -30,6 +30,7 @@ import { cellsIn, gridOf } from './grid.js'
 import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
 import { formulaAt } from './transform.js'
 import { combined, isBlank } from './operation.js'
+import { operationRefusal } from './arrays.js'
 import { internStyle } from '../style-table.js'
 
 type Refused = Exclude<Applied, { ok: true }>
@@ -408,9 +409,11 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind, { operation: o.operation, skipBlanks: o.skipBlanks, widths }), geometry: writesContent(o.kind) ? r.geometry : [] }
     r = writesContent(o.kind) ? headersPasted(book, to, area)(part) : part
   }
-  // an operation onto a spilled array is refused, as Excel refuses it onto a dynamic array formula (the paste sets `ops-held`, `spill-ops`)
+  // an operation onto a legacy array formula is refused, and onto a spilled array, as Excel refuses it onto a dynamic array formula (the paste sets `array-ops`, `ops-held`, `spill-ops`)
+  const legacy = r.ok && area && o.operation && writesContent(o.kind) ? operationRefusal(sheetOf(book, to), area) : null
   const spill = r.ok && area && o.operation && writesContent(o.kind) ? values.spills?.(to, area)[0] : undefined
-  if (spill) r = { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
+  if (legacy) r = { ok: false, code: 'array', message: say(book.locale, legacy) }
+  else if (spill) r = { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
   // the looks the copy laid, over the rows a session fits to their fonts
   if (r.ok && area && PARTS[o.kind].style !== 'target') r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }

@@ -1,0 +1,195 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US",
+  "seconds": 12.6
+ },
+ "books": {
+  "held": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 2
+      },
+      "A2": {
+       "value": 3
+      },
+      "A3": {
+       "value": 4
+      },
+      "B1": {
+       "value": 5
+      },
+      "C1": {
+       "formula": "A1:A2*10",
+       "array": "C1:C2"
+      },
+      "E1": {
+       "formula": "SUM(A1:A2)",
+       "array": "E1"
+      },
+      "E2": {
+       "value": 7
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 1
+      },
+      "J3": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "B2": {
+       "formula": "MAX(S!A1:A3)",
+       "array": "B2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "tiled-over-one-cell",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1:E2"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "transposed-onto-one-cell",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "values",
+   "operation": "subtract",
+   "transpose": true
+  },
+  {
+   "id": "skip-onto-one-cell",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "all",
+   "operation": "add",
+   "skipBlanks": true
+  },
+  {
+   "id": "last-cell-alone",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C2"
+   },
+   "what": "values",
+   "operation": "multiply"
+  },
+  {
+   "id": "other-sheet-one-cell",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "T",
+    "range": "B2"
+   },
+   "what": "values",
+   "operation": "divide"
+  },
+  {
+   "id": "beside-array",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "D1"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "array-onto-plain",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "array-formulas-onto-plain",
+   "book": "held",
+   "from": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "J2"
+   },
+   "what": "formulas",
+   "operation": "add"
+  }
+ ],
+ "sent": {
+  "tiled-over-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "transposed-onto-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "skip-onto-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "last-cell-alone": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "other-sheet-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "beside-array": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "array-onto-plain": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
+  "array-formulas-onto-plain": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4"
+ },
+ "answers": {
+  "tiled-over-one-cell": {},
+  "transposed-onto-one-cell": {},
+  "skip-onto-one-cell": {},
+  "last-cell-alone": {},
+  "other-sheet-one-cell": {},
+  "beside-array": {},
+  "array-onto-plain": {},
+  "array-formulas-onto-plain": {}
+ }
+}

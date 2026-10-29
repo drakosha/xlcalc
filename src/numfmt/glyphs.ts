@@ -101,6 +101,15 @@ function laidOut(s: string, width: (c: number) => number): number {
   return w
 }
 
+/** The points AutoFit gives `w` points of text: two past the padding, or the padding and a thirtieth more of the text. */
+export const padded = (w: number): number => Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
+
+/**
+ * The width of laid-out text in Calibri of `size` points as Excel for Mac wraps and turns it: each character the font's
+ * advance rounded to a point at its size (`test/excel/rows/held.json`, the set `scale`; `rotation-2.json`).
+ */
+export const sizedWidth = (s: string, size: number): number => laidOut(s, (c) => Math.round((advanceOf(c) * size) / 2048))
+
 /** Text of ASCII alone (the marks of laid-out text aside), which Excel for Mac measures by the widths it shows it in. */
 const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
 
@@ -111,10 +120,7 @@ const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
  * rounded for the first measure.
  */
 export function fitText(s: string): number {
-  if (ASCII.test(s)) {
-    const w = laidOut(s, glyphOf)
-    return Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
-  }
+  if (ASCII.test(s)) return padded(laidOut(s, glyphOf))
   const u = laidOut(s, advanceOf)
   return Math.max(Math.floor((u * 11 + 1024) / 2048) + 7, Math.floor((u * 11 * 31) / (2048 * 30)) + 5)
 }

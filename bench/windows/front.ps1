@@ -1,10 +1,12 @@
 # Excel's window in front, for the scripts of bench/windows that run on the screen (dot-sourced): Windows lets a process
 # take the foreground once it sent the last input, so Shift goes down and up first; a window that keeps the foreground
-# (Windows's Get Started did) stops the script.
+# (Windows's Get Started did) stops the script. The keyboard's and the mouse's calls of user32 with it (XlScreen.Win).
 Add-Type -Namespace XlScreen -Name Win -MemberDefinition @'
 [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
 [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
 [DllImport("user32.dll")] public static extern void keybd_event(byte k, byte s, uint f, UIntPtr x);
+[DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+[DllImport("user32.dll")] public static extern void mouse_event(uint f, uint x, uint y, uint d, UIntPtr e);
 '@
 function Front($hwnd) {
   $h = [IntPtr]$hwnd

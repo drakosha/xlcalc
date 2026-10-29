@@ -19,6 +19,7 @@ import { arrayPart } from '../spill/fixed.js'
 import { brokenRule } from '../validation/session.js'
 import { CONTENT, someField } from './cells.js'
 import { cellValue } from './looks.js'
+import { turnOf } from '../layout/turned.js'
 
 /** The fields an entry replaces: the content and the number format. */
 const TYPED = [...CONTENT, 'numberFormat'] as const
@@ -99,6 +100,9 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number, 
   const column = lines.column(c)
   if (column?.hidden || column?.width === 0) return undefined
   if (mergedOf(sh, s).rects.some((x) => x.c2 > x.c1 && hasCell(x, r, c))) return undefined
+  // a turned cell lays its text across the column: Excel widens nothing for it (`test/excel/fit/rotation.json`, `typed`)
+  const style = lines.look(r, c).style
+  if (style !== undefined && turnOf(s.input.styles?.[style]) !== undefined) return undefined
   const { locale, dateSystem } = s.input
   const value = cellValue(s, i, r, c)
   const numberFormat = lines.format(r, c)
