@@ -1,0 +1,2246 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-29",
+  "seconds": 114.7
+ },
+ "cases": [
+  {
+   "id": "under-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "under-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "B6"
+    }
+   ]
+  },
+  {
+   "id": "under-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "C6"
+    }
+   ]
+  },
+  {
+   "id": "under-4",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "D6"
+    }
+   ]
+  },
+  {
+   "id": "under-5",
+   "cells": {
+    "B1": {
+     "value": "A"
+    },
+    "C1": {
+     "value": "B"
+    },
+    "D1": {
+     "value": "C"
+    },
+    "B2": {
+     "value": "North"
+    },
+    "C2": {
+     "value": 2
+    },
+    "D2": {
+     "value": 2
+    },
+    "B3": {
+     "value": "South"
+    },
+    "C3": {
+     "value": 3
+    },
+    "D3": {
+     "value": 3
+    },
+    "B4": {
+     "value": "North"
+    },
+    "C4": {
+     "value": 4
+    },
+    "D4": {
+     "value": 4
+    },
+    "B5": {
+     "value": "South"
+    },
+    "C5": {
+     "value": 5
+    },
+    "D5": {
+     "value": 5
+    }
+   },
+   "filter": "B1:D5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "under-6",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "North",
+     "at": "A6"
+    },
+    {
+     "type": "South",
+     "at": "A7"
+    }
+   ]
+  },
+  {
+   "id": "under-7",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "D6"
+    },
+    {
+     "type": "8",
+     "at": "C6"
+    }
+   ]
+  },
+  {
+   "id": "gap-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A7"
+    }
+   ]
+  },
+  {
+   "id": "gap-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A7"
+    },
+    {
+     "type": "8",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "paste-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "paste": "North\t6\t6",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "paste-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "paste": "North\t6\t6\nSouth\t7\t7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "paste-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "paste": "North\t6\t6",
+     "at": "A7"
+    }
+   ]
+  },
+  {
+   "id": "paste-4",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "paste": "6",
+     "at": "D6"
+    }
+   ]
+  },
+  {
+   "id": "copy-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "copy": "A2:C2",
+     "to": "A6"
+    }
+   ]
+  },
+  {
+   "id": "copy-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "copy": "A2:C3",
+     "to": "A6"
+    }
+   ]
+  },
+  {
+   "id": "copy-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "copy": "B2",
+     "to": "B6"
+    }
+   ]
+  },
+  {
+   "id": "fill-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "fill": "A5:C6"
+    }
+   ]
+  },
+  {
+   "id": "fill-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "fill": "A5:C7"
+    }
+   ]
+  },
+  {
+   "id": "fill-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "fill": "B5:B6"
+    }
+   ]
+  },
+  {
+   "id": "entry-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "=B2*2",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "entry-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": " ",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "entry-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "criteria-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "criteria": {
+    "field": 1,
+    "value": "North",
+    "hides": [
+     3,
+     5
+    ]
+   },
+   "steps": [
+    {
+     "type": "North",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "criteria-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "criteria": {
+    "field": 1,
+    "value": "North",
+    "hides": [
+     3,
+     5
+    ]
+   },
+   "steps": [
+    {
+     "type": "South",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "criteria-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "hidden": [
+    5
+   ],
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "full-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C1048576",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    },
+    {
+     "type": "8",
+     "at": "D6"
+    }
+   ]
+  },
+  {
+   "id": "header-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    }
+   },
+   "filter": "A1:C1",
+   "steps": [
+    {
+     "type": "7",
+     "at": "B2"
+    }
+   ]
+  },
+  {
+   "id": "clear-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "clear": "A5:C5"
+    }
+   ]
+  },
+  {
+   "id": "clear-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    },
+    {
+     "clear": "A6"
+    }
+   ]
+  },
+  {
+   "id": "clear-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "clear": "A5:C5"
+    },
+    {
+     "type": "7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "undo-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    },
+    {
+     "undo": true
+    }
+   ]
+  },
+  {
+   "id": "undo-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "paste": "North\t6\t6\nSouth\t7\t7",
+     "at": "A6"
+    },
+    {
+     "undo": true
+    }
+   ]
+  },
+  {
+   "id": "undo-3",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "type": "7",
+     "at": "A6"
+    },
+    {
+     "type": "8",
+     "at": "A7"
+    },
+    {
+     "undo": true
+    }
+   ]
+  },
+  {
+   "id": "set-1",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "set": "7",
+     "at": "A6"
+    }
+   ]
+  },
+  {
+   "id": "set-2",
+   "cells": {
+    "A1": {
+     "value": "A"
+    },
+    "B1": {
+     "value": "B"
+    },
+    "C1": {
+     "value": "C"
+    },
+    "A2": {
+     "value": "North"
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "South"
+    },
+    "B3": {
+     "value": 3
+    },
+    "C3": {
+     "value": 3
+    },
+    "A4": {
+     "value": "North"
+    },
+    "B4": {
+     "value": 4
+    },
+    "C4": {
+     "value": 4
+    },
+    "A5": {
+     "value": "South"
+    },
+    "B5": {
+     "value": 5
+    },
+    "C5": {
+     "value": 5
+    }
+   },
+   "filter": "A1:C5",
+   "steps": [
+    {
+     "set": "7",
+     "at": "A6"
+    },
+    {
+     "set": "8",
+     "at": "A7"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "under-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-4": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-5": {
+   "after": [
+    "B1:D6"
+   ],
+   "saved": "B1:D5"
+  },
+  "under-6": {
+   "after": [
+    "A1:C6",
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "under-7": {
+   "after": [
+    "A1:C6",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "gap-1": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "gap-2": {
+   "after": [
+    "A1:C5",
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "paste-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "paste-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "paste-3": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "paste-4": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "copy-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "copy-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "copy-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "fill-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "fill-2": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "fill-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "entry-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "entry-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "entry-3": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-2": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-3": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "full-1": {
+   "after": [
+    "A:C",
+    "A:C"
+   ],
+   "saved": "A1:C1048576"
+  },
+  "header-1": {
+   "after": [
+    "A1:C2"
+   ],
+   "saved": "A1:C1"
+  },
+  "clear-1": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "clear-2": {
+   "after": [
+    "A1:C6",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "clear-3": {
+   "after": [
+    "A1:C5",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "undo-1": {
+   "after": [
+    "A1:C6",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "undo-2": {
+   "after": [
+    "A1:C7",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "undo-3": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "set-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "set-2": {
+   "after": [
+    "A1:C6",
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  }
+ }
+}

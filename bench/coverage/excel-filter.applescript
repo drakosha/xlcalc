@@ -7,7 +7,7 @@
 -- whatever the layout. After each step the AutoFilter's range is read (`range object of autofilter object`, empty
 -- without one) and a window Excel shows is answered. Then save the book as xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the case as
--- JSON {"criteria": {"field", "value"} | null, "filter": range, "steps": [...]}, the path of excel-keys.applescript.
+-- JSON {"criteria": {"field", "value"} (absent without), "filter": range, "steps": [...]}, the path of excel-keys.applescript.
 -- Output: JSON {"after": [range, ...], "dialog": text}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -22,7 +22,7 @@ on run argv
 	set kb to my keysLib(item 5 of argv)
 	set hfs to (POSIX file p) as text
 	set out to (POSIX file q) as text
-	set steps to (c's objectForKey:"steps") as list
+	set steps to c's objectForKey:"steps"
 	set crit to c's objectForKey:"criteria"
 	set said to ""
 	set afterOut to {}
@@ -31,16 +31,16 @@ on run argv
 			set wb to open workbook workbook file name hfs
 			set ws to worksheet "S" of wb
 			calculate full
-			if crit is not missing value then
-				set f to (crit's objectForKey:"field") as integer
-				set v to (crit's objectForKey:"value") as text
-				autofilter range (range ((c's objectForKey:"filter") as text) of ws) field f criteria1 v
-			end if
 		end timeout
 	end tell
 	try
-		repeat with s in steps
-			set stp to s
+		if crit is not missing value then
+			set f to (crit's objectForKey:"field") as integer
+			set v to (crit's objectForKey:"value") as text
+			tell application "Microsoft Excel" to autofilter range (range ((c's objectForKey:"filter") as text) of ws) field f criteria1 v
+		end if
+		repeat with i from 0 to ((steps's |count|()) as integer) - 1
+			set stp to steps's objectAtIndex:i
 			set keysOf to (stp's allKeys()) as list
 			if keysOf contains "type" then
 				tell application "Microsoft Excel" to select range ((stp's objectForKey:"at") as text) of ws

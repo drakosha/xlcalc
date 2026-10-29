@@ -47,7 +47,7 @@ async function runCase(c: FilterCase, label: string): Promise<FilterAnswer> {
       if (issues.length) throw new Error(`filter ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
       writeFileSync(file, data)
     },
-    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify({ filter: c.filter, criteria: c.criteria ?? null, steps: c.steps }), KEYS],
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify({ filter: c.filter, ...(c.criteria ? { criteria: c.criteria } : {}), steps: c.steps }), KEYS],
     timeout: 170_000,
     poll: 1000,
     after: 'case',
