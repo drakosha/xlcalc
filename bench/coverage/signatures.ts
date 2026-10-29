@@ -567,6 +567,9 @@ export const XLFN: Record<string, string> = Object.fromEntries(
     // the newer functions the measurement lacks
     'ARRAYTOTEXT', 'FORECAST.LINEAR', 'LET', 'PERCENTOF', 'RANDARRAY', 'SEQUENCE', 'SORTBY', 'TEXTAFTER', 'TEXTBEFORE', 'TEXTSPLIT',
     'TOCOL', 'TOROW', 'VALUETOTEXT', 'WRAPCOLS', 'WRAPROWS', 'XLOOKUP', 'XMATCH',
+    // the functions of the web, of connections and of regular expressions
+    'DETECTLANGUAGE', 'ECMA.CEILING', 'ENCODEURL', 'FILTERXML', 'FORECAST.ETS', 'FORECAST.ETS.CONFINT', 'FORECAST.ETS.SEASONALITY', 'FORECAST.ETS.STAT',
+    'IMAGE', 'REGEXEXTRACT', 'REGEXREPLACE', 'REGEXTEST', 'STOCKHISTORY', 'TRANSLATE', 'WEBSERVICE',
     // the functions about references and the book
     'FORMULATEXT', 'ISFORMULA', 'SHEET', 'SHEETS', 'TRIMRANGE',
     'BYCOL', 'BYROW', 'GROUPBY', 'ISOMITTED', 'LAMBDA', 'MAKEARRAY', 'MAP', 'PIVOTBY', 'REDUCE', 'SCAN',

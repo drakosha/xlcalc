@@ -31,10 +31,13 @@ const spelling = (state: EngineState, named: Named): PrintOptions => ({
   nameOf: (name, sheet) => named(name, sheet)?.name ?? name,
 })
 
-/** The check of a formula in the table named `enclosing` (none: outside tables), over its tokens when they are read (`toks`). */
-function checked(state: EngineState, enclosing: string | undefined, text: string, toks: Tok[] | null, named: Named): { ok: true; ast: Ast } | { ok: false; invalid: Invalid } {
+/**
+ * The check of a formula in the table named `enclosing` (none: outside tables), over its tokens when they are read
+ * (`toks`); `unknown` takes functions the engine does not know (`unknownFunctions: 'held'`).
+ */
+function checked(state: EngineState, enclosing: string | undefined, text: string, toks: Tok[] | null, named: Named, unknown = false): { ok: true; ast: Ast } | { ok: false; invalid: Invalid } {
   const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
-  const r = validateTokens(text, toks, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], ...(enclosing ? { table: enclosing } : {}) })
+  const r = validateTokens(text, toks, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], ...(enclosing ? { table: enclosing } : {}), ...(unknown ? { unknown } : {}) })
   return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code), ...(r.fn !== undefined ? { fn: r.fn } : {}) } }
 }
 
@@ -54,11 +57,21 @@ export const validateIn = (state: EngineState, s: number, enclosing?: string) =>
 /** A formula's AST checked, with its text and linked workbooks' names put in their place. */
 const accepted = (state: EngineState, text: string, ast: Ast): Prepared => ({ ok: true, text, ast: expandLinkNames(ast, state.links, state.input.externalBooks) })
 
-/** A formula of sheet `s` at `row`, `col` prepared on its own. */
-export function prepare(state: EngineState, s: number, row: number, col: number, text: string, toks: Tok[] | null = null): Prepared {
+/** A formula of sheet `s` at `row`, `col` prepared on its own; `unknown` takes functions the engine does not know. */
+export function prepare(state: EngineState, s: number, row: number, col: number, text: string, toks: Tok[] | null = null, unknown = false): Prepared {
   const named = namedFrom(state, s)
-  const r = checked(state, tableAt(state.tables, s, row, col)?.name, text, toks, named)
+  const r = checked(state, tableAt(state.tables, s, row, col)?.name, text, toks, named, unknown)
   return r.ok ? accepted(state, printFormula(r.ast, spelling(state, named)), r.ast) : r
+}
+
+/**
+ * A formula refused for a function the engine does not know, prepared again to keep a value (`held`) under
+ * `unknownFunctions: 'held'`: with the refusal, which it reports once it is calculated. Otherwise `p` as it is.
+ */
+export function preparedHolding(state: EngineState, s: number, row: number, col: number, text: string, p: Prepared, held: unknown): Prepared & { unknown?: Invalid } {
+  if (p.ok || !state.unknownHeld || p.invalid.code !== 'unknown_function' || held === undefined) return p
+  const again = prepare(state, s, row, col, text, null, true)
+  return again.ok ? { ...again, unknown: p.invalid } : p
 }
 
 /** The shapes of one build of a state, by their key: a template, or null for a shape prepared formula by formula. */

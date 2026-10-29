@@ -26,6 +26,7 @@ import { hasLook, inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import type { Issues } from '../issues.js'
+import { RICH_TYPE } from '../read/metadata.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { fileText, type FileNames, type FileShapes } from './formula.js'
@@ -65,8 +66,8 @@ export interface SheetContext extends FileNames {
   /** The addresses of the sheet's cells and of its result's (`Object.keys`), where the checks listed them already. */
   keys?: readonly string[]
   resultKeys?: readonly string[]
-  /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!; without one, `#VALUE!` alone. */
-  richError(code: 'SPILL' | 'CALC'): number | undefined
+  /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value (`RICH_TYPE`); without one, `#VALUE!` alone. */
+  richError(code: keyof typeof RICH_TYPE): number | undefined
   /** The book's table holding a cell of this sheet (0-based row and column), with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
   tableAt(row: number, col: number): { name: string; totals: boolean } | undefined
   /** The relationship ids of the sheet's table parts. */
@@ -157,8 +158,8 @@ function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, 
 }
 
 /**
- * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!`, with a
- * rich value (`vm`) that names them where `richError` gives one, as Excel 365 stores them in a sheet; the engine's
+ * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL!, #CALC!, #CONNECT!, #BLOCKED! and
+ * #GETTING_DATA as `#VALUE!`, with a rich value (`vm`) that names them where `richError` gives one, as Excel 365 stores them in a sheet; the engine's
  * #CYCLE! as 0, as Excel stores a circular reference, and #ERROR!, which Excel does not have, as #NULL!: `changed`
  * reports both.
  */
@@ -167,10 +168,13 @@ export function errorXml(code: ErrorCode, changed: (key: 'cycleZero' | 'errorNul
     changed('cycleZero')
     return { t: '', v: '0' }
   }
-  if (code === 'SPILL' || code === 'CALC') {
-    const vm = richError?.(code)
+  // of another workbook (no rich values there) the errors of connections keep their text, as Excel stores them
+  if (code === 'SPILL' || code === 'CALC' || (richError && code in RICH_TYPE)) {
+    const vm = richError?.(code as keyof typeof RICH_TYPE)
     return { t: ` t="e"${vm === undefined ? '' : ` vm="${vm}"`}`, v: '#VALUE!' }
   }
+  // #BUSY!, an answer still on its way, which Excel does not store
+  if (code === 'BUSY') return { t: ' t="e"', v: '#VALUE!' }
   if (code === 'ERROR') changed('errorNull')
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
 }

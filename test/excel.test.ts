@@ -2,13 +2,15 @@
  * Acceptance against Microsoft Excel: every whitelisted function is computed by this engine on the coverage
  * measurement's cases (`docs/coverage-formulajs.md`) and compared with Excel 16.113 (en-US locale, English
  * UI). A function is in the whitelist only if all of its cases match Excel; the test pins that for the
- * whole whitelist. Excel's answers are stored in the repository: no office suite is needed.
+ * whole whitelist (a function Excel for Mac lacks by Excel for Windows's cases). Excel's answers are stored in the
+ * repository: no office suite is needed.
  */
 import { describe, expect, it } from 'vitest'
 import { FUNCTION_NAMES } from '../src/index.js'
 import { FUNCTIONS } from '../src/functions.js'
 import { CASES, EXCEL, runExcelCases, show, type Outcome } from './excel-cases.js'
 import { SET_FUNCTIONS } from './excel-sets.js'
+import { WIN_SETS } from './excel-win-cases.js'
 
 /** Whitelisted functions without cases in the measurement or a case set, and why. */
 const NO_CASES: Record<string, string> = {
@@ -16,6 +18,9 @@ const NO_CASES: Record<string, string> = {
   NOW: 'volatile, excluded from the measurement; test/volatile.test.ts',
   RAND: 'volatile, excluded from the measurement; test/volatile.test.ts',
 }
+
+/** Functions of the sets of Excel for Windows alone (one Excel for Mac lacks), whose cases count as well. */
+const WIN_FUNCTIONS = new Set(WIN_SETS.flatMap((s) => (s.cases ?? []).flatMap((c) => (c.fn ? [c.fn] : []))))
 
 const covered = FUNCTION_NAMES.filter((f) => !(f in NO_CASES))
 const outcomes = runExcelCases(CASES.filter((c) => covered.includes(c.fn)))
@@ -28,7 +33,7 @@ describe('acceptance against Excel en-US', () => {
   })
 
   it('every whitelisted function has cases (measurement or a case set), or is listed with the reason why not', () => {
-    expect(covered.filter((f) => !byFunction.has(f) && !SET_FUNCTIONS.has(f))).toEqual([])
+    expect(covered.filter((f) => !byFunction.has(f) && !SET_FUNCTIONS.has(f) && !WIN_FUNCTIONS.has(f))).toEqual([])
     for (const f of Object.keys(NO_CASES)) expect(FUNCTIONS[f], f).toBeDefined()
     // a function that has cases now leaves the list, so the cases count for it
     expect(Object.keys(NO_CASES).filter((f) => CASES.some((c) => c.fn === f) || SET_FUNCTIONS.has(f))).toEqual([])

@@ -5,6 +5,7 @@
  */
 import { specOf, type FnDef, type FunctionSpec } from './args.js'
 import { SYNTAX, useArities } from './arity.js'
+import { functions as connections } from './functions/connections.js'
 import { functions as database } from './functions/database.js'
 import { functions as date } from './functions/date.js'
 import { functions as engineering } from './functions/engineering.js'
@@ -21,7 +22,7 @@ import { functions as text } from './functions/text.js'
 export type { FunctionSpec } from './args.js'
 export { isFunction, SYNTAX } from './arity.js'
 
-const CATEGORIES = { database, date, engineering, financial, information, logical, lookup, math, statistical, text }
+const CATEGORIES = { connections, database, date, engineering, financial, information, logical, lookup, math, statistical, text }
 
 /**
  * The former Analysis ToolPak's functions, with NETWORKDAYS.INTL and WORKDAY.INTL. Excel 365 takes an argument
@@ -31,7 +32,7 @@ const CATEGORIES = { database, date, engineering, financial, information, logica
  */
 const ANALYSIS = new Set([
   'ACCRINT', 'ACCRINTM', 'AMORDEGRC', 'AMORLINC', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'BIN2DEC', 'BIN2HEX', 'BIN2OCT', 'COMPLEX',
-  'CONVERT', 'COUPDAYBS', 'COUPDAYSNC', 'COUPNCD', 'COUPNUM', 'COUPPCD', 'CUMIPMT', 'CUMPRINC', 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'DELTA',
+  'CONVERT', 'COUPDAYBS', 'COUPDAYS', 'COUPDAYSNC', 'COUPNCD', 'COUPNUM', 'COUPPCD', 'CUMIPMT', 'CUMPRINC', 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'DELTA',
   'DISC', 'DOLLARDE', 'DOLLARFR', 'DURATION', 'EDATE', 'EFFECT', 'EOMONTH', 'ERF', 'ERF.PRECISE', 'ERFC', 'ERFC.PRECISE', 'FACTDOUBLE',
   'FVSCHEDULE', 'GCD', 'GESTEP', 'HEX2BIN', 'HEX2DEC', 'HEX2OCT', 'IMABS', 'IMAGINARY', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH',
   'IMCOT', 'IMCSC', 'IMCSCH', 'IMDIV', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMPOWER', 'IMPRODUCT', 'IMREAL', 'IMSEC', 'IMSECH', 'IMSIN',

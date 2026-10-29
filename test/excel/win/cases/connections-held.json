@@ -1,0 +1,480 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 112.1,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "CUBEMEMBER#1",
+   "group": "CUBEMEMBER",
+   "fn": "CUBEMEMBER",
+   "formula": "CUBEMEMBER(\"Sales\",\"[Time].[2025]\")"
+  },
+  {
+   "id": "CUBEMEMBER#2",
+   "group": "CUBEMEMBER",
+   "fn": "CUBEMEMBER",
+   "formula": "CUBEMEMBER(\"Sales\",\"[Time].[2025]\",\"Year\")"
+  },
+  {
+   "id": "CUBEMEMBER#3",
+   "group": "CUBEMEMBER",
+   "fn": "CUBEMEMBER",
+   "formula": "CUBEMEMBER(NA(),\"[Time].[2025]\")"
+  },
+  {
+   "id": "CUBEMEMBER#4",
+   "group": "CUBEMEMBER",
+   "fn": "CUBEMEMBER",
+   "formula": "CUBEMEMBER(\"Sales\",5)"
+  },
+  {
+   "id": "CUBEVALUE#1",
+   "group": "CUBEVALUE",
+   "fn": "CUBEVALUE",
+   "formula": "CUBEVALUE(\"Sales\",\"[Measures].[Amount]\")"
+  },
+  {
+   "id": "CUBEVALUE#2",
+   "group": "CUBEVALUE",
+   "fn": "CUBEVALUE",
+   "formula": "CUBEVALUE(\"Sales\")"
+  },
+  {
+   "id": "CUBEVALUE#3",
+   "group": "CUBEVALUE",
+   "fn": "CUBEVALUE",
+   "formula": "CUBEVALUE(\"Sales\",NA())"
+  },
+  {
+   "id": "CUBEVALUE#4",
+   "group": "CUBEVALUE",
+   "fn": "CUBEVALUE",
+   "formula": "CUBEVALUE(\"\",\"[Measures].[Amount]\")"
+  },
+  {
+   "id": "CUBESET#1",
+   "group": "CUBESET",
+   "fn": "CUBESET",
+   "formula": "CUBESET(\"Sales\",\"[Time].Children\")"
+  },
+  {
+   "id": "CUBESET#2",
+   "group": "CUBESET",
+   "fn": "CUBESET",
+   "formula": "CUBESET(\"Sales\",\"[Time].Children\",\"Years\",1,\"[Measures].[Amount]\")"
+  },
+  {
+   "id": "CUBESET#3",
+   "group": "CUBESET",
+   "fn": "CUBESET",
+   "formula": "CUBESET(\"Sales\",\"[Time].Children\",\"Years\",9)"
+  },
+  {
+   "id": "CUBESETCOUNT#1",
+   "group": "CUBESETCOUNT",
+   "fn": "CUBESETCOUNT",
+   "formula": "CUBESETCOUNT(CUBESET(\"Sales\",\"[Time].Children\"))"
+  },
+  {
+   "id": "CUBESETCOUNT#2",
+   "group": "CUBESETCOUNT",
+   "fn": "CUBESETCOUNT",
+   "formula": "CUBESETCOUNT(\"[Time].Children\")"
+  },
+  {
+   "id": "CUBESETCOUNT#3",
+   "group": "CUBESETCOUNT",
+   "fn": "CUBESETCOUNT",
+   "formula": "CUBESETCOUNT(5)"
+  },
+  {
+   "id": "CUBESETCOUNT#4",
+   "group": "CUBESETCOUNT",
+   "fn": "CUBESETCOUNT",
+   "formula": "CUBESETCOUNT(NA())"
+  },
+  {
+   "id": "CUBERANKEDMEMBER#1",
+   "group": "CUBERANKEDMEMBER",
+   "fn": "CUBERANKEDMEMBER",
+   "formula": "CUBERANKEDMEMBER(\"Sales\",\"[Time].Children\",1)"
+  },
+  {
+   "id": "CUBERANKEDMEMBER#2",
+   "group": "CUBERANKEDMEMBER",
+   "fn": "CUBERANKEDMEMBER",
+   "formula": "CUBERANKEDMEMBER(\"Sales\",\"[Time].Children\",0)"
+  },
+  {
+   "id": "CUBEMEMBERPROPERTY#1",
+   "group": "CUBEMEMBERPROPERTY",
+   "fn": "CUBEMEMBERPROPERTY",
+   "formula": "CUBEMEMBERPROPERTY(\"Sales\",\"[Time].[2025]\",\"Key\")"
+  },
+  {
+   "id": "CUBEKPIMEMBER#1",
+   "group": "CUBEKPIMEMBER",
+   "fn": "CUBEKPIMEMBER",
+   "formula": "CUBEKPIMEMBER(\"Sales\",\"Margin\",1)"
+  },
+  {
+   "id": "CUBEKPIMEMBER#2",
+   "group": "CUBEKPIMEMBER",
+   "fn": "CUBEKPIMEMBER",
+   "formula": "CUBEKPIMEMBER(\"Sales\",\"Margin\",9)"
+  },
+  {
+   "id": "RTD#1",
+   "group": "RTD",
+   "fn": "RTD",
+   "formula": "RTD(\"NoSuch.Server\",\"\",\"Topic\")"
+  },
+  {
+   "id": "RTD#2",
+   "group": "RTD",
+   "fn": "RTD",
+   "formula": "RTD(\"NoSuch.Server\",\"\",\"Topic\",\"Two\")"
+  },
+  {
+   "id": "RTD#3",
+   "group": "RTD",
+   "fn": "RTD",
+   "formula": "RTD(NA(),\"\",\"Topic\")"
+  },
+  {
+   "id": "WEBSERVICE#1",
+   "group": "WEBSERVICE",
+   "fn": "WEBSERVICE",
+   "formula": "_xlfn.WEBSERVICE(\"http://192.0.2.1/a\")"
+  },
+  {
+   "id": "WEBSERVICE#2",
+   "group": "WEBSERVICE",
+   "fn": "WEBSERVICE",
+   "formula": "_xlfn.WEBSERVICE(\"abc\")"
+  },
+  {
+   "id": "WEBSERVICE#3",
+   "group": "WEBSERVICE",
+   "fn": "WEBSERVICE",
+   "formula": "_xlfn.WEBSERVICE(REPT(\"a\",2049))"
+  },
+  {
+   "id": "WEBSERVICE#4",
+   "group": "WEBSERVICE",
+   "fn": "WEBSERVICE",
+   "formula": "_xlfn.WEBSERVICE(NA())"
+  },
+  {
+   "id": "WEBSERVICE#5",
+   "group": "WEBSERVICE",
+   "fn": "WEBSERVICE",
+   "formula": "_xlfn.WEBSERVICE(5)"
+  },
+  {
+   "id": "IMAGE#1",
+   "group": "IMAGE",
+   "fn": "IMAGE",
+   "formula": "_xlfn.IMAGE(\"http://192.0.2.1/a\")"
+  },
+  {
+   "id": "IMAGE#2",
+   "group": "IMAGE",
+   "fn": "IMAGE",
+   "formula": "_xlfn.IMAGE(\"abc\")"
+  },
+  {
+   "id": "IMAGE#3",
+   "group": "IMAGE",
+   "fn": "IMAGE",
+   "formula": "_xlfn.IMAGE(\"http://192.0.2.1/a\",\"alt\",5)"
+  },
+  {
+   "id": "IMAGE#4",
+   "group": "IMAGE",
+   "fn": "IMAGE",
+   "formula": "_xlfn.IMAGE(NA())"
+  },
+  {
+   "id": "STOCKHISTORY#1",
+   "group": "STOCKHISTORY",
+   "fn": "STOCKHISTORY",
+   "formula": "_xlfn.STOCKHISTORY(\"MSFT\",45658)"
+  },
+  {
+   "id": "STOCKHISTORY#2",
+   "group": "STOCKHISTORY",
+   "fn": "STOCKHISTORY",
+   "formula": "_xlfn.STOCKHISTORY(\"MSFT\",45658,45688,0,1,0,1)"
+  },
+  {
+   "id": "STOCKHISTORY#3",
+   "group": "STOCKHISTORY",
+   "fn": "STOCKHISTORY",
+   "formula": "_xlfn.STOCKHISTORY(\"MSFT\",\"abc\")"
+  },
+  {
+   "id": "STOCKHISTORY#4",
+   "group": "STOCKHISTORY",
+   "fn": "STOCKHISTORY",
+   "formula": "_xlfn.STOCKHISTORY(NA(),45658)"
+  },
+  {
+   "id": "TRANSLATE#1",
+   "group": "TRANSLATE",
+   "fn": "TRANSLATE",
+   "formula": "_xlfn.TRANSLATE(\"hello\",\"en\",\"fr\")"
+  },
+  {
+   "id": "TRANSLATE#2",
+   "group": "TRANSLATE",
+   "fn": "TRANSLATE",
+   "formula": "_xlfn.TRANSLATE(\"hello\")"
+  },
+  {
+   "id": "DETECTLANGUAGE#1",
+   "group": "DETECTLANGUAGE",
+   "fn": "DETECTLANGUAGE",
+   "formula": "_xlfn.DETECTLANGUAGE(\"hello\")"
+  },
+  {
+   "id": "DETECTLANGUAGE#2",
+   "group": "DETECTLANGUAGE",
+   "fn": "DETECTLANGUAGE",
+   "formula": "_xlfn.DETECTLANGUAGE(NA())"
+  },
+  {
+   "id": "CALL#1",
+   "group": "CALL",
+   "fn": "CALL",
+   "formula": "CALL(\"NoSuchLibrary.dll\",\"NoSuchFunction\",\"J\")"
+  },
+  {
+   "id": "REGISTER.ID#1",
+   "group": "REGISTER.ID",
+   "fn": "REGISTER.ID",
+   "formula": "REGISTER.ID(\"NoSuchLibrary.dll\",\"NoSuchFunction\",\"J\")"
+  },
+  {
+   "id": "REGISTER.ID#2",
+   "group": "REGISTER.ID",
+   "fn": "REGISTER.ID",
+   "formula": "REGISTER.ID(\"NoSuchLibrary.dll\",\"NoSuchFunction\")"
+  },
+  {
+   "id": "EUROCONVERT#1",
+   "group": "EUROCONVERT",
+   "fn": "EUROCONVERT",
+   "formula": "EUROCONVERT(1,\"EUR\",\"DEM\")"
+  },
+  {
+   "id": "EUROCONVERT#2",
+   "group": "EUROCONVERT",
+   "fn": "EUROCONVERT",
+   "formula": "EUROCONVERT(1,\"EUR\",\"DEM\",TRUE,3)"
+  },
+  {
+   "id": "ECMA.CEILING#1",
+   "group": "ECMA.CEILING",
+   "fn": "ECMA.CEILING",
+   "formula": "_xlfn.ECMA.CEILING(4.3,2)"
+  },
+  {
+   "id": "ECMA.CEILING#2",
+   "group": "ECMA.CEILING",
+   "fn": "ECMA.CEILING",
+   "formula": "_xlfn.ECMA.CEILING(-4.3,2)"
+  }
+ ],
+ "values": {
+  "CUBEMEMBER#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEMEMBER#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEMEMBER#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEMEMBER#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEVALUE#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEVALUE#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEVALUE#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEVALUE#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESET#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESET#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESET#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESETCOUNT#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESETCOUNT#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESETCOUNT#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBESETCOUNT#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBERANKEDMEMBER#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBERANKEDMEMBER#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEMEMBERPROPERTY#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEKPIMEMBER#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CUBEKPIMEMBER#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "RTD#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "RTD#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "RTD#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "WEBSERVICE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEBSERVICE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEBSERVICE#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEBSERVICE#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "WEBSERVICE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMAGE#1": {
+   "t": "e",
+   "v": "BLOCKED"
+  },
+  "IMAGE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMAGE#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMAGE#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "STOCKHISTORY#1": {
+   "t": "e",
+   "v": "BLOCKED"
+  },
+  "STOCKHISTORY#2": {
+   "t": "e",
+   "v": "BLOCKED"
+  },
+  "STOCKHISTORY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "STOCKHISTORY#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TRANSLATE#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "TRANSLATE#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "DETECTLANGUAGE#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "DETECTLANGUAGE#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "EUROCONVERT#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "EUROCONVERT#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "ECMA.CEILING#1": {
+   "t": "n",
+   "v": 6
+  },
+  "ECMA.CEILING#2": {
+   "t": "n",
+   "v": -4
+  }
+ },
+ "rejected": [
+  "CALL#1",
+  "REGISTER.ID#1",
+  "REGISTER.ID#2"
+ ]
+}

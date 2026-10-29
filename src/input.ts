@@ -386,6 +386,10 @@ function checkExecution(v: unknown, path: string) {
   if (!EXECUTIONS.includes(v as Execution)) throw new InputError(path, `expected "closures" or "eval", got ${what(v)}`)
 }
 
+function checkUnknownFunctions(v: unknown, path: string) {
+  if (v !== 'name' && v !== 'held') throw new InputError(path, `expected "name" or "held", got ${what(v)}`)
+}
+
 const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 
 const LIMITS = ['formulas', 'cells', 'spill', 'writes']
@@ -424,7 +428,7 @@ function checkFile(v: unknown, path: string) {
 }
 
 /** The run fields the compute and session options both check, each with its checker. */
-const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { file: checkFile, cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean }
+const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { file: checkFile, cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean, unknownFunctions: checkUnknownFunctions }
 
 /** The run fields `keys`, each checked when given, in the caller's own order (undo and the live clock stay with their calls). */
 const runFields = (o: Record<string, unknown>, path: string, keys: readonly string[]) => {
@@ -434,15 +438,15 @@ const runFields = (o: Record<string, unknown>, path: string, keys: readonly stri
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached', 'file'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
-  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display', 'file'])
+  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached', 'file', 'unknownFunctions'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display', 'file', 'unknownFunctions'])
   return o as ComputeOptions
 }
 
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached', 'file'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached', 'file', 'unknownFunctions'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
   runFields(o, path, ['cached', 'limits', 'file'])
   if (o.undo !== undefined) {
@@ -453,7 +457,7 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   }
   runFields(o, path, ['display'])
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
-  runFields(o, path, ['clock', 'externals', 'execution'])
+  runFields(o, path, ['clock', 'externals', 'execution', 'unknownFunctions'])
   return o as SessionOptions
 }
 

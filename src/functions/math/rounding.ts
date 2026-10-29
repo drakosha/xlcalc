@@ -32,17 +32,21 @@ const CEILING_PRECISE: FnDef = { args: 'n n?', fn: (n: number, s?: number) => ro
 /** ROUNDDOWN and TRUNC, whose digits may be left out (0). */
 const roundDown = (x: number, d = 0) => roundDigits(to15(x), d, Math.floor)
 
-export const functions: Record<string, FnDef> = {
-  CEILING: {
-    args: 'n n',
-    fn: (n: number, s: number) => {
-      if (s === 0) return 0
-      if (n > 0 && s < 0) return E.NUM
-      return Math.ceil(quotient(n, s)) * s
-    },
+/** CEILING and ECMA.CEILING, its name in the file format's standard, one definition. */
+const CEILING: FnDef = {
+  args: 'n n',
+  fn: (n: number, s: number) => {
+    if (s === 0) return 0
+    if (n > 0 && s < 0) return E.NUM
+    return Math.ceil(quotient(n, s)) * s
   },
+}
+
+export const functions: Record<string, FnDef> = {
+  CEILING,
   'CEILING.MATH': { args: 'n n? n?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
   'CEILING.PRECISE': CEILING_PRECISE,
+  'ECMA.CEILING': CEILING,
   // the next even number away from zero, exactly (EVEN(2+2^-51) is 4)
   EVEN: { args: 'n', fn: (x: number) => (x < 0 ? -2 : 2) * Math.ceil(Math.abs(x) / 2) },
   FLOOR: {

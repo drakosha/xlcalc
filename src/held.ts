@@ -89,14 +89,31 @@ export function priorOf(old: EngineState, g: Geometry): (f: Formula) => V | unde
   }
 }
 
-/** The value a file stores for a formula, by the sheets of `cached` that the book has: empty text where it stores none. */
-function storedIn(state: EngineState, cached: CachedValues): (f: Formula) => V {
+/** The value a file stores for a cell, by the sheets of `cached` that the book has: undefined where it stores none (or stores it empty). */
+export function storedOf(state: EngineState, cached: CachedValues): (s: number, addr: string) => Exclude<CellValue, null> | undefined {
   const sheets = new Map(cached.sheets.map((x) => [state.sheetIdx.get(sheetKey(x.name)), x.cells]))
+  return (s, addr) => sheets.get(s)?.[addr]?.value ?? undefined
+}
+
+/** The value a file stores for a formula: empty text where it stores none. */
+function storedIn(state: EngineState, cached: CachedValues): (f: Formula) => V {
+  const of = storedOf(state, cached)
   return (f) => {
-    const v = sheets.get(f.s)?.[formatAddress(f.r, f.c)]?.value
-    return v === undefined || v === null ? '' : fromCellValue(v)
+    const v = of(f.s, formatAddress(f.r, f.c))
+    return v === undefined ? '' : fromCellValue(v)
   }
 }
+
+/**
+ * A formula over a function whose value comes from outside the workbook (`Formula.stored`: one of connections, or one
+ * the engine does not know under `unknownFunctions: 'held'`) keeps the value its cell holds or its file stores, as Excel
+ * shows a file's values until it calculates them: it is not computed while it holds one (`evaluate.ts`), and the cells
+ * that read it are computed from it. Once it is edited or a cell it reads changes, it drops the value and is computed.
+ */
+export const holdStored = (state: EngineState, f: Formula, v: V) => setHeld(state, f, v)
+
+/** Whether formula `f` keeps the value its file stores, not computed. */
+export const keepsStored = (state: EngineState, f: Formula): boolean => f.stored !== undefined && state.held.has(f.id) && !stopped(state, f.id)
 
 /** The inputs `was` puts back, and those the engine changed besides (`EngineState.journal`) of the cells `was` does not hold. */
 export function journaled(was: CellReplace[], journal: Map<string, CellReplace> | undefined): CellReplace[] {

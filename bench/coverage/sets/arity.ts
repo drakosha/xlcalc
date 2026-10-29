@@ -2,8 +2,8 @@
  * Excel en-US cases for the largest number of arguments of every whitelisted function with repeated
  * arguments: a call with that many arguments, which Excel loads. Excel refuses a book with one more (the
  * "We found a problem with some content" window, closed by the harness), so those are not cases; the limits
- * are in `LIMITS`, which `test/arity.test.ts` checks against the engine. Computed as dynamic array formulas, in
- * Excel en-US (`test/excel/cases/arity.json`).
+ * are in `LIMITS`, which `test/arity.test.ts` checks against the engine (CALL's too, whose books Excel does not open).
+ * Computed as dynamic array formulas, in Excel en-US (`test/excel/cases/arity.json`).
  */
 import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'
@@ -20,6 +20,11 @@ interface Shape {
   last?: (k: number) => string
   /** A function with an array answer is wrapped (ROWS) to give one value. */
   wrap?: string
+  /**
+   * A function that reaches outside the workbook: its call sits in a branch IF never computes, so that Excel loads it
+   * without calling out (Excel for Mac would ask for a sign-in in a window of its own).
+   */
+  never?: true
 }
 
 const ones = (rep = ['1']): Shape => ({ head: [], rep })
@@ -55,7 +60,14 @@ export const SHAPES: Record<string, Shape> = {
   CONCAT: ones(['"a"']),
   CONCATENATE: ones(['"a"']),
   TEXTJOIN: { head: ['","', 'TRUE'], rep: ['"a"'] },
+  CUBEVALUE: { head: ['"Sales"'], rep: ['"[Measures].[Amount]"'], never: true },
+  RTD: { head: ['"NoSuch.Server"', '""'], rep: ['"Topic"'], never: true },
+  STOCKHISTORY: { head: ['"MSFT"', '45658', '45688', '0', '1'], rep: ['0'], never: true },
+  CALL: { head: ['"NoSuchLibrary.dll"', '"NoSuchFunction"', '"J"'], rep: ['1'], never: true },
 }
+
+/** Functions whose calls Excel opens no book with (both Excels, the set `connections-held`): their limit is not measured. */
+const UNOPENED = new Set(['CALL'])
 
 /** The call of `fn` with `n` arguments; null when no whole number of repetitions gives `n`. */
 export function call(fn: string, n: number): string | null {
@@ -65,7 +77,7 @@ export function call(fn: string, n: number): string | null {
   if (!Number.isInteger(k) || k < 1) return null
   const args = [...s.head, ...Array.from({ length: k }, () => s.rep).flat(), ...(s.last ? [s.last(k)] : (s.tail ?? []))]
   const f = `${fn}(${args.join(',')})`
-  return s.wrap ? `${s.wrap}(${f})` : f
+  return s.wrap ? `${s.wrap}(${f})` : s.never ? `IF(FALSE,${f},0)` : f
 }
 
 /**
@@ -75,7 +87,7 @@ export function call(fn: string, n: number): string | null {
  * function with 255 (measured on 7 October 2026, two runs).
  */
 export const LIMITS: Record<string, number> = {
-  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
+  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'STOCKHISTORY', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
   COUNTIFS: 254,
   MAXIFS: 253,
   MINIFS: 253,
@@ -85,5 +97,5 @@ export const LIMITS: Record<string, number> = {
 export const limit = (fn: string) => LIMITS[fn] ?? 255
 
 export function buildProbes(): Probe[] {
-  return Object.keys(SHAPES).map((fn) => ({ id: `${fn}:${limit(fn)}`, group: fn, fn, formula: xl(xlpm(call(fn, limit(fn))!)) }))
+  return Object.keys(SHAPES).filter((fn) => !UNOPENED.has(fn)).map((fn) => ({ id: `${fn}:${limit(fn)}`, group: fn, fn, formula: xl(xlpm(call(fn, limit(fn))!)) }))
 }

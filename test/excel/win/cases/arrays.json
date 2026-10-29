@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 423.5,
+  "seconds": 16.9,
   "dynamic": true
  },
  "cases": [
@@ -6622,6 +6622,54 @@
    "group": "lift:COUPDAYBS",
    "fn": "COUPDAYBS",
    "formula": "COUPDAYBS(DATE(2011,1,25),DATE(2011,11,15),2,{1;2})"
+  },
+  {
+   "id": "lift:COUPDAYS#1",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(D!B1:B2,40862,2,1)"
+  },
+  {
+   "id": "lift:COUPDAYS#2",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS({1;2},40862,2,1)"
+  },
+  {
+   "id": "lift:COUPDAYS#3",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,D!B1:B2,2,1)"
+  },
+  {
+   "id": "lift:COUPDAYS#4",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,{1;2},2,1)"
+  },
+  {
+   "id": "lift:COUPDAYS#5",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,D!B1:B2,1)"
+  },
+  {
+   "id": "lift:COUPDAYS#6",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,{1;2},1)"
+  },
+  {
+   "id": "lift:COUPDAYS#7",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,D!B1:B2)"
+  },
+  {
+   "id": "lift:COUPDAYS#8",
+   "group": "lift:COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(40568,40862,2,{1;2})"
   },
   {
    "id": "lift:COUPDAYSNC#1",
@@ -18986,6 +19034,38 @@
    "v": "VALUE"
   },
   "lift:COUPDAYBS#8": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:COUPDAYS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "lift:COUPDAYS#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:COUPDAYS#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "lift:COUPDAYS#4": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:COUPDAYS#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "lift:COUPDAYS#6": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:COUPDAYS#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "lift:COUPDAYS#8": {
    "t": "e",
    "v": "SPILL"
   },

@@ -134,6 +134,10 @@ export const REASONS = {
     '`GROWTH` far from 0 in x is `#NUM!` in Excel even where the fitted value fits in a double: for 100·1.1^k rounded to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has the b of `LOGEST` equal to 0 and m^x beyond the largest double.',
   macLongS:
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
+  macPhonetic:
+    '`PHONETIC` of a reference is `#N/A` here, as Excel for Windows answers in a workbook without readings (the workbook keeps none of those a file stores with Japanese text); Excel for Mac answers `#NUM!`, though the file it saves stores `#N/A`.',
+  vdbSalvageAboveCost:
+    '`VDB` with a salvage above the cost and a fractional start: the engine takes the negative amount in the period the start cuts, Excel in the next one, so `VDB(2400,3000,10,0.5,5)` is -600 in Excel and -300 here (with a whole start both give -600 or 0).',
   infoConstants:
     "`INFO` returns Excel for Windows' constants (`system` `pcdos`, `release` `16.0`), where Excel for Mac returns `mac` and its version, and `numfile` counts the workbook's sheets, where Excel counts those of every open workbook.",
   cellBookName:
@@ -168,6 +172,16 @@ export const BOTH_KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS;
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  'east-asian-held:PHONETIC#1': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#2': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#3': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#4': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#5': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#6': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#7': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#8': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'east-asian-held:PHONETIC#9': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
+  'coupdays-vdb-held-3:VDB#15': { reason: 'vdbSalvageAboveCost', engine: { t: 'n', v: -300 } },
   'indirect:cell#1': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$B$3' } },
   'indirect:cell#3': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$A$1' } },
   'indirect:info#1': { reason: 'infoConstants', engine: { t: 's', v: 'pcdos' } },

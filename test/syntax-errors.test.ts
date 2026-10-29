@@ -13,7 +13,7 @@ describe('error texts', () => {
   it('each set holds the one before it: typed, read by a formula, held by a file’s cell, translated by a locale', () => {
     expect(TYPED_ERRORS).toEqual(['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A'])
     expect(FORMULA_ERRORS).toEqual([...TYPED_ERRORS, '#SPILL!'])
-    expect(CELL_ERRORS).toEqual([...FORMULA_ERRORS, '#CALC!'])
+    expect(CELL_ERRORS).toEqual([...FORMULA_ERRORS, '#CALC!', '#CONNECT!', '#BLOCKED!', '#GETTING_DATA'])
     expect(CELL_ERRORS.every((e) => LOCALE_ERRORS.includes(e))).toBe(true)
   })
 

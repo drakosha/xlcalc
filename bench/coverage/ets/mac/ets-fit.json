@@ -1,0 +1,5782 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 3.025,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "holt-trend#1",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,1,0)"
+  },
+  {
+   "id": "holt-trend#2",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,2,0)"
+  },
+  {
+   "id": "holt-trend#3",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,3,0)"
+  },
+  {
+   "id": "holt-trend#4",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,4,0)"
+  },
+  {
+   "id": "holt-trend#5",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,5,0)"
+  },
+  {
+   "id": "holt-trend#6",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,6,0)"
+  },
+  {
+   "id": "holt-trend#7",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,7,0)"
+  },
+  {
+   "id": "holt-trend#8",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,8,0)"
+  },
+  {
+   "id": "holt-trend#9",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "holt-trend#10",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "holt-trend#11",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "holt-trend#12",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!B1:B10,E!A1:A10,0.95,0)"
+  },
+  {
+   "id": "holt-trend#13",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(12,E!B1:B10,E!A1:A10,0.95,0)"
+  },
+  {
+   "id": "holt-trend#14",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(14,E!B1:B10,E!A1:A10,0.95,0)"
+  },
+  {
+   "id": "holt-trend#15",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!B1:B10,E!A1:A10,0.5,0)"
+  },
+  {
+   "id": "holt-trend#16",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!B1:B10,E!A1:A10,0.99,0)"
+  },
+  {
+   "id": "holt-trend#17",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!B1:B10,E!A1:A10)"
+  },
+  {
+   "id": "holt-trend#18",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!B1:B10,E!A1:A10)"
+  },
+  {
+   "id": "holt-trend#19",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,1)"
+  },
+  {
+   "id": "holt-trend#20",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,2)"
+  },
+  {
+   "id": "holt-trend#21",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,3)"
+  },
+  {
+   "id": "holt-trend#22",
+   "group": "holt-trend",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,7)"
+  },
+  {
+   "id": "holt-level#1",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,1,0)"
+  },
+  {
+   "id": "holt-level#2",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,2,0)"
+  },
+  {
+   "id": "holt-level#3",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,3,0)"
+  },
+  {
+   "id": "holt-level#4",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,4,0)"
+  },
+  {
+   "id": "holt-level#5",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,5,0)"
+  },
+  {
+   "id": "holt-level#6",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,6,0)"
+  },
+  {
+   "id": "holt-level#7",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,7,0)"
+  },
+  {
+   "id": "holt-level#8",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,8,0)"
+  },
+  {
+   "id": "holt-level#9",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!D1:D12,E!C1:C12,0)"
+  },
+  {
+   "id": "holt-level#10",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!D1:D12,E!C1:C12,0)"
+  },
+  {
+   "id": "holt-level#11",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(15,E!D1:D12,E!C1:C12,0)"
+  },
+  {
+   "id": "holt-level#12",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(13,E!D1:D12,E!C1:C12,0.95,0)"
+  },
+  {
+   "id": "holt-level#13",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(14,E!D1:D12,E!C1:C12,0.95,0)"
+  },
+  {
+   "id": "holt-level#14",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(16,E!D1:D12,E!C1:C12,0.95,0)"
+  },
+  {
+   "id": "holt-level#15",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(13,E!D1:D12,E!C1:C12,0.5,0)"
+  },
+  {
+   "id": "holt-level#16",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(13,E!D1:D12,E!C1:C12,0.99,0)"
+  },
+  {
+   "id": "holt-level#17",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!D1:D12,E!C1:C12)"
+  },
+  {
+   "id": "holt-level#18",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!D1:D12,E!C1:C12)"
+  },
+  {
+   "id": "holt-level#19",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,1)"
+  },
+  {
+   "id": "holt-level#20",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,2)"
+  },
+  {
+   "id": "holt-level#21",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,3)"
+  },
+  {
+   "id": "holt-level#22",
+   "group": "holt-level",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,7)"
+  },
+  {
+   "id": "holt-line#1",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,1,0)"
+  },
+  {
+   "id": "holt-line#2",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,2,0)"
+  },
+  {
+   "id": "holt-line#3",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,3,0)"
+  },
+  {
+   "id": "holt-line#4",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,4,0)"
+  },
+  {
+   "id": "holt-line#5",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,5,0)"
+  },
+  {
+   "id": "holt-line#6",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,6,0)"
+  },
+  {
+   "id": "holt-line#7",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,7,0)"
+  },
+  {
+   "id": "holt-line#8",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,8,0)"
+  },
+  {
+   "id": "holt-line#9",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "holt-line#10",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "holt-line#11",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "holt-line#12",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(9,E!F1:F8,E!E1:E8,0.95,0)"
+  },
+  {
+   "id": "holt-line#13",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!F1:F8,E!E1:E8,0.95,0)"
+  },
+  {
+   "id": "holt-line#14",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(12,E!F1:F8,E!E1:E8,0.95,0)"
+  },
+  {
+   "id": "holt-line#15",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(9,E!F1:F8,E!E1:E8,0.5,0)"
+  },
+  {
+   "id": "holt-line#16",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(9,E!F1:F8,E!E1:E8,0.99,0)"
+  },
+  {
+   "id": "holt-line#17",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!F1:F8,E!E1:E8)"
+  },
+  {
+   "id": "holt-line#18",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!F1:F8,E!E1:E8)"
+  },
+  {
+   "id": "holt-line#19",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,1)"
+  },
+  {
+   "id": "holt-line#20",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,2)"
+  },
+  {
+   "id": "holt-line#21",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,3)"
+  },
+  {
+   "id": "holt-line#22",
+   "group": "holt-line",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,7)"
+  },
+  {
+   "id": "holt-flat#1",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,1,0)"
+  },
+  {
+   "id": "holt-flat#2",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,2,0)"
+  },
+  {
+   "id": "holt-flat#3",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,3,0)"
+  },
+  {
+   "id": "holt-flat#4",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,4,0)"
+  },
+  {
+   "id": "holt-flat#5",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,5,0)"
+  },
+  {
+   "id": "holt-flat#6",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,6,0)"
+  },
+  {
+   "id": "holt-flat#7",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,7,0)"
+  },
+  {
+   "id": "holt-flat#8",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,8,0)"
+  },
+  {
+   "id": "holt-flat#9",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(7,E!H1:H6,E!G1:G6,0)"
+  },
+  {
+   "id": "holt-flat#10",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(8,E!H1:H6,E!G1:G6,0)"
+  },
+  {
+   "id": "holt-flat#11",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!H1:H6,E!G1:G6,0)"
+  },
+  {
+   "id": "holt-flat#12",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(7,E!H1:H6,E!G1:G6,0.95,0)"
+  },
+  {
+   "id": "holt-flat#13",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(8,E!H1:H6,E!G1:G6,0.95,0)"
+  },
+  {
+   "id": "holt-flat#14",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!H1:H6,E!G1:G6,0.95,0)"
+  },
+  {
+   "id": "holt-flat#15",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(7,E!H1:H6,E!G1:G6,0.5,0)"
+  },
+  {
+   "id": "holt-flat#16",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(7,E!H1:H6,E!G1:G6,0.99,0)"
+  },
+  {
+   "id": "holt-flat#17",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!H1:H6,E!G1:G6)"
+  },
+  {
+   "id": "holt-flat#18",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(7,E!H1:H6,E!G1:G6)"
+  },
+  {
+   "id": "holt-flat#19",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,1)"
+  },
+  {
+   "id": "holt-flat#20",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,2)"
+  },
+  {
+   "id": "holt-flat#21",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,3)"
+  },
+  {
+   "id": "holt-flat#22",
+   "group": "holt-flat",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H6,E!G1:G6,7)"
+  },
+  {
+   "id": "holt-walk#1",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,1,0)"
+  },
+  {
+   "id": "holt-walk#2",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,2,0)"
+  },
+  {
+   "id": "holt-walk#3",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,3,0)"
+  },
+  {
+   "id": "holt-walk#4",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,4,0)"
+  },
+  {
+   "id": "holt-walk#5",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,5,0)"
+  },
+  {
+   "id": "holt-walk#6",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,6,0)"
+  },
+  {
+   "id": "holt-walk#7",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,7,0)"
+  },
+  {
+   "id": "holt-walk#8",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,8,0)"
+  },
+  {
+   "id": "holt-walk#9",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(21,E!J1:J20,E!I1:I20,0)"
+  },
+  {
+   "id": "holt-walk#10",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(22,E!J1:J20,E!I1:I20,0)"
+  },
+  {
+   "id": "holt-walk#11",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(23,E!J1:J20,E!I1:I20,0)"
+  },
+  {
+   "id": "holt-walk#12",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(21,E!J1:J20,E!I1:I20,0.95,0)"
+  },
+  {
+   "id": "holt-walk#13",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(22,E!J1:J20,E!I1:I20,0.95,0)"
+  },
+  {
+   "id": "holt-walk#14",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(24,E!J1:J20,E!I1:I20,0.95,0)"
+  },
+  {
+   "id": "holt-walk#15",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(21,E!J1:J20,E!I1:I20,0.5,0)"
+  },
+  {
+   "id": "holt-walk#16",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(21,E!J1:J20,E!I1:I20,0.99,0)"
+  },
+  {
+   "id": "holt-walk#17",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!J1:J20,E!I1:I20)"
+  },
+  {
+   "id": "holt-walk#18",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(21,E!J1:J20,E!I1:I20)"
+  },
+  {
+   "id": "holt-walk#19",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,1)"
+  },
+  {
+   "id": "holt-walk#20",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,2)"
+  },
+  {
+   "id": "holt-walk#21",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,3)"
+  },
+  {
+   "id": "holt-walk#22",
+   "group": "holt-walk",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J20,E!I1:I20,7)"
+  },
+  {
+   "id": "holt-down#1",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,1,0)"
+  },
+  {
+   "id": "holt-down#2",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,2,0)"
+  },
+  {
+   "id": "holt-down#3",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,3,0)"
+  },
+  {
+   "id": "holt-down#4",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,4,0)"
+  },
+  {
+   "id": "holt-down#5",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,5,0)"
+  },
+  {
+   "id": "holt-down#6",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,6,0)"
+  },
+  {
+   "id": "holt-down#7",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,7,0)"
+  },
+  {
+   "id": "holt-down#8",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,8,0)"
+  },
+  {
+   "id": "holt-down#9",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(16,E!L1:L15,E!K1:K15,0)"
+  },
+  {
+   "id": "holt-down#10",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(17,E!L1:L15,E!K1:K15,0)"
+  },
+  {
+   "id": "holt-down#11",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(18,E!L1:L15,E!K1:K15,0)"
+  },
+  {
+   "id": "holt-down#12",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(16,E!L1:L15,E!K1:K15,0.95,0)"
+  },
+  {
+   "id": "holt-down#13",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(17,E!L1:L15,E!K1:K15,0.95,0)"
+  },
+  {
+   "id": "holt-down#14",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(19,E!L1:L15,E!K1:K15,0.95,0)"
+  },
+  {
+   "id": "holt-down#15",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(16,E!L1:L15,E!K1:K15,0.5,0)"
+  },
+  {
+   "id": "holt-down#16",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(16,E!L1:L15,E!K1:K15,0.99,0)"
+  },
+  {
+   "id": "holt-down#17",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!L1:L15,E!K1:K15)"
+  },
+  {
+   "id": "holt-down#18",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(16,E!L1:L15,E!K1:K15)"
+  },
+  {
+   "id": "holt-down#19",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,1)"
+  },
+  {
+   "id": "holt-down#20",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,2)"
+  },
+  {
+   "id": "holt-down#21",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,3)"
+  },
+  {
+   "id": "holt-down#22",
+   "group": "holt-down",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L15,E!K1:K15,7)"
+  },
+  {
+   "id": "holt-three#1",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,1,0)"
+  },
+  {
+   "id": "holt-three#2",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,2,0)"
+  },
+  {
+   "id": "holt-three#3",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,3,0)"
+  },
+  {
+   "id": "holt-three#4",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,4,0)"
+  },
+  {
+   "id": "holt-three#5",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,5,0)"
+  },
+  {
+   "id": "holt-three#6",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,6,0)"
+  },
+  {
+   "id": "holt-three#7",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,7,0)"
+  },
+  {
+   "id": "holt-three#8",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,8,0)"
+  },
+  {
+   "id": "holt-three#9",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(4,E!N1:N3,E!M1:M3,0)"
+  },
+  {
+   "id": "holt-three#10",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(5,E!N1:N3,E!M1:M3,0)"
+  },
+  {
+   "id": "holt-three#11",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(6,E!N1:N3,E!M1:M3,0)"
+  },
+  {
+   "id": "holt-three#12",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(4,E!N1:N3,E!M1:M3,0.95,0)"
+  },
+  {
+   "id": "holt-three#13",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(5,E!N1:N3,E!M1:M3,0.95,0)"
+  },
+  {
+   "id": "holt-three#14",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(7,E!N1:N3,E!M1:M3,0.95,0)"
+  },
+  {
+   "id": "holt-three#15",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(4,E!N1:N3,E!M1:M3,0.5,0)"
+  },
+  {
+   "id": "holt-three#16",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(4,E!N1:N3,E!M1:M3,0.99,0)"
+  },
+  {
+   "id": "holt-three#17",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!N1:N3,E!M1:M3)"
+  },
+  {
+   "id": "holt-three#18",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(4,E!N1:N3,E!M1:M3)"
+  },
+  {
+   "id": "holt-three#19",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,1)"
+  },
+  {
+   "id": "holt-three#20",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,2)"
+  },
+  {
+   "id": "holt-three#21",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,3)"
+  },
+  {
+   "id": "holt-three#22",
+   "group": "holt-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N3,E!M1:M3,7)"
+  },
+  {
+   "id": "holt-four#1",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,1,0)"
+  },
+  {
+   "id": "holt-four#2",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,2,0)"
+  },
+  {
+   "id": "holt-four#3",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,3,0)"
+  },
+  {
+   "id": "holt-four#4",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,4,0)"
+  },
+  {
+   "id": "holt-four#5",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,5,0)"
+  },
+  {
+   "id": "holt-four#6",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,6,0)"
+  },
+  {
+   "id": "holt-four#7",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,7,0)"
+  },
+  {
+   "id": "holt-four#8",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,8,0)"
+  },
+  {
+   "id": "holt-four#9",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(5,E!P1:P4,E!O1:O4,0)"
+  },
+  {
+   "id": "holt-four#10",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(6,E!P1:P4,E!O1:O4,0)"
+  },
+  {
+   "id": "holt-four#11",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(7,E!P1:P4,E!O1:O4,0)"
+  },
+  {
+   "id": "holt-four#12",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(5,E!P1:P4,E!O1:O4,0.95,0)"
+  },
+  {
+   "id": "holt-four#13",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(6,E!P1:P4,E!O1:O4,0.95,0)"
+  },
+  {
+   "id": "holt-four#14",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(8,E!P1:P4,E!O1:O4,0.95,0)"
+  },
+  {
+   "id": "holt-four#15",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(5,E!P1:P4,E!O1:O4,0.5,0)"
+  },
+  {
+   "id": "holt-four#16",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(5,E!P1:P4,E!O1:O4,0.99,0)"
+  },
+  {
+   "id": "holt-four#17",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!P1:P4,E!O1:O4)"
+  },
+  {
+   "id": "holt-four#18",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(5,E!P1:P4,E!O1:O4)"
+  },
+  {
+   "id": "holt-four#19",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,1)"
+  },
+  {
+   "id": "holt-four#20",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,2)"
+  },
+  {
+   "id": "holt-four#21",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,3)"
+  },
+  {
+   "id": "holt-four#22",
+   "group": "holt-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P4,E!O1:O4,7)"
+  },
+  {
+   "id": "aaa-q16#1",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,1,4)"
+  },
+  {
+   "id": "aaa-q16#2",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,2,4)"
+  },
+  {
+   "id": "aaa-q16#3",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,3,4)"
+  },
+  {
+   "id": "aaa-q16#4",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,4,4)"
+  },
+  {
+   "id": "aaa-q16#5",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,5,4)"
+  },
+  {
+   "id": "aaa-q16#6",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,6,4)"
+  },
+  {
+   "id": "aaa-q16#7",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,7,4)"
+  },
+  {
+   "id": "aaa-q16#8",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,8,4)"
+  },
+  {
+   "id": "aaa-q16#9",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(17,E!R1:R16,E!Q1:Q16,4)"
+  },
+  {
+   "id": "aaa-q16#10",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(18,E!R1:R16,E!Q1:Q16,4)"
+  },
+  {
+   "id": "aaa-q16#11",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(19,E!R1:R16,E!Q1:Q16,4)"
+  },
+  {
+   "id": "aaa-q16#12",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(20,E!R1:R16,E!Q1:Q16,4)"
+  },
+  {
+   "id": "aaa-q16#13",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(21,E!R1:R16,E!Q1:Q16,4)"
+  },
+  {
+   "id": "aaa-q16#14",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(17,E!R1:R16,E!Q1:Q16,0.95,4)"
+  },
+  {
+   "id": "aaa-q16#15",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(18,E!R1:R16,E!Q1:Q16,0.95,4)"
+  },
+  {
+   "id": "aaa-q16#16",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(21,E!R1:R16,E!Q1:Q16,0.95,4)"
+  },
+  {
+   "id": "aaa-q16#17",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!R1:R16,E!Q1:Q16)"
+  },
+  {
+   "id": "aaa-q16#18",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(17,E!R1:R16,E!Q1:Q16)"
+  },
+  {
+   "id": "aaa-q16#19",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,1)"
+  },
+  {
+   "id": "aaa-q16#20",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,2)"
+  },
+  {
+   "id": "aaa-q16#21",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,3)"
+  },
+  {
+   "id": "aaa-q16#22",
+   "group": "aaa-q16",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R16,E!Q1:Q16,7)"
+  },
+  {
+   "id": "aaa-q24#1",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,1,4)"
+  },
+  {
+   "id": "aaa-q24#2",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,2,4)"
+  },
+  {
+   "id": "aaa-q24#3",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,3,4)"
+  },
+  {
+   "id": "aaa-q24#4",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,4,4)"
+  },
+  {
+   "id": "aaa-q24#5",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,5,4)"
+  },
+  {
+   "id": "aaa-q24#6",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,6,4)"
+  },
+  {
+   "id": "aaa-q24#7",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,7,4)"
+  },
+  {
+   "id": "aaa-q24#8",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,8,4)"
+  },
+  {
+   "id": "aaa-q24#9",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!T1:T24,E!S1:S24,4)"
+  },
+  {
+   "id": "aaa-q24#10",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(26,E!T1:T24,E!S1:S24,4)"
+  },
+  {
+   "id": "aaa-q24#11",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(27,E!T1:T24,E!S1:S24,4)"
+  },
+  {
+   "id": "aaa-q24#12",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(28,E!T1:T24,E!S1:S24,4)"
+  },
+  {
+   "id": "aaa-q24#13",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(29,E!T1:T24,E!S1:S24,4)"
+  },
+  {
+   "id": "aaa-q24#14",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(25,E!T1:T24,E!S1:S24,0.95,4)"
+  },
+  {
+   "id": "aaa-q24#15",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(26,E!T1:T24,E!S1:S24,0.95,4)"
+  },
+  {
+   "id": "aaa-q24#16",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(29,E!T1:T24,E!S1:S24,0.95,4)"
+  },
+  {
+   "id": "aaa-q24#17",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!T1:T24,E!S1:S24)"
+  },
+  {
+   "id": "aaa-q24#18",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!T1:T24,E!S1:S24)"
+  },
+  {
+   "id": "aaa-q24#19",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,1)"
+  },
+  {
+   "id": "aaa-q24#20",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,2)"
+  },
+  {
+   "id": "aaa-q24#21",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,3)"
+  },
+  {
+   "id": "aaa-q24#22",
+   "group": "aaa-q24",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T24,E!S1:S24,7)"
+  },
+  {
+   "id": "aaa-m36#1",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,1,12)"
+  },
+  {
+   "id": "aaa-m36#2",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,2,12)"
+  },
+  {
+   "id": "aaa-m36#3",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,3,12)"
+  },
+  {
+   "id": "aaa-m36#4",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,4,12)"
+  },
+  {
+   "id": "aaa-m36#5",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,5,12)"
+  },
+  {
+   "id": "aaa-m36#6",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,6,12)"
+  },
+  {
+   "id": "aaa-m36#7",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,7,12)"
+  },
+  {
+   "id": "aaa-m36#8",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,8,12)"
+  },
+  {
+   "id": "aaa-m36#9",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(37,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#10",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(38,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#11",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(39,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#12",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(40,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#13",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(41,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#14",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(42,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#15",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#16",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#17",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#18",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(46,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#19",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(47,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#20",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(48,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#21",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(49,E!V1:V36,E!U1:U36,12)"
+  },
+  {
+   "id": "aaa-m36#22",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(37,E!V1:V36,E!U1:U36,0.95,12)"
+  },
+  {
+   "id": "aaa-m36#23",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(38,E!V1:V36,E!U1:U36,0.95,12)"
+  },
+  {
+   "id": "aaa-m36#24",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(49,E!V1:V36,E!U1:U36,0.95,12)"
+  },
+  {
+   "id": "aaa-m36#25",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!V1:V36,E!U1:U36)"
+  },
+  {
+   "id": "aaa-m36#26",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(37,E!V1:V36,E!U1:U36)"
+  },
+  {
+   "id": "aaa-m36#27",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,1)"
+  },
+  {
+   "id": "aaa-m36#28",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,2)"
+  },
+  {
+   "id": "aaa-m36#29",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,3)"
+  },
+  {
+   "id": "aaa-m36#30",
+   "group": "aaa-m36",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V36,E!U1:U36,7)"
+  },
+  {
+   "id": "aaa-q8#1",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,1,4)"
+  },
+  {
+   "id": "aaa-q8#2",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,2,4)"
+  },
+  {
+   "id": "aaa-q8#3",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,3,4)"
+  },
+  {
+   "id": "aaa-q8#4",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,4,4)"
+  },
+  {
+   "id": "aaa-q8#5",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,5,4)"
+  },
+  {
+   "id": "aaa-q8#6",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,6,4)"
+  },
+  {
+   "id": "aaa-q8#7",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,7,4)"
+  },
+  {
+   "id": "aaa-q8#8",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,8,4)"
+  },
+  {
+   "id": "aaa-q8#9",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!X1:X8,E!W1:W8,4)"
+  },
+  {
+   "id": "aaa-q8#10",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!X1:X8,E!W1:W8,4)"
+  },
+  {
+   "id": "aaa-q8#11",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!X1:X8,E!W1:W8,4)"
+  },
+  {
+   "id": "aaa-q8#12",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12,E!X1:X8,E!W1:W8,4)"
+  },
+  {
+   "id": "aaa-q8#13",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!X1:X8,E!W1:W8,4)"
+  },
+  {
+   "id": "aaa-q8#14",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(9,E!X1:X8,E!W1:W8,0.95,4)"
+  },
+  {
+   "id": "aaa-q8#15",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!X1:X8,E!W1:W8,0.95,4)"
+  },
+  {
+   "id": "aaa-q8#16",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(13,E!X1:X8,E!W1:W8,0.95,4)"
+  },
+  {
+   "id": "aaa-q8#17",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!X1:X8,E!W1:W8)"
+  },
+  {
+   "id": "aaa-q8#18",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!X1:X8,E!W1:W8)"
+  },
+  {
+   "id": "aaa-q8#19",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,1)"
+  },
+  {
+   "id": "aaa-q8#20",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,2)"
+  },
+  {
+   "id": "aaa-q8#21",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,3)"
+  },
+  {
+   "id": "aaa-q8#22",
+   "group": "aaa-q8",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X8,E!W1:W8,7)"
+  },
+  {
+   "id": "aaa-q10#1",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,1,4)"
+  },
+  {
+   "id": "aaa-q10#2",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,2,4)"
+  },
+  {
+   "id": "aaa-q10#3",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,3,4)"
+  },
+  {
+   "id": "aaa-q10#4",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,4,4)"
+  },
+  {
+   "id": "aaa-q10#5",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,5,4)"
+  },
+  {
+   "id": "aaa-q10#6",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,6,4)"
+  },
+  {
+   "id": "aaa-q10#7",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,7,4)"
+  },
+  {
+   "id": "aaa-q10#8",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,8,4)"
+  },
+  {
+   "id": "aaa-q10#9",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!Z1:Z10,E!Y1:Y10,4)"
+  },
+  {
+   "id": "aaa-q10#10",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12,E!Z1:Z10,E!Y1:Y10,4)"
+  },
+  {
+   "id": "aaa-q10#11",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!Z1:Z10,E!Y1:Y10,4)"
+  },
+  {
+   "id": "aaa-q10#12",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!Z1:Z10,E!Y1:Y10,4)"
+  },
+  {
+   "id": "aaa-q10#13",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(15,E!Z1:Z10,E!Y1:Y10,4)"
+  },
+  {
+   "id": "aaa-q10#14",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!Z1:Z10,E!Y1:Y10,0.95,4)"
+  },
+  {
+   "id": "aaa-q10#15",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(12,E!Z1:Z10,E!Y1:Y10,0.95,4)"
+  },
+  {
+   "id": "aaa-q10#16",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(15,E!Z1:Z10,E!Y1:Y10,0.95,4)"
+  },
+  {
+   "id": "aaa-q10#17",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!Z1:Z10,E!Y1:Y10)"
+  },
+  {
+   "id": "aaa-q10#18",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!Z1:Z10,E!Y1:Y10)"
+  },
+  {
+   "id": "aaa-q10#19",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,1)"
+  },
+  {
+   "id": "aaa-q10#20",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,2)"
+  },
+  {
+   "id": "aaa-q10#21",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,3)"
+  },
+  {
+   "id": "aaa-q10#22",
+   "group": "aaa-q10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z10,E!Y1:Y10,7)"
+  },
+  {
+   "id": "aaa-t9#1",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,1,3)"
+  },
+  {
+   "id": "aaa-t9#2",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,2,3)"
+  },
+  {
+   "id": "aaa-t9#3",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,3,3)"
+  },
+  {
+   "id": "aaa-t9#4",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,4,3)"
+  },
+  {
+   "id": "aaa-t9#5",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,5,3)"
+  },
+  {
+   "id": "aaa-t9#6",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,6,3)"
+  },
+  {
+   "id": "aaa-t9#7",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,7,3)"
+  },
+  {
+   "id": "aaa-t9#8",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,8,3)"
+  },
+  {
+   "id": "aaa-t9#9",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!AB1:AB9,E!AA1:AA9,3)"
+  },
+  {
+   "id": "aaa-t9#10",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!AB1:AB9,E!AA1:AA9,3)"
+  },
+  {
+   "id": "aaa-t9#11",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12,E!AB1:AB9,E!AA1:AA9,3)"
+  },
+  {
+   "id": "aaa-t9#12",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!AB1:AB9,E!AA1:AA9,3)"
+  },
+  {
+   "id": "aaa-t9#13",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!AB1:AB9,E!AA1:AA9,0.95,3)"
+  },
+  {
+   "id": "aaa-t9#14",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!AB1:AB9,E!AA1:AA9,0.95,3)"
+  },
+  {
+   "id": "aaa-t9#15",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(13,E!AB1:AB9,E!AA1:AA9,0.95,3)"
+  },
+  {
+   "id": "aaa-t9#16",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AB1:AB9,E!AA1:AA9)"
+  },
+  {
+   "id": "aaa-t9#17",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!AB1:AB9,E!AA1:AA9)"
+  },
+  {
+   "id": "aaa-t9#18",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,1)"
+  },
+  {
+   "id": "aaa-t9#19",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,2)"
+  },
+  {
+   "id": "aaa-t9#20",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,3)"
+  },
+  {
+   "id": "aaa-t9#21",
+   "group": "aaa-t9",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB9,E!AA1:AA9,7)"
+  },
+  {
+   "id": "aaa-w28#1",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,1,7)"
+  },
+  {
+   "id": "aaa-w28#2",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,2,7)"
+  },
+  {
+   "id": "aaa-w28#3",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,3,7)"
+  },
+  {
+   "id": "aaa-w28#4",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,4,7)"
+  },
+  {
+   "id": "aaa-w28#5",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,5,7)"
+  },
+  {
+   "id": "aaa-w28#6",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,6,7)"
+  },
+  {
+   "id": "aaa-w28#7",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,7,7)"
+  },
+  {
+   "id": "aaa-w28#8",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,8,7)"
+  },
+  {
+   "id": "aaa-w28#9",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(29,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#10",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(30,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#11",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(31,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#12",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(32,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#13",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(33,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#14",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(34,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#15",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(35,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#16",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(36,E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-w28#17",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(29,E!AD1:AD28,E!AC1:AC28,0.95,7)"
+  },
+  {
+   "id": "aaa-w28#18",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(30,E!AD1:AD28,E!AC1:AC28,0.95,7)"
+  },
+  {
+   "id": "aaa-w28#19",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(36,E!AD1:AD28,E!AC1:AC28,0.95,7)"
+  },
+  {
+   "id": "aaa-w28#20",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AD1:AD28,E!AC1:AC28)"
+  },
+  {
+   "id": "aaa-w28#21",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(29,E!AD1:AD28,E!AC1:AC28)"
+  },
+  {
+   "id": "aaa-w28#22",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,1)"
+  },
+  {
+   "id": "aaa-w28#23",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,2)"
+  },
+  {
+   "id": "aaa-w28#24",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,3)"
+  },
+  {
+   "id": "aaa-w28#25",
+   "group": "aaa-w28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD28,E!AC1:AC28,7)"
+  },
+  {
+   "id": "aaa-s5#1",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,1,5)"
+  },
+  {
+   "id": "aaa-s5#2",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,2,5)"
+  },
+  {
+   "id": "aaa-s5#3",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,3,5)"
+  },
+  {
+   "id": "aaa-s5#4",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,4,5)"
+  },
+  {
+   "id": "aaa-s5#5",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,5,5)"
+  },
+  {
+   "id": "aaa-s5#6",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,6,5)"
+  },
+  {
+   "id": "aaa-s5#7",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,7,5)"
+  },
+  {
+   "id": "aaa-s5#8",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,8,5)"
+  },
+  {
+   "id": "aaa-s5#9",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#10",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#11",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#12",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(13,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#13",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#14",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(15,E!AF1:AF9,E!AE1:AE9,5)"
+  },
+  {
+   "id": "aaa-s5#15",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!AF1:AF9,E!AE1:AE9,0.95,5)"
+  },
+  {
+   "id": "aaa-s5#16",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!AF1:AF9,E!AE1:AE9,0.95,5)"
+  },
+  {
+   "id": "aaa-s5#17",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(15,E!AF1:AF9,E!AE1:AE9,0.95,5)"
+  },
+  {
+   "id": "aaa-s5#18",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AF1:AF9,E!AE1:AE9)"
+  },
+  {
+   "id": "aaa-s5#19",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!AF1:AF9,E!AE1:AE9)"
+  },
+  {
+   "id": "aaa-s5#20",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,1)"
+  },
+  {
+   "id": "aaa-s5#21",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,2)"
+  },
+  {
+   "id": "aaa-s5#22",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,3)"
+  },
+  {
+   "id": "aaa-s5#23",
+   "group": "aaa-s5",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF9,E!AE1:AE9,7)"
+  },
+  {
+   "id": "detect-p2#1",
+   "group": "detect-p2",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AH1:AH24,E!AG1:AG24)"
+  },
+  {
+   "id": "detect-p2#2",
+   "group": "detect-p2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!AH1:AH24,E!AG1:AG24)"
+  },
+  {
+   "id": "detect-p3#1",
+   "group": "detect-p3",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AJ1:AJ24,E!AI1:AI24)"
+  },
+  {
+   "id": "detect-p3#2",
+   "group": "detect-p3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!AJ1:AJ24,E!AI1:AI24)"
+  },
+  {
+   "id": "detect-p4#1",
+   "group": "detect-p4",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AL1:AL24,E!AK1:AK24)"
+  },
+  {
+   "id": "detect-p4#2",
+   "group": "detect-p4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!AL1:AL24,E!AK1:AK24)"
+  },
+  {
+   "id": "detect-p5#1",
+   "group": "detect-p5",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AN1:AN24,E!AM1:AM24)"
+  },
+  {
+   "id": "detect-p5#2",
+   "group": "detect-p5",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!AN1:AN24,E!AM1:AM24)"
+  },
+  {
+   "id": "detect-p6#1",
+   "group": "detect-p6",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AP1:AP24,E!AO1:AO24)"
+  },
+  {
+   "id": "detect-p6#2",
+   "group": "detect-p6",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(25,E!AP1:AP24,E!AO1:AO24)"
+  },
+  {
+   "id": "detect-p7#1",
+   "group": "detect-p7",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AR1:AR28,E!AQ1:AQ28)"
+  },
+  {
+   "id": "detect-p7#2",
+   "group": "detect-p7",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(29,E!AR1:AR28,E!AQ1:AQ28)"
+  },
+  {
+   "id": "detect-p8#1",
+   "group": "detect-p8",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AT1:AT32,E!AS1:AS32)"
+  },
+  {
+   "id": "detect-p8#2",
+   "group": "detect-p8",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(33,E!AT1:AT32,E!AS1:AS32)"
+  },
+  {
+   "id": "detect-p9#1",
+   "group": "detect-p9",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AV1:AV36,E!AU1:AU36)"
+  },
+  {
+   "id": "detect-p9#2",
+   "group": "detect-p9",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(37,E!AV1:AV36,E!AU1:AU36)"
+  },
+  {
+   "id": "detect-p10#1",
+   "group": "detect-p10",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AX1:AX40,E!AW1:AW40)"
+  },
+  {
+   "id": "detect-p10#2",
+   "group": "detect-p10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(41,E!AX1:AX40,E!AW1:AW40)"
+  },
+  {
+   "id": "detect-p11#1",
+   "group": "detect-p11",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!AZ1:AZ44,E!AY1:AY44)"
+  },
+  {
+   "id": "detect-p11#2",
+   "group": "detect-p11",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45,E!AZ1:AZ44,E!AY1:AY44)"
+  },
+  {
+   "id": "detect-p12#1",
+   "group": "detect-p12",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BB1:BB48,E!BA1:BA48)"
+  },
+  {
+   "id": "detect-p12#2",
+   "group": "detect-p12",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(49,E!BB1:BB48,E!BA1:BA48)"
+  },
+  {
+   "id": "detect-p12sine#1",
+   "group": "detect-p12sine",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BD1:BD48,E!BC1:BC48)"
+  },
+  {
+   "id": "detect-p12sine#2",
+   "group": "detect-p12sine",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(49,E!BD1:BD48,E!BC1:BC48)"
+  },
+  {
+   "id": "detect-p7long#1",
+   "group": "detect-p7long",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BF1:BF50,E!BE1:BE50)"
+  },
+  {
+   "id": "detect-p7long#2",
+   "group": "detect-p7long",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(51,E!BF1:BF50,E!BE1:BE50)"
+  },
+  {
+   "id": "detect-noise#1",
+   "group": "detect-noise",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BH1:BH30,E!BG1:BG30)"
+  },
+  {
+   "id": "detect-noise#2",
+   "group": "detect-noise",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(31,E!BH1:BH30,E!BG1:BG30)"
+  },
+  {
+   "id": "detect-p4flat#1",
+   "group": "detect-p4flat",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BJ1:BJ16,E!BI1:BI16)"
+  },
+  {
+   "id": "detect-p4flat#2",
+   "group": "detect-p4flat",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(17,E!BJ1:BJ16,E!BI1:BI16)"
+  },
+  {
+   "id": "order#1",
+   "group": "order",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BL1:BL10,E!BK1:BK10,0)"
+  },
+  {
+   "id": "order#2",
+   "group": "order",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BL1:BL10,E!BK1:BK10)"
+  },
+  {
+   "id": "order#3",
+   "group": "order",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BL1:BL10,E!BK1:BK10,1,0)"
+  },
+  {
+   "id": "order#4",
+   "group": "order",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BL1:BL10,E!BK1:BK10,7,0)"
+  },
+  {
+   "id": "dup#1",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0)"
+  },
+  {
+   "id": "dup#2",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,0)"
+  },
+  {
+   "id": "dup#3",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,1)"
+  },
+  {
+   "id": "dup#4",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,2)"
+  },
+  {
+   "id": "dup#5",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,3)"
+  },
+  {
+   "id": "dup#6",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,4)"
+  },
+  {
+   "id": "dup#7",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,5)"
+  },
+  {
+   "id": "dup#8",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,6)"
+  },
+  {
+   "id": "dup#9",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,7)"
+  },
+  {
+   "id": "dup#10",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,8)"
+  },
+  {
+   "id": "dup#11",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,-1)"
+  },
+  {
+   "id": "dup#12",
+   "group": "dup",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BN1:BN13,E!BM1:BM13,0,1,1.5)"
+  },
+  {
+   "id": "dup#13",
+   "group": "dup",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BN1:BN13,E!BM1:BM13,8,0)"
+  },
+  {
+   "id": "dup#14",
+   "group": "dup",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BN1:BN13,E!BM1:BM13,6,0,1,7)"
+  },
+  {
+   "id": "dup#15",
+   "group": "dup",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY(E!BN1:BN13,E!BM1:BM13)"
+  },
+  {
+   "id": "gap-one#1",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BP1:BP12,E!BO1:BO12,0)"
+  },
+  {
+   "id": "gap-one#2",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BP1:BP12,E!BO1:BO12,0,0)"
+  },
+  {
+   "id": "gap-one#3",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BP1:BP12,E!BO1:BO12,0,2)"
+  },
+  {
+   "id": "gap-one#4",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BP1:BP12,E!BO1:BO12,0,-1)"
+  },
+  {
+   "id": "gap-one#5",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BP1:BP12,E!BO1:BO12,0,0.5)"
+  },
+  {
+   "id": "gap-one#6",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BP1:BP12,E!BO1:BO12,7,0)"
+  },
+  {
+   "id": "gap-one#7",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BP1:BP12,E!BO1:BO12,7,0,0)"
+  },
+  {
+   "id": "gap-one#8",
+   "group": "gap-one",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BP1:BP12,E!BO1:BO12,8,0)"
+  },
+  {
+   "id": "gap-run#1",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BR1:BR10,E!BQ1:BQ10,0)"
+  },
+  {
+   "id": "gap-run#2",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BR1:BR10,E!BQ1:BQ10,0,0)"
+  },
+  {
+   "id": "gap-run#3",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BR1:BR10,E!BQ1:BQ10,0,2)"
+  },
+  {
+   "id": "gap-run#4",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BR1:BR10,E!BQ1:BQ10,0,-1)"
+  },
+  {
+   "id": "gap-run#5",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BR1:BR10,E!BQ1:BQ10,0,0.5)"
+  },
+  {
+   "id": "gap-run#6",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BR1:BR10,E!BQ1:BQ10,7,0)"
+  },
+  {
+   "id": "gap-run#7",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BR1:BR10,E!BQ1:BQ10,7,0,0)"
+  },
+  {
+   "id": "gap-run#8",
+   "group": "gap-run",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BR1:BR10,E!BQ1:BQ10,8,0)"
+  },
+  {
+   "id": "gap-three#1",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BT1:BT10,E!BS1:BS10,0)"
+  },
+  {
+   "id": "gap-three#2",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BT1:BT10,E!BS1:BS10,0,0)"
+  },
+  {
+   "id": "gap-three#3",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BT1:BT10,E!BS1:BS10,0,2)"
+  },
+  {
+   "id": "gap-three#4",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BT1:BT10,E!BS1:BS10,0,-1)"
+  },
+  {
+   "id": "gap-three#5",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BT1:BT10,E!BS1:BS10,0,0.5)"
+  },
+  {
+   "id": "gap-three#6",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BT1:BT10,E!BS1:BS10,7,0)"
+  },
+  {
+   "id": "gap-three#7",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BT1:BT10,E!BS1:BS10,7,0,0)"
+  },
+  {
+   "id": "gap-three#8",
+   "group": "gap-three",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BT1:BT10,E!BS1:BS10,8,0)"
+  },
+  {
+   "id": "gap-four#1",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BV1:BV9,E!BU1:BU9,0)"
+  },
+  {
+   "id": "gap-four#2",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BV1:BV9,E!BU1:BU9,0,0)"
+  },
+  {
+   "id": "gap-four#3",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BV1:BV9,E!BU1:BU9,0,2)"
+  },
+  {
+   "id": "gap-four#4",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BV1:BV9,E!BU1:BU9,0,-1)"
+  },
+  {
+   "id": "gap-four#5",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BV1:BV9,E!BU1:BU9,0,0.5)"
+  },
+  {
+   "id": "gap-four#6",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BV1:BV9,E!BU1:BU9,7,0)"
+  },
+  {
+   "id": "gap-four#7",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BV1:BV9,E!BU1:BU9,7,0,0)"
+  },
+  {
+   "id": "gap-four#8",
+   "group": "gap-four",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BV1:BV9,E!BU1:BU9,8,0)"
+  },
+  {
+   "id": "gap-five#1",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BX1:BX8,E!BW1:BW8,0)"
+  },
+  {
+   "id": "gap-five#2",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BX1:BX8,E!BW1:BW8,0,0)"
+  },
+  {
+   "id": "gap-five#3",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BX1:BX8,E!BW1:BW8,0,2)"
+  },
+  {
+   "id": "gap-five#4",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BX1:BX8,E!BW1:BW8,0,-1)"
+  },
+  {
+   "id": "gap-five#5",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(14,E!BX1:BX8,E!BW1:BW8,0,0.5)"
+  },
+  {
+   "id": "gap-five#6",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BX1:BX8,E!BW1:BW8,7,0)"
+  },
+  {
+   "id": "gap-five#7",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BX1:BX8,E!BW1:BW8,7,0,0)"
+  },
+  {
+   "id": "gap-five#8",
+   "group": "gap-five",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BX1:BX8,E!BW1:BW8,8,0)"
+  },
+  {
+   "id": "value-blank#1",
+   "group": "value-blank",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BZ1:BZ10,E!BY1:BY10,0)"
+  },
+  {
+   "id": "value-blank#2",
+   "group": "value-blank",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!BZ1:BZ10,E!BY1:BY10,0,0)"
+  },
+  {
+   "id": "value-blank#3",
+   "group": "value-blank",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BZ1:BZ10,E!BY1:BY10,7,0)"
+  },
+  {
+   "id": "time-blank#1",
+   "group": "time-blank",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CB1:CB10,E!CA1:CA10,0)"
+  },
+  {
+   "id": "time-blank#2",
+   "group": "time-blank",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CB1:CB10,E!CA1:CA10,8,0)"
+  },
+  {
+   "id": "value-text#1",
+   "group": "value-text",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CD1:CD10,E!CC1:CC10,0)"
+  },
+  {
+   "id": "value-text#2",
+   "group": "value-text",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CD1:CD10,E!CC1:CC10,0,0)"
+  },
+  {
+   "id": "value-text#3",
+   "group": "value-text",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CD1:CD10,E!CC1:CC10,7,0)"
+  },
+  {
+   "id": "time-text#1",
+   "group": "time-text",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CF1:CF10,E!CE1:CE10,0)"
+  },
+  {
+   "id": "time-text#2",
+   "group": "time-text",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CF1:CF10,E!CE1:CE10,8,0)"
+  },
+  {
+   "id": "value-num#1",
+   "group": "value-num",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CH1:CH10,E!CG1:CG10,0)"
+  },
+  {
+   "id": "value-num#2",
+   "group": "value-num",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CH1:CH10,E!CG1:CG10,0,0)"
+  },
+  {
+   "id": "value-num#3",
+   "group": "value-num",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CH1:CH10,E!CG1:CG10,7,0)"
+  },
+  {
+   "id": "time-num#1",
+   "group": "time-num",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CJ1:CJ10,E!CI1:CI10,0)"
+  },
+  {
+   "id": "time-num#2",
+   "group": "time-num",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CJ1:CJ10,E!CI1:CI10,8,0)"
+  },
+  {
+   "id": "value-bool#1",
+   "group": "value-bool",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CL1:CL10,E!CK1:CK10,0)"
+  },
+  {
+   "id": "value-bool#2",
+   "group": "value-bool",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CL1:CL10,E!CK1:CK10,0,0)"
+  },
+  {
+   "id": "value-bool#3",
+   "group": "value-bool",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CL1:CL10,E!CK1:CK10,7,0)"
+  },
+  {
+   "id": "time-bool#1",
+   "group": "time-bool",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CN1:CN10,E!CM1:CM10,0)"
+  },
+  {
+   "id": "time-bool#2",
+   "group": "time-bool",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CN1:CN10,E!CM1:CM10,8,0)"
+  },
+  {
+   "id": "value-err#1",
+   "group": "value-err",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CP1:CP10,E!CO1:CO10,0)"
+  },
+  {
+   "id": "value-err#2",
+   "group": "value-err",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CP1:CP10,E!CO1:CO10,0,0)"
+  },
+  {
+   "id": "value-err#3",
+   "group": "value-err",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CP1:CP10,E!CO1:CO10,7,0)"
+  },
+  {
+   "id": "time-err#1",
+   "group": "time-err",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CR1:CR10,E!CQ1:CQ10,0)"
+  },
+  {
+   "id": "time-err#2",
+   "group": "time-err",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CR1:CR10,E!CQ1:CQ10,8,0)"
+  },
+  {
+   "id": "value-empty#1",
+   "group": "value-empty",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CT1:CT10,E!CS1:CS10,0)"
+  },
+  {
+   "id": "value-empty#2",
+   "group": "value-empty",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CT1:CT10,E!CS1:CS10,0,0)"
+  },
+  {
+   "id": "value-empty#3",
+   "group": "value-empty",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CT1:CT10,E!CS1:CS10,7,0)"
+  },
+  {
+   "id": "time-empty#1",
+   "group": "time-empty",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CV1:CV10,E!CU1:CU10,0)"
+  },
+  {
+   "id": "time-empty#2",
+   "group": "time-empty",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CV1:CV10,E!CU1:CU10,8,0)"
+  },
+  {
+   "id": "value-last#1",
+   "group": "value-last",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!CX1:CX10,E!CW1:CW10,0)"
+  },
+  {
+   "id": "value-last#2",
+   "group": "value-last",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!CX1:CX10,E!CW1:CW10,0)"
+  },
+  {
+   "id": "step-uneven#1",
+   "group": "step-uneven",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CZ1:CZ10,E!CY1:CY10,8,0)"
+  },
+  {
+   "id": "step-uneven#2",
+   "group": "step-uneven",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!CZ1:CZ10,E!CY1:CY10,1,0)"
+  },
+  {
+   "id": "step-uneven#3",
+   "group": "step-uneven",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11.5,E!CZ1:CZ10,E!CY1:CY10,0)"
+  },
+  {
+   "id": "step-double#1",
+   "group": "step-double",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DB1:DB10,E!DA1:DA10,8,0)"
+  },
+  {
+   "id": "step-double#2",
+   "group": "step-double",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DB1:DB10,E!DA1:DA10,1,0)"
+  },
+  {
+   "id": "step-double#3",
+   "group": "step-double",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(20,E!DB1:DB10,E!DA1:DA10,0)"
+  },
+  {
+   "id": "step-week#1",
+   "group": "step-week",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DD1:DD10,E!DC1:DC10,8,0)"
+  },
+  {
+   "id": "step-week#2",
+   "group": "step-week",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DD1:DD10,E!DC1:DC10,1,0)"
+  },
+  {
+   "id": "step-week#3",
+   "group": "step-week",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45070,E!DD1:DD10,E!DC1:DC10,0)"
+  },
+  {
+   "id": "step-half#1",
+   "group": "step-half",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DF1:DF10,E!DE1:DE10,8,0)"
+  },
+  {
+   "id": "step-half#2",
+   "group": "step-half",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DF1:DF10,E!DE1:DE10,1,0)"
+  },
+  {
+   "id": "step-half#3",
+   "group": "step-half",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(5,E!DF1:DF10,E!DE1:DE10,0)"
+  },
+  {
+   "id": "step-hour#1",
+   "group": "step-hour",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DH1:DH10,E!DG1:DG10,8,0)"
+  },
+  {
+   "id": "step-hour#2",
+   "group": "step-hour",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DH1:DH10,E!DG1:DG10,1,0)"
+  },
+  {
+   "id": "step-hour#3",
+   "group": "step-hour",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45000.416666666664,E!DH1:DH10,E!DG1:DG10,0)"
+  },
+  {
+   "id": "step-tenth#1",
+   "group": "step-tenth",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DJ1:DJ10,E!DI1:DI10,8,0)"
+  },
+  {
+   "id": "step-tenth#2",
+   "group": "step-tenth",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DJ1:DJ10,E!DI1:DI10,1,0)"
+  },
+  {
+   "id": "step-tenth#3",
+   "group": "step-tenth",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(1.1,E!DJ1:DJ10,E!DI1:DI10,0)"
+  },
+  {
+   "id": "step-months#1",
+   "group": "step-months",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DL1:DL10,E!DK1:DK10,8,0)"
+  },
+  {
+   "id": "step-months#2",
+   "group": "step-months",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DL1:DL10,E!DK1:DK10,1,0)"
+  },
+  {
+   "id": "step-months#3",
+   "group": "step-months",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44136,E!DL1:DL10,E!DK1:DK10,0)"
+  },
+  {
+   "id": "step-negative#1",
+   "group": "step-negative",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DN1:DN10,E!DM1:DM10,8,0)"
+  },
+  {
+   "id": "step-negative#2",
+   "group": "step-negative",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DN1:DN10,E!DM1:DM10,1,0)"
+  },
+  {
+   "id": "step-negative#3",
+   "group": "step-negative",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(0,E!DN1:DN10,E!DM1:DM10,0)"
+  },
+  {
+   "id": "target#1",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#2",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(9,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#3",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(1,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#4",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(10.5,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#5",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11.5,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#6",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(12.25,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#7",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(110,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#8",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(\"11\",E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#9",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(TRUE,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#10",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(E!ZZ1,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#11",
+   "group": "target",
+   "fn": "INDEX",
+   "formula": "INDEX(_xlfn.FORECAST.ETS({11,12},E!DP1:DP10,E!DO1:DO10,0),2)"
+  },
+  {
+   "id": "target#12",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(-5,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#13",
+   "group": "target",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(0,E!DP1:DP10,E!DO1:DO10,0)"
+  },
+  {
+   "id": "target#14",
+   "group": "target",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10,E!DP1:DP10,E!DO1:DO10,0.95,0)"
+  },
+  {
+   "id": "target#15",
+   "group": "target",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(9,E!DP1:DP10,E!DO1:DO10,0.95,0)"
+  },
+  {
+   "id": "target#16",
+   "group": "target",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(10.5,E!DP1:DP10,E!DO1:DO10,0.95,0)"
+  },
+  {
+   "id": "target#17",
+   "group": "target",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(110,E!DP1:DP10,E!DO1:DO10,0.95,0)"
+  },
+  {
+   "id": "season#1",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,-1)"
+  },
+  {
+   "id": "season#2",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,1.5)"
+  },
+  {
+   "id": "season#3",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,2.5)"
+  },
+  {
+   "id": "season#4",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,4.9)"
+  },
+  {
+   "id": "season#5",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,\"4\")"
+  },
+  {
+   "id": "season#6",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,TRUE)"
+  },
+  {
+   "id": "season#7",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,5)"
+  },
+  {
+   "id": "season#8",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,6)"
+  },
+  {
+   "id": "season#9",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,8760)"
+  },
+  {
+   "id": "season#10",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,8761)"
+  },
+  {
+   "id": "season#11",
+   "group": "season",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,E!ZZ1)"
+  },
+  {
+   "id": "season#12",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,0)"
+  },
+  {
+   "id": "season#13",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,1)"
+  },
+  {
+   "id": "season#14",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,2)"
+  },
+  {
+   "id": "season#15",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,3)"
+  },
+  {
+   "id": "season#16",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,4)"
+  },
+  {
+   "id": "season#17",
+   "group": "season",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,3,5)"
+  },
+  {
+   "id": "type#1",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,0,0)"
+  },
+  {
+   "id": "type#2",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,9,0)"
+  },
+  {
+   "id": "type#3",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,1.5,0)"
+  },
+  {
+   "id": "type#4",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,7.9,0)"
+  },
+  {
+   "id": "type#5",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,\"2\",0)"
+  },
+  {
+   "id": "type#6",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,TRUE,0)"
+  },
+  {
+   "id": "type#7",
+   "group": "type",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,-1,0)"
+  },
+  {
+   "id": "level#1",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,0,0)"
+  },
+  {
+   "id": "level#2",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,1,0)"
+  },
+  {
+   "id": "level#3",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,0.5,0)"
+  },
+  {
+   "id": "level#4",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,1.5,0)"
+  },
+  {
+   "id": "level#5",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,-0.1,0)"
+  },
+  {
+   "id": "level#6",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,0.999,0)"
+  },
+  {
+   "id": "level#7",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,0.0001,0)"
+  },
+  {
+   "id": "level#8",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,\"0.9\",0)"
+  },
+  {
+   "id": "level#9",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,TRUE,0)"
+  },
+  {
+   "id": "level#10",
+   "group": "level",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,E!ZZ1,0)"
+  },
+  {
+   "id": "omit#1",
+   "group": "omit",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,,,)"
+  },
+  {
+   "id": "omit#2",
+   "group": "omit",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,0,,)"
+  },
+  {
+   "id": "omit#3",
+   "group": "omit",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DP1:DP10,E!DO1:DO10,,1,1)"
+  },
+  {
+   "id": "omit#4",
+   "group": "omit",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10,,0)"
+  },
+  {
+   "id": "omit#5",
+   "group": "omit",
+   "fn": "FORECAST.ETS.CONFINT",
+   "formula": "_xlfn.FORECAST.ETS.CONFINT(11,E!DP1:DP10,E!DO1:DO10)"
+  },
+  {
+   "id": "omit#6",
+   "group": "omit",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!DP1:DP10,E!DO1:DO10,1,,,)"
+  },
+  {
+   "id": "size#1",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,E!DR1:DR10,E!DQ1:DQ9,0)"
+  },
+  {
+   "id": "size#2",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,{3,5,9,11,15,17,21,24,26,30},{1,2,3,4,5,6,7,8,9,10},0)"
+  },
+  {
+   "id": "size#3",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(11,{3,5,9,11,15,17,21,24,26,30},E!DQ1:DQ10,0)"
+  },
+  {
+   "id": "size#4",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(3,{1,2},{1,2},0)"
+  },
+  {
+   "id": "size#5",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(4,{1,2,4},{1,2,3},0)"
+  },
+  {
+   "id": "size#6",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(2,{5},{1},0)"
+  },
+  {
+   "id": "size#7",
+   "group": "size",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(3,{1,2},{1,1},0)"
+  },
+  {
+   "id": "size#8",
+   "group": "size",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT({1,2},{1,2},1,0)"
+  },
+  {
+   "id": "size#9",
+   "group": "size",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT({1,2,4},{1,2,3},1,0)"
+  },
+  {
+   "id": "size#10",
+   "group": "size",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT({1,2,4},{1,2,3},7,0)"
+  },
+  {
+   "id": "size#11",
+   "group": "size",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY({1,2,4},{1,2,3})"
+  },
+  {
+   "id": "size#12",
+   "group": "size",
+   "fn": "FORECAST.ETS.SEASONALITY",
+   "formula": "_xlfn.FORECAST.ETS.SEASONALITY({1,2},{1,2})"
+  }
+ ],
+ "values": {
+  "holt-trend#1": {
+   "t": "n",
+   "v": 0.126
+  },
+  "holt-trend#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-trend#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-trend#4": {
+   "t": "n",
+   "v": 0.1540720445742785
+  },
+  "holt-trend#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-trend#6": {
+   "t": "n",
+   "v": 0.46221613372283554
+  },
+  "holt-trend#7": {
+   "t": "n",
+   "v": 0.5914800516077225
+  },
+  "holt-trend#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-trend#9": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "holt-trend#10": {
+   "t": "n",
+   "v": 35.78604578912636
+  },
+  "holt-trend#11": {
+   "t": "n",
+   "v": 38.79557115089868
+  },
+  "holt-trend#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-trend#13": {
+   "t": "n",
+   "v": 1.1685912124834923
+  },
+  "holt-trend#14": {
+   "t": "n",
+   "v": 1.1874294435156985
+  },
+  "holt-trend#15": {
+   "t": "n",
+   "v": 0.39894723225485845
+  },
+  "holt-trend#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-trend#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-trend#18": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "holt-trend#19": {
+   "t": "n",
+   "v": 0.126
+  },
+  "holt-trend#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-trend#21": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-trend#22": {
+   "t": "n",
+   "v": 0.5914800516077225
+  },
+  "holt-level#1": {
+   "t": "n",
+   "v": 0.002
+  },
+  "holt-level#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-level#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-level#4": {
+   "t": "n",
+   "v": 0.30760131878511165
+  },
+  "holt-level#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-level#6": {
+   "t": "n",
+   "v": 1.098576138518256
+  },
+  "holt-level#7": {
+   "t": "n",
+   "v": 1.3923870262019218
+  },
+  "holt-level#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-level#9": {
+   "t": "n",
+   "v": 18.932251083411572
+  },
+  "holt-level#10": {
+   "t": "n",
+   "v": 19.511624538994262
+  },
+  "holt-level#11": {
+   "t": "n",
+   "v": 20.090997994576956
+  },
+  "holt-level#12": {
+   "t": "n",
+   "v": 3.783328432324894
+  },
+  "holt-level#13": {
+   "t": "n",
+   "v": 3.783345457264533
+  },
+  "holt-level#14": {
+   "t": "n",
+   "v": 3.7834230143534415
+  },
+  "holt-level#15": {
+   "t": "n",
+   "v": 1.3019709899554042
+  },
+  "holt-level#16": {
+   "t": "n",
+   "v": 4.972136385056636
+  },
+  "holt-level#17": {
+   "t": "n",
+   "v": 3
+  },
+  "holt-level#18": {
+   "t": "n",
+   "v": 19.512185948485243
+  },
+  "holt-level#19": {
+   "t": "n",
+   "v": 0.126
+  },
+  "holt-level#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-level#21": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-level#22": {
+   "t": "n",
+   "v": 0.9547290874456921
+  },
+  "holt-line#1": {
+   "t": "n",
+   "v": 0.9
+  },
+  "holt-line#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-line#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-line#4": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#5": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#6": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#7": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#8": {
+   "t": "n",
+   "v": 1
+  },
+  "holt-line#9": {
+   "t": "n",
+   "v": 19
+  },
+  "holt-line#10": {
+   "t": "n",
+   "v": 21
+  },
+  "holt-line#11": {
+   "t": "n",
+   "v": 23
+  },
+  "holt-line#12": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#13": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#14": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#15": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#16": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#17": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-line#18": {
+   "t": "n",
+   "v": 19
+  },
+  "holt-line#19": {
+   "t": "n",
+   "v": 0.9
+  },
+  "holt-line#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-line#21": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-line#22": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#1": {
+   "t": "n",
+   "v": 0.9
+  },
+  "holt-flat#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-flat#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-flat#4": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#5": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#6": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#7": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#8": {
+   "t": "n",
+   "v": 1
+  },
+  "holt-flat#9": {
+   "t": "n",
+   "v": 5
+  },
+  "holt-flat#10": {
+   "t": "n",
+   "v": 5
+  },
+  "holt-flat#11": {
+   "t": "n",
+   "v": 5
+  },
+  "holt-flat#12": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#13": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#14": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#15": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#16": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#17": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-flat#18": {
+   "t": "n",
+   "v": 5
+  },
+  "holt-flat#19": {
+   "t": "n",
+   "v": 0.9
+  },
+  "holt-flat#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-flat#21": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-flat#22": {
+   "t": "n",
+   "v": 0
+  },
+  "holt-walk#1": {
+   "t": "n",
+   "v": 0.002
+  },
+  "holt-walk#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-walk#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-walk#4": {
+   "t": "n",
+   "v": 0.39202822015461614
+  },
+  "holt-walk#5": {
+   "t": "n",
+   "v": 0.01997948960166927
+  },
+  "holt-walk#6": {
+   "t": "n",
+   "v": 0.40984768470709865
+  },
+  "holt-walk#7": {
+   "t": "n",
+   "v": 0.486729803275881
+  },
+  "holt-walk#8": {
+   "t": "n",
+   "v": 1
+  },
+  "holt-walk#9": {
+   "t": "n",
+   "v": 23.586507926767776
+  },
+  "holt-walk#10": {
+   "t": "n",
+   "v": 24.265059621293886
+  },
+  "holt-walk#11": {
+   "t": "n",
+   "v": 24.943611315819993
+  },
+  "holt-walk#12": {
+   "t": "n",
+   "v": 1.080457063324578
+  },
+  "holt-walk#13": {
+   "t": "n",
+   "v": 1.0804619253704235
+  },
+  "holt-walk#14": {
+   "t": "n",
+   "v": 1.080484074413527
+  },
+  "holt-walk#15": {
+   "t": "n",
+   "v": 0.37182173779096506
+  },
+  "holt-walk#16": {
+   "t": "n",
+   "v": 1.4199612783144806
+  },
+  "holt-walk#17": {
+   "t": "n",
+   "v": 3
+  },
+  "holt-walk#18": {
+   "t": "n",
+   "v": 22.793113297889406
+  },
+  "holt-walk#19": {
+   "t": "n",
+   "v": 0.126
+  },
+  "holt-walk#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-walk#21": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-walk#22": {
+   "t": "n",
+   "v": 0.11927934511455857
+  },
+  "holt-down#1": {
+   "t": "n",
+   "v": 0.1
+  },
+  "holt-down#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-down#3": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-down#4": {
+   "t": "n",
+   "v": 0.26485787780890496
+  },
+  "holt-down#5": {
+   "t": "n",
+   "v": 0.018116514672943052
+  },
+  "holt-down#6": {
+   "t": "n",
+   "v": 0.49660852089169677
+  },
+  "holt-down#7": {
+   "t": "n",
+   "v": 0.5467035538088721
+  },
+  "holt-down#8": {
+   "t": "n",
+   "v": 1
+  },
+  "holt-down#9": {
+   "t": "n",
+   "v": 21.87413844411976
+  },
+  "holt-down#10": {
+   "t": "n",
+   "v": 19.989859200200897
+  },
+  "holt-down#11": {
+   "t": "n",
+   "v": 18.105579956282035
+  },
+  "holt-down#12": {
+   "t": "n",
+   "v": 1.129169074453797
+  },
+  "holt-down#13": {
+   "t": "n",
+   "v": 1.1349137880352023
+  },
+  "holt-down#14": {
+   "t": "n",
+   "v": 1.1466566008799477
+  },
+  "holt-down#15": {
+   "t": "n",
+   "v": 0.38858518471001957
+  },
+  "holt-down#16": {
+   "t": "n",
+   "v": 1.4839797126791752
+  },
+  "holt-down#17": {
+   "t": "n",
+   "v": 2
+  },
+  "holt-down#18": {
+   "t": "n",
+   "v": 21.68544904142054
+  },
+  "holt-down#19": {
+   "t": "n",
+   "v": 0.126
+  },
+  "holt-down#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-down#21": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-down#22": {
+   "t": "n",
+   "v": 0.5468630311162032
+  },
+  "holt-three#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#2": {
+   "t": "n",
+   "v": 0.099
+  },
+  "holt-three#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#4": {
+   "t": "n",
+   "v": 0.3996666666666666
+  },
+  "holt-three#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#6": {
+   "t": "n",
+   "v": 0.5994999999999999
+  },
+  "holt-three#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#11": {
+   "t": "n",
+   "v": 4.1254955
+  },
+  "holt-three#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#14": {
+   "t": "n",
+   "v": 1.9626141028669903
+  },
+  "holt-three#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#18": {
+   "t": "n",
+   "v": 2.8875985
+  },
+  "holt-three#19": {
+   "t": "n",
+   "v": 0.1
+  },
+  "holt-three#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-three#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#1": {
+   "t": "n",
+   "v": 0.25
+  },
+  "holt-four#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#4": {
+   "t": "n",
+   "v": 0.6054237421875003
+  },
+  "holt-four#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#9": {
+   "t": "n",
+   "v": 6.320620344321428
+  },
+  "holt-four#10": {
+   "t": "n",
+   "v": 7.208532411857142
+  },
+  "holt-four#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#14": {
+   "t": "n",
+   "v": 4.6605139592763045
+  },
+  "holt-four#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#16": {
+   "t": "n",
+   "v": 5.613523540634835
+  },
+  "holt-four#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "holt-four#20": {
+   "t": "n",
+   "v": 0.001
+  },
+  "holt-four#21": {
+   "t": "n",
+   "v": 2.220446049250313e-16
+  },
+  "holt-four#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#1": {
+   "t": "n",
+   "v": 0.251
+  },
+  "aaa-q16#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q16#3": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q16#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#6": {
+   "t": "n",
+   "v": 0.23457194120817526
+  },
+  "aaa-q16#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#10": {
+   "t": "n",
+   "v": 27.98730633839719
+  },
+  "aaa-q16#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#15": {
+   "t": "n",
+   "v": 0.5835699020887662
+  },
+  "aaa-q16#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#19": {
+   "t": "n",
+   "v": 0.251
+  },
+  "aaa-q16#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q16#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q24#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#5": {
+   "t": "n",
+   "v": 0.00555330991516744
+  },
+  "aaa-q24#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#8": {
+   "t": "n",
+   "v": 1
+  },
+  "aaa-q24#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q24#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-m36#3": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-m36#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#5": {
+   "t": "n",
+   "v": 0.005801690990273957
+  },
+  "aaa-m36#6": {
+   "t": "n",
+   "v": 0.33311776679826977
+  },
+  "aaa-m36#7": {
+   "t": "n",
+   "v": 0.4424860992214256
+  },
+  "aaa-m36#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#10": {
+   "t": "n",
+   "v": 68.78414956760781
+  },
+  "aaa-m36#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#13": {
+   "t": "n",
+   "v": 64.51711051173443
+  },
+  "aaa-m36#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#17": {
+   "t": "n",
+   "v": 55.78544622866032
+  },
+  "aaa-m36#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-m36#24": {
+   "t": "n",
+   "v": 0.9582125584505188
+  },
+  "aaa-m36#25": {
+   "t": "n",
+   "v": 12
+  },
+  "aaa-m36#26": {
+   "t": "n",
+   "v": 65.89755304669521
+  },
+  "aaa-m36#27": {
+   "t": "n",
+   "v": 0.251
+  },
+  "aaa-m36#28": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-m36#29": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-m36#30": {
+   "t": "n",
+   "v": 0.4424860992214256
+  },
+  "aaa-q8#1": {
+   "t": "n",
+   "v": 0.251
+  },
+  "aaa-q8#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q8#3": {
+   "t": "n",
+   "v": 0.25
+  },
+  "aaa-q8#4": {
+   "t": "n",
+   "v": 0.10525780946134604
+  },
+  "aaa-q8#5": {
+   "t": "n",
+   "v": 0.024029449962226907
+  },
+  "aaa-q8#6": {
+   "t": "n",
+   "v": 0.3067513304302085
+  },
+  "aaa-q8#7": {
+   "t": "n",
+   "v": 0.39998985186861347
+  },
+  "aaa-q8#8": {
+   "t": "n",
+   "v": 1
+  },
+  "aaa-q8#9": {
+   "t": "n",
+   "v": 20.672360909414
+  },
+  "aaa-q8#10": {
+   "t": "n",
+   "v": 17.949584986414358
+  },
+  "aaa-q8#11": {
+   "t": "n",
+   "v": 22.14013966165217
+  },
+  "aaa-q8#12": {
+   "t": "n",
+   "v": 20.93395037724267
+  },
+  "aaa-q8#13": {
+   "t": "n",
+   "v": 24.600952094502325
+  },
+  "aaa-q8#14": {
+   "t": "n",
+   "v": 0.7839657038439934
+  },
+  "aaa-q8#15": {
+   "t": "n",
+   "v": 0.8084750611413665
+  },
+  "aaa-q8#16": {
+   "t": "n",
+   "v": 0.9430602355157174
+  },
+  "aaa-q8#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q8#18": {
+   "t": "n",
+   "v": 20.75891828093893
+  },
+  "aaa-q8#19": {
+   "t": "n",
+   "v": 0.251
+  },
+  "aaa-q8#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q8#21": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q8#22": {
+   "t": "n",
+   "v": 0.643095375409326
+  },
+  "aaa-q10#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#2": {
+   "t": "n",
+   "v": 0.001
+  },
+  "aaa-q10#3": {
+   "t": "n",
+   "v": 0.25
+  },
+  "aaa-q10#4": {
+   "t": "n",
+   "v": 0.10992260707778007
+  },
+  "aaa-q10#5": {
+   "t": "n",
+   "v": 0.024462733016851885
+  },
+  "aaa-q10#6": {
+   "t": "n",
+   "v": 0.34442416884371096
+  },
+  "aaa-q10#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#8": {
+   "t": "n",
+   "v": 1
+  },
+  "aaa-q10#9": {
+   "t": "n",
+   "v": 22.205779206328106
+  },
+  "aaa-q10#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#11": {
+   "t": "n",
+   "v": 24.823062943663963
+  },
+  "aaa-q10#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#15": {
+   "t": "n",
+   "v": 0.8495566547323932
+  },
+  "aaa-q10#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#17": {
+   "t": "n",
+   "v": 2
+  },
+  "aaa-q10#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-q10#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-t9#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-w28#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "aaa-s5#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p2#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p2#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p3#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p3#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p4#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p4#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p5#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p5#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p6#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p6#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p7#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p7#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p8#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p8#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p9#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p9#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p10#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p10#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p11#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p11#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p12#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p12#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p12sine#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p12sine#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p7long#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p7long#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-noise#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-noise#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p4flat#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "detect-p4flat#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "order#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "order#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "order#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "order#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#4": {
+   "t": "n",
+   "v": 0.9449083947818114
+  },
+  "dup#5": {
+   "t": "n",
+   "v": 0.9449083947818114
+  },
+  "dup#6": {
+   "t": "n",
+   "v": 32.48010392833683
+  },
+  "dup#7": {
+   "t": "n",
+   "v": 32.67702937205394
+  },
+  "dup#8": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "dup#9": {
+   "t": "n",
+   "v": 32.24877558755042
+  },
+  "dup#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "dup#13": {
+   "t": "n",
+   "v": 1
+  },
+  "dup#14": {
+   "t": "n",
+   "v": 4.631755760562966
+  },
+  "dup#15": {
+   "t": "n",
+   "v": 2
+  },
+  "gap-one#1": {
+   "t": "n",
+   "v": 42.09058815625159
+  },
+  "gap-one#2": {
+   "t": "n",
+   "v": 42.580671369785634
+  },
+  "gap-one#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-one#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-one#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-one#6": {
+   "t": "n",
+   "v": 0.24373289589221192
+  },
+  "gap-one#7": {
+   "t": "n",
+   "v": 0.22909026151483786
+  },
+  "gap-one#8": {
+   "t": "n",
+   "v": 1
+  },
+  "gap-run#1": {
+   "t": "n",
+   "v": 42.081404064691114
+  },
+  "gap-run#2": {
+   "t": "n",
+   "v": 42.652647452507544
+  },
+  "gap-run#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-run#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-run#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-run#6": {
+   "t": "n",
+   "v": 0.22579343622376769
+  },
+  "gap-run#7": {
+   "t": "n",
+   "v": 0.649354908768157
+  },
+  "gap-run#8": {
+   "t": "n",
+   "v": 1
+  },
+  "gap-three#1": {
+   "t": "n",
+   "v": 42.07184446114878
+  },
+  "gap-three#2": {
+   "t": "n",
+   "v": 34.92290118696851
+  },
+  "gap-three#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-three#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-three#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-three#6": {
+   "t": "n",
+   "v": 0.2550972912159134
+  },
+  "gap-three#7": {
+   "t": "n",
+   "v": 13.294533009729102
+  },
+  "gap-three#8": {
+   "t": "n",
+   "v": 1
+  },
+  "gap-four#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-four#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-five#1": {
+   "t": "n",
+   "v": 41.18685203682713
+  },
+  "gap-five#2": {
+   "t": "n",
+   "v": 41.18685203682713
+  },
+  "gap-five#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-five#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-five#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "gap-five#6": {
+   "t": "n",
+   "v": 0.5012530530655085
+  },
+  "gap-five#7": {
+   "t": "n",
+   "v": 0.5012530530655085
+  },
+  "gap-five#8": {
+   "t": "n",
+   "v": 2
+  },
+  "value-blank#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "value-blank#2": {
+   "t": "n",
+   "v": 32.45681697477103
+  },
+  "value-blank#3": {
+   "t": "n",
+   "v": 0.6123230920172215
+  },
+  "time-blank#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "time-blank#2": {
+   "t": "n",
+   "v": 1
+  },
+  "value-text#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "value-text#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "value-text#3": {
+   "t": "n",
+   "v": 0.6123230920172215
+  },
+  "time-text#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "time-text#2": {
+   "t": "n",
+   "v": 1
+  },
+  "value-num#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "value-num#2": {
+   "t": "n",
+   "v": 32.45681697477103
+  },
+  "value-num#3": {
+   "t": "n",
+   "v": 0.6123230920172215
+  },
+  "time-num#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "time-num#2": {
+   "t": "n",
+   "v": 1
+  },
+  "value-bool#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "value-bool#2": {
+   "t": "n",
+   "v": 32.45681697477103
+  },
+  "value-bool#3": {
+   "t": "n",
+   "v": 0.6123230920172215
+  },
+  "time-bool#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "time-bool#2": {
+   "t": "n",
+   "v": 1
+  },
+  "value-err#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "value-err#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "value-err#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "time-err#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "time-err#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "value-empty#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "value-empty#2": {
+   "t": "n",
+   "v": 32.45681697477103
+  },
+  "value-empty#3": {
+   "t": "n",
+   "v": 0.6123230920172215
+  },
+  "time-empty#1": {
+   "t": "n",
+   "v": 32.66546129301376
+  },
+  "time-empty#2": {
+   "t": "n",
+   "v": 1
+  },
+  "value-last#1": {
+   "t": "n",
+   "v": 32.55639054226742
+  },
+  "value-last#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "step-uneven#1": {
+   "t": "n",
+   "v": 1
+  },
+  "step-uneven#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-uneven#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-double#1": {
+   "t": "n",
+   "v": 2
+  },
+  "step-double#2": {
+   "t": "n",
+   "v": 0.5
+  },
+  "step-double#3": {
+   "t": "n",
+   "v": 32.93957260894389
+  },
+  "step-week#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "step-week#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-week#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-half#1": {
+   "t": "n",
+   "v": 0.5
+  },
+  "step-half#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-half#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-hour#1": {
+   "t": "n",
+   "v": 0.04166666666424135
+  },
+  "step-hour#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-hour#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-tenth#1": {
+   "t": "n",
+   "v": 0.1
+  },
+  "step-tenth#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "step-tenth#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-months#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "step-months#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-months#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "step-negative#1": {
+   "t": "n",
+   "v": 2
+  },
+  "step-negative#2": {
+   "t": "n",
+   "v": 0.126
+  },
+  "step-negative#3": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "target#1": {
+   "t": "n",
+   "v": 29.766995065581725
+  },
+  "target#2": {
+   "t": "n",
+   "v": 26.757469703809406
+  },
+  "target#3": {
+   "t": "n",
+   "v": 2.6812668096308454
+  },
+  "target#4": {
+   "t": "n",
+   "v": 31.271757746467884
+  },
+  "target#5": {
+   "t": "n",
+   "v": 34.2812831082402
+  },
+  "target#6": {
+   "t": "n",
+   "v": 36.53842712956944
+  },
+  "target#7": {
+   "t": "n",
+   "v": 330.71953124281373
+  },
+  "target#8": {
+   "t": "n",
+   "v": 32.77652042735404
+  },
+  "target#9": {
+   "t": "n",
+   "v": 2.6812668096308454
+  },
+  "target#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "target#16": {
+   "t": "n",
+   "v": 0.8197344655496873
+  },
+  "target#17": {
+   "t": "n",
+   "v": 2.360913248121228
+  },
+  "season#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "season#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "type#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "level#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "omit#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#9": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "size#12": {
+   "t": "e",
+   "v": "NUM"
+  }
+ }
+}
