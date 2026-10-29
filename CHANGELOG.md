@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.67.0 (2026-10-29)
+
+Added:
+
+- Rows and columns fit turned text (`AlignmentStyle.rotation`) as Excel for Mac fits it: a row grows to the height of text at an angle, at 90 degrees or stacked, a column to its width, in fitting rows and columns, AutoFit, `patchCells`, a copy with its looks and typed text, in one step of undo with the edit. A turned cell shows its text in the width of its widest column (Excel for Mac, 621 cases with held-out sets, 611 the same and the others named) ([Turned text](docs/formats.md#turned-text)).
+- `SheetView.split`, Excel's split window (View > Split): where the lines are, in points as the file holds them, the cell at the top left of the panes past them and the active pane; read, written and kept over the file, and opened and saved alike by Excel for Mac and Windows ([A split window](docs/xlsx.md#a-split-window)).
+- `Session.getWorkbookStatistics(sheet)`, Excel's Workbook Statistics: the end of the sheet and its counts of cells with data, tables, formulas and notes, and the same over the workbook; what the workbook does not hold is `null` (Excel for Mac, 24 cases) ([A viewport for a grid](docs/grid.md#a-viewport-for-a-grid)).
+- `Session.getAutoFilterRange(sheet)`: the range an AutoFilter acts on after data entered below it, as Excel reads it, the stored range down to the last row of its current region. Excel saves the stored range unchanged; a host that applies criteria sets the AutoFilter's range to this one, as Excel does then (Excel for Mac and Windows, 56 and 53 cases) ([The AutoFilter](docs/structure.md#the-autofilter)).
+- A formula typed into a cell takes the number format of the cell it refers to, as Excel gives it: `=C1+C2` over percentages shows a percentage, a sum of dates a date. The first cell of a range counts, through signs, parentheses, `+`, `-`, `SUM`, `MAX`, `MIN`, `AVERAGE`, `MEDIAN`, `ROUND` and its kin, `INT` and `MOD`; in a session, in `fillCellText`, `pasteText` and AutoSum. `EntryOptions.numberFormatAt` gives `parseEntry` the formats of the cells (Excel for Mac and Windows, 252 cases with held-out sets) ([A cell with a number format](docs/entry.md#a-cell-with-a-number-format)).
+- `KeptRefusalCode` `layout`.
+
+Changed:
+
+- `writeKept` refuses (`layout`) a workbook whose carriers were laid out by another version of the library or for another file, or that has carriers without the fingerprint `openKept` now adds: a workbook a host kept from `openKept` 0.66 or earlier is refused until the original file is opened again with `openKept`. A workbook without carriers is written as before.
+- `writeKept` writes a pivot cache's source whose cells were all deleted and a sparkline whose cell was deleted as Excel keeps them, where it refused them; a picture that moves without sizing keeps its size over the columns' new widths; cells with formatted runs moved to another sheet keep their runs (Excel for Mac and Windows; Excel for Windows opened 120 files `writeKept` wrote without repairing them).
+- `abort()` of a call to a pool stops a formula in progress, through memory the pool shares with its threads, where it waited for the formula to end; `SUMPRODUCT` and `SEQUENCE` check the deadline and the signal inside their loops. Where memory cannot be shared (a page without cross-origin isolation), an abort is seen between formulas as before ([Deadlines and cancellation](docs/async.md#deadlines-and-cancellation)).
+- `SUBTOTAL` and `AGGREGATE` over one range that skip hidden rows, nested subtotals or errors read the range cell by cell, as `SUM` does, and `limits.cells` no longer bounds them ([Limits](docs/async.md#limits)).
+- Paste Special's operation onto a legacy array formula, of one cell too, is refused (`array`), as Excel refuses it.
+- The reader no longer gives frozen or split panes without an active pane the selection of another pane, and the writer writes frozen panes without a cursor as Excel writes them.
+- `readXlsx` no longer reports `splitPanes`, which the workbook now holds.
+
+Paste Special's All Merging Conditional Formats was measured in Excel for Mac and with rules of every kind, All Using Source Theme between workbooks of different themes, the rows `allExceptBorders` fits and the Format Painter double-clicked over several targets, in Excel for Mac and Windows; the buttons of the Home ribbon in ru-RU and in Excel for Windows. The engine matched all but the known differences in the documents.
+
 ## 0.66.0 (2026-10-29)
 
 Added:

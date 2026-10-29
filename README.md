@@ -24,20 +24,20 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (29.10.2026, 0.66.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 325 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (29.10.2026, 0.67.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 325 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 314 KB (120) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 559 KB (211) |
+| `compute` from `xlcalc` | calculating a workbook | 316 KB (121) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 565 KB (213) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 629 KB (234) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 234 KB (87) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 310 KB (115) |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 25 KB (9), its worker 732 KB (249), 557 KB (210) where a bundler splits off the locales and regex levels it loads |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 635 KB (236) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 235 KB (87) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 313 KB (116) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 26 KB (9), its worker 739 KB (251), 564 KB (213) where a bundler splits off the locales and regex levels it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 50 KB (19) |
-| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 103 KB (38) |
+| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 105 KB (39) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 124 KB (19) |
 | `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 7 KB (3), and the locale's module |
