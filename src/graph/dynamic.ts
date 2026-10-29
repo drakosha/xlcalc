@@ -26,6 +26,9 @@ export interface Dynamic {
 /** The most cells of reads whose formulas are found cell by cell; larger ones build the graph again. */
 const CELLS = 4096
 
+/** What a formula reads: its references, then those it found in its last computation. */
+export const refsOf = (f: Formula): readonly Rng[] => (f.reads?.length ? [...f.refs, ...f.reads] : f.refs)
+
 export const newDynamic = (): Dynamic => ({ entries: new Map(), succ: new Map(), moved: [], seen: new Set() })
 
 const sameRng = (a: Rng, b: Rng) => a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2
