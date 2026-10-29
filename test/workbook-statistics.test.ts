@@ -19,7 +19,7 @@ const UNHELD = { pivotTables: null, charts: null, images: null, formControls: nu
 
 describe.each(['closures', 'eval'] as Execution[])('%s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    it("counts a sheet's cells, formulas, tables and notes, ends it where its used range ends, and sums the workbook", async () => {
+    it("counts a sheet's cells, formulas, tables and notes, ends it at its last row and column of data or notes, and sums the workbook", async () => {
       const s = await (await opener(kind))(book(), { execution })
       // A1, B2:B4 spilled, D1:D2 a legacy array, the table's header F1
       expect(await s.getWorkbookStatistics('S')).toEqual({
@@ -37,8 +37,8 @@ describe.each(['closures', 'eval'] as Execution[])('%s', (execution) => {
   })
 })
 
-it('an empty sheet ends on A1', async () => {
-  const s = await (await opener(KINDS[0]))({ sheets: [{ name: 'S', cells: {} }] }, {})
-  expect((await s.getWorkbookStatistics('S')).sheet).toEqual({ end: 'A1', cells: 0, tables: 0, formulas: 0, notes: 0, ...UNHELD })
+it('a sheet without data or notes has no end, whatever its styles, lines and hyperlinks', async () => {
+  const s = await (await opener(KINDS[0]))({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { H20: { style: 0 }, C3: { link: { url: 'https://example.com/' } } }, rows: { '30': { height: 30 } } }] }, {})
+  expect((await s.getWorkbookStatistics('S')).sheet).toEqual({ end: null, cells: 0, tables: 0, formulas: 0, notes: 0, ...UNHELD })
   await s.close()
 })
