@@ -100,7 +100,12 @@ export const KEPT_FORMATS = 5_000
 /** The length of a carrier of a format's rectangles, past which they go to another. */
 const FORMAT_TEXT = 2_000
 
+/** The version of the carriers' layout: raised when the carriers of the same file come to mean other things to `writeKept`. */
+const LAYOUT = 1
+
 export interface Carriers {
+  /** The name whose text is the layout's fingerprint: its version and what the carriers are, of which file's parts (`layoutOf`). */
+  layout: { name: string; ref: string }
   /** Each of the source's sheets' carrier, in the book's order of them. */
   sheets: Carrier[]
   /** By sheet of the source: its cells with what only the file holds; none past `KEPT_CELLS`, their count in `uncarried`. */
@@ -187,7 +192,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   }
   const parts = { n: 0 }
   const carrier = (ref: string, kind: Carrier['kind']): Carrier => ({ name: fresh('', parts), ref, kind })
-  const out: Carriers = { sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []), rules: [] }
+  const out: Carriers = { layout: { name: '', ref: '' }, sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), formats: names.map(() => []), unformatted: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []), rules: [] }
   for (const [i, sheet] of names.entries()) {
     let name = `${PREFIX}s${i}`
     for (let k = 2; taken.has(caseKey(name)); k++) name = `${PREFIX}s${i}.${k}`
@@ -298,6 +303,9 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   for (const part of types.parts((t) => /pivotCacheDefinition\+xml$/i.test(t))) pivotCache((await src.archive.text(part)) ?? '', part)
   // macro and dialog sheets hold formulas over the worksheets
   for (const d of src.decls) if (d.kind !== undefined && d.kind !== 'worksheet' && d.kind !== 'chartsheet') out.anywhere.push({ part: 'sheetKind', kind: d.kind, name: d.name })
+  let layout = `${PREFIX}layout`
+  for (let k = 2; taken.has(caseKey(layout)); k++) layout = `${PREFIX}layout${k}`
+  out.layout = { name: layout, ref: `"${layoutOf(out)}"` }
   return out
 
   /**
@@ -634,9 +642,33 @@ function refersToBook(ast: Ast, known: Set<string>): boolean {
   return found
 }
 
-/** The carriers as the book's names, hidden ones. */
+/**
+ * The fingerprint of the carriers' layout: the version and each carrier's name, kind and reference, by what it carries
+ * (a sheet, a cell, a format, the part of an item), in two lanes of FNV-1a (a check of identity, not of trust). A book
+ * opened by another version of `openKept`, whose names are given in another order, or over another file has another;
+ * `writeKept` refuses it rather than read its names wrong.
+ */
+function layoutOf(c: Carriers): string {
+  let [a, b] = [0x811c9dc5, 0x9e3779b9]
+  const add = (text: string) => {
+    for (let i = 0; i < text.length; i++) {
+      const x = text.charCodeAt(i)
+      a = Math.imul(a ^ x, 0x01000193)
+      b = Math.imul(b ^ x, 0x5bd1e995)
+    }
+  }
+  const line = (tag: string, x: Carrier) => add(`${tag} ${x.name} ${x.kind} ${x.ref}\n`)
+  c.sheets.forEach((x) => line('s', x))
+  c.cells.forEach((list, i) => list.forEach((x) => line(`c${i} ${x.addr}`, x.carrier)))
+  c.formats.forEach((list, i) => (list ? list.forEach((x) => line(`x${i} ${x.kind} ${x.s}`, x.carrier)) : add(`x${i} none\n`)))
+  c.items.forEach((item) => item.carriers.forEach((x, k) => line(`${k ? '+' : 'i'} ${item.what.part}`, x)))
+  const hex = (h: number) => (h >>> 0).toString(16).padStart(8, '0')
+  return `${LAYOUT} ${hex(a)}${hex(b)}`
+}
+
+/** The carriers as the book's names, hidden ones, the layout's fingerprint last. */
 export function carrierNames(c: Carriers): NameInput[] {
-  return [...c.sheets, ...c.cells.flat().map((x) => x.carrier), ...c.formats.flatMap((x) => x ?? []).map((x) => x.carrier), ...c.items.flatMap((x) => x.carriers)].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
+  return [...c.sheets, ...c.cells.flat().map((x) => x.carrier), ...c.formats.flatMap((x) => x ?? []).map((x) => x.carrier), ...c.items.flatMap((x) => x.carriers), c.layout].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
 }
 
 /** A carrier's reference as it compares: its canonical text; of a part on a sheet, without the sheet. Null when it does not parse. */

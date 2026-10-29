@@ -17,7 +17,7 @@ import { columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
 import { formatAddress } from '../../model.js'
 import { entryAt, lines } from '../../layout/spans.js'
 import { attributes } from '../xml/scan.js'
-import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
+import { compared, PREFIX, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
 import type { FormatArea } from './formats.js'
 import { areasOf } from './refs.js'
 import type { Source } from './source.js'
@@ -91,6 +91,10 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
   const index = new Map(book1.sheets.map((s, j) => [sheetKey(s.name), j]))
   const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], deleted: [], edits: [], cells: new Map(), formats: new Map() }
+  // the carriers' names are read by their place in the layout: a book with carriers of another layout, or without its fingerprint, would read them wrong
+  const layout = names.get(caseKey(c.layout.name))
+  const carried = layout !== undefined || (book1.names ?? []).some((n) => n.scope === undefined && n.hidden && n.name.startsWith(PREFIX))
+  if (carried && layout?.ref !== c.layout.ref) throw new KeptRefusal({ key: 'keptLayout', name: c.layout.name }, 'layout')
   for (const [k, carrier] of c.sheets.entries()) {
     const was = book0.sheets[k].name
     const n = names.get(caseKey(carrier.name))

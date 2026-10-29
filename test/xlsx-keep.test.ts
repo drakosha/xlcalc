@@ -419,6 +419,52 @@ describe('the carriers outside writeKept', () => {
   })
 })
 
+describe("the carriers' layout", () => {
+  const LAYOUT = /^xlsx\/keep: the workbook's name _xlcalc\.keep\.layout, which tells how openKept laid out the hidden names, is missing or was given by another version of openKept or for another file: open the original file again with openKept$/
+  /** The book with its fingerprint's text replaced, or without it. */
+  const fingered = (b: BookInput, ref?: string): BookInput => ({ ...b, names: b.names!.flatMap((n) => (n.name !== '_xlcalc.keep.layout' ? [n] : ref === undefined ? [] : [{ ...n, ref }])) })
+
+  it("openKept gives the book a fingerprint of its carriers' layout, which writeKept checks: the current one is written, another one is refused", async () => {
+    const { data, read, session } = await charted()
+    const print = read.book.names!.find((n) => n.name === '_xlcalc.keep.layout')!
+    expect(print).toEqual({ name: '_xlcalc.keep.layout', ref: expect.stringMatching(/^"1 [0-9a-f]{16}"$/), hidden: true })
+    // the same file opened again gives the same fingerprint
+    expect((await openKept(data)).book.names!.at(-1)).toEqual(print)
+    session.setCells([{ sheet: 'Data', cell: 'B3', input: { value: 25 } }])
+    session.editStructure({ op: 'insertRows', sheet: 'Data', row: 1 })
+    const snap = session.getSnapshot()
+    expect(snap.book.names!.find((n) => n.name === '_xlcalc.keep.layout')).toEqual(print)
+    expect((await writeKept(data, snap)).issues).toEqual([])
+    // another version's fingerprint, or none while the carriers stay: refused, in the locale's language too
+    for (const book of [fingered(snap.book, '"1 0123456789abcdef"'), fingered(snap.book, '"2 ' + print.ref.slice(3)), fingered(snap.book)]) {
+      await expect(writeKept(data, { ...snap, book })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'layout', message: expect.stringMatching(LAYOUT) })
+      await expect(writeKept(data, { ...snap, book }, { locale: 'ru-RU' })).rejects.toMatchObject({ code: 'layout', message: expect.stringMatching(/^xlsx\/keep: Имени книги _xlcalc\.keep\.layout, .* откройте исходный файл заново через openKept$/) })
+    }
+    // a book unchanged with another fingerprint is refused as well: its carriers cannot be read
+    await expect(writeKept(data, { book: fingered(read.book, '"1 0123456789abcdef"'), result: read.cached })).rejects.toMatchObject({ code: 'layout' })
+  })
+
+  it('a book opened over one file and written over another is refused; a book without carriers is written as before', async () => {
+    const { data: a, read } = await charted()
+    const { data: b } = await charted({ picture: { sheet: 1, anchor: [2, 7, 6, 9] } })
+    await expect(writeKept(b, { book: read.book, result: read.cached })).rejects.toMatchObject({ code: 'layout', message: expect.stringMatching(LAYOUT) })
+    expect((await writeKept(a, { book: read.book, result: read.cached })).data).toBe(a)
+    // no carriers at all: not a book of openKept, refused only where a part needs its carrier (the chart's), as before
+    const plain = await readXlsx(a)
+    await expect(writeKept(a, { book: plain.book, result: plain.cached })).rejects.toMatchObject({ code: 'carriers' })
+    const bare = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } }, { values: 'omit' })).data
+    const own = await readXlsx(bare)
+    own.book.sheets[0].cells.A1 = { value: 2 }
+    expect((await readXlsx((await writeKept(bare, { book: own.book })).data)).book.sheets[0].cells.A1).toEqual({ value: 2 })
+  })
+
+  it('writeXlsx writes neither the carriers nor the fingerprint', async () => {
+    const { read } = await charted()
+    const file = await writeXlsx({ book: read.book, result: read.cached })
+    expect((await partsOf(file.data)).get('xl/workbook.xml')).not.toContain('_xlcalc')
+  })
+})
+
 describe('validation the workbook could not read is refused, never lost; conditional formats are carried', () => {
   /** S with a rule of each kind the workbook reads, and the file given a conditional format and a validation rule it does not; T without. */
   async function unread(): Promise<Uint8Array> {

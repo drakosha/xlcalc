@@ -78,7 +78,7 @@ What follows the cells this way:
 
 Each sheet has a carrier of its own on its last cell, which tells which sheet of the workbook the file's sheet became, and whether rows or columns were inserted or deleted on it. The parts whose references are not read are known only by it: OLE objects and controls, form controls in a legacy drawing, data consolidation, scenarios, custom views, watched cells, web publishing, smart tags, extensions of other kinds, and macro and dialog sheets (which refer to any sheet). Rows and columns inserted or deleted on their sheet, or its rename or deletion, are refused; a range moved over cells they refer to is not seen.
 
-The carriers' names follow the file's parts in order, so a workbook takes `writeKept` over the file it was opened from, by the same version of `openKept`.
+The carriers' names follow the file's parts in order, so a workbook takes `writeKept` over the file it was opened from, by the same version of `openKept`. One more hidden name, `_xlcalc.keep.layout`, holds a fingerprint of the carriers: the version of their layout and what each carries, of which file. `writeKept` refuses a workbook whose fingerprint is another version's or another file's, or one that has carriers and no fingerprint (`layout`), rather than read its names wrong: a host that kept a workbook across an update of the library, or opened it over another file, opens the original file again with `openKept`.
 
 ## Links to other workbooks
 
@@ -135,6 +135,7 @@ What cannot go as Excel would is refused: a pivot table's rules, which the pivot
 - a link to another workbook removed, moved among the links or pointed at another file, which the file's formulas would read by another number, or a link of the file of another kind (DDE, OLE) changed (`links`);
 - the workbook's default font (`font`) changed, which every cell without a font of its own would show (`font`);
 - a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped (`carriers`);
+- a workbook whose carriers `openKept` laid out for another file or in another version of the library, or with carriers and without their fingerprint (`layout`): open the original file again with `openKept`;
 - a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed; a worksheet in other namespaces (`file`).
 
 Everything the workbook holds moves with these operations on its own: formulas, names, conditional formats, data validation, merged areas, tables, AutoFilters, notes, hyperlinks, frozen panes.
