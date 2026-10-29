@@ -1091,6 +1091,7 @@ interface AsyncSession {
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
+  getAutoFilterRange(sheet: string): Promise<string | null>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
@@ -4157,6 +4158,14 @@ interface Session {
    * sheet's columns, spills and cells without a value; it does not scan all the cells.
    */
   getUsedRange(sheet: string): SheetExtent
+  /**
+   * The range the sheet's AutoFilter acts on, as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
+   * grown down over the rows right under it that hold a value or a formula in its columns or the column on either side,
+   * one after another, an empty row ending it; null without an AutoFilter. The AutoFilter's own range stays as Excel
+   * saves it; a host that applies criteria filters this range (`docs/structure.md` "The AutoFilter"). It reads the rows
+   * under the range up to the first empty one.
+   */
+  getAutoFilterRange(sheet: string): string | null
   /**
    * The address of the cell that Control plus an arrow key moves to from `cell`, as Excel's `Range.End` returns it
    * (`docs/live-books.md`): from a non-empty cell next to another non-empty cell, the last cell of that block; otherwise

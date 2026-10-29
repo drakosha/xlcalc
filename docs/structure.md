@@ -459,7 +459,17 @@ A sheet's AutoFilter (`autoFilter: { range: 'A1:C21' }`) is the filter buttons o
 
 The filter mode (`filtered`) stays as it is when the AutoFilter goes: a host that removes it as Excel's Filter button does also sets `filtered: false` and shows the rows.
 
-The keep sets `filter-*` checked these rules in Excel for Mac, each case predicted before Excel ran it ([docs/development.md](development.md#writing-over-the-original-file)).
+What is entered under the AutoFilter does not change its range: Excel saves `A1:C5` after rows 6 and 7 are typed under it, pasted, copied or filled there. It filters more, though. `getAutoFilterRange(sheet)` gives the range the AutoFilter acts on, as Excel reads it: its range down to the last row of its current region, the block of cells that hold something around it, reached from cell to cell, diagonally too, up to an empty row and an empty column all round. Its header row and its columns stay. Over `A1:C5`:
+
+- a value typed into A6, or into D6 beside it, gives `A1:C6`, and one more in A7 gives `A1:C7`; a formula counts, one that shows nothing too, and a spill counts its cells;
+- a value in A7 with row 6 empty leaves `A1:C5`, and so does one in E6, a column away;
+- D6 and then E7 give `A1:C7`: E7 touches D6, which touches the range;
+- a column beside it that holds rows 1 to 9 gives `A1:C9`, and so do rows above the header that lead down a column further right;
+- clearing A6 again gives `A1:C5`: the range is read anew each time, never shorter than the AutoFilter's own.
+
+Hidden rows and criteria do not change it. A host that applies criteria filters this range and then sets it as the AutoFilter's, `setLayout([{ sheet, autoFilter: { range } }])`, as Excel saves the grown range once it filters. It returns null for a sheet without an AutoFilter, and reads the cells around the region as it grows, not the whole sheet.
+
+The keep sets `filter-*` checked these rules in Excel for Mac, each case predicted before Excel ran it ([docs/development.md](development.md#writing-over-the-original-file)), and the filter sets `grow`, `grow-held` and `grow-held-2` checked the range in both Excels ([docs/development.md](development.md#the-autofilter-under-what-is-entered)).
 
 ## Notes, hyperlinks and frozen panes
 
@@ -560,7 +570,7 @@ Only two of these recalculate values. A merged area added or removed over an arr
 
 ## Checked against Excel
 
-Tested in Excel 16 for Mac, en-US, on 317 workbooks, and the AutoFilter on 19 operations and 6 tables; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both; Paste Special on 247 cases in Excel for Mac and 270 in Excel for Windows, every kind, operation and Skip Blanks among them, over entire lines, tables and filtered sheets, the two Excels pasting every case both ran alike, 10 more in ru-RU on both, and the Format Painter on 14 in both. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists; and the AutoFilter under a copy, a moved sheet and the operations on a filtered sheet, and in Excel for Windows.
+Tested in Excel 16 for Mac, en-US, on 317 workbooks, the AutoFilter on 19 operations and 6 tables, and the range it acts on after 56 cases of what is entered under it, 53 of them in Excel for Windows too; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, and hidden sheets in both; Paste Special on 247 cases in Excel for Mac and 270 in Excel for Windows, every kind, operation and Skip Blanks among them, over entire lines, tables and filtered sheets, the two Excels pasting every case both ran alike, 10 more in ru-RU on both, and the Format Painter on 14 in both. All match except the known differences below. Not tested: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment, and the notes and hyperlinks of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists; and the AutoFilter under a copy, a moved sheet and the operations on a filtered sheet, and in Excel for Windows.
 
 ## Known differences and limits
 
