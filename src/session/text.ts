@@ -8,6 +8,7 @@
 import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
+import type { FormatAt } from '../entry/formula.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { mergedOf } from '../layout/merges.js'
@@ -28,10 +29,18 @@ function lineFormat(s: EngineState, i: number, r: number, c: number) {
   return formatOf(undefined, lines.row(r), lines.column(c))
 }
 
+/** The format a cell of the book shows, by its sheet's name (null: sheet `i`), as a formula typed into sheet `i` refers to it; none on a sheet the book lacks. */
+const formatIn =
+  (s: EngineState, i: number): FormatAt =>
+  (sheet, r, c) => {
+    const k = sheet === null ? i : sheetIndexOf(s, sheet)
+    return k === undefined ? undefined : sheetLines(s.input.sheets[k], s).format(r, c)
+  }
+
 /** What `text` typed, edited in place or pasted (`way`) into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
 export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed'): EntryResult {
   const shown = own?.numberFormat ?? lineFormat(s, i, r, c)
-  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, way)
+  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, way, formatIn(s, i))
 }
 
 /** The input `own` of the cell with an entry's content and format (`typed`, `readText`'s input) in place of its own; a format its row or column gives it stays theirs. */

@@ -49,6 +49,13 @@ export function builtinOf(format: NumberFormat, locale: Locale): number | undefi
   return undefined
 }
 
+/** The form of a constant typed with a format of a kind a typed form sets (a formula's format, `formula.ts`); plain for another, which keeps a cell's format. */
+export function formOf(format: NumberFormat, locale: Locale): Form {
+  const id = builtinOf(format, locale)
+  const family = id === undefined ? undefined : FAMILY.get(id)
+  return family === undefined ? 'plain' : family === 'accounting' ? 'currency' : family
+}
+
 /** The format of a cell with the format `cell` in a locale after a number of the form typed, with that form's format; undefined: General. */
 export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, locale: Locale): NumberFormat | undefined {
   const id = cell === undefined ? 0 : builtinOf(cell, locale)
