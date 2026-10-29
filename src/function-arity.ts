@@ -433,7 +433,7 @@ export const FUNCTION_ARITY: Readonly<Record<string, ArityDef>> = {
   STDEVP: { args: 'N', rep: 1 },
   STDEVPA: { args: 'A', rep: 1 },
   STEYX: { args: 'C C' },
-  STOCKHISTORY: { args: 's d d? n? n? n?', rep: 1, max: 11 },
+  STOCKHISTORY: { args: 's d d? n? n? n?', rep: 1, max: 254 },
   SUBSTITUTE: { args: 's s s w?' },
   SUBTOTAL: { args: 'n R', rep: 1, notOmitted: { from: 1 } },
   SUM: { args: 'N', rep: 1 },
