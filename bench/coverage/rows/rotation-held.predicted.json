@@ -1,0 +1,1713 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "angle-1": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-2": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-3": {
+    "before": 15,
+    "height": 20,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-4": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-5": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-6": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-7": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-8": {
+    "before": 15,
+    "height": 39,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-9": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-10": {
+    "before": 15,
+    "height": 58,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-11": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-12": {
+    "before": 15,
+    "height": 70,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-13": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-14": {
+    "before": 15,
+    "height": 73,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-15": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-16": {
+    "before": 15,
+    "height": 75,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-17": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-18": {
+    "before": 15,
+    "height": 83,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-19": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-20": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-21": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-22": {
+    "before": 15,
+    "height": 58,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-23": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-24": {
+    "before": 15,
+    "height": 75,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "half-1": {
+    "before": 15,
+    "height": 22,
+    "cells": {
+     "0": {
+      "formula": "bD",
+      "wrap": false
+     }
+    }
+   },
+   "half-2": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "bbbbi",
+      "wrap": false
+     }
+    }
+   },
+   "half-3": {
+    "before": 15,
+    "height": 46,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbD",
+      "wrap": false
+     }
+    }
+   },
+   "half-4": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "bD",
+      "wrap": false
+     }
+    }
+   },
+   "half-5": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "bbbbi",
+      "wrap": false
+     }
+    }
+   },
+   "half-6": {
+    "before": 15,
+    "height": 65,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbD",
+      "wrap": false
+     }
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 41,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 56,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-3": {
+    "before": 15,
+    "height": 55,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-4": {
+    "before": 15,
+    "height": 130,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-5": {
+    "before": 15,
+    "height": 59,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-6": {
+    "before": 15,
+    "height": 82,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-7": {
+    "before": 15,
+    "height": 81,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-8": {
+    "before": 15,
+    "height": 186,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-9": {
+    "before": 15,
+    "height": 76,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-10": {
+    "before": 15,
+    "height": 107,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-11": {
+    "before": 15,
+    "height": 106,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-12": {
+    "before": 15,
+    "height": 234,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-13": {
+    "before": 15,
+    "height": 90,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-14": {
+    "before": 15,
+    "height": 126,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-15": {
+    "before": 15,
+    "height": 124,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-16": {
+    "before": 15,
+    "height": 274,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-17": {
+    "before": 15,
+    "height": 103,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-18": {
+    "before": 15,
+    "height": 143,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-19": {
+    "before": 15,
+    "height": 141,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-20": {
+    "before": 15,
+    "height": 314,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-21": {
+    "before": 15,
+    "height": 134,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-22": {
+    "before": 15,
+    "height": 187,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-23": {
+    "before": 15,
+    "height": 184,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-24": {
+    "before": 15,
+    "height": 409.5,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "script-1": {
+    "before": 15,
+    "height": 33,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-2": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-3": {
+    "before": 15,
+    "height": 77,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-4": {
+    "before": 15,
+    "height": 64,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-5": {
+    "before": 15,
+    "height": 78,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-6": {
+    "before": 15,
+    "height": 212,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-7": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "script-8": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "script-9": {
+    "before": 15,
+    "height": 77,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "format-1": {
+    "before": 15,
+    "height": 33,
+    "cells": {
+     "0": {
+      "formula": "0.1234",
+      "wrap": false
+     }
+    }
+   },
+   "format-2": {
+    "before": 15,
+    "height": 37,
+    "cells": {
+     "0": {
+      "formula": "1234.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-3": {
+    "before": 15,
+    "height": 50,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "format-4": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "FALSE",
+      "wrap": false
+     }
+    }
+   },
+   "format-5": {
+    "before": 15,
+    "height": 54,
+    "cells": {
+     "0": {
+      "formula": "-1234567",
+      "wrap": false
+     }
+    }
+   },
+   "format-6": {
+    "before": 15,
+    "height": 42,
+    "cells": {
+     "0": {
+      "formula": "0.1234",
+      "wrap": false
+     }
+    }
+   },
+   "format-7": {
+    "before": 15,
+    "height": 49,
+    "cells": {
+     "0": {
+      "formula": "1234.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-8": {
+    "before": 15,
+    "height": 76,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "format-9": {
+    "before": 15,
+    "height": 33,
+    "cells": {
+     "0": {
+      "formula": "FALSE",
+      "wrap": false
+     }
+    }
+   },
+   "format-10": {
+    "before": 15,
+    "height": 68,
+    "cells": {
+     "0": {
+      "formula": "-1234567",
+      "wrap": false
+     }
+    }
+   },
+   "cells-1": {
+    "before": 15,
+    "height": 47,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "cells-2": {
+    "before": 15,
+    "height": 64,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "a\nb\nc\nd",
+      "wrap": true
+     },
+     "2": {
+      "formula": "bbb",
+      "wrap": false
+     }
+    }
+   },
+   "cells-3": {
+    "before": 15,
+    "height": 27,
+    "cells": {
+     "0": {
+      "formula": "bbw",
+      "wrap": false
+     }
+    }
+   },
+   "cells-4": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbw",
+      "wrap": false
+     }
+    }
+   },
+   "merged-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "blank-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-2": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "typed-1": {
+    "before": 15,
+    "height": 74,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbw",
+      "wrap": false
+     }
+    }
+   },
+   "typed-2": {
+    "before": 15,
+    "height": 74,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbw",
+      "wrap": false
+     }
+    }
+   },
+   "typed-3": {
+    "before": 15,
+    "height": 78,
+    "cells": {
+     "0": {
+      "formula": "abcd",
+      "wrap": false
+     }
+    }
+   },
+   "typed-4": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "angle-1": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-2": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-3": {
+    "before": 15,
+    "height": 20,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-4": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-5": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-6": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-7": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-8": {
+    "before": 15,
+    "height": 39,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-9": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-10": {
+    "before": 15,
+    "height": 58,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-11": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-12": {
+    "before": 15,
+    "height": 70,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-13": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-14": {
+    "before": 15,
+    "height": 73,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-15": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-16": {
+    "before": 15,
+    "height": 75,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-17": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-18": {
+    "before": 15,
+    "height": 83,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-19": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-20": {
+    "before": 15,
+    "height": 25,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-21": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-22": {
+    "before": 15,
+    "height": 58,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-23": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "bbba",
+      "wrap": false
+     }
+    }
+   },
+   "angle-24": {
+    "before": 15,
+    "height": 75,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbba",
+      "wrap": false
+     }
+    }
+   },
+   "half-1": {
+    "before": 15,
+    "height": 22,
+    "cells": {
+     "0": {
+      "formula": "bD",
+      "wrap": false
+     }
+    }
+   },
+   "half-2": {
+    "before": 15,
+    "height": 29,
+    "cells": {
+     "0": {
+      "formula": "bbbbi",
+      "wrap": false
+     }
+    }
+   },
+   "half-3": {
+    "before": 15,
+    "height": 46,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbD",
+      "wrap": false
+     }
+    }
+   },
+   "half-4": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "bD",
+      "wrap": false
+     }
+    }
+   },
+   "half-5": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "bbbbi",
+      "wrap": false
+     }
+    }
+   },
+   "half-6": {
+    "before": 15,
+    "height": 65,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbD",
+      "wrap": false
+     }
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 41,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 56,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-3": {
+    "before": 15,
+    "height": 55,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-4": {
+    "before": 15,
+    "height": 130,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-5": {
+    "before": 15,
+    "height": 59,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-6": {
+    "before": 15,
+    "height": 82,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-7": {
+    "before": 15,
+    "height": 81,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-8": {
+    "before": 15,
+    "height": 186,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-9": {
+    "before": 15,
+    "height": 76,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-10": {
+    "before": 15,
+    "height": 107,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-11": {
+    "before": 15,
+    "height": 106,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-12": {
+    "before": 15,
+    "height": 234,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-13": {
+    "before": 15,
+    "height": 90,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-14": {
+    "before": 15,
+    "height": 126,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-15": {
+    "before": 15,
+    "height": 124,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-16": {
+    "before": 15,
+    "height": 274,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-17": {
+    "before": 15,
+    "height": 103,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-18": {
+    "before": 15,
+    "height": 143,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-19": {
+    "before": 15,
+    "height": 141,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-20": {
+    "before": 15,
+    "height": 314,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-21": {
+    "before": 15,
+    "height": 134,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-22": {
+    "before": 15,
+    "height": 187,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-23": {
+    "before": 15,
+    "height": 184,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-24": {
+    "before": 15,
+    "height": 409.5,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "script-1": {
+    "before": 15,
+    "height": 33,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-2": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-3": {
+    "before": 15,
+    "height": 77,
+    "cells": {
+     "0": {
+      "formula": "Итого",
+      "wrap": false
+     }
+    }
+   },
+   "script-4": {
+    "before": 15,
+    "height": 64,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-5": {
+    "before": 15,
+    "height": 78,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-6": {
+    "before": 15,
+    "height": 212,
+    "cells": {
+     "0": {
+      "formula": "Сумма к оплате",
+      "wrap": false
+     }
+    }
+   },
+   "script-7": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "script-8": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "script-9": {
+    "before": 15,
+    "height": 77,
+    "cells": {
+     "0": {
+      "formula": "Ag Ag",
+      "wrap": false
+     }
+    }
+   },
+   "format-1": {
+    "before": 15,
+    "height": 33,
+    "cells": {
+     "0": {
+      "formula": "0.1234",
+      "wrap": false
+     }
+    }
+   },
+   "format-2": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "1234.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-3": {
+    "before": 15,
+    "height": 48,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "format-4": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "FALSE",
+      "wrap": false
+     }
+    }
+   },
+   "format-5": {
+    "before": 15,
+    "height": 54,
+    "cells": {
+     "0": {
+      "formula": "-1234567",
+      "wrap": false
+     }
+    }
+   },
+   "format-6": {
+    "before": 15,
+    "height": 42,
+    "cells": {
+     "0": {
+      "formula": "0.1234",
+      "wrap": false
+     }
+    }
+   },
+   "format-7": {
+    "before": 15,
+    "height": 48,
+    "cells": {
+     "0": {
+      "formula": "1234.5",
+      "wrap": false
+     }
+    }
+   },
+   "format-8": {
+    "before": 15,
+    "height": 71,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "format-9": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "FALSE",
+      "wrap": false
+     }
+    }
+   },
+   "format-10": {
+    "before": 15,
+    "height": 68,
+    "cells": {
+     "0": {
+      "formula": "-1234567",
+      "wrap": false
+     }
+    }
+   },
+   "cells-1": {
+    "before": 15,
+    "height": 47,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "cells-2": {
+    "before": 15,
+    "height": 64,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "a\nb\nc\nd",
+      "wrap": true
+     },
+     "2": {
+      "formula": "bbb",
+      "wrap": false
+     }
+    }
+   },
+   "cells-3": {
+    "before": 15,
+    "height": 27,
+    "cells": {
+     "0": {
+      "formula": "bbw",
+      "wrap": false
+     }
+    }
+   },
+   "cells-4": {
+    "before": 15,
+    "height": 28,
+    "cells": {
+     "0": {
+      "formula": "bbw",
+      "wrap": false
+     }
+    }
+   },
+   "merged-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "blank-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-2": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "typed-1": {
+    "before": 15,
+    "height": 74,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbw",
+      "wrap": false
+     }
+    }
+   },
+   "typed-2": {
+    "before": 15,
+    "height": 74,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbw",
+      "wrap": false
+     }
+    }
+   },
+   "typed-3": {
+    "before": 15,
+    "height": 78,
+    "cells": {
+     "0": {
+      "formula": "abcd",
+      "wrap": false
+     }
+    }
+   },
+   "typed-4": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   }
+  }
+ }
+}
