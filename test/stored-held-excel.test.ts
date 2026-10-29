@@ -7,7 +7,8 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
-import { compute, createSession, FUNCTION_NAMES, readXlsx } from '../src/index.js'
+import { compute, createSession, FUNCTION_NAMES } from '../src/index.js'
+import { readXlsx } from '../src/xlsx.js'
 import { show, toVal } from './excel-cases.js'
 
 const dir = new URL('./excel/win/xlsx/', import.meta.url)
@@ -35,10 +36,10 @@ describe.skipIf(!existsSync(new URL('stored.json', dir)))('formulas keeping the 
     expect(marked).toEqual([...(FUNCTION_NAMES.includes('OFFSET') ? [] : ['B1']), 'D1', 'E1', 'F1', 'G1'])
   })
 
-  it("outside: a change that reaches the add-in's formula computes it, #NAME?; the cube's and the web's keep their values", async () => {
+  it("outside: a change that reaches the add-in's formulas computes them (#NAME?, caught by IFERROR); the cube's and the web's keep their values", async () => {
     const r = await readXlsx(readFileSync(new URL('stored/outside.xlsx', dir)))
     const s = createSession(r.book, { cached: r.cached, unknownFunctions: 'held' })
     s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }])
-    expect(['D1', 'E1', 'F1', 'G1', 'H1'].map((a) => s.getCell('S', a)?.value)).toEqual([{ error: 'NAME' }, { error: 'NAME' }, { error: 'NA' }, { error: 'VALUE' }, 3])
+    expect(['D1', 'E1', 'F1', 'G1', 'H1'].map((a) => s.getCell('S', a)?.value)).toEqual([{ error: 'NAME' }, 'none', { error: 'NA' }, { error: 'VALUE' }, 3])
   })
 })
