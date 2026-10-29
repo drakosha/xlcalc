@@ -44,7 +44,7 @@ async function paintOnScreen(cases: PasteCase[], files: Map<string, Uint8Array>,
     const { select, key } = painterSelection(c.to.range)
     return { from: [c.from.sheet, c.from.range], to: [c.to.sheet, select], key }
   }, 60 + 15 * cases.length)
-  for (const [id, data] of saved) store.got(id, { answer: {}, saved: data })
+  for (const [id, { saved: data }] of saved) store.got(id, { answer: {}, saved: data })
 }
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
