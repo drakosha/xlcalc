@@ -9,13 +9,13 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { CellStyle } from '../src/index.js'
-import { shownFile } from '../bench/coverage/paste/shown.js'
+import { shownFile, type Shown } from '../bench/coverage/paste/shown.js'
 import { buildPasteCases, carried } from '../bench/coverage/paste/theme.js'
 
 type Cells = Record<string, { value?: unknown; style?: CellStyle }>
 
 /** The pasted cells C1:C6 of a book shown. */
-const pasted = (shown: { S: { cells: unknown } }) => {
+const pasted = (shown: Shown) => {
   const cells = shown.S.cells as Cells
   return ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'].map((a) => cells[a])
 }
