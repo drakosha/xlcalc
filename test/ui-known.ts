@@ -10,6 +10,7 @@ export const UI_REASONS = {
   macShortDate: "Excel for Mac's own short date in en-US is m/d/yy, narrower than Windows's m/d/yyyy that the engine follows: a typed date widens the column in the engine, not in Excel for Mac",
   shortDateCode: "Excel for Mac's built-in short date (14) is m/d/yy in en-US, so it takes the code m/d/yyyy as one of the book's own (Custom); the package shows 14 by Excel for Windows's m/d/yyyy, and numberFormatCategory takes that code for the short date (Date), as builtinFormatCode(14) gives it",
   macSyntax: "Excel for Mac in a locale other than en-US compares the code, kept in en-US syntax (0.00), with its formats written in the locale's (0,00), and shows Custom ((все форматы)) for nearly every code; Excel for Windows writes the code in the locale's syntax first (NumberFormatLocal) and finds 0.00 among Числовой's, as numberFormatCategory does (test/format-category-win.test.ts). A rule, not a list: every cell of the Mac's ribbon sets in such a locale where the Mac shows Custom and the function another category (an item applied: the box after it)",
+  oneCellFill: "Control+Return in a selection of one cell (Excel for Mac, the harness's fill) left a formula's value in the cell as a constant, twice in two runs (=A5-A3 is 98, =A1 0.1 without its format): it types no formula there, and the case tells nothing of the format a formula takes",
   dateItems: "the list's Short Date, Long Date and Time items are not the same in every Excel session: in this run Excel offered Date (yyyy-mm-dd;@), Date (d/m;@) and Time (h:mm;@) whatever the cell held; the same case run in another session that day offered Short Date (built-in 14), Long Date ([$-F800]dddd, mmmm dd, yyyy) and Time ([$-F400]h:mm:ss AM/PM), the items numberFormatChoices gives",
 } as const
 
@@ -21,6 +22,7 @@ const both = (all: string[], en: string[] = [], ru: string[] = []) => ({ 'en-US'
 /** Each reason's cases by `<set>` and locale. */
 const BY_REASON: Record<UiReason, Record<string, Record<string, string[]>>> = {
   macShortDate: { 'fill-held': { 'en-US': ['date-1', 'formula-3'] } },
+  oneCellFill: { 'fill-refs-held': { 'en-US': ['fill-5', 'fill-7'] } },
   shortDateCode: { ribbon: { 'en-US': ['code-1:B15', ...['B3', 'B4', 'B5', 'B6', 'B7', 'B12'].map((x) => `code-2:${x}`)] } },
   // by the rule in test/ui-excel.test.ts, as the cells are those where the function's category is not Custom
   macSyntax: {},
