@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 133.8,
+  "seconds": 26.1,
   "dynamic": true
  },
  "cases": [
@@ -495,7 +495,7 @@
    "id": "offset#23",
    "group": "offset",
    "fn": "OFFSET",
-   "formula": "OFFSET({1,2},0,0)"
+   "formula": "ROWS(OFFSET(R!A1:B2,1,1))"
   },
   {
    "id": "offset#24",
@@ -771,7 +771,7 @@
    "id": "cell#23",
    "group": "cell",
    "fn": "CELL",
-   "formula": "CELL(\"row\",{1})"
+   "formula": "CELL(\"row\",R!C1:D2 R!D2:E3)"
   },
   {
    "id": "cell#24",
@@ -873,433 +873,433 @@
    "id": "sheet#1",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET()"
+   "formula": "_xlfn.SHEET()"
   },
   {
    "id": "sheet#2",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(C!A1)"
+   "formula": "_xlfn.SHEET(C!A1)"
   },
   {
    "id": "sheet#3",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(R!A1)<SHEET()"
+   "formula": "_xlfn.SHEET(R!A1)<_xlfn.SHEET()"
   },
   {
    "id": "sheet#4",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"C\")"
+   "formula": "_xlfn.SHEET(\"C\")"
   },
   {
    "id": "sheet#5",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"c\")"
+   "formula": "_xlfn.SHEET(\"c\")"
   },
   {
    "id": "sheet#6",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"R\")=SHEET(R!A1)"
+   "formula": "_xlfn.SHEET(\"R\")=_xlfn.SHEET(R!A1)"
   },
   {
    "id": "sheet#7",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"nowhere\")"
+   "formula": "_xlfn.SHEET(\"nowhere\")"
   },
   {
    "id": "sheet#8",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(1)"
+   "formula": "_xlfn.SHEET(1)"
   },
   {
    "id": "sheet#9",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(TRUE)"
+   "formula": "_xlfn.SHEET(TRUE)"
   },
   {
    "id": "sheet#10",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(D!A7)<SHEET()"
+   "formula": "_xlfn.SHEET(D!A7)<_xlfn.SHEET()"
   },
   {
    "id": "sheet#11",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(R:C!A1)=SHEET(R!A1)"
+   "formula": "_xlfn.SHEET(R:C!A1)=_xlfn.SHEET(R!A1)"
   },
   {
    "id": "sheet#12",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET((R!A1,R!A2))=SHEET(R!A1)"
+   "formula": "_xlfn.SHEET((R!A1,R!A2))=_xlfn.SHEET(R!A1)"
   },
   {
    "id": "sheet#13",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(INDIRECT(\"R!A1\"))=SHEET(R!A1)"
+   "formula": "_xlfn.SHEET(INDIRECT(\"R!A1\"))=_xlfn.SHEET(R!A1)"
   },
   {
    "id": "sheet#14",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"'Two Words'\")"
+   "formula": "_xlfn.SHEET(\"'Two Words'\")"
   },
   {
    "id": "sheet#15",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET(\"Two Words\")=SHEET('Two Words'!A1)"
+   "formula": "_xlfn.SHEET(\"Two Words\")=_xlfn.SHEET('Two Words'!A1)"
   },
   {
    "id": "sheet#16",
    "group": "sheet",
    "fn": "SHEET",
-   "formula": "SHEET({\"C\",\"R\"})"
+   "formula": "_xlfn.SHEET({\"C\",\"R\"})"
   },
   {
    "id": "sheets#1",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS()"
+   "formula": "_xlfn.SHEETS()"
   },
   {
    "id": "sheets#2",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS(R!A1)"
+   "formula": "_xlfn.SHEETS(R!A1)"
   },
   {
    "id": "sheets#3",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS(R:C!A1)"
+   "formula": "_xlfn.SHEETS(R:'Two Words'!A1)"
   },
   {
    "id": "sheets#4",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS((R!A1,R!A2))"
+   "formula": "_xlfn.SHEETS((R!A1,R!A2))"
   },
   {
    "id": "sheets#5",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS(\"R\")"
+   "formula": "_xlfn.SHEETS(\"R\")"
   },
   {
    "id": "sheets#6",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS(1)"
+   "formula": "_xlfn.SHEETS(1)"
   },
   {
    "id": "sheets#7",
    "group": "sheets",
    "fn": "SHEETS",
-   "formula": "SHEETS(D!A7)"
+   "formula": "_xlfn.SHEETS(D!A7)"
   },
   {
    "id": "formulatext#1",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!C1)"
+   "formula": "_xlfn.FORMULATEXT(R!C1)"
   },
   {
    "id": "formulatext#2",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!C2)"
+   "formula": "_xlfn.FORMULATEXT(R!C2)"
   },
   {
    "id": "formulatext#3",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!C3)"
+   "formula": "_xlfn.FORMULATEXT(R!C3)"
   },
   {
    "id": "formulatext#4",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!A1)"
+   "formula": "_xlfn.FORMULATEXT(R!A1)"
   },
   {
    "id": "formulatext#5",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!A5)"
+   "formula": "_xlfn.FORMULATEXT(R!A5)"
   },
   {
    "id": "formulatext#6",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!E1)"
+   "formula": "_xlfn.FORMULATEXT(R!E1)"
   },
   {
    "id": "formulatext#7",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!E2)"
+   "formula": "_xlfn.FORMULATEXT(R!E2)"
   },
   {
    "id": "formulatext#8",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!C1:C3)"
+   "formula": "_xlfn.FORMULATEXT(R!C1:C3)"
   },
   {
    "id": "formulatext#9",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R!H5)"
+   "formula": "_xlfn.FORMULATEXT(R!H5)"
   },
   {
    "id": "formulatext#10",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(1)"
+   "formula": "_xlfn.FORMULATEXT(INDEX(R!C1:C3,2))"
   },
   {
    "id": "formulatext#11",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(\"R!C1\")"
+   "formula": "_xlfn.FORMULATEXT(IF(TRUE,R!C3))"
   },
   {
    "id": "formulatext#12",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT((R!C1,R!C2))"
+   "formula": "_xlfn.FORMULATEXT((R!C1,R!C2))"
   },
   {
    "id": "formulatext#13",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(R:C!C1)"
+   "formula": "_xlfn.FORMULATEXT(R:C!C1)"
   },
   {
    "id": "formulatext#14",
    "group": "formulatext",
    "fn": "FORMULATEXT",
-   "formula": "FORMULATEXT(INDIRECT(\"R!C2\"))"
+   "formula": "_xlfn.FORMULATEXT(INDIRECT(\"R!C2\"))"
   },
   {
    "id": "isformula#1",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!C1)"
+   "formula": "_xlfn.ISFORMULA(R!C1)"
   },
   {
    "id": "isformula#2",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!A1)"
+   "formula": "_xlfn.ISFORMULA(R!A1)"
   },
   {
    "id": "isformula#3",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!A5)"
+   "formula": "_xlfn.ISFORMULA(R!A5)"
   },
   {
    "id": "isformula#4",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!E1)"
+   "formula": "_xlfn.ISFORMULA(R!E1)"
   },
   {
    "id": "isformula#5",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!E2)"
+   "formula": "_xlfn.ISFORMULA(R!E2)"
   },
   {
    "id": "isformula#6",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!C1:C3)"
+   "formula": "_xlfn.ISFORMULA(R!C1:C3)"
   },
   {
    "id": "isformula#7",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R!A1:C1)"
+   "formula": "_xlfn.ISFORMULA(R!A1:C1)"
   },
   {
    "id": "isformula#8",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(1)"
+   "formula": "_xlfn.ISFORMULA(INDEX(R!A1:C1,3))"
   },
   {
    "id": "isformula#9",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(\"R!C1\")"
+   "formula": "_xlfn.ISFORMULA(CHOOSE(2,R!A1,R!C1))"
   },
   {
    "id": "isformula#10",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA((R!C1,R!A1))"
+   "formula": "_xlfn.ISFORMULA((R!C1,R!A1))"
   },
   {
    "id": "isformula#11",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(R:C!C1)"
+   "formula": "_xlfn.ISFORMULA(R:C!C1)"
   },
   {
    "id": "isformula#12",
    "group": "isformula",
    "fn": "ISFORMULA",
-   "formula": "ISFORMULA(D!A7)"
+   "formula": "_xlfn.ISFORMULA(D!A7)"
   },
   {
    "id": "trimrange#1",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!A1:A9))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!A1:A9))"
   },
   {
    "id": "trimrange#2",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "SUM(TRIMRANGE(R!A1:A9))"
+   "formula": "SUM(_xlfn.TRIMRANGE(R!A1:A9))"
   },
   {
    "id": "trimrange#3",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!A:A))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!A:A))"
   },
   {
    "id": "trimrange#4",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!G1:H9))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9))"
   },
   {
    "id": "trimrange#5",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "COLUMNS(TRIMRANGE(R!F1:J9))"
+   "formula": "COLUMNS(_xlfn.TRIMRANGE(R!F1:J9))"
   },
   {
    "id": "trimrange#6",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROW(TRIMRANGE(R!G1:H9))"
+   "formula": "ROW(_xlfn.TRIMRANGE(R!G1:H9))"
   },
   {
    "id": "trimrange#7",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "COLUMN(TRIMRANGE(R!F1:J9))"
+   "formula": "COLUMN(_xlfn.TRIMRANGE(R!F1:J9))"
   },
   {
    "id": "trimrange#8",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!G1:H9,1))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,1))"
   },
   {
    "id": "trimrange#9",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!G1:H9,2))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,2))"
   },
   {
    "id": "trimrange#10",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!G1:H9,0))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,0))"
   },
   {
    "id": "trimrange#11",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "COLUMNS(TRIMRANGE(R!F1:J9,3,1))"
+   "formula": "COLUMNS(_xlfn.TRIMRANGE(R!F1:J9,3,1))"
   },
   {
    "id": "trimrange#12",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "COLUMNS(TRIMRANGE(R!F1:J9,3,2))"
+   "formula": "COLUMNS(_xlfn.TRIMRANGE(R!F1:J9,3,2))"
   },
   {
    "id": "trimrange#13",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "COLUMNS(TRIMRANGE(R!F1:J9,3,0))"
+   "formula": "COLUMNS(_xlfn.TRIMRANGE(R!F1:J9,3,0))"
   },
   {
    "id": "trimrange#14",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE(R!K1:K9)"
+   "formula": "_xlfn.TRIMRANGE(R!K1:K9)"
   },
   {
    "id": "trimrange#15",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE(R!G1:H9,4)"
+   "formula": "_xlfn.TRIMRANGE(R!G1:H9,4)"
   },
   {
    "id": "trimrange#16",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE(R!G1:H9,-1)"
+   "formula": "_xlfn.TRIMRANGE(R!G1:H9,-1)"
   },
   {
    "id": "trimrange#17",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE(R!G1:H9,\"x\")"
+   "formula": "_xlfn.TRIMRANGE(R!G1:H9,\"x\")"
   },
   {
    "id": "trimrange#18",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!H4:H9))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!H4:H9))"
   },
   {
    "id": "trimrange#19",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE({1,2})"
+   "formula": "_xlfn.TRIMRANGE({1,2})"
   },
   {
    "id": "trimrange#20",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE(5)"
+   "formula": "_xlfn.TRIMRANGE(5)"
   },
   {
    "id": "trimrange#21",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "TRIMRANGE((R!A1,R!A2))"
+   "formula": "_xlfn.TRIMRANGE((R!A1,R!A2))"
   },
   {
    "id": "trimrange#22",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "ROWS(TRIMRANGE(R!G1:H9,1.5))"
+   "formula": "ROWS(_xlfn.TRIMRANGE(R!G1:H9,1.5))"
   },
   {
    "id": "trimrange#23",
    "group": "trimrange",
    "fn": "TRIMRANGE",
-   "formula": "SUM(TRIMRANGE(R!E1:E9))"
+   "formula": "SUM(_xlfn.TRIMRANGE(R!E1:E9))"
   },
   {
    "id": "tro#1",
@@ -1647,6 +1647,10 @@
    "t": "n",
    "v": 10
   },
+  "offset#23": {
+   "t": "n",
+   "v": 2
+  },
   "offset#24": {
    "t": "e",
    "v": "VALUE"
@@ -1827,6 +1831,10 @@
    "t": "n",
    "v": 1
   },
+  "cell#23": {
+   "t": "n",
+   "v": 2
+  },
   "cell#24": {
    "t": "e",
    "v": "DIV0"
@@ -1892,200 +1900,200 @@
    "v": "VALUE"
   },
   "sheet#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 4
   },
   "sheet#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 4
   },
   "sheet#3": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#4": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 4
   },
   "sheet#5": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 4
   },
   "sheet#6": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#7": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheet#8": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheet#9": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheet#10": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#11": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#12": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#13": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#14": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheet#15": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "sheet#16": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheets#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 4
   },
   "sheets#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 1
   },
   "sheets#3": {
    "t": "e",
    "v": "NAME"
   },
   "sheets#4": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 1
   },
   "sheets#5": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheets#6": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "sheets#7": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 1
   },
   "formulatext#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=A1*2"
   },
   "formulatext#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=SUM(A1:A3)"
   },
   "formulatext#3": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=\"t\"&A4"
   },
   "formulatext#4": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "formulatext#5": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "formulatext#6": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=SEQUENCE(3)"
   },
   "formulatext#7": {
    "t": "e",
-   "v": "NAME"
+   "v": "NA"
   },
   "formulatext#8": {
    "t": "e",
-   "v": "NAME"
+   "v": "SPILL"
   },
   "formulatext#9": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=\"\""
   },
   "formulatext#10": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=SUM(A1:A3)"
   },
   "formulatext#11": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=\"t\"&A4"
   },
   "formulatext#12": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=A1*2"
   },
   "formulatext#13": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "formulatext#14": {
-   "t": "e",
-   "v": "NAME"
+   "t": "s",
+   "v": "=SUM(A1:A3)"
   },
   "isformula#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "isformula#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": false
   },
   "isformula#3": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": false
   },
   "isformula#4": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "isformula#5": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": false
   },
   "isformula#6": {
    "t": "e",
-   "v": "NAME"
+   "v": "SPILL"
   },
   "isformula#7": {
    "t": "e",
-   "v": "NAME"
+   "v": "SPILL"
   },
   "isformula#8": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "isformula#9": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "isformula#10": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "isformula#11": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "isformula#12": {
-   "t": "e",
-   "v": "NAME"
+   "t": "b",
+   "v": true
   },
   "trimrange#1": {
    "t": "e",
@@ -2195,9 +2203,5 @@
    "t": "e",
    "v": "NAME"
   }
- },
- "rejected": [
-  "offset#23",
-  "cell#23"
- ]
+ }
 }

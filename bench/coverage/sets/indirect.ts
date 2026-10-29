@@ -3,7 +3,7 @@
  * a quoted sheet, whole columns and rows, a spill reference, a text that names nothing, OFFSET with a size, a negative
  * size and off the sheet's edges, both as arguments of SUM, INDEX, ROWS and the range operator, lifted over arrays;
  * CELL's answers that need no look, INFO's constant ones, SHEET, SHEETS, FORMULATEXT and ISFORMULA; TRIMRANGE, and
- * the guesses of how a file stores the trim references (`_xlfn._TRO_ALL` and the others). The case sheet C comes after
+ * the trim references as a file stores them (`_xlfn._TRO_ALL` and the others). The case sheet C comes after
  * the set's sheets and D in Excel's book and after D and them in the engine's, so a sheet's number is read against C's.
  * Answers: `test/excel/cases/indirect.json`; `PREDICTED`, the engine's answers, was committed before Excel ran the set.
  */
@@ -36,7 +36,7 @@ const CASES: Record<string, [fn: string, formulas: string[]]> = {
   formulatext: ['FORMULATEXT', ['FORMULATEXT(R!C1)', 'FORMULATEXT(R!C2)', 'FORMULATEXT(R!C3)', 'FORMULATEXT(R!A1)', 'FORMULATEXT(R!A5)', 'FORMULATEXT(R!E1)', 'FORMULATEXT(R!E2)', 'FORMULATEXT(R!C1:C3)', 'FORMULATEXT(R!H5)', 'FORMULATEXT(INDEX(R!C1:C3,2))', 'FORMULATEXT(IF(TRUE,R!C3))', 'FORMULATEXT((R!C1,R!C2))', 'FORMULATEXT(R:C!C1)', 'FORMULATEXT(INDIRECT("R!C2"))']],
   isformula: ['ISFORMULA', ['ISFORMULA(R!C1)', 'ISFORMULA(R!A1)', 'ISFORMULA(R!A5)', 'ISFORMULA(R!E1)', 'ISFORMULA(R!E2)', 'ISFORMULA(R!C1:C3)', 'ISFORMULA(R!A1:C1)', 'ISFORMULA(INDEX(R!A1:C1,3))', 'ISFORMULA(CHOOSE(2,R!A1,R!C1))', 'ISFORMULA((R!C1,R!A1))', 'ISFORMULA(R:C!C1)', 'ISFORMULA(D!A7)']],
   trimrange: ['TRIMRANGE', ['ROWS(TRIMRANGE(R!A1:A9))', 'SUM(TRIMRANGE(R!A1:A9))', 'ROWS(TRIMRANGE(R!A:A))', 'ROWS(TRIMRANGE(R!G1:H9))', 'COLUMNS(TRIMRANGE(R!F1:J9))', 'ROW(TRIMRANGE(R!G1:H9))', 'COLUMN(TRIMRANGE(R!F1:J9))', 'ROWS(TRIMRANGE(R!G1:H9,1))', 'ROWS(TRIMRANGE(R!G1:H9,2))', 'ROWS(TRIMRANGE(R!G1:H9,0))', 'COLUMNS(TRIMRANGE(R!F1:J9,3,1))', 'COLUMNS(TRIMRANGE(R!F1:J9,3,2))', 'COLUMNS(TRIMRANGE(R!F1:J9,3,0))', 'TRIMRANGE(R!K1:K9)', 'TRIMRANGE(R!G1:H9,4)', 'TRIMRANGE(R!G1:H9,-1)', 'TRIMRANGE(R!G1:H9,"x")', 'ROWS(TRIMRANGE(R!H4:H9))', 'TRIMRANGE({1,2})', 'TRIMRANGE(5)', 'TRIMRANGE((R!A1,R!A2))', 'ROWS(TRIMRANGE(R!G1:H9,1.5))', 'SUM(TRIMRANGE(R!E1:E9))']],
-  tro: ['TRIMRANGE', ['ROWS(_xlfn._TRO_ALL(R!G1:H9))', 'ROWS(_xlfn._TRO_LEADING(R!G1:H9))', 'ROWS(_xlfn._TRO_TRAILING(R!G1:H9))', 'ROWS(_xlfn._TRO_ALL(R!G1,R!H9))']],
+  tro: ['TRIMRANGE', ['ROWS(_xlfn._TRO_ALL(R!G1:H9))', 'ROWS(_xlfn._TRO_LEADING(R!G1:H9))', 'ROWS(_xlfn._TRO_TRAILING(R!G1:H9))', 'ROWS(_xlfn._TRO_TRAILING(R!A:A))']],
 }
 
 export function buildProbes(): Probe[] {
