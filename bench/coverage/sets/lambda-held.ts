@@ -70,3 +70,10 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./lambda-held.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: a function compares with nothing (`LAMBDA(x,x)=1` is #VALUE!), COUNT
+ * passes it by, a function by its name called with more arguments than it takes is #CALC! too, MAP's later array an
+ * error is #VALUE!, and a position a smaller array lacks is #N/A without a call.
+ */
+export const MISSED: readonly string[] = ['LAMBDA#8', 'LAMBDA#12', 'ABS#1', 'MAP#1', 'MAP#5']

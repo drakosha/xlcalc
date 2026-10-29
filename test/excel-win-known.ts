@@ -226,4 +226,12 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:groupby:PIVOTBY#13': { reason: 'winGroupby', engine: { t: 's', v: "{\"\",\"\",2024,2025,\"Total\";\"East\",\"A\",10,8,18;\"East\",\"B\",\"\",5,5;\"East\",\"C\",\"\",6,6;\"North\",\"A\",3,\"\",3;\"North\",\"C\",\"\",0,0;\"west\",\"A\",\"\",7,7;\"west\",\"B\",20,\"\",20;\"west\",\"C\",12,\"\",12;,\"B\",4,\"\",4;\"Total\",\"\",49,26,75}" } },
   'en-US:groupby:PIVOTBY#14': { reason: 'winGroupby', engine: { t: 's', v: "{\"\",2024,2025,\"Total\";\"East\",10,11,21;\"North\",3,0,3;\"west\",12,7,19;,4,\"\",4;\"Total\",29,18,47}" } },
   'en-US:groupby:PIVOTBY#15': { reason: 'winGroupby', engine: { t: 's', v: "{\"\",2024,2025,\"Total\";\"East\",1,3,4;\"North\",1,0,1;\"West\",2,1,3;,1,\"\",1;\"Total\",5,4,9}" } },
+  'en-US:lambda-held:LAMBDA#4': { reason: 'winEta', engine: { t: 'n', v: 128 } },
+  'en-US:lambda-held:LAMBDA#20': { reason: 'winEta', engine: { t: 'n', v: 3 } },
+  'en-US:lambda-held:SUM#1': { reason: 'winEta', engine: { t: 'n', v: 6 } },
+  'en-US:lambda-held:SUM#2': { reason: 'winEta', engine: { t: 'n', v: 9 } },
+  'en-US:lambda-held:ABS#1': { reason: 'winEta', engine: { t: 'e', v: 'CALC' } },
+  'en-US:lambda-held:ROUND#1': { reason: 'winEta', engine: { t: 'e', v: 'VALUE' } },
+  'en-US:lambda-held:ROUND#2': { reason: 'winEta', engine: { t: 's', v: "{1.3,3}" } },
+  'en-US:lambda-held:BYCOL#2': { reason: 'winLambdaCount', engine: { t: 'e', v: 'VALUE' } },
 }
