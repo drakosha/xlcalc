@@ -1,0 +1,745 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US",
+  "seconds": 6.5
+ },
+ "cases": [
+  {
+   "id": "written",
+   "book": {
+    "sheets": [
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "bottomRight"
+       },
+       "activeCell": "G21",
+       "selection": [
+        "G21"
+       ]
+      }
+     },
+     {
+      "name": "Columns",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 150.5,
+        "topLeft": "H1",
+        "activePane": "topRight"
+       },
+       "activeCell": "H2",
+       "selection": [
+        "H2"
+       ]
+      }
+     },
+     {
+      "name": "Rows",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "y": 75,
+        "topLeft": "A30",
+        "activePane": "bottomLeft"
+       }
+      }
+     },
+     {
+      "name": "Scrolled",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "topLeft": "C5",
+       "split": {
+        "x": 200,
+        "y": 100,
+        "topLeft": "K40"
+       },
+       "activeCell": "D6",
+       "selection": [
+        "D6"
+       ]
+      }
+     },
+     {
+      "name": "Zoomed",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 200,
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "topRight"
+       }
+      }
+     },
+     {
+      "name": "Frozen",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "frozen": {
+       "rows": 2
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20"
+       }
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "kept-set",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 150
+      }
+     }
+    ]
+   },
+   "kept": {
+    "views": {
+     "S": {
+      "split": {
+       "x": 100,
+       "y": 50,
+       "topLeft": "E12",
+       "activePane": "bottomRight"
+      },
+      "activeCell": "E12",
+      "selection": [
+       "E12"
+      ]
+     },
+     "T": {
+      "zoom": 150,
+      "split": {
+       "y": 90,
+       "topLeft": "A25"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "kept-changed",
+   "book": {
+    "sheets": [
+     {
+      "name": "Both",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "bottomRight"
+       },
+       "activeCell": "G21",
+       "selection": [
+        "G21"
+       ]
+      }
+     },
+     {
+      "name": "Columns",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "x": 150.5,
+        "topLeft": "H1",
+        "activePane": "topRight"
+       },
+       "activeCell": "H2",
+       "selection": [
+        "H2"
+       ]
+      }
+     },
+     {
+      "name": "Rows",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "split": {
+        "y": 75,
+        "topLeft": "A30",
+        "activePane": "bottomLeft"
+       }
+      }
+     },
+     {
+      "name": "Scrolled",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "topLeft": "C5",
+       "split": {
+        "x": 200,
+        "y": 100,
+        "topLeft": "K40"
+       },
+       "activeCell": "D6",
+       "selection": [
+        "D6"
+       ]
+      }
+     },
+     {
+      "name": "Zoomed",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "view": {
+       "zoom": 200,
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20",
+        "activePane": "topRight"
+       }
+      }
+     },
+     {
+      "name": "Frozen",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      },
+      "frozen": {
+       "rows": 2
+      },
+      "view": {
+       "split": {
+        "x": 120,
+        "y": 60,
+        "topLeft": "F20"
+       }
+      }
+     },
+     {
+      "name": "Plain",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   },
+   "kept": {
+    "views": {
+     "Both": {
+      "split": {
+       "x": 240,
+       "y": 30,
+       "topLeft": "J5"
+      }
+     },
+     "Columns": null,
+     "Rows": {
+      "split": {
+       "y": 75,
+       "topLeft": "A30",
+       "activePane": "bottomLeft"
+      },
+      "activeCell": "A31",
+      "selection": [
+       "A31"
+      ]
+     },
+     "Frozen": null
+    }
+   }
+  }
+ ],
+ "sent": {
+  "written": "16a5dbc466bd18725d14b4b24702f038b1281520b2dd6ade8415a4a883a554e0",
+  "kept-set": "6cf872bd9638b2d9affab017e62ca52a7b57d35b82051788dd581003679b1205",
+  "kept-changed": "843fd7782850ef23bc34358cb370b61ab433c8b82f042479f6f2566b25f115a2"
+ },
+ "answers": {
+  "written": {
+   "panes": [
+    {
+     "panes": [
+      "Both",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      4
+     ],
+     "points": [
+      97,
+      38
+     ]
+    },
+    {
+     "panes": [
+      "Columns",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        8
+       ]
+      ],
+      2
+     ],
+     "points": [
+      127,
+      0
+     ]
+    },
+    {
+     "panes": [
+      "Rows",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        30,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      53
+     ]
+    },
+    {
+     "panes": [
+      "Scrolled",
+      false,
+      true,
+      [
+       [
+        5,
+        3
+       ],
+       [
+        5,
+        11
+       ],
+       [
+        40,
+        3
+       ],
+       [
+        40,
+        11
+       ]
+      ],
+      1
+     ],
+     "points": [
+      177,
+      78
+     ]
+    },
+    {
+     "panes": [
+      "Zoomed",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      2
+     ],
+     "points": [
+      76,
+      16
+     ]
+    },
+    {
+     "panes": [
+      "Frozen",
+      true,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        3,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      30
+     ]
+    },
+    {
+     "panes": [
+      "Plain",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "kept-set": {
+   "panes": [
+    {
+     "panes": [
+      "S",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        5
+       ],
+       [
+        12,
+        1
+       ],
+       [
+        12,
+        5
+       ]
+      ],
+      4
+     ],
+     "points": [
+      77,
+      28
+     ]
+    },
+    {
+     "panes": [
+      "T",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        25,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      57
+     ]
+    }
+   ]
+  },
+  "kept-changed": {
+   "panes": [
+    {
+     "panes": [
+      "Both",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        10
+       ],
+       [
+        5,
+        1
+       ],
+       [
+        5,
+        10
+       ]
+      ],
+      1
+     ],
+     "points": [
+      217,
+      8
+     ]
+    },
+    {
+     "panes": [
+      "Columns",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    },
+    {
+     "panes": [
+      "Rows",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        30,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      53
+     ]
+    },
+    {
+     "panes": [
+      "Scrolled",
+      false,
+      true,
+      [
+       [
+        5,
+        3
+       ],
+       [
+        5,
+        11
+       ],
+       [
+        40,
+        3
+       ],
+       [
+        40,
+        11
+       ]
+      ],
+      1
+     ],
+     "points": [
+      177,
+      78
+     ]
+    },
+    {
+     "panes": [
+      "Zoomed",
+      false,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        1,
+        6
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        20,
+        6
+       ]
+      ],
+      2
+     ],
+     "points": [
+      76,
+      16
+     ]
+    },
+    {
+     "panes": [
+      "Frozen",
+      true,
+      true,
+      [
+       [
+        1,
+        1
+       ],
+       [
+        3,
+        1
+       ]
+      ],
+      2
+     ],
+     "points": [
+      0,
+      30
+     ]
+    },
+    {
+     "panes": [
+      "Plain",
+      false,
+      false,
+      [
+       [
+        1,
+        1
+       ]
+      ],
+      1
+     ],
+     "points": [
+      0,
+      0
+     ]
+    }
+   ]
+  }
+ }
+}

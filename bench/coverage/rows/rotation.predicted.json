@@ -1,0 +1,2169 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "angle-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-11": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-12": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-13": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-14": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-15": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-16": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-17": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-18": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-19": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-20": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-21": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-22": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-23": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-24": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-25": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-26": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-27": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-28": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-29": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-30": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-31": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-32": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-33": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-34": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-35": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-36": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-37": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-38": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-39": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-40": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-41": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-42": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "b",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a b",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Wij",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "12345",
+      "wrap": false
+     }
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-5": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-6": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-7": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-8": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-9": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-10": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-11": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-12": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "long-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "long-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "long-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-1": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-2": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-3": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-4": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-5": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-6": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-7": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-10": {
+    "before": 15,
+    "height": 96,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "cells-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "cells-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "cells-3": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "cells-4": {
+    "before": 15,
+    "height": 48,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "a\nb\nc",
+      "wrap": true
+     }
+    }
+   },
+   "cells-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "value-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "value-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "value-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "TRUE",
+      "wrap": false
+     }
+    }
+   },
+   "value-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "=1/0",
+      "wrap": false
+     }
+    }
+   },
+   "value-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "value-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "value-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "TRUE",
+      "wrap": false
+     }
+    }
+   },
+   "value-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "=1/0",
+      "wrap": false
+     }
+    }
+   },
+   "value-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "3.14159265358979",
+      "wrap": false
+     }
+    }
+   },
+   "value-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "merged-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "merged-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "merged-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "blank-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-3": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "hand-1": {
+    "before": 30,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "typed-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "typed-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-7": {
+    "before": 30,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "angle-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-11": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-12": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-13": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-14": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-15": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-16": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-17": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-18": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-19": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-20": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-21": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-22": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-23": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-24": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-25": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-26": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-27": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-28": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-29": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-30": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-31": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-32": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-33": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-34": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-35": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-36": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-37": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-38": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-39": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-40": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "angle-41": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "angle-42": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "b",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a b",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Wij",
+      "wrap": false
+     }
+    }
+   },
+   "vertical-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "12345",
+      "wrap": false
+     }
+    }
+   },
+   "size-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-5": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-6": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-7": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-8": {
+    "before": 15,
+    "height": 21,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-9": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-10": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-11": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "size-12": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "long-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "long-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "long-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-1": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-2": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-3": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-4": {
+    "before": 15,
+    "height": 240,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-5": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-6": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-7": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": true
+     }
+    }
+   },
+   "wrap-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "a\nb",
+      "wrap": false
+     }
+    }
+   },
+   "wrap-10": {
+    "before": 15,
+    "height": 96,
+    "cells": {
+     "0": {
+      "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+      "wrap": true
+     }
+    }
+   },
+   "cells-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "cells-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbbbbbbbbbbbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "cells-3": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     },
+     "1": {
+      "formula": "Ag",
+      "wrap": false
+     }
+    }
+   },
+   "cells-4": {
+    "before": 15,
+    "height": 48,
+    "cells": {
+     "0": {
+      "formula": "bb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "a\nb\nc",
+      "wrap": true
+     }
+    }
+   },
+   "cells-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     },
+     "1": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "value-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "value-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "value-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "TRUE",
+      "wrap": false
+     }
+    }
+   },
+   "value-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "=1/0",
+      "wrap": false
+     }
+    }
+   },
+   "value-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "value-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "46096",
+      "wrap": false
+     }
+    }
+   },
+   "value-7": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "TRUE",
+      "wrap": false
+     }
+    }
+   },
+   "value-8": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "=1/0",
+      "wrap": false
+     }
+    }
+   },
+   "value-9": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "3.14159265358979",
+      "wrap": false
+     }
+    }
+   },
+   "value-10": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "merged-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "merged-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "merged-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "blank-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "blank-3": {
+    "before": 15,
+    "height": 31,
+    "cells": {
+     "0": {
+      "formula": "",
+      "wrap": false
+     }
+    }
+   },
+   "hand-1": {
+    "before": 30,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-1": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-2": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-3": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-4": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbb",
+      "wrap": false
+     }
+    }
+   },
+   "typed-5": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "1234567",
+      "wrap": false
+     }
+    }
+   },
+   "typed-6": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   },
+   "typed-7": {
+    "before": 30,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "bbbbbbbr",
+      "wrap": false
+     }
+    }
+   }
+  }
+ }
+}

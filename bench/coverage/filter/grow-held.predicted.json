@@ -1,0 +1,76 @@
+{
+ "cases": {
+  "far-1": {
+   "after": [
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "far-2": {
+   "after": [
+    "C1:E5"
+   ],
+   "saved": "C1:E5"
+  },
+  "far-3": {
+   "after": [
+    "A1:C6",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "formula-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "formula-2": {
+   "after": [
+    "A1:C8"
+   ],
+   "saved": "A1:C5"
+  },
+  "below-1": {
+   "after": [
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "emptied-1": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C5"
+   ],
+   "saved": "A1:C5"
+  },
+  "hidden-1": {
+   "after": [
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  },
+  "beside-1": {
+   "after": [
+    "A1:C8"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-1": {
+   "after": [
+    "A1:C6",
+    "A1:C7",
+    "A1:C7"
+   ],
+   "saved": "A1:C5"
+  },
+  "criteria-2": {
+   "after": [
+    "A1:C6",
+    "A1:C6"
+   ],
+   "saved": "A1:C5"
+  }
+ }
+}

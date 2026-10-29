@@ -89,14 +89,15 @@ const DATA = '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1"><v>1</
 describe('frozen and split panes read', () => {
   const view = (pane: string, attrs = '') => read({ sheets: [{ name: 'S', body: `<sheetViews><sheetView workbookViewId="0"${attrs}>${pane}</sheetView></sheetViews>${DATA}` }], strings: ['x'] })
 
-  it('frozen panes by their rows and columns, frozen after a split too; split panes alone reported', async () => {
+  it('frozen panes by their rows and columns, frozen after a split too; split panes alone in the view', async () => {
     expect((await view('<pane xSplit="2" ySplit="1" topLeftCell="C2" activePane="bottomRight" state="frozen"/>')).book.sheets[0].frozen).toEqual({ rows: 1, columns: 2 })
     expect((await view('<pane xSplit="1" ySplit="3" topLeftCell="B4" activePane="bottomRight" state="frozenSplit"/>')).book.sheets[0].frozen).toEqual({ rows: 3, columns: 1 })
     // the pane after the split scrolled down: the split stays where it is
     expect((await view('<pane ySplit="2" topLeftCell="A40" activePane="bottomLeft" state="frozen"/>')).book.sheets[0].frozen).toEqual({ rows: 2 })
     const split = await view('<pane xSplit="2000" ySplit="1500" topLeftCell="C5"/>')
     expect(split.book.sheets[0].frozen).toBeUndefined()
-    expect(codes(split.issues)).toEqual(['frozenPanes'])
+    expect(split.book.sheets[0].view).toEqual({ split: { x: 100, y: 75, topLeft: 'C5' } })
+    expect(codes(split.issues)).toEqual([])
   })
 
   it('panes frozen over a scrolled sheet are read from its first row and column, and reported', async () => {

@@ -17,7 +17,7 @@ import { folded, matcher, replacer } from './find-text.js'
 import { sameType, sortOrder } from './sort-order.js'
 import { textOrder } from './collate.js'
 import { optionalLocale } from './locale/load.js'
-import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
+import { charsOfPoints, columnPoints, MAX_FILE_WIDTH, MAX_POINTS, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as decimals from './numfmt/decimals.js'
@@ -102,13 +102,13 @@ export const formatClipboard = /* @__PURE__ */ strict(function formatClipboard(r
 
 /** A stored xlsx width in the library's Mac point model; null or undefined is the default 53 points. */
 export const columnWidthToPoints = /* @__PURE__ */ strict(function columnWidthToPoints(width?: number | null): number {
-  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
+  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, MAX_FILE_WIDTH)
   return columnPoints(width ?? undefined)
 })
 
 /** Whole points back to a stored width in 256ths; fractional points round down, as the model's geometry does. */
 export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidthFromPoints(points: number): number {
-  checkNumber(points, 'points', 0, 1535)
+  checkNumber(points, 'points', 0, MAX_POINTS)
   return widthOf(Math.trunc(points))
 })
 
@@ -118,7 +118,7 @@ export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidth
  * `columnWidthToPoints`.
  */
 export const columnWidthToChars = /* @__PURE__ */ strict(function columnWidthToChars(width?: number | null): number {
-  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
+  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, MAX_FILE_WIDTH)
   return charsOfPoints(columnPoints(width ?? undefined))
 })
 

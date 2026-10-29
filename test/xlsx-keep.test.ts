@@ -202,7 +202,7 @@ describe('writeKept moves the cells that hold what only the file holds', () => {
     const w = await writeKept(data, s.getSnapshot())
     const cells = (xml: string) => Object.fromEntries([...xml.matchAll(/<c r="(\w+)"[^>]*?(?:\/>|>.*?<\/c>)/g)].map((m) => [m[1], m[0]]))
     const [was, now] = [await partsOf(data), await partsOf(w.data)]
-    return { was: cells(was.get('xl/worksheets/sheet1.xml')!), now: cells(now.get('xl/worksheets/sheet1.xml')!), strings: now.get('xl/sharedStrings.xml') === was.get('xl/sharedStrings.xml'), issues: w.issues }
+    return { was: cells(was.get('xl/worksheets/sheet1.xml')!), now: cells(now.get('xl/worksheets/sheet1.xml')!), other: cells(now.get('xl/worksheets/sheet2.xml')!), strings: now.get('xl/sharedStrings.xml') === was.get('xl/sharedStrings.xml'), issues: w.issues }
   }
   const at = (xml: string, addr: string) => xml.replace(/^<c r="\w+"/, `<c r="${addr}"`)
 
@@ -226,6 +226,24 @@ describe('writeKept moves the cells that hold what only the file holds', () => {
     // the row of North deleted: South moves up into A2, written from the workbook
     r = await after((s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 2 }))
     expect([r.now.A2, r.now.B2]).toEqual(['<c r="A2" t="inlineStr"><is><t>South</t></is></c>', at(r.was.B3, 'B2')])
+  })
+
+  it("a range moved to another sheet: the file's cells at their new addresses there; a formula's cell is written from the workbook", async () => {
+    let r = await after((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2:B3' }, to: { sheet: 'Other', cell: 'D10' } }))
+    expect([r.other.D10, r.other.E11, r.now.A2, r.now.B3]).toEqual([at(r.was.A2, 'D10'), at(r.was.B3, 'E11'), undefined, undefined])
+    expect([r.strings, r.issues]).toEqual([true, []])
+    // moved back over the cell's own sheet after another range moved it there: the file's cell again
+    r = await after((s) => {
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Other', cell: 'C1' } })
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'C1' }, to: { sheet: 'Data', cell: 'F2' } })
+    })
+    expect([r.now.F2, r.other.C1]).toEqual([at(r.was.A2, 'F2'), undefined])
+    // changed after the move, or moved over a cell of a formula: written from the workbook
+    r = await after((s) => {
+      s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Other', cell: 'D10' } })
+      s.setCells([{ sheet: 'Other', cell: 'D10', input: { value: 'Northeast' } }])
+    })
+    expect(r.other.D10).toBe('<c r="D10" t="inlineStr"><is><t>Northeast</t></is></c>')
   })
 
   it('a cell changed after it moved is written from the workbook; one that stayed is the file\'s', async () => {
@@ -327,9 +345,9 @@ describe('writeKept moves the references of the parts the model does not have', 
     const pivots = (parts: Map<string, string> | string) => (typeof parts === 'string' ? parts : [/<location ref="([^"]*)"/.exec(parts.get('xl/pivotTables/pivotTable1.xml')!)![1], /<worksheetSource [^>]*\/>/.exec(parts.get('xl/pivotCache/pivotCacheDefinition1.xml')!)![0]])
     expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 1 })))).toEqual(['D4:E6', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     expect(pivots(await plain(pivot, (s) => { s.editStructure({ op: 'insertRows', sheet: 'Data', row: 3 }); s.editStructure({ op: 'renameSheet', sheet: 'Data', name: 'Raw' }) }))).toEqual(['D3:E5', '<worksheetSource ref="A1:B5" sheet="Raw"/>'])
-    // the source's sheet deleted: Excel makes the source a link to the file by its path, refused; its cells deleted: refused
+    // the source's sheet deleted: Excel makes the source a link to the file by its path, refused; its cells deleted: the source as it was, as Excel keeps it
     expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' }))).toBe('deleted: xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path')
-    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 }))).toBe('deleted: xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml lies in cells the change deleted')
+    expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 })))).toEqual(['D3:E5', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("moved: xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
     const table: BookInput = { sheets: [{ name: 'Data', cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 'x' }, B2: { value: 1 } }, tables: [{ name: 'Sales', range: 'A1:B2', columns: [{ name: 'k' }, { name: 'v' }] }] }, { name: 'Other', cells: {} }] }
     const data = await withParts(table, { pivot: { sheet: 1, location: 'A3:B5', source: { name: 'Sales' } } })
@@ -416,6 +434,52 @@ describe('the carriers outside writeKept', () => {
     const file = await writeXlsx({ book: opened.book }, { values: 'omit' })
     expect(file.issues).toEqual([])
     expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'rate', ref: "'S'!$A$1" }])
+  })
+})
+
+describe("the carriers' layout", () => {
+  const LAYOUT = /^xlsx\/keep: the workbook's name _xlcalc\.keep\.layout, which tells how openKept laid out the hidden names, is missing or was given by another version of openKept or for another file: open the original file again with openKept$/
+  /** The book with its fingerprint's text replaced, or without it. */
+  const fingered = (b: BookInput, ref?: string): BookInput => ({ ...b, names: b.names!.flatMap((n) => (n.name !== '_xlcalc.keep.layout' ? [n] : ref === undefined ? [] : [{ ...n, ref }])) })
+
+  it("openKept gives the book a fingerprint of its carriers' layout, which writeKept checks: the current one is written, another one is refused", async () => {
+    const { data, read, session } = await charted()
+    const print = read.book.names!.find((n) => n.name === '_xlcalc.keep.layout')!
+    expect(print).toEqual({ name: '_xlcalc.keep.layout', ref: expect.stringMatching(/^"1 [0-9a-f]{16}"$/), hidden: true })
+    // the same file opened again gives the same fingerprint
+    expect((await openKept(data)).book.names!.at(-1)).toEqual(print)
+    session.setCells([{ sheet: 'Data', cell: 'B3', input: { value: 25 } }])
+    session.editStructure({ op: 'insertRows', sheet: 'Data', row: 1 })
+    const snap = session.getSnapshot()
+    expect(snap.book.names!.find((n) => n.name === '_xlcalc.keep.layout')).toEqual(print)
+    expect((await writeKept(data, snap)).issues).toEqual([])
+    // another version's fingerprint, or none while the carriers stay: refused, in the locale's language too
+    for (const book of [fingered(snap.book, '"1 0123456789abcdef"'), fingered(snap.book, '"2 ' + print.ref.slice(3)), fingered(snap.book)]) {
+      await expect(writeKept(data, { ...snap, book })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'layout', message: expect.stringMatching(LAYOUT) })
+      await expect(writeKept(data, { ...snap, book }, { locale: 'ru-RU' })).rejects.toMatchObject({ code: 'layout', message: expect.stringMatching(/^xlsx\/keep: Имени книги _xlcalc\.keep\.layout, .* откройте исходный файл заново через openKept$/) })
+    }
+    // a book unchanged with another fingerprint is refused as well: its carriers cannot be read
+    await expect(writeKept(data, { book: fingered(read.book, '"1 0123456789abcdef"'), result: read.cached })).rejects.toMatchObject({ code: 'layout' })
+  })
+
+  it('a book opened over one file and written over another is refused; a book without carriers is written as before', async () => {
+    const { data: a, read } = await charted()
+    const { data: b } = await charted({ picture: { sheet: 1, anchor: [2, 7, 6, 9] } })
+    await expect(writeKept(b, { book: read.book, result: read.cached })).rejects.toMatchObject({ code: 'layout', message: expect.stringMatching(LAYOUT) })
+    expect((await writeKept(a, { book: read.book, result: read.cached })).data).toBe(a)
+    // no carriers at all: not a book of openKept, refused only where a part needs its carrier (the chart's), as before
+    const plain = await readXlsx(a)
+    await expect(writeKept(a, { book: plain.book, result: plain.cached })).rejects.toMatchObject({ code: 'carriers' })
+    const bare = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } }, { values: 'omit' })).data
+    const own = await readXlsx(bare)
+    own.book.sheets[0].cells.A1 = { value: 2 }
+    expect((await readXlsx((await writeKept(bare, { book: own.book })).data)).book.sheets[0].cells.A1).toEqual({ value: 2 })
+  })
+
+  it('writeXlsx writes neither the carriers nor the fingerprint', async () => {
+    const { read } = await charted()
+    const file = await writeXlsx({ book: read.book, result: read.cached })
+    expect((await partsOf(file.data)).get('xl/workbook.xml')).not.toContain('_xlcalc')
   })
 })
 

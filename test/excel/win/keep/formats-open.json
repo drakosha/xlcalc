@@ -1,0 +1,121 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "day": "2026-10-29",
+  "seconds": 17.5
+ },
+ "sent": {
+  "formats-insert-above": "1a4866f181f63311c86aa9c7584b37a54cb638e108b61d70fe95e72e6c00dd27",
+  "formats-insert-in": "a1c472c3c25796b747856857d558f390fbc1994263e1a7bc9e7a90f4c87d3fe1",
+  "formats-delete-in": "131b1f54b0eea16abcfefab07452f0640029eb916dbd46e559ac98a36c251094",
+  "formats-insert-column": "3ffc50eaa0c958f706f4c107fa0f6e134a8ba091bff4aa08cd726ab2f57af083",
+  "formats-delete-column": "933fcf93f405468e80702fb28eb8d6c1f8356e16eed0b127f77636cfd29451ae",
+  "formats-insert-at-row": "5b6bdf317b6e3915918d5c35cf4caa45c8d28c76f7dbee9d33735dd2322ccd5f",
+  "formats-insert-below-row": "631a62d9bedbf8021be3730770df322db42bf956cd21e1d0f0632547a3e65020",
+  "formats-insert-after-column": "8695787c0f3a7e8ca0fc53d3b30e0aae1cd737a675abfbfc18ea7e65aaae45ad",
+  "formats-insert-in-colour": "fb352407eb0416a5d03bada12669ef66113c1a254673844349b7bb39ee2aa9b1",
+  "formats-insert-in-blocks": "7e2cf8976d160d5911a26d30efc75c31ffab580db4c0be3bc49a69dc11d04f20",
+  "formats-delete-across": "dabeafc936d67979f7d924349c1ea7e5eea02b3aaad40684e40f256ee35088bc",
+  "formats-insert-below-block": "22dd088d07e4c3db12e8f8c57c6b3a0473947fb53efd86e8634fd0de620ced43",
+  "formats-delete-colour-column": "f4d96da14ab51d9d8700da9d1f776dd8c58089823037d494ed113e78d05e6880"
+ },
+ "answers": {
+  "formats-insert-above": {
+   "opened": [
+    "0.xlsx",
+    "0 - Excel",
+    []
+   ]
+  },
+  "formats-insert-in": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "formats-delete-in": {
+   "opened": [
+    "2.xlsx",
+    "2 - Excel",
+    []
+   ]
+  },
+  "formats-insert-column": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "formats-delete-column": {
+   "opened": [
+    "4.xlsx",
+    "4 - Excel",
+    []
+   ]
+  },
+  "formats-insert-at-row": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "formats-insert-below-row": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "formats-insert-after-column": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "formats-insert-in-colour": {
+   "opened": [
+    "8.xlsx",
+    "8 - Excel",
+    []
+   ]
+  },
+  "formats-insert-in-blocks": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "formats-delete-across": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  },
+  "formats-insert-below-block": {
+   "opened": [
+    "11.xlsx",
+    "11 - Excel",
+    []
+   ]
+  },
+  "formats-delete-colour-column": {
+   "opened": [
+    "12.xlsx",
+    "12 - Excel",
+    []
+   ]
+  }
+ }
+}

@@ -9,20 +9,18 @@ import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { inParts } from '../coverage/book.js'
 import { cellOf, keptRows, partAnswers, ROWS_PART, rowsFile } from '../coverage/rows.js'
-import { caseCells, caseRow, rowsBook, type RowCase, type RowSet } from '../coverage/rows/cases.js'
+import { caseCells, caseRow, fitsRow, ownBook, rowsBook, type RowCase, type RowSet } from '../coverage/rows/cases.js'
 import { answeredLine, answerSaver, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const cases = (await setModule<RowSet>('rows', set)).buildRowCases(tag).filter((c) => c.via !== 'keys' && c.via !== 'fill')
+  const cases = (await setModule<RowSet>('rows', set)).buildRowCases(tag).filter((c) => c.via !== 'keys' && c.via !== 'fill' && !c.patched)
   const file = rowsFile(set, tag, true)
   const { answers } = keptRows(file, cases)
   const t0 = Date.now()
   const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
-  // a column's style reaches every row of the sheet: such a case has a book of its own, as on the Mac
-  const alone = (c: RowCase) => Object.values(c.columns ?? {}).some((x) => x.look)
-  const parts = [...inParts(todo.filter((c) => !alone(c)), ROWS_PART), ...todo.filter(alone).map((c) => [c])]
+  const parts = [...inParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
   const book = async (part: RowCase[], f: string) => {
     const { data, issues } = await writeXlsx({ book: rowsBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`rows ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
@@ -30,7 +28,7 @@ export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> 
     const rows = part.map((_, k) => caseRow(k))
     const acts: Step[] = part.flatMap((c, k) => [
       ...(c.typed ?? []).map(([col, text]) => (c.via === 'paste' ? { do: 'paste', sheet: 'S', at: cellOf(k, col), text } : { do: 'set', sheet: 'S', cell: cellOf(k, col), kind: c.via === 'value' ? 's' : 'l2', value: text })),
-      ...(!c.typed || c.fitAfter ? [{ do: 'rowfit', sheet: 'S', range: `A${rows[k]}` }] : []),
+      ...(fitsRow(c) ? [{ do: 'rowfit', sheet: 'S', range: `A${rows[k]}` }] : []),
     ])
     const cells = part.flatMap((c, k) => caseCells(c).map(([dr, col]) => cellOf(k, col, dr)))
     return { file: f, steps: [{ do: 'heights', sheet: 'S', rows }, ...acts, { do: 'calc' }, { do: 'heights', sheet: 'S', rows }, { do: 'wraps', sheet: 'S', cells }, { do: 'saveAs' }] }
@@ -46,7 +44,7 @@ export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> 
         const x = got[i++]
         return x && typeof x === 'object' && 'error' in x ? String((x as { error: string }).error) : ''
       })
-      if (!c.typed || c.fitAfter) i++
+      if (fitsRow(c)) i++
       return out
     })
     const after = got[i + 1] as [number, boolean][]

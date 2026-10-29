@@ -6,18 +6,20 @@
  * passes the ones it tests (`src` or `dist`).
  */
 import type { BookInput, CellInput, Session, SessionOptions } from '../../../src/contract.js'
-import { formatAddress } from '../../../src/model.js'
-import { caseCells, caseRow, cellKey, rowsBook, type RowCase } from './cases.js'
+import { lineAt } from '../../../src/layout/spans.js'
+import { formatAddress, indexToCol } from '../../../src/model.js'
+import { caseCells, caseRow, cellKey, fitsRow, rowsBook, type RowCase } from './cases.js'
 
 export interface RowsEngine {
   createSession(book: BookInput, opts?: SessionOptions): Session
 }
 
-/** The engine's answer: the row's height when the book opens and after (the default 15 for none, 0 for a hidden row) and each read cell's content (as `Formula` reads it) and wrapping. */
+/** The engine's answer: the row's height when the book opens and after (the default 15 for none, 0 for a hidden row), each read cell's content (as `Formula` reads it) and wrapping, and the heights of the rows the case names. */
 export interface RowsPrediction {
   before: number
   height: number
   cells: Record<string, { formula: string; wrap: boolean }>
+  more?: Record<string, number>
 }
 
 /** What `Range.Formula` reads of a cell: its formula after `=`, else its value as text (TRUE, an error's text). */
@@ -32,8 +34,8 @@ export function engineRows(e: RowsEngine, c: RowCase, tag: string, now: string):
   const book = { ...rowsBook([c]), locale: tag }
   const s = e.createSession(book, { clock: { now: `${now}T12:00:00Z`, seed: 1 } })
   const row = caseRow(0)
-  const shown = () => {
-    const r = s.getLayout().sheets[0].rows?.[String(row)]
+  const shown = (at = row) => {
+    const r = lineAt(s.getLayout().sheets[0].rows, 'r', at - 1)
     return r?.hidden || r?.height === 0 ? 0 : (r?.height ?? 15)
   }
   const at = (col: number, dr = 0) => formatAddress(row - 1 + dr, 1 + col)
@@ -44,7 +46,11 @@ export function engineRows(e: RowsEngine, c: RowCase, tag: string, now: string):
     else if (c.via === 'fill') s.fillCellText('S', `${at(col)}:${at(c.fillTo!)}`, text)
     else s.setCellText('S', at(col), text)
   }
-  if (!c.typed || c.fitAfter) s.setLayout([{ sheet: 'S', rows: String(row), fit: true }])
+  if (c.patched) {
+    const { cols, size, rotation } = c.patched
+    s.patchCells([{ sheet: 'S', range: `${indexToCol(1 + cols[0])}:${indexToCol(1 + cols[1])}`, set: { style: { ...(size ? { font: { size } } : {}), ...(rotation !== undefined ? { alignment: { rotation } } : {}) } } }])
+  }
+  if (fitsRow(c)) s.setLayout([{ sheet: 'S', rows: String(row), fit: true }])
   const out = s.getBook()
   const styles = out.styles ?? []
   const cells = Object.fromEntries(
@@ -55,6 +61,7 @@ export function engineRows(e: RowsEngine, c: RowCase, tag: string, now: string):
     }),
   )
   const height = shown()
+  const more = c.more && Object.fromEntries(c.more.map((r) => [r, shown(r)]))
   s.close()
-  return { before, height, cells }
+  return { before, height, cells, ...(more ? { more } : {}) }
 }

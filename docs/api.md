@@ -1021,7 +1021,8 @@ interface AlignmentStyle {
   indent?: number
   /**
    * The text's orientation (Format Cells > Alignment > Orientation, xlsx `textRotation`): degrees from -90 to 90, up for
-   * positive ones, or `vertical`, its letters one above the other. The engine fits widths and heights as for level text.
+   * positive ones, or `vertical`, its letters one above the other. AutoFit of rows and columns takes the turned text's
+   * room as Excel for Mac does (`fitRows`, `fitColumns`), and a number typed into a turned cell widens no column.
    */
   rotation?: number | 'vertical'
 }
@@ -1091,10 +1092,12 @@ interface AsyncSession {
   /** Like `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
+  getAutoFilterRange(sheet: string): Promise<string | null>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
+  getWorkbookStatistics(sheet: string): Promise<WorkbookStatistics>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
@@ -2640,7 +2643,8 @@ interface EntryTextOptions {
 ### `EntryWidthOptions`
 
 Options of [`entryWidth`](#xlcalc-entrywidth): the format used to display the value (the cell's format after the entry), the workbook's
-locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into.
+locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into. A cell
+whose text is turned ([`AlignmentStyle.rotation`](#alignmentstyle)) widens no column, so a host does not call it for one.
 
 ```ts
 interface EntryWidthOptions extends DisplayOptions {
@@ -3149,10 +3153,11 @@ removed, moved or pointed at another file, or one of a kind other than a workboo
 the data validation of a sheet changed and the file has rules of it the workbook could not read (its [`readXlsx`](#xlcalcxlsx-readxlsx) issues
 `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
 it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
-would need making for a new first cell).
+would need making for a new first cell); `layout`, the workbook's carriers were laid out by another version of
+openKept or for another file, or their layout's name is gone while carriers stay.
 
 ```ts
-type KeptRefusalCode = 'file' | 'carriers' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
+type KeptRefusalCode = 'file' | 'carriers' | 'layout' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
 ```
 
 ### `LayoutEdit`
@@ -3580,6 +3585,14 @@ interface PageOptions extends EditOptions {
   /** Count all matching cells, even after the page is full; false by default. */
   count?: boolean
 }
+```
+
+### `PaneName`
+
+A pane of a window split in two or four: the first is the top left one, the others lie right of or below a line.
+
+```ts
+type PaneName = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
 ```
 
 ### `PasteKind`
@@ -4158,6 +4171,14 @@ interface Session {
    */
   getUsedRange(sheet: string): SheetExtent
   /**
+   * The range the sheet's AutoFilter acts on, as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
+   * grown down over the rows right under it that hold a value or a formula in its columns or the column on either side,
+   * one after another, an empty row ending it; null without an AutoFilter. The AutoFilter's own range stays as Excel
+   * saves it; a host that applies criteria filters this range (`docs/structure.md` "The AutoFilter"). It reads the rows
+   * under the range up to the first empty one.
+   */
+  getAutoFilterRange(sheet: string): string | null
+  /**
    * The address of the cell that Control plus an arrow key moves to from `cell`, as Excel's `Range.End` returns it
    * (`docs/live-books.md`): from a non-empty cell next to another non-empty cell, the last cell of that block; otherwise
    * the next non-empty cell, or the sheet's edge (row 1 or 1,048,576, column A or XFD), where a cell already at the edge
@@ -4189,6 +4210,8 @@ interface Session {
    * larger one is taken within it.
    */
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
+  /** What Excel's Workbook Statistics shows with `sheet` active: the sheet's end and counts, and the workbook's counts. */
+  getWorkbookStatistics(sheet: string): WorkbookStatistics
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -4515,6 +4538,8 @@ interface SheetView {
   gridlines?: boolean
   /** False hides the row and column headings (View > Show > Headings, xlsx `showRowColHeaders="0"`); shown by default. */
   headings?: boolean
+  /** The window split into panes without freezing them (View > Split); frozen panes (`SheetInput.frozen`) take its place while the sheet has them. */
+  split?: SplitPanes
 }
 ```
 
@@ -4534,6 +4559,51 @@ What a cell holds by the kinds of Excel's Go To Special: a number, text, a boole
 
 ```ts
 type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
+```
+
+### `SplitPanes`
+
+A window split into panes ([`SheetView.split`](#sheetview), xlsx `<pane>` without `state="frozen"`): a vertical line `x` points from
+the window's left edge, a horizontal one `y` points from its top, at least one of them. As Excel saves them, the
+points count the row and column headings in and are points on the screen at the view's zoom (xlsx `xSplit` and
+`ySplit` in twentieths of a point): a grid draws a line at `x` less the width of its own row headings.
+
+```ts
+interface SplitPanes {
+  x?: number
+  y?: number
+  /**
+   * The top left cell of the pane after both lines (right of the vertical one, below the horizontal one), which also
+   * gives the scroll of the other panes on its axes; the first pane's is the view's `topLeft`. Without it Excel scrolls
+   * the panes after the lines to A1.
+   */
+  topLeft?: string
+  /** The pane that holds the active cell and the selection; the first without it. */
+  activePane?: PaneName
+}
+```
+
+### `StatisticsCounts`
+
+What Excel's Workbook Statistics (Review > Workbook Statistics) counts, on a sheet or in the workbook. The workbook
+holds no PivotTables, charts, pictures, form controls, other objects or threads of comments (a thread read from a
+file is a note): those counts are null.
+
+```ts
+interface StatisticsCounts {
+  /** Cells holding a value or a formula; each cell of a spilled array or of a legacy array formula is one. */
+  cells: number
+  tables: number
+  /** Cells with a formula; each cell of a spilled array or of a legacy array formula is one, as Excel counts them. */
+  formulas: number
+  notes: number
+  pivotTables: null
+  charts: null
+  images: null
+  formControls: null
+  objects: null
+  comments: null
+}
 ```
 
 ### `StructureOp`
@@ -5168,6 +5238,23 @@ interface ViewportTable {
   headers: boolean
   /** Its last row is a totals row (`TableInput.totals`, false by default). */
   totals: boolean
+}
+```
+
+### `WorkbookStatistics`
+
+Excel's Workbook Statistics ([`Session.getWorkbookStatistics`](#session)): the counts of a sheet and of the whole workbook.
+
+```ts
+interface WorkbookStatistics {
+  /**
+   * The sheet's counts and its end: the cell of the last row and the last column that hold data or a note, or that a
+   * merged area over such a cell covers (`E9` for data in B9 and E2), not reached by styles, hyperlinks alone or tables
+   * as the used range is; null on a sheet without.
+   */
+  sheet: StatisticsCounts & { end: string | null }
+  /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
+  workbook: StatisticsCounts & { sheets: number }
 }
 ```
 

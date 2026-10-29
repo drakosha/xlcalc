@@ -1,0 +1,678 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US",
+  "date": "2026-10-29",
+  "seconds": 138.8
+ },
+ "cases": [
+  {
+   "id": "note-far",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "H30": {
+        "note": {
+         "text": "far"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "two-edges",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B9": {
+        "value": 1
+       },
+       "E2": {
+        "formula": "\"\""
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "merged-wide",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "m"
+       }
+      },
+      "merges": [
+       "A1:D4"
+      ]
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "hidden-lines",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "C8": {
+        "value": 2
+       },
+       "F3": {
+        "value": 3
+       }
+      },
+      "rows": {
+       "8": {
+        "hidden": true
+       }
+      },
+      "columns": {
+       "F": {
+        "hidden": true
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "last-cell",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "XFD1048576": {
+        "value": 2
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "table-header",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C3": {
+        "value": "a"
+       },
+       "D3": {
+        "value": "b"
+       }
+      },
+      "tables": [
+       {
+        "name": "Empty",
+        "range": "C3:D8",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "arrays-2d",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(100,30)"
+       },
+       "AH2": {
+        "formula": "ROW(AH2:AI3)+COLUMN(AH2:AI3)",
+        "array": "AH2:AI3"
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "spill-over-note",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(4)"
+       },
+       "A3": {
+        "note": {
+         "text": "under"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S"
+  },
+  {
+   "id": "thread-only",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "value": 1
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "S",
+   "threads": [
+    {
+     "sheet": "S",
+     "cell": "D6",
+     "comments": [
+      {
+       "author": "A",
+       "text": "only"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "last-active",
+   "book": {
+    "sheets": [
+     {
+      "name": "A",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "B1": {
+        "value": "y"
+       },
+       "A2": {
+        "value": 1
+       }
+      },
+      "tables": [
+       {
+        "name": "One",
+        "range": "A1:B2",
+        "columns": [
+         {
+          "name": "x"
+         },
+         {
+          "name": "y"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "name": "B",
+      "hidden": true,
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3,3)"
+       }
+      }
+     },
+     {
+      "name": "C",
+      "cells": {
+       "C2": {
+        "formula": "A!A2*2"
+       },
+       "E4": {
+        "note": {
+         "text": "n"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "sheet": "C"
+  }
+ ],
+ "answers": {
+  "note-far": {
+   "sheet": [
+    [
+     "End of sheet",
+     "H30"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ],
+    [
+     "Notes",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "two-edges": {
+   "sheet": [
+    [
+     "End of sheet",
+     "E9"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "1"
+    ]
+   ]
+  },
+  "merged-wide": {
+   "sheet": [
+    [
+     "End of sheet",
+     "D4"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "hidden-lines": {
+   "sheet": [
+    [
+     "End of sheet",
+     "F8"
+    ],
+    [
+     "Cells with data",
+     "3"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "3"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "last-cell": {
+   "sheet": [
+    [
+     "End of sheet",
+     "XFD1048576"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "table-header": {
+   "sheet": [
+    [
+     "End of sheet",
+     "D3"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "1"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "2"
+    ],
+    [
+     "Tables",
+     "1"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "arrays-2d": {
+   "sheet": [
+    [
+     "End of sheet",
+     "AI100"
+    ],
+    [
+     "Cells with data",
+     "3004"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "3004"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "3004"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "3004"
+    ]
+   ]
+  },
+  "spill-over-note": {
+   "sheet": [
+    [
+     "End of sheet",
+     "A4"
+    ],
+    [
+     "Cells with data",
+     "4"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "4"
+    ],
+    [
+     "Notes",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "4"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "4"
+    ]
+   ]
+  },
+  "thread-only": {
+   "sheet": [
+    [
+     "End of sheet",
+     "D6"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ],
+    [
+     "Notes",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "1"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "0"
+    ]
+   ]
+  },
+  "last-active": {
+   "sheet": [
+    [
+     "End of sheet",
+     "E4"
+    ],
+    [
+     "Cells with data",
+     "1"
+    ],
+    [
+     "Tables",
+     "0"
+    ],
+    [
+     "Formulas",
+     "1"
+    ],
+    [
+     "Notes",
+     "1"
+    ]
+   ],
+   "workbook": [
+    [
+     "Sheets",
+     "3"
+    ],
+    [
+     "Cells with data",
+     "13"
+    ],
+    [
+     "Tables",
+     "1"
+    ],
+    [
+     "Formulas",
+     "10"
+    ]
+   ]
+  }
+ }
+}

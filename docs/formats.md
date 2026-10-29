@@ -335,6 +335,38 @@ Text with a line break typed into a cell wraps it, whether on the keyboard (Cont
 
 Assigning a height with `setLayout([{ sheet: 'S', rows: '2', set: { height: 40 } }])` clears the row's previous `bestFit` marker: later typing keeps the 40 points, even when it needs more room. This applies when assigning the same height too. Removing a height (`height: null`) also removes the marker and returns to the default height, which can be fitted on entry again. These are exceptions to the rule that a row patch preserves the fields it leaves out. An explicit `bestFit: true` keeps a height fitted; a patch without `height` preserves the marker. AutoFit (`fit: true`) enables automatic fitting again. Undo and redo restore the height and its marker together; a manually assigned height is written to xlsx as `customHeight`.
 
+### Turned text
+
+A cell's style can turn its text (`alignment.rotation`: degrees from -90 to 90, or `vertical`, the letters one above the other), and AutoFit then fits the row and the column to the turned text, as Excel for Mac does, in `fitRows`, `fitColumns`, `{ fit: true }` and every edit that fits rows. Text is measured in its font's size, each character the font's advance rounded to a point (`b` is 6 points at 11, 8 at 16 and 13 at 24), and a turned line keeps a margin `m` of a point for each eighth of its size at each end: `m = floor((size + 7) / 8)`, 2 for Calibri 11. A turn up and the same turn down take the same room.
+
+```js
+import { compute, fitColumns, fitRows } from 'xlcalc'
+
+const book = {
+  sheets: [{ name: 'S', cells: { A1: { value: 'bbbbbbbr', style: 0 }, B2: { value: 'bbbbbbbr', style: 1 }, C3: { value: 'bbbbb', style: 2 } } }],
+  styles: [{ alignment: { rotation: 90 } }, { alignment: { rotation: 45 } }, { alignment: { rotation: 'vertical' } }],
+}
+const result = compute(book)
+console.log(fitRows(book, result, 'S', '1:3'), fitColumns(book, result, 'S', 'A:C')) // → { '1': 53, '2': 46, '3': 77 } { A: 3.5, B: 8.33203125, C: 3.33203125 }
+```
+
+For a row, a turned cell needs its height whole; it does not stand on the baseline the level cells share, and the row is as high as the larger of the two:
+
+- At 90 degrees, up or down, the text's width as AutoFit pads a column's text (above: `w + 7`, from about 90 points `floor(w · 31/30) + 5`), plus `2m − 4`: 46 points of text in Calibri 11 make a row of 53.
+- At another angle `a`, `round(w · sin a + h · cos a) + 1 + 2 · round(m · sin a)`, where `h` is the font's line (15 for Calibri 11), a margin's projection of a half rounding up, and two points more for a number, in General or by a format, but not for a date, a time or a section of text alone (`0;-0;"zero"` showing `zero`): 46 points of text at 45 degrees make 46, and at 15 degrees 29.
+- Letters one above the other take a line each and 2 points: `bbbbb` makes 77; a line break counts as a letter, and a space too.
+- A line break inside turned text is as wide as a space. A turned blank cell counts for nothing, whatever its font, while empty text counts as text of no width. A turned cell merged with others counts for nothing, across or down. Wrapped text turned by an angle counts for nothing; wrapped letters one above the other count by their longest line.
+
+For a column, the cell gets:
+
+- At an angle `a`, the projections of the text and its line padded as level text: `w · cos a + h · sin a`, rounded, padded as above, plus `2m − 4`. 120 points of text at 45 degrees make 103, and at 75 degrees 53.
+- At 90 degrees, its line alone padded, a point less: `h + 7 + 2m − 4 − 1`, 21 for Calibri 11 whatever the text, and the lines of wrapped text with line breaks (`a`, a line break and `b` make 36). Letters one above the other a point less again: 20.
+- A number in General counts its digits by their widths at their size, without the two points a level one adds.
+
+A turned cell displays its text whole, as a column as wide as Excel's widest would show it, since its text runs across the column: 1234567890 turned by 45 degrees in a column of 60 points shows all its digits, not `1.235E+09`. A number typed into a turned cell widens no column (`entryWidth` is not for such a cell), and text typed into a turned cell fits its row, unless its height was set manually, as wrapping text does. Excel for Windows fits turned text to the same shape at its pixels.
+
+A font size set on whole columns (`patchCells` with `range: 'B:B'`) makes Excel fit every row of the sheet to it, those without a cell too, and save none of those heights in the file; the engine fits the rows that hold a cell in those columns ([Known differences](#known-differences)). A rotation set on whole columns changes only the rows whose cells there show something, as in Excel.
+
 ## The ribbon's Number Format box
 
 The Number Format box on Excel's Home tab names the category of the active cell's format, and its list applies a format of each category. A host that draws Excel's ribbon needs both: `numberFormatCategory(format, locale)` returns the category as a key (`number`, `currency`, `custom`) and the name the box shows (`Number`, `Числовой`), and `numberFormatChoices(locale)` returns the list's eleven items in order, each with its key, its name, the format it applies and that format's code in the locale. Both accept a code or a built-in format's number, and are available in `xlcalc/text`, without the engine. The rules below were verified in Excel 16.113 for Mac in en-US and in Excel 16.0 for Windows in ru-RU.
@@ -407,12 +439,14 @@ Most cells are text or General numbers in a default column, and their text is th
 
 ## Checked against Excel
 
-Tested in Excel 16.113 for Mac, en-US and ru-RU, and checked again in Excel for Windows: the displayed text of 13,351 cells, column widths, AutoFit and row heights, with the later sets predicted before Excel ran them.
+Tested in Excel 16.113 for Mac, en-US and ru-RU, and checked again in Excel for Windows: the displayed text of 13,351 cells, column widths, AutoFit and row heights, turned text in 252 columns and 369 rows, with the later sets predicted before Excel ran them.
 
 ## Known differences
 
-- **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping, shrinking and rotation (`alignment.rotation`) are ignored, and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
+- **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping and shrinking are ignored for level text (turned text is measured in its size, [Turned text](#turned-text)), and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
 - **Fitting rows.** Heights are Excel for Mac's for Calibri; a cell in another font is fitted as Calibri of its size (Arial 10 wraps two lines in 29 points in Excel and 30 here, and Arial 16 is 20 there and 21 here), and Excel for Windows fits rows to its pixels (above). Excel keeps a row whose height was not set manually at its fitted height whenever the row changes and when a file opens; the engine fits rows on AutoFit and when wrapping text is typed, but not when a file opens or a cell's font changes. A formula typed over several lines keeps its line breaks in Excel's text, but not in the engine's.
+- **Turned text.** Wrapped text turned by 90 degrees Excel wraps at the height its row had before AutoFit (a long sentence makes 401 points where the row had 409.5), and wrapped letters one above the other get two points more than their longest line; in a column, wrapped text turned by another angle and wrapped letters one above the other are wrapped in the room the row gives them. The engine fits these by their line breaks alone. Where Excel for Mac shows its own short date (`3/15/26`), the engine fits the longer text it displays.
+- **A font on whole columns.** Excel fits every row of the sheet to a font size set on whole columns; the engine fits only the rows that hold a cell there, since a height over every row would be written into the file row by row (a million `<row>` elements, half a second and 2.7 MB more for `writeXlsx`), and leaves the others at the default height a host draws.
 - **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` (and `[$-x-sysdate]`, `[$-x-systime]`) change names or formats. Other locale codes and tags (`[$-ru-RU]mmmm` displays the workbook's month names), calendars other than `B1` and `B2`, and numeral systems (`[DBNum1]`) are parsed and ignored.
 - **Fitting columns.** Widths are Excel for Mac's; Excel for Windows fits columns to its pixels (above). A cell's own font is not taken into account (bold text that the engine fits to 115 points gets 117 in Excel), nor are characters outside the tables (`中文字符` counts as four digits). Text outside ASCII is measured by the advance widths of Carlito, metrically compatible with Calibri, which give Excel's width on short text but differ by a point on some long runs (19 of 70 runs of one Cyrillic letter 600 points wide, `Итого по разделу 1`, ru-RU's long date). Where Excel for Mac displays its own short date (`3/15/26`) or ru-RU month names (`март`), the engine fits the text Excel for Windows displays (`3/15/2026`, `Март`). The widest column is 255 here and 255.83 in Excel.
 - **The ribbon's Number Format box.** The rules are Excel for Mac's in en-US and Excel for Windows's in ru-RU; Excel for Windows in en-US was not tested. Excel for Windows names a date or time with `;@` from the lists of its Format Cells dialog, which the package does not have: in ru-RU `dd/mm/yy;@`, `d/m;@`, `[$-419]d mmm;@` and en-US's `m/d/yyyy;@` are Дата, but `dd/mm;@`, `d mmm;@` and `[$-419]d mmmm yyyy;@` are none, and `dd/mm/yy h:mm;@` is Время. The functions name every such code by its letters (16 of the 50 held-out cells would otherwise differ), since codes with `;@` come from such lists. Excel for Mac in ru-RU names nearly every code `(все форматы)` (above). The code `m/d/yyyy` is the short date in en-US here, as built-in 14 is displayed with it (the code of Excel for Windows); Excel for Mac, whose short date is `m/d/yy`, calls it Custom. Excel for Mac also names the category of a format its list applied by the list's state: in ru-RU an applied item showed its own category (`Числовой`) in some runs and `(все форматы)` in others. Its Short Date, Long Date and Time items were not the same in two sessions on the same day: one offered built-in 14, the long date and the long time, which `numberFormatChoices` returns, and the other `yyyy-mm-dd;@`, `d/m;@` and `h:mm;@`.

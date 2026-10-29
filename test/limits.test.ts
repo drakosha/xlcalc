@@ -131,6 +131,19 @@ describe('limits', () => {
 })
 
 describe.each(['closures', 'eval'] as const)('limits and diagnostics, %s', (execution) => {
+  it('cells: the range summaries of one range read it cell by cell, SUBTOTAL and AGGREGATE skipping hidden rows, nested cells and errors too', () => {
+    const cells: BookInput['sheets'][0]['cells'] = {}
+    for (let r = 1; r <= 1000; r++) cells[`A${r}`] = r === 9 ? { formula: '1/0' } : r === 12 ? { formula: 'SUBTOTAL(9,A1:A2)' } : { value: r % 7 }
+    const read = ['SUM(A13:A1000)', 'AVERAGE(A:A)', 'COUNTIF(A1:A1000,1)', 'SUBTOTAL(109,A13:A1000)', 'SUBTOTAL(9,A13:A1000)', 'SUBTOTAL(103,A:A)', 'AGGREGATE(9,5,A13:A1000)', 'AGGREGATE(9,6,A1:A1000)', 'AGGREGATE(1,7,A1:A1000)', 'AGGREGATE(4,3,A:A)', 'AGGREGATE(2,1,A1:A1000)']
+    const made = ['SUBTOTAL(9,A13:A1000,A1)', 'SUBTOTAL(7,A13:A1000)', 'AGGREGATE(9,6,A1:A1000,A1)', 'SUM(A13:A1000,0)']
+    for (const filtered of [false, true]) {
+      // a hidden row on a filtered sheet and not: SUBTOTAL 1–11 skips it only on the first
+      const at = (formula: string): BookInput => ({ sheets: [{ name: 'S', cells: { ...cells, C1: { formula } }, rows: { 99: { hidden: true } }, filtered }] })
+      for (const formula of read) expect(compute(at(formula), { clock, limits: { cells: 100 } }).hash, formula).toBe(compute(at(formula), { clock }).hash)
+      for (const formula of made) expect(stopped(() => compute(at(formula), { clock, limits: { cells: 100 } })).limit, formula).toBe('cells')
+    }
+  })
+
   it('cells: the reason of an error formula over a tall range is found without reading the range in full', async () => {
     const b = book({
       A2: { formula: '1/0' },

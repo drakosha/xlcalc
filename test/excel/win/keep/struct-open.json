@@ -1,0 +1,465 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "day": "2026-10-29",
+  "seconds": 40.1
+ },
+ "sent": {
+  "chart-insert-in": "5057880ba1359aa09ed2884e907afd91586670a41753040eacc4e79aada3c0d1",
+  "chart-delete-in": "3d4250f6ef0d8990331a9d3282d3831106f07067da9318e22b784f03d01dbe4c",
+  "chart-delete-series": "7b09da0300c285b2b43ade96a6876bda2417d92afbaf4608113743b6388f1cfd",
+  "chart-delete-chart": "2eac40b1913570d51039dc4566b424baf5d732687f861fb87dcc2abb39f44996",
+  "chart-insert-cols": "70054197ad31459aabc074a8dd13fba4a36b588f3191eccccce5147b4b3a29d2",
+  "chart-rename": "791aee8f7414d47be9ed70b2e9a933bf5662748725fe0a2f922b9bd7f2793c78",
+  "chart-move": "2fef590c2cfaa04be77898824a8cc473cbfc305c9f0a949abca7a915dbdbbbeb",
+  "picture-delete-picture": "e2029e068c589de782427c7ad9367e7c8d8e97d0ff3918c004e197c75c962805",
+  "sized-delete-picture": "a74c5c1adbea44fafb3a0b1a42e29fc366bcfda8c8492dd76bb4765b50e47928",
+  "sized-insert-above": "560ac5e29770eab07344c290ccc751117f5a7e0380eced82e710152ed76ad846",
+  "moving-insert-in": "6e6f9c013d1c2f2b1e21de5fea34728327ff3b2468010f19b357e58ac2398f69",
+  "pivot-insert-above": "29cc19886d59673392dcacb1d4b6e6d9130681660067d94be80dbbf1c7016f7b",
+  "pivot-insert-source": "f4c4a3627bcdd6bc70e79ff5bd45021b3fa183d4eb4e982a55848d914441fa11",
+  "print-delete": "5b0c20f095f35e9315eb23f86cafa58252b0fd1c8ee567bc0bf3306dda4d0dcd",
+  "print-insert": "5f818f5a4392b940b5aa5127f2c0d079032036f59ee120614bd316b99285ca14",
+  "print-delete-break-row": "6b82388118d292b2036528832ad3ebc7e52069e5890d77a35ea6dfb8088dd995",
+  "chartsheet-rename": "9f6fdd6fb2dbcef65d1f2a2c1f0e2897ef9956c3917ac491f5850a8335884437",
+  "chartsheet-source-deleted": "cf78bd3417cd3f879653a9ac93c5e58d75924cf2138b5a724b94d4b6161379c5",
+  "all-insert-cols": "42703ca9aa9c760ac6d67ee3d95ea9aade3b6f93cd2283184548bfccb250f308",
+  "filter-insert-in": "6385b11e97cf72532a26c120876b8e251f745a5ab884e502244ae69f29c1fb47",
+  "filter-insert-below": "bd6efed972ad41ad5ecc1e9f16195134c382e7a72fbaa193933f6c096eb4c1bb",
+  "filter-insert-above": "2e95d4c64c892c5b1ee70540877389f95c3b7f373d0c46e1d6ef387b85c5667d",
+  "filter-delete-header": "f12e17ceecc0808b1b16120fe215c24ffdd18c801e3eb6a65176379b65839e55",
+  "filter-delete-all": "07d9a409033f712f53aab56fe81e493b9d4e47f4e934a3a4f5d3e87de0350417",
+  "filter-delete-column": "16ee0589107cbe1dc8c5c3ad597cdf855b28506ca6e4c41e218d21dda828b049",
+  "filter-delete-columns-all": "2650a5c0d48d8575e5cf7c43b75e6ca9ae4219426d6c1ced61464d75e48107e6",
+  "filter-insert-column": "650d87c6f3f78ba56c96bd33c9ca2e4695912cdf5c8eb301be2fe2ec51bb43e0",
+  "filter-insert-column-right": "f51146a0c15e9ff9285da44ec293e0742ddda7d2941a8459e2d63a4477afe626",
+  "filter-move": "3aceab4509e80160efc7b04fbd051ec5e77e6885c740377c2e30c421d19f8dba",
+  "filter-move-sheet": "c5376ed92e471c366f3f9fab3cec251124dcfd4ea16fd6a0a4e33004ecf41268",
+  "filter-move-header": "c267dd056ec4ec62241cced8152fefc286a363934c68dfd579b85b262e82d8cc",
+  "filter-move-over": "b41dec9c6344b393ad222442938e28337b7034a6f8a1a7683b244bc8152686bb",
+  "filter-rename": "f7691307d633e5d7659df4a3cb349d508dafa76acc33a67e878c64db12db5ad3",
+  "filter-delete-sheet": "d51c488a2e974fde938506415768056c5a45d19c98443b8626c942c2cc845e29",
+  "filter-delete-head-two": "badc36c7d5a62883743ab0f7f41aa98801432e41271a92723262bb9b20a4d5c4",
+  "filter-delete-first-column": "78d85d58913010b4bf76d35c5671b11c485a1fe0e6b161643a06e683bf431061",
+  "filter-move-over-end": "c5679207dd46ec096c8510ccef4d4b6eec944424b7115ade110780be84e779c4",
+  "filter-move-end-down": "b496f72e761a7b49eb47f133783c9060de55c1a10ba138159231cee7599e1a0e",
+  "sized-delete-picture-cols": "846cbc8d0d700134e4fc6af52f190a8f151da32c9d3d1dcdbc62fbdbd986b01e",
+  "moving-delete-picture-cols": "dfd2a606415e30fdefaf0360fb55f9a2c565887d2d2e0b8db7e0c8598e97f318",
+  "moving-delete-from-col": "dfd2a606415e30fdefaf0360fb55f9a2c565887d2d2e0b8db7e0c8598e97f318",
+  "moving-insert-cols-in": "5b308ef7ea0e9ab8cb16a0bf8c3d56f0b9e27f8fd08d15fa4bf442647eb6c5ca",
+  "wide-delete-from-col": "85bbb91baf7648fb4311eadaa95c42a21ba5e8b7a35955562e4edf7791c9f875",
+  "wide-delete-cols-in": "a01cbf11b63861b20dec9355ef760937e9739e40963b435072bc9e8b7d2c5b64",
+  "wide-insert-cols-in": "03154d17b0541ab7b9b2abc4b45f56ed2541d3bd2aa5fa4c7801406829461b30",
+  "wide-delete-picture-cols": "a2432494eef0e2b600bd56d55a976a421941ff7936d04602a8a7e98867ca8089",
+  "wide-delete-before": "004867b9ee2136b99a838392ee6e353e5d45a0b61c4e43724daadfafe9c287e5",
+  "pivot-delete-source-cells": "c6f18194dce115686897de9974fa157a0f1e580bbb55a0b498635b63a5ad414c",
+  "sparklines-delete-cell": "f0a071449babd756672619e6c697dd2b4a3f638b7031a7cbf94688ecdea695f9",
+  "sparklines-delete-data": "2c71b252af8cf094b569c7fe03af4c6a6fbf998c1a8a2f44f27789e5dfde3c40",
+  "sparklines-delete-data-col": "fd5565e1870d3d57bae89060d0f457a6158f68acafe3ed50353afe38160474d7",
+  "wide-delete-wide-col": "b8137942c0b1814475677abf41d106fe2ddaf6ca45f6ae980eb716553230ce32",
+  "wide-delete-to-col": "8de8271fb95cbbe9a01a83725cb8a4a8a736279d719ed31ee3bdff251b3e87bc",
+  "moving-delete-cols-in": "5b308ef7ea0e9ab8cb16a0bf8c3d56f0b9e27f8fd08d15fa4bf442647eb6c5ca",
+  "pivot-delete-source-rows": "453a9938b93e2ad0ab552de0a5bd712b0cdf986214ab054f241183f8e7c00823",
+  "sparklines-delete-both": "87f76d8bc67722a6beb9a3949e6aeb563024d5baa5a30ace59ca51d19075a07b"
+ },
+ "answers": {
+  "chart-insert-in": {
+   "opened": [
+    "0.xlsx",
+    "0 - Excel",
+    []
+   ]
+  },
+  "chart-delete-in": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "chart-delete-series": {
+   "opened": [
+    "2.xlsx",
+    "2 - Excel",
+    []
+   ]
+  },
+  "chart-delete-chart": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "chart-insert-cols": {
+   "opened": [
+    "4.xlsx",
+    "4 - Excel",
+    []
+   ]
+  },
+  "chart-rename": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "chart-move": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "picture-delete-picture": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "sized-delete-picture": {
+   "opened": [
+    "8.xlsx",
+    "8 - Excel",
+    []
+   ]
+  },
+  "sized-insert-above": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "moving-insert-in": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  },
+  "pivot-insert-above": {
+   "opened": [
+    "11.xlsx",
+    "11 - Excel",
+    []
+   ]
+  },
+  "pivot-insert-source": {
+   "opened": [
+    "12.xlsx",
+    "12 - Excel",
+    []
+   ]
+  },
+  "print-delete": {
+   "opened": [
+    "13.xlsx",
+    "13 - Excel",
+    []
+   ]
+  },
+  "print-insert": {
+   "opened": [
+    "14.xlsx",
+    "14 - Excel",
+    []
+   ]
+  },
+  "print-delete-break-row": {
+   "opened": [
+    "15.xlsx",
+    "15 - Excel",
+    []
+   ]
+  },
+  "chartsheet-rename": {
+   "opened": [
+    "16.xlsx",
+    "16 - Excel",
+    []
+   ]
+  },
+  "chartsheet-source-deleted": {
+   "opened": [
+    "17.xlsx",
+    "17  [Group] - Excel",
+    []
+   ]
+  },
+  "all-insert-cols": {
+   "opened": [
+    "18.xlsx",
+    "18 - Excel",
+    []
+   ]
+  },
+  "filter-insert-in": {
+   "opened": [
+    "19.xlsx",
+    "19 - Excel",
+    []
+   ]
+  },
+  "filter-insert-below": {
+   "opened": [
+    "20.xlsx",
+    "20 - Excel",
+    []
+   ]
+  },
+  "filter-insert-above": {
+   "opened": [
+    "21.xlsx",
+    "21 - Excel",
+    []
+   ]
+  },
+  "filter-delete-header": {
+   "opened": [
+    "22.xlsx",
+    "22 - Excel",
+    []
+   ]
+  },
+  "filter-delete-all": {
+   "opened": [
+    "23.xlsx",
+    "23 - Excel",
+    []
+   ]
+  },
+  "filter-delete-column": {
+   "opened": [
+    "24.xlsx",
+    "24 - Excel",
+    []
+   ]
+  },
+  "filter-delete-columns-all": {
+   "opened": [
+    "25.xlsx",
+    "25 - Excel",
+    []
+   ]
+  },
+  "filter-insert-column": {
+   "opened": [
+    "26.xlsx",
+    "26 - Excel",
+    []
+   ]
+  },
+  "filter-insert-column-right": {
+   "opened": [
+    "27.xlsx",
+    "27 - Excel",
+    []
+   ]
+  },
+  "filter-move": {
+   "opened": [
+    "28.xlsx",
+    "28 - Excel",
+    []
+   ]
+  },
+  "filter-move-sheet": {
+   "opened": [
+    "29.xlsx",
+    "29 - Excel",
+    []
+   ]
+  },
+  "filter-move-header": {
+   "opened": [
+    "30.xlsx",
+    "30 - Excel",
+    []
+   ]
+  },
+  "filter-move-over": {
+   "opened": [
+    "31.xlsx",
+    "31 - Excel",
+    []
+   ]
+  },
+  "filter-rename": {
+   "opened": [
+    "32.xlsx",
+    "32 - Excel",
+    []
+   ]
+  },
+  "filter-delete-sheet": {
+   "opened": [
+    "33.xlsx",
+    "33 - Excel",
+    []
+   ]
+  },
+  "filter-delete-head-two": {
+   "opened": [
+    "34.xlsx",
+    "34 - Excel",
+    []
+   ]
+  },
+  "filter-delete-first-column": {
+   "opened": [
+    "35.xlsx",
+    "35 - Excel",
+    []
+   ]
+  },
+  "filter-move-over-end": {
+   "opened": [
+    "36.xlsx",
+    "36 - Excel",
+    []
+   ]
+  },
+  "filter-move-end-down": {
+   "opened": [
+    "37.xlsx",
+    "37 - Excel",
+    []
+   ]
+  },
+  "sized-delete-picture-cols": {
+   "opened": [
+    "38.xlsx",
+    "38 - Excel",
+    []
+   ]
+  },
+  "moving-delete-picture-cols": {
+   "opened": [
+    "39.xlsx",
+    "39 - Excel",
+    []
+   ]
+  },
+  "moving-delete-from-col": {
+   "opened": [
+    "0.xlsx",
+    "0 - Excel",
+    []
+   ]
+  },
+  "moving-insert-cols-in": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "wide-delete-from-col": {
+   "opened": [
+    "2.xlsx",
+    "2 - Excel",
+    []
+   ]
+  },
+  "wide-delete-cols-in": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "wide-insert-cols-in": {
+   "opened": [
+    "4.xlsx",
+    "4 - Excel",
+    []
+   ]
+  },
+  "wide-delete-picture-cols": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "wide-delete-before": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "pivot-delete-source-cells": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "sparklines-delete-cell": {
+   "opened": [
+    "8.xlsx",
+    "8 - Excel",
+    []
+   ]
+  },
+  "sparklines-delete-data": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "sparklines-delete-data-col": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  },
+  "wide-delete-wide-col": {
+   "opened": [
+    "11.xlsx",
+    "11 - Excel",
+    []
+   ]
+  },
+  "wide-delete-to-col": {
+   "opened": [
+    "12.xlsx",
+    "12 - Excel",
+    []
+   ]
+  },
+  "moving-delete-cols-in": {
+   "opened": [
+    "13.xlsx",
+    "13 - Excel",
+    []
+   ]
+  },
+  "pivot-delete-source-rows": {
+   "opened": [
+    "14.xlsx",
+    "14 - Excel",
+    []
+   ]
+  },
+  "sparklines-delete-both": {
+   "opened": [
+    "15.xlsx",
+    "15 - Excel",
+    []
+   ]
+  }
+ }
+}

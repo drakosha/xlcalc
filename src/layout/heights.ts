@@ -3,40 +3,29 @@
  * line at its bottom, each cell one line of its font or a text that wraps its lines at its column's width, and gives the
  * row the most any cell needs above that line and the most any needs below; a cell merged down does not count, one
  * merged across is one line, and the cells of a row without a value count by the font they show (the row's style, else
- * a column's, else the book's Calibri 11), so an empty row gets the default height.
+ * a column's, else the book's Calibri 11), so an empty row gets the default height. A turned cell (`turned.ts`) needs
+ * its height whole, beside the line the level cells stand on.
  */
 import { DEFAULT_ROW_HEIGHT as DEFAULT_HEIGHT, MAX_ROW_HEIGHT as MAX_HEIGHT } from '../column-width.js'
-import type { BookInput, CellStyle, CellValue, ComputeResult, SheetInput } from '../contract.js'
+import type { BookInput, CellStyle, CellValue, ComputeResult, NumberFormat, SheetInput } from '../contract.js'
+import { epochOf } from '../dates.js'
+import { displayRules } from '../locale/rules.js'
 import type { EngineState } from '../engine.js'
 import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
 import { outCell } from '../result.js'
 import { bands } from '../sorted.js'
-import { advance } from '../numfmt/glyphs.js'
+import { sizedWidth } from '../numfmt/glyphs.js'
+import type { Rules } from '../locale/rules.js'
 import { resultSheet, type Placed } from './result-sheet.js'
 import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
 import { lines as spansOf, spanKey } from './spans.js'
-
-/** The size of the book's default font, which a style without one shows. */
-const DEFAULT_SIZE = 11
+import { DEFAULT_SIZE, fontSize, lineHeight, turnedHeight, turnOf, type Turn } from './turned.js'
 
 /** The points a wrapped text's column keeps beside its lines: two more than the padding of shown text. */
 const WRAP_PADDING = 7
-
-/** The height of one line of Calibri of `size` points, as Excel for Mac fits a row to it (`test/excel/rows/autofit.json`); a size of a half point counts as the next whole one (`held.json`). */
-const lineHeight = (size: number): number => Math.round(Math.round(size) * 1.27 + 0.96)
-
-/**
- * The width of text in Calibri of `size` points as Excel for Mac wraps it: each character the font's advance rounded to
- * a point, as Excel shows Calibri 11 (`glyphs.ts`), at its size (`test/excel/rows/held.json`, the set `scale`).
- */
-function widthIn(s: string, size: number): number {
-  let w = 0
-  for (const ch of s) w += Math.round((advance(ch) * size) / 2048)
-  return w
-}
 
 /**
  * The lines a text takes wrapped in `space` points of Calibri of `size` points: a line at each line break, and within
@@ -44,13 +33,13 @@ function widthIn(s: string, size: number): number {
  */
 function wrappedLines(text: string, size: number, space: number): number {
   let n = 0
-  const gap = widthIn(' ', size)
+  const gap = sizedWidth(' ', size)
   // spaces at the end of a line hang past the room
   for (const para of text.split('\n').map((x) => x.replace(/ +$/, ''))) {
     n++
     let line = -1
     for (const word of para.split(' ')) {
-      const w = widthIn(word, size)
+      const w = sizedWidth(word, size)
       if (line >= 0 && line + gap + w <= space) {
         line += gap + w
         continue
@@ -58,7 +47,7 @@ function wrappedLines(text: string, size: number, space: number): number {
       if (line >= 0) n++
       line = 0
       for (const ch of word) {
-        const cw = widthIn(ch, size)
+        const cw = sizedWidth(ch, size)
         if (line > 0 && line + cw > space) {
           n++
           line = 0
@@ -71,36 +60,51 @@ function wrappedLines(text: string, size: number, space: number): number {
 }
 
 /** The font size of a style of the book, the default's without one. */
-const sizeOf = (styles: readonly CellStyle[], style: number | undefined) => (style === undefined ? undefined : styles[style]?.font?.size) ?? DEFAULT_SIZE
+const sizeOf = (styles: readonly CellStyle[], style: number | undefined) => fontSize(style === undefined ? undefined : styles[style])
 
 /**
  * What a cell needs of its row, as Excel for Mac stands cells on one line at the bottom of the row: the points above it
  * and below it (`test/excel/rows/lines.json`). A line of Calibri of `s` points stands `s` points above and its line's
- * rest below; a wrapped text's lines above its last are a point higher than a line alone, the first 20 of them.
+ * rest below; a wrapped text's lines above its last are a point higher than a line alone, the first 20 of them. A
+ * turned text stands on no line: it needs its height whole.
  */
-type Need = [above: number, below: number]
+type Need = [above: number, below: number, whole: number]
 
 /** One line of a font of `size` points. */
-const lineNeed = (size: number): Need => [Math.round(size), lineHeight(size) - Math.round(size)]
+const lineNeed = (size: number): Need => [Math.round(size), lineHeight(size) - Math.round(size), 0]
 
 /**
  * What a cell needs (`Need`): wrapped text its lines at its column's width (`points`), anything else one line of its
  * font. `across`: the cell is merged with the cells beside it, one line, or wrapped no more than the line's rest below.
  */
 function cellNeed(value: CellValue, style: CellStyle | undefined, points: number, across = false): Need {
-  const size = style?.font?.size ?? DEFAULT_SIZE
+  const size = fontSize(style)
   const [above, below] = lineNeed(size)
-  if (typeof value !== 'string' || !value || !style?.alignment?.wrap) return [above, below]
-  if (across) return [0, below]
+  if (typeof value !== 'string' || !value || !style?.alignment?.wrap) return [above, below, 0]
+  if (across) return [0, below, 0]
   const n = wrappedLines(value, size, points - WRAP_PADDING)
-  return [Math.min(MAX_HEIGHT, n * lineHeight(size) + Math.min(n, 20) - below), below]
+  return [Math.min(MAX_HEIGHT, n * lineHeight(size) + Math.min(n, 20) - below), below, 0]
 }
 
-/** What a span of rows needs: rows `r1` to `r2`, the points above and below. */
-type SpanNeed = [r1: number, r2: number, above: number, below: number]
+/**
+ * What a turned cell needs: its text as AutoFit lays it out (`fitLaid`; what shows nothing as empty text) its height
+ * whole (`turnedHeight`); a blank nothing, nor does wrapped text turned by an angle (`test/excel/rows/rotation.json`).
+ */
+function turnedNeed(rules: Rules, value: CellValue, style: CellStyle, format: NumberFormat | undefined, turn: Turn): Need | null {
+  const wrap = !!style.alignment?.wrap
+  if (value === null || (wrap && turn !== 'vertical')) return null
+  const laid = rules.fitLaid(value, format)
+  return [0, 0, Math.min(MAX_HEIGHT, turnedHeight(laid?.text ?? '', fontSize(style), turn, !!laid && laid.kind !== 'other', wrap))]
+}
+
+/** What a span of rows needs: rows `r1` to `r2`, and its need. */
+type SpanNeed = [r1: number, r2: number, ...need: Need]
 
 /** The greater of two needs, side by side. */
-const most = (a: Need, b: Need): Need => [Math.max(a[0], b[0]), Math.max(a[1], b[1])]
+const most = (a: Need, b: Need): Need => [Math.max(a[0], b[0]), Math.max(a[1], b[1]), Math.max(a[2], b[2])]
+
+/** Whether a style of the book gives its blank cells a line: one that turns its text gives them none (`rotation.json`, `blank`). */
+const lined = (styles: readonly CellStyle[], style: number | undefined): style is number => style !== undefined && turnOf(styles[style]) === undefined
 
 /**
  * What rows `lo` to `hi` of a sheet need beside their cells: a row without a style of its own the default font's line
@@ -109,12 +113,12 @@ const most = (a: Need, b: Need): Need => [Math.max(a[0], b[0]), Math.max(a[1], b
  */
 function lineNeeds(styles: readonly CellStyle[], sheet: SheetInput, lo: number, hi: number): { base: Need; needs: SpanNeed[]; cuts: number[] } {
   let base = lineNeed(DEFAULT_SIZE)
-  for (const [, , col] of spansOf(sheet.columns, 'c')) if (col.style !== undefined) base = most(base, lineNeed(sizeOf(styles, col.style)))
+  for (const [, , col] of spansOf(sheet.columns, 'c')) if (lined(styles, col.style)) base = most(base, lineNeed(sizeOf(styles, col.style)))
   const cuts = spansOf(sheet.rows, 'r').flatMap(([a, b]) => [a, b + 1])
   const layer = layerOf(sheet)
   const needs = [...(layer?.pieces({ r1: lo, r2: hi, c1: 0, c2: MAX_COLS - 1 }) ?? [])].flatMap((p): SpanNeed[] => {
     const style = layer!.looks.list[p.look]?.style
-    return style === undefined ? [] : [[p.r1, p.r2, ...lineNeed(sizeOf(styles, style))]]
+    return lined(styles, style) ? [[p.r1, p.r2, ...lineNeed(sizeOf(styles, style))]] : []
   })
   return { base, needs, cuts }
 }
@@ -125,21 +129,24 @@ function lineNeeds(styles: readonly CellStyle[], sheet: SheetInput, lo: number, 
  * spans of rows of one height: null for the default height. A row is as high as its cells need above their line and
  * below it, each the most a cell needs.
  */
-export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number, spans: [r1: number, r2: number, c: number, v: CellValue][] = []): Record<string, number | null> {
+export function fitHeights(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number, spans: [r1: number, r2: number, c: number, v: CellValue][] = []): Record<string, number | null> {
   const lines = sheetLines(sheet)
   const merges = mergesOf(sheet).filter((m) => m.r2 >= lo && m.r1 <= hi)
   const { base, needs, cuts: entries } = lineNeeds(styles, sheet, lo, hi)
   const need = (r: number, c: number, v: CellValue): Need | null => {
     const m = merges.find((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)
-    // a cell merged down counts for nothing
+    // a cell merged down counts for nothing, nor does a turned one merged
     if (m && m.r2 > m.r1) return null
-    const style = lines.look(r, c).style
-    return cellNeed(v, style === undefined ? undefined : styles[style], columnPoints(lines.column(c)?.width), !!m)
+    const id = lines.look(r, c).style
+    const style = id === undefined ? undefined : styles[id]
+    const turn = turnOf(style)
+    if (turn !== undefined) return m ? null : turnedNeed(rules, v, style!, lines.format(r, c), turn)
+    return cellNeed(v, style, columnPoints(lines.column(c)?.width), !!m)
   }
   const rows = new Map<number, Need>()
   for (const [r, c, v] of cells) {
     const x = r >= lo && r <= hi ? need(r, c, v) : null
-    if (x) rows.set(r, most(rows.get(r) ?? [0, 0], x))
+    if (x) rows.set(r, most(rows.get(r) ?? [0, 0, 0], x))
   }
   for (const [r1, r2, c, v] of spans) {
     const x = need(r1, c, v)
@@ -154,10 +161,10 @@ export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cell
   }
   for (const [a, b] of cuts) {
     const own = lines.row(a)?.style
-    let n = own === undefined ? base : lineNeed(sizeOf(styles, own))
-    for (const [x, y, above, below] of needs) if (x <= a && y >= b) n = most(n, [above, below])
-    if (a === b) n = most(n, rows.get(a) ?? [0, 0])
-    const h = Math.min(MAX_HEIGHT, n[0] + n[1])
+    let n = lined(styles, own) ? lineNeed(sizeOf(styles, own)) : base
+    for (const [x, y, ...more] of needs) if (x <= a && y >= b) n = most(n, more)
+    if (a === b) n = most(n, rows.get(a) ?? [0, 0, 0])
+    const h = Math.min(MAX_HEIGHT, Math.max(n[0] + n[1], n[2]))
     if (run && run[2] === h && run[1] === a - 1) run[1] = b
     else {
       flush()
@@ -204,5 +211,5 @@ export function fitRows(book: BookInput, result: ComputeResult, sheet: string, r
   // a cell with an entry and no value counts by its font (rows outside the span are dropped in `fitHeights`)
   const valued = new Set(x.cells.map(([r, c]) => `${r}:${c}`))
   blanksOf(x.cells, Object.keys(sh.cells).map((a): [number, number] => { const { row, col } = parseAddress(a); return [row, col] }), x.lo, x.hi, (r, c) => valued.has(`${r}:${c}`))
-  return fitHeights(x.book.styles ?? [], sh, x.cells, x.lo, x.hi)
+  return fitHeights(displayRules(x.book.locale, epochOf(x.book.dateSystem)), x.book.styles ?? [], sh, x.cells, x.lo, x.hi)
 }

@@ -103,6 +103,9 @@ export function step(): void {
   }
 }
 
+/** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask): `if ((i & STRIDE) === 0) spend(…)`. */
+export const STRIDE = 0xffff
+
 /** The computation's slice is used up: a step boundary yields. */
 export const due = (): boolean => active !== null && active.due
 

@@ -157,7 +157,6 @@ export interface XlsxMessageParams {
   ruleNoRange: object
   ruleShared: object
   // reading: notes, hyperlinks, panes
-  splitPanes: object
   frozenScrolled: object
   noteCell: object
   noteThread: object
@@ -214,6 +213,7 @@ export interface KeptMessageParams {
   keptLinkKind: { link: number }
   keptLinks: object
   keptNoCarrier: { name: string; sheet: string }
+  keptLayout: { name: string }
   keptNoCellCarrier: { name: string; cell: string; sheet: string }
   keptNoPartCarrier: { name: string; what: KeptPart }
   keptUnread: { sheet: string; what: KeptPart }
@@ -235,7 +235,6 @@ export interface KeptMessageParams {
   keptDrawingDeleted: { what: KeptPart }
   keptCut: { what: KeptPart }
   keptCacheSheet: { what: KeptPart }
-  keptCellsDeleted: { what: KeptPart }
   keptSparkline: { sheet: string }
   keptWouldMove: { what: KeptPart; path: string }
 }
@@ -381,7 +380,7 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   cellOutside: 0, widthBad: 0, heightBad: 0, rowNumberBad: 0, styleIndexBad: 0, stringIndexBad: 0, valueBad: 0, dateInvalid: 0, cellOpen: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
   tablePartBad: 0, tableLeftOut: 0, headerGiven: 0, tableStyleCustom: 0, condRangeOutside: 0, condStyleLost: 0, condOperator: 0, condNoFormulas: 0, condNoFormula: 0,
   condPeriod: 0, condAverage: 0, condColorScale: 0, condDataBar: 0, condIconSet: 0, condIcons: 0, condType: 0, condPivot: 0, ruleListCommas: 0,
-  ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, splitPanes: 0, frozenScrolled: 0, noteCell: 0,
+  ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, frozenScrolled: 0, noteCell: 0,
   noteThread: 0, noteFormatted: 0, linkAddress: 0, linkCells: 0, nameNotTaken: 0, nameNoSheet: 0, nameTwice: 0, nameBadRef: 0,
   noResult: 0, formulaNoValue: 0, formulaEmpty: 0, formulaAsValue: 0, formulaLeftOut: 0, tableFormulaOut: 0, cycleZero: 0, errorNull: 0, cellMeta: 0, textCut: 0, noteCut: 0,
   tooltipCut: 0, ruleTextCut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0, keptCells: 0, keptFormats: 0,
@@ -389,10 +388,10 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
 
 /** The keys of the messages of `writeKept`'s refusals, which a locale's `messages` holds too; their English text is the `./xlsx/keep` subpath's. */
 export const KEPT_MESSAGE_KEYS: Readonly<Record<keyof KeptMessageParams, 0>> = {
-  keptStrict: 0, keptSheetName: 0, keptFont: 0, keptValidation: 0, keptThreads: 0, keptTableParts: 0, keptLinkKind: 0, keptLinks: 0, keptNoCarrier: 0,
+  keptStrict: 0, keptSheetName: 0, keptFont: 0, keptValidation: 0, keptThreads: 0, keptTableParts: 0, keptLinkKind: 0, keptLinks: 0, keptNoCarrier: 0, keptLayout: 0,
   keptNoCellCarrier: 0, keptNoPartCarrier: 0, keptUnread: 0, keptNamedSheet: 0, keptSheetParts: 0, keptSourceGone: 0, keptNoRef: 0, keptMovedSheet: 0,
   keptFirstCell: 0, keptTakenApart: 0, keptRulesPivot: 0, keptRulesPart: 0, keptRulesPrefixes: 0, keptRulesBar: 0, keptNamespace: 0, keptRelPrefix: 0,
-  keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptCellsDeleted: 0, keptSparkline: 0, keptWouldMove: 0,
+  keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptSparkline: 0, keptWouldMove: 0,
 }
 
 /** A message: its key and its parameters; the engine's other than an edit's by default (an edit's is `Message<EngineKey>`, an issue of xlsx `XlsxMessage`). */

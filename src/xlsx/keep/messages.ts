@@ -62,6 +62,7 @@ export const KEPT_EN_MESSAGES: { readonly [K in keyof KeptMessageParams]: (p: Ke
   keptLinkKind: (p) => `the link [${p.link}] to another workbook changed, and its part is missing or is not a workbook's (DDE, OLE)`,
   keptLinks: () => "a link to another workbook was removed, moved or pointed at another file, which the file's formulas would read by another number",
   keptNoCarrier: (p) => `the workbook has no name ${p.name}, which tells what became of the sheet '${p.sheet}': ${OPEN_KEPT}`,
+  keptLayout: (p) => `the workbook's name ${p.name}, which tells how openKept laid out the hidden names, is missing or was given by another version of openKept or for another file: open the original file again with openKept`,
   keptNoCellCarrier: (p) => `the workbook has no name ${p.name}, which tells where the cell ${p.cell} of '${p.sheet}' went: ${OPEN_KEPT}`,
   keptNoPartCarrier: (p) => `the workbook has no name ${p.name}, which holds a reference of ${partText(p.what)}: ${OPEN_KEPT}`,
   keptUnread: (p) => `the sheet '${p.sheet}' had rows or columns inserted or deleted, or was renamed or deleted, and ${partText(p.what)} holds references writeKept does not read`,
@@ -83,8 +84,7 @@ export const KEPT_EN_MESSAGES: { readonly [K in keyof KeptMessageParams]: (p: Ke
   keptDrawingDeleted: (p) => `${partText(p.what)} lies in cells deleted with all those below or beside it`,
   keptCut: (p) => `${partText(p.what)} would be cut by the change, which Excel refuses`,
   keptCacheSheet: (p) => `${partText(p.what)} is on a sheet the change deleted, which Excel makes a link to the file by its path`,
-  keptCellsDeleted: (p) => `${partText(p.what)} lies in cells the change deleted`,
-  keptSparkline: (p) => `a sparkline's cell on '${p.sheet}' was deleted`,
+  keptSparkline: (p) => `some of the cells of a sparkline on '${p.sheet}' were deleted`,
   keptWouldMove: (p) => `${partText(p.what)} (${p.path}) would move, which writeKept does not write`,
 }
 

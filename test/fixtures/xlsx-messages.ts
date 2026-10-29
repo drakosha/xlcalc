@@ -85,7 +85,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   ruleIme: [{}],
   ruleNoRange: [{}],
   ruleShared: [{}],
-  splitPanes: [{}],
   frozenScrolled: [{}],
   noteCell: [{}],
   noteThread: [{}],
@@ -128,6 +127,7 @@ export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K
   keptLinkKind: [{ link: 2 }],
   keptLinks: [{}],
   keptNoCarrier: [{ name: '_xlcalc_keep_s1', sheet }],
+  keptLayout: [{ name: '_xlcalc.keep.layout' }],
   keptNoCellCarrier: [{ name: '_xlcalc_keep_c1', cell: 'B2', sheet }],
   keptNoPartCarrier: [{ name: '_xlcalc_keep_p1', what: { part: 'name', name: 'Rate' } }, { name: '_xlcalc_keep_p2', what: { part: 'chart', path: 'xl/charts/chart1.xml' } }],
   keptUnread: [
@@ -140,7 +140,13 @@ export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K
   keptNamedSheet: [{ sheet, what: { part: 'pivotChart', path: 'xl/charts/chart2.xml' } }],
   keptSheetParts: [{ sheet, kind: 'pivotTable', path: 'xl/pivotTables/pivotTable1.xml' }],
   keptSourceGone: [{ what: { part: 'pivotSource', path: 'xl/pivotCache/pivotCacheDefinition1.xml' }, name: 'Sales' }],
-  keptNoRef: [{ what: { part: 'unreadRule', sheet, range: 'C2:C9' } }],
+  keptNoRef: [
+    { what: { part: 'unreadRule', sheet, range: 'C2:C9' } },
+    { what: { part: 'autoFilter', sheet } },
+    { what: { part: 'sort', sheet } },
+    { what: { part: 'pageBreaks', sheet } },
+    { what: { part: 'protectedRanges', sheet } },
+  ],
   keptMovedSheet: [{ what: { part: 'unreadRule', sheet, range: 'H2:H21' } }],
   keptFirstCell: [{ what: { part: 'unreadRule', sheet, range: 'D2:D9' } }],
   keptTakenApart: [{ what: { part: 'unreadRule', sheet, range: 'E2:E9' } }],
@@ -155,12 +161,6 @@ export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K
   keptDrawingDeleted: [{ what: { part: 'drawing', sheet, path: 'xl/drawings/drawing2.xml' } }],
   keptCut: [{ what: { part: 'pivotTable', sheet, path: 'xl/pivotTables/pivotTable1.xml' } }],
   keptCacheSheet: [{ what: { part: 'pivotSource', path: 'xl/pivotCache/pivotCacheDefinition1.xml' } }],
-  keptCellsDeleted: [
-    { what: { part: 'autoFilter', sheet } },
-    { what: { part: 'sort', sheet } },
-    { what: { part: 'pageBreaks', sheet } },
-    { what: { part: 'protectedRanges', sheet } },
-  ],
   keptSparkline: [{ sheet }],
   keptWouldMove: [{ what: { part: 'threads', sheet }, path: 'xl/threadedComments/threadedComment1.xml' }, { what: { part: 'sparklines', sheet }, path: 'xl/worksheets/sheet1.xml' }],
 }

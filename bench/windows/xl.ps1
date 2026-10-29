@@ -300,6 +300,8 @@ function VRead($ws, $win) {
 function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
+    # how the book opened: its name, Excel's caption, and the repair logs Excel wrote into the temporary folder in the last two minutes
+    'opened' { List @((Str $wb.Name), (Str ([string]$xl.Caption)), (List @(Get-ChildItem $env:TEMP -Filter 'error*.xml' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-2) } | ForEach-Object { Str (Get-Content -Raw $_.FullName) }))) }
     'calc' { $xl.Calculate(); 'null' }
     'rebuild' { $xl.CalculateFullRebuild(); 'null' }
     'values' { Grid (Rg $wb $s.sheet $s.range).Value2 }
@@ -483,6 +485,9 @@ function Step($xl, $wb, $s) {
     'hideColumns' { (Rg $wb $s.sheet $s.range).EntireColumn.Hidden = [bool]$s.hidden; 'null' }
     'filter' { [void](Rg $wb $s.sheet $s.range).AutoFilter([int]$s.field, [string]$s.criterion); 'null' }
     'struct' { try { Struct $wb $s; 'null' } catch { Err $_ } }
+    # criteria on a field of a range (the sheet's AutoFilter's without one), and the AutoFilter's range read, empty without one (bench/windows/filter.ts)
+    'autoFilter' { try { $rg = if ($s.range) { Rg $wb $s.sheet $s.range } else { $wb.Worksheets.Item($s.sheet).AutoFilter.Range }; [void]$rg.AutoFilter([int]$s.field, [string]$s.value); 'null' } catch { Err $_ } }
+    'filterRange' { $ws = $wb.Worksheets.Item($s.sheet); if ($ws.AutoFilterMode) { Str $ws.AutoFilter.Range.Address($false, $false) } else { Str '' } }
     # Paste Special as excel-paste.applescript pastes it (bench/windows/paste.ts): the range copied, the target's sheet
     # active, PasteSpecial with the XlPasteType, the operation (none when left out), Skip Blanks and Transpose; with copy,
     # Range.Copy with a destination; with source (an xlsx in base64), the range copied from that book, opened beside and
@@ -588,6 +593,17 @@ function Step($xl, $wb, $s) {
           [void]$_.Activate()
           $tab = if ($_.Tab.ColorIndex -eq -4142) { 'null' } else { Cell ([double]$_.Tab.Color) }
           List @((Str $_.Name), $tab, (Cell $xl.ActiveWindow.DisplayGridlines), (Cell $xl.ActiveWindow.DisplayHeadings))
+        })
+      [void]$wb.Worksheets.Item(1).Activate()
+      $all
+    }
+    # each worksheet's window: frozen, split, the lines in points, each pane's first row and column, the active pane (bench/windows/fields.ts)
+    'sheetPanes' {
+      $all = List ($wb.Worksheets | ForEach-Object {
+          [void]$_.Activate()
+          $w = $xl.ActiveWindow
+          $panes = List (1..$w.Panes.Count | ForEach-Object { $p = $w.Panes.Item($_); List @((Cell ([double]$p.ScrollRow)), (Cell ([double]$p.ScrollColumn))) })
+          List @((Str $_.Name), (Cell $w.FreezePanes), (Cell $w.Split), (Cell ([double]$w.SplitHorizontal)), (Cell ([double]$w.SplitVertical)), $panes, (Cell ([double]$w.ActivePane.Index)))
         })
       [void]$wb.Worksheets.Item(1).Activate()
       $all

@@ -1,0 +1,425 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "day": "2026-10-29",
+  "seconds": 41.8
+ },
+ "sent": {
+  "chart-values": "0defe606105b87cdbbe5cfd371fd992b7a5d3cb45f76e9d3d1e9a24e8716776c",
+  "chart-links": "d8c89df8b0db51f83fd20026e71f409afd3f9b74ba8955264fc8e5ab19f70da0",
+  "chart-formulas-styles": "5716839e9c8b44b56b6126aa0e1e744b55437679e7f3ff4f57ece2569ced2907",
+  "chart-parts": "79c3193031bb6c1536111099c277f97c36af2a60e6a83e8c1e08a077c401f282",
+  "chart-structure": "9567b31a756041af61a84911b9e50027ec062246563d0c5b2630895615538048",
+  "chart-below": "282539b9f7216704ab670801e155f423dd4ddee5050929d1e2ceedda9ee6c837",
+  "chart-filter": "95f40ab914a644022a39177e4d9c7dac33c7ca3f3cfdb33dec42af527bbcf3d4",
+  "picture-values": "29723f08ff8914bbebebefc5ddf5b16d777227623d7094ead28e56f6e0ff59a7",
+  "picture-links": "c07a0232be1cb1f94bf1165ac7372863a96cb7c84f2d71d9fb4af656fc029557",
+  "picture-formulas-styles": "40f5894e6fee3d2b369747421af7a01e71c8d1c2fd080a58adf29323e1580052",
+  "picture-parts": "0c36ab4138c1e66f2f341ab0c3af18f54ba348d3c5a52e1e281f94540dbc5b40",
+  "picture-structure": "8076ebd45f95f1fa3839af1c1ebf8d4d864ed3aa9c22d697e6d9af7dacf7f61d",
+  "picture-below": "d4870f619f9f5bf40ecc61217f0f54bca8e1b1ba564b417636ac94c952e064e3",
+  "picture-filter": "fbf0be08053d2b51c0fd24f869ea23fe62c5ffec476c895f4f805ba83fbc87ac",
+  "picture-rich-sheet": "ee5706571d0fad5dd0419e3e8c41d5facbffb79764cfb63ca8e62bd86003be5e",
+  "pivot-values": "1cd73a150a29f7ccd68f95a9c0760aed4a271bf8b947331ceec879c68dc41497",
+  "pivot-links": "a7f2b6cc03c4257d8416495dabe838d696244e53b06f6b03274bb6b7b5903a8e",
+  "pivot-formulas-styles": "b682005cdc95f52d0fa7f33ee7cc57f9e954dcafb09302618bc1169ec01fadf1",
+  "pivot-parts": "839d4f2e3e589ca86ff3172874adfed62691cb037430a4db8e023129758419c1",
+  "pivot-structure": "0239f0c1c73058c9a6e0bf69bbc1e6b809083cccc34709e8aab1cf2d965ac47d",
+  "pivot-below": "afb348950d55003bbfce7207b4f4cad40bb2decff4a52344aefa300ded02a4da",
+  "pivot-filter": "9fe9a6ca08ba219f59b6503afa41cc01b961749d516dfcce05c4751ec3aaf5ea",
+  "print-values": "2aa10797ed48518db602645d40ae1431b2a8522f3aa8266f7e672859a8158783",
+  "print-links": "f95b5d022f230b43f6b7b59d1994c803a62b1afe8d953e05b2a05ee3966af622",
+  "print-formulas-styles": "c00f5f1856ad918e37ac81cdf93d78b36e47d79b24e2dfcafe0a78337f45b6cd",
+  "print-parts": "8e848d917ab60f05ee55a7e6b70ba961ef658d50187390de4ed2bcd8771648ef",
+  "print-structure": "292dc7eb874af592bf546d82822e700f38d7c5726c7e55c52c907d16671aa318",
+  "print-below": "5624914c4495399d88fd5479ff18e9f213ed3460102c8679024df221260f71b2",
+  "print-filter": "fc6733718b3ea480346d1e52c0a17e0efc35bd5df86ffbeaead9736deb57f52d",
+  "chartsheet-values": "3281ae3c939f1f325b7247dcc0c0bab4c95c16545af5ca83b2c63ee8716479e1",
+  "chartsheet-links": "6d44d44596fcff203e645d0722cfa71f8730b5a09888c2121715bb24f579a256",
+  "chartsheet-formulas-styles": "77b833ce473fb2bb92fcd5e56e94db352e6a39005946cbd47ba7858a69388336",
+  "chartsheet-parts": "5004056c57d3e94231e558fa63a4bf6ad5c36cf04bb01bc3e56beba269961c1f",
+  "chartsheet-structure": "1af140a9c4f396ff2d101840be5fdb73efa4c008d789fd5199014518548b7b53",
+  "chartsheet-below": "6c187fbc2fe07671bf19c2a206a09c170f54d35d44f42ea9f1d75beb4ae29c32",
+  "chartsheet-filter": "b99a696af9913fd088d9c9a4360b58c1e49ed55e46e552ed8b4c63e7a962bf2e",
+  "all-values": "28f05e0eb7394a92e83f02b8aafb4ea3f876510caf596acf3b67ad3867e500e3",
+  "all-links": "3667c9b38a3cd3c9996adc327db2ab1bd74c2fd7c29bdcb35eb79f3b8fbfdc76",
+  "all-formulas-styles": "6a314de71f0dc60e8ebfa4104c10ebdce964576fb3141b4db2cc604c3c8920fc",
+  "all-parts": "e5a871929b7ee0fe2b48b03c26c9da6ae5e80b815240fc910e32da6afbac69ec",
+  "all-structure": "19f6508fc9665bb77a641fbeb41bc47ed90b5a8fb310140a7fbc3674a074655a",
+  "all-below": "eec75f20a22ae9dca7c6af263517ac796341c0a73f2db236d7e145f36caab306",
+  "all-filter": "60a6c46f6d52b15e80213abb1ba3814a21ca8cec302ff1601a4a688e5b873384",
+  "criteria-values": "d2c8bff8adecd4b2b30ff590c81b14b5e33f93889a3ddd9e28d2d9b2624dd561",
+  "criteria-links": "197b6ebd86f45780287948982c5095a02ed7f48174dbdba9e34c7dd16a56ef0b",
+  "criteria-formulas-styles": "674f2f4853308c45be63cfd5cb586c55d590f92970dde7f390931a10a98391d7",
+  "criteria-parts": "cce181833ce737aa51e3b60dbfb7f96d48988f7560754fe7266edc00ad1f8472",
+  "criteria-structure": "e83598342af1d6f6b0bc3566a92aced22f39960cbaed3cae018e25e094cb1489",
+  "criteria-below": "39b6a462c922d862538a447037c60582a07d0c83f3acdece16ad8822fab17cb4",
+  "criteria-filter": "380c500cffe608cab484897e8bef6665f40f3b38a6432939437971e67e9d28a6",
+  "criteria-filter-off": "2bf3f7d82e98666ad1a5e75a795f85a74dc0ad1422e8422dc6ff2f970af9cef9"
+ },
+ "answers": {
+  "chart-values": {
+   "opened": [
+    "0.xlsx",
+    "0 - Excel",
+    []
+   ]
+  },
+  "chart-links": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "chart-formulas-styles": {
+   "opened": [
+    "2.xlsx",
+    "2 - Excel",
+    []
+   ]
+  },
+  "chart-parts": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "chart-structure": {
+   "opened": [
+    "4.xlsx",
+    "4 - Excel",
+    []
+   ]
+  },
+  "chart-below": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "chart-filter": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "picture-values": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "picture-links": {
+   "opened": [
+    "8.xlsx",
+    "8 - Excel",
+    []
+   ]
+  },
+  "picture-formulas-styles": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "picture-parts": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  },
+  "picture-structure": {
+   "opened": [
+    "11.xlsx",
+    "11 - Excel",
+    []
+   ]
+  },
+  "picture-below": {
+   "opened": [
+    "12.xlsx",
+    "12 - Excel",
+    []
+   ]
+  },
+  "picture-filter": {
+   "opened": [
+    "13.xlsx",
+    "13 - Excel",
+    []
+   ]
+  },
+  "picture-rich-sheet": {
+   "opened": [
+    "14.xlsx",
+    "14 - Excel",
+    []
+   ]
+  },
+  "pivot-values": {
+   "opened": [
+    "15.xlsx",
+    "15 - Excel",
+    []
+   ]
+  },
+  "pivot-links": {
+   "opened": [
+    "16.xlsx",
+    "16 - Excel",
+    []
+   ]
+  },
+  "pivot-formulas-styles": {
+   "opened": [
+    "17.xlsx",
+    "17 - Excel",
+    []
+   ]
+  },
+  "pivot-parts": {
+   "opened": [
+    "18.xlsx",
+    "18 - Excel",
+    []
+   ]
+  },
+  "pivot-structure": {
+   "opened": [
+    "19.xlsx",
+    "19 - Excel",
+    []
+   ]
+  },
+  "pivot-below": {
+   "opened": [
+    "20.xlsx",
+    "20 - Excel",
+    []
+   ]
+  },
+  "pivot-filter": {
+   "opened": [
+    "21.xlsx",
+    "21 - Excel",
+    []
+   ]
+  },
+  "print-values": {
+   "opened": [
+    "22.xlsx",
+    "22 - Excel",
+    []
+   ]
+  },
+  "print-links": {
+   "opened": [
+    "23.xlsx",
+    "23 - Excel",
+    []
+   ]
+  },
+  "print-formulas-styles": {
+   "opened": [
+    "24.xlsx",
+    "24 - Excel",
+    []
+   ]
+  },
+  "print-parts": {
+   "opened": [
+    "25.xlsx",
+    "25 - Excel",
+    []
+   ]
+  },
+  "print-structure": {
+   "opened": [
+    "26.xlsx",
+    "26 - Excel",
+    []
+   ]
+  },
+  "print-below": {
+   "opened": [
+    "27.xlsx",
+    "27 - Excel",
+    []
+   ]
+  },
+  "print-filter": {
+   "opened": [
+    "28.xlsx",
+    "28 - Excel",
+    []
+   ]
+  },
+  "chartsheet-values": {
+   "opened": [
+    "29.xlsx",
+    "29 - Excel",
+    []
+   ]
+  },
+  "chartsheet-links": {
+   "opened": [
+    "30.xlsx",
+    "30 - Excel",
+    []
+   ]
+  },
+  "chartsheet-formulas-styles": {
+   "opened": [
+    "31.xlsx",
+    "31 - Excel",
+    []
+   ]
+  },
+  "chartsheet-parts": {
+   "opened": [
+    "32.xlsx",
+    "32 - Excel",
+    []
+   ]
+  },
+  "chartsheet-structure": {
+   "opened": [
+    "33.xlsx",
+    "33  [Group] - Excel",
+    []
+   ]
+  },
+  "chartsheet-below": {
+   "opened": [
+    "34.xlsx",
+    "34 - Excel",
+    []
+   ]
+  },
+  "chartsheet-filter": {
+   "opened": [
+    "35.xlsx",
+    "35 - Excel",
+    []
+   ]
+  },
+  "all-values": {
+   "opened": [
+    "36.xlsx",
+    "36 - Excel",
+    []
+   ]
+  },
+  "all-links": {
+   "opened": [
+    "37.xlsx",
+    "37 - Excel",
+    []
+   ]
+  },
+  "all-formulas-styles": {
+   "opened": [
+    "38.xlsx",
+    "38 - Excel",
+    []
+   ]
+  },
+  "all-parts": {
+   "opened": [
+    "39.xlsx",
+    "39 - Excel",
+    []
+   ]
+  },
+  "all-structure": {
+   "opened": [
+    "0.xlsx",
+    "0  [Group] - Excel",
+    []
+   ]
+  },
+  "all-below": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "all-filter": {
+   "opened": [
+    "2.xlsx",
+    "2 - Excel",
+    []
+   ]
+  },
+  "criteria-values": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "criteria-links": {
+   "opened": [
+    "4.xlsx",
+    "4 - Excel",
+    []
+   ]
+  },
+  "criteria-formulas-styles": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "criteria-parts": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "criteria-structure": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "criteria-below": {
+   "opened": [
+    "8.xlsx",
+    "8 - Excel",
+    []
+   ]
+  },
+  "criteria-filter": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "criteria-filter-off": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  }
+ }
+}

@@ -4,6 +4,7 @@
  */
 import { occupied, oneCell, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
+import { spend, STRIDE } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { excelSum, product, sumSquares } from '../common.js'
@@ -25,7 +26,8 @@ function sumAt(values: readonly V[], sel: readonly number[]): V {
  * SUMPRODUCT: arrays of one shape; anything but a number counts as 0. Each array in turn answers a blank cell given
  * alone with #VALUE! and its first error, before the shapes are compared (the sets `sumx-cell-held`, `sumproduct-held`:
  * `SUMPRODUCT(A1:A3,B1:B2)` with an error in A2 is that error). Past the occupied parts every array holds its fill
- * (blank for a range), so `SUMPRODUCT((A:A="x")*B:B)` computes the occupied rows only.
+ * (blank for a range), so `SUMPRODUCT((A:A="x")*B:B)` computes the occupied rows only. Long products are a long
+ * loop: the budget's deadline and signal are checked inside it.
  */
 function sumproduct(cx: Cx, xs: Arg[]): V {
   const arrs: Arr[] = []
@@ -45,12 +47,14 @@ function sumproduct(cx: Cx, xs: Arg[]): V {
     // each stored in its whole width: position i is v[i] in the stored rows, the fill past them
     const stored = arrs.map((a) => a.h * a.w)
     for (let i = 0; i < end; i++) {
+      if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, end - i))
       let p = 1
       for (let k = 0; k < arrs.length; k++) p *= num(i < stored[k] ? arrs[k].v[i] : arrs[k].fill)
       acc += p
     }
   } else
     for (let i = 0; i < end; i++) {
+      if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, end - i))
       const r = Math.floor(i / first.cols)
       let p = 1
       for (const a of arrs) p *= num(a.at(r, i - r * first.cols))

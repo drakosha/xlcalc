@@ -18,10 +18,12 @@
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru|T]   cells shown by display/X.ts into test/excel/display/[ru-RU/ or T/]X.json (test: test/display-excel.test.ts)
  *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
- *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
  *   npx tsx bench/coverage/run.ts workbook X   book-level features of workbook/X.ts into test/excel/workbook/X.json (test: test/workbook-excel.test.ts)
  *   npx tsx bench/coverage/run.ts tables X [ru|T]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/ or T/]X.json (test: test/tables-excel.test.ts)
  *   npx tsx bench/coverage/run.ts parts X    notes, hyperlinks and frozen panes of parts/X.ts into test/excel/parts/X.json and X/ (test: test/sheet-parts-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts fields X   each sheet's window in the files of fields/X.ts into test/excel/fields/X.json and X/ (test: test/fields-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts stats X    Review > Workbook Statistics over the books of stats/X.ts into test/excel/stats/X.json (test: test/stats-excel.test.ts)
  *   npx tsx bench/coverage/run.ts entry X [ru|T]    text typed into cells, entry/X.ts, into test/excel/entry/[ru-RU/ or T/]X.json (test: test/entry-excel.test.ts)
  *   npx tsx bench/coverage/run.ts cond X     conditional formats of cond/X.ts (in the set's locale) into test/excel/cond/[T/]X.json and X/ (test: test/cond-excel.test.ts)
  *   npx tsx bench/coverage/run.ts paste X [ru|T]    Paste Special of paste/X.ts into test/excel/paste/[ru-RU/ or T/]X.json and X/ (test: test/paste-excel.test.ts)
@@ -34,6 +36,7 @@
  *   npx tsx bench/coverage/run.ts rows X [ru|T]   row heights fitted and texts typed into rows, rows/X.ts, into test/excel/rows/[ru-RU/ or T/]X.json (test: test/rows-excel.test.ts)
  *   npx tsx bench/coverage/run.ts sort X     the Sort command over the columns of sort/X.ts into test/excel/sort/X.json (test: test/sort-command-excel.test.ts)
  *   npx tsx bench/coverage/run.ts ui X [ru|T]    the formula bar, a paste and Control+Return in Excel's window (Excel in front), ui/X.ts, into test/excel/ui/[ru-RU/ or T/]X.json (test: test/ui-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts filter X   the AutoFilter under typing, pasting, filling, clearing and undo in Excel's window, filter/X.ts, into test/excel/filter/X.json (test: test/autofilter-excel.test.ts)
  *
  * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
  * in a directory of its tag.
@@ -62,6 +65,8 @@ import { stepKeep } from './keep.js'
 import { stepWorkbook } from './workbook.js'
 import { stepTables } from './tables.js'
 import { stepParts } from './parts.js'
+import { stepFields } from './fields.js'
+import { stepStats } from './stats.js'
 import { stepEntry } from './entry.js'
 import { stepHidden } from './hidden.js'
 import { stepLinks } from './links.js'
@@ -72,6 +77,7 @@ import { stepFit } from './fit.js'
 import { stepLines } from './lines.js'
 import { stepProtect } from './protect.js'
 import { stepUi } from './ui.js'
+import { stepFilter } from './filter.js'
 import { stepRows } from './rows.js'
 import { HERE, ROOT } from './paths.js'
 
@@ -312,6 +318,8 @@ else if (step === 'keep') await (/predict$/.test(process.argv[3] ?? '') ? stepKe
 else if (step === 'workbook') await withExcelLock(() => stepWorkbook(process.argv[3]))
 else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], locale))
 else if (step === 'parts') await withExcelLock(() => stepParts(process.argv[3]))
+else if (step === 'fields') await withExcelLock(() => stepFields(process.argv[3]))
+else if (step === 'stats') await withExcelLock(() => stepStats(process.argv[3]))
 else if (step === 'entry') await withExcelLock(() => stepEntry(process.argv[3], locale))
 else if (step === 'cond') await withExcelLock(() => stepCond(process.argv[3]))
 else if (step === 'valid') await withExcelLock(() => stepValid(process.argv[3], locale))
@@ -324,6 +332,7 @@ else if (step === 'links') await withExcelLock(() => stepLinks(process.argv[3]))
 else if (step === 'fit') await withExcelLock(() => stepFit(process.argv[3], locale))
 else if (step === 'ui') await withExcelLock(() => stepUi(process.argv[3], locale))
 else if (step === 'rows') await withExcelLock(() => stepRows(process.argv[3], locale))
+else if (step === 'filter') await withExcelLock(() => stepFilter(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -334,7 +343,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
