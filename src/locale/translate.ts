@@ -103,38 +103,6 @@ const isSheetPrefix = (pieces: Piece[], i: number) => {
   return k === 'raw' && text.length > 1 && text.endsWith('!') && text[0] !== '"' && before !== ':' && !before?.endsWith(']')
 }
 
-/**
- * The pieces that are a function's name as a value (`BYROW(A1:C3,SUM)`): a word of a function's name on the side
- * `from` alone in an argument, which no LET or LAMBDA around declares as its name and the book does not define (`defined`:
- * a name `Ставка` stays the name in ru-RU, where СТАВКА is RATE). Excel ru-RU writes it in Russian
- * (`BYROW(A1:C3;СУММ)`), as it writes a call.
- */
-function etaPieces(pieces: readonly Piece[], from: Side, defined: (word: string) => boolean): Set<number> {
-  const out = new Set<number>()
-  const declared = new Set<string>()
-  // the calls whose parentheses are open, by name, and whether their arguments may declare names (LET, LAMBDA)
-  const calls: boolean[] = []
-  const solid = (i: number, step: number) => {
-    let j = i + step
-    while (pieces[j]?.k === 'raw' && pieces[j].text.trim() === '') j += step
-    return pieces[j]
-  }
-  const alone = (i: number) => {
-    const [before, after] = [solid(i, -1), solid(i, 1)]
-    return (before?.text === '(' || before?.k === 'list') && (after?.text === ')' || after?.k === 'list')
-  }
-  pieces.forEach((p, i) => {
-    if (p.text === '(') calls.push(solid(i, -1)?.k === 'fn' && /^(LET|LAMBDA)$/.test(wordKey(solid(i, -1)!.text)))
-    else if (p.text === ')') calls.pop()
-    else if (p.k === 'word' && !p.arr && alone(i) && from.fn.has(wordKey(p.text)) && !defined(p.text)) {
-      if (calls.at(-1) && solid(i, 1)?.k === 'list') declared.add(wordKey(p.text))
-      out.add(i)
-    }
-  })
-  for (const i of out) if (declared.has(wordKey(pieces[i].text))) out.delete(i)
-  return out
-}
-
 /** A translated text; `back` maps a position in it to the input: the same character, or the start of a translated piece. */
 export interface Translated {
   ok: true
@@ -142,21 +110,17 @@ export interface Translated {
   back(at: number): number
 }
 
-/**
- * Translates `src` out of the side `from` into `to`; `offset` is where `src` starts in the caller's text (after `=`);
- * `defined` tells the book's names, which a function's word alone does not stand for.
- */
-export function translate(src: string, from: Side, to: Side, offset = 0, defined: (word: string) => boolean = () => false): Translated | Fail {
+/** Translates `src` out of the side `from` into `to`; `offset` is where `src` starts in the caller's text (after `=`). */
+export function translate(src: string, from: Side, to: Side, offset = 0): Translated | Fail {
   const pieces = lex(src, from.syn, from.errors, from.num)
   if (!Array.isArray(pieces)) return fail(offset + pieces.at, pieces.msg)
   // characters with a meaning on the other side: in an array constant its separators, elsewhere the list separator
   const special = [new Set([to.syn.decimal, to.syn.list]), new Set([to.syn.decimal, to.syn.arrayColumn, to.syn.arrayRow])]
   const out: Piece[] = []
-  const eta = etaPieces(pieces, from, defined)
   for (const [i, p] of pieces.entries()) {
     let text = p.text
     if (p.k === 'num') text = text.replace(from.syn.decimal, to.syn.decimal)
-    else if (p.k === 'fn' || eta.has(i)) text = from.fn.get(wordKey(text)) ?? text
+    else if (p.k === 'fn') text = from.fn.get(wordKey(text)) ?? text
     else if (p.k === 'err') text = from.err.get(wordKey(text)) ?? text
     else if (p.k === 'list') text = to.syn.list
     else if (p.k === 'tbl') text = tableText(text, from.item, from.syn.list, to.syn.list)

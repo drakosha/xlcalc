@@ -131,7 +131,8 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     ast = linked.ast
   }
   const externalSet = new Set((ctx.externalFunctions ?? []).map(wordKey))
-  if (bindable(ast)) ast = bindCalls(ast, definedIn(ctx), externalSet)
+  const defined = definedIn(ctx)
+  if (bindable(ast)) ast = bindCalls(ast, defined, externalSet)
   const functions = new Set<string>()
   const sheets = new Set<string>()
   const names = new Set<string>()
@@ -147,6 +148,8 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     else if (n.k === 'eta') functions.add(n.name)
     else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined && n.book === undefined)) sheets.add(n.sheet!)
     else if (n.k === 'ref3d') sheets.add(n.first).add(n.last)
+    // a function's word the book does not define is the function as a value (`BYROW(A1:C3,SUM)`), kept as typed
+    else if (n.k === 'name' && n.sheet === undefined && !defined(n.name) && etaName(n.name)) functions.add(wordKey(n.name))
     else if (n.k === 'name') {
       names.add(n.name)
       uses.push([n.name, n.sheet])
@@ -171,18 +174,13 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
 }
 
 /** Whether a book defines a name, by what a check knows of its names (none: it defines none). */
-export function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean {
+function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean {
   if (ctx.known) return (name) => ctx.known!(name, undefined)
   if (ctx.defined) return ctx.defined
   const names = new Set((ctx.names ?? []).map(caseKey))
   return (name) => names.has(caseKey(name))
 }
 
-/**
- * Calls of defined names and functions as values: a call of a function no list has whose name the book defines is a
- * call of the name, a LET name's or a parameter's call by a function's name a call of the function (`MyFn(1,2)`, a name whose formula is a LAMBDA), and a name the book does not define that is a
- * function's is that function as a value (`BYROW(A1:C3,SUM)`), as Excel reads them.
- */
 /** Whether a formula has what `bindCalls` binds: a name, a call of a function no list has, a call of a value; most have none. */
 export function bindable(ast: Ast): boolean {
   let found = false
@@ -192,14 +190,21 @@ export function bindable(ast: Ast): boolean {
   return found
 }
 
-export function bindCalls(ast: Ast, defined: (name: string) => boolean, external: ReadonlySet<string> = new Set()): Ast {
+/** Whether a word names a function a formula can take as a value: a whitelisted one, not syntax (LET, LAMBDA). */
+export const etaName = (word: string) => isFunction(wordKey(word)) && !SYNTAX.includes(wordKey(word))
+
+/**
+ * Calls of defined names and functions as values: a call of a function no list has whose name the book defines is a
+ * call of the name (`MyFn(1,2)`), a LET name's or a parameter's call by a function's name a call of the function; with
+ * `eta`, as a file writes them, a function's word the book does not define is the function as a value (`_xleta.SUM`).
+ * A formula's own text keeps such a word as typed: the book may define it later.
+ */
+export function bindCalls(ast: Ast, defined: (name: string) => boolean, external: ReadonlySet<string> = new Set(), eta = false): Ast {
   return mapAst(ast, (n) => {
     // a function's name calls the function, a LET name or a parameter of that name aside (`LET(sum,5,SUM(sum,1))`)
     if (n.k === 'call' && n.fn.k === 'local' && isFunction(wordKey(n.fn.name)) && !SYNTAX.includes(wordKey(n.fn.name))) return { k: 'fn', name: wordKey(n.fn.name), args: n.args }
     if (n.k === 'fn' && !isFunction(n.name) && !external.has(n.name) && defined(n.name)) return { k: 'call', fn: { k: 'name', name: n.name }, args: n.args }
-    if (n.k !== 'name' || n.sheet !== undefined || defined(n.name)) return undefined
-    const up = wordKey(n.name)
-    return isFunction(up) && !SYNTAX.includes(up) ? { k: 'eta', name: up } : undefined
+    return eta && n.k === 'name' && n.sheet === undefined && !defined(n.name) && etaName(n.name) ? { k: 'eta', name: wordKey(n.name) } : undefined
   })
 }
 

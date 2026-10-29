@@ -43,7 +43,7 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   }
   const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
-  ast = bindable(bound.ast) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name))), names) : bound.ast
+  ast = bindable(bound.ast) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name)), undefined, true), names) : bound.ast
   let ok = true
   // a defined name's ref may name a sheet the book does not have; its links are bound without the walk
   let linked = !!opts.anySheet

@@ -51,7 +51,11 @@ describe('LAMBDA: parsing and checks', () => {
   it('a call of a name the book defines is the name\'s, spelled as defined; a function\'s name alone is the function', () => {
     expect(validateFormula('twice(2)', { names: ['Twice'] })).toMatchObject({ ok: true, names: ['TWICE'], functions: [] })
     expect(validateFormula('twice(2)')).toMatchObject({ ok: false, code: 'unknown_function' })
-    expect(validateFormula('BYROW(A1:C3,sum)')).toMatchObject({ ok: true, canonical: 'BYROW(A1:C3,SUM)', functions: ['BYROW', 'SUM'] })
+    expect(validateFormula('BYROW(A1:C3,sum)')).toMatchObject({ ok: true, canonical: 'BYROW(A1:C3,sum)', functions: ['BYROW', 'SUM'], names: [] })
+    // the text keeps the word, as the book may define it later: then it is the name
+    expect(values(book({ A1: '=Rate+1' }), ['A1'])).toEqual([{ error: 'VALUE' }])
+    const named = compute(book({ A1: '=Rate+1' }, [{ name: 'Rate', ref: '2' }])).sheets[0].cells.A1
+    expect([named.formula, named.value]).toEqual(['Rate+1', 3])
     // a LET name of a function's word calls the function
     expect(values(book({ A1: '=LET(sum,5,SUM(sum,1))' }), ['A1'])).toEqual([6])
     const out = compute(book({ A1: '=twice(3)' }, NAMES)).sheets[0].cells.A1
@@ -141,12 +145,12 @@ describe('LAMBDA: files, locales, explain and tips', () => {
     expect(compute(again.book).sheets[0].cells.C2.value).toBe(28)
   })
 
-  it('ru-RU writes a function as a value in Russian, a LET or LAMBDA name of that word as it is', () => {
-    expect(toLocal('BYROW(A1:C3,SUM)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3;СУММ)' })
-    expect(toInvariant('BYROW(A1:C3;СУММ)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3,SUM)' })
+  it('ru-RU keeps a function as a value in English, as a word alone may be a name (Ставка, СТАВКА being RATE)', () => {
+    expect(toLocal('BYROW(A1:C3,SUM)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3;SUM)' })
+    expect(toInvariant('BYROW(A1:C3;SUM)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3,SUM)' })
     expect(toLocal('MAP(A1:A3,LAMBDA(sum,sum*2))', ruRU)).toEqual({ ok: true, formula: 'MAP(A1:A3;LAMBDA(sum;sum*2))' })
     // a word the book defines stays its name: СТАВКА is RATE in ru-RU
-    expect(validateLocalFormula('=BYROW(A1:C3;СУММ)+Ставка', ruRU, { names: ['Ставка'] })).toMatchObject({ ok: true, canonical: 'BYROW(A1:C3,SUM)+Ставка' })
+    expect(validateLocalFormula('=BYROW(A1:C3;SUM)+Ставка', ruRU, { names: ['Ставка'] })).toMatchObject({ ok: true, canonical: 'BYROW(A1:C3,SUM)+Ставка' })
     expect(toLocal('LAMBDA(x,y,IF(ISOMITTED(y),x,y))(1,)', ruRU)).toEqual({ ok: true, formula: 'LAMBDA(x;y;ЕСЛИ(ПРОПУЩЕНО(y);x;y))(1;)' })
   })
 
