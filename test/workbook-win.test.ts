@@ -24,7 +24,9 @@ const START = 'Excel starts a cycle from what the file stores (50 in counter-cac
 const UNLISTED = 'INDIRECT and OFFSET are not in the whitelist (#NAME?); Excel keeps the cycle through them as any other'
 /** The one miss of the predictions of `cycles-held`: the engine still answers as predicted there. */
 const ARRAY = 'a spilled array a cycle comes to holds its first value here and spills no more (a held value is one value a cell); Excel keeps its whole spill as it was'
+const DEPTH = 'a recursion of LAMBDAs past the engine\'s budget of calls is #NUM! (300 calls of `Cnt`), where Excel goes on to its stack (the reason lambdaDepth)'
 const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'lambda-names:names': { 'F!A14': DEPTH },
   'cycles:indirect': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
   'cycles:offset': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
   'cycles:iterate-file': { 'S!A1': START, 'S!B1': START, 'S!C1': START },
