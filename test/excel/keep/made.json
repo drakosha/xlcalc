@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.114.2",
-  "seconds": 3,
-  "date": "2026-10-27"
+  "version": "16.114.3",
+  "seconds": 4.8,
+  "date": "2026-10-29"
  },
  "books": {
   "chart": {
@@ -357,6 +357,44 @@
     "pivotCaches": 0,
     "richStrings": 0,
     "themeColors": 1,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "wide": {
+   "sent": "9e64e01c09fb56237798b6d77b8a0a3187d8be8a1f408170a48aeffbf3f53065",
+   "made": [
+    "chart",
+    "picture",
+    "chartmove"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "sparklines": {
+   "sent": "112cb3d5bf5e4feee39a8af103dc405476234431d56e30960b056582a5fc0fd1",
+   "made": [],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
     "printAreas": 0,
     "breaks": 0,
     "notes": 0
