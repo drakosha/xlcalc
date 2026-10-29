@@ -61,15 +61,16 @@ export async function engineStats(c: StatsCase): Promise<StatsAnswer> {
 
 /**
  * The lines where the window and the engine differ: a row Excel shows with another value or that the engine has no
- * count for, and a count of the engine Excel does not show though it is not 0 (Excel for Mac leaves out rows of none).
+ * count for, and a count of the engine Excel does not show though it is not 0 (Excel for Mac leaves out rows of none),
+ * but for the rows `unshown` names (`workbook Notes`), which the Excel compared never shows.
  */
-export function statsDifferences(excel: StatsAnswer, engine: StatsAnswer): string[] {
+export function statsDifferences(excel: StatsAnswer, engine: StatsAnswer, unshown: readonly string[] = []): string[] {
   const out: string[] = []
   for (const part of ['sheet', 'workbook'] as const) {
     const mine = new Map(engine[part])
     const shown = new Set(excel[part].map(([label]) => label))
     for (const [label, text] of excel[part]) if (mine.get(label) !== text) out.push(`${part} ${label}: Excel ${text}, engine ${mine.get(label) ?? 'none'}`)
-    for (const [label, text] of engine[part]) if (!shown.has(label) && text !== '0' && text !== 'null') out.push(`${part} ${label}: not shown, engine ${text}`)
+    for (const [label, text] of engine[part]) if (!shown.has(label) && text !== '0' && text !== 'null' && !unshown.includes(`${part} ${label}`)) out.push(`${part} ${label}: not shown, engine ${text}`)
   }
   return out
 }
