@@ -1,0 +1,41 @@
+{
+ "started": "2026-10-29T17:21:53.191Z",
+ "uptimeStart": "20:21  up 9 days, 2 hrs, 2 users, load averages: 3.75 5.28 6.29",
+ "node": "v26.7.0",
+ "engineCommit": "75a6bcd25e90eac06edb95e62fbbe8b344071f11",
+ "versions": {
+  "hyperformula": "3.5.0",
+  "ironcalc": "0.9.1",
+  "exceljs": "4.4.0",
+  "xlsx": "0.18.5"
+ },
+ "machine": {
+  "cpu": "Apple M5 Pro",
+  "memoryGiB": 48
+ },
+ "results": [
+  {
+   "part": "memory",
+   "file": "iron-memory.mjs",
+   "args": [
+    "business-34000"
+   ],
+   "loadBefore": [
+    3.74951171875,
+    5.2763671875,
+    6.28515625
+   ],
+   "loadAfter": [
+    4.35498046875,
+    5.2021484375,
+    6.2080078125
+   ],
+   "status": "ok",
+   "heapMb": 1.4612197875976562,
+   "wasmMb": 179.6875,
+   "held": "object"
+  }
+ ],
+ "finished": "2026-10-29T17:22:31.532Z",
+ "uptimeEnd": "20:22  up 9 days,  2:01, 2 users, load averages: 4.35 5.20 6.21"
+}
