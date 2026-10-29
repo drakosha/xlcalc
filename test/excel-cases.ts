@@ -6,6 +6,7 @@
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
  */
+import { fromFile } from '../src/xlsx/formulas/from-file.js'
 import { readFileSync } from 'node:fs'
 import { compare, samePin } from '../bench/coverage/compare.js'
 import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
@@ -39,7 +40,8 @@ function dataInput(c: Cell): CellInput {
 }
 
 /** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
-export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+// a trim reference's file form (`_xlfn._TRO_ALL(A1:C9)`) as the reader reads it (`A1.:.C9`)
+export const engineFormula = (f: string) => (f.includes('_TRO_') ? fromFile(f).formula : f).replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
 
 /** The measurement's data sheet, as in every book sent to Excel. */
 export function dataSheet(): BookInput['sheets'][number] {
