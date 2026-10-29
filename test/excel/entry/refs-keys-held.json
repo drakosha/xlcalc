@@ -1,0 +1,204 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-29",
+  "seconds": 23
+ },
+ "cases": [
+  {
+   "id": "key-1",
+   "text": "=D12"
+  },
+  {
+   "id": "key-2",
+   "text": "=D6+D12"
+  },
+  {
+   "id": "key-3",
+   "text": "=D12-D6"
+  },
+  {
+   "id": "key-4",
+   "text": "=D11-D7"
+  },
+  {
+   "id": "key-5",
+   "text": "=D12*2"
+  },
+  {
+   "id": "key-6",
+   "text": "=SUM(D6,D3)"
+  },
+  {
+   "id": "key-7",
+   "text": "=SUM(E:E)"
+  },
+  {
+   "id": "key-8",
+   "text": "=ROUNDUP(D3,0)"
+  },
+  {
+   "id": "key-9",
+   "text": "=ABS(D3)"
+  },
+  {
+   "id": "key-10",
+   "text": "=U!C1"
+  },
+  {
+   "id": "key-11",
+   "text": "=Rate"
+  },
+  {
+   "id": "in-pct2-1",
+   "text": "=D3",
+   "format": 10
+  },
+  {
+   "id": "in-pct2-2",
+   "text": "=D12",
+   "format": 10
+  }
+ ],
+ "answers": {
+  "key-1": {
+   "cell": {
+    "formula": "D12",
+    "format": 9
+   },
+   "computed": 0.1,
+   "text": "10%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.1
+  },
+  "key-2": {
+   "cell": {
+    "formula": "D6+D12",
+    "format": 9
+   },
+   "computed": 2.1,
+   "text": "210%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 2.1
+  },
+  "key-3": {
+   "cell": {
+    "formula": "D12-D6",
+    "format": 9
+   },
+   "computed": -1.9,
+   "text": "-190%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -1.9
+  },
+  "key-4": {
+   "cell": {
+    "formula": "D11-D7"
+   },
+   "computed": 104,
+   "text": "104",
+   "code": "General",
+   "local": "General",
+   "value2": 104
+  },
+  "key-5": {
+   "cell": {
+    "formula": "D12*2"
+   },
+   "computed": 0.2,
+   "text": "0.2",
+   "code": "General",
+   "local": "General",
+   "value2": 0.2
+  },
+  "key-6": {
+   "cell": {
+    "formula": "SUM(D6,D3)",
+    "format": "\"$\"#,##0_);\\(\"$\"#,##0\\)"
+   },
+   "computed": 102,
+   "text": "$102 ",
+   "code": "$#,##0_);($#,##0)",
+   "local": "$#,##0_);($#,##0)",
+   "value2": 102
+  },
+  "key-7": {
+   "cell": {
+    "formula": "SUM(E:E)",
+    "format": 9
+   },
+   "computed": 0.4,
+   "text": "40%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.4
+  },
+  "key-8": {
+   "cell": {
+    "formula": "ROUNDUP(D3,0)",
+    "format": "\"$\"#,##0_);\\(\"$\"#,##0\\)"
+   },
+   "computed": 100,
+   "text": "$100 ",
+   "code": "$#,##0_);($#,##0)",
+   "local": "$#,##0_);($#,##0)",
+   "value2": 100
+  },
+  "key-9": {
+   "cell": {
+    "formula": "ABS(D3)"
+   },
+   "computed": 100,
+   "text": "100",
+   "code": "General",
+   "local": "General",
+   "value2": 100
+  },
+  "key-10": {
+   "cell": {
+    "formula": "U!C1",
+    "format": 14
+   },
+   "computed": 46096,
+   "text": "3/15/26",
+   "code": "m/d/yy",
+   "local": "m/d/yy"
+  },
+  "key-11": {
+   "cell": {
+    "formula": "Rate"
+   },
+   "computed": 0.1,
+   "text": "0.1",
+   "code": "General",
+   "local": "General",
+   "value2": 0.1
+  },
+  "in-pct2-1": {
+   "cell": {
+    "formula": "D3",
+    "format": "\"$\"#,##0_);\\(\"$\"#,##0\\)"
+   },
+   "computed": 100,
+   "text": "$100 ",
+   "code": "$#,##0_);($#,##0)",
+   "local": "$#,##0_);($#,##0)",
+   "value2": 100
+  },
+  "in-pct2-2": {
+   "cell": {
+    "formula": "D12",
+    "format": 10
+   },
+   "computed": 0.1,
+   "text": "10.00%",
+   "code": "0.00%",
+   "local": "0.00%",
+   "value2": 0.1
+  }
+ }
+}
