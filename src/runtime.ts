@@ -408,7 +408,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (f) return f
     const spec = FUNCTIONS[name]
     const call = spec.lazy ? (args: readonly Arg[]) => F[name](...args.map((a) => () => a)) : spec.cell ? (args: readonly Arg[]) => FL[name](0, 0, 0, ...args) : (args: readonly Arg[]) => FL[name](...args)
-    f = new Lambda(0, spec.max, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes)
+    f = new Lambda(0, spec.max, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes, name)
     etas.set(name, f)
     return f
   }

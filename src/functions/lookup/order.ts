@@ -210,6 +210,9 @@ function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
  */
 const textKey = (v: string) => (/[^\x00-\x7f]/.test(v) ? v.normalize('NFKC') : v).toLowerCase()
 
+/** A value's identity for UNIQUE and for the groups of GROUPBY and PIVOTBY: by type, text by `textKey`. */
+export const valueKey = (v: V): V => (isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${textKey(v)}` : v)
+
 /** A line's identity for UNIQUE: values by type, text by `textKey`. */
 function lineKey(a: Arr, line: number, byCol: boolean): string {
   const n = byCol ? a.rows : a.cols
@@ -231,7 +234,7 @@ function unique(g: Grid, byCol = false, once = false): V | Arr {
   // the lines past the occupied part are all the same blank line
   for (let i = 0; i < Math.min(total, n + 1); i++) {
     const v = single ? (byCol ? a.at(0, i) : a.at(i, 0)) : null
-    const k = !single ? lineKey(a, i, byCol) : isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${textKey(v)}` : v
+    const k = !single ? lineKey(a, i, byCol) : valueKey(v)
     const s = seen.get(k)
     const count = i === n ? total - n : 1
     if (s) s.count += count

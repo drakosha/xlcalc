@@ -77,6 +77,8 @@ export class Lambda {
     readonly run: (args: readonly unknown[]) => unknown,
     /** Whether MAP and its kin may call it with `n` arguments: a LAMBDA's parameters, a function's counts. */
     readonly takes: (n: number) => boolean = (n) => n >= min && n <= max,
+    /** A built-in function's name, which GROUPBY and PIVOTBY label its column with. */
+    readonly name?: string,
   ) {}
 }
 
