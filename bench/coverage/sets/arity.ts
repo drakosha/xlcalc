@@ -38,6 +38,7 @@ export const SHAPES: Record<string, Shape> = {
   CHOOSECOLS: { head: ['D!B1:C8'], rep: ['1'], wrap: 'ROWS' },
   CHOOSEROWS: { head: ['D!B1:C8'], rep: ['1'], wrap: 'ROWS' },
   HSTACK: { ...ones(), wrap: 'ROWS' },
+  MAP: { head: ['D!B1:B2'], rep: ['D!B1:B2'], tail: ['SUM'], wrap: 'ROWS' },
   VSTACK: { ...ones(), wrap: 'ROWS' },
   SORTBY: { head: ['D!B1:B8'], rep: ['D!C1:C8', '1'], wrap: 'ROWS' },
   AGGREGATE: { head: ['9', '0'], rep: ['D!B1:B8'] },
@@ -71,7 +72,7 @@ export function call(fn: string, n: number): string | null {
  * function with 255 (measured on 7 October 2026, two runs).
  */
 export const LIMITS: Record<string, number> = {
-  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
+  ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
   COUNTIFS: 254,
   MAXIFS: 253,
   MINIFS: 253,

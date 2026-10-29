@@ -38,8 +38,8 @@ function dataInput(c: Cell): CellInput {
   return { value: c.text }
 }
 
-/** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
-export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+/** The formula as this engine reads it: Excel's storage prefixes of newer functions, of LET's and LAMBDA's names and of functions as values removed. */
+export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\.|_xleta\./g, '')
 
 /** The measurement's data sheet, as in every book sent to Excel. */
 export function dataSheet(): BookInput['sheets'][number] {
