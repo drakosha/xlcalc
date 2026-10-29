@@ -14,11 +14,12 @@ import { capped } from './common.js'
 const trim = (s: string) => s.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, '')
 
 /**
- * A node's own text as Excel takes it: an element's text children joined, each trimmed but a CDATA section, any other
- * node's value trimmed; null for an element without text, a comment or a processing instruction.
+ * A node's own text as Excel takes it, the text of its children as a DOM holds them: an element's text children
+ * joined, each trimmed but a CDATA section, an attribute's value trimmed; null for an element without text and for a
+ * node without children (a text node itself, a comment, a processing instruction).
  */
 function ownText(n: XNode): string | null {
-  if (n.kind === 'comment' || n.kind === 'pi' || n.kind === 'root') return null
+  if (n.kind === 'text' || n.kind === 'comment' || n.kind === 'pi' || n.kind === 'root') return null
   if (n.kind !== 'element') return trim(n.value)
   const s = n.children.map((c) => (c.kind !== 'text' ? '' : c.name ? c.value : trim(c.value))).join('')
   return s === '' ? null : s
