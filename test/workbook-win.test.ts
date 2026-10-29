@@ -21,12 +21,9 @@ const OUTSIDE = {
 }
 /** Excel starts a cycle from what the file stores, on Windows as on the Mac; the engine from 0. */
 const START = 'Excel starts a cycle from what the file stores (50 in counter-cached, the fixed point 2 in cycles:iterate-file), empty text (#VALUE! in arithmetic) where it stores none; the engine starts from 0'
-const UNLISTED = 'INDIRECT and OFFSET are not in the whitelist (#NAME?); Excel keeps the cycle through them as any other'
 /** The one miss of the predictions of `cycles-held`: the engine still answers as predicted there. */
 const ARRAY = 'a spilled array a cycle comes to holds its first value here and spills no more (a held value is one value a cell); Excel keeps its whole spill as it was'
 const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
-  'cycles:indirect': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
-  'cycles:offset': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
   'cycles:iterate-file': { 'S!A1': START, 'S!B1': START, 'S!C1': START },
   'cycles-held:array-enters': { 'S!A2': ARRAY, 'S!A3': ARRAY },
   'date1904-held:held': { 'S!A9': PIXELS },

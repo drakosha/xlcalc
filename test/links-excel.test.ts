@@ -24,12 +24,6 @@ const PLATFORMS = [
 
 /** Functions the engine does not have (`#NAME?` in any book): Excel's answer over a closed book is in the comment. */
 const UNSUPPORTED: Record<string, string> = {
-  'basics-held/cache/S!A22': 'INDIRECT into a closed book is #REF!',
-  'basics-held/cache/S!A23': 'OFFSET over a closed book is #VALUE!',
-  'basics-held/cache/S!A37': 'INDIRECT into a closed book is #REF!',
-  'written/cache/S!A22': 'INDIRECT into a closed book is #REF!',
-  'written/cache/S!A23': 'OFFSET over a closed book is #VALUE!',
-  'written/cache/S!A37': 'INDIRECT into a closed book is #REF!',
   'functions-held/functions/S!A11': 'CELL over a closed book gives no text',
 }
 
