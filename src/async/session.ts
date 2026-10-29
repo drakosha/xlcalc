@@ -145,6 +145,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getBook: () => plain(() => core.getBook()),
     getLayout: () => plain(() => core.getLayout()),
     getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
+    getAutoFilterRange: (sheet) => call(() => core.getAutoFilterRange(sheet)),
     getEnd: (sheet, cell, direction) => call(() => core.getEnd(sheet, cell, direction)),
     getAutoSum: (sheet, cell) => call(() => core.getAutoSum(sheet, cell)),
     getNamesFromSelection: (sheet, range, labels) => call(() => core.getNamesFromSelection(sheet, range, labels)),

@@ -58,6 +58,7 @@ import { stepKeepRules } from './keep.js'
 import type { CondSet } from '../coverage/cond/cases.js'
 import { stepValid } from './valid.js'
 import { stepUi } from './ui.js'
+import { stepFilter } from './filter.js'
 import { stepClipboard } from './clipboard.js'
 import { stepRibbon } from './ribbon.js'
 import { stepFind } from './find.js'
@@ -128,6 +129,7 @@ else if (step === 'cond' && a) {
 else if (step === 'valid' && a) await withWindowsExcel(parseTag(b), (e) => stepValid(a, parseTag(b), e))
 else if (step === 'clipboard') await withWindowsExcel(parseTag(a), (e) => stepClipboard(parseTag(a), e))
 else if (step === 'ui' && a) await withWindowsExcel(parseTag(b), (e) => stepUi(a, parseTag(b), e))
+else if (step === 'filter' && a) await withWindowsExcel('en-US', (e) => stepFilter(a, 'en-US', e))
 else if (step === 'ribbon' && a) await withWindowsExcel(parseTag(b), (e) => stepRibbon(a, parseTag(b), e))
 else if (step === 'find' && a) await withWindowsExcel(parseTag(b), (e) => stepFind(a, parseTag(b), e))
 else if (step === 'replace' && a) await withWindowsExcel(parseTag(b), (e) => stepReplace(a, parseTag(b), e))

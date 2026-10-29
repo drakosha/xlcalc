@@ -115,6 +115,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'getUsedRange':
       value = await s.getUsedRange(args[0] as string)
       break
+    case 'getAutoFilterRange':
+      value = await s.getAutoFilterRange(args[0] as string)
+      break
     case 'getEnd':
       value = await s.getEnd(args[0] as string, args[1] as string, args[2] as never)
       break

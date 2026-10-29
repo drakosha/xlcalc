@@ -466,6 +466,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getBook: () => value<Sent>(call('getBook', [])).then(unpackSlowly),
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
+      getAutoFilterRange: (sheet) => value(call('getAutoFilterRange', [sheet])),
       getEnd: (sheet, cell, direction) => value(call('getEnd', [sheet, cell, direction])),
       getAutoSum: (sheet, cell) => value(call('getAutoSum', [sheet, cell])),
       getNamesFromSelection: (sheet, range, labels) => value(call('getNamesFromSelection', [sheet, range, labels])),

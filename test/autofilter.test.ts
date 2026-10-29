@@ -100,6 +100,29 @@ describe.each(KINDS)('the AutoFilter in %s', (kind) => {
   })
 })
 
+describe.each(KINDS)('the range the AutoFilter acts on in %s', (kind) => {
+  it.each(['closures', 'eval'] as const)('getAutoFilterRange: its current region down, read without a step of the undo; its own range stays (execution %s)', async (execution) => {
+    const s = await (await opener(kind))(book(), { clock, execution })
+    expect(await s.getAutoFilterRange('Data')).toBe('A1:C5')
+    expect(await s.getAutoFilterRange('Other')).toBeNull()
+    await expect(s.getAutoFilterRange('Nope')).rejects.toThrow(InputError)
+    await s.setCellText('Data', 'D6', '1')
+    expect(await s.getAutoFilterRange('Data')).toBe('A1:C6')
+    // diagonally on from the column beside it, and a spill's cells
+    await s.setCellText('Data', 'E7', '2')
+    await s.setCellText('Data', 'A8', '=SEQUENCE(3)')
+    expect(await s.getAutoFilterRange('Data')).toBe('A1:C10')
+    expect((await s.getLayout()).sheets[0].autoFilter).toEqual({ range: 'A1:C5' })
+    // a row emptied ends it
+    await s.clearCells([{ sheet: 'Data', range: 'D6:E7' }], 'contents')
+    expect(await s.getAutoFilterRange('Data')).toBe('A1:C5')
+    expect(s.history.undo).toBe(4)
+    await s.setLayout([{ sheet: 'Data', autoFilter: { range: 'A1:C1048576' } }])
+    expect(await s.getAutoFilterRange('Data')).toBe('A1:C1048576')
+    await s.close()
+  })
+})
+
 /** The AutoFilter of a sheet after an operation on the book (`A1:C5` on Data), or the refusal's code. */
 function after(op: StructureOp, sheet = 'Data', start = book()): string | undefined {
   const r = editStructure(start, op)

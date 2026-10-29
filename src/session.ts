@@ -29,6 +29,7 @@ import { checkBoolean, checkNumber, checkString } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
+import { autoFilterRange } from './session/autofilter.js'
 import { applyLayout, bookLayout, checkOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
 import { pastedHeights, patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
@@ -120,6 +121,7 @@ export interface SessionSteps {
   getBook(): BookInput
   getLayout(): BookLayout
   getUsedRange(sheet: string): Steps<SheetExtent>
+  getAutoFilterRange(sheet: string): Steps<string | null>
   getEnd(sheet: string, cell: string, direction: EndDirection): Steps<string>
   getAutoSum(sheet: string, cell: string): Steps<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Steps<NameInput[]>
@@ -851,6 +853,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return sheetExtent(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
     },
+    *getAutoFilterRange(sheet: string) {
+      const s = yield* ready()
+      return autoFilterRange(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
+    },
     *getEnd(sheet: string, cell: string, direction: EndDirection) {
       const s = yield* ready()
       const [i, r, c] = at(s, sheet, cell)
@@ -997,6 +1003,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getBook: () => core.getBook(),
     getLayout: () => core.getLayout(),
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
+    getAutoFilterRange: (sheet) => now(() => core.getAutoFilterRange(sheet)),
     getEnd: (sheet, cell, direction) => now(() => core.getEnd(sheet, cell, direction)),
     getAutoSum: (sheet, cell) => now(() => core.getAutoSum(sheet, cell)),
     getNamesFromSelection: (sheet, range, labels) => now(() => core.getNamesFromSelection(sheet, range, labels)),
