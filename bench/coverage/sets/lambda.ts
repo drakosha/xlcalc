@@ -162,3 +162,12 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./lambda.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: a LAMBDA takes no fewer arguments than its parameters (#VALUE!, one
+ * left out between commas only); a function is no error but a value of its own (TYPE 128, ISERROR FALSE, ERROR.TYPE #N/A,
+ * IFERROR keeps it, an operator's #VALUE!, ARRAYTOTEXT λ); calls go deeper than 1,024 (the set `lambda-depth`); a
+ * function by its name called with no arguments is #CALC!; an error given as MAP's array is the answer; REDUCE without
+ * an initial value starts from the first value; MAKEARRAY takes no fractional size.
+ */
+export const MISSED: readonly string[] = ['LAMBDA#4', 'LAMBDA#6', 'LAMBDA#13', 'LAMBDA#14', 'LAMBDA#15', 'LAMBDA#16', 'LAMBDA#17', 'LAMBDA#18', 'LAMBDA#45', 'LAMBDA#46', 'ISOMITTED#2', 'ISOMITTED#5', 'ISOMITTED#7', 'ISOMITTED#9', 'SUM#3', 'MAP#18', 'MAP#19', 'REDUCE#2', 'REDUCE#3', 'MAKEARRAY#3']

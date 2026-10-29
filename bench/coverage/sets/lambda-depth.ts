@@ -32,3 +32,6 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./lambda-depth.predicted.json', import.meta.url), 'utf8'))
+
+/** The predictions Excel for Mac did not confirm: Excel goes deeper than the engine's budget of calls (`lambdaDepth`). */
+export const MISSED: readonly string[] = ['simple#1', 'simple#2', 'simple#3', 'simple#4', 'simple#5', 'heavy#1', 'heavy#2', 'heavy#3', 'named#1', 'named#2']

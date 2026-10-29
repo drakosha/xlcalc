@@ -133,6 +133,8 @@ export const REASONS = {
     '`GROWTH` far from 0 in x is `#NUM!` in Excel even where the fitted value fits in a double: for 100·1.1^k rounded to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has the b of `LOGEST` equal to 0 and m^x beyond the largest double.',
   macLongS:
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
+  lambdaDepth:
+    'Recursion of LAMBDAs ends in `#NUM!` at a fixed budget of calls, about 200 calls of a short calculation (`LET(f,LAMBDA(g,n,IF(n<=0,0,1+g(g,n-1))),f(f,500))`), fewer of a longer one; Excel goes on as far as its stack holds, 4,000 calls of that one, 2,000 with a LET in the calculation. The engine computes in the JavaScript stack, which runs out sooner and where it runs out depends on the process, so the budget keeps the answer the same everywhere.',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel returns when it stands alone; inside one generated workbook of the random check, Excel 16.113 returned a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, in two runs).',
 } as const
@@ -254,6 +256,21 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fit-offset-held:TREND#2': { reason: 'linestMean', engine: { t: 'n', v: 0.030029296875 } },
   'fit-offset-held:GROWTH#2': { reason: 'growthRange', engine: { t: 'n', v: 313.83972099924 } },
   'fit-offset-held:GROWTH#3': { reason: 'growthRange', engine: { t: 'n', v: 285.309168434641 } },
+  'lambda:LAMBDA#42': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#43': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#44': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#45': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda:LAMBDA#46': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#3': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#4': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:simple#5': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:heavy#3': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:named#1': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
+  'lambda-depth:named#2': { reason: 'lambdaDepth', engine: { t: 'e', v: 'NUM' } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives the pinned answer (`samePin`). */

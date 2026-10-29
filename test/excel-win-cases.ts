@@ -44,6 +44,8 @@ export const WIN_SETS: WinSet[] = [
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
 export const WIN_REASONS = {
+  winEta: 'A function by its name as a value (`BYROW(A1:C3,SUM)`, `_xleta.SUM` in a file): Excel for Windows 16.0.20430 does not know it and answers `#NAME?`; Excel for Mac 16.114 and the engine call the function.',
+  winLambdaCount: 'MAP, REDUCE, BYROW and MAKEARRAY given a LAMBDA with the wrong number of parameters: Excel for Windows 16.0.20430 calls it at each value and answers an array of errors (REDUCE `#N/A`); Excel for Mac 16.114 and the engine answer `#VALUE!` for the call, as Microsoft documents.',
   winRegexMatch: 'Match mode 3 of `XMATCH` and `XLOOKUP`, regular expressions: Excel for Windows 16.0.20430 has none and answers `#VALUE!`; Excel for Mac 16.114 and the engine find the pattern (`XMATCH("[A-Z][a-z]+y",A2:A9,3)`, IronCalc\'s `XMATCH.xlsx`).',
   winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',
   winWeeknum: '`WEEKNUM` with return type 22, which Microsoft does not list: Excel for Windows answers a week (`WEEKNUM(45658,22)` is 1), Excel for Mac and the engine `#NUM!`.',
