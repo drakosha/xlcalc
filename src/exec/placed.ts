@@ -35,9 +35,12 @@ const FORMULA: Readonly<Record<string, (i: number) => boolean>> = { FORMULATEXT:
 /** How a node's reference is used: for its place alone, or for the formulas there. */
 export type Use = 'place' | 'formula'
 
-/** The argument at `i` passes on the reference the call answers: INDEX's, TAKE's, DROP's and TRIMRANGE's array, IF's and CHOOSE's values. */
+/**
+ * The argument at `i` passes on the reference the call answers: INDEX's, TAKE's and DROP's array, IF's and CHOOSE's
+ * values (TRIMRANGE reads its range's cells to trim it).
+ */
 function passes(n: Extract<Ast, { k: 'fn' }>, i: number): boolean {
-  if (n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' || n.name === 'TRIMRANGE') return i === 0
+  if (n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP') return i === 0
   const spec = FUNCTIONS[n.name]
   return !!spec?.refs && spec.mode(i) === 'pass'
 }
