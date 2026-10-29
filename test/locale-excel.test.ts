@@ -9,6 +9,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { derive, loadSnapshot, snapshotFile } from '../bench/locale/derive.js'
+import { withExtraNames } from '../bench/locale/extra-names.js'
 import { formulaText, withPart } from '../bench/locale/generate.js'
 import { LOCALES, toInvariant, toLocal } from '../src/index.js'
 
@@ -41,15 +42,16 @@ for (const [tag, loc] of LOCALES) {
       expect(snap.formulas['lit:8']).toEqual(['SUM({1,2;3,4})', `${loc.functions.SUM ?? 'SUM'}({1${col}2${row}3${col}4})`])
     })
 
-    it('every function Excel names has its local name in the locale, and no other entries', () => {
-      const named = Object.fromEntries(Object.keys(d.functions).map((f) => [f, loc.functions[f] ?? f]))
-      expect(named).toEqual(d.functions)
-      expect(Object.keys(loc.functions).filter((f) => !(f in d.functions))).toEqual([])
+    it('every function Excel names has its local name in the locale, the extra names too, and no other entries', () => {
+      const all = withExtraNames(tag, d.functions)
+      const named = Object.fromEntries(Object.keys(all).map((f) => [f, loc.functions[f] ?? f]))
+      expect(named).toEqual(all)
+      expect(Object.keys(loc.functions).filter((f) => !(f in all))).toEqual([])
     })
 
     it('the locale file holds what bench/locale/generate.ts writes between its marks', () => {
       const source = readFileSync(new URL(`../src/locales/${tag}.ts`, import.meta.url), 'utf8')
-      expect(withPart(source, formulaText(d, snap.meta.excel))).toBe(source)
+      expect(withPart(source, formulaText(tag, d, snap.meta.excel))).toBe(source)
     })
 
     it('no local name is the English name of another function (English names are read in local text too)', () => {
