@@ -1,0 +1,397 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.4,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "COUPDAYS#1",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,28),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#2",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,29),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#3",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,30),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#4",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#5",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,5,29),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#6",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,5,30),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#7",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#8",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,29),DATE(2015,8,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#9",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,29),DATE(2015,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#10",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,5,30),DATE(2015,8,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#11",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,5,30),DATE(2015,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#12",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2016,2,29),2,1)"
+  },
+  {
+   "id": "COUPDAYS#13",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,29),DATE(2016,2,29),2,1)"
+  },
+  {
+   "id": "COUPDAYS#14",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,30),DATE(2016,2,29),2,1)"
+  },
+  {
+   "id": "COUPDAYS#15",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1899,12,31),DATE(1901,6,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#16",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,2,1),DATE(1902,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#17",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,3,1),DATE(1903,2,28),2,1)"
+  },
+  {
+   "id": "VDB#1",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.5,10,1.5)"
+  },
+  {
+   "id": "VDB#2",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,6.25,7.75,1.5)"
+  },
+  {
+   "id": "VDB#3",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7,7.5,1.5)"
+  },
+  {
+   "id": "VDB#4",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7.5,8,1.5)"
+  },
+  {
+   "id": "VDB#5",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.5,10,1)"
+  },
+  {
+   "id": "VDB#6",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,6.25,7.75,1)"
+  },
+  {
+   "id": "VDB#7",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7,7.5,1)"
+  },
+  {
+   "id": "VDB#8",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7.5,8,1)"
+  },
+  {
+   "id": "VDB#9",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.5,10,2.5)"
+  },
+  {
+   "id": "VDB#10",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,6.25,7.75,2.5)"
+  },
+  {
+   "id": "VDB#11",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7,7.5,2.5)"
+  },
+  {
+   "id": "VDB#12",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7.5,8,2.5)"
+  },
+  {
+   "id": "VDB#13",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.5,10,3)"
+  },
+  {
+   "id": "VDB#14",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,6.25,7.75,3)"
+  },
+  {
+   "id": "VDB#15",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7,7.5,3)"
+  },
+  {
+   "id": "VDB#16",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,7.5,8,3)"
+  },
+  {
+   "id": "VDB#17",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,3,0.5,1,3)"
+  },
+  {
+   "id": "VDB#18",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,3,1.5,2,3)"
+  },
+  {
+   "id": "VDB#19",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,3,0.25,1.25,3)"
+  },
+  {
+   "id": "VDB#20",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,2,0.5,2,2)"
+  },
+  {
+   "id": "VDB#21",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,1,0.5,1,2)"
+  }
+ ],
+ "values": {
+  "COUPDAYS#1": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#2": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#3": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#4": {
+   "t": "n",
+   "v": 89
+  },
+  "COUPDAYS#5": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#6": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#7": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#8": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#9": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#10": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#11": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#12": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#13": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#14": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#16": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#17": {
+   "t": "n",
+   "v": 182
+  },
+  "VDB#1": {
+   "t": "n",
+   "v": 228.34193125000002
+  },
+  "VDB#2": {
+   "t": "n",
+   "v": 228.48615243749998
+  },
+  "VDB#3": {
+   "t": "n",
+   "v": 75.6448546875
+  },
+  "VDB#4": {
+   "t": "n",
+   "v": 76.11397708333334
+  },
+  "VDB#5": {
+   "t": "n",
+   "v": 309.1764705882353
+  },
+  "VDB#6": {
+   "t": "n",
+   "v": 308.78709677419357
+  },
+  "VDB#7": {
+   "t": "n",
+   "v": 102.75
+  },
+  "VDB#8": {
+   "t": "n",
+   "v": 103.05882352941177
+  },
+  "VDB#9": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#10": {
+   "t": "n",
+   "v": 100.28228759765625
+  },
+  "VDB#11": {
+   "t": "n",
+   "v": 10.1806640625
+  },
+  "VDB#12": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#13": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#14": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#15": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#16": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#17": {
+   "t": "n",
+   "v": 225
+  },
+  "VDB#18": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#19": {
+   "t": "n",
+   "v": 675
+  },
+  "VDB#20": {
+   "t": "n",
+   "v": 450
+  },
+  "VDB#21": {
+   "t": "n",
+   "v": 225
+  }
+ }
+}

@@ -1,6 +1,7 @@
 /** Coupon schedules and the COUP* functions, on Excel's serial numbers. */
 import type { FnDef } from '../../args.js'
-import { addMonths, daysInMonth, serialExcel, utcDays, ymd } from '../../dates.js'
+import { addMonths, daysInMonth, lastDayExcel, serialExcel, utcDays, ymd } from '../../dates.js'
+import { spend } from '../../exec/budget.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { d360, euro360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
@@ -98,17 +99,24 @@ const daysTo = (a: Ymd, b: Ymd) => (a.y < 1900 ? utcDays(b.y, b.m, b.d) - utcDay
 
 /**
  * COUPDAYS on basis 1. Excel steps the coupon dates back from maturity each from the one before it, so a day a shorter
- * month cuts stays cut (a 31st that meets February stays the 28th), takes the first such date after settlement, and
- * counts from the date a period before it: on
- * the month's last day where that date is on one, unless that comes after settlement. So
+ * month cuts stays cut (a 31st that meets February stays the 28th), and takes the first such date after settlement.
+ * From there it steps back a period at a time, to the month's last day from a date on its last day (Excel's own, 29
+ * February 1900 included), to the first date not after settlement, and counts the period that date starts. So
  * `COUPDAYS(DATE(2011,3,15),DATE(2015,8,31),2,1)` is 181, 28 February to 28 August, where COUPPCD and COUPNCD give
  * 28 February and 31 August.
  */
 function actualPeriod(c: Coupons, mat: Ymd, freq: number): number {
-  const at = { ...c.ncd, d: steppedDay(mat, c.n - 1, freq) }
-  const next = cmp(at, c.settle) > 0 ? at : { ...couponDate(c.ncd, 1, freq), d: steppedDay(mat, c.n - 2, freq) }
-  const back = couponDate(next, -1, freq)
-  const from = cmp(back, c.settle) > 0 ? couponDate(next, -1, freq, false) : back
+  // the periods from the next coupon date to maturity (COUPNUM less one, also before 1900)
+  const steps = (((mat.y - c.ncd.y) * 12 + mat.m - c.ncd.m) * freq) / 12
+  const at = { ...c.ncd, d: steppedDay(mat, steps, freq) }
+  let next = cmp(at, c.settle) > 0 ? at : { ...couponDate(c.ncd, 1, freq), d: steppedDay(mat, steps - 1, freq) }
+  const back = (x: Ymd) => couponDate(x, -1, freq, x.d === lastDayExcel(x.y, x.m))
+  let from = back(next)
+  while (cmp(from, c.settle) > 0) {
+    spend(1)
+    next = from
+    from = back(next)
+  }
   return daysTo(from, next)
 }
 

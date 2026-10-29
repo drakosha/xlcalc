@@ -1,0 +1,1247 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 16.1,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "COUPDAYS#1",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2012,8,29),DATE(2015,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#2",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#3",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,30),DATE(2015,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#4",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,30),DATE(2015,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#5",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2015,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#6",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2012,8,29),DATE(2015,8,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#7",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,8,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#8",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,30),DATE(2015,8,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#9",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,30),DATE(2015,8,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#10",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2015,8,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#11",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2012,8,29),DATE(2015,8,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#12",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,8,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#13",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,30),DATE(2015,8,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#14",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,30),DATE(2015,8,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#15",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2015,8,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#16",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2012,8,29),DATE(2015,2,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#17",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,2,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#18",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,30),DATE(2015,2,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#19",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,8,30),DATE(2015,2,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#20",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,2,28),DATE(2015,2,28),2,1)"
+  },
+  {
+   "id": "COUPDAYS#21",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,8,29),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#22",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,11,29),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#23",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2014,5,30),DATE(2015,8,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#24",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#25",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#26",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#27",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#28",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#29",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#30",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2017,5,31),4,1)"
+  },
+  {
+   "id": "COUPDAYS#31",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#32",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#33",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#34",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#35",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#36",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#37",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2016,11,30),4,1)"
+  },
+  {
+   "id": "COUPDAYS#38",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#39",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#40",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#41",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#42",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#43",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#44",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2018,4,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#45",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#46",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#47",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#48",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#49",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#50",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#51",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2018,10,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#52",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#53",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#54",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#55",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#56",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#57",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#58",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2018,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#59",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,1,31),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#60",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#61",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,4,30),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#62",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,7,31),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#63",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,10,31),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#64",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,12,15),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#65",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,2,28),DATE(2018,1,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#66",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,2,28),DATE(2016,2,29),1,1)"
+  },
+  {
+   "id": "COUPDAYS#67",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2015,3,1),DATE(2016,2,29),1,1)"
+  },
+  {
+   "id": "COUPDAYS#68",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,2,29),DATE(2020,2,29),1,1)"
+  },
+  {
+   "id": "COUPDAYS#69",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2017,6,30),DATE(2020,2,29),1,1)"
+  },
+  {
+   "id": "COUPDAYS#70",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,1,30),DATE(2015,1,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#71",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,1,30),DATE(2015,5,29),4,1)"
+  },
+  {
+   "id": "COUPDAYS#72",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,3,1),DATE(2015,1,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#73",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,3,1),DATE(2015,5,29),4,1)"
+  },
+  {
+   "id": "COUPDAYS#74",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,9,30),DATE(2015,1,30),2,1)"
+  },
+  {
+   "id": "COUPDAYS#75",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2013,9,30),DATE(2015,5,29),4,1)"
+  },
+  {
+   "id": "COUPDAYS#76",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,1,10),DATE(1901,7,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#77",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,3,15),DATE(1902,2,28),4,1)"
+  },
+  {
+   "id": "COUPDAYS#78",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,2,28),DATE(1901,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#79",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,1,1),DATE(1900,12,31),1,1)"
+  },
+  {
+   "id": "COUPDAYS#80",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(1900,1,31),DATE(1900,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#81",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),4,0)"
+  },
+  {
+   "id": "COUPDAYS#82",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),4,2)"
+  },
+  {
+   "id": "COUPDAYS#83",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),4,3)"
+  },
+  {
+   "id": "COUPDAYS#84",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),4,4)"
+  },
+  {
+   "id": "COUPDAYS#85",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),3,1)"
+  },
+  {
+   "id": "COUPDAYS#86",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),2,5)"
+  },
+  {
+   "id": "COUPDAYS#87",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2018,8,31),DATE(2018,8,31),2,1)"
+  },
+  {
+   "id": "COUPDAYS#88",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),2,\"1\")"
+  },
+  {
+   "id": "COUPDAYS#89",
+   "group": "COUPDAYS",
+   "fn": "COUPDAYS",
+   "formula": "COUPDAYS(DATE(2016,3,15),DATE(2018,8,31),2,1.9)"
+  },
+  {
+   "id": "VDB#1",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.1,10)"
+  },
+  {
+   "id": "VDB#2",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.9,10)"
+  },
+  {
+   "id": "VDB#3",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.25,9.75)"
+  },
+  {
+   "id": "VDB#4",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.5,9.75)"
+  },
+  {
+   "id": "VDB#5",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9,9.25)"
+  },
+  {
+   "id": "VDB#6",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.75,9.9)"
+  },
+  {
+   "id": "VDB#7",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,200,5,4.5,5)"
+  },
+  {
+   "id": "VDB#8",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,200,5,4.2,4.8)"
+  },
+  {
+   "id": "VDB#9",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,200,5,3.5,5)"
+  },
+  {
+   "id": "VDB#10",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,500,10,8.5,10)"
+  },
+  {
+   "id": "VDB#11",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,500,10,7.25,8.75)"
+  },
+  {
+   "id": "VDB#12",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,500,10,9.5,10)"
+  },
+  {
+   "id": "VDB#13",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.5,10,1.5)"
+  },
+  {
+   "id": "VDB#14",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,6.25,7.75,1.5)"
+  },
+  {
+   "id": "VDB#15",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,2.5,4.5,3)"
+  },
+  {
+   "id": "VDB#16",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,2,0.5,1.5,2)"
+  },
+  {
+   "id": "VDB#17",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(1000,100,2,0.25,0.75,4)"
+  },
+  {
+   "id": "VDB#18",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,2.5,3.5,0)"
+  },
+  {
+   "id": "VDB#19",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,0,1,-1)"
+  },
+  {
+   "id": "VDB#20",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,7.5,6.5,7.5)"
+  },
+  {
+   "id": "VDB#21",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,7.5,5.25,7.25)"
+  },
+  {
+   "id": "VDB#22",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,3,3)"
+  },
+  {
+   "id": "VDB#23",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,3.5,3.5)"
+  },
+  {
+   "id": "VDB#24",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,2400,10,2.5,5)"
+  },
+  {
+   "id": "VDB#25",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,3000,10,2.5,5)"
+  },
+  {
+   "id": "VDB#26",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,3000,10,0,10)"
+  },
+  {
+   "id": "VDB#27",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,9.25,10,2,TRUE)"
+  },
+  {
+   "id": "VDB#28",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,8.25,9.75,2,TRUE)"
+  },
+  {
+   "id": "VDB#29",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,0,10,9.5,10,2,TRUE)"
+  },
+  {
+   "id": "VDB#30",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,0,0,1)"
+  },
+  {
+   "id": "VDB#31",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(-2400,300,10,0,1)"
+  },
+  {
+   "id": "VDB#32",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,-300,10,0,1)"
+  },
+  {
+   "id": "VDB#33",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,\"a\",1)"
+  },
+  {
+   "id": "VDB#34",
+   "group": "VDB",
+   "fn": "VDB",
+   "formula": "VDB(2400,300,10,0,1,2,2)"
+  }
+ ],
+ "values": {
+  "COUPDAYS#1": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#2": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#3": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#4": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#5": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#6": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#7": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#8": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#9": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#10": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#11": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#12": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#13": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#14": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#15": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#16": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#17": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#18": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#19": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#20": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#21": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#22": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#23": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#24": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#25": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#26": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#27": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#28": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#29": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#30": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#31": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#32": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#33": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#34": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#35": {
+   "t": "n",
+   "v": 91
+  },
+  "COUPDAYS#36": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#38": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#39": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#40": {
+   "t": "n",
+   "v": 183
+  },
+  "COUPDAYS#41": {
+   "t": "n",
+   "v": 183
+  },
+  "COUPDAYS#42": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#43": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#44": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#45": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#46": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#47": {
+   "t": "n",
+   "v": 183
+  },
+  "COUPDAYS#48": {
+   "t": "n",
+   "v": 183
+  },
+  "COUPDAYS#49": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#50": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#51": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#52": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#53": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#54": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#55": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#56": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#57": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#58": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#59": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#60": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#61": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#62": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#63": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#64": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#65": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#66": {
+   "t": "n",
+   "v": 365
+  },
+  "COUPDAYS#67": {
+   "t": "n",
+   "v": 366
+  },
+  "COUPDAYS#68": {
+   "t": "n",
+   "v": 365
+  },
+  "COUPDAYS#69": {
+   "t": "n",
+   "v": 365
+  },
+  "COUPDAYS#70": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#71": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#72": {
+   "t": "n",
+   "v": 181
+  },
+  "COUPDAYS#73": {
+   "t": "n",
+   "v": 89
+  },
+  "COUPDAYS#74": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#75": {
+   "t": "n",
+   "v": 92
+  },
+  "COUPDAYS#76": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#77": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#78": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#79": {
+   "t": "n",
+   "v": 365
+  },
+  "COUPDAYS#80": {
+   "t": "n",
+   "v": 184
+  },
+  "COUPDAYS#81": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#82": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#83": {
+   "t": "n",
+   "v": 91.25
+  },
+  "COUPDAYS#84": {
+   "t": "n",
+   "v": 90
+  },
+  "COUPDAYS#85": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#86": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#87": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYS#88": {
+   "t": "n",
+   "v": 182
+  },
+  "COUPDAYS#89": {
+   "t": "n",
+   "v": 182
+  },
+  "VDB#1": {
+   "t": "n",
+   "v": 14.112086630399967
+  },
+  "VDB#2": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#3": {
+   "t": "n",
+   "v": 3.0082099200000414
+  },
+  "VDB#4": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#5": {
+   "t": "n",
+   "v": 5.530636800000011
+  },
+  "VDB#6": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#7": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#8": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#9": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#10": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#11": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#12": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#13": {
+   "t": "n",
+   "v": 228.34193125000002
+  },
+  "VDB#14": {
+   "t": "n",
+   "v": 228.48615243749998
+  },
+  "VDB#15": {
+   "t": "n",
+   "v": 509.796
+  },
+  "VDB#16": {
+   "t": "n",
+   "v": 450
+  },
+  "VDB#17": {
+   "t": "n",
+   "v": 337.5
+  },
+  "VDB#18": {
+   "t": "n",
+   "v": 210
+  },
+  "VDB#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VDB#20": {
+   "t": "n",
+   "v": 23.498217174211334
+  },
+  "VDB#21": {
+   "t": "n",
+   "v": 175.06731193415635
+  },
+  "VDB#22": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#23": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#24": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#25": {
+   "t": "n",
+   "v": 0
+  },
+  "VDB#26": {
+   "t": "n",
+   "v": -600
+  },
+  "VDB#27": {
+   "t": "n",
+   "v": 16.591910400000202
+  },
+  "VDB#28": {
+   "t": "n",
+   "v": 76.98988800000026
+  },
+  "VDB#29": {
+   "t": "n",
+   "v": 32.212254720000026
+  },
+  "VDB#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VDB#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VDB#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VDB#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VDB#34": {
+   "t": "n",
+   "v": 480
+  }
+ }
+}
