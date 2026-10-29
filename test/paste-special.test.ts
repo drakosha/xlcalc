@@ -203,3 +203,18 @@ describe.each(KINDS)('an operation onto a spilled array in %s', (kind) => {
     await s.close()
   })
 })
+
+describe.each(KINDS)('an operation onto a legacy array formula in %s', (kind) => {
+  it('is refused with array onto one of a single cell and onto a whole range, as Excel refuses it (the paste set array-ops); values without one replace the range', async () => {
+    const cells = { A1: { value: 5 }, A2: { value: 6 }, C1: { formula: 'A1:A2*10', array: 'C1:C2' }, E1: { formula: 'SUM(A1:A2)', array: 'E1' } }
+    const s = await (await opener(kind))({ sheets: [{ name: 'S', cells }] }, { clock })
+    for (const [from, to] of [['A1', 'E1'], ['A1:A2', 'C1:C2']]) {
+      const r = await s.editStructure(copy(from, to, { paste: 'values', operation: 'add' }))
+      expect(r.ok ? null : [r.code, r.message]).toEqual(['array', `the operation would change part of the array formula S!${to.slice(0, 2)} (${to})`])
+    }
+    expect([(await s.getBook()).sheets[0].cells, s.history]).toEqual([cells, { undo: 0, redo: 0 }])
+    expect((await s.editStructure(copy('A1:A2', 'C1:C2', { paste: 'values' }))).ok).toBe(true)
+    expect((await s.getBook()).sheets[0].cells.C1).toEqual({ value: 5 })
+    await s.close()
+  })
+})
