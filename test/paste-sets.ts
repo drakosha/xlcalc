@@ -17,7 +17,7 @@ import { engineHas, engineOutcome, localFormulas, shownFile, type Shown } from '
 import './locales.js'
 
 /** The paste sets with answers of Excel. */
-export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops']
+export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops', 'array-ops', 'merging-rules', 'merging-mac', 'fit-borders', 'painter-double']
 
 /** An operation onto a formula written as a dynamic array formula. */
 const DYNAMIC =
@@ -45,7 +45,7 @@ export const asRu = (shown: Shown): Shown => withFormats(shown, (x) => (typeof x
 export const PASTE_RU_SETS = ['ru-ops']
 
 /** One cell with a look and a rule pasted with all into a merged area. */
-export const INTO_MERGED = "Excel pastes one cell into a merged area with its value alone, without the cell's look and rule (measured once); the engine pastes the cell whole"
+export const INTO_MERGED = "Excel pastes one cell into a merged area with its value alone, without the cell's look and rule; the engine pastes the cell whole"
 
 /** Where the engine pastes otherwise than Excel for Mac, by set and case. */
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
