@@ -18,6 +18,17 @@ export interface Area {
   kind: SyntaxRef['kind']
   r: Span
   c: Span
+  /** A trim reference's blank rows and columns trimmed (`A1.:C9` 1, `A1:.C9` 2, `A1.:.C9` 3, as TRIMRANGE's codes). */
+  trim?: 1 | 2 | 3
+}
+
+/** A trim reference's operator, its dots by TRIMRANGE's codes: 1 leading, 2 trailing, 3 both. */
+export const TRIM_OPS = ['', '.:', ':.', '.:.'] as const
+
+/** What a reference's text trims (`Area.trim`), 0 for nothing. */
+export function trimOf(text: string): number {
+  const m = /\.:\.|\.:|:\./.exec(text)
+  return m ? TRIM_OPS.indexOf(m[0] as (typeof TRIM_OPS)[number]) : 0
 }
 
 export type Axis = 'r' | 'c'
@@ -41,6 +52,8 @@ const ROWS = /^(\$?)(\d+):(\$?)(\d+)$/
 
 /** The rectangle of a parsed reference (its text carries the `$` flags). */
 export function decode(ref: SyntaxRef): Area {
+  const trim = trimOf(ref.text)
+  if (trim) return { ...decode({ ...ref, text: ref.text.replace(TRIM_OPS[trim], ':') }), trim: trim as Area['trim'] }
   const t = ref.text
   if (ref.kind === 'cols') {
     const m = COLS.exec(t)!
@@ -64,6 +77,7 @@ export const isFull = (s: Span, axis: Axis) => s.lo.i === 0 && s.hi.i === LIMIT[
  * column a row range (`1:1`), over the whole sheet the rows `1:1048576`.
  */
 export function encode(a: Area): string {
+  if (a.trim) return encode({ ...a, trim: undefined }).replace(':', TRIM_OPS[a.trim])
   if (a.kind === 'cell') return colText(a.c.lo) + rowText(a.r.lo)
   if (isFull(a.c, 'c')) return `${rowText(a.r.lo)}:${rowText(a.r.hi)}`
   if (isFull(a.r, 'r')) return `${colText(a.c.lo)}:${colText(a.c.hi)}`

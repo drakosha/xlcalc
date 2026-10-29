@@ -8,7 +8,26 @@ import type { Val } from '../bench/coverage/formulajs.js'
 /** SUMIF inside its own resized sum range: Excel finds the circular reference and leaves the formulas reading the cell uncomputed (empty), so its value is not read; the engine holds the cycle at 0. */
 const SUMIF_OWN = "a circular reference through SUMIF's resized sum range: Excel leaves the formulas that read the cell uncomputed, its value unread; the engine holds the cycle at 0"
 
+/** Excel for Mac 16.114 answered #NUM! in the first run of the set `indirect`, a run beside other workbooks' calculations; the same formulas in the book of `indirect-held` gave the engine's answer. */
+const MAC_NUM = 'Excel for Mac 16.114 answered #NUM! in the first run of indirect, not in the book of indirect-held (the same formulas, again#1 to again#6): not repeated'
+
+/** The harness wrote a spill reference's file form inside INDIRECT's quotes (`bench/coverage/book.ts`, fixed): the set indirect-held-3 sent it as typed, and Excel answers as the engine. */
+const SENT = 'the harness sent INDIRECT("_xlfn.ANCHORARRAY(R!E1)") for INDIRECT("R!E1#"), which Excel answers #REF!; sent as typed (indirect-held-3), Excel answers as the engine'
+
 export const OPEN: Readonly<Record<string, { why: string; engine: Val }>> = {
+  'indirect:a1#32': { why: SENT, engine: { t: 'n', v: 6 } },
+  'indirect-held:again#7': { why: SENT, engine: { t: 'n', v: 6 } },
+  'indirect-held:again#8': { why: SENT, engine: { t: 'n', v: 3 } },
+  'indirect-held:again#9': { why: SENT, engine: { t: 'n', v: 2 } },
+  'indirect:a1#26': { why: MAC_NUM, engine: { t: 'e', v: 'DIV0' } },
+  'indirect:offset#37': { why: MAC_NUM, engine: { t: 'n', v: 30 } },
+  'indirect:arrays#1': { why: MAC_NUM, engine: { t: 'n', v: 30 } },
+  'indirect:arrays#2': { why: MAC_NUM, engine: { t: 'n', v: 40 } },
+  'indirect:arrays#3': { why: MAC_NUM, engine: { t: 'n', v: 10 } },
+  'indirect:arrays#4': { why: MAC_NUM, engine: { t: 'n', v: 40 } },
+  'indirect:arrays#5': { why: MAC_NUM, engine: { t: 'n', v: 9 } },
+  'indirect:cell#26': { why: MAC_NUM, engine: { t: 'n', v: 5 } },
+  'indirect:formulatext#4': { why: MAC_NUM, engine: { t: 'e', v: 'NA' } },
   'sumif-own-held:SUMIF#1': { why: SUMIF_OWN, engine: { t: 'n', v: 0 } },
   'sumif-own-held:SUMIF#2': { why: SUMIF_OWN, engine: { t: 'n', v: 0 } },
   'sumif-own-held:SUMIF#3': { why: SUMIF_OWN, engine: { t: 'n', v: 0 } },

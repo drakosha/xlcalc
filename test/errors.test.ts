@@ -30,9 +30,9 @@ describe('errors', () => {
   })
 
   it('#NAME?: unknown function and name', () => {
-    const { v, issue } = run({ A1: { formula: 'INDIRECT("B1")' }, A2: { formula: 'nope*2' } })
+    const { v, issue } = run({ A1: { formula: 'SUMM(B1)' }, A2: { formula: 'nope*2' } })
     expect(v('A1')).toEqual({ error: 'NAME' })
-    expect(issue('A1')).toMatchObject({ check: 'unknown_function', at: 0, fn: 'INDIRECT' })
+    expect(issue('A1')).toMatchObject({ check: 'unknown_function', at: 0, fn: 'SUMM' })
     expect(v('A2')).toEqual({ error: 'NAME' })
     expect(issue('A2')!.check).toBe('unknown_name')
     expect(issue('A2')).not.toHaveProperty('fn')

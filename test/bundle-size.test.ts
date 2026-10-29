@@ -1,7 +1,7 @@
 /**
  * What a host's bundle takes of the package, bundled by esbuild for the browser and minified: `compute` alone stays
- * under 325 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root and
- * `xlcalc/xlsx` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
+ * under 325 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
+ * `xlcalc/xlsx` and `xlcalc/csv` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
  * what to import gives the sizes.
  */
 import { build } from 'esbuild'
@@ -28,13 +28,17 @@ describe('bundle size', () => {
     expect(bytes).toBeLessThan(325 * 1024)
   }, 60_000)
 
-  it('the root and xlcalc/xlsx take en-US alone of the locales, xlcalc/locales the modules it loads and none of the computation; the ru-RU module none of the computation', async () => {
+  it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation', async () => {
     const root = (await minified(`export * from ${lib('index.js')}`)).used
     expect(locales(root)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     expect(locales((await minified(`export * from ${lib('xlsx.js')}`)).used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     const loader = (await minified(`export * from ${lib('locales.js')}`)).used
     expect(locales(loader).sort()).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/), expect.stringMatching(/^ru-RU\.(ts|js)$/)])
     expect(loader.filter((f) => /\/(functions|exec|session|spill|arrays|xlsx)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
+    // CSV reads and writes without the computation: the entry's parser and the display of values (functions/common: the helpers of numbers the General format rounds by)
+    const csv = (await minified(`export * from ${lib('csv.js')}`)).used
+    expect(locales(csv)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
+    expect(csv.filter((f) => !/functions\/common\.(ts|js)$/.test(f) && /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
     const ru = await minified(`export * from ${lib('locales/ru-RU.js')}`)
     expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
   }, 60_000)

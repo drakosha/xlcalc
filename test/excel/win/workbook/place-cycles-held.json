@@ -1,0 +1,1444 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 20.7
+ },
+ "cases": [
+  {
+   "id": "row",
+   "about": "=ROW(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "ROW(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns",
+   "about": "=COLUMNS(A1:C1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "COLUMNS(A1:C1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "isref",
+   "about": "=ISREF(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "ISREF(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "areas",
+   "about": "=AREAS(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "AREAS(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "sheet",
+   "about": "=SHEET(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SHEET(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "cell-address",
+   "about": "=CELL(\"address\",A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "CELL(\"address\",A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "cell-row",
+   "about": "=CELL(\"row\",A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "CELL(\"row\",A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "cell-width",
+   "about": "=INDEX(CELL(\"width\",A1),1,1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "INDEX(CELL(\"width\",A1),1,1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "cell-contents",
+   "about": "=CELL(\"contents\",A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "CELL(\"contents\",A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "cell-type",
+   "about": "=CELL(\"type\",A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "CELL(\"type\",A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "sum",
+   "about": "=SUM(A1)+1 in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SUM(A1)+1"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "formulatext",
+   "about": "=FORMULATEXT(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "FORMULATEXT(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "isformula",
+   "about": "=ISFORMULA(A1) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "ISFORMULA(A1)"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "row-indirect",
+   "about": "=ROW(INDIRECT(\"A1\")) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "ROW(INDIRECT(\"A1\"))"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "rows-offset",
+   "about": "=ROWS(A1:OFFSET(A1,2,0)) in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "ROWS(A1:OFFSET(A1,2,0))"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "offset-below",
+   "about": "=OFFSET(A1,1,0)+1 in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "OFFSET(A1,1,0)+1"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "indirect",
+   "about": "=INDIRECT(\"A1\")+1 in A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "INDIRECT(\"A1\")+1"
+       },
+       "A2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!A1": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "row": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROW(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROW(A1)"
+     }
+    }
+   ]
+  },
+  "columns": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=COLUMNS(A1:C1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=COLUMNS(A1:C1)"
+     }
+    }
+   ]
+  },
+  "isref": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=ISREF(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=ISREF(A1)"
+     }
+    }
+   ]
+  },
+  "areas": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=AREAS(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=AREAS(A1)"
+     }
+    }
+   ]
+  },
+  "sheet": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=SHEET(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=SHEET(A1)"
+     }
+    }
+   ]
+  },
+  "cell-address": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "$A$1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"address\",A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "$A$1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"address\",A1)"
+     }
+    }
+   ]
+  },
+  "cell-row": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"row\",A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"row\",A1)"
+     }
+    }
+   ]
+  },
+  "cell-width": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 8
+      }
+     },
+     "formulas": {
+      "S!A1": "=INDEX(CELL(\"width\",A1),1,1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 8
+      }
+     },
+     "formulas": {
+      "S!A1": "=INDEX(CELL(\"width\",A1),1,1)"
+     }
+    }
+   ]
+  },
+  "cell-contents": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"contents\",A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"contents\",A1)"
+     }
+    }
+   ]
+  },
+  "cell-type": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"type\",A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=CELL(\"type\",A1)"
+     }
+    }
+   ]
+  },
+  "sum": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=SUM(A1)+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=SUM(A1)+1"
+     }
+    }
+   ]
+  },
+  "formulatext": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "=FORMULATEXT(A1)"
+      }
+     },
+     "formulas": {
+      "S!A1": "=FORMULATEXT(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "=FORMULATEXT(A1)"
+      }
+     },
+     "formulas": {
+      "S!A1": "=FORMULATEXT(A1)"
+     }
+    }
+   ]
+  },
+  "isformula": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=ISFORMULA(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=ISFORMULA(A1)"
+     }
+    }
+   ]
+  },
+  "row-indirect": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROW(INDIRECT(\"A1\"))"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROW(INDIRECT(\"A1\"))"
+     }
+    }
+   ]
+  },
+  "rows-offset": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROWS(A1:OFFSET(A1,2,0))"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=ROWS(A1:OFFSET(A1,2,0))"
+     }
+    }
+   ]
+  },
+  "offset-below": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 6
+      }
+     },
+     "formulas": {
+      "S!A1": "=OFFSET(A1,1,0)+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 6
+      }
+     },
+     "formulas": {
+      "S!A1": "=OFFSET(A1,1,0)+1"
+     }
+    }
+   ]
+  },
+  "indirect": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=INDIRECT(\"A1\")+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=INDIRECT(\"A1\")+1"
+     }
+    }
+   ]
+  }
+ }
+}

@@ -42,6 +42,19 @@ export interface Clock {
   seed: number
 }
 
+/**
+ * The file a workbook was opened from, as Excel knows it: its name (`Budget.xlsx`) and the folder it is in as the host
+ * names it, with the separator at its end (`C:\Users\me\`, `/Users/me/`). `CELL("filename")` gives the folder, the
+ * name in brackets and the sheet (`/Users/me/[Budget.xlsx]Sheet1`), `CELL("address")` of another sheet's cell
+ * the name in brackets (`[Budget.xlsx]Sheet2!$A$1`), `INFO("directory")` the folder. Without it they are those of a
+ * workbook not saved yet: `CELL("filename")` is empty text, the name `Book1`, no folder. Not part of `inputHash`, as the
+ * clock is not; the values computed with it are part of `hash` as any others.
+ */
+export interface BookFile {
+  name: string
+  path?: string
+}
+
 /** A cell of a workbook: its sheet's name and its A1 address (`B2`). */
 export interface CellRef {
   sheet: string

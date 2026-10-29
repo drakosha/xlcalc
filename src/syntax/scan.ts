@@ -95,6 +95,12 @@ export function callFollows(src: string, i: number): boolean {
 }
 
 /** A number with the decimal separator `decimal` (a regular expression's source): `1.5`, `.5`, `5.`, `1.5E-07`. */
+/** An end of a trim reference (`A1.:C9`): a cell, a column or a row, as regular expression source. */
+export const TRIM_END = '(?:\\$?[A-Za-z]{1,3}\\$?[0-9]+|\\$?[A-Za-z]{1,3}|\\$?[0-9]+)'
+
+/** The file's function of a trim reference by TRIMRANGE's codes (its operator's dots: `TRIM_OPS` of `structure/area.ts`). */
+export const TRIM_FUNCTIONS = ['', '_TRO_LEADING', '_TRO_TRAILING', '_TRO_ALL'] as const
+
 export const numberSource = (decimal: string) => `(?:[0-9]+(?:${decimal}[0-9]*)?|${decimal}[0-9]+)(?:[eE][+-]?[0-9]+)?`
 
 // The characters of a word past its first differ by what the word is; each set below names where its difference comes from.

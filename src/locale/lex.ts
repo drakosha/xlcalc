@@ -6,7 +6,7 @@
  */
 import { wordKey } from '../collate.js'
 import { literal } from '../wildcards.js'
-import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
+import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource, TRIM_END } from '../syntax/scan.js'
 import type { Message } from './messages.js'
 
 /** Separators of formula text on one side of a translation. */
@@ -39,6 +39,11 @@ export interface LexFail {
 
 // the identifier rule of the engine's tokenizer
 const IDENT = new RegExp(IDENT_RULE, 'uy')
+
+/** A trim reference's ends and operator: cells, columns or rows around `.:`, `:.` or `.:.`. */
+const TRIM_REF = new RegExp(`${TRIM_END}(?:\\.:\\.|\\.:|:\\.)${TRIM_END}(?![\\p{L}\\p{N}_.(!])`, 'uy')
+/** A character a reference cannot follow: one of a name's. */
+const IDENT_AFTER = /[\p{L}\p{N}_.\\]/u
 
 /** The number rule of a syntax: `1.5`, `.5`, `5.`, `1.5E-07` with its decimal separator. */
 export const numberRule = (syn: Syntax) => new RegExp(numberSource(literal(syn.decimal)), 'y')
@@ -119,6 +124,13 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
     }
     if (depth > 0 ? ch === syn.arrayColumn || ch === syn.arrayRow : ch === syn.list) {
       push(depth === 0 ? 'list' : ch === syn.arrayColumn ? 'col' : 'row', 1)
+      continue
+    }
+    // a trim reference (`A1:.C9`, `1.:.9`) is copied as it is, its dots no decimal separator
+    TRIM_REF.lastIndex = i
+    const tr = !IDENT_AFTER.test(src[i - 1] ?? '') && TRIM_REF.exec(src)
+    if (tr) {
+      push('raw', tr[0].length)
       continue
     }
     num.lastIndex = i

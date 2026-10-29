@@ -1,0 +1,672 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-29",
+  "seconds": 39.6
+ },
+ "cases": [
+  {
+   "id": "basic",
+   "text": "Item,Qty,Price\r\nApple,3,1.5\r\nPear,10,0.25\r\n"
+  },
+  {
+   "id": "quotes",
+   "text": "\"a,b\",\"say \"\"hi\"\"\",\"line1\nline2\",plain\"quote,\"x\"y,\"open\r\nnext,row\r\n"
+  },
+  {
+   "id": "quote-unclosed",
+   "text": "a,\"b\r\nc,d\r\ne\r\n"
+  },
+  {
+   "id": "quote-spaced",
+   "text": "a, \"b,c\" ,d\r\n\"\",\"\"\"\"\r\n"
+  },
+  {
+   "id": "breaks",
+   "text": "a,b\nc,d\re,f\r\ng"
+  },
+  {
+   "id": "empty",
+   "text": "a,,c\r\n\r\n,,\r\nd\r\n\r\n"
+  },
+  {
+   "id": "numbers",
+   "text": "1234.5,\"1,234.5\",1e3,-5,(5),5%,$1.50,1/2,0 1/2, 12 ,+5,.5,-.5,1.,\"1,2,3\"\r\n"
+  },
+  {
+   "id": "numbers-more",
+   "text": "1E+3,1.5e-3,12345678901,1e308,1e309,\"1 234\",50%,5.5%,-5%,$-5,-$5,\"$1,234\",€5,£5\r\n"
+  },
+  {
+   "id": "dates",
+   "text": "3/15/2026,2026-03-15,15-Mar-2026,Mar 15,3/15,18:30,6:30 PM,3/15/2026 18:30,25:00,1:30:45,1/4,2026/3/15\r\n"
+  },
+  {
+   "id": "logic",
+   "text": "TRUE,false,True,#N/A,#DIV/0!,#ref!,#NAME?,#VALUE\r\n"
+  },
+  {
+   "id": "formulas",
+   "text": "=1+2,=SUM(1,2),\"=SUM(1,2)\",+1+2,-1+2,@SUM(1),=1+,=,=A1*2,=foo(1),-A1,+A1\r\n"
+  },
+  {
+   "id": "codes",
+   "text": "00123,007,0,0.5,0123.5,1234567890123456789,123456789012345,1234567890123456,+0012,-007\r\n"
+  },
+  {
+   "id": "apostrophe",
+   "text": "'007,'abc,'=1+2,a'b\r\n"
+  },
+  {
+   "id": "spaces",
+   "text": " abc ,  , 5 ,\"  7  \",x \r\n"
+  },
+  {
+   "id": "sep",
+   "text": "sep=;\r\na;b,c\r\n1;2,5\r\n"
+  },
+  {
+   "id": "sep-bom",
+   "text": "sep=;\r\na;b,c\r\n1;2,5\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "sep-tab",
+   "text": "sep=\t\r\na\tb,c\r\n"
+  },
+  {
+   "id": "semicolons",
+   "text": "a;b;c\r\n1;2;3\r\n"
+  },
+  {
+   "id": "tabs",
+   "text": "a\tb\tc\r\n1\t2\t3\r\n"
+  },
+  {
+   "id": "utf8",
+   "text": "Café,Привет,€,日本\r\n"
+  },
+  {
+   "id": "utf8-bom",
+   "text": "Café,Привет,€,日本\r\n",
+   "encoding": "utf-8-bom"
+  },
+  {
+   "id": "utf16le-bom",
+   "text": "a,b\tc\r\nCafé,Привет\r\n",
+   "encoding": "utf-16le-bom"
+  },
+  {
+   "id": "utf16be-bom",
+   "text": "a,b\tc\r\nCafé,Привет\r\n",
+   "encoding": "utf-16be-bom"
+  },
+  {
+   "id": "utf16le",
+   "text": "a,b\tc\r\nCafé,Привет\r\n",
+   "encoding": "utf-16le"
+  },
+  {
+   "id": "cp1252",
+   "text": "Café,naïve,€5,“q”\r\n",
+   "encoding": "windows-1252"
+  },
+  {
+   "id": "cp1251",
+   "text": "Привет,мир\r\n",
+   "encoding": "windows-1251"
+  },
+  {
+   "id": "named",
+   "text": "a,b\r\n",
+   "name": "Sales 2026.csv"
+  },
+  {
+   "id": "named-long",
+   "text": "a,b\r\n",
+   "name": "A very long file name of more than 31 characters.csv"
+  },
+  {
+   "id": "empty-file",
+   "text": ""
+  },
+  {
+   "id": "w-formats",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1234.5,
+        "numberFormat": "#,##0.00"
+       },
+       "B1": {
+        "value": 46096,
+        "numberFormat": 14
+       },
+       "C1": {
+        "value": 46096,
+        "numberFormat": "dddd, mmmm d, yyyy"
+       },
+       "D1": {
+        "value": 1.5,
+        "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+       },
+       "E1": {
+        "value": 0.125,
+        "numberFormat": "0.0%"
+       },
+       "F1": {
+        "value": 1.23456789012345
+       },
+       "G1": {
+        "value": 123456789012345680000
+       },
+       "H1": {
+        "value": true
+       },
+       "I1": {
+        "formula": "1/0"
+       },
+       "J1": {
+        "value": 0.770833333333333,
+        "numberFormat": "h:mm"
+       },
+       "K1": {
+        "value": -5,
+        "numberFormat": "0;(0)"
+       },
+       "L1": {
+        "value": 1234567.891
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-texts",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a,b"
+       },
+       "B1": {
+        "value": "say \"hi\""
+       },
+       "C1": {
+        "value": "line1\nline2"
+       },
+       "D1": {
+        "value": " lead"
+       },
+       "E1": {
+        "value": "trail "
+       },
+       "F1": {
+        "value": "=1+2"
+       },
+       "G1": {
+        "value": "007"
+       },
+       "H1": {
+        "value": "'q"
+       },
+       "I1": {
+        "value": "a;b"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-wide",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 46096,
+        "numberFormat": "dddd, mmmm d, yyyy"
+       },
+       "B1": {
+        "value": 1.23456789012345
+       }
+      },
+      "columns": {
+       "A": {
+        "width": 30
+       },
+       "B": {
+        "width": 20
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-offset",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "value": "b2"
+       },
+       "C3": {
+        "value": 3
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-short-rows",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "A11": {
+        "value": 11
+       },
+       "A12": {
+        "value": 12
+       },
+       "A13": {
+        "value": 13
+       },
+       "A14": {
+        "value": 14
+       },
+       "A15": {
+        "value": 15
+       },
+       "A16": {
+        "value": 16
+       },
+       "A17": {
+        "value": 17
+       },
+       "A18": {
+        "value": 18
+       },
+       "A19": {
+        "value": 19
+       },
+       "A20": {
+        "value": 20
+       },
+       "C1": {
+        "value": "c"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-gap",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A3": {
+        "value": 3
+       },
+       "C2": {
+        "value": "c"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-formatted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "D5": {
+        "numberFormat": "0.00"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-sheets",
+   "book": {
+    "activeSheet": "Two",
+    "sheets": [
+     {
+      "name": "One",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     },
+     {
+      "name": "Two",
+      "cells": {
+       "A1": {
+        "value": 2
+       },
+       "B1": {
+        "formula": "One!A1+A1"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-array",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3,2)"
+       },
+       "D1": {
+        "formula": "A3*10"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-unicode",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Привет"
+       },
+       "B1": {
+        "value": "€5"
+       },
+       "C1": {
+        "value": "Café"
+       },
+       "D1": {
+        "value": "日本"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "w-empty",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   }
+  }
+ ],
+ "sent": {
+  "basic": "1e0be7cca88ec8de830bd78b25424189fdc54810d7f9fc5f036feea1cbc73e6f",
+  "quotes": "224489b732c3c3a9d1f419930740be8f2e89f3e84f95de4ec909760d11217ca1",
+  "quote-unclosed": "3c068ebab170da3a019e12b7a523630a264b526b6e12a72d6ba5625ff9c2c0b6",
+  "quote-spaced": "12dc411263b6900a296b02da75fa8b2cc33d4c939e75f1bf8006ad72a8173318",
+  "breaks": "b4179d0dc2d66594ace954597f7edb39ed1751dc5da6f8309e8b33e5fedb0e1e",
+  "empty": "4497bdc0c232fcc2a295b0610608e138d2b360ee2f3f794edd6a9710bec357bd",
+  "numbers": "a02c92379669bbbbb76726219cdefc7d24af3a7f2402e3394180e121f2da3eed",
+  "numbers-more": "d19aa0b46b285060ef09f396b8f491c27fdded66dacf1d85db001f8a1511a1d4",
+  "dates": "739dbac33cc37949b0367f8377139dc272172d9231fd3b5703b2ccf3e699c909",
+  "logic": "c215e5920a2ae91866150c4bfe363ed5b38660a38c0a31921e7c3b987d340bf2",
+  "formulas": "adab5005300a4410083579430b18265585849c0fe6cd7612ebec21304ec2a47e",
+  "codes": "2fab325c9dad46c8bdbe7624b47d7888663c26422fdda13229ee5451edd2d8d6",
+  "apostrophe": "79c8337153931416e03e655cf39d581157b4e6f1bf7fb708ee4fac20fdc8f5ce",
+  "spaces": "e9b0a4c27abb2e89f266d32b90687d897d452467edd1f9841927d29f8cef0fab",
+  "sep": "989e8b36bc826775b0085df43b19b2a3b5b7c0fbb65e59d10d56c765d847f290",
+  "sep-bom": "cb97f807648df67f240fecb27b2beb740f7d9b49d3baeb739beb0ae92e3f541e",
+  "sep-tab": "8c321c8cfe681baff4a1e6e7d72eb5b5cbdce2915017eb667e2c1916e8b6c317",
+  "semicolons": "5c3f1d8cb8949b57a3ed0b65585671905afc57260d511939f1e375ca587835e1",
+  "tabs": "ec328b7e62249360f2f16a14fd3c1faa2632928f6d07af847d0450fdf9ac7436",
+  "utf8": "2a828d9e6fe7a1ac4cd01f9c06a91a3ff38468f484e4c6e21cd71695212015d3",
+  "utf8-bom": "af2948d50a7c80a1e96e70f3b9874fd03d75687b6fc76afaa12f808aecbf57bc",
+  "utf16le-bom": "55276b709998d8c10a86ad13d929d4bd950240014d36edd1d5b5ca95dc6ff9d4",
+  "utf16be-bom": "07aa7a502d0e277011162423eb6c5af322ed45ddca054a74f91b893df650e151",
+  "utf16le": "46940dcf92de0dcecd6f5504fca97bfb31f57571f0db2335b7a2ca27016376a1",
+  "cp1252": "c56df32830852cd10329ddc40db4ad4868e29392f4105c60394b854a66b6a19b",
+  "cp1251": "c3dd6e2c947ff3be8aef825f8e86b6b310aba05d1ff83e8730094cee07d5e537",
+  "named": "711e331d54c7d40e5c378cbf43ad08b979da240d9a1a305bb9799c05cf958823",
+  "named-long": "9c40c84416d46400d891fbe71007bcc3f9a8030683f84d0170e42f58a307058c",
+  "empty-file": "feaed04a5f4602d63e186b19b3730bec7dd302c4388ccea7fa96283082cdf0c9",
+  "w-formats": "c6e958f0758bc409498d29059a0efd704521399ac076560061eab9d59115e9f8",
+  "w-texts": "a5484d1f8e69f1546d7dfa197101d8d8f8343fb12a768a2651153acdbe4bd771",
+  "w-wide": "9eda3ea8e93356dc28ab8b7855eb3f2d417cbaf4c419794db7070cee92ad67b9",
+  "w-offset": "9c81f89850772f1353f030b8dda22b28709aa71b51097dd8d4868c604939eb8c",
+  "w-short-rows": "5c320226e626bf8e79116c6062163b2f19ad5ecdc09a1e92665b67c24a888f83",
+  "w-gap": "bfdcada1fb67daeadc59fc1e8cef891a63fb7128db210774151339609dda87cb",
+  "w-formatted": "91c63693ce15d83e1cb2704c77cd7244e60741d2e8742e593c1504bd6b3ef065",
+  "w-sheets": "6a862397ae75abdbca5aa7d36b74eaf486968d8947e4d0afbbc8bb82489dd482",
+  "w-array": "8c148030dcc98591d6c786c658780990563aa9d9b8d73ee2a66a5e5aff00d98e",
+  "w-unicode": "1cbcadfbd9bbbc8135b16f3f550e9966b029acf2b662ca8a3c5f19d107984f48",
+  "w-empty": "ad86dacda862f250101e28543a4a3b75211ab8e0f85e8cf40595b7a804d65582"
+ },
+ "answers": {
+  "basic": {
+   "sheet": "book",
+   "csv": "SXRlbSxRdHksUHJpY2UNCkFwcGxlLDMsMS41DQpQZWFyLDEwLDAuMjU="
+  },
+  "quotes": {
+   "sheet": "book",
+   "csv": "ImEsYiIsInNheSAiImhpIiIiLCJsaW5lMQpsaW5lMiIsInBsYWluIiJxdW90ZSIseHksIm9wZW4NCm5leHQscm93DQoi"
+  },
+  "quote-unclosed": {
+   "sheet": "book",
+   "csv": "YSwiYg0KYyxkDQplDQoi"
+  },
+  "quote-spaced": {
+   "sheet": "book",
+   "csv": "YSwiICIiYiIsImMiIiAiLGQNCiwiIiIiLCw="
+  },
+  "breaks": {
+   "sheet": "book",
+   "csv": "YSxiDQpjLGQNCmUsZg0KZyw="
+  },
+  "empty": {
+   "sheet": "book",
+   "csv": "YSwsYw0KLCwNCiwsDQpkLCw="
+  },
+  "numbers": {
+   "sheet": "book",
+   "csv": "MTIzNC41LCIxLDIzNC41MCIsMS4wMEUrMDMsLTUsLTUsNSUsJDEuNTAgLDItSmFuLCAxLzIsMTIsNSwwLjUsLTAuNSwxLCIxLDIsMyI="
+  },
+  "numbers-more": {
+   "sheet": "book",
+   "csv": "MS4wMEUrMDMsMS41MEUtMDMsMTIzNDU2Nzg5MDEsMWUzMDgsMWUzMDksMSAyMzQsNTAlLDUuNTAlLC01JSwoJDUpLCgkNSksIiQxLDIzNCAiLOKCrDUswqM1"
+  },
+  "dates": {
+   "sheet": "book",
+   "csv": "My8xNS8yNiwzLzE1LzI2LDE1LU1hci0yNiwxNS1NYXIsMTUtTWFyLDE4OjMwLDY6MzAgUE0sMy8xNS8yNiAxODozMCwyNTowMDowMCwxOjMwOjQ1LDQtSmFuLDMvMTUvMjY="
+  },
+  "logic": {
+   "sheet": "book",
+   "csv": "VFJVRSxGQUxTRSxUUlVFLCNOL0EsI0RJVi8wISwjUkVGISwjTkFNRT8sI1ZBTFVF"
+  },
+  "formulas": {
+   "sheet": "book",
+   "csv": "Myw9U1VNKDEsMiksMywzLDEsMSw9MSssPSw2LCNOQU1FPywtMywz"
+  },
+  "codes": {
+   "sheet": "book",
+   "csv": "MTIzLDcsMCwwLjUsMTIzLjUsMS4yMzQ1N0UrMTgsMS4yMzQ1N0UrMTQsMS4yMzQ1N0UrMTUsMTIsLTc="
+  },
+  "apostrophe": {
+   "sheet": "book",
+   "csv": "JzAwNywnYWJjLCc9MSsyLGEnYg=="
+  },
+  "spaces": {
+   "sheet": "book",
+   "csv": "IGFiYyAsICAsNSw3LHgg"
+  },
+  "sep": {
+   "sheet": "book",
+   "csv": "YSwiYixjIg0KMSwiMiw1Ig=="
+  },
+  "sep-bom": {
+   "sheet": "book",
+   "csv": "YSwiYixjIg0KMSwiMiw1Ig=="
+  },
+  "sep-tab": {
+   "sheet": "book",
+   "csv": "YSwiYixjIg=="
+  },
+  "semicolons": {
+   "sheet": "book",
+   "csv": "YTtiO2MNCjE7Mjsz"
+  },
+  "tabs": {
+   "sheet": "book",
+   "csv": "ImEJYgljIg0KIjEJMgkzIg=="
+  },
+  "utf8": {
+   "sheet": "book",
+   "csv": "Q2Fmw6ks0J/RgNC40LLQtdGCLOKCrCzml6XmnKw="
+  },
+  "utf8-bom": {
+   "sheet": "book",
+   "csv": "Q2FmjixfX19fX18s2yxfXw=="
+  },
+  "utf16le-bom": {
+   "sheet": "book",
+   "csv": "ImEsYiIsYw0KIkNhZo4sX19fX19fIiw="
+  },
+  "utf16be-bom": {
+   "sheet": "book",
+   "csv": "/v9hLCJiCWMiDQpDYWbpLAQfBEAEOAQyBDUEQg=="
+  },
+  "utf16le": {
+   "sheet": "book",
+   "csv": "YSwiYgljIg0KQ2Fm6SwfBEAEOAQyBDUEQgQ="
+  },
+  "cp1252": {
+   "sheet": "book",
+   "csv": "Q2Fm6SxuYe92ZSyANSyTcZQ="
+  },
+  "cp1251": {
+   "sheet": "book",
+   "csv": "z/Do4uXyLOzo8A=="
+  },
+  "named": {
+   "sheet": "Sales 2026",
+   "csv": "YSxi"
+  },
+  "named-long": {
+   "sheet": "A very long file name of more t",
+   "csv": "YSxi"
+  },
+  "empty-file": {
+   "sheet": "book",
+   "csv": ""
+  },
+  "w-formats": {
+   "sheet": "S",
+   "csv": "IjEsMjM0LjUwIiwzLzE1LzI2LCJTdW5kYXksIE1hcmNoIDE1LCAyMDI2IiwkMS41MCAsMTIuNSUsMS4yMzQ1Njc4OSwxLjIzNDU3RSsyMCxUUlVFLCNESVYvMCEsMTg6MzAsKDUpLDEyMzQ1NjcuODkx"
+  },
+  "w-texts": {
+   "sheet": "S",
+   "csv": "ImEsYiIsInNheSAiImhpIiIiLCJsaW5lMQpsaW5lMiIsIGxlYWQsdHJhaWwgLD0xKzIsMDA3LCdxLGE7Yg=="
+  },
+  "w-wide": {
+   "sheet": "S",
+   "csv": "IlN1bmRheSwgTWFyY2ggMTUsIDIwMjYiLDEuMjM0NTY3ODk="
+  },
+  "w-offset": {
+   "sheet": "S",
+   "csv": "YjIsDQosMw=="
+  },
+  "w-short-rows": {
+   "sheet": "S",
+   "csv": "MSwsYw0KMiwsDQozLCwNCjQsLA0KNSwsDQo2LCwNCjcsLA0KOCwsDQo5LCwNCjEwLCwNCjExLCwNCjEyLCwNCjEzLCwNCjE0LCwNCjE1LCwNCjE2LCwNCjE3LCwNCjE4LCwNCjE5LCwNCjIwLCw="
+  },
+  "w-gap": {
+   "sheet": "S",
+   "csv": "MSwsDQosLGMNCjMsLA=="
+  },
+  "w-formatted": {
+   "sheet": "S",
+   "csv": "MSwsLA0KLCwsDQosLCwNCiwsLA0KLCws"
+  },
+  "w-sheets": {
+   "sheet": "Two",
+   "csv": "Miwz"
+  },
+  "w-array": {
+   "sheet": "S",
+   "csv": "MSwyLCw1MA0KMyw0LCwNCjUsNiws"
+  },
+  "w-unicode": {
+   "sheet": "S",
+   "csv": "X19fX19fLNs1LENhZo4sX18="
+  },
+  "w-empty": {
+   "sheet": "S",
+   "csv": ""
+  }
+ }
+}

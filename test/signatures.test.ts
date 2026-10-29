@@ -67,7 +67,7 @@ describe('functionSignature', () => {
     expect(functionSignature('СЧЁТЕСЛИ', ru)).toMatchObject({ fn: 'COUNTIF', category: 'statistical', categoryName: 'Статистические' })
     expect(functionDescription('countif', ru)).toBe('Сколько ячеек отвечают условию.')
     expect(functionDescription('VLOOKUP')).toBe('A value from a column of a table, found in its first column.')
-    expect(functionDescription('CELL')).toBeNull()
+    expect(functionDescription('SUMM')).toBeNull()
     // the ru-RU locale alone, as a host that only computes takes it, has none of the tips' words
     expect(ruRU.argumentWords).toBeUndefined()
     expect(functionSignature('ВПР', ruRU)!.text).toBe('ВПР(lookup_value;table;column_index;[approximate])')
@@ -97,7 +97,7 @@ describe('functionSignature', () => {
   })
 
   it('answers null for a name that is no function of the whitelist', () => {
-    for (const name of ['', 'SUMM', 'CELL', 'СУММ']) expect(functionSignature(name), name).toBeNull()
+    for (const name of ['', 'SUMM', 'SUMX', 'СУММ']) expect(functionSignature(name), name).toBeNull()
   })
 
   it('checks its input', () => {
