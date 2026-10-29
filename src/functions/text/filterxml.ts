@@ -29,6 +29,8 @@ function valueOf(cx: Cx, n: XNode): V {
   const s = ownText(n)
   if (s === null) return E.VALUE
   const v = cx.rules.valueText(s) ?? cx.rules.toBool(s)
+  // a number too small for a double stays text (`1E-400`), where VALUE reads 0
+  if (v === 0 && /[1-9][^eE]*[eE]/.test(s)) return capped(s)
   return typeof v === 'number' || typeof v === 'boolean' ? v : capped(s)
 }
 
