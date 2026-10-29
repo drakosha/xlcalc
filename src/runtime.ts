@@ -12,7 +12,6 @@ import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
 import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritColumn, type CritIndex, type Lower } from './criteria.js'
 import { allot, spend } from './exec/budget.js'
-import { Lambda } from './exec/lambda.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { rankInRange } from './functions/statistical/rank.js'
@@ -27,7 +26,7 @@ import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, asValue, E, fitNumber, fromCellValue, holds, isErr, Lambda, nearZero, Rng, whole, type CErr, type V } from './values.js'
 import type { Column } from './column.js'
 
 export interface SheetData {
@@ -157,12 +156,12 @@ export function makeRuntime(ctx: RuntimeContext) {
   const scalar = (x: Arg): V => {
     if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
     if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
-    return x instanceof Areas ? E.VALUE : x
+    return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
   }
 
   /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are; several areas #VALUE!. */
   const view = (x: Arg): V | Arr => {
-    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
+    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x instanceof Lambda ? asValue(x) : x
     const b = bounds(x)
     return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
   }
@@ -400,8 +399,8 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   /**
    * A function by its name as a value (`BYROW(A1:C3,SUM)`), made once: called with the counts it takes, it is its call
-   * over those arguments, lifted as a formula's call is; an argument left out is not given. RAND and its kin get the
-   * book's first cell.
+   * over those arguments, lifted as a formula's call is; an argument left out is not given; called with other counts
+   * #CALC!, as Excel answers `LET(f,SUM,f())`. RAND and its kin get the book's first cell.
    */
   const etas = new Map<string, Lambda>()
   const ETA = (name: string): Lambda => {
@@ -409,7 +408,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (f) return f
     const spec = FUNCTIONS[name]
     const call = spec.lazy ? (args: readonly Arg[]) => F[name](...args.map((a) => () => a)) : spec.cell ? (args: readonly Arg[]) => FL[name](0, 0, 0, ...args) : (args: readonly Arg[]) => FL[name](...args)
-    f = new Lambda(spec.min, spec.max, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.VALUE))
+    f = new Lambda(0, spec.max, (args) => (spec.takes(args.length) ? call(args as Arg[]) : E.CALC), spec.takes)
     etas.set(name, f)
     return f
   }

@@ -8,14 +8,12 @@
 import type { Arg, Cx, FnDef } from '../args.js'
 import { arr, Arr } from '../arrays/value.js'
 import { allot } from '../exec/budget.js'
-import { callValue, Lambda } from '../exec/lambda.js'
-import { Areas, E, isErr, Rng, type V } from '../values.js'
+import { callValue } from '../exec/lambda.js'
+import { Areas, asValue, E, isErr, Lambda, Rng, type V } from '../values.js'
 import { NEWER_MAX_ARGS } from './common.js'
 
 /** A function that takes `n` arguments, or undefined: a LAMBDA with `n` parameters, a built-in function within its counts. */
-export function taking(f: Arg | undefined, n: number): Lambda | undefined {
-  return f instanceof Lambda && n >= (f.min || f.max) && n <= f.max ? f : undefined
-}
+export const taking = (f: Arg | undefined, n: number): Lambda | undefined => (f instanceof Lambda && f.takes(n) ? f : undefined)
 
 /** An argument's rows and columns, and its element at a row and a column: a range's cell as a reference, an array's value. */
 export interface Items {
@@ -39,9 +37,10 @@ function line(x: Rng | Arr, i: number, row: boolean): Arg {
   return arr(row ? 1 : n, row ? n : 1, Array.from({ length: n }, (_, k) => (row ? x.at(i, k) : x.at(k, i))))
 }
 
-/** The one value an answer is, or undefined for an array of several values or a function. */
+/** The one value an answer is (a function too, which an array holds), or undefined for an array of several values. */
 export function one(x: Arg, cx: Cx): V | undefined {
-  if (x instanceof Lambda || x instanceof Areas) return undefined
+  if (x instanceof Lambda) return asValue(x)
+  if (x instanceof Areas) return undefined
   if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cx.scalar(x) : undefined
   if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : undefined
   return x
@@ -60,11 +59,17 @@ function answers(cx: Cx, rows: number, cols: number, answer: (r: number, c: numb
   return arr(rows, cols, v)
 }
 
-/** MAP(array1, …, function): the function of the arrays' values at each position; a smaller array's missing ones are #N/A. */
+/**
+ * MAP(array1, …, function): the function of the arrays' values at each position; a smaller array's missing ones are
+ * #N/A. An array that is an error is the answer, before the function is looked at.
+ */
 function map(cx: Cx, first: Arg, rest: Arg[]): Arg {
+  const arrays = [first, ...rest.slice(0, -1)]
+  const error = arrays.find(isErr)
+  if (error) return error
   const f = taking(rest.at(-1), rest.length)
   if (!f) return E.VALUE
-  const all = [first, ...rest.slice(0, -1)].map(itemsOf)
+  const all = arrays.map(itemsOf)
   if (all.some((x) => !x)) return E.VALUE
   const items = all as Items[]
   const rows = Math.max(...items.map((x) => x.rows))
@@ -74,23 +79,30 @@ function map(cx: Cx, first: Arg, rest: Arg[]): Arg {
 
 /**
  * REDUCE and SCAN: the value accumulated over the array's values row by row, or with `each` (SCAN) the array of each
- * step's value.
+ * step's value. Without an initial value the first value starts it, as Microsoft's documentation says.
  */
 function accumulate(cx: Cx, initial: Arg | undefined, array: Arg, fn: Arg, each?: V[]): Arg {
+  if (isErr(array)) return array
   const f = taking(fn, 2)
   const items = itemsOf(array)
   if (!f || !items) return E.VALUE
-  if (each) allot(items.rows * items.cols)
-  let acc = initial
-  for (let r = 0; r < items.rows; r++)
-    for (let c = 0; c < items.cols; c++) {
-      acc = f.run([acc, items.at(r, c)])
-      if (!each) continue
-      const x = one(acc, cx)
-      if (x === undefined) return E.CALC
-      each.push(x)
-    }
-  return each ? arr(items.rows, items.cols, each) : (acc ?? null)
+  const n = items.rows * items.cols
+  if (each) allot(n)
+  const at = (i: number) => items.at(Math.floor(i / items.cols), i % items.cols)
+  // SCAN keeps each step's value, one value or the whole call is #CALC!
+  const kept = (x: Arg) => {
+    const v = each && one(x, cx)
+    if (v !== undefined) each!.push(v)
+    return !each || v !== undefined
+  }
+  let i = initial === undefined ? 1 : 0
+  let acc = initial ?? at(0)
+  if (i && !kept(acc)) return E.CALC
+  for (; i < n; i++) {
+    acc = callValue(f, [acc, at(i)])
+    if (!kept(acc)) return E.CALC
+  }
+  return each ? arr(items.rows, items.cols, each) : acc
 }
 
 /** BYROW and BYCOL: the function of each row (a column of answers) or each column (a row of them). */
@@ -98,30 +110,28 @@ const by =
   (row: boolean) =>
   (cx: Cx, x: Arg, fn: Arg): Arg => {
     const f = taking(fn, 1)
-    if (!f || x instanceof Areas) return E.VALUE
     if (isErr(x)) return x
-    const lines = x instanceof Rng || x instanceof Arr ? x : arr(1, 1, [x])
+    if (!f || x instanceof Areas) return E.VALUE
+    const lines = x instanceof Rng || x instanceof Arr ? x : arr(1, 1, [x instanceof Lambda ? asValue(x) : x])
     const n = row ? (lines instanceof Rng ? lines.r2 - lines.r1 + 1 : lines.rows) : lines instanceof Rng ? lines.c2 - lines.c1 + 1 : lines.cols
-    return answers(cx, row ? n : 1, row ? 1 : n, (r, c) => f.run([line(lines, row ? r : c, row)]))
+    return answers(cx, row ? n : 1, row ? 1 : n, (r, c) => callValue(f, [line(lines, row ? r : c, row)]))
   }
 
 export const functions: Record<string, FnDef> = {
   BYCOL: { args: 'R R', cx: true, array: true, fn: by(false) },
   BYROW: { args: 'R R', cx: true, array: true, fn: by(true) },
-  // a size is truncated, below 1 #VALUE!
+  // a size is a whole number from 1, else #VALUE! (2.7 too)
   MAKEARRAY: {
     args: 'n n R',
     cx: true,
     array: true,
     fn: (cx: Cx, rows: number, cols: number, fn: Arg) => {
       const f = taking(fn, 2)
-      const [h, w] = [Math.trunc(rows), Math.trunc(cols)]
-      if (!f || h < 1 || w < 1) return E.VALUE
-      return answers(cx, h, w, (r, c) => f.run([r + 1, c + 1]))
+      if (!f || !Number.isInteger(rows) || !Number.isInteger(cols) || rows < 1 || cols < 1) return E.VALUE
+      return answers(cx, rows, cols, (r, c) => callValue(f, [r + 1, c + 1]))
     },
   },
   MAP: { args: 'R R', rep: 1, max: NEWER_MAX_ARGS, cx: true, array: true, fn: map },
-  // a left-out initial value is the first accumulated value left out: blank, and ISOMITTED of it TRUE
   REDUCE: { args: 'R R R', omit: { at: { 0: 'default' } }, cx: true, array: true, fn: (cx: Cx, initial: Arg | undefined, array: Arg, fn: Arg) => accumulate(cx, initial, array, fn) },
   SCAN: { args: 'R R R', omit: { at: { 0: 'default' } }, cx: true, array: true, fn: (cx: Cx, initial: Arg | undefined, array: Arg, fn: Arg) => accumulate(cx, initial, array, fn, []) },
 }

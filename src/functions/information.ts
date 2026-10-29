@@ -3,7 +3,7 @@
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
 import { lifts } from '../arrays/lift.js'
-import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
+import { Areas, E, isErr, Lambda, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import { ERROR_TYPE } from '../error-type.js'
 
@@ -32,6 +32,6 @@ export const functions: Record<string, FnDef> = {
   // a range of several cells gives its top-left cell (an array is lifted)
   N: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },
   NA: { args: '', fn: () => E.NA },
-  // an array, even of one value, or a range of several cells is type 64
-  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (lifts(x) ? 64 : typeOf(cx.scalar(x))) },
+  // an array, even of one value, or a range of several cells is type 64, a function (a LAMBDA) 128
+  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (x instanceof Lambda ? 128 : lifts(x) ? 64 : typeOf(cx.scalar(x))) },
 }
