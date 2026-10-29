@@ -36,6 +36,11 @@ export const OMITTED: Readonly<Record<string, Omission>> = {
   FIXED: defaults(1),
   'FLOOR.MATH': defaults(1),
   'FLOOR.PRECISE': defaults(1),
+  // the defaults of the series' reading and the interval's level
+  'FORECAST.ETS': defaults(3, 4, 5),
+  'FORECAST.ETS.CONFINT': defaults(3, 4, 5, 6),
+  'FORECAST.ETS.SEASONALITY': defaults(2, 3),
+  'FORECAST.ETS.STAT': defaults(3, 4, 5),
   FTEST: { at: { 0: 'VALUE', 1: 'VALUE' } },
   GROWTH: defaults(1, 2, 3),
   // a lookup in a blank finds nothing (#N/A)
