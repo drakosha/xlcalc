@@ -1021,7 +1021,8 @@ interface AlignmentStyle {
   indent?: number
   /**
    * The text's orientation (Format Cells > Alignment > Orientation, xlsx `textRotation`): degrees from -90 to 90, up for
-   * positive ones, or `vertical`, its letters one above the other. The engine fits widths and heights as for level text.
+   * positive ones, or `vertical`, its letters one above the other. AutoFit of rows and columns takes the turned text's
+   * room as Excel for Mac does (`fitRows`, `fitColumns`), and a number typed into a turned cell widens no column.
    */
   rotation?: number | 'vertical'
 }
@@ -2640,7 +2641,8 @@ interface EntryTextOptions {
 ### `EntryWidthOptions`
 
 Options of [`entryWidth`](#xlcalc-entrywidth): the format used to display the value (the cell's format after the entry), the workbook's
-locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into.
+locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into. A cell
+whose text is turned ([`AlignmentStyle.rotation`](#alignmentstyle)) widens no column, so a host does not call it for one.
 
 ```ts
 interface EntryWidthOptions extends DisplayOptions {
