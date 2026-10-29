@@ -1,0 +1,861 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-29",
+  "seconds": 143.7
+ },
+ "cases": [
+  {
+   "id": "whole-1",
+   "cells": {
+    "B2": {
+     "value": -12345678.9
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-2",
+   "cells": {
+    "B2": {
+     "value": -12345678.9
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-3",
+   "cells": {
+    "B2": {
+     "value": 99999999.25
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-4",
+   "cells": {
+    "B2": {
+     "value": 99999999.25
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-5",
+   "cells": {
+    "B2": {
+     "value": 1234567.125
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-6",
+   "cells": {
+    "B2": {
+     "value": 1234567.125
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "whole-wide-1",
+   "cells": {
+    "B2": {
+     "value": 12345678.9
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 12
+    }
+   }
+  },
+  {
+   "id": "hashes-1",
+   "cells": {
+    "B2": {
+     "value": 123456789
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 4
+    }
+   }
+  },
+  {
+   "id": "hashes-2",
+   "cells": {
+    "B2": {
+     "value": 123456789
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 4
+    }
+   }
+  },
+  {
+   "id": "hashes-3",
+   "cells": {
+    "B2": {
+     "value": 0.000123
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 2
+    }
+   }
+  },
+  {
+   "id": "hashes-4",
+   "cells": {
+    "B2": {
+     "value": 0.000123
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 2
+    }
+   }
+  },
+  {
+   "id": "hashes-5",
+   "cells": {
+    "B2": {
+     "value": 98765.4
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 3
+    }
+   }
+  },
+  {
+   "id": "hashes-6",
+   "cells": {
+    "B2": {
+     "value": 98765.4
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 3
+    }
+   }
+  },
+  {
+   "id": "sum-blocks-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "formula": "SUM(A1)"
+    },
+    "A3": {
+     "value": 3
+    },
+    "A4": {
+     "formula": "SUM(A3)"
+    },
+    "A5": {
+     "value": 5
+    },
+    "A6": {
+     "value": 6
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A7",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-blocks-2",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "formula": "SUM(A1)"
+    },
+    "A3": {
+     "value": 3
+    },
+    "A4": {
+     "formula": "SUM(A3)"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-other-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "value": 2
+    },
+    "A3": {
+     "formula": "SUBTOTAL(9,A1:A2)"
+    },
+    "A4": {
+     "value": 4
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-left-1",
+   "cells": {
+    "A2": {
+     "value": 1
+    },
+    "B2": {
+     "formula": "SUM(A2)"
+    },
+    "C2": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "D2",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  }
+ ],
+ "answers": {
+  "whole-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -12345678.9,
+      "format": 11
+     },
+     "text": "-1,23E+07",
+     "code": "0,00E+00",
+     "local": "0,00E+00",
+     "value2": -12345678.9,
+     "formula": "-12345678.9",
+     "formulaLocal": "-12345678,9",
+     "formula2": "-12345678.9",
+     "formula2Local": "-12345678,9",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "whole-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -12345678.9,
+      "format": "0E+00"
+     },
+     "text": "-1E+07",
+     "code": "0E+00",
+     "local": "0E+00",
+     "value2": -12345678.9,
+     "formula": "-12345678.9",
+     "formulaLocal": "-12345678,9",
+     "formula2": "-12345678.9",
+     "formula2Local": "-12345678,9",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "whole-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 99999999.25,
+      "format": "0.000"
+     },
+     "text": "99999999,250",
+     "code": "0,000",
+     "local": "0,000",
+     "value2": 99999999.25,
+     "formula": "99999999.25",
+     "formulaLocal": "99999999,25",
+     "formula2": "99999999.25",
+     "formula2Local": "99999999,25",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 11.86,
+     "points": 66,
+     "standard": false,
+     "saved": {
+      "width": 12.5703125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "whole-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 99999999.25,
+      "format": "0.0"
+     },
+     "text": "99999999,3",
+     "code": "0,0",
+     "local": "0,0",
+     "value2": 99999999.25,
+     "formula": "99999999.25",
+     "formulaLocal": "99999999,25",
+     "formula2": "99999999.25",
+     "formula2Local": "99999999,25",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.86,
+     "points": 55.5,
+     "standard": false,
+     "saved": {
+      "width": 10.5703125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "whole-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234567.125,
+      "format": "0.0000"
+     },
+     "text": "1234567,1250",
+     "code": "0,0000",
+     "local": "0,0000",
+     "value2": 1234567.125,
+     "formula": "1234567.125",
+     "formulaLocal": "1234567,125",
+     "formula2": "1234567.125",
+     "formula2Local": "1234567,125",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 11.86,
+     "points": 66,
+     "standard": false,
+     "saved": {
+      "width": 12.5703125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "whole-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234567.125,
+      "format": 2
+     },
+     "text": "1234567,13",
+     "code": "0,00",
+     "local": "0,00",
+     "value2": 1234567.125,
+     "formula": "1234567.125",
+     "formulaLocal": "1234567,125",
+     "formula2": "1234567.125",
+     "formula2Local": "1234567,125",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.86,
+     "points": 55.5,
+     "standard": false,
+     "saved": {
+      "width": 10.5703125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "whole-wide-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 12345678.9,
+      "format": 2
+     },
+     "text": "12345678,90",
+     "code": "0,00",
+     "local": "0,00",
+     "value2": 12345678.9,
+     "formula": "12345678.9",
+     "formulaLocal": "12345678,9",
+     "formula2": "12345678.9",
+     "formula2Local": "12345678,9",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 11.29,
+     "points": 63,
+     "standard": false,
+     "saved": {
+      "width": 12,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 123456789,
+      "format": "0.0E+00"
+     },
+     "text": "###",
+     "code": "0,0E+00",
+     "local": "0,0E+00",
+     "value2": 123456789,
+     "formula": "123456789",
+     "formulaLocal": "123456789",
+     "formula2": "123456789",
+     "formula2Local": "123456789",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 3.29,
+     "points": 21,
+     "standard": false,
+     "saved": {
+      "width": 4,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 123456789
+     },
+     "text": "###",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 123456789,
+     "formula": "123456789",
+     "formulaLocal": "123456789",
+     "formula2": "123456789",
+     "formula2Local": "123456789",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 3.29,
+     "points": 21,
+     "standard": false,
+     "saved": {
+      "width": 4,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.000123,
+      "format": "0.0000000"
+     },
+     "text": "#",
+     "code": "0,0000000",
+     "local": "0,0000000",
+     "value2": 0.000123,
+     "formula": "0.000123",
+     "formulaLocal": "0,000123",
+     "formula2": "0.000123",
+     "formula2Local": "0,000123",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 1.29,
+     "points": 10.5,
+     "standard": false,
+     "saved": {
+      "width": 2,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.000123,
+      "format": "0.00000"
+     },
+     "text": "#",
+     "code": "0,00000",
+     "local": "0,00000",
+     "value2": 0.000123,
+     "formula": "0.000123",
+     "formulaLocal": "0,000123",
+     "formula2": "0.000123",
+     "formula2Local": "0,000123",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 1.29,
+     "points": 10.5,
+     "standard": false,
+     "saved": {
+      "width": 2,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 98765.4,
+      "format": "0.0E+00"
+     },
+     "text": "##",
+     "code": "0,0E+00",
+     "local": "0,0E+00",
+     "value2": 98765.4,
+     "formula": "98765.4",
+     "formulaLocal": "98765,4",
+     "formula2": "98765.4",
+     "formula2Local": "98765,4",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 2.29,
+     "points": 15.75,
+     "standard": false,
+     "saved": {
+      "width": 3,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "hashes-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 98765.4
+     },
+     "text": "##",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 98765.4,
+     "formula": "98765.4",
+     "formulaLocal": "98765,4",
+     "formula2": "98765.4",
+     "formula2Local": "98765,4",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 2.29,
+     "points": 15.75,
+     "standard": false,
+     "saved": {
+      "width": 3,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "sum-blocks-1": {
+   "cells": {
+    "A7": {
+     "cell": {
+      "formula": "SUM(A5:A6)"
+     },
+     "computed": 11,
+     "text": "11",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 11,
+     "formula": "=SUM(A5:A6)",
+     "formulaLocal": "=СУММ(A5:A6)",
+     "formula2": "=SUM(A5:A6)",
+     "formula2Local": "=СУММ(A5:A6)",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-blocks-2": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A4,A2)"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "=SUM(A4,A2)",
+     "formulaLocal": "=СУММ(A4;A2)",
+     "formula2": "=SUM(A4,A2)",
+     "formula2Local": "=СУММ(A4;A2)",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-other-1": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A4)"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "=SUM(A4)",
+     "formulaLocal": "=СУММ(A4)",
+     "formula2": "=SUM(A4)",
+     "formula2Local": "=СУММ(A4)",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-left-1": {
+   "cells": {
+    "D2": {
+     "cell": {
+      "formula": "SUM(C2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "=SUM(C2)",
+     "formulaLocal": "=СУММ(C2)",
+     "formula2": "=SUM(C2)",
+     "formula2Local": "=СУММ(C2)",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "D": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}

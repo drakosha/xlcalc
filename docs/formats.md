@@ -393,7 +393,7 @@ console.log(stepDecimals(undefined, 1.5, 1), stepDecimals('#,##0.00', 1.5, -1), 
 
 Comma Style applies the built-in format 43 and Accounting Number Format 44, which display by the workbook's locale (`_(* #,##0.00_)…` and `_($* #,##0.00_)…` in en-US); a host passes 43 or 44 to `patchCells`. Excel for Mac in en-US saves both as codes of the file's own, which read back as the same formats.
 
-The rules are Excel for Mac's in en-US, from 183 presses in three sets, each predicted before Excel ran it, and hold in Excel for Mac in ru-RU and Excel for Windows in en-US, which pressed every button alike ([docs/development.md](development.md#number-formats-and-displayed-text)); the column a press widens follows Excel for Mac's widths, and in ru-RU Comma Style widens the default column for 1 234,50 where Excel keeps it.
+The rules are Excel for Mac's in en-US, from 183 presses in three sets, each predicted before Excel ran it, and hold in Excel for Mac in ru-RU and Excel for Windows in en-US and ru-RU, which pressed every button alike ([docs/development.md](development.md#number-formats-and-displayed-text)); the column a press widens follows Excel for Mac's widths, and in ru-RU Comma Style widens the default column for 1 234,50 where Excel for Mac keeps it.
 
 A format that a number no longer fits widens its column, as Excel widens it after Accounting or a decimal more: `patchCells` with `numberFormat` gives a column without a width of its own the width typing would give it (`bestFit`), in the same undo step.
 
