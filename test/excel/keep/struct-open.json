@@ -1252,7 +1252,7 @@
    }
   },
   "wide-delete-from-col": {
-   "sent": "3c37e6f3163830aa3afd2ed4415992ce67fe8255e502d5ff2c6f8c289d47bde9",
+   "sent": "85bbb91baf7648fb4311eadaa95c42a21ba5e8b7a35955562e4edf7791c9f875",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1274,8 +1274,8 @@
     ],
     "anchors": {
      "Data": [
-      "twoCellAnchor oneCell: 5 0 0 127000 / 7 368300 12 127000",
-      "twoCellAnchor oneCell: 5 0 14 127000 / 5 1016000 18 0"
+      "twoCellAnchor oneCell: 5 0 0 127000 / 8 546100 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 711200 18 0"
      ]
     },
     "pivots": [],
@@ -1284,7 +1284,7 @@
    }
   },
   "wide-delete-cols-in": {
-   "sent": "148c83171428d9b3017a57156f853e09c79866b246490d239e4fbe4b89beb179",
+   "sent": "a01cbf11b63861b20dec9355ef760937e9739e40963b435072bc9e8b7d2c5b64",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1306,7 +1306,7 @@
     ],
     "anchors": {
      "Data": [
-      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 7 444500 12 127000",
       "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
      ]
     },
@@ -1316,7 +1316,7 @@
    }
   },
   "wide-insert-cols-in": {
-   "sent": "f8ec8a19d4a3a8a5baed0bfe3d843020fa0f7e46166f0af250c80226f3266ba6",
+   "sent": "03154d17b0541ab7b9b2abc4b45f56ed2541d3bd2aa5fa4c7801406829461b30",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1338,7 +1338,7 @@
     ],
     "anchors": {
      "Data": [
-      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 7 1206500 12 127000",
       "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
      ]
     },
@@ -1348,7 +1348,7 @@
    }
   },
   "wide-delete-picture-cols": {
-   "sent": "3e68329729a89eba3d13ede54d935b9a3614cd5c4a55324a586a2e832fa7b4e9",
+   "sent": "a2432494eef0e2b600bd56d55a976a421941ff7936d04602a8a7e98867ca8089",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1370,8 +1370,8 @@
     ],
     "anchors": {
      "Data": [
-      "twoCellAnchor oneCell: 5 0 0 127000 / 7 368300 12 127000",
-      "twoCellAnchor oneCell: 5 0 14 127000 / 5 1016000 18 0"
+      "twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000",
+      "twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0"
      ]
     },
     "pivots": [],
@@ -1465,6 +1465,218 @@
      "Data": [
       "F2 'Data'!#REF!",
       "F3 'Data'!#REF!"
+     ]
+    }
+   }
+  },
+  "pivot-delete-source-cells": {
+   "sent": "c6f18194dce115686897de9974fa157a0f1e580bbb55a0b498635b63a5ad414c",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!#REF!"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor : 2 444500 0 127000 / 8 215900 12 127000"
+     ]
+    },
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-cell": {
+   "sent": "f0a071449babd756672619e6c697dd2b4a3f638b7031a7cbf94688ecdea695f9",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B10",
+      "G2 'Data'!B11:B20"
+     ]
+    }
+   }
+  },
+  "wide-delete-wide-col": {
+   "sent": "b8137942c0b1814475677abf41d106fe2ddaf6ca45f6ae980eb716553230ce32",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 10 406400 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-to-col": {
+   "sent": "8de8271fb95cbbe9a01a83725cb8a4a8a736279d719ed31ee3bdff251b3e87bc",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-cols-in": {
+   "sent": "5b308ef7ea0e9ab8cb16a0bf8c3d56f0b9e27f8fd08d15fa4bf442647eb6c5ca",
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 11 215900 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 7 114300 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "pivot-delete-source-rows": {
+   "sent": "453a9938b93e2ad0ab552de0a5bd712b0cdf986214ab054f241183f8e7c00823",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-both": {
+   "sent": "87f76d8bc67722a6beb9a3949e6aeb563024d5baa5a30ace59ca51d19075a07b",
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B9",
+      "#REF! 'Data'!B10:B19"
      ]
     }
    }

@@ -1,0 +1,33 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "seconds": 3.6,
+  "date": "2026-10-29"
+ },
+ "cases": {
+  "column": {
+   "sent": "afe3e1d5971a5cc1c009e460942ac2537192a5c1cf51b7acf6c012c97820d19e",
+   "seconds": 1.7,
+   "bytes": 8239,
+   "saved": {
+    "cells": 1,
+    "cols": [
+     "<col min=\"3\" max=\"3\" width=\"8.83203125\" style=\"1\"/>"
+    ],
+    "rows": []
+   }
+  },
+  "row": {
+   "sent": "7b63ba7b2b3968b83e68992ce78d25799b562abe454b17d11734d6e389897ae7",
+   "seconds": 0.8,
+   "bytes": 8228,
+   "saved": {
+    "cells": 1,
+    "cols": [],
+    "rows": [
+     "<row r=\"3\" s=\"1\" customFormat=\"1\"/>"
+    ]
+   }
+  }
+ }
+}

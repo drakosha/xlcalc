@@ -15,11 +15,11 @@
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { readXlsx } from '../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { createSession, InputError } from '../src/index.js'
 import { baseBook, MADE, MADE_PROBES, partsOf, PROBES, refsOf, STRUCT } from '../bench/coverage/keep/books.js'
-import { formatsFiles, structFiles, structWritten, written, type FormatsRun, type MadeRun, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
+import { formatsFiles, LOOKS, looksOf, structFiles, structWritten, written, type FormatsRun, type MadeRun, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
 import { FORMATS, formatsOf } from '../bench/coverage/keep/formats.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { partsOf as textsOf } from './keep-files.js'
@@ -60,6 +60,12 @@ const RESAVED: Record<string, { parts?: Record<string, number>; refs?: Record<st
   'chart-delete-series': { parts: { themeColors: 0 }, refs: { series: ["'Data'!#REF!", "'Data'!$B$1"] } },
   'chart-delete-chart': { parts: { themeColors: 0 } },
   'chartsheet-source-deleted': { parts: { richStrings: 0 }, refs: { series: ['#REF!'] } },
+  'pivot-delete-source-cells': { refs: { series: ["'Data'!#REF!"] } },
+  // predicted before the fit of a drawing's size over the columns' widths: Excel saved the anchors writeKept writes since
+  'wide-delete-from-col': { refs: { anchors: { Data: ['twoCellAnchor oneCell: 5 0 0 127000 / 8 546100 12 127000', 'twoCellAnchor oneCell: 5 0 14 127000 / 6 711200 18 0'] } } },
+  'wide-delete-cols-in': { refs: { anchors: { Data: ['twoCellAnchor oneCell: 5 444500 0 127000 / 7 444500 12 127000', 'twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0'] } } },
+  'wide-insert-cols-in': { refs: { anchors: { Data: ['twoCellAnchor oneCell: 5 444500 0 127000 / 7 1206500 12 127000', 'twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0'] } } },
+  'wide-delete-picture-cols': { refs: { anchors: { Data: ['twoCellAnchor oneCell: 5 0 0 127000 / 10 444500 12 127000', 'twoCellAnchor oneCell: 5 0 14 127000 / 6 342900 18 0'] } } },
 }
 const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/keep/open.predicted.json', import.meta.url), 'utf8')) as { cases: Record<string, { opens: boolean; parts: Record<string, number> }> }
 
@@ -93,6 +99,33 @@ describe('xlsx/keep in Excel', () => {
       expect(values((await readXlsx(saved)).book), f.id).toEqual(values((await readXlsx(f.data)).book))
     }
   }, 60_000)
+
+  it('the cells with formatted runs moved to another sheet keep their runs and fonts in the file Excel saved', async () => {
+    /** The runs of a cell's shared string, each its text and whether it is bold or italic, and the cell's own format. */
+    const runs = async (file: string, sheet: string, addr: string) => {
+      const parts = await textsOf(readFileSync(new URL(file, dir)))
+      const cell = new RegExp(`<c r="${addr}"( s="\\d+")? t="s"><v>(\\d+)</v>`).exec(parts.get(`xl/worksheets/${sheet}.xml`)!)!
+      const si = [...parts.get('xl/sharedStrings.xml')!.matchAll(/<si>([\s\S]*?)<\/si>/g)][Number(cell[2])][1]
+      return { s: cell[1] ?? '', runs: [...si.matchAll(/<r>(?:<rPr>([\s\S]*?)<\/rPr>)?<t[^>]*>([^<]*)<\/t><\/r>/g)].map((m) => [m[2], /<b\/>/.test(m[1] ?? ''), /<i\/>/.test(m[1] ?? '')]) }
+    }
+    for (const [from, to] of [['A2', 'D1'], ['A5', 'D4']]) {
+      const made = await runs('made/picture.xlsx', 'sheet1', from)
+      expect(made.runs.length, from).toBeGreaterThan(1)
+      expect(await runs('open/picture-rich-sheet.xlsx', 'sheet3', to), to).toEqual(made)
+    }
+  })
+
+  it('Excel saves a look over a whole column or row, which writeXlsx writes as a cell for each of its cells, as the line\'s format without the cells', async () => {
+    const looks = JSON.parse(readFileSync(new URL('looks.json', dir), 'utf8')) as { cases: Record<string, { sent: string; saved: Awaited<ReturnType<typeof looksOf>> }> }
+    const saved = { column: { cells: 1, cols: ['<col min="3" max="3" width="8.83203125" style="1"/>'], rows: [] }, row: { cells: 1, cols: [], rows: ['<row r="3" s="1" customFormat="1"/>'] } }
+    for (const [id, book] of Object.entries(LOOKS)) {
+      const data = (await writeXlsx({ book })).data
+      expect(looks.cases[id].sent, `${id}: writeXlsx changed since Excel saw the file: run the keep looks step`).toBe(await partsHash(data))
+      expect((await looksOf(data)).cells, id).toBe(id === 'column' ? 1_048_577 : 16_385)
+      expect(looks.cases[id].saved, id).toEqual(saved[id as keyof typeof saved])
+      expect(await looksOf(readFileSync(new URL(`looks/${id}.xlsx`, dir))), id).toEqual(saved[id as keyof typeof saved])
+    }
+  })
 
   it("writeKept moves the parts' references as Excel moved them in the operations of the structure", async () => {
     const ours = await structWritten()

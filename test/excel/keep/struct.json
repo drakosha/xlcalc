@@ -920,6 +920,97 @@
      ]
     }
    }
+  },
+  "wide-delete-wide-col": {
+   "sent": "e49577e659a0e7cef952be6df98c3d092c174ef669497006b1fad746febf1e66",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 10 406400 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-to-col": {
+   "sent": "cf4a05995c51dcda2c2096432073a7b943e61c8cc1d0777923a11a6041de003c",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-cols-in": {
+   "sent": "1329980b380a345952b81a2cb2dc2fc2677b0293dc11b84cbea03680594e7e92",
+   "out": "done",
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 11 215900 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 7 114300 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "pivot-delete-source-rows": {
+   "sent": "be9fbb43cca4c5cbb19e19719102bb6a6ac7c277910604677eaf03326a87d688",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-both": {
+   "sent": "0039fdc1594faac9ea9c9a3f45f693f655d82b1a89b5c229d9a0872fb3c846cc",
+   "out": "done",
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B9",
+      "#REF! 'Data'!B10:B19"
+     ]
+    }
+   }
   }
  }
 }
