@@ -11,7 +11,7 @@ import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
-import { heldAt, unhold } from './held.js'
+import { heldAt, releaseStored, unhold } from './held.js'
 import { blocker, describeAt, endSpill, fixed, release, rivals, spill } from './spill/place.js'
 import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
@@ -100,6 +100,10 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     if (state.topo[id] < 0 && !iterating) {
       endSpill(state, f, t, true)
       v = heldAt(state, f, shown(was))
+    } else if (f.stored !== undefined && state.held.has(id)) {
+      // the value its file stores, until a change reaches it (`releaseStored`)
+      endSpill(state, f, t, false)
+      v = state.held.get(id)!
     } else {
       // out of a cycle's way, a formula holding a value drops it once the computation settles (a spill may close the cycle again)
       if (state.held.size && state.held.has(id)) state.outside.add(id)
@@ -196,6 +200,7 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   // Reuse the reachability set as the active set. Large root batches and existing arrays keep the full pass.
   const roots = prune && dirty.size <= 64 && !state.input.iteration && !state.spills.claims.size && !state.spills.wait.size ? [...dirty] : undefined
   const lists = ordered(state, dirty)
+  releaseStored(state, lists[0])
   let active: Set<number> | undefined
   if (roots && !lists[1].length && lists[0].length >= 64) {
     dirty.clear()

@@ -46,6 +46,8 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
+  /** Functions the engine does not know are taken (`unknownFunctions: 'held'`, a formula keeping its file's value). */
+  unknown?: boolean
   say?: (m: Message) => string
 }
 
@@ -149,7 +151,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     }
   })
   const fail = (code: CheckCode, m: Message, needle: string) => refused(code, m, positionOf(text, needle), say)
-  for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
+  for (const f of functions) if (!isFunction(f) && !externalSet.has(f) && !ctx.unknown) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', { key: 'unknownSheet', sheet: s }, s)

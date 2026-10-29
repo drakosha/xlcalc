@@ -88,6 +88,25 @@ console.log(result.sheets[0].cells.A1.value) // → 42
 
 Arguments of an external function must be literals; a call without a value evaluates to `#N/A`. A value is a cell's value: a number, text, a boolean, `null` or `{ error: code }`; anything else (an unknown error code, a date input, an array, `undefined`) throws `InputError` instead of computing as 0.
 
+## Values a file stores
+
+A workbook from a file can use functions the engine cannot calculate: an add-in's (`MYADDIN(A1)`), or one that reaches outside the workbook, a cube's connection (`CUBEVALUE`), a web service (`WEBSERVICE`), Microsoft's services (`STOCKHISTORY`). Excel shows the value the file stores for such a formula until it calculates the cell; the engine does the same with the file's values (`readXlsx`'s `cached`):
+
+- a formula over a function of connections keeps the value its file stores, always;
+- a formula over a function the engine does not know keeps it with `unknownFunctions: 'held'`; by default it is `#NAME?`, as Excel answers without the add-in.
+
+The cells that read such a formula are calculated from that value. The formula is listed in `diagnostics` with `fromFile: true` (`error` NAME for a function the engine does not know, CONNECT for one of connections), so a host can show that the value is the file's. Once the cell is edited, or a cell it reads changes, it is calculated: `#NAME?`, or the function's answer without its connection (`CUBEVALUE` `#N/A`, `WEBSERVICE` `#VALUE!`). Without a stored value it is calculated at once. A session's `getBook()` holds the value as the cell's `held`, so the workbook it gives calculates as the session shows.
+
+```js
+import { compute } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { formula: 'MYADDIN(A1)*2' }, C1: { formula: 'B1+1' }, D1: { formula: 'CUBEVALUE("Sales","[Measures].[Amount]")' } } }] }
+const cached = { sheets: [{ name: 'S', cells: { B1: { value: 40 }, D1: { value: 7 } } }] }
+const r = compute(book, { cached, unknownFunctions: 'held' })
+console.log(r.sheets[0].cells.C1.value, r.sheets[0].cells.D1.value) // → 41 7
+console.log(r.diagnostics.map((d) => `${d.cell} ${d.error} ${d.fromFile}`)) // → [ 'B1 NAME true', 'D1 CONNECT true' ]
+```
+
 ## Hidden rows and filters
 
 A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it, or by a height or width of 0, as Excel treats it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 ignore cells in hidden rows. Hidden columns are included, as in Excel.

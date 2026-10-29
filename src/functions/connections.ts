@@ -34,3 +34,6 @@ export const functions: Record<string, FnDef> = {
   'REGISTER.ID': answering('a a a?', E.VALUE),
   EUROCONVERT: answering('a a a a? a?', E.NAME),
 }
+
+/** The functions whose formula keeps the value its file stores until it is calculated (`held.ts`): those above. */
+export const STORED_FUNCTIONS: ReadonlySet<string> = new Set(Object.keys(functions))

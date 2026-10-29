@@ -4,9 +4,9 @@
  * cell an error began in.
  */
 import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
-import { key, valueAt, type EngineState, type Formula } from './engine.js'
+import { key, valueAt, type EngineState, type Formula, type Invalid } from './engine.js'
 import { canAllot } from './exec/budget.js'
-import { stopped } from './held.js'
+import { keepsStored, stopped } from './held.js'
 import { byPlace, formatAddress, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { fillBounds } from './spill/fill.js'
@@ -43,6 +43,7 @@ export interface Issue {
   check?: CheckCode
   at?: number
   fn?: string
+  fromFile?: true
 }
 
 // the cell of a sheet `structure/geometry.ts` already names
@@ -56,6 +57,21 @@ const HELD = 'circular reference: not calculated, the value is held'
 
 /** The issue of a formula a circular reference stops, whatever value it holds. */
 const heldIssue = (f: Formula): Issue => ({ s: f.s, r: f.r, c: f.c, error: 'CYCLE', reason: HELD })
+
+/** The reason of a formula that keeps the value its file stores (`held.ts`), after what it reaches outside the workbook. */
+const STORED = ': not calculated, the value the file stores is held'
+
+/**
+ * The issue of a formula that keeps the value its file stores: over a function the engine does not know, its check's
+ * refusal (#NAME?); over one of connections, the connection it does not have (#CONNECT!).
+ */
+const storedIssue = (f: Formula): Issue =>
+  f.unknown
+    ? { s: f.s, r: f.r, c: f.c, error: 'NAME', reason: f.unknown.message + STORED, check: 'unknown_function', at: f.unknown.at, fn: f.unknown.fn, fromFile: true }
+    : { s: f.s, r: f.r, c: f.c, error: 'CONNECT', reason: `${f.stored} has no connection${STORED}`, fn: f.stored, fromFile: true }
+
+/** The issue of a formula calculated over a function the engine does not know: its check's refusal, as a formula refused has. */
+const unknownIssue = (f: Formula, inv: Invalid): Issue => ({ s: f.s, r: f.r, c: f.c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at, ...(inv.fn !== undefined ? { fn: inv.fn } : {}) })
 
 /** The issue of a formula whose value is the error `code`; `memo` as `errorSource`'s. */
 function formulaIssue(state: EngineState, f: Formula, code: ErrorCode, memo?: Map<string, Place | null>): Issue {
@@ -96,8 +112,12 @@ export function issues(state: EngineState): Issue[] {
       out.push(heldIssue(f))
       continue
     }
+    if (keepsStored(state, f)) {
+      out.push(storedIssue(f))
+      continue
+    }
     const v = valueAt(state, f.s, f.r, f.c)
-    if (isErr(v)) out.push(formulaIssue(state, f, v.code, memo))
+    if (isErr(v)) out.push(f.unknown && v.code === 'NAME' ? unknownIssue(f, f.unknown) : formulaIssue(state, f, v.code, memo))
   }
   // the stored cells of spilled arrays (the unstored rest of a large one is its formula's)
   for (const x of state.spills.on.values())
@@ -115,9 +135,11 @@ function cellIssue(state: EngineState, s: number, r: number, c: number): Issue |
   if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at, ...(inv.fn !== undefined ? { fn: inv.fn } : {}) }
   const id = state.at.get(placeOf(s, r, c))
   if (id !== undefined && stopped(state, id)) return heldIssue(state.formulas[id]!)
+  if (id !== undefined && keepsStored(state, state.formulas[id]!)) return storedIssue(state.formulas[id]!)
   const v = valueAt(state, s, r, c)
   if (!isErr(v)) return null
-  if (id !== undefined) return formulaIssue(state, state.formulas[id]!, v.code)
+  const f = id === undefined ? undefined : state.formulas[id]!
+  if (f) return f.unknown && v.code === 'NAME' ? unknownIssue(f, f.unknown) : formulaIssue(state, f, v.code)
   const x = ownerOf(state, s, r, c)
   return x ? spilledIssue(state, x, r, c, v.code) : null
 }
@@ -234,7 +256,7 @@ export function wayBack(p: Place, code: ErrorCode, step: (at: Place) => Place | 
 }
 
 /** An issue as `Session.getCellIssue` gives it, with the cell its error began in. */
-export const issueWith = (i: Omit<Issue, 's' | 'r' | 'c'>, origin: CellRef): CellIssueDetail => ({ error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), ...(i.fn !== undefined ? { fn: i.fn } : {}), origin })
+export const issueWith = (i: Omit<Issue, 's' | 'r' | 'c'>, origin: CellRef): CellIssueDetail => ({ error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), ...(i.fn !== undefined ? { fn: i.fn } : {}), ...(i.fromFile ? { fromFile: true } : {}), origin })
 
 /** A cell's issue with the cell its error began in (`Session.getCellIssue`); null for a cell without an error. `memo` as `errorOrigin`'s. */
 export function issueDetail(state: EngineState, s: number, r: number, c: number, memo?: Map<string, Place>): CellIssueDetail | null {
