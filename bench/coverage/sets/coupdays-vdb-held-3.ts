@@ -59,5 +59,8 @@ const CASES: [string, string, Val][] = [
   ['VDB', 'VDB(2400,300,10,8.6,10,1.5,TRUE)', n(122.620736267578)],
 ]
 
+/** The prediction Excel answered otherwise: salvage above cost from a fractional start, a known difference. */
+export const MISSED = ['VDB#15']
+
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
