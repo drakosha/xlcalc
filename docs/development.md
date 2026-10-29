@@ -341,6 +341,19 @@ The step `select` (above) also calls `Range.SpecialCells` with Excel's `XlCellTy
 | `special-held-2` | 2 | held out: visible cells over one cell and over an entire column |
 
 `special` held in 13 of 16: Excel's used range started at A1, where the sheet's cells started at B2, as its hidden row and column reach it at column A and row 1; and visible cells are the range's own, not those of the used range. `special-held`, predicted after the fit, held in 6 of 8: rows and columns of their own reach the used range at its far ends too (a styled row below the cells, a styled column right of them). `special-held-2` (visible cells over one cell, the whole sheet's, and over an entire column) held in 2 of 2.
+### Workbook Statistics
+
+From [A viewport for a grid](grid.md#a-viewport-for-a-grid).
+
+`npx tsx bench/coverage/run.ts stats <set>` writes each case's workbook with `writeXlsx` (threads of comments put in as Excel 365 writes them), and Excel 16.114 for Mac opens it with the case's sheet active; the step presses Review and Workbook Statistics through Accessibility, reads the rows of the window it opens and closes it. `test/stats-excel.test.ts` compares each row with `getWorkbookStatistics` over the workbook the reader reads from the case's file; a count Excel does not show must be 0. The engine's answers were committed before each set ran (`bench/coverage/stats/*.predicted.json`).
+
+| set | cases | what |
+|---|---|---|
+| `fit` | 14 | an empty sheet; constants of each kind, an error, empty text, a formula answering empty text; a style, a row, a column and a hyperlink of their own past the data; spills, one blocked and one of 5,000 cells; a legacy array formula; a merged area; two tables; a hidden sheet and another active one; notes and a thread |
+| `held` | 10 | held out: a note far past the data, data on two edges, a merged area past its value, hidden rows and columns, the sheet's last cell, a table's header alone, arrays over two dimensions, a spill over a cell with a note alone, a thread alone, the last sheet active |
+
+`fit` held in 5 of 14 cases. Excel's end of sheet is not the used range, as the engine predicted, but the last row and column of data and notes: a style, a row and a column of their own, a hyperlink alone and a table's empty rows do not reach it, a legacy array formula's cells do, and an empty sheet shows no end (fixed). Excel for Mac shows a row only where its count is above 0, except the cells, tables and formulas, which it always shows, and it never shows the workbook's notes; it shows no PivotTables, charts, images, form controls, objects or comments, of which these workbooks had none. `held`, created after it, held in 9 of 10: a merged area over a value reaches the end with its last cell (fixed). Both sets were taken twice, the second time whole after a click on Excel during the first runs, with the same answers. Excel for Windows was not checked.
+
 ### Editing a grid
 
 From [Editing a grid](edits.md).
@@ -686,7 +699,13 @@ The engine's results were committed before each run. The first run of `files`, w
 
 From [Reading and writing xlsx, The saved active sheet and view](xlsx.md#the-saved-active-sheet-and-view).
 
-`test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first-visible-sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo. No default XML behavior was changed for workbooks without saved view fields.
+`test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first-visible-sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo.
+
+Split windows were first looked at in Excel 16.114.1 for Mac outside the sets: windows split through its object model (`split row`, `split column`, `split horizontal`, `split vertical`) and files with a `<pane>` written by hand, saved by Excel and read back, with a prediction written before the run. Excel writes a split as `<pane xSplit ySplit topLeftCell activePane>` without `state`; its lines are in twentieths of a point from the window's edges, headings included (split at 5 rows and 3 columns, `xSplit="3640" ySplit="1940"`, while the object model gives 159 and 75 points, without the headings); the twentieths are points on the screen, not scaled by zoom; without `activePane` the first pane is active, and a cursor on A1 is saved as no selection of that pane. The predictions held for the file's units, the zoom and the active pane; they missed that the object model's points leave the headings out, and that panes after a line without a top left cell are scrolled to A1 and saved so.
+
+`npx tsx bench/coverage/run.ts fields <set>` (Excel for Mac: `excel-fields.applescript`) and `npx tsx bench/windows/run.ts fields <set>` (Excel for Windows: the step `sheetPanes`, `FreezePanes`, `Split`, `Panes(i).ScrollRow` and `ScrollColumn`, `ActivePane.Index`, `SplitHorizontal` and `SplitVertical`) open each case's file, read each sheet's window and save the workbook; `test/fields-excel.test.ts` and `test/fields-win.test.ts` check that Excel read the panes as the workbook holds them (`bookPanes`, committed before either ran) and that the reader reads the same split from the file Excel saved. The set `split` (3 cases, 16 windows: lines on both axes and on one, scrolled, zoomed to 200%, each pane active, under frozen panes, set, changed and removed by `writeKept`) held in every window on both; the lines came back on the screen's pixels, Excel for Windows rounding 150.5, 200 and 100 points to 150.75, 200.25 and 99.75, Excel for Mac 150.5 to 150. The object model's points without the headings give their sizes at 100%: 19.5 by 15 points in Excel for Windows, 23 by 22 in Excel for Mac.
+
+The writer wrote frozen panes without a saved cursor with a selection on the split's first cell, which the reader read back as the cursor. Excel saves a cursor on A1 as the pane's selection without a cell (Excel for Mac 16.114.1, frozen panes on rows, on columns and on both); the writer now writes that, and the parts sets `files`, `frozen-held` and `struct-held` were taken again on both versions of Excel over the new files: the same answers in all 45 cases on each, and both saved the cursor on A1 as written.
 
 ### Writing over the original file
 

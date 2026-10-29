@@ -13,6 +13,7 @@ import { setCell } from './cells.js'
 import type { Rel } from './package.js'
 import { fileCell } from './refs.js'
 import { stringItem } from './strings.js'
+import { isSplit } from '../view.js'
 
 /** A sheet's parts as the archive holds them: its comments, VML drawing and threaded comments, the book's persons. */
 export interface PartsSource {
@@ -32,17 +33,14 @@ export interface PartsSource {
 
 /**
  * Frozen panes of the sheet's first view (`view`, found once by the sheet reader): the rows and columns before the
- * split. A pane frozen over a scrolled sheet showed fewer of them; split panes without freezing are reported.
+ * split. A pane frozen over a scrolled sheet showed fewer of them.
  */
 export function readFrozen(view: Element | undefined, sheet: string, issues: Issues): FrozenPanes | undefined {
   const pane = view?.body ? element(view.body, 'pane') : undefined
   if (!view || !pane) return undefined
   const a = attributes(pane.attrs)
-  // a pane's state is a split unless it says otherwise
-  if (a.state !== 'frozen' && a.state !== 'frozenSplit') {
-    issues.add('frozenPanes', { key: 'splitPanes' }, { sheet })
-    return undefined
-  }
+  // a split that is not frozen is the view's (`readSheetView`)
+  if (isSplit(a)) return undefined
   const top = parseAddress(/^[A-Z]{1,3}[1-9]\d*$/.test(attributes(view.attrs).topLeftCell ?? '') ? attributes(view.attrs).topLeftCell! : 'A1')
   const [ys, xs] = [Math.trunc(Number(a.ySplit ?? 0)), Math.trunc(Number(a.xSplit ?? 0))]
   const out: FrozenPanes = {}

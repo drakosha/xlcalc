@@ -38,7 +38,7 @@ const LOSSES = pack(
       {
         name: 'Лист',
         body:
-          '<sheetPr filterMode="1"/><sheetViews><sheetView workbookViewId="0"><pane xSplit="2000" ySplit="1000"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="12" defaultRowHeight="15"/>' +
+          '<sheetPr filterMode="1"/><sheetViews><sheetView workbookViewId="0" topLeftCell="A5"><pane ySplit="2" topLeftCell="A7" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="12" defaultRowHeight="15"/>' +
           '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" s="1"><v>1</v></c><c r="C1" t="e"><v>#CALC!</v></c><c r="D1" t="e"><v>#N/A</v></c>' +
           '<c r="E1"><f>_xludf.MYFN(1)</f><v>0</v></c><c r="F1"><f>1+</f><v>0</v></c><c r="G1" vm="1"><v>1</v></c></row>' +
           '<row r="2"><c r="A2"><f t="dataTable" ref="A2:A2" dt2D="0" dtr="0" r1="B2"/><v>1</v></c></row><row r="3"><c r="A1048577"><v>1</v></c></row></sheetData>' +
@@ -82,7 +82,7 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['part', { key: 'cellOutside' }],
   ['part', { key: 'mergeOverlap' }],
   ['autoFilter', { key: 'advancedFilter' }],
-  ['frozenPanes', { key: 'splitPanes' }],
+  ['frozenPanes', { key: 'frozenScrolled' }],
   ['defaultWidth', { key: 'defaultWidth', width: 12 }],
   ['protection', { key: 'sheetPassword' }],
   ['print', { key: 'printSettings' }],

@@ -368,6 +368,38 @@ export type SpecialValue = 'numbers' | 'text' | 'logicals' | 'errors'
  */
 export type SpecialCells = { type: 'blanks' } | { type: 'constants' | 'formulas'; values?: SpecialValue[] } | { type: 'visible' }
 
+/**
+ * What Excel's Workbook Statistics (Review > Workbook Statistics) counts, on a sheet or in the workbook. The workbook
+ * holds no PivotTables, charts, pictures, form controls, other objects or threads of comments (a thread read from a
+ * file is a note): those counts are null.
+ */
+export interface StatisticsCounts {
+  /** Cells holding a value or a formula; each cell of a spilled array or of a legacy array formula is one. */
+  cells: number
+  tables: number
+  /** Cells with a formula; each cell of a spilled array or of a legacy array formula is one, as Excel counts them. */
+  formulas: number
+  notes: number
+  pivotTables: null
+  charts: null
+  images: null
+  formControls: null
+  objects: null
+  comments: null
+}
+
+/** Excel's Workbook Statistics (`Session.getWorkbookStatistics`): the counts of a sheet and of the whole workbook. */
+export interface WorkbookStatistics {
+  /**
+   * The sheet's counts and its end: the cell of the last row and the last column that hold data or a note, or that a
+   * merged area over such a cell covers (`E9` for data in B9 and E2), not reached by styles, hyperlinks alone or tables
+   * as the used range is; null on a sheet without.
+   */
+  sheet: StatisticsCounts & { end: string | null }
+  /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
+  workbook: StatisticsCounts & { sheets: number }
+}
+
 /** Excel's AutoSum at a cell (`Session.getAutoSum`): the range it offers to sum and the formula it enters. */
 export interface AutoSumGuess {
   /**

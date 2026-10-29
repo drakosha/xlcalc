@@ -127,7 +127,6 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   ruleNoRange: () => 'a rule without a range on the sheet is left out',
   ruleShared: () => 'cells that a rule shares with an earlier rule keep the earlier one',
   // reading: notes, hyperlinks and panes
-  splitPanes: () => 'split panes that are not frozen are not in the model',
   frozenScrolled: () => 'panes frozen over a sheet scrolled down or right are read from the first row and column',
   noteCell: () => 'a note or a comment thread whose cell is not a single cell of the sheet is left out',
   noteThread: () => "a comment thread is read as a note: its first comment's author, every comment's text with the replies' authors; dates, mentions and the thread's state are not kept",
