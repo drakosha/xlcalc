@@ -156,6 +156,8 @@ Excel for Mac saves some built-in formats other than by their number: the curren
 
 Excel stores each cell of a formatted area, including a row formatted out to column XFD, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry in `cells`: the reader puts its formatting into its sheet's `looks` ([Formatting of many cells](grid.md#formatting-of-many-cells)) as it reads the row, as runs of columns with the same formatting, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own formatting, as before.
 
+The writer writes the cells of `looks` back one by one, a look over entire columns or rows too: `looks: [{ range: 'C:C', style: 1 }]` given by a host becomes a million cells, a file of about 5 MB, which Excel opens and saves as the column's format (`<col style>`). A host that formats entire columns does it through `patchCells` over them, which sets the columns' `style` and writes `<col style>`, a file of a few kilobytes.
+
 ```js
 // <row r="20"><c r="A20" s="1"/><c r="B20" s="1"/> … <c r="XFD20" s="1"/></row>, and so rows 21 and 22
 looks: [{ range: 'A20:XFD22', style: 0 }]
