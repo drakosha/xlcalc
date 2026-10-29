@@ -28,6 +28,10 @@ const GENERIC: Record<ErrorCode, string> = {
   SPILL: 'array result does not fit',
   CALC: 'empty array or text too long',
   ERROR: 'error',
+  CONNECT: 'service not reached',
+  BLOCKED: 'service not allowed',
+  BUSY: 'answer still on its way',
+  GETTING_DATA: 'cube data still on its way',
 }
 
 export interface Issue {

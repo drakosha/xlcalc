@@ -26,6 +26,10 @@ export const E: Record<ErrorCode, CErr> = {
   SPILL: new CErr('SPILL'),
   CALC: new CErr('CALC'),
   ERROR: new CErr('ERROR'),
+  CONNECT: new CErr('CONNECT'),
+  BLOCKED: new CErr('BLOCKED'),
+  BUSY: new CErr('BUSY'),
+  GETTING_DATA: new CErr('GETTING_DATA'),
 }
 
 export type V = number | string | boolean | null | CErr

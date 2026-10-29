@@ -16,6 +16,10 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   SPILL: '#SPILL!',
   CALC: '#CALC!',
   ERROR: '#ERROR!',
+  CONNECT: '#CONNECT!',
+  BLOCKED: '#BLOCKED!',
+  BUSY: '#BUSY!',
+  GETTING_DATA: '#GETTING_DATA',
 }
 
 /** Error codes by their text. */
