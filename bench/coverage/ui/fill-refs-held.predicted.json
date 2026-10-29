@@ -1,0 +1,887 @@
+{
+ "now": "2026-10-29",
+ "locales": {
+  "en-US": {
+   "fill-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1+A3",
+        "numberFormat": 9
+       },
+       "value": 2.1
+      },
+      "B2": {
+       "input": {
+        "formula": "A2+A4",
+        "numberFormat": 9
+       },
+       "value": 46096.2
+      },
+      "B3": {
+       "input": {
+        "formula": "A3+A5",
+        "numberFormat": 9
+       },
+       "value": 102
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1+A3",
+       "numberFormat": 9
+      },
+      "value": 2.1
+     },
+     "B2": {
+      "input": {
+       "formula": "A2+A4",
+       "numberFormat": 9
+      },
+      "value": 46096.2
+     },
+     "B3": {
+      "input": {
+       "formula": "A3+A5",
+       "numberFormat": 9
+      },
+      "value": 102
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-2": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "formula": "A3+A1",
+        "numberFormat": 9
+       },
+       "value": 2.1
+      },
+      "B4": {
+       "input": {
+        "formula": "A4+A2",
+        "numberFormat": 9
+       },
+       "value": 46096.2
+      },
+      "B5": {
+       "input": {
+        "formula": "A5+A3",
+        "numberFormat": 9
+       },
+       "value": 102
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B3": {
+      "input": {
+       "formula": "A3+A1",
+       "numberFormat": 9
+      },
+      "value": 2.1
+     },
+     "B4": {
+      "input": {
+       "formula": "A4+A2",
+       "numberFormat": 9
+      },
+      "value": 46096.2
+     },
+     "B5": {
+      "input": {
+       "formula": "A5+A3",
+       "numberFormat": 9
+      },
+      "value": 102
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-3": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A3"
+       },
+       "value": 2
+      },
+      "C1": {
+       "input": {
+        "formula": "B3"
+       },
+       "value": 0
+      },
+      "B2": {
+       "input": {
+        "formula": "A4"
+       },
+       "value": 46096
+      },
+      "C2": {
+       "input": {
+        "formula": "B4"
+       },
+       "value": 0
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A3"
+      },
+      "value": 2
+     },
+     "C1": {
+      "input": {
+       "formula": "B3"
+      },
+      "value": 0
+     },
+     "B2": {
+      "input": {
+       "formula": "A4"
+      },
+      "value": 46096
+     },
+     "C2": {
+      "input": {
+       "formula": "B4"
+      },
+      "value": 0
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "fill-4": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1",
+        "numberFormat": 9
+       },
+       "value": 0.1
+      },
+      "B2": {
+       "input": {
+        "formula": "A2",
+        "numberFormat": 9
+       },
+       "value": 0.2
+      },
+      "B3": {
+       "input": {
+        "formula": "A3",
+        "numberFormat": 9
+       },
+       "value": 2
+      },
+      "B4": {
+       "input": {
+        "formula": "A4",
+        "numberFormat": 9
+       },
+       "value": 46096
+      },
+      "B5": {
+       "input": {
+        "formula": "A5",
+        "numberFormat": 9
+       },
+       "value": 100
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1",
+       "numberFormat": 9
+      },
+      "value": 0.1
+     },
+     "B2": {
+      "input": {
+       "formula": "A2",
+       "numberFormat": 9
+      },
+      "value": 0.2
+     },
+     "B3": {
+      "input": {
+       "formula": "A3",
+       "numberFormat": 9
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "formula": "A4",
+       "numberFormat": 9
+      },
+      "value": 46096
+     },
+     "B5": {
+      "input": {
+       "formula": "A5",
+       "numberFormat": 9
+      },
+      "value": 100
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-5": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A5-A3",
+        "numberFormat": 7
+       },
+       "value": 98
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A5-A3",
+       "numberFormat": 7
+      },
+      "value": 98
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "fill-6": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "formula": "A3-A2",
+        "numberFormat": 9
+       },
+       "value": 1.8
+      },
+      "B3": {
+       "input": {
+        "formula": "A4-A3",
+        "numberFormat": 9
+       },
+       "value": 46094
+      },
+      "B4": {
+       "input": {
+        "formula": "A5-A4",
+        "numberFormat": 9
+       },
+       "value": -45996
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "formula": "A3-A2",
+       "numberFormat": 9
+      },
+      "value": 1.8
+     },
+     "B3": {
+      "input": {
+       "formula": "A4-A3",
+       "numberFormat": 9
+      },
+      "value": 46094
+     },
+     "B4": {
+      "input": {
+       "formula": "A5-A4",
+       "numberFormat": 9
+      },
+      "value": -45996
+     }
+    },
+    "widths": {
+     "B": 10
+    }
+   },
+   "fill-7": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1",
+        "numberFormat": 9
+       },
+       "value": 0.1
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1",
+       "numberFormat": 9
+      },
+      "value": 0.1
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "sum-1": {
+    "after": {
+     "A6": {
+      "input": {
+       "formula": "SUM(A5)",
+       "numberFormat": 7
+      },
+      "value": 100
+     }
+    }
+   },
+   "sum-2": {
+    "after": {
+     "A6": {
+      "input": {
+       "formula": "SUM(A5)",
+       "numberFormat": 7
+      },
+      "value": 100
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "fill-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1+A3",
+        "numberFormat": 9
+       },
+       "value": 2.1
+      },
+      "B2": {
+       "input": {
+        "formula": "A2+A4",
+        "numberFormat": 9
+       },
+       "value": 46096.2
+      },
+      "B3": {
+       "input": {
+        "formula": "A3+A5",
+        "numberFormat": 9
+       },
+       "value": 102
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1+A3",
+       "numberFormat": 9
+      },
+      "value": 2.1
+     },
+     "B2": {
+      "input": {
+       "formula": "A2+A4",
+       "numberFormat": 9
+      },
+      "value": 46096.2
+     },
+     "B3": {
+      "input": {
+       "formula": "A3+A5",
+       "numberFormat": 9
+      },
+      "value": 102
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-2": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "formula": "A3+A1",
+        "numberFormat": 9
+       },
+       "value": 2.1
+      },
+      "B4": {
+       "input": {
+        "formula": "A4+A2",
+        "numberFormat": 9
+       },
+       "value": 46096.2
+      },
+      "B5": {
+       "input": {
+        "formula": "A5+A3",
+        "numberFormat": 9
+       },
+       "value": 102
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B3": {
+      "input": {
+       "formula": "A3+A1",
+       "numberFormat": 9
+      },
+      "value": 2.1
+     },
+     "B4": {
+      "input": {
+       "formula": "A4+A2",
+       "numberFormat": 9
+      },
+      "value": 46096.2
+     },
+     "B5": {
+      "input": {
+       "formula": "A5+A3",
+       "numberFormat": 9
+      },
+      "value": 102
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-3": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A3"
+       },
+       "value": 2
+      },
+      "C1": {
+       "input": {
+        "formula": "B3"
+       },
+       "value": 0
+      },
+      "B2": {
+       "input": {
+        "formula": "A4"
+       },
+       "value": 46096
+      },
+      "C2": {
+       "input": {
+        "formula": "B4"
+       },
+       "value": 0
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A3"
+      },
+      "value": 2
+     },
+     "C1": {
+      "input": {
+       "formula": "B3"
+      },
+      "value": 0
+     },
+     "B2": {
+      "input": {
+       "formula": "A4"
+      },
+      "value": 46096
+     },
+     "C2": {
+      "input": {
+       "formula": "B4"
+      },
+      "value": 0
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "fill-4": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1",
+        "numberFormat": 9
+       },
+       "value": 0.1
+      },
+      "B2": {
+       "input": {
+        "formula": "A2",
+        "numberFormat": 9
+       },
+       "value": 0.2
+      },
+      "B3": {
+       "input": {
+        "formula": "A3",
+        "numberFormat": 9
+       },
+       "value": 2
+      },
+      "B4": {
+       "input": {
+        "formula": "A4",
+        "numberFormat": 9
+       },
+       "value": 46096
+      },
+      "B5": {
+       "input": {
+        "formula": "A5",
+        "numberFormat": 9
+       },
+       "value": 100
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1",
+       "numberFormat": 9
+      },
+      "value": 0.1
+     },
+     "B2": {
+      "input": {
+       "formula": "A2",
+       "numberFormat": 9
+      },
+      "value": 0.2
+     },
+     "B3": {
+      "input": {
+       "formula": "A3",
+       "numberFormat": 9
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "formula": "A4",
+       "numberFormat": 9
+      },
+      "value": 46096
+     },
+     "B5": {
+      "input": {
+       "formula": "A5",
+       "numberFormat": 9
+      },
+      "value": 100
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "fill-5": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A5-A3",
+        "numberFormat": 7
+       },
+       "value": 98
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A5-A3",
+       "numberFormat": 7
+      },
+      "value": 98
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "fill-6": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "formula": "A3-A2",
+        "numberFormat": 9
+       },
+       "value": 1.8
+      },
+      "B3": {
+       "input": {
+        "formula": "A4-A3",
+        "numberFormat": 9
+       },
+       "value": 46094
+      },
+      "B4": {
+       "input": {
+        "formula": "A5-A4",
+        "numberFormat": 9
+       },
+       "value": -45996
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "formula": "A3-A2",
+       "numberFormat": 9
+      },
+      "value": 1.8
+     },
+     "B3": {
+      "input": {
+       "formula": "A4-A3",
+       "numberFormat": 9
+      },
+      "value": 46094
+     },
+     "B4": {
+      "input": {
+       "formula": "A5-A4",
+       "numberFormat": 9
+      },
+      "value": -45996
+     }
+    },
+    "widths": {
+     "B": 10
+    }
+   },
+   "fill-7": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1",
+        "numberFormat": 9
+       },
+       "value": 0.1
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1",
+       "numberFormat": 9
+      },
+      "value": 0.1
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "sum-1": {
+    "after": {
+     "A6": {
+      "input": {
+       "formula": "SUM(A5)",
+       "numberFormat": 7
+      },
+      "value": 100
+     }
+    }
+   },
+   "sum-2": {
+    "after": {
+     "A6": {
+      "input": {
+       "formula": "SUM(A5)",
+       "numberFormat": 7
+      },
+      "value": 100
+     }
+    }
+   }
+  }
+ }
+}
