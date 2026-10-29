@@ -8,6 +8,7 @@ import type { ExternalBook, ValidateContext, ValidateResult } from '../contract.
 import { checkExternalBooks, checkValidateContext } from '../input.js'
 import { checkString, object, onlyOptions } from '../input/basic.js'
 import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
+import { definedIn } from '../syntax/check.js'
 import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
@@ -160,7 +161,7 @@ export const validateTyped = (text: string, where: string | Locale, ctx?: Valida
 
 function checkedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ReturnType<typeof validate> {
   const eq = text.startsWith('=') ? 1 : 0
-  const t = translate(text.slice(eq), s.local, s.invariant, eq)
+  const t = translate(text.slice(eq), s.local, s.invariant, eq, definedIn(c ?? {}))
   if (!t.ok) return refusal(t, locale)
   const r = validate(t.formula, { ...c, say: (m) => say(locale, m) })
   return r.ok ? r : { ...r, at: t.back(r.at) }

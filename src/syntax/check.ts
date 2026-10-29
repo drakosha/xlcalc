@@ -171,7 +171,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
 }
 
 /** Whether a book defines a name, by what a check knows of its names (none: it defines none). */
-function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean {
+export function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean {
   if (ctx.known) return (name) => ctx.known!(name, undefined)
   if (ctx.defined) return ctx.defined
   const names = new Set((ctx.names ?? []).map(caseKey))

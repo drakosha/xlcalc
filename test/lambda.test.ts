@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, functionSignature, toInvariant, toLocal, validateFormula, type BookInput, type CellValue } from '../src/index.js'
+import { compute, createInlineCalc, createSession, functionSignature, toInvariant, toLocal, validateFormula, validateLocalFormula, type BookInput, type CellValue } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { canonical, parse } from '../src/syntax.js'
@@ -145,6 +145,8 @@ describe('LAMBDA: files, locales, explain and tips', () => {
     expect(toLocal('BYROW(A1:C3,SUM)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3;СУММ)' })
     expect(toInvariant('BYROW(A1:C3;СУММ)', ruRU)).toEqual({ ok: true, formula: 'BYROW(A1:C3,SUM)' })
     expect(toLocal('MAP(A1:A3,LAMBDA(sum,sum*2))', ruRU)).toEqual({ ok: true, formula: 'MAP(A1:A3;LAMBDA(sum;sum*2))' })
+    // a word the book defines stays its name: СТАВКА is RATE in ru-RU
+    expect(validateLocalFormula('=BYROW(A1:C3;СУММ)+Ставка', ruRU, { names: ['Ставка'] })).toMatchObject({ ok: true, canonical: 'BYROW(A1:C3,SUM)+Ставка' })
     expect(toLocal('LAMBDA(x,y,IF(ISOMITTED(y),x,y))(1,)', ruRU)).toEqual({ ok: true, formula: 'LAMBDA(x;y;ЕСЛИ(ПРОПУЩЕНО(y);x;y))(1;)' })
   })
 

@@ -105,10 +105,11 @@ const isSheetPrefix = (pieces: Piece[], i: number) => {
 
 /**
  * The pieces that are a function's name as a value (`BYROW(A1:C3,SUM)`): a word of a function's name on the side
- * `from` alone in an argument, which no LET or LAMBDA around declares as its name. Excel ru-RU writes it in Russian
+ * `from` alone in an argument, which no LET or LAMBDA around declares as its name and the book does not define (`defined`:
+ * a name `Ставка` stays the name in ru-RU, where СТАВКА is RATE). Excel ru-RU writes it in Russian
  * (`BYROW(A1:C3;СУММ)`), as it writes a call.
  */
-function etaPieces(pieces: readonly Piece[], from: Side): Set<number> {
+function etaPieces(pieces: readonly Piece[], from: Side, defined: (word: string) => boolean): Set<number> {
   const out = new Set<number>()
   const declared = new Set<string>()
   // the calls whose parentheses are open, by name, and whether their arguments may declare names (LET, LAMBDA)
@@ -125,7 +126,7 @@ function etaPieces(pieces: readonly Piece[], from: Side): Set<number> {
   pieces.forEach((p, i) => {
     if (p.text === '(') calls.push(solid(i, -1)?.k === 'fn' && /^(LET|LAMBDA)$/.test(wordKey(solid(i, -1)!.text)))
     else if (p.text === ')') calls.pop()
-    else if (p.k === 'word' && !p.arr && alone(i) && from.fn.has(wordKey(p.text))) {
+    else if (p.k === 'word' && !p.arr && alone(i) && from.fn.has(wordKey(p.text)) && !defined(p.text)) {
       if (calls.at(-1) && solid(i, 1)?.k === 'list') declared.add(wordKey(p.text))
       out.add(i)
     }
@@ -141,14 +142,17 @@ export interface Translated {
   back(at: number): number
 }
 
-/** Translates `src` out of the side `from` into `to`; `offset` is where `src` starts in the caller's text (after `=`). */
-export function translate(src: string, from: Side, to: Side, offset = 0): Translated | Fail {
+/**
+ * Translates `src` out of the side `from` into `to`; `offset` is where `src` starts in the caller's text (after `=`);
+ * `defined` tells the book's names, which a function's word alone does not stand for.
+ */
+export function translate(src: string, from: Side, to: Side, offset = 0, defined: (word: string) => boolean = () => false): Translated | Fail {
   const pieces = lex(src, from.syn, from.errors, from.num)
   if (!Array.isArray(pieces)) return fail(offset + pieces.at, pieces.msg)
   // characters with a meaning on the other side: in an array constant its separators, elsewhere the list separator
   const special = [new Set([to.syn.decimal, to.syn.list]), new Set([to.syn.decimal, to.syn.arrayColumn, to.syn.arrayRow])]
   const out: Piece[] = []
-  const eta = etaPieces(pieces, from)
+  const eta = etaPieces(pieces, from, defined)
   for (const [i, p] of pieces.entries()) {
     let text = p.text
     if (p.k === 'num') text = text.replace(from.syn.decimal, to.syn.decimal)
