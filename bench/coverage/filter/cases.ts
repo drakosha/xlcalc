@@ -25,7 +25,7 @@ export type FilterStep =
   | { clear: string }
   /** Undo of the last step. */
   | { undo: true }
-  /** Criteria applied to the AutoFilter as its button applies them (on the range Excel reads, `AutoFilter.Range`): a host's, the engine's range unchanged. */
+  /** Criteria applied to the AutoFilter as its button applies them (on the range Excel reads, `AutoFilter.Range`); a host then sets the AutoFilter over that range. */
   | { criteria: { field: number; value: string } }
 
 export interface FilterCase {
@@ -74,7 +74,7 @@ export function filterBook(c: FilterCase): BookInput {
   return { sheets: [{ name: 'S', cells: c.cells, autoFilter: { range: c.filter }, ...(Object.keys(rows).length ? { rows } : {}), ...(c.criteria ? { filtered: true } : {}) }] }
 }
 
-/** A step taken by a session as a host takes it: typed and set texts by `setCellText`, a paste by `pasteText`, a copy and Fill Down by `editStructure`; criteria are the host's, which change nothing here. */
+/** A step taken by a session as a host takes it: typed and set texts by `setCellText`, a paste by `pasteText`, a copy and Fill Down by `editStructure`, criteria by `setLayout` of the range `getAutoFilterRange` gives. */
 export function stepInEngine(s: Session, step: FilterStep): void {
   if ('type' in step) s.setCellText('S', step.at, step.type)
   else if ('set' in step) s.setCellText('S', step.at, step.set)
@@ -86,6 +86,8 @@ export function stepInEngine(s: Session, step: FilterStep): void {
     s.editStructure({ op: 'fillRange', sheet: 'S', range: first, to: step.fill, type: 'copy' })
   } else if ('clear' in step) s.clearCells([{ sheet: 'S', range: step.clear }], 'contents')
   else if ('undo' in step) s.undo()
+  // a host that filters sets the AutoFilter over the range it acts on, as Excel saves it then
+  else s.setLayout([{ sheet: 'S', autoFilter: { range: s.getAutoFilterRange('S')! } }])
 }
 
 /** The engine's answer to a case: the range its AutoFilter acts on after each step (`getAutoFilterRange`), and its own range at the end, which a file saves. */
