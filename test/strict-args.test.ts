@@ -3,7 +3,7 @@
  * method's or a function's own arguments is an `InputError` naming the call that takes those options, and so is an
  * unknown field of a session call's options; an array, a number or undefined past them passes, as `map` gives a callback
  * its index and array. Every method of the three kinds of session and of both calculators, every function of the root,
- * `xlcalc/a1`, `xlcalc/xlsx` and `xlcalc/worker`. With closures and eval.
+ * `xlcalc/a1`, `xlcalc/xlsx`, `xlcalc/csv` and `xlcalc/worker`. With closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import * as root from '../src/index.js'
@@ -11,6 +11,7 @@ import { compute, createInlineCalc, createSession, InputError, parseCell, toInva
 import * as a1 from '../src/a1.js'
 import * as text from '../src/text.js'
 import * as xlsx from '../src/xlsx.js'
+import * as csv from '../src/csv.js'
 import * as locales from '../src/locales.js'
 import * as worker from '../src/worker/index.js'
 import * as functionText from '../src/function-text/index.js'
@@ -125,6 +126,7 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/text', text, { scanReferences: 2, refAt: 3, callAt: 3, nameAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, columnWidthFromChars: 1, columnWidthToChars: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1, findMatcher: 2, findReplacer: 3, compareValues: 3, valueComparator: 1, stepDecimals: 4 }],
     ['xlcalc/entry', typedEntry, { parseEntry: 2, entryText: 2, needsApostrophe: 2 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
+    ['xlcalc/csv', csv, { readCsv: 2, writeCsv: 2 }],
     ['xlcalc/locales', locales, { loadLocale: 1 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
     ['xlcalc/function-text', functionText, { functionDescription: 2 }],
@@ -154,7 +156,7 @@ describe('the functions of the package take no options they do not', () => {
     expect(xlsx.fromLegacy('A1:A2*2', { sheet: 'S' })).toBe('@A1:A2*2')
     expect(['A1', 'B2'].map(parseCell)).toEqual([{ row: 1, col: 1 }, { row: 2, col: 2 }])
     expect([1, 2].map(root.colLetters)).toEqual(['A', 'B'])
-    expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits, cached, unknownFunctions) (formulaLocal is an option of getViewport)')
+    expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits, cached, file, unknownFunctions) (formulaLocal is an option of getViewport)')
   })
 
   it("readXlsx's limits by their fields, and where a stray limits goes", async () => {

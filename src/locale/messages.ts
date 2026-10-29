@@ -239,8 +239,18 @@ export interface KeptMessageParams {
   keptWouldMove: { what: KeptPart; path: string }
 }
 
+/** The parameters of the messages of `readCsv`'s and `writeCsv`'s issues, by key. */
+export interface CsvMessageParams {
+  csvFormulaText: object
+  csvFormulaUnparsed: object
+  csvTextCut: object
+  csvOutside: object
+  csvSheets: { sheet: string }
+  csvCharsLost: { page: string }
+}
+
 /** The parameters of each message, by key. */
-export interface MessageParams extends XlsxMessageParams, KeptMessageParams {
+export interface MessageParams extends XlsxMessageParams, KeptMessageParams, CsvMessageParams {
   // reading a formula: the tokens
   rowOutOfRange: { row: string }
   columnOutOfRange: { column: string }
@@ -270,6 +280,11 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams {
   letName: { position: number }
   letEmpty: object
   letTooMany: { max: number }
+  lambdaTwice: { name: string }
+  lambdaName: { position: number }
+  lambdaDot: { name: string }
+  lambdaEmpty: object
+  lambdaTooMany: { max: number }
   // structured references
   specUnterminated: object
   specBracketInColumn: object
@@ -354,7 +369,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams {
 export type MessageKey = keyof MessageParams
 
 /** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`, and `EDIT_MESSAGES` for `EditKey`). */
-export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams | keyof KeptMessageParams>
+export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams | keyof KeptMessageParams | keyof CsvMessageParams>
 
 /** The keys of the messages only an edit of a book gives (a structure operation, typing into a cell, `explain`), whose English text stays out of `compute`'s bundle. */
 export type EditKey =
@@ -393,6 +408,9 @@ export const KEPT_MESSAGE_KEYS: Readonly<Record<keyof KeptMessageParams, 0>> = {
   keptFirstCell: 0, keptTakenApart: 0, keptRulesPivot: 0, keptRulesPart: 0, keptRulesPrefixes: 0, keptRulesBar: 0, keptNamespace: 0, keptRelPrefix: 0,
   keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptSparkline: 0, keptWouldMove: 0,
 }
+
+/** The keys of the messages of CSV issues, which a locale's `messages` holds too; their English text is the `./csv` subpath's. */
+export const CSV_MESSAGE_KEYS: Readonly<Record<keyof CsvMessageParams, 0>> = { csvFormulaText: 0, csvFormulaUnparsed: 0, csvTextCut: 0, csvOutside: 0, csvSheets: 0, csvCharsLost: 0 }
 
 /** A message: its key and its parameters; the engine's other than an edit's by default (an edit's is `Message<EngineKey>`, an issue of xlsx `XlsxMessage`). */
 export type Message<K extends MessageKey = CoreKey> = { [P in K]: { key: P } & MessageParams[P] }[K]

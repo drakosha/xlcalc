@@ -295,6 +295,11 @@ const MESSAGES: Messages = {
   letName: (p, w) => `Аргументом ${p.position} функции ${w.fn('LET')} должно быть имя`,
   letEmpty: (_, w) => `Функции ${w.fn('LET')} нужны хотя бы имя и его значение`,
   letTooMany: (p, w) => `Функция ${w.fn('LET')} принимает не больше ${p.max} ${plural(p.max, 'аргумента', 'аргументов', 'аргументов')}`,
+  lambdaTwice: (p, w) => `Параметр ${p.name} задан в ${w.fn('LAMBDA')} дважды`,
+  lambdaName: (p, w) => `Аргументом ${p.position} функции ${w.fn('LAMBDA')} должно быть имя параметра`,
+  lambdaDot: (p, w) => `В имени параметра ${w.fn('LAMBDA')} не может стоять точка: ${p.name}`,
+  lambdaEmpty: (_, w) => `Последним аргументом функции ${w.fn('LAMBDA')} должно быть вычисление`,
+  lambdaTooMany: (p, w) => `Функция ${w.fn('LAMBDA')} принимает не больше ${p.max} ${plural(p.max, 'параметра', 'параметров', 'параметров')}`,
   specUnterminated: () => 'Ссылка на таблицу не закрыта',
   specBracketInColumn: () => "В имени столбца не может стоять [ (пишите '[)",
   specUnknown: (p, w) => `Неизвестный элемент ссылки на таблицу ${w.item(p.word)}`,
@@ -520,6 +525,13 @@ const MESSAGES: Messages = {
   keptCacheSheet: (p) => `Часть файла (${keptPart(p.what)}) была на удалённом листе, а Excel заменяет её связью с самим файлом по его пути`,
   keptSparkline: (p) => `Удалена часть ячеек спарклайна на листе ${q(p.sheet)}`,
   keptWouldMove: (p) => `Часть файла (${keptPart(p.what)}, ${p.path}) сместилась бы, а writeKept этого не записывает`,
+  // CSV issues
+  csvFormulaText: () => 'Поля, которые Excel читает как формулы, оставлены текстом (readCsv берёт их формулами с formulas: true)',
+  csvFormulaUnparsed: () => 'Поля с формулой, которая не разбирается, оставлены текстом',
+  csvTextCut: () => 'Поле длиннее 32 767 знаков, предела Excel, обрезано',
+  csvOutside: () => 'Строки после 1 048 576-й и поля после столбца XFD не прочитаны, как и в Excel',
+  csvSheets: (p) => `В файл записан только лист ${q(p.sheet)}: остальные листы не записаны`,
+  csvCharsLost: (p) => `Знаки, которых нет в кодовой странице ${p.page}, записаны как ?`,
 }
 
 /** ru-RU, for `registerLocale`, or to pass as is to `toLocal` and the other functions that work without a workbook. */

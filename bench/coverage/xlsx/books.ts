@@ -87,6 +87,25 @@ const formulas: BookInput = {
   ],
 }
 
+/** LAMBDAs: in names (one calling itself, one scoped to a sheet), called in cells, a function by its name, GROUPBY. */
+const lambdas: BookInput = {
+  sheets: [
+    {
+      name: 'L',
+      cells: {
+        A1: v('East'), A2: v('West'), A3: v('East'), B1: v(10), B2: v(20), B3: v(5),
+        C1: f('Fact(5)'), C2: f('Twice(B1)+Bump(1)'), C3: f('LAMBDA(x,y,x*y)(3,4)'), C4: f('LET(f,LAMBDA(x,x+1),f(B2))'), C5: f('SUM(MAP(B1:B3,LAMBDA(x,x*2)))'),
+        C6: f('SUM(BYROW(B1:B3,SUM))'), C7: f('REDUCE(0,B1:B3,LAMBDA(a,b,a+b))'), C8: f('LAMBDA(x,x)'), C9: f('ISOMITTED(1)'), E1: f('GROUPBY(A1:A3,B1:B3,SUM)'),
+      },
+    },
+  ],
+  names: [
+    { name: 'Fact', ref: 'LAMBDA(n,IF(n<=1,1,n*Fact(n-1)))' },
+    { name: 'Twice', ref: 'LAMBDA(x,x*2)' },
+    { name: 'Bump', ref: "LAMBDA(x,x+'L'!$B$3)", scope: 'L' },
+  ],
+}
+
 const spills: BookInput = {
   sheets: [
     {
@@ -211,6 +230,7 @@ function ownBooks(): RoundTrip[] {
     { id: 'escapes', what: "Excel's _xHHHH_ escapes, control characters, the longest text", book: escapes },
     { id: 'formulas', what: 'functions newer than Excel 2007, names global and local, sheets, errors, LET, empty text results', book: formulas },
     { id: 'formulas-values', what: 'the same book as values only', book: formulas, mode: 'values' },
+    { id: 'lambdas', what: 'LAMBDAs in names and cells, a function as a value, MAP, BYROW, REDUCE, GROUPBY', book: lambdas },
     { id: 'spills', what: 'dynamic arrays: spills, spill references, a blocked spill, an empty FILTER, a merged area in the way', book: spills },
     { id: 'spills-values', what: 'the spills as values only', book: spills, mode: 'values' },
     { id: 'styles', what: 'fonts, fills, borders, alignment, number formats, widths, heights, column and row styles, merged areas', book: styles },

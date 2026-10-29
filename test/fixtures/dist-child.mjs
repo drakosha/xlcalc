@@ -12,6 +12,7 @@ const { createState, parse, valuesHash } = await import(`${name}/unstable/intern
 const { classAEdits, synthBook } = await import(`${name}/unstable/synth`)
 const { readXlsx, writeXlsx } = await import(`${name}/xlsx`)
 const { loadLocale } = await import(`${name}/locales`)
+const { readCsv, writeCsv } = await import(`${name}/csv`)
 const { createCalcPool } = await import(`${name}/worker`)
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -31,6 +32,9 @@ const threads = { hash: (await pool.compute(synth.book, { clock })).hash, edited
 const ru = await loadLocale('ru-RU')
 const ruBook = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
 const loaded = { tag: ru.tag, same: (await loadLocale('ru-RU')) === ru, inRoot: 'loadLocale' in root, read: (await readXlsx((await writeXlsx({ book: ruBook })).data)).book.locale, thread: (await pool.compute(ruBook, { clock })).sheets[0].cells.B1.value }
+// a ru-RU book through CSV and back: the values Excel would show, read as typed in the locale
+const viaCsv = readCsv(writeCsv({ book: ruBook, result: compute(ruBook) }).data, { locale: 'ru-RU' })
+const csv = { delimiter: viaCsv.delimiter, encoding: viaCsv.encoding, cells: viaCsv.book.sheets[0].cells }
 /** Error code of importing a path that `exports` does not expose. */
 async function closed(spec) {
   try {
@@ -56,6 +60,7 @@ console.log(
     xlsx: compute(xlsx.book, { clock }).hash,
     threads,
     loaded,
+    csv,
     closed: await Promise.all([`${name}/dist/engine.js`, `${name}/internal`, `${name}/synth`].map(closed)),
   }),
 )

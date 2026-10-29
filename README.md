@@ -4,13 +4,13 @@ A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook
 
 Under heavy development. AI-engineered.
 
-- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 43,778, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
+- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 44,356, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
 - **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
 - **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
-- **Excel 365 arrays.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)).
+- **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
 - **Displayed text.** Each cell carries the text Excel displays for it by its number format, locale and column width; a session also gives a viewport's conditional formats ([Number formats](docs/formats.md)).
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
-- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)).
+- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)).
 - **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
 - **Node 20.19 or newer and browsers**, no Node APIs.
 
@@ -34,6 +34,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 635 KB (236) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 235 KB (87) |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 313 KB (116) |
+| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 26 KB (9), its worker 739 KB (251), 564 KB (213) where a bundler splits off the locales and regex levels it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 50 KB (19) |
@@ -44,7 +45,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 34 KB (12) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
 
 ## Quick start
 
@@ -57,12 +58,12 @@ const cells = {
   A3: { value: 'North' }, B3: { value: 45.5 },
   D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
   D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
-  D3: { formula: 'INDIRECT("B2")' },
+  D3: { formula: 'B1/(B2-80)' },
 }
 const { sheets, diagnostics } = compute({ sheets: [{ name: 'Sales', cells }] })
 console.log(sheets[0].cells.D1.value) // → 165.5
 console.log(sheets[0].cells.D2.value) // → 80
-console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'NAME' } unknown function INDIRECT
+console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'DIV0' } division by zero
 ```
 
 A formula goes in `formula` without the leading `=` (one given is dropped, with the same `inputHash`), apart from `value`, so text from your data never becomes a formula; the same holds for the formulas of names, tables, conditional formats and data validation. A date is `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and becomes an Excel serial number. `numberFormat` and `meta` pass through to the result, whose `text` is the value in its number format.
@@ -125,41 +126,45 @@ await pool.close()
 
 Each library calculated the 5,275 formulas of xlcalc's coverage run over the same data, and its results were compared with Excel 16's, which this repository stores, by the same tolerance and with no allowance for known differences:
 
-| | xlcalc | Univer 1.0.4 | IronCalc 0.9.0 | HyperFormula 3.5.0 |
-|---|---:|---:|---:|---:|
-| Formulas with Excel's result | 99.5% | 94.5% | 93.0% | 80.5% |
-| Functions with Excel's result in every case (of 402) | 395 | 240 | 241 | 171 |
+| | Formulas with Excel's result | Functions with Excel's result in every case (of 402) |
+|---|---:|---:|
+| xlcalc 0.67.0 | 99.5% | 395 |
+| Univer 1.3.0 | 95.3% | 249 |
+| Univer 1.0.4 | 94.5% | 240 |
+| IronCalc 0.9.1 | 92.9% | 237 |
+| IronCalc 0.9.0 | 93.0% | 241 |
+| HyperFormula 3.5.0 | 80.5% | 171 |
 
 These are the cases xlcalc's functions were checked against, so they favor it.
 
-Speed and memory on Node 26.7 and an Apple M5 Pro, each case in its own process, with xlcalc's faster mode of execution, HyperFormula's best configuration and IronCalc's WebAssembly build; IronCalc's memory is its heap with the WebAssembly memory it grew to, an upper bound. A dash marks values that differ from xlcalc's full calculation: IronCalc's after a row is inserted in the SUMIFS workbook. The protocol and every case are in `bench/compare` in the repository.
+Speed and memory, measured on 29.10.2026 with xlcalc 0.67.0, HyperFormula 3.5.0, IronCalc 0.9.0, SheetJS 0.18.5 and ExcelJS 4.4.0 on Node 26.7 and an Apple M5 Pro, each case in its own process, with xlcalc's faster mode of execution, HyperFormula's best configuration and IronCalc's WebAssembly build; IronCalc's memory is its heap with the WebAssembly memory it grew to, an upper bound. A dash marks values that differ from xlcalc's full calculation: IronCalc's after a row is inserted in the SUMIFS workbook. The protocol and every case are in `bench/compare` in the repository.
 
 | Milliseconds, median | xlcalc | HyperFormula | IronCalc |
 |---|---:|---:|---:|
-| Open a 3,400-row workbook of 3,907 SUMIFS formulas | 98.6 | 3,765 | 2,207 |
-| Edit a criterion of its SUMIFS | 0.151 | 0.956 | 2,070 |
-| Edit an amount it sums | 8.51 | 2,810 | 2,134 |
-| Open 50,000 lookups | 46.9 | 1,119 | 13,648 |
-| Edit a lookup key | 0.156 | 0.095 | 12,875 |
-| Open a chain of 10,000 formulas | 32.8 | 30.2 | 24.9 |
-| Edit its first cell | 2.21 | 4.51 | 2.30 |
-| Open 50,000 formulas over one cell | 128 | 362 | 111 |
-| Edit that cell | 15.2 | 40.6 | 16.1 |
-| Set 2,000 inputs at once | 2.58 | 2.92 | 2.50 |
-| Insert a row in the SUMIFS workbook | 107 | 2,669 | – |
-| Insert a row among 5,000 cumulative SUMs | 24.3 | 6.36 | 187 |
+| Open a 3,400-row workbook of 3,907 SUMIFS formulas | 104 | 3,765 | 2,208 |
+| Edit a criterion of its SUMIFS | 0.163 | 0.964 | 2,046 |
+| Edit an amount it sums | 6.46 | 2,800 | 2,065 |
+| Open 50,000 lookups | 44.5 | 1,272 | 13,478 |
+| Edit a lookup key | 0.146 | 0.100 | 13,599 |
+| Open a chain of 10,000 formulas | 34.8 | 31.0 | 25.0 |
+| Edit its first cell | 2.30 | 4.51 | 1.96 |
+| Open 50,000 formulas over one cell | 131 | 366 | 113 |
+| Edit that cell | 16.0 | 42.3 | 18.1 |
+| Set 2,000 inputs at once | 2.85 | 3.31 | 2.62 |
+| Insert a row in the SUMIFS workbook | 91.0 | 2,805 | – |
+| Insert a row among 5,000 cumulative SUMs | 25.2 | 6.36 | 185 |
 
-| Retained heap after opening, MB | xlcalc | HyperFormula | IronCalc |
+| Retained heap after opening, MiB | xlcalc | HyperFormula | IronCalc |
 |---|---:|---:|---:|
-| The SUMIFS workbook | 13.6 | 17.7 | 22.0 |
-| 50,000 lookups | 8.66 | 20.4 | 26.5 |
-| A chain of 10,000 formulas | 7.19 | 4.76 | 6.52 |
-| 1,000 values 97 rows apart | 1.16 | 0.842 | 3.77 |
+| The SUMIFS workbook | 14.2 | 17.7 | 22.0 |
+| 50,000 lookups | 7.42 | 20.4 | 26.5 |
+| A chain of 10,000 formulas | 7.41 | 4.76 | 6.52 |
+| 1,000 values 97 rows apart | 1.36 | 0.848 | 3.77 |
 
 | xlsx, 34,000 rows | xlcalc | SheetJS | ExcelJS |
 |---|---:|---:|---:|
-| Read, ms | 446 | 546 | 596 |
-| Write, ms | 664 | 347 (compressed 461) | 1,068 |
+| Read, ms | 408 | 527 | 579 |
+| Write, ms | 518 | 368 (compressed 473) | 1,068 |
 | File written, MB | 3.50 | 20.0 (compressed 8.69) | 3.54 |
 
 SheetJS writes without compression by default.
@@ -173,7 +178,7 @@ Workbooks and formulas: [Formulas](docs/formulas.md), [Functions](docs/functions
 
 Sessions and grids: [Sessions](docs/sessions.md), [Rendering a grid](docs/grid.md), [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes and queries](docs/live-books.md), [Live objects](docs/live-objects.md), [Structure operations](docs/structure.md), [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md), [Addresses and formula text](docs/addresses.md).
 
-Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Asynchronous and threaded computation](docs/async.md), [Regular expressions in XLOOKUP and XMATCH](docs/regex.md).
+Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Reading and writing CSV](docs/csv.md), [Asynchronous and threaded computation](docs/async.md), [Regular expressions in XLOOKUP and XMATCH](docs/regex.md).
 
 The project: [Limitations](docs/limitations.md), [Development](docs/development.md), [formula.js against Excel](docs/coverage-formulajs.md), [Range and lookup caches](docs/cache.md), [Numerical stability of statistical moments](docs/statistics.md).
 

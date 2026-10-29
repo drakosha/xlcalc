@@ -1,0 +1,1242 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.658,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "LAMBDA#1",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)(3)"
+  },
+  {
+   "id": "LAMBDA#2",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.x+_xlpm.y)(1,2)"
+  },
+  {
+   "id": "LAMBDA#3",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)(1,2)"
+  },
+  {
+   "id": "LAMBDA#4",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.x+_xlpm.y)(1)"
+  },
+  {
+   "id": "LAMBDA#5",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.x+_xlpm.y)(1,)"
+  },
+  {
+   "id": "LAMBDA#6",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.y)(1)"
+  },
+  {
+   "id": "LAMBDA#7",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,ISBLANK(_xlpm.y))(1,)"
+  },
+  {
+   "id": "LAMBDA#8",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,TYPE(_xlpm.y))(1,)"
+  },
+  {
+   "id": "LAMBDA#9",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.y&\"\")(1,)"
+  },
+  {
+   "id": "LAMBDA#10",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)"
+  },
+  {
+   "id": "LAMBDA#11",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(1)"
+  },
+  {
+   "id": "LAMBDA#12",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(1)()"
+  },
+  {
+   "id": "LAMBDA#13",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)()"
+  },
+  {
+   "id": "LAMBDA#14",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "TYPE(_xlfn.LAMBDA(_xlpm.x,_xlpm.x))"
+  },
+  {
+   "id": "LAMBDA#15",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "ISERROR(_xlfn.LAMBDA(_xlpm.x,_xlpm.x))"
+  },
+  {
+   "id": "LAMBDA#16",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "ERROR.TYPE(_xlfn.LAMBDA(_xlpm.x,_xlpm.x))"
+  },
+  {
+   "id": "LAMBDA#17",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "IFERROR(_xlfn.LAMBDA(_xlpm.x,_xlpm.x),\"e\")"
+  },
+  {
+   "id": "LAMBDA#18",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)+1"
+  },
+  {
+   "id": "LAMBDA#19",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+1),_xlpm.f(2))"
+  },
+  {
+   "id": "LAMBDA#20",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+1),_xlpm.f)"
+  },
+  {
+   "id": "LAMBDA#21",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlfn.LAMBDA(_xlpm.y,_xlpm.x+_xlpm.y))(1)(2)"
+  },
+  {
+   "id": "LAMBDA#22",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.a,10,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+_xlpm.a))(5)"
+  },
+  {
+   "id": "LAMBDA#23",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2),_xlpm.g,_xlfn.LAMBDA(_xlpm.x,_xlpm.f(_xlpm.x)+1),_xlpm.g(3))"
+  },
+  {
+   "id": "LAMBDA#24",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.r,ROWS(_xlpm.r))(D!B1:B8)"
+  },
+  {
+   "id": "LAMBDA#25",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.r,ISREF(_xlpm.r))(D!B1:B8)"
+  },
+  {
+   "id": "LAMBDA#26",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.r,SUM(_xlpm.r))(D!B1:B8)"
+  },
+  {
+   "id": "LAMBDA#27",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)({1,2,3}),1)"
+  },
+  {
+   "id": "LAMBDA#28",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)(D!A3)"
+  },
+  {
+   "id": "LAMBDA#29",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)(D!A1)"
+  },
+  {
+   "id": "LAMBDA#30",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)(D!A7)"
+  },
+  {
+   "id": "LAMBDA#31",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.a1,_xlpm.a1*2)(4)"
+  },
+  {
+   "id": "LAMBDA#32",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm._x,_xlpm._x+1)(1)"
+  },
+  {
+   "id": "LAMBDA#33",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.X+1)(1)"
+  },
+  {
+   "id": "LAMBDA#34",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.sum,_xlpm.sum+1)(1)"
+  },
+  {
+   "id": "LAMBDA#35",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.sum,SUM(_xlpm.sum,1))(2)"
+  },
+  {
+   "id": "LAMBDA#36",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x)(_xlfn.LAMBDA(_xlpm.y,_xlpm.y*3))(2)"
+  },
+  {
+   "id": "LAMBDA#37",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "CHOOSE(2,_xlfn.LAMBDA(_xlpm.x,_xlpm.x),_xlfn.LAMBDA(_xlpm.x,_xlpm.x*10))(3)"
+  },
+  {
+   "id": "LAMBDA#38",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "(_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2))(3)"
+  },
+  {
+   "id": "LAMBDA#39",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "IF(TRUE,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+1),0)(1)"
+  },
+  {
+   "id": "LAMBDA#40",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.z,_xlpm.x&_xlpm.y&_xlpm.z)(\"a\",\"b\",\"c\")"
+  },
+  {
+   "id": "LAMBDA#41",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,100))"
+  },
+  {
+   "id": "LAMBDA#42",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,500))"
+  },
+  {
+   "id": "LAMBDA#43",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,1000))"
+  },
+  {
+   "id": "LAMBDA#44",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,1023))"
+  },
+  {
+   "id": "LAMBDA#45",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,1024))"
+  },
+  {
+   "id": "LAMBDA#46",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,2000))"
+  },
+  {
+   "id": "LAMBDA#47",
+   "group": "LAMBDA",
+   "fn": "LAMBDA",
+   "formula": "_xlfn.LET(_xlpm.f,_xlfn.LAMBDA(_xlpm.g,_xlpm.n,IF(_xlpm.n<=0,0,1+_xlpm.g(_xlpm.g,_xlpm.n-1))),_xlpm.f(_xlpm.f,5000))"
+  },
+  {
+   "id": "ISOMITTED#1",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.ISOMITTED(1)"
+  },
+  {
+   "id": "ISOMITTED#2",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlfn.ISOMITTED(_xlpm.x))()"
+  },
+  {
+   "id": "ISOMITTED#3",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlfn.ISOMITTED(_xlpm.y))(1,)"
+  },
+  {
+   "id": "ISOMITTED#4",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlfn.ISOMITTED(_xlpm.y))(1,2)"
+  },
+  {
+   "id": "ISOMITTED#5",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlfn.ISOMITTED(_xlpm.y))(1)"
+  },
+  {
+   "id": "ISOMITTED#6",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlfn.ISOMITTED(_xlpm.y))(1,D!A1)"
+  },
+  {
+   "id": "ISOMITTED#7",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlfn.LAMBDA(_xlpm.y,_xlfn.ISOMITTED(_xlpm.y))(_xlpm.x))()"
+  },
+  {
+   "id": "ISOMITTED#8",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlfn.ISOMITTED(_xlpm.x))"
+  },
+  {
+   "id": "ISOMITTED#9",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))(5)"
+  },
+  {
+   "id": "ISOMITTED#10",
+   "group": "ISOMITTED",
+   "fn": "ISOMITTED",
+   "formula": "_xlfn.LAMBDA(_xlpm.x,_xlpm.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))(5,1)"
+  },
+  {
+   "id": "SUM#1",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "_xlfn.LET(_xlpm.f,_xleta.SUM,_xlpm.f(1,2))"
+  },
+  {
+   "id": "SUM#2",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "_xleta.SUM"
+  },
+  {
+   "id": "SUM#3",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "_xlfn.LET(_xlpm.f,_xleta.SUM,_xlpm.f())"
+  },
+  {
+   "id": "SUM#4",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "_xlfn.LET(_xlpm.f,_xleta.SUM,_xlpm.f)"
+  },
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "_xlfn.LET(_xlpm.f,_xleta.ABS,_xlpm.f(-2))"
+  },
+  {
+   "id": "IF#1",
+   "group": "IF",
+   "fn": "IF",
+   "formula": "_xlfn.LET(_xlpm.f,_xleta.IF,_xlpm.f(TRUE,1,2))"
+  },
+  {
+   "id": "MAP#1",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B4,_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)),1)"
+  },
+  {
+   "id": "MAP#2",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:C2,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+1)),1)"
+  },
+  {
+   "id": "MAP#3",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B3,D!C1:C3,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a*_xlpm.b)),1)"
+  },
+  {
+   "id": "MAP#4",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B3,D!C1:C2,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "MAP#5",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B2,D!B1:C1,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "MAP#6",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP({1,2},_xlfn.LAMBDA(_xlpm.x,ISREF(_xlpm.x))),1)"
+  },
+  {
+   "id": "MAP#7",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B2,_xlfn.LAMBDA(_xlpm.x,ISREF(_xlpm.x))),1)"
+  },
+  {
+   "id": "MAP#8",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(D!B1:B3,_xlfn.LAMBDA(_xlpm.x,_xlpm.y,_xlpm.x))"
+  },
+  {
+   "id": "MAP#9",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(D!B1:B3,1)"
+  },
+  {
+   "id": "MAP#10",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!E1:E4,_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)),1)"
+  },
+  {
+   "id": "MAP#11",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(D!B1:B2,_xlfn.LAMBDA(_xlpm.x,{1,2}))"
+  },
+  {
+   "id": "MAP#12",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B3,_xleta.ABS),1)"
+  },
+  {
+   "id": "MAP#13",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B2,D!C1:C2,_xleta.SUM),1)"
+  },
+  {
+   "id": "MAP#14",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!A1:A3,_xlfn.LAMBDA(_xlpm.x,_xlpm.x)),1)"
+  },
+  {
+   "id": "MAP#15",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(5,_xlfn.LAMBDA(_xlpm.x,_xlpm.x+1))"
+  },
+  {
+   "id": "MAP#16",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B3,_xlfn.LAMBDA(_xlpm.x,ROW(_xlpm.x))),1)"
+  },
+  {
+   "id": "MAP#17",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(D!B1:B3,_xlfn.LAMBDA(_xlpm.x,D!C1:C3))"
+  },
+  {
+   "id": "MAP#18",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.MAP(1/0,_xlfn.LAMBDA(_xlpm.x,1))"
+  },
+  {
+   "id": "MAP#19",
+   "group": "MAP",
+   "fn": "MAP",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAP(D!B1:B2,_xlfn.LAMBDA(_xlpm.x,_xlfn.LAMBDA(_xlpm.y,_xlpm.y))),1)"
+  },
+  {
+   "id": "REDUCE#1",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(0,D!B1:B8,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b))"
+  },
+  {
+   "id": "REDUCE#2",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(,{2,3},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b^2))"
+  },
+  {
+   "id": "REDUCE#3",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(,{2,3},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,IF(_xlfn.ISOMITTED(_xlpm.a),\"om\",_xlpm.a&_xlpm.b)))"
+  },
+  {
+   "id": "REDUCE#4",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(1,{2,3},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a*_xlpm.b))"
+  },
+  {
+   "id": "REDUCE#5",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.REDUCE(0,{1,2},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+{1,10})),1)"
+  },
+  {
+   "id": "REDUCE#6",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(0,D!E1:E4,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b))"
+  },
+  {
+   "id": "REDUCE#7",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(0,D!B1:B3,_xlfn.LAMBDA(_xlpm.a,_xlpm.a))"
+  },
+  {
+   "id": "REDUCE#8",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(0,D!B1:B3,_xleta.SUM)"
+  },
+  {
+   "id": "REDUCE#9",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(\"\",D!F1:F3,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a&_xlpm.b))"
+  },
+  {
+   "id": "REDUCE#10",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "ISREF(_xlfn.REDUCE(D!B1,D!B1:B2,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.b)))"
+  },
+  {
+   "id": "REDUCE#11",
+   "group": "REDUCE",
+   "fn": "REDUCE",
+   "formula": "_xlfn.REDUCE(0,D!K1:K3,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+ISBLANK(_xlpm.b)))"
+  },
+  {
+   "id": "SCAN#1",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SCAN(0,D!B1:B4,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "SCAN#2",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SCAN(,{1,2,3},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "SCAN#3",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SCAN(0,{1,2;3,4},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "SCAN#4",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.SCAN(0,{1,2},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,{1,2}))"
+  },
+  {
+   "id": "SCAN#5",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SCAN(\"\",{\"a\",\"b\"},_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a&_xlpm.b)),1)"
+  },
+  {
+   "id": "SCAN#6",
+   "group": "SCAN",
+   "fn": "SCAN",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SCAN(0,D!E1:E4,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a+_xlpm.b)),1)"
+  },
+  {
+   "id": "BYROW#1",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW(D!B1:C3,_xlfn.LAMBDA(_xlpm.r,SUM(_xlpm.r))),1)"
+  },
+  {
+   "id": "BYROW#2",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW(D!B1:C3,_xleta.SUM),1)"
+  },
+  {
+   "id": "BYROW#3",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW(D!B1:C3,_xlfn.LAMBDA(_xlpm.r,ISREF(_xlpm.r))),1)"
+  },
+  {
+   "id": "BYROW#4",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW({1,2;3,4},_xlfn.LAMBDA(_xlpm.r,COLUMNS(_xlpm.r))),1)"
+  },
+  {
+   "id": "BYROW#5",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.BYROW(D!B1:C3,_xlfn.LAMBDA(_xlpm.r,_xlpm.r))"
+  },
+  {
+   "id": "BYROW#6",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW(D!B1:B3,_xlfn.LAMBDA(_xlpm.r,_xlpm.r)),1)"
+  },
+  {
+   "id": "BYROW#7",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.BYROW(D!B1:C3,_xlfn.LAMBDA(_xlpm.a,_xlpm.b,_xlpm.a))"
+  },
+  {
+   "id": "BYROW#8",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.BYROW(5,_xlfn.LAMBDA(_xlpm.r,_xlpm.r+1))"
+  },
+  {
+   "id": "BYROW#9",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYROW(D!B1:C2,_xlfn.LAMBDA(_xlpm.r,ROW(_xlpm.r))),1)"
+  },
+  {
+   "id": "BYROW#10",
+   "group": "BYROW",
+   "fn": "BYROW",
+   "formula": "_xlfn.BYROW(NA(),_xlfn.LAMBDA(_xlpm.r,1))"
+  },
+  {
+   "id": "BYCOL#1",
+   "group": "BYCOL",
+   "fn": "BYCOL",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYCOL(D!B1:C3,_xleta.MAX),1)"
+  },
+  {
+   "id": "BYCOL#2",
+   "group": "BYCOL",
+   "fn": "BYCOL",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYCOL(D!E1:E4,_xleta.SUM),1)"
+  },
+  {
+   "id": "BYCOL#3",
+   "group": "BYCOL",
+   "fn": "BYCOL",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.BYCOL(D!B1:C3,_xlfn.LAMBDA(_xlpm.c,ROWS(_xlpm.c))),1)"
+  },
+  {
+   "id": "BYCOL#4",
+   "group": "BYCOL",
+   "fn": "BYCOL",
+   "formula": "_xlfn.BYCOL(D!B1:C3,_xlfn.LAMBDA(_xlpm.c,_xlpm.c))"
+  },
+  {
+   "id": "MAKEARRAY#1",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAKEARRAY(2,3,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,_xlpm.r*10+_xlpm.c)),1)"
+  },
+  {
+   "id": "MAKEARRAY#2",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.MAKEARRAY(0,2,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,1))"
+  },
+  {
+   "id": "MAKEARRAY#3",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAKEARRAY(2.7,1.2,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,_xlpm.r)),1)"
+  },
+  {
+   "id": "MAKEARRAY#4",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAKEARRAY(\"2\",1,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,_xlpm.r)),1)"
+  },
+  {
+   "id": "MAKEARRAY#5",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.MAKEARRAY(2,2,_xlfn.LAMBDA(_xlpm.r,_xlpm.r))"
+  },
+  {
+   "id": "MAKEARRAY#6",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.MAKEARRAY(2,2,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,{1,2}))"
+  },
+  {
+   "id": "MAKEARRAY#7",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAKEARRAY(2,2,_xleta.SUM),1)"
+  },
+  {
+   "id": "MAKEARRAY#8",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.MAKEARRAY(-1,1,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,_xlpm.r))"
+  },
+  {
+   "id": "MAKEARRAY#9",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.MAKEARRAY(TRUE,1,_xlfn.LAMBDA(_xlpm.r,_xlpm.c,_xlpm.r)),1)"
+  },
+  {
+   "id": "MAKEARRAY#10",
+   "group": "MAKEARRAY",
+   "fn": "MAKEARRAY",
+   "formula": "_xlfn.MAKEARRAY(1,1,1)"
+  }
+ ],
+ "values": {
+  "LAMBDA#1": {
+   "t": "n",
+   "v": 6
+  },
+  "LAMBDA#2": {
+   "t": "n",
+   "v": 3
+  },
+  "LAMBDA#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LAMBDA#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LAMBDA#5": {
+   "t": "n",
+   "v": 1
+  },
+  "LAMBDA#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LAMBDA#7": {
+   "t": "b",
+   "v": true
+  },
+  "LAMBDA#8": {
+   "t": "n",
+   "v": 1
+  },
+  "LAMBDA#9": {
+   "t": "s",
+   "v": ""
+  },
+  "LAMBDA#10": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "LAMBDA#11": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "LAMBDA#12": {
+   "t": "n",
+   "v": 1
+  },
+  "LAMBDA#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LAMBDA#14": {
+   "t": "n",
+   "v": 128
+  },
+  "LAMBDA#15": {
+   "t": "b",
+   "v": false
+  },
+  "LAMBDA#16": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LAMBDA#17": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "LAMBDA#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LAMBDA#19": {
+   "t": "n",
+   "v": 3
+  },
+  "LAMBDA#20": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "LAMBDA#21": {
+   "t": "n",
+   "v": 3
+  },
+  "LAMBDA#22": {
+   "t": "n",
+   "v": 15
+  },
+  "LAMBDA#23": {
+   "t": "n",
+   "v": 7
+  },
+  "LAMBDA#24": {
+   "t": "n",
+   "v": 8
+  },
+  "LAMBDA#25": {
+   "t": "b",
+   "v": true
+  },
+  "LAMBDA#26": {
+   "t": "n",
+   "v": 114.75
+  },
+  "LAMBDA#27": {
+   "t": "s",
+   "v": "{2,4,6}"
+  },
+  "LAMBDA#28": {
+   "t": "s",
+   "v": "abc"
+  },
+  "LAMBDA#29": {
+   "t": "n",
+   "v": 0
+  },
+  "LAMBDA#30": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "LAMBDA#31": {
+   "t": "n",
+   "v": 8
+  },
+  "LAMBDA#32": {
+   "t": "n",
+   "v": 2
+  },
+  "LAMBDA#33": {
+   "t": "n",
+   "v": 2
+  },
+  "LAMBDA#34": {
+   "t": "n",
+   "v": 2
+  },
+  "LAMBDA#35": {
+   "t": "n",
+   "v": 3
+  },
+  "LAMBDA#36": {
+   "t": "n",
+   "v": 6
+  },
+  "LAMBDA#37": {
+   "t": "n",
+   "v": 30
+  },
+  "LAMBDA#38": {
+   "t": "n",
+   "v": 6
+  },
+  "LAMBDA#39": {
+   "t": "n",
+   "v": 2
+  },
+  "LAMBDA#40": {
+   "t": "s",
+   "v": "abc"
+  },
+  "LAMBDA#41": {
+   "t": "n",
+   "v": 100
+  },
+  "LAMBDA#42": {
+   "t": "n",
+   "v": 500
+  },
+  "LAMBDA#43": {
+   "t": "n",
+   "v": 1000
+  },
+  "LAMBDA#44": {
+   "t": "n",
+   "v": 1023
+  },
+  "LAMBDA#45": {
+   "t": "n",
+   "v": 1024
+  },
+  "LAMBDA#46": {
+   "t": "n",
+   "v": 2000
+  },
+  "LAMBDA#47": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ISOMITTED#1": {
+   "t": "b",
+   "v": false
+  },
+  "ISOMITTED#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOMITTED#3": {
+   "t": "b",
+   "v": true
+  },
+  "ISOMITTED#4": {
+   "t": "b",
+   "v": false
+  },
+  "ISOMITTED#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOMITTED#6": {
+   "t": "b",
+   "v": false
+  },
+  "ISOMITTED#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOMITTED#8": {
+   "t": "b",
+   "v": false
+  },
+  "ISOMITTED#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOMITTED#10": {
+   "t": "n",
+   "v": 6
+  },
+  "SUM#1": {
+   "t": "n",
+   "v": 3
+  },
+  "SUM#2": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "SUM#3": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "SUM#4": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "ABS#1": {
+   "t": "n",
+   "v": 2
+  },
+  "IF#1": {
+   "t": "n",
+   "v": 1
+  },
+  "MAP#1": {
+   "t": "s",
+   "v": "{8;16;30;32}"
+  },
+  "MAP#2": {
+   "t": "s",
+   "v": "{5,3;9,8}"
+  },
+  "MAP#3": {
+   "t": "s",
+   "v": "{8;56;165}"
+  },
+  "MAP#4": {
+   "t": "s",
+   "v": "{6;15;#N/A}"
+  },
+  "MAP#5": {
+   "t": "s",
+   "v": "{8,#N/A;#N/A,#N/A}"
+  },
+  "MAP#6": {
+   "t": "s",
+   "v": "{FALSE,FALSE}"
+  },
+  "MAP#7": {
+   "t": "s",
+   "v": "{TRUE;TRUE}"
+  },
+  "MAP#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAP#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAP#10": {
+   "t": "s",
+   "v": "{2;4;#DIV/0!;8}"
+  },
+  "MAP#11": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "MAP#12": {
+   "t": "s",
+   "v": "{4;8;15}"
+  },
+  "MAP#13": {
+   "t": "s",
+   "v": "{6;15}"
+  },
+  "MAP#14": {
+   "t": "s",
+   "v": "{;\"2\";\"abc\"}"
+  },
+  "MAP#15": {
+   "t": "n",
+   "v": 6
+  },
+  "MAP#16": {
+   "t": "s",
+   "v": "{1;2;3}"
+  },
+  "MAP#17": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "MAP#18": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "MAP#19": {
+   "t": "s",
+   "v": "{\"λ\";\"λ\"}"
+  },
+  "REDUCE#1": {
+   "t": "n",
+   "v": 114.75
+  },
+  "REDUCE#2": {
+   "t": "n",
+   "v": 11
+  },
+  "REDUCE#3": {
+   "t": "s",
+   "v": "23"
+  },
+  "REDUCE#4": {
+   "t": "n",
+   "v": 6
+  },
+  "REDUCE#5": {
+   "t": "s",
+   "v": "{2,20}"
+  },
+  "REDUCE#6": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "REDUCE#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "REDUCE#8": {
+   "t": "n",
+   "v": 27
+  },
+  "REDUCE#9": {
+   "t": "s",
+   "v": "АрендаарендаАрендй"
+  },
+  "REDUCE#10": {
+   "t": "b",
+   "v": true
+  },
+  "REDUCE#11": {
+   "t": "n",
+   "v": 3
+  },
+  "SCAN#1": {
+   "t": "s",
+   "v": "{4;12;27;43}"
+  },
+  "SCAN#2": {
+   "t": "s",
+   "v": "{1,3,6}"
+  },
+  "SCAN#3": {
+   "t": "s",
+   "v": "{1,3;6,10}"
+  },
+  "SCAN#4": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "SCAN#5": {
+   "t": "s",
+   "v": "{\"a\",\"ab\"}"
+  },
+  "SCAN#6": {
+   "t": "s",
+   "v": "{1;3;#DIV/0!;#DIV/0!}"
+  },
+  "BYROW#1": {
+   "t": "s",
+   "v": "{6;15;26}"
+  },
+  "BYROW#2": {
+   "t": "s",
+   "v": "{6;15;26}"
+  },
+  "BYROW#3": {
+   "t": "s",
+   "v": "{TRUE;TRUE;TRUE}"
+  },
+  "BYROW#4": {
+   "t": "s",
+   "v": "{2;2}"
+  },
+  "BYROW#5": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "BYROW#6": {
+   "t": "s",
+   "v": "{4;8;15}"
+  },
+  "BYROW#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BYROW#8": {
+   "t": "n",
+   "v": 6
+  },
+  "BYROW#9": {
+   "t": "s",
+   "v": "{1;2}"
+  },
+  "BYROW#10": {
+   "t": "e",
+   "v": "NA"
+  },
+  "BYCOL#1": {
+   "t": "s",
+   "v": "{15,11}"
+  },
+  "BYCOL#2": {
+   "t": "s",
+   "v": "{#DIV/0!}"
+  },
+  "BYCOL#3": {
+   "t": "s",
+   "v": "{3,3}"
+  },
+  "BYCOL#4": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "MAKEARRAY#1": {
+   "t": "s",
+   "v": "{11,12,13;21,22,23}"
+  },
+  "MAKEARRAY#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAKEARRAY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAKEARRAY#4": {
+   "t": "s",
+   "v": "{1;2}"
+  },
+  "MAKEARRAY#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAKEARRAY#6": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "MAKEARRAY#7": {
+   "t": "s",
+   "v": "{2,3;3,4}"
+  },
+  "MAKEARRAY#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MAKEARRAY#9": {
+   "t": "s",
+   "v": "{1}"
+  },
+  "MAKEARRAY#10": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

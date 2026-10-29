@@ -44,8 +44,9 @@ export function functionParts<T extends { fn?: string }>(cases: T[]): T[][] {
   return out
 }
 
-/** Spill references (`E2#`) as a file writes them, `_xlfn.ANCHORARRAY(E2)`. */
-export const anchorArray = (f: string) => f.replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+/** Spill references (`E2#`) as a file writes them, `_xlfn.ANCHORARRAY(E2)`; text in quotes stays (`INDIRECT("E2#")`). */
+export const anchorArray = (f: string) =>
+  f.replace(/"(?:[^"]|"")*"|((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => (m.startsWith('"') ? m : `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`))
 
 /** The formulas of the read columns over a cell `x`, which never give an error: its type code, its number, its text. */
 export const READ_COLUMNS = {

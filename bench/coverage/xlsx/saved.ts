@@ -4,13 +4,14 @@
  * `CHAR(9)&"abc"&CHAR(10)`), and the case sheet `C` with the cases in column A and Excel's wrappers beside them.
  * Formulas lose their file prefixes by a plain replacement, not by the reader's code.
  */
+import { fromFile } from '../../../src/xlsx/formulas/from-file.js'
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import { CASE_SHEET, READ_COLUMNS } from '../book.js'
 import { DATA_SHEET, dataCells } from '../data.js'
 import type { Probe, SheetCells } from '../probes.js'
 
-/** A formula without the file's prefixes of newer functions and of LET's names. */
-export const plainFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+/** A formula without the file's prefixes of newer functions, of LET's and LAMBDA's names and of functions as values, a trim reference's file form (`_xlfn._TRO_ALL(A1:C9)`) as the reader reads it (`A1.:.C9`). */
+export const plainFormula = (f: string) => (f.includes('_TRO_') ? fromFile(f).formula : f).replace(/_xlfn\.(_xlws\.)?|_xlpm\.|_xleta\./g, '')
 
 /** The parts of a set as `xlsx saved` sends them: PART cases each, `<set>-<k>`. */
 export { PART } from '../book.js'

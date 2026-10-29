@@ -9,6 +9,7 @@ import { localeOf } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
+import { refsOf } from './graph/dynamic.js'
 import { quoteSheet } from './syntax.js'
 import type { Rng } from './values.js'
 import { paced, type Steps } from './exec/budget.js'
@@ -77,19 +78,20 @@ export function* explainCell(state: EngineState, s: number, r: number, c: number
       else if (onward && room()) node.children.push(yield* visit(s, owner.r1, owner.c1, 0, past - 1))
       else truncated = true
     }
+    const refs = f ? refsOf(f) : []
     if (f && d <= 0) {
       if (onward && room()) {
-        const g = f.refs[onward.ref!]
+        const g = refs[onward.ref!]
         const single = g.r1 === g.r2 && g.c1 === g.c2
         const into = single ? node : yield* range(g)
         if (!single) node.children.push(into)
         into.children.push(yield* visit(onward.s, onward.r, onward.c, 0, past - 1))
-        if (f.refs.length > 1) truncated = true
-      } else if (f.refs.length) truncated = true
+        if (refs.length > 1) truncated = true
+      } else if (refs.length) truncated = true
     } else if (f) {
-      for (let i = 0; i < f.refs.length; i++) {
+      for (let i = 0; i < refs.length; i++) {
         if (!room()) break
-        const g = f.refs[i]
+        const g = refs[i]
         if (g.r1 === g.r2 && g.c1 === g.c2) {
           node.children.push(yield* visit(g.s, g.r1, g.c1, d - 1, past))
           continue

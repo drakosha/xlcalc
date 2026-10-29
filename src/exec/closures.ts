@@ -6,9 +6,20 @@
 import type { Arg } from '../args.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, type V } from '../values.js'
+import { callValue, lambdaOf, OMITTED, parameters as given } from './lambda.js'
 import { once, operator, type Backend, type Operator } from './walk.js'
 
 type Fn = (parameters?: readonly Arg[]) => Arg
+
+/**
+ * The values of the LETs and the calls of LAMBDAs being computed, innermost first, each found by the scope its code was
+ * built for: a call has its own (a LAMBDA calling itself too), and a LAMBDA keeps the ones around it where it was made.
+ */
+interface Env {
+  scope: object
+  vals: (() => Arg)[]
+  up: Env | null
+}
 
 /** A leaf the backend made last: a cell or a constant, which an operator over two of them reads itself. */
 interface Leaf {
@@ -21,7 +32,23 @@ interface Leaf {
 }
 
 export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
-  const { cell, spill, scalar, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO } = rt
+  const { cell, spill, scalar, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, ETA } = rt
+  let env: Env | null = null
+  const find = (scope: object) => {
+    let e = env!
+    while (e.scope !== scope) e = e.up!
+    return e.vals
+  }
+  // `f` computed among the values of `e` (few frames: a deep recursion of LAMBDAs runs through it)
+  const inside = (e: Env, f: Fn, p: readonly Arg[] | undefined): Arg => {
+    const outer = env
+    env = e
+    try {
+      return f(p)
+    } finally {
+      env = outer
+    }
+  }
   // the runtime's scalar operators get what the walk proved to be one value
   const op1 = (name: 'neg' | 'pct') => rt[name] as (a: Arg) => V
   const op2 = (name: Operator) => rt[name] as (a: Arg, b: Arg) => V
@@ -133,17 +160,35 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       return (p) => I(a(p), p![i] as number, p![i + 1] as number)
     },
     let: (count, build) => {
-      // the uses read the current computation's values
-      const cells: Fn[] = new Array(count)
-      const frames = parameters ? new WeakMap<readonly Arg[], Fn[]>() : undefined
-      const current = (p: readonly Arg[] | undefined) => p && frames ? frames.get(p)! : cells
-      const { values, body } = build((i) => (p) => current(p)[i]())
+      // the uses read the values of the current computation of the LET; a value is computed among the LETs it was made in
+      const scope = {}
+      const { values, body } = build((i) => () => find(scope)[i]())
       return (p) => {
-        const frame = frames && p ? new Array<Fn>(count) : cells
-        if (frames && p) frames.set(p, frame)
-        for (let i = 0; i < count; i++) frame[i] = once(() => values[i](p))
-        return body(p)
+        const vals = new Array<() => Arg>(count)
+        const e: Env = { scope, vals, up: env }
+        for (let i = 0; i < count; i++) vals[i] = once(() => inside(e, values[i], p))
+        return inside(e, body, p)
       }
     },
+    lambda: (count, build) => {
+      const scope = {}
+      const { body, height } = build(
+        (i) => () => find(scope)[i](),
+        (i) => () => find(scope)[i] === OMITTED,
+      )
+      return (p) => {
+        const up = env
+        // the call's parameters among the values around the LAMBDA where it was made
+        return lambdaOf(count, height, (args) => inside({ scope, vals: given(args, count), up }, body, p))
+      }
+    },
+    invoke: (fn, args) => (p) => callValue(fn(p), args.map((a) => a(p))),
+    recursive: (build) => {
+      let made: Fn | undefined
+      const code = build((p) => made!(p))
+      made = code
+      return code
+    },
+    eta: (name) => () => ETA(name),
   }
 }

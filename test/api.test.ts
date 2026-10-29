@@ -59,12 +59,15 @@ describe('input errors', () => {
 
   it('options and the clock', () => {
     const book = sheet({ A1: { value: 1 } })
-    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display, limits, cached, unknownFunctions) (pass the clock as { clock: { now, seed } })')
+    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display, limits, cached, file, unknownFunctions) (pass the clock as { clock: { now, seed } })')
     fails(() => compute(book, { clock: { now: 'yesterday', seed: 1 } }), 'opts.clock.now: invalid moment "yesterday"')
     fails(() => compute(book, { clock: { now: '2026-01-01T00:00:00Z', seed: '1' } as never }), 'opts.clock.seed: expected a finite number, got the string "1"')
     fails(() => createSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')
     fails(() => compute(book, { execution: 'fast' } as never), 'opts.execution: expected "closures" or "eval", got the string "fast"')
     fails(() => createSession(book, { execution: 'Eval' } as never), 'opts.execution: expected "closures" or "eval", got the string "Eval"')
+    fails(() => compute(book, { file: { name: '' } }), 'opts.file.name: expected the name of a file, got empty text')
+    fails(() => createSession(book, { file: { name: 'a.xlsx', folder: '/' } } as never), 'opts.file: unknown field "folder" (expected name, path)')
+    fails(() => compute(book, { file: { name: 'a.xlsx', path: 1 } } as never), 'opts.file.path: expected a string, got number 1')
   })
 
   it('session calls and validation', () => {

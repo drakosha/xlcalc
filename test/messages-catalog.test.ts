@@ -8,11 +8,12 @@ import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
 import { toLocal } from '../src/locale/index.js'
 import { ruRU } from './locales.js'
-import { KEPT_MESSAGE_KEYS, ownText, say, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+import { CSV_MESSAGE_KEYS, KEPT_MESSAGE_KEYS, ownText, say, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
 import type { XlsxMessage } from '../src/xlsx/issues.js'
 import { issueText, XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
 import { KEPT_SAMPLES, XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
 import { KEPT_EN_MESSAGES, keptText, type KeptMessage } from '../src/xlsx/keep/messages.js'
+import { CSV_EN_MESSAGES, csvText, type CsvMessage } from '../src/csv/messages.js'
 
 /** Parameters of each message: a key without samples does not compile. */
 const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
@@ -43,6 +44,11 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   letName: [{ position: 3 }],
   letEmpty: [{}],
   letTooMany: [{ max: 254 }],
+  lambdaTwice: [{ name: 'x' }],
+  lambdaName: [{ position: 2 }],
+  lambdaDot: [{ name: 'a.b' }],
+  lambdaEmpty: [{}],
+  lambdaTooMany: [{ max: 253 }],
   specUnterminated: [{}],
   specBracketInColumn: [{}],
   specUnknown: [{ word: '#Data' }, { word: '#Foo' }],
@@ -122,14 +128,21 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   explainHeldHere: [{}],
   ...XLSX_SAMPLES,
   ...KEPT_SAMPLES,
+  csvFormulaText: [{}],
+  csvFormulaUnparsed: [{}],
+  csvTextCut: [{}],
+  csvOutside: [{}],
+  csvSheets: [{ sheet: 'Sales' }],
+  csvCharsLost: [{ page: 'windows-1251' }],
 }
 
 type Any = Message<MessageKey>
 const messages = (): Any[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Any))
 const isXlsx = (m: Any): m is XlsxMessage => Object.hasOwn(XLSX_MESSAGE_KEYS, m.key)
 const isKept = (m: Any): m is KeptMessage => Object.hasOwn(KEPT_MESSAGE_KEYS, m.key)
-/** A message in English: en-US's of the engine, the xlsx subpath's of an issue, the xlsx/keep subpath's of a refusal. */
-const en = (m: Any) => (isXlsx(m) ? issueText('en-US', m) : isKept(m) ? keptText('en-US', m) : say('en-US', m))
+const isCsv = (m: Any): m is CsvMessage => Object.hasOwn(CSV_MESSAGE_KEYS, m.key)
+/** A message in English: en-US's of the engine, the xlsx and csv subpaths' of an issue, the xlsx/keep subpath's of a refusal. */
+const en = (m: Any) => (isXlsx(m) ? issueText('en-US', m) : isKept(m) ? keptText('en-US', m) : isCsv(m) ? csvText('en-US', m) : say('en-US', m))
 const ru = (m: Any) => ownText('ru-RU', m, (f) => (toLocal(f, ruRU) as { formula: string }).formula)!
 
 /** The ways ru-RU writes a parameter's value: as it is, a function's or a specifier's name, a number, a formula. */
@@ -153,12 +166,13 @@ const EXCEL_WORDS = new Set<MessageKey>(['validationError'])
 const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere', 'explainHeldFrom', 'explainHeldHere'])
 
 describe('the catalog of messages', () => {
-  it("ru-RU writes every message of en-US and of the xlsx subpaths, whose keys registerLocale takes", () => {
-    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES), ...Object.keys(KEPT_EN_MESSAGES)]
+  it("ru-RU writes every message of en-US and of the xlsx and csv subpaths, whose keys registerLocale takes", () => {
+    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES), ...Object.keys(KEPT_EN_MESSAGES), ...Object.keys(CSV_EN_MESSAGES)]
     expect(keys.filter((k) => ruRU.messages?.[k as MessageKey] === undefined)).toEqual([])
     expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
     expect(Object.keys(XLSX_MESSAGE_KEYS).sort()).toEqual(Object.keys(XLSX_EN_MESSAGES).sort())
     expect(Object.keys(KEPT_MESSAGE_KEYS).sort()).toEqual(Object.keys(KEPT_EN_MESSAGES).sort())
+    expect(Object.keys(CSV_MESSAGE_KEYS).sort()).toEqual(Object.keys(CSV_EN_MESSAGES).sort())
   })
 
   it('the Russian text shows every parameter the English one shows, in the locale', () => {

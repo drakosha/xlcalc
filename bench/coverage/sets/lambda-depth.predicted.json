@@ -1,0 +1,62 @@
+{
+ "simple#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#2": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#3": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#4": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#5": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#6": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "simple#7": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "heavy#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "heavy#2": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "heavy#3": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "heavy#4": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "named#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "named#2": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "named#3": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "named#4": {
+  "t": "e",
+  "v": "NUM"
+ }
+}

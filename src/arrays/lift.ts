@@ -5,7 +5,7 @@
  * occupied part of the operands is computed, the rest is one `fill` value.
  */
 import { allot, spend } from '../exec/budget.js'
-import { Areas, E, Rng, type V } from '../values.js'
+import { Areas, asValue, E, Lambda, Rng, type V } from '../values.js'
 import { Arr, broadcastAt } from './value.js'
 
 /** A value as the runtime passes it: a scalar, a reference or an array. */
@@ -72,9 +72,10 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V, missing = f
  * The value of a lifted call at one position: an array or a reference answer gives its top-left value, and a
  * blank there stays an empty element (INDEX); a blank value becomes 0 (IF over a blank cell, as in Excel).
  */
-export function first(x: Val | Areas, cell: (g: Rng) => V): V {
+export function first(x: Val | Areas | Lambda, cell: (g: Rng) => V): V {
   if (x instanceof Arr) return x.at(0, 0)
   if (x instanceof Areas) return E.VALUE
+  if (x instanceof Lambda) return asValue(x)
   if (x instanceof Rng) return cell(x)
   return x === null ? 0 : x
 }

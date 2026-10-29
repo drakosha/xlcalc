@@ -1,0 +1,163 @@
+{
+ "started": "2026-10-29T17:51:19.834Z",
+ "uptimeStart": "20:51  up 9 days,  2:29, 2 users, load averages: 4.63 4.75 5.18",
+ "node": "v26.7.0",
+ "engineCommit": "75a6bcd25e90eac06edb95e62fbbe8b344071f11",
+ "versions": {
+  "hyperformula": "3.5.0",
+  "ironcalc": "0.9.0",
+  "exceljs": "4.4.0",
+  "xlsx": "0.18.5"
+ },
+ "machine": {
+  "cpu": "Apple M5 Pro",
+  "memoryGiB": 48
+ },
+ "results": [
+  {
+   "part": "engines",
+   "file": "iron-child.mjs",
+   "args": [
+    "fanout",
+    "xl-eval"
+   ],
+   "loadBefore": [
+    4.6318359375,
+    4.74853515625,
+    5.1806640625
+   ],
+   "loadAfter": [
+    5.0615234375,
+    4.83544921875,
+    5.20849609375
+   ],
+   "status": "ok",
+   "cells": 50002,
+   "formulas": 50001,
+   "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+   "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+   "retainedHeapMb": 45.277137756347656,
+   "coldMedianMs": 202.08224999999993,
+   "coldMedianCpuMs": 423.163,
+   "samples": [
+    {
+     "wallMs": 202.08224999999993,
+     "cpuMs": 400.866
+    },
+    {
+     "wallMs": 198.674125,
+     "cpuMs": 423.163
+    },
+    {
+     "wallMs": 214.39133300000003,
+     "cpuMs": 426.175
+    },
+    {
+     "wallMs": 195.61125000000015,
+     "cpuMs": 401.095
+    },
+    {
+     "wallMs": 213.04783399999997,
+     "cpuMs": 423.978
+    }
+   ],
+   "edits": {
+    "root": {
+     "firstEditMs": 47.195124999999734,
+     "medianMs": 22.70425000000023,
+     "p95Ms": 27.934416000000056,
+     "medianCpuMs": 26.288,
+     "samples": [
+      {
+       "wallMs": 25.056416999999783,
+       "cpuMs": 35.917
+      },
+      {
+       "wallMs": 26.8703330000003,
+       "cpuMs": 38.238
+      },
+      {
+       "wallMs": 27.934416000000056,
+       "cpuMs": 48.847
+      },
+      {
+       "wallMs": 22.467375000000175,
+       "cpuMs": 30.046
+      },
+      {
+       "wallMs": 22.085125000000062,
+       "cpuMs": 23.703
+      },
+      {
+       "wallMs": 23.052791999999954,
+       "cpuMs": 23.96
+      },
+      {
+       "wallMs": 28.93604200000027,
+       "cpuMs": 77.942
+      },
+      {
+       "wallMs": 20.26516700000002,
+       "cpuMs": 25.043
+      },
+      {
+       "wallMs": 21.84879200000023,
+       "cpuMs": 22.046
+      },
+      {
+       "wallMs": 22.70425000000023,
+       "cpuMs": 26.207
+      },
+      {
+       "wallMs": 24.358458000000155,
+       "cpuMs": 53.272
+      },
+      {
+       "wallMs": 26.885833000000275,
+       "cpuMs": 39.286
+      },
+      {
+       "wallMs": 20.293959000000086,
+       "cpuMs": 22.72
+      },
+      {
+       "wallMs": 22.253625000000284,
+       "cpuMs": 23.976
+      },
+      {
+       "wallMs": 21.4540420000003,
+       "cpuMs": 22.737
+      },
+      {
+       "wallMs": 23.57891699999982,
+       "cpuMs": 26.935
+      },
+      {
+       "wallMs": 20.460791999999856,
+       "cpuMs": 21.155
+      },
+      {
+       "wallMs": 22.492041000000427,
+       "cpuMs": 26.288
+      },
+      {
+       "wallMs": 22.180875000000015,
+       "cpuMs": 23.433
+      },
+      {
+       "wallMs": 23.603999999999814,
+       "cpuMs": 26.681
+      }
+     ]
+    }
+   },
+   "verification": {
+    "comparisons": 28,
+    "checkedCells": 1400056,
+    "maxRelativeError": 0
+   }
+  }
+ ],
+ "finished": "2026-10-29T17:51:23.903Z",
+ "uptimeEnd": "20:51  up 9 days,  2:29, 2 users, load averages: 5.06 4.84 5.21"
+}

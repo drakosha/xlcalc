@@ -129,7 +129,11 @@ describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as 
 const MAC_LONG_S = 'Excel for Mac reads the long s as s and saves falſe as FALSE, which the formula read is; the engine, as Excel for Windows, takes falſe for a name (docs/limitations.md, Known differences)'
 
 /** Cases whose value differs between the book Excel saved and the book sent, and why: Excel's doing, not the reader's. */
+/** INDIRECT's text with a spill reference sent in its file form (OPEN in test/excel-open.ts): the saved file holds that text. */
+const SENT = 'the harness sent INDIRECT("_xlfn.ANCHORARRAY(R!E1)"), which the saved file holds (OPEN in test/excel-open.ts)'
 const SAVED_KNOWN: Record<string, string> = {
+  ...Object.fromEntries(['indirect:a1#32', 'indirect-held:again#7', 'indirect-held:again#8', 'indirect-held:again#9'].map((k) => [k, SENT])),
+  'indirect:sheets#3': "a reference across sheets whose last sheet alone is quoted (R:'Two Words'!A1): Excel saves the #NAME? it read it as",
   'let-held:held#5':
     "Excel saves a LET that ends with a value with its last name as the calculation (LET(x,1) as LET(x,1,x)): with 127 names that makes 255 arguments, one past the engine's limit, and the formula read does not parse",
   'name-case-held:bool#1': MAC_LONG_S,
@@ -142,8 +146,11 @@ const SAVED_KNOWN: Record<string, string> = {
 }
 
 /** Cases where the value Excel stored on saving differs from its stored answer: Excel does not repeat it. */
+/** Excel for Mac's #NUM! in the first run of indirect, which the saved book's calculation did not repeat (OPEN in test/excel-open.ts). */
+const MAC_NUM = 'Excel for Mac answered #NUM! in the first run of indirect, not again (OPEN in test/excel-open.ts)'
 const SAVED_UNSTABLE: Record<string, string> = {
   'fuzz:1#1263': 'DAY(WEEKNUM(40977,1E+3)<>2.5): 1 or #NUM! from run to run (bench/coverage/README.md)',
+  ...Object.fromEntries(['a1#26', 'offset#37', 'arrays#1', 'arrays#2', 'arrays#3', 'arrays#4', 'arrays#5', 'cell#26', 'formulatext#4'].map((id) => [`indirect:${id}`, MAC_NUM])),
   ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [`east-asian-held:PHONETIC#${i + 1}`, "PHONETIC: Excel for Mac answers the case's reading #NUM! and stores #N/A, Excel for Windows's answer"])),
 }
 
