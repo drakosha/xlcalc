@@ -3,7 +3,8 @@
  * <set>`): each case is a book of one sheet `S` with an AutoFilter, its criteria applied by Excel where the case has
  * some, and steps taken in turn, the AutoFilter's range read after each. On the Mac the steps are a person's, Excel in
  * front: a text typed into a cell and Return, text pasted from the clipboard (Cmd+V), a range copied (Cmd+C) and pasted
- * (Cmd+V), Fill Down (Cmd+D), cells cleared (Delete) and Undo (Cmd+Z); `set` writes a cell through the object model.
+ * (Cmd+V), Fill Down (Cmd+D), cells cleared (Delete) and Undo (Cmd+Z); `set` writes a cell and `criteria` filters
+ * through the object model.
  */
 import type { BookInput, CellInput, Session } from '../../../src/contract.js'
 import { createSession } from '../../../src/index.js'
@@ -24,6 +25,8 @@ export type FilterStep =
   | { clear: string }
   /** Undo of the last step. */
   | { undo: true }
+  /** Criteria applied to the AutoFilter as its button applies them (on the range Excel reads, `AutoFilter.Range`): a host's, the engine's range unchanged. */
+  | { criteria: { field: number; value: string } }
 
 export interface FilterCase {
   id: string
@@ -71,7 +74,7 @@ export function filterBook(c: FilterCase): BookInput {
   return { sheets: [{ name: 'S', cells: c.cells, autoFilter: { range: c.filter }, ...(Object.keys(rows).length ? { rows } : {}), ...(c.criteria ? { filtered: true } : {}) }] }
 }
 
-/** A step taken by a session as a host takes it: typed and set texts by `setCellText`, a paste by `pasteText`, a copy and Fill Down by `editStructure`. */
+/** A step taken by a session as a host takes it: typed and set texts by `setCellText`, a paste by `pasteText`, a copy and Fill Down by `editStructure`; criteria are the host's, which change nothing here. */
 export function stepInEngine(s: Session, step: FilterStep): void {
   if ('type' in step) s.setCellText('S', step.at, step.type)
   else if ('set' in step) s.setCellText('S', step.at, step.set)
@@ -82,7 +85,7 @@ export function stepInEngine(s: Session, step: FilterStep): void {
     const first = `${a}:${b.replace(/\d+$/, a.replace(/^[A-Z]+/, ''))}`
     s.editStructure({ op: 'fillRange', sheet: 'S', range: first, to: step.fill, type: 'copy' })
   } else if ('clear' in step) s.clearCells([{ sheet: 'S', range: step.clear }], 'contents')
-  else s.undo()
+  else if ('undo' in step) s.undo()
 }
 
 /** The engine's answer to a case: the range its AutoFilter acts on after each step (`getAutoFilterRange`), and its own range at the end, which a file saves. */

@@ -2,7 +2,7 @@
  * The filter sets in Excel for Windows (`bench/coverage/filter/`), each case in its own book as the Mac step writes it.
  * Over SSH Excel has no screen, so the steps go through the object model: a typed or set text as `Formula2Local`, a
  * paste as text put on the clipboard and `Worksheet.Paste`, a copy as `Range.Copy` with a destination, Fill Down as
- * `Range.FillDown`, Delete as `ClearContents`; Undo has no object model of its own, so a case that undoes is the
+ * `Range.FillDown`, Delete as `ClearContents`, criteria as `AutoFilter.Range.AutoFilter`; Undo has no object model of its own, so a case that undoes is the
  * Mac's alone. The criteria go on through `Range.AutoFilter`, and the AutoFilter's range is read after each step
  * (`AutoFilter.Range`). The answers go to `test/excel/win/filter/<set>.json`.
  */
@@ -20,6 +20,7 @@ function winStep(s: FilterStep): Step {
   if ('copy' in s) return { do: 'struct', op: 'copyRange', sheet: 'S', range: s.copy, target: 'S', to: s.to }
   if ('fill' in s) return { do: 'struct', op: 'fillDown', sheet: 'S', target: 'S', to: s.fill }
   if ('clear' in s) return { do: 'clear', sheet: 'S', range: s.clear, what: 'contents' }
+  if ('criteria' in s) return { do: 'autoFilter', sheet: 'S', field: s.criteria.field, value: s.criteria.value }
   throw new Error('an undo has no step on Windows')
 }
 

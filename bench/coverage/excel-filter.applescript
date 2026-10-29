@@ -3,7 +3,8 @@
 -- the cell, types the text and presses Return; "set" writes the cell's formula through the object model; "paste" puts
 -- the text on the clipboard and presses Cmd+V with the cell selected; "copy" selects the range, presses Cmd+C, selects
 -- the target, presses Cmd+V and Escape; "fill" selects the range and presses Cmd+D (Fill Down); "clear" selects the
--- range and presses Delete (forward delete, which clears the contents); "undo" presses Cmd+Z. Keys go by their codes,
+-- range and presses Delete (forward delete, which clears the contents); "undo" presses Cmd+Z; "criteria" filters the
+-- range Excel reads (`autofilter range` over `range object of autofilter object`). Keys go by their codes,
 -- whatever the layout. After each step the AutoFilter's range is read (`range object of autofilter object`, empty
 -- without one) and a window Excel shows is answered. Then save the book as xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the case as
@@ -64,6 +65,9 @@ on run argv
 			else if keysOf contains "clear" then
 				tell application "Microsoft Excel" to select range ((stp's objectForKey:"clear") as text) of ws
 				set said to said & my keys({117}, {}, kb)
+			else if keysOf contains "criteria" then
+				set k to stp's objectForKey:"criteria"
+				tell application "Microsoft Excel" to autofilter range (range object of (autofilter object of ws)) field ((k's objectForKey:"field") as integer) criteria1 ((k's objectForKey:"value") as text)
 			else if keysOf contains "undo" then
 				set said to said & my keys({6}, {command down}, kb)
 			end if
