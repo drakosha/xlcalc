@@ -130,6 +130,16 @@ describe.each(['closures', 'eval'] as const)('frozen panes with a saved scroll p
     expect(compute(r.book, { execution }).inputHash).toBe(compute(b, { execution }).inputHash)
   })
 
+  it('frozen panes without a saved cursor are written with the cursor on A1, as Excel saves it, and read without a view', async () => {
+    for (const frozen of [{ rows: 1, columns: 1 }, { rows: 2 }, { columns: 3 }] as FrozenPanes[]) {
+      const data = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } }, frozen }] } })).data
+      const xml = await (await JSZip.loadAsync(data)).file('xl/worksheets/sheet1.xml')!.async('string')
+      expect(xml).toMatch(/state="frozen"\/><selection pane="(bottomRight|bottomLeft|topRight)"\/><\/sheetView>/)
+      const r = await readXlsx(data)
+      expect([r.book.sheets[0].frozen, r.book.sheets[0].view]).toEqual([frozen, undefined])
+    }
+  })
+
   it('the scroll goes to the pane after the split, the view starts at the first row and column', async () => {
     const zip = await JSZip.loadAsync((await writeXlsx({ book: book({ rows: 2, columns: 1 }, 'C5') })).data)
     const xml = await zip.file('xl/worksheets/sheet1.xml')!.async('string')
