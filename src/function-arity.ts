@@ -179,6 +179,7 @@ export const FUNCTION_ARITY: Readonly<Record<string, ArityDef>> = {
   FALSE: { args: '' },
   FDIST: { args: 'n i i' },
   FILTER: { args: 'G R p?' },
+  FILTERXML: { args: 's s' },
   FIND: { args: 's s w?' },
   FINDB: { args: 's s w?' },
   FINV: { args: 'n i i' },

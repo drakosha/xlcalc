@@ -184,6 +184,7 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
   FALSE: 'The logical value FALSE.',
   FDIST: 'The right-tailed F probability distribution (older version).',
   FILTER: 'The rows or columns of an array that meet a condition.',
+  FILTERXML: 'The values of the nodes an XPath expression selects in XML.',
   FIND: 'Where text starts within other text, case-sensitive.',
   FINDB: 'Where text starts within other text, in bytes, case-sensitive.',
   FINV: 'The inverse of the right-tailed F probability distribution (older version).',

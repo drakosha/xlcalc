@@ -1,0 +1,122 @@
+{
+ "siblings#1": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#2": {
+  "t": "s",
+  "v": "y"
+ },
+ "siblings#3": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#4": {
+  "t": "s",
+  "v": "y"
+ },
+ "siblings#5": {
+  "t": "s",
+  "v": "z"
+ },
+ "siblings#6": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#7": {
+  "t": "s",
+  "v": "y"
+ },
+ "siblings#8": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#9": {
+  "t": "s",
+  "v": "y"
+ },
+ "siblings#10": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#11": {
+  "t": "s",
+  "v": "y"
+ },
+ "siblings#12": {
+  "t": "s",
+  "v": "x"
+ },
+ "siblings#13": {
+  "t": "s",
+  "v": "y"
+ },
+ "single#1": {
+  "t": "s",
+  "v": "y"
+ },
+ "single#2": {
+  "t": "s",
+  "v": "x"
+ },
+ "single#3": {
+  "t": "s",
+  "v": "y"
+ },
+ "single#4": {
+  "t": "s",
+  "v": "y"
+ },
+ "single#5": {
+  "t": "s",
+  "v": "y"
+ },
+ "single#6": {
+  "t": "s",
+  "v": "y"
+ },
+ "nodes#1": {
+  "t": "n",
+  "v": 1
+ },
+ "nodes#2": {
+  "t": "s",
+  "v": "t"
+ },
+ "nodes#3": {
+  "t": "n",
+  "v": 2
+ },
+ "nodes#4": {
+  "t": "s",
+  "v": "one"
+ },
+ "nodes#5": {
+  "t": "s",
+  "v": "two"
+ },
+ "nodes#6": {
+  "t": "n",
+  "v": 4
+ },
+ "nodes#7": {
+  "t": "s",
+  "v": "t"
+ },
+ "nodes#8": {
+  "t": "n",
+  "v": 2
+ },
+ "nodes#9": {
+  "t": "n",
+  "v": 2
+ },
+ "nodes#10": {
+  "t": "s",
+  "v": "s"
+ },
+ "nodes#11": {
+  "t": "n",
+  "v": 2
+ }
+}

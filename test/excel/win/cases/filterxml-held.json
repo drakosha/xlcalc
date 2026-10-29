@@ -1,0 +1,847 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.7,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "mixed#1",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//*\"),1)"
+  },
+  {
+   "id": "mixed#2",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//*\"),2)"
+  },
+  {
+   "id": "mixed#3",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "ISERROR(INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//*\"),4))"
+  },
+  {
+   "id": "mixed#4",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//node()\"),6)"
+  },
+  {
+   "id": "mixed#5",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//node()\"),12)"
+  },
+  {
+   "id": "mixed#6",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//node()\"),13)"
+  },
+  {
+   "id": "mixed#7",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "ROWS(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//c | //d\"))"
+  },
+  {
+   "id": "mixed#8",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//c | //d\"),2)"
+  },
+  {
+   "id": "mixed#9",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "COUNTA(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//*\"))"
+  },
+  {
+   "id": "mixed#10",
+   "group": "mixed",
+   "fn": "FILTERXML",
+   "formula": "SUM(IFERROR(_xlfn.FILTERXML(\"<a id=\"\"1\"\"><b k=\"\"v\"\">one</b><b>two</b><!-- note --><c><d>4</d><d>5</d></c><?pi data?><e/></a>\",\"//*\"),0))"
+  },
+  {
+   "id": "text#1",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a> x <![CDATA[ y ]]> z </a>\",\"/a\")"
+  },
+  {
+   "id": "text#2",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a><![CDATA[a]]><![CDATA[b]]></a>\",\"/a\")"
+  },
+  {
+   "id": "text#3",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a><![CDATA[ ]]></a>\",\"/a\")"
+  },
+  {
+   "id": "text#4",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>&#160;x</a>\",\"/a\")"
+  },
+  {
+   "id": "text#5",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>&#32;x&#32;</a>\",\"/a\")"
+  },
+  {
+   "id": "text#6",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>&#9;7&#10;</a>\",\"/a\")"
+  },
+  {
+   "id": "text#7",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a\")"
+  },
+  {
+   "id": "text#8",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a> <![CDATA[1]]> </a>\",\"/a\")"
+  },
+  {
+   "id": "text#9",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1<!-- c -->2</a>\",\"/a\")"
+  },
+  {
+   "id": "text#10",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1<?p?>2</a>\",\"/a\")"
+  },
+  {
+   "id": "text#11",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "LEN(_xlfn.FILTERXML(\"<a>&#160;x</a>\",\"/a\"))"
+  },
+  {
+   "id": "text#12",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "CODE(_xlfn.FILTERXML(\"<a>&#160;x</a>\",\"/a\"))"
+  },
+  {
+   "id": "text#13",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "ROWS(_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/text()\"))"
+  },
+  {
+   "id": "text#14",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "text#15",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a b='  x  '/>\",\"/a/@b\")"
+  },
+  {
+   "id": "text#16",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a b=\"\"&#9;x&#10;\"\"/>\",\"/a/@b\")"
+  },
+  {
+   "id": "text#17",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "LEN(_xlfn.FILTERXML(\"<a b=\"\"&#9;x&#10;\"\"/>\",\"/a/@b\"))"
+  },
+  {
+   "id": "text#18",
+   "group": "text",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a b=\"\"&lt;&amp;\"\"/>\",\"/a/@b\")"
+  },
+  {
+   "id": "values#1",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a> true </a>\",\"/a\")"
+  },
+  {
+   "id": "values#2",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>True</a>\",\"/a\")"
+  },
+  {
+   "id": "values#3",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>TRUE </a>\",\"/a\")"
+  },
+  {
+   "id": "values#4",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>yes</a>\",\"/a\")"
+  },
+  {
+   "id": "values#5",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>FALSE</a>\",\"/a\")"
+  },
+  {
+   "id": "values#6",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>ИСТИНА</a>\",\"/a\")"
+  },
+  {
+   "id": "values#7",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1e400</a>\",\"/a\")"
+  },
+  {
+   "id": "values#8",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>-0</a>\",\"/a\")"
+  },
+  {
+   "id": "values#9",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a> -1.5e-3 </a>\",\"/a\")"
+  },
+  {
+   "id": "values#10",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1 000</a>\",\"/a\")"
+  },
+  {
+   "id": "values#11",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>15%</a>\",\"/a\")"
+  },
+  {
+   "id": "values#12",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>2020/01/02</a>\",\"/a\")"
+  },
+  {
+   "id": "values#13",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>Jan 2 2020</a>\",\"/a\")"
+  },
+  {
+   "id": "values#14",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1:30 PM</a>\",\"/a\")"
+  },
+  {
+   "id": "values#15",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>#N/A</a>\",\"/a\")"
+  },
+  {
+   "id": "values#16",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1E-400</a>\",\"/a\")"
+  },
+  {
+   "id": "values#17",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>0.1E1</a>\",\"/a\")"
+  },
+  {
+   "id": "values#18",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "TYPE(_xlfn.FILTERXML(\"<a>true</a>\",\"/a\"))"
+  },
+  {
+   "id": "values#19",
+   "group": "values",
+   "fn": "FILTERXML",
+   "formula": "ISTEXT(_xlfn.FILTERXML(\"<a>1 000</a>\",\"/a\"))"
+  },
+  {
+   "id": "names#1",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//x:b\")"
+  },
+  {
+   "id": "names#2",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//y:b\")"
+  },
+  {
+   "id": "names#3",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//b\")"
+  },
+  {
+   "id": "names#4",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "ROWS(_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//x:*\"))"
+  },
+  {
+   "id": "names#5",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"count(//x:*)\")"
+  },
+  {
+   "id": "names#6",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//*[name()=\"\"y:b\"\"]\")"
+  },
+  {
+   "id": "names#7",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//*[local-name()=\"\"b\"\"][3]\")"
+  },
+  {
+   "id": "names#8",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//*[namespace-uri()=\"\"w\"\"]\")"
+  },
+  {
+   "id": "names#9",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"/x:a/@*\")"
+  },
+  {
+   "id": "names#10",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//z:b\")"
+  },
+  {
+   "id": "names#11",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "ROWS(_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"/x:a/namespace::*\"))"
+  },
+  {
+   "id": "names#12",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"/x:a/namespace::*\"),1)"
+  },
+  {
+   "id": "names#13",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "ROWS(_xlfn.FILTERXML(\"<x:a xmlns:x=\"\"u\"\" xmlns:y=\"\"w\"\"><x:b>3</x:b><y:b>4</y:b><b>5</b></x:a>\",\"//b/namespace::*\"))"
+  },
+  {
+   "id": "names#14",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a xmlns=\"\"u\"\"><b k=\"\"1\"\"/></a>\",\"//b/@k\")"
+  },
+  {
+   "id": "names#15",
+   "group": "names",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a xmlns:p=\"\"u\"\"><p:b p:k=\"\"2\"\"/></a>\",\"//@p:k\")"
+  },
+  {
+   "id": "positions#1",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"(//i | //g)[last()]\")"
+  },
+  {
+   "id": "positions#2",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[position()=last()-1]\")"
+  },
+  {
+   "id": "positions#3",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[3 > position()][last()]\")"
+  },
+  {
+   "id": "positions#4",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"(//i)[last()]\")"
+  },
+  {
+   "id": "positions#5",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//g/i[1]/preceding::i[1]\")"
+  },
+  {
+   "id": "positions#6",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//g/i[2]/preceding::i[last()]\")"
+  },
+  {
+   "id": "positions#7",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[5 - position() = 3]\")"
+  },
+  {
+   "id": "positions#8",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"(//g/i | //i[1])[2]\")"
+  },
+  {
+   "id": "positions#9",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[../g]\")"
+  },
+  {
+   "id": "positions#10",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[count(../i) = 2][1]\")"
+  },
+  {
+   "id": "positions#11",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//*[i > 4]/@*\")"
+  },
+  {
+   "id": "positions#12",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[following-sibling::i][last()]\")"
+  },
+  {
+   "id": "positions#13",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"//i[not(following-sibling::*)][1]\")"
+  },
+  {
+   "id": "positions#14",
+   "group": "positions",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<r><i>1</i><i>2</i><i>3</i><g><i>4</i><i>5</i></g></r>\",\"(//i)[position() mod 2 = 0][2]\")"
+  },
+  {
+   "id": "args#1",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML({\"<a>1</a>\";\"<a>2</a>\"},\"/a\")"
+  },
+  {
+   "id": "args#2",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML({\"<a>1</a>\";\"<a>2</a>\"},\"/a\"),2)"
+  },
+  {
+   "id": "args#3",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML({\"<a>1</a>\",\"<a>x</a>\"},\"/a\"),2)"
+  },
+  {
+   "id": "args#4",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(1/0,NA())"
+  },
+  {
+   "id": "args#5",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1</a>\",NA())"
+  },
+  {
+   "id": "args#6",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1</a>\",\"/a\")*2"
+  },
+  {
+   "id": "args#7",
+   "group": "args",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>1</a>\",\"/a\")&\"!\""
+  }
+ ],
+ "values": {
+  "mixed#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "mixed#2": {
+   "t": "s",
+   "v": "one"
+  },
+  "mixed#3": {
+   "t": "b",
+   "v": true
+  },
+  "mixed#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "mixed#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "mixed#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "mixed#7": {
+   "t": "n",
+   "v": 3
+  },
+  "mixed#8": {
+   "t": "n",
+   "v": 4
+  },
+  "mixed#9": {
+   "t": "n",
+   "v": 7
+  },
+  "mixed#10": {
+   "t": "n",
+   "v": 9
+  },
+  "text#1": {
+   "t": "s",
+   "v": "x y z"
+  },
+  "text#2": {
+   "t": "s",
+   "v": "ab"
+  },
+  "text#3": {
+   "t": "s",
+   "v": " "
+  },
+  "text#4": {
+   "t": "s",
+   "v": " x"
+  },
+  "text#5": {
+   "t": "s",
+   "v": "x"
+  },
+  "text#6": {
+   "t": "n",
+   "v": 7
+  },
+  "text#7": {
+   "t": "s",
+   "v": "xy"
+  },
+  "text#8": {
+   "t": "n",
+   "v": 1
+  },
+  "text#9": {
+   "t": "n",
+   "v": 12
+  },
+  "text#10": {
+   "t": "n",
+   "v": 12
+  },
+  "text#11": {
+   "t": "n",
+   "v": 2
+  },
+  "text#12": {
+   "t": "n",
+   "v": 160
+  },
+  "text#13": {
+   "t": "n",
+   "v": 2
+  },
+  "text#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "text#15": {
+   "t": "s",
+   "v": "x"
+  },
+  "text#16": {
+   "t": "s",
+   "v": "x"
+  },
+  "text#17": {
+   "t": "n",
+   "v": 1
+  },
+  "text#18": {
+   "t": "s",
+   "v": "<&"
+  },
+  "values#1": {
+   "t": "b",
+   "v": true
+  },
+  "values#2": {
+   "t": "b",
+   "v": true
+  },
+  "values#3": {
+   "t": "b",
+   "v": true
+  },
+  "values#4": {
+   "t": "s",
+   "v": "yes"
+  },
+  "values#5": {
+   "t": "b",
+   "v": false
+  },
+  "values#6": {
+   "t": "s",
+   "v": "ИСТИНА"
+  },
+  "values#7": {
+   "t": "s",
+   "v": "1e400"
+  },
+  "values#8": {
+   "t": "n",
+   "v": 0
+  },
+  "values#9": {
+   "t": "n",
+   "v": -0.0015
+  },
+  "values#10": {
+   "t": "s",
+   "v": "1 000"
+  },
+  "values#11": {
+   "t": "n",
+   "v": 0.15
+  },
+  "values#12": {
+   "t": "n",
+   "v": 43832
+  },
+  "values#13": {
+   "t": "s",
+   "v": "Jan 2 2020"
+  },
+  "values#14": {
+   "t": "n",
+   "v": 0.5625
+  },
+  "values#15": {
+   "t": "s",
+   "v": "#N/A"
+  },
+  "values#16": {
+   "t": "s",
+   "v": "1E-400"
+  },
+  "values#17": {
+   "t": "n",
+   "v": 1
+  },
+  "values#18": {
+   "t": "n",
+   "v": 4
+  },
+  "values#19": {
+   "t": "b",
+   "v": true
+  },
+  "names#1": {
+   "t": "n",
+   "v": 3
+  },
+  "names#2": {
+   "t": "n",
+   "v": 4
+  },
+  "names#3": {
+   "t": "n",
+   "v": 5
+  },
+  "names#4": {
+   "t": "n",
+   "v": 2
+  },
+  "names#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "names#6": {
+   "t": "n",
+   "v": 4
+  },
+  "names#7": {
+   "t": "n",
+   "v": 5
+  },
+  "names#8": {
+   "t": "n",
+   "v": 4
+  },
+  "names#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "names#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "names#11": {
+   "t": "n",
+   "v": 3
+  },
+  "names#12": {
+   "t": "s",
+   "v": "http://www.w3.org/XML/1998/namespace"
+  },
+  "names#13": {
+   "t": "n",
+   "v": 3
+  },
+  "names#14": {
+   "t": "n",
+   "v": 1
+  },
+  "names#15": {
+   "t": "n",
+   "v": 2
+  },
+  "positions#1": {
+   "t": "n",
+   "v": 5
+  },
+  "positions#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "positions#3": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "positions#4": {
+   "t": "n",
+   "v": 5
+  },
+  "positions#5": {
+   "t": "n",
+   "v": 3
+  },
+  "positions#6": {
+   "t": "n",
+   "v": 1
+  },
+  "positions#7": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "positions#8": {
+   "t": "n",
+   "v": 4
+  },
+  "positions#9": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "positions#10": {
+   "t": "n",
+   "v": 4
+  },
+  "positions#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "positions#12": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "positions#13": {
+   "t": "n",
+   "v": 5
+  },
+  "positions#14": {
+   "t": "n",
+   "v": 4
+  },
+  "args#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "args#2": {
+   "t": "n",
+   "v": 2
+  },
+  "args#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "args#4": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "args#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "args#6": {
+   "t": "n",
+   "v": 2
+  },
+  "args#7": {
+   "t": "s",
+   "v": "1!"
+  }
+ }
+}

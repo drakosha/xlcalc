@@ -118,7 +118,7 @@ Structured references are translated too: the specifiers by the locale's `tableI
 
 The Russian names were read from Excel 16.113 for Mac with the Russian interface. `bench/locale/snapshot.ts` wrote 6,381 formulas to workbooks and read each one back both as `formula` and as `formula local`, along with Excel's international settings (`test/excel/locale/ru-RU.json`). `bench/locale/derive.ts` pairs the function calls of each English formula with those of its Russian text, and `bench/locale/generate.ts ru-RU` writes them into the ru-RU locale file, `src/locales/ru-RU.ts`.
 
-513 of the 521 functions on Microsoft's list got a Russian name this way (468 of them differ from the English name). Excel for Mac does not know 6 functions (`ENCODEURL`, `FILTERXML`, `WEBSERVICE`, `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`) and removes 2 from the workbooks it loads (`CALL`, `REGISTER.ID`); these keep their English names. Excel accepts 8 error literals in formulas; `#SPILL!`, `#CALC!` and newer errors are not literals for it.
+513 of the 521 functions on Microsoft's list got a Russian name this way (468 of them differ from the English name). Excel for Mac does not know 6 functions (`ENCODEURL`, `FILTERXML`, `WEBSERVICE`, `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`) and removes 2 from the workbooks it loads (`CALL`, `REGISTER.ID`); these take their Russian names from Microsoft's function reference in Russian (`bench/locale/extra-names.ts`), and their English names are read as well. Excel accepts 8 error literals in formulas; `#SPILL!`, `#CALC!` and newer errors are not literals for it.
 
 ## Calculating in a workbook's locale
 
