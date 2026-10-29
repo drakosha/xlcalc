@@ -9,6 +9,7 @@ import { codegenContext, sheetIndexOf } from './engine.js'
 import { nameRect } from './exec/walk.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { nameFor } from './names.js'
+import { PLAIN_NAME } from './sheet-pattern.js'
 import { validateIn } from './prepare.js'
 import { validate, type Ast } from './syntax.js'
 import { tableAt } from './tables/model.js'
@@ -61,7 +62,7 @@ function sheetPart(text: string): { sheet?: string; rest: string } | undefined {
     return m ? { sheet: m[1].replaceAll("''", "'"), rest: m[2] } : undefined
   }
   const i = text.lastIndexOf('!')
-  return i < 0 ? { rest: text } : /^[\p{L}_][\p{L}\p{N}_.]*$/u.test(text.slice(0, i)) ? { sheet: text.slice(0, i), rest: text.slice(i + 1) } : undefined
+  return i < 0 ? { rest: text } : PLAIN_NAME.test(text.slice(0, i)) ? { sheet: text.slice(0, i), rest: text.slice(i + 1) } : undefined
 }
 
 /** INDIRECT over a state: `refer(text, a1, s, r, c)` from the formula at sheet `s`, row `r`, column `c`. */
