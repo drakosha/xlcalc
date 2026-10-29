@@ -1,9 +1,12 @@
 /**
- * The classes of PCRE2 with UCP as JavaScript's classes (flag `v`), shared by the translation (`syntax.ts`) and the
- * engine, whose character tests are made from them (`chars.ts`): `\\h`, `\\v`, the POSIX classes, and `\\p{…}` by
- * PCRE2's loose names.
+ * The classes of PCRE2 with UCP as JavaScript's classes (flag `v`), which the parser writes into the tree (`parse.ts`):
+ * the engine's character tests are made from them (`chars.ts`) and the translation writes them out (`syntax.ts`).
+ * `\h`, `\v`, the POSIX classes, and `\p{…}` by PCRE2's loose names.
  */
 import { S_IN, W_IN } from '../functions/lookup/regex-syntax.js'
+
+/** A code point as JavaScript escapes it in a pattern. */
+export const hex = (c: number) => `\\u{${c.toString(16)}}`
 
 export const W = `[${W_IN}]`
 export const H = '[\\t \\xa0\\u1680\\u180e\\u2000-\\u200a\\u202f\\u205f\\u3000]'

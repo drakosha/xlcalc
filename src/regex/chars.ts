@@ -1,10 +1,10 @@
 /**
  * Characters for the regular expressions of match mode 3, as PCRE2 reads them with UTF and UCP on (Excel for Mac):
- * code points of a UTF-16 text, tests of `\d \w \s \h \v`, the POSIX classes and `\p{…}` made from JavaScript's classes
- * (`classes.ts`, shared with the translation), caseless matching by case folding, and the characters that end a line.
+ * code points of a UTF-16 text, tests of characters made from the JavaScript classes the parser writes (`classes.ts`,
+ * shared with the translation), caseless matching by case folding, and the characters that end a line.
  */
 import { typeClass } from '../functions/lookup/regex-syntax.js'
-import { ASCII_POSIX, H, POSIX, property, V } from './classes.js'
+import { ASCII_POSIX, POSIX } from './classes.js'
 
 /** A test of one code point. */
 export type CharTest = (c: number) => boolean
@@ -50,7 +50,7 @@ export function remembered(t: CharTest): CharTest {
 
 /** A test of a JavaScript class (`classes.ts`), remembered for the BMP; memoized by the class. */
 const tests = new Map<string, CharTest>()
-function classOf(js: string): CharTest {
+export function classOf(js: string): CharTest {
   let t = tests.get(js)
   if (!t) {
     const re = new RegExp(js, 'v')
@@ -59,10 +59,6 @@ function classOf(js: string): CharTest {
   }
   return t
 }
-
-/** `\h` and `\v`. */
-export const horizontal: CharTest = (c) => classOf(H)(c)
-export const vertical: CharTest = (c) => classOf(V)(c)
 
 /** ASCII restrictions of `(?aD)`, `(?aS)`, `(?aW)`, `(?aP)`, `(?aT)`. */
 export interface Ascii {
@@ -73,23 +69,13 @@ export interface Ascii {
   aT: boolean
 }
 
-/** `\d`, `\s` and `\w` (Unicode under UCP, ASCII under their restriction). */
-export const typeTest = (k: 'd' | 's' | 'w', a: Ascii): CharTest => classOf(typeClass(k, { d: a.aD, s: a.aS, w: a.aW })!)
+/** A word character for `\b` and `\B` (Unicode, or ASCII under `(?aW)`). */
+export const wordTest = (a: Ascii): CharTest => classOf(typeClass('w', { w: a.aW })!)
 
-/** A word character for `\b` and `\B`. */
-export const wordTest = (a: Ascii): CharTest => typeTest('w', a)
-
-/** A POSIX class by name (`alpha`), or null if there is none; `caseless` makes `lower` and `upper` any cased letter. */
-export function posixTest(name: string, a: Ascii, caseless: boolean): CharTest | null {
+/** A POSIX class by name (`alpha`) as a JavaScript class, or null if there is none; `caseless` makes `lower` and `upper` any cased letter. */
+export function posixClass(name: string, a: Ascii, caseless: boolean): string | null {
   const ascii = a.aP || (a.aT && name === 'digit')
-  const js = caseless && !ascii && (name === 'lower' || name === 'upper') ? '\\p{LC}' : (ascii && ASCII_POSIX[name]) || POSIX[name]
-  return js ? classOf(js) : null
-}
-
-/** `\p{name}` (`name` as written between the braces or the one letter of `\pL`), or null if unknown; `caseless` makes `Lu`, `Ll` and `Lt` any cased letter. */
-export function propertyTest(name: string, caseless: boolean): CharTest | null {
-  const js = property(name, false, caseless)
-  return js ? classOf(js) : null
+  return (caseless && !ascii && (name === 'lower' || name === 'upper') ? '\\p{LC}' : (ascii && ASCII_POSIX[name]) || POSIX[name]) ?? null
 }
 
 const ONE = /^[\s\S]$/u

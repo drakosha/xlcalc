@@ -8,12 +8,12 @@ How closely a pattern is read as Excel reads it is the host's choice, between th
 
 | | Built in | `pcreSyntax` | `pcreEngine` |
 |---|---|---|---|
-| What runs | JavaScript's regular expressions | JavaScript's regular expressions, after a translation | the package's own PCRE2 engine |
-| Syntax | JavaScript's, with Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}` and a leading `(?i)` as PCRE2 reads them | Excel's, except recursion, conditional groups, the verbs other than `(*FAIL)` and `(*MARK)`, `\X`, `\p{Bidi_Class:…}` and `(*NOTEMPTY)` (`#VALUE!`) | Excel's, except `\p{Bidi_Class:…}` (`#VALUE!`) |
+| What runs | JavaScript's regular expressions | JavaScript's regular expressions, written from the engine's parse of the pattern | the package's own PCRE2 engine |
+| Syntax | JavaScript's, with Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}` and a leading `(?i)` as PCRE2 reads them | Excel's, except recursion, conditions on groups, the verbs other than `(*FAIL)` and `(*MARK)`, `\X`, `\p{Bidi_Class:…}` and `(*NOTEMPTY)` (`#VALUE!`) | Excel's, except `\p{Bidi_Class:…}` (`#VALUE!`) |
 | Excel's match limit (`#VALUE!`) | no | no | yes |
 | A heavy pattern stopped by `timeoutMs` | no | no | yes |
 | Speed against the built-in level | 1 | 1.3 to 5.5 times slower | 1.5 to 17 times slower |
-| Bundle, beyond `compute` | 1.4 KB of it | 9.9 KB (4.2 KB gzipped) | 30.8 KB (11.3 KB gzipped) |
+| Bundle, beyond `compute` | 1.4 KB of it | 19.9 KB (7.2 KB gzipped) | 31.2 KB (11.5 KB gzipped); both levels together 34.0 KB (12.5 KB) |
 
 What the levels answer where they differ:
 
@@ -27,7 +27,7 @@ What the levels answer where they differ:
 | `XMATCH("(a+)+$",A1,3)` over 19 letters `a` and a `b` | `#VALUE!` | `#N/A` | `#N/A` | `#VALUE!` |
 | `XMATCH("(a+)+$",A1,3)` over 40 letters `a` and a `b` | `#VALUE!` | runs for days | runs for days | `#VALUE!` at once |
 
-Without a level, every other construct is read as JavaScript reads it: a possessive quantifier (`a++`), an atomic group, `(?i)` past the start, `\Q…\E` and POSIX classes are `#VALUE!` or mean something else, and `$` does not match before a final newline. `pcreSyntax` translates them, including `(?x)`, `(?s)`, `(?m)`, `(?n)`, `(?U)`, named groups in every spelling, `\p{…}` by PCRE2's names, `\h \v \R \N`, and lines ended by CR, LF and CRLF as in Excel. A back reference to a group that took no part in the match matches empty text there, where PCRE2 fails it; `(?|…)` with a back reference and `(?J)` need duplicate group names, which JavaScript has from Node 23, Chrome 125, Firefox 129 and Safari 17 (`#VALUE!` before).
+Without a level, every other construct is read as JavaScript reads it: a possessive quantifier (`a++`), an atomic group, `(?i)` past the start, `\Q…\E` and POSIX classes are `#VALUE!` or mean something else, and `$` does not match before a final newline. `pcreSyntax` translates them, including `(?x)`, `(?s)`, `(?m)`, `(?n)`, `(?U)`, named groups in every spelling, `\p{…}` by PCRE2's names, `\h \v \R \N`, a condition on an assertion, and lines ended by CR, LF and CRLF as in Excel; it accepts and refuses patterns exactly as the engine does, whose parser it shares. A back reference to a group that took no part in the match matches empty text there, where PCRE2 fails it; a back reference to a number or name that several groups carry (in `(?|…)` or with `(?J)`) needs duplicate group names, which JavaScript has from Node 23, Chrome 125, Firefox 129 and Safari 17 (`#VALUE!` before).
 
 Which one to choose:
 
@@ -67,8 +67,8 @@ Patterns under the limit can still take long over many values: 2,000 values of 1
 | `^(?=.*\d)[a-z]+\d*$` | 0.20 | 0.48 | 2.5 |
 | `(a+)+$` over 10 values of 18 letters | 21 | 32 | 350 |
 
-The first use of a pattern compiles it: 3 µs built in for one in JavaScript's own syntax, 35 µs when it has `\d`, `\s` or `\w`, whose Unicode classes JavaScript takes longer to compile, 37 µs with `pcreSyntax`, 7 µs with `pcreEngine`; the 64 patterns used last stay compiled.
+The first use of a pattern compiles it: 3 µs built in for one in JavaScript's own syntax, 35 µs when it has `\d`, `\s` or `\w`, whose Unicode classes JavaScript takes longer to compile, 43 µs with `pcreSyntax`, 6 µs with `pcreEngine`; the 64 patterns used last stay compiled.
 
 ## Checked against Excel
 
-Excel for Mac 16.114 calculated 129 patterns with every kind of construct (`xmatch-regex-syntax`) and 68 on what that set left open (`xmatch-regex-syntax-2`): the newlines, `\w` over marks and connectors, caseless letters, the options of newer PCRE2 releases and where the match limit lies. `pcreEngine` returns Excel's answer on all of them but `\p{Bidi_Class:L}`, and on 63 of the 64 cases of two sets predicted before Excel ran them (`xmatch-regex-own-held`, `xmatch-regex-own-held-2`): the match limit for twelve other shapes of heavy patterns, a literal the match requires (missing, `#N/A` at once, in texts of up to 32,000 characters), caseless letters outside ASCII, `\X`, the verbs, recursion. Of the 260 cases that JavaScript's regular expressions calculate in reasonable time (the heavy ones of the predicted sets would take hours), `pcreSyntax` differs from Excel on 42 and the built-in level on 123; all of them are listed in `test/regex-levels.test.ts`. [Development](development.md#regular-expressions) has the details.
+Excel for Mac 16.114 calculated 129 patterns with every kind of construct (`xmatch-regex-syntax`) and 68 on what that set left open (`xmatch-regex-syntax-2`): the newlines, `\w` over marks and connectors, caseless letters, the options of newer PCRE2 releases and where the match limit lies. `pcreEngine` returns Excel's answer on all of them but `\p{Bidi_Class:L}`, and on 63 of the 64 cases of two sets predicted before Excel ran them (`xmatch-regex-own-held`, `xmatch-regex-own-held-2`): the match limit for twelve other shapes of heavy patterns, a literal the match requires (missing, `#N/A` at once, in texts of up to 32,000 characters), caseless letters outside ASCII, `\X`, the verbs, recursion. Of the 260 cases that JavaScript's regular expressions calculate in reasonable time (the heavy ones of the predicted sets would take hours), `pcreSyntax` differs from Excel on 41 and the built-in level on 123; all of them are listed in `test/regex-levels.test.ts`. [Development](development.md#regular-expressions) has the details.

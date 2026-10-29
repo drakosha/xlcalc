@@ -5,8 +5,7 @@
  * own start-of-match optimizations skip positions without work.
  */
 import { type CharTest, remembered, sameCase } from './chars.js'
-import type { Head, Node, Parsed } from './parse.js'
-import { RegexSyntaxError } from './parse.js'
+import { type Head, type Node, type Parsed, widths } from './parse.js'
 
 /** Instructions; the operands follow each one (`OPERANDS`). */
 export const CHAR = 0, CHARI = 1, ANY = 2, ANYNL = 3, SET = 4, REP = 5, NL = 6, CLUSTER = 7, JMP = 8, PUSH = 9, GMARK = 10,
@@ -40,58 +39,6 @@ export interface Program {
   required: string
   /** Characters every match spans at least. */
   minLength: number
-}
-
-/** The fewest and most characters a node matches (Infinity for no bound), groups looked up for calls and references. */
-function widths(parsed: Parsed): (n: Node) => [number, number] {
-  const busy = new Set<number>()
-  const group = (g: number): [number, number] => {
-    if (busy.has(g)) return [0, Infinity]
-    busy.add(g)
-    try {
-      return g === 0 ? w(parsed.root) : w(parsed.bodies[g])
-    } finally {
-      busy.delete(g)
-    }
-  }
-  const w = (n: Node): [number, number] => {
-    switch (n.t) {
-      case 'char':
-      case 'set':
-      case 'any':
-        return [1, 1]
-      case 'nl':
-        return [1, 2]
-      case 'cluster':
-        return [1, Infinity]
-      case 'seq':
-        return n.items.map(w).reduce(([a, b], [c, d]) => [a + c, b + d], [0, 0])
-      case 'alt': {
-        const all = n.alts.map(w)
-        return [Math.min(...all.map((x) => x[0])), Math.max(...all.map((x) => x[1]))]
-      }
-      case 'group':
-        return w(n.body)
-      case 'rep': {
-        const [a, b] = w(n.body)
-        return [a * n.min, b === 0 ? 0 : b * n.max]
-      }
-      case 'bref': {
-        const all = n.ref.groups.map(group)
-        return [0, Math.max(...all.map((x) => x[1]))]
-      }
-      case 'call':
-        return group(n.ref.groups[0])
-      case 'cond': {
-        if (n.cond.k === 'define') return [0, 0]
-        const [y, z] = [w(n.yes), w(n.no)]
-        return [Math.min(y[0], z[0]), Math.max(y[1], z[1])]
-      }
-      default:
-        return [0, 0]
-    }
-  }
-  return w
 }
 
 const has = (n: Node, f: (n: Node) => boolean): boolean => {
@@ -308,7 +255,6 @@ export function compile(parsed: Parsed): Program {
       const ends: number[] = []
       alts.forEach((a, i) => {
         const [min, max] = w(a)
-        if (max === Infinity || max > 65535 || (min !== max && max > 255)) throw new RegexSyntaxError('lookbehind is not of bounded length')
         const last = i === alts.length - 1
         const push = last ? -1 : emit(PUSH, 0, -1)
         emit(BACK, min, max)

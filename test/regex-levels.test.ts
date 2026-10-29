@@ -31,7 +31,7 @@ const takes = (re: string) => {
     return false
   }
 }
-/** What JavaScript takes from Node 23: duplicate group names (`pcreSyntax` needs them for `(?|…)` with a back reference and for `(?J)`) and modifiers (`(?i:…)`). */
+/** What JavaScript takes from Node 23: duplicate group names (`pcreSyntax` needs them for a back reference to a name or number of several groups) and modifiers (`(?i:…)`). */
 const DUPLICATE_NAMES = takes('(?<x>a)|(?<x>b)')
 const MODIFIERS = takes('(?i:a)')
 
@@ -47,10 +47,10 @@ const KNOWN = {
     'xmatch-regex-own-held': 'class#1 look#2 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#3 group#4 group#6 group#7',
     'xmatch-regex-own-held-2': 'line#1 line#2 line#3',
   }),
-  // recursion, conditional groups, (*ACCEPT) and the verbs that cut backtracking, \X, Bidi_Class and (*NOTEMPTY)
+  // recursion, conditions on groups, (*ACCEPT) and the verbs that cut backtracking, \X, Bidi_Class and (*NOTEMPTY)
   // have no translation (#VALUE!); no match limit (#N/A where Excel's is #VALUE!); duplicate group names before Node 23
   pcreSyntax: ids({
-    'xmatch-regex-syntax': `${DUPLICATE_NAMES ? '' : 'group#8 group#11 '}dot#11 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#4 cond#5 cond#6 verb#2 verb#3 verb#4 verb#5 verb#6 backtrack#2 backtrack#3 backtrack#4`,
+    'xmatch-regex-syntax': `${DUPLICATE_NAMES ? '' : 'group#8 '}dot#11 recurse#1 recurse#2 recurse#3 recurse#4 recurse#5 cond#1 cond#2 cond#3 cond#5 cond#6 verb#2 verb#3 verb#4 verb#5 verb#6 backtrack#2 backtrack#3 backtrack#4`,
     'xmatch-regex-syntax-2': 'class#13 option#3 recurse#1 recurse#2 recurse#3 bad#2 backtrack#3 backtrack#5 backtrack#6 backtrack#8 backtrack#11 limit#1 limit#2',
     // and a back reference to a group not set matches empty text in JavaScript
     'xmatch-regex-own-held': `${DUPLICATE_NAMES ? '' : 'group#3 '}class#1 verb#1 verb#2 verb#3 verb#4 group#1 group#2 group#6 group#7`,

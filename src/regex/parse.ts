@@ -3,7 +3,9 @@
  * UTF and UCP on, as Excel for Mac takes it: a pattern into a tree of nodes, or a `RegexSyntaxError` where PCRE2 gives a
  * compile error (`#VALUE!`). Callouts and `\C` are errors, as in Excel.
  */
-import { type Ascii, type CharTest, classTest, horizontal, Newline, posixTest, propertyTest, typeTest, vertical } from './chars.js'
+import { typeClass } from '../functions/lookup/regex-syntax.js'
+import { type Ascii, type CharTest, classOf, classTest, Newline, posixClass } from './chars.js'
+import { H, hex, property, V } from './classes.js'
 
 export class RegexSyntaxError extends Error {}
 
@@ -19,7 +21,8 @@ export type Cond = { k: 'group'; ref: Ref } | { k: 'R'; ref: Ref | null } | { k:
 
 export type Node =
   | { t: 'char'; c: number; i: boolean; r: boolean }
-  | { t: 'set'; test: CharTest }
+  /** `js`: the class in JavaScript (flag `v`); a bracketed one also by its parts, for the translation's caseless characters. */
+  | { t: 'set'; test: CharTest; js: string; ranges?: number[]; parts?: string[]; negated?: boolean; caseless?: boolean; r?: boolean }
   | { t: 'any'; all: boolean }
   | { t: 'seq'; items: Node[] }
   | { t: 'alt'; alts: Node[] }
@@ -316,8 +319,8 @@ class Parser {
         if (this.peek() === '{' && this.peek(1) === 'U') return [this.char(this.charEscape('N'), f), true]
         return [{ t: 'any', all: false }, true]
     }
-    const set = this.typeEscape(c, f)
-    if (set) return [{ t: 'set', test: set }, true]
+    const js = this.typeEscape(c, f)
+    if (js) return [{ t: 'set', test: classOf(js), js }, true]
     this.i--
     return [this.char(this.charEscape(this.p[this.i++]), f), true]
   }
@@ -328,29 +331,22 @@ class Parser {
     return parseInt(m[0], 8)
   }
 
-  /** `\d \D \s \S \w \W \h \H \v \V \p \P` (the letter consumed), or null. */
-  typeEscape(c: string, f: Flags): CharTest | null {
+  /** `\d \D \s \S \w \W \h \H \v \V \p \P` (the letter consumed) as a JavaScript class, or null. */
+  typeEscape(c: string, f: Flags): string | null {
     const lower = c.toLowerCase()
-    let t: CharTest | null = null
-    if (lower === 'd' || lower === 's' || lower === 'w') t = typeTest(lower, f)
-    else if (lower === 'h') t = horizontal
-    else if (lower === 'v') t = vertical
-    else if (lower === 'p') {
-      let name: string
-      let neg = c === 'P'
-      if (this.eat('{')) {
-        const end = this.p.indexOf('}', this.i)
-        if (end < 0) this.fail()
-        name = this.p.slice(this.i, end)
-        this.i = end + 1
-        if (name.startsWith('^')) ((neg = !neg), (name = name.slice(1)))
-      } else name = this.p[this.i++] ?? ''
-      const p = propertyTest(name, f.i)
-      if (!p) this.fail()
-      return neg ? (x) => !p(x) : p
-    } else return null
-    const test = t
-    return c === lower ? test : (x) => !test(x)
+    if (lower === 'd' || lower === 's' || lower === 'w') return typeClass(c, { d: f.aD, s: f.aS, w: f.aW })
+    if (lower === 'h' || lower === 'v') return c === lower ? (c === 'h' ? H : V) : `[^${c === 'H' ? H : V}]`
+    if (lower !== 'p') return null
+    let name: string
+    let neg = c === 'P'
+    if (this.eat('{')) {
+      const end = this.p.indexOf('}', this.i)
+      if (end < 0) this.fail()
+      name = this.p.slice(this.i, end)
+      this.i = end + 1
+      if (name.startsWith('^')) ((neg = !neg), (name = name.slice(1)))
+    } else name = this.p[this.i++] ?? ''
+    return property(name, neg, f.i) ?? this.fail()
   }
 
   /** The code point of a character escape whose letter is consumed (`\x41`, `\n`, `\.`); letters without a meaning are errors. */
@@ -408,7 +404,7 @@ class Parser {
     this.i++
     const negated = this.eat('^')
     const ranges: number[] = []
-    const tests: CharTest[] = []
+    const parts: string[] = []
     let first = true
     for (;;) {
       if (this.i >= this.p.length) this.fail()
@@ -429,7 +425,7 @@ class Parser {
         continue
       }
       if (this.eat('\\E')) continue
-      const lo = this.classAtom(f, tests)
+      const lo = this.classAtom(f, parts)
       if (lo < 0) {
         // after a class such as \d a hyphen is literal only before the end
         if (this.peek() === '-' && this.peek(1) !== ']') this.fail()
@@ -442,22 +438,26 @@ class Parser {
           ranges.push(lo, lo)
           continue
         }
-        const hi = this.classAtom(f, tests)
+        const hi = this.classAtom(f, parts)
         if (hi < 0 || hi < lo) this.fail()
         ranges.push(lo, hi)
       } else ranges.push(lo, lo)
     }
-    return { t: 'set', test: classTest(ranges, tests, negated, f.i, f.r) }
+    let js = negated ? '[^' : '['
+    for (let k = 0; k < ranges.length; k += 2) js += ranges[k] === ranges[k + 1] ? hex(ranges[k]) : `${hex(ranges[k])}-${hex(ranges[k + 1])}`
+    js += `${parts.join('')}]`
+    // caseless, the ranges take the characters of their case at each test; the rest is the class JavaScript reads
+    const test = f.i ? classTest(ranges, parts.map(classOf), negated, true, f.r) : classOf(js)
+    return { t: 'set', test, js, ranges, parts, negated, caseless: f.i, r: f.r }
   }
 
-  /** One character of a class (its code point), or a class within it added to `tests` (-1). */
-  classAtom(f: Flags, tests: CharTest[]): number {
+  /** One character of a class (its code point), or a class within it added to `parts` in JavaScript (-1). */
+  classAtom(f: Flags, parts: string[]): number {
     const posix = /^\[:(\^?)([a-z]+):\]/.exec(this.p.slice(this.i))
     if (posix) {
-      const t = posixTest(posix[2], f, f.i)
-      if (!t) this.fail()
+      const js = posixClass(posix[2], f, f.i) ?? this.fail()
       this.i += posix[0].length
-      tests.push(posix[1] ? (c) => !t(c) : t)
+      parts.push(posix[1] ? `[^${js}]` : js)
       return -1
     }
     if (/^\[[.=]/.test(this.p.slice(this.i)) && /^\[([.=]).*?\1\]/.test(this.p.slice(this.i))) this.fail()
@@ -470,9 +470,9 @@ class Parser {
       return this.octal()
     }
     if ('RXBNgkKAzZG'.includes(c) && !(c === 'N' && this.peek() === '{')) this.fail()
-    const t = this.typeEscape(c, f)
-    if (t) {
-      tests.push(t)
+    const js = this.typeEscape(c, f)
+    if (js) {
+      parts.push(js)
       return -1
     }
     return this.charEscape(c)
@@ -665,6 +665,75 @@ function checkRefs(node: Node, groups: number, fail: () => never): void {
   walk(node)
 }
 
+/** The fewest and most characters a node matches (Infinity for no bound), groups looked up for calls and references. */
+export function widths(parsed: Parsed): (n: Node) => [number, number] {
+  const busy = new Set<number>()
+  const group = (g: number): [number, number] => {
+    if (busy.has(g)) return [0, Infinity]
+    busy.add(g)
+    try {
+      return g === 0 ? w(parsed.root) : w(parsed.bodies[g])
+    } finally {
+      busy.delete(g)
+    }
+  }
+  const w = (n: Node): [number, number] => {
+    switch (n.t) {
+      case 'char':
+      case 'set':
+      case 'any':
+        return [1, 1]
+      case 'nl':
+        return [1, 2]
+      case 'cluster':
+        return [1, Infinity]
+      case 'seq':
+        return n.items.map(w).reduce(([a, b], [c, d]) => [a + c, b + d], [0, 0])
+      case 'alt': {
+        const all = n.alts.map(w)
+        return [Math.min(...all.map((x) => x[0])), Math.max(...all.map((x) => x[1]))]
+      }
+      case 'group':
+        return w(n.body)
+      case 'rep': {
+        const [a, b] = w(n.body)
+        return [a * n.min, b === 0 ? 0 : b * n.max]
+      }
+      case 'bref': {
+        const all = n.ref.groups.map(group)
+        return [0, Math.max(...all.map((x) => x[1]))]
+      }
+      case 'call':
+        return group(n.ref.groups[0])
+      case 'cond': {
+        if (n.cond.k === 'define') return [0, 0]
+        const [y, z] = [w(n.yes), w(n.no)]
+        return [Math.min(y[0], z[0]), Math.max(y[1], z[1])]
+      }
+      default:
+        return [0, 0]
+    }
+  }
+  return w
+}
+
+/** Every alternative of a lookbehind is of bounded length, 255 characters at most where it varies (PCRE2's default). */
+function checkLookbehinds(parsed: Parsed, fail: () => never): void {
+  const w = widths(parsed)
+  const walk = (n: Node): void => {
+    if (n.t === 'look' && n.behind)
+      for (const a of n.body.t === 'alt' ? n.body.alts : [n.body]) {
+        const [min, max] = w(a)
+        if (max === Infinity || max > 65535 || (min !== max && max > 255)) fail()
+      }
+    if (n.t === 'seq') n.items.forEach(walk)
+    else if (n.t === 'alt') n.alts.forEach(walk)
+    else if (n.t === 'group' || n.t === 'look' || n.t === 'rep') walk(n.body)
+    else if (n.t === 'cond') [...(n.cond.k === 'look' ? [n.cond.look] : []), n.yes, n.no].forEach(walk)
+  }
+  walk(parsed.root)
+}
+
 /** A pattern parsed, or a `RegexSyntaxError`. */
 export function parse(pattern: string): Parsed {
   const p: Parser = new Parser(pattern)
@@ -677,5 +746,7 @@ export function parse(pattern: string): Parsed {
     r.groups = g
   }
   checkRefs(root, p.groups, () => p.fail())
-  return { root, groups: p.groups, bodies: p.bodies, head: p.head }
+  const parsed = { root, groups: p.groups, bodies: p.bodies, head: p.head }
+  checkLookbehinds(parsed, () => p.fail())
+  return parsed
 }
