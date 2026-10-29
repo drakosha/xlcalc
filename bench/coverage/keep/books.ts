@@ -340,6 +340,12 @@ export const STRUCT: Struct[] = [
   { id: 'sparklines-delete-cell', made: 'sparklines', ...rows('Data', 2, 1, 'deleteRows') },
   { id: 'sparklines-delete-data', made: 'sparklines', ...rows('Data', 12, 10, 'deleteRows') },
   cols('sparklines-delete-data-col', 'sparklines', 'B', 1, 'deleteColumns'),
+  // held out after the rules for a drawing's size by the columns' widths, a pivot cache's source and a sparkline's cell were fitted to the cases above
+  cols('wide-delete-wide-col', 'wide', 'H', 1, 'deleteColumns'),
+  cols('wide-delete-to-col', 'wide', 'I', 1, 'deleteColumns'),
+  cols('moving-delete-cols-in', 'moving', 'G', 2, 'deleteColumns'),
+  { id: 'pivot-delete-source-rows', made: 'pivot', ...rows('Data', 1, 21, 'deleteRows') },
+  { id: 'sparklines-delete-both', made: 'sparklines', ...rows('Data', 2, 2, 'deleteRows') },
 ]
 
 /**

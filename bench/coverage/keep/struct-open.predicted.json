@@ -1491,6 +1491,220 @@
      ]
     }
    }
+  },
+  "pivot-delete-source-cells": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!#REF!",
+     "'Data'!#REF!",
+     "'Data'!#REF!"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor : 2 444500 0 127000 / 8 215900 12 127000"
+     ]
+    },
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-cell": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B10",
+      "G2 'Data'!B11:B20"
+     ]
+    }
+   }
+  },
+  "wide-delete-wide-col": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 10 406400 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "wide-delete-to-col": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 8 139700 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 5 1460500 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "moving-delete-cols-in": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [
+     "'Data'!$A$2:$A$6",
+     "'Data'!$B$1",
+     "'Data'!$B$2:$B$6"
+    ],
+    "anchors": {
+     "Data": [
+      "twoCellAnchor oneCell: 5 444500 0 127000 / 11 215900 12 127000",
+      "twoCellAnchor oneCell: 5 444500 14 127000 / 7 114300 18 0"
+     ]
+    },
+    "pivots": [],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "pivot-delete-source-rows": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [
+     "location A3:B8",
+     "source Data!A1:C21"
+    ],
+    "names": [],
+    "breaks": {}
+   }
+  },
+  "sparklines-delete-both": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "refs": {
+    "series": [],
+    "anchors": {},
+    "pivots": [],
+    "names": [],
+    "breaks": {},
+    "sparklines": {
+     "Data": [
+      "#REF! 'Data'!B2:B9",
+      "#REF! 'Data'!B10:B19"
+     ]
+    }
+   }
   }
  }
 }
