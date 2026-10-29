@@ -191,7 +191,7 @@ function headersOf(mode: number | undefined, fields: Grid, values: Grid): { has:
 const option = (n: number | undefined) => (n === undefined ? undefined : Number.isInteger(n) ? n : NaN)
 
 /**
- * The sort keys of a sort order: 1-based column numbers, negative descending; 0 or past the columns #VALUE!, and so are
+ * The sort keys of a sort order: whole 1-based column numbers, negative descending; 0 or past the columns #VALUE!, and so are
  * several keys with a measured column (`fields` the fields' columns) among them, as the documentation takes several only
  * of the fields.
  */
@@ -202,8 +202,8 @@ function sortKeys(g: Grid | undefined, columns: number, fields: number): AxisOpt
     const v = gridAt(g, i)
     if (isErr(v)) return v
     if (typeof v !== 'number') return E.VALUE
-    const n = Math.trunc(v)
-    if (n === 0 || Math.abs(n) > columns) return E.VALUE
+    const n = v
+    if (!Number.isInteger(n) || n === 0 || Math.abs(n) > columns) return E.VALUE
     out.push({ at: Math.abs(n) - 1, desc: n < 0 })
   }
   return out.length > 1 && out.some((x) => x.at >= fields) ? E.VALUE : out
@@ -237,9 +237,11 @@ function aggregator(cx: Cx, values: Grid, start: number, fns: Functions) {
   return (rows: number[], col: number, total: number[]): V => {
     const f = fns.fns[Math.floor(col / m)]
     const c = col % m
-    const x = one(callValue(f, twoArgs(f) ? [column(values, start, c, rows), column(values, start, c, total)] : [column(values, start, c, rows)]), cx)
-    if (x === undefined) throw new NotOne()
-    return x
+    const x = callValue(f, twoArgs(f) ? [column(values, start, c, rows), column(values, start, c, total)] : [column(values, start, c, rows)])
+    // an array, of one value too, is not one value here, as Excel for Mac answers `LAMBDA(x,TAKE(x,1))` (MAP takes it)
+    const v = x instanceof Arr ? undefined : one(x, cx)
+    if (v === undefined) throw new NotOne()
+    return v
   }
 }
 
