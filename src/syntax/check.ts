@@ -131,7 +131,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     ast = linked.ast
   }
   const externalSet = new Set((ctx.externalFunctions ?? []).map(wordKey))
-  ast = bindCalls(ast, definedIn(ctx), externalSet)
+  if (bindable(ast)) ast = bindCalls(ast, definedIn(ctx), externalSet)
   const functions = new Set<string>()
   const sheets = new Set<string>()
   const names = new Set<string>()
@@ -183,6 +183,15 @@ function definedIn(ctx: ValidateContext & BookCheck): (name: string) => boolean 
  * call of the name, a LET name's or a parameter's call by a function's name a call of the function (`MyFn(1,2)`, a name whose formula is a LAMBDA), and a name the book does not define that is a
  * function's is that function as a value (`BYROW(A1:C3,SUM)`), as Excel reads them.
  */
+/** Whether a formula has what `bindCalls` binds: a name, a call of a function no list has, a call of a value; most have none. */
+export function bindable(ast: Ast): boolean {
+  let found = false
+  walk(ast, (n) => {
+    found ||= (n.k === 'name' && n.sheet === undefined) || n.k === 'call' || (n.k === 'fn' && !isFunction(n.name))
+  })
+  return found
+}
+
 export function bindCalls(ast: Ast, defined: (name: string) => boolean, external: ReadonlySet<string> = new Set()): Ast {
   return mapAst(ast, (n) => {
     // a function's name calls the function, a LET name or a parameter of that name aside (`LET(sum,5,SUM(sum,1))`)

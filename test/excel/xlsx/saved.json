@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 4.4,
+  "seconds": 3.3,
   "date": "2026-10-29"
  },
  "books": {
@@ -466,6 +466,15 @@
   },
   "lambda-depth-1": {
    "sent": "b438a0e5a6312b264c257772c6bbf9efb92660e249292302a9800f099c00c0d2"
+  },
+  "groupby-held-1": {
+   "sent": "4cbf5d31afcba0ba784047483b2dcfae5916c33637464b9b8d3e3e4fdeb2dd0b"
+  },
+  "groupby-held-2-1": {
+   "sent": "c1331aa0a4177151b599abec4f69b0c09805b552979dce9571f426648817a10a"
+  },
+  "lambda-held-1": {
+   "sent": "cfe301a24b54f8a10099229ba8c36940d189a00ddf4094214c696443ca6a4f1d"
   }
  }
 }
