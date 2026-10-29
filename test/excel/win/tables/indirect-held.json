@@ -1,0 +1,2610 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 20.5
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "names of a reference, a range, an OFFSET and an INDIRECT, through INDIRECT and directly",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A2"
+       },
+       "C1": {
+        "formula": "INDIRECT(\"rate\")"
+       },
+       "C2": {
+        "formula": "SUM(INDIRECT(\"span\"))"
+       },
+       "C3": {
+        "formula": "SUM(INDIRECT(\"grow\"))"
+       },
+       "C4": {
+        "formula": "SUM(grow)"
+       },
+       "C5": {
+        "formula": "pick*10"
+       },
+       "C6": {
+        "formula": "INDIRECT(\"S!rate\")"
+       },
+       "C7": {
+        "formula": "INDIRECT(\"nosuch\")"
+       },
+       "C8": {
+        "formula": "ROWS(grow)"
+       },
+       "C9": {
+        "formula": "INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "rate",
+      "ref": "'S'!$A$1"
+     },
+     {
+      "name": "span",
+      "ref": "'S'!$A$1:$A$3"
+     },
+     {
+      "name": "grow",
+      "ref": "OFFSET('S'!$A$1,0,0,'S'!$A$4)"
+     },
+     {
+      "name": "pick",
+      "ref": "INDIRECT('S'!$B$1)"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C9"
+    }
+   ]
+  },
+  {
+   "id": "names-typed",
+   "about": "the cells the names read typed: the OFFSET grows, the INDIRECT points elsewhere",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A2"
+       },
+       "C1": {
+        "formula": "INDIRECT(\"rate\")"
+       },
+       "C2": {
+        "formula": "SUM(INDIRECT(\"span\"))"
+       },
+       "C3": {
+        "formula": "SUM(INDIRECT(\"grow\"))"
+       },
+       "C4": {
+        "formula": "SUM(grow)"
+       },
+       "C5": {
+        "formula": "pick*10"
+       },
+       "C6": {
+        "formula": "INDIRECT(\"S!rate\")"
+       },
+       "C7": {
+        "formula": "INDIRECT(\"nosuch\")"
+       },
+       "C8": {
+        "formula": "ROWS(grow)"
+       },
+       "C9": {
+        "formula": "INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "rate",
+      "ref": "'S'!$A$1"
+     },
+     {
+      "name": "span",
+      "ref": "'S'!$A$1:$A$3"
+     },
+     {
+      "name": "grow",
+      "ref": "OFFSET('S'!$A$1,0,0,'S'!$A$4)"
+     },
+     {
+      "name": "pick",
+      "ref": "INDIRECT('S'!$B$1)"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A4",
+      "value": 3
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": "A3"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A3",
+      "value": 30
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C9"
+    }
+   ]
+  },
+  {
+   "id": "table",
+   "about": "a table's columns, areas and the whole table through INDIRECT",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F1": {
+        "formula": "SUM(INDIRECT(\"Sales[Qty]\"))"
+       },
+       "F2": {
+        "formula": "INDIRECT(\"Sales[[#Headers],[Price]]\")"
+       },
+       "F3": {
+        "formula": "ROWS(INDIRECT(\"Sales\"))"
+       },
+       "F4": {
+        "formula": "ROWS(INDIRECT(\"Sales[#All]\"))"
+       },
+       "F5": {
+        "formula": "SUM(INDIRECT(\"sales[total]\"))"
+       },
+       "F6": {
+        "formula": "INDIRECT(\"Sales[Nope]\")"
+       },
+       "F7": {
+        "formula": "SUM(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+       },
+       "F8": {
+        "formula": "COLUMNS(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B2",
+      "value": 4
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F1:F8"
+    }
+   ]
+  },
+  {
+   "id": "typed",
+   "about": "typed after opening: the cell INDIRECT reads, its text, the size OFFSET takes, a chain read backwards",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A1"
+       },
+       "C1": {
+        "formula": "INDIRECT(B1)*10"
+       },
+       "C2": {
+        "formula": "SUM(OFFSET(A1,0,0,A3))"
+       },
+       "C3": {
+        "formula": "INDIRECT(\"A\"&A3)"
+       },
+       "C4": {
+        "formula": "CELL(\"contents\",INDIRECT(B1))"
+       },
+       "C5": {
+        "formula": "SUM(A1:INDIRECT(\"A\"&A3))"
+       },
+       "D1": {
+        "formula": "INDIRECT(\"D2\")+1"
+       },
+       "D2": {
+        "formula": "INDIRECT(\"D3\")+1"
+       },
+       "D3": {
+        "formula": "A1*100"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A1",
+      "value": 5
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": "A2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A3",
+      "value": 1
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A2",
+      "value": 7
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:D5"
+    }
+   ]
+  },
+  {
+   "id": "typed-formula",
+   "about": "a formula typed that INDIRECT reads, then one typed over its text",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A1"
+       },
+       "C1": {
+        "formula": "INDIRECT(B1)*10"
+       },
+       "C2": {
+        "formula": "SUM(OFFSET(A1,0,0,A3))"
+       },
+       "C3": {
+        "formula": "INDIRECT(\"A\"&A3)"
+       },
+       "C4": {
+        "formula": "CELL(\"contents\",INDIRECT(B1))"
+       },
+       "C5": {
+        "formula": "SUM(A1:INDIRECT(\"A\"&A3))"
+       },
+       "D1": {
+        "formula": "INDIRECT(\"D2\")+1"
+       },
+       "D2": {
+        "formula": "INDIRECT(\"D3\")+1"
+       },
+       "D3": {
+        "formula": "A1*100"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A2",
+      "value": {
+       "formula": "A1*3"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": {
+       "formula": "\"A\"&A3"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:D5"
+    }
+   ]
+  },
+  {
+   "id": "insert-rows",
+   "about": "a row inserted above: the text stays and reads the cell that came there, OFFSET moves",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "formula": "INDIRECT(\"A2\")"
+       },
+       "B2": {
+        "formula": "OFFSET(A1,1,0)"
+       },
+       "B3": {
+        "formula": "SUM(OFFSET(A1,0,0,3))"
+       },
+       "B4": {
+        "formula": "INDIRECT(\"T!A1\")"
+       },
+       "B5": {
+        "formula": "INDIRECT(\"New!A1\")"
+       },
+       "B6": {
+        "formula": "SUM(A1:OFFSET(A1,2,0))"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "tee"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertRows",
+      "sheet": "S",
+      "row": 1,
+      "count": 1
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B8"
+    }
+   ]
+  },
+  {
+   "id": "delete-rows",
+   "about": "the row of the cell INDIRECT and OFFSET read deleted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "formula": "INDIRECT(\"A2\")"
+       },
+       "B2": {
+        "formula": "OFFSET(A1,1,0)"
+       },
+       "B3": {
+        "formula": "SUM(OFFSET(A1,0,0,3))"
+       },
+       "B4": {
+        "formula": "INDIRECT(\"T!A1\")"
+       },
+       "B5": {
+        "formula": "INDIRECT(\"New!A1\")"
+       },
+       "B6": {
+        "formula": "SUM(A1:OFFSET(A1,2,0))"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "tee"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteRows",
+      "sheet": "S",
+      "row": 2,
+      "count": 1
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B7"
+    }
+   ]
+  },
+  {
+   "id": "rename-sheet",
+   "about": "the sheet INDIRECT names renamed to the name another text names",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "formula": "INDIRECT(\"A2\")"
+       },
+       "B2": {
+        "formula": "OFFSET(A1,1,0)"
+       },
+       "B3": {
+        "formula": "SUM(OFFSET(A1,0,0,3))"
+       },
+       "B4": {
+        "formula": "INDIRECT(\"T!A1\")"
+       },
+       "B5": {
+        "formula": "INDIRECT(\"New!A1\")"
+       },
+       "B6": {
+        "formula": "SUM(A1:OFFSET(A1,2,0))"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "tee"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "T",
+      "name": "New"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B7"
+    }
+   ]
+  },
+  {
+   "id": "looks",
+   "about": "CELL's format codes of 43 number formats, the prefix of aligned text, protection and widths",
+   "book": {
+    "sheets": [
+     {
+      "name": "F",
+      "cells": {
+       "A1": {
+        "value": -1234.5,
+        "numberFormat": "General"
+       },
+       "B1": {
+        "formula": "CELL(\"format\",A1)"
+       },
+       "C1": {
+        "formula": "CELL(\"color\",A1)"
+       },
+       "D1": {
+        "formula": "CELL(\"parentheses\",A1)"
+       },
+       "A2": {
+        "value": -1234.5,
+        "numberFormat": "0"
+       },
+       "B2": {
+        "formula": "CELL(\"format\",A2)"
+       },
+       "C2": {
+        "formula": "CELL(\"color\",A2)"
+       },
+       "D2": {
+        "formula": "CELL(\"parentheses\",A2)"
+       },
+       "A3": {
+        "value": -1234.5,
+        "numberFormat": "0.00"
+       },
+       "B3": {
+        "formula": "CELL(\"format\",A3)"
+       },
+       "C3": {
+        "formula": "CELL(\"color\",A3)"
+       },
+       "D3": {
+        "formula": "CELL(\"parentheses\",A3)"
+       },
+       "A4": {
+        "value": -1234.5,
+        "numberFormat": "#,##0"
+       },
+       "B4": {
+        "formula": "CELL(\"format\",A4)"
+       },
+       "C4": {
+        "formula": "CELL(\"color\",A4)"
+       },
+       "D4": {
+        "formula": "CELL(\"parentheses\",A4)"
+       },
+       "A5": {
+        "value": -1234.5,
+        "numberFormat": "#,##0.00"
+       },
+       "B5": {
+        "formula": "CELL(\"format\",A5)"
+       },
+       "C5": {
+        "formula": "CELL(\"color\",A5)"
+       },
+       "D5": {
+        "formula": "CELL(\"parentheses\",A5)"
+       },
+       "A6": {
+        "value": -1234.5,
+        "numberFormat": "$#,##0_);($#,##0)"
+       },
+       "B6": {
+        "formula": "CELL(\"format\",A6)"
+       },
+       "C6": {
+        "formula": "CELL(\"color\",A6)"
+       },
+       "D6": {
+        "formula": "CELL(\"parentheses\",A6)"
+       },
+       "A7": {
+        "value": -1234.5,
+        "numberFormat": "$#,##0_);[Red]($#,##0)"
+       },
+       "B7": {
+        "formula": "CELL(\"format\",A7)"
+       },
+       "C7": {
+        "formula": "CELL(\"color\",A7)"
+       },
+       "D7": {
+        "formula": "CELL(\"parentheses\",A7)"
+       },
+       "A8": {
+        "value": -1234.5,
+        "numberFormat": "$#,##0.00_);($#,##0.00)"
+       },
+       "B8": {
+        "formula": "CELL(\"format\",A8)"
+       },
+       "C8": {
+        "formula": "CELL(\"color\",A8)"
+       },
+       "D8": {
+        "formula": "CELL(\"parentheses\",A8)"
+       },
+       "A9": {
+        "value": -1234.5,
+        "numberFormat": "$#,##0.00_);[Red]($#,##0.00)"
+       },
+       "B9": {
+        "formula": "CELL(\"format\",A9)"
+       },
+       "C9": {
+        "formula": "CELL(\"color\",A9)"
+       },
+       "D9": {
+        "formula": "CELL(\"parentheses\",A9)"
+       },
+       "A10": {
+        "value": -1234.5,
+        "numberFormat": "0%"
+       },
+       "B10": {
+        "formula": "CELL(\"format\",A10)"
+       },
+       "C10": {
+        "formula": "CELL(\"color\",A10)"
+       },
+       "D10": {
+        "formula": "CELL(\"parentheses\",A10)"
+       },
+       "A11": {
+        "value": -1234.5,
+        "numberFormat": "0.00%"
+       },
+       "B11": {
+        "formula": "CELL(\"format\",A11)"
+       },
+       "C11": {
+        "formula": "CELL(\"color\",A11)"
+       },
+       "D11": {
+        "formula": "CELL(\"parentheses\",A11)"
+       },
+       "A12": {
+        "value": -1234.5,
+        "numberFormat": "0.00E+00"
+       },
+       "B12": {
+        "formula": "CELL(\"format\",A12)"
+       },
+       "C12": {
+        "formula": "CELL(\"color\",A12)"
+       },
+       "D12": {
+        "formula": "CELL(\"parentheses\",A12)"
+       },
+       "A13": {
+        "value": -1234.5,
+        "numberFormat": "# ?/?"
+       },
+       "B13": {
+        "formula": "CELL(\"format\",A13)"
+       },
+       "C13": {
+        "formula": "CELL(\"color\",A13)"
+       },
+       "D13": {
+        "formula": "CELL(\"parentheses\",A13)"
+       },
+       "A14": {
+        "value": -1234.5,
+        "numberFormat": "# ??/??"
+       },
+       "B14": {
+        "formula": "CELL(\"format\",A14)"
+       },
+       "C14": {
+        "formula": "CELL(\"color\",A14)"
+       },
+       "D14": {
+        "formula": "CELL(\"parentheses\",A14)"
+       },
+       "A15": {
+        "value": -1234.5,
+        "numberFormat": "m/d/yy"
+       },
+       "B15": {
+        "formula": "CELL(\"format\",A15)"
+       },
+       "C15": {
+        "formula": "CELL(\"color\",A15)"
+       },
+       "D15": {
+        "formula": "CELL(\"parentheses\",A15)"
+       },
+       "A16": {
+        "value": -1234.5,
+        "numberFormat": "d-mmm-yy"
+       },
+       "B16": {
+        "formula": "CELL(\"format\",A16)"
+       },
+       "C16": {
+        "formula": "CELL(\"color\",A16)"
+       },
+       "D16": {
+        "formula": "CELL(\"parentheses\",A16)"
+       },
+       "A17": {
+        "value": -1234.5,
+        "numberFormat": "d-mmm"
+       },
+       "B17": {
+        "formula": "CELL(\"format\",A17)"
+       },
+       "C17": {
+        "formula": "CELL(\"color\",A17)"
+       },
+       "D17": {
+        "formula": "CELL(\"parentheses\",A17)"
+       },
+       "A18": {
+        "value": -1234.5,
+        "numberFormat": "mmm-yy"
+       },
+       "B18": {
+        "formula": "CELL(\"format\",A18)"
+       },
+       "C18": {
+        "formula": "CELL(\"color\",A18)"
+       },
+       "D18": {
+        "formula": "CELL(\"parentheses\",A18)"
+       },
+       "A19": {
+        "value": -1234.5,
+        "numberFormat": "h:mm AM/PM"
+       },
+       "B19": {
+        "formula": "CELL(\"format\",A19)"
+       },
+       "C19": {
+        "formula": "CELL(\"color\",A19)"
+       },
+       "D19": {
+        "formula": "CELL(\"parentheses\",A19)"
+       },
+       "A20": {
+        "value": -1234.5,
+        "numberFormat": "h:mm:ss AM/PM"
+       },
+       "B20": {
+        "formula": "CELL(\"format\",A20)"
+       },
+       "C20": {
+        "formula": "CELL(\"color\",A20)"
+       },
+       "D20": {
+        "formula": "CELL(\"parentheses\",A20)"
+       },
+       "A21": {
+        "value": -1234.5,
+        "numberFormat": "h:mm"
+       },
+       "B21": {
+        "formula": "CELL(\"format\",A21)"
+       },
+       "C21": {
+        "formula": "CELL(\"color\",A21)"
+       },
+       "D21": {
+        "formula": "CELL(\"parentheses\",A21)"
+       },
+       "A22": {
+        "value": -1234.5,
+        "numberFormat": "h:mm:ss"
+       },
+       "B22": {
+        "formula": "CELL(\"format\",A22)"
+       },
+       "C22": {
+        "formula": "CELL(\"color\",A22)"
+       },
+       "D22": {
+        "formula": "CELL(\"parentheses\",A22)"
+       },
+       "A23": {
+        "value": -1234.5,
+        "numberFormat": "m/d/yy h:mm"
+       },
+       "B23": {
+        "formula": "CELL(\"format\",A23)"
+       },
+       "C23": {
+        "formula": "CELL(\"color\",A23)"
+       },
+       "D23": {
+        "formula": "CELL(\"parentheses\",A23)"
+       },
+       "A24": {
+        "value": -1234.5,
+        "numberFormat": "@"
+       },
+       "B24": {
+        "formula": "CELL(\"format\",A24)"
+       },
+       "C24": {
+        "formula": "CELL(\"color\",A24)"
+       },
+       "D24": {
+        "formula": "CELL(\"parentheses\",A24)"
+       },
+       "A25": {
+        "value": -1234.5,
+        "numberFormat": "0.000"
+       },
+       "B25": {
+        "formula": "CELL(\"format\",A25)"
+       },
+       "C25": {
+        "formula": "CELL(\"color\",A25)"
+       },
+       "D25": {
+        "formula": "CELL(\"parentheses\",A25)"
+       },
+       "A26": {
+        "value": -1234.5,
+        "numberFormat": "#,##0.0"
+       },
+       "B26": {
+        "formula": "CELL(\"format\",A26)"
+       },
+       "C26": {
+        "formula": "CELL(\"color\",A26)"
+       },
+       "D26": {
+        "formula": "CELL(\"parentheses\",A26)"
+       },
+       "A27": {
+        "value": -1234.5,
+        "numberFormat": "(0)"
+       },
+       "B27": {
+        "formula": "CELL(\"format\",A27)"
+       },
+       "C27": {
+        "formula": "CELL(\"color\",A27)"
+       },
+       "D27": {
+        "formula": "CELL(\"parentheses\",A27)"
+       },
+       "A28": {
+        "value": -1234.5,
+        "numberFormat": "0;(0)"
+       },
+       "B28": {
+        "formula": "CELL(\"format\",A28)"
+       },
+       "C28": {
+        "formula": "CELL(\"color\",A28)"
+       },
+       "D28": {
+        "formula": "CELL(\"parentheses\",A28)"
+       },
+       "A29": {
+        "value": -1234.5,
+        "numberFormat": "[Red]0"
+       },
+       "B29": {
+        "formula": "CELL(\"format\",A29)"
+       },
+       "C29": {
+        "formula": "CELL(\"color\",A29)"
+       },
+       "D29": {
+        "formula": "CELL(\"parentheses\",A29)"
+       },
+       "A30": {
+        "value": -1234.5,
+        "numberFormat": "0;[Red]-0"
+       },
+       "B30": {
+        "formula": "CELL(\"format\",A30)"
+       },
+       "C30": {
+        "formula": "CELL(\"color\",A30)"
+       },
+       "D30": {
+        "formula": "CELL(\"parentheses\",A30)"
+       },
+       "A31": {
+        "value": -1234.5,
+        "numberFormat": "0;[Blue]0"
+       },
+       "B31": {
+        "formula": "CELL(\"format\",A31)"
+       },
+       "C31": {
+        "formula": "CELL(\"color\",A31)"
+       },
+       "D31": {
+        "formula": "CELL(\"parentheses\",A31)"
+       },
+       "A32": {
+        "value": -1234.5,
+        "numberFormat": "\"€\"#,##0.00"
+       },
+       "B32": {
+        "formula": "CELL(\"format\",A32)"
+       },
+       "C32": {
+        "formula": "CELL(\"color\",A32)"
+       },
+       "D32": {
+        "formula": "CELL(\"parentheses\",A32)"
+       },
+       "A33": {
+        "value": -1234.5,
+        "numberFormat": "[$€-407] #,##0.00"
+       },
+       "B33": {
+        "formula": "CELL(\"format\",A33)"
+       },
+       "C33": {
+        "formula": "CELL(\"color\",A33)"
+       },
+       "D33": {
+        "formula": "CELL(\"parentheses\",A33)"
+       },
+       "A34": {
+        "value": -1234.5,
+        "numberFormat": "yyyy-mm-dd"
+       },
+       "B34": {
+        "formula": "CELL(\"format\",A34)"
+       },
+       "C34": {
+        "formula": "CELL(\"color\",A34)"
+       },
+       "D34": {
+        "formula": "CELL(\"parentheses\",A34)"
+       },
+       "A35": {
+        "value": -1234.5,
+        "numberFormat": "mm/dd"
+       },
+       "B35": {
+        "formula": "CELL(\"format\",A35)"
+       },
+       "C35": {
+        "formula": "CELL(\"color\",A35)"
+       },
+       "D35": {
+        "formula": "CELL(\"parentheses\",A35)"
+       },
+       "A36": {
+        "value": -1234.5,
+        "numberFormat": "dd/mm/yyyy"
+       },
+       "B36": {
+        "formula": "CELL(\"format\",A36)"
+       },
+       "C36": {
+        "formula": "CELL(\"color\",A36)"
+       },
+       "D36": {
+        "formula": "CELL(\"parentheses\",A36)"
+       },
+       "A37": {
+        "value": -1234.5,
+        "numberFormat": "mmmm d, yyyy"
+       },
+       "B37": {
+        "formula": "CELL(\"format\",A37)"
+       },
+       "C37": {
+        "formula": "CELL(\"color\",A37)"
+       },
+       "D37": {
+        "formula": "CELL(\"parentheses\",A37)"
+       },
+       "A38": {
+        "value": -1234.5,
+        "numberFormat": "[h]:mm:ss"
+       },
+       "B38": {
+        "formula": "CELL(\"format\",A38)"
+       },
+       "C38": {
+        "formula": "CELL(\"color\",A38)"
+       },
+       "D38": {
+        "formula": "CELL(\"parentheses\",A38)"
+       },
+       "A39": {
+        "value": -1234.5,
+        "numberFormat": "0.0E+0"
+       },
+       "B39": {
+        "formula": "CELL(\"format\",A39)"
+       },
+       "C39": {
+        "formula": "CELL(\"color\",A39)"
+       },
+       "D39": {
+        "formula": "CELL(\"parentheses\",A39)"
+       },
+       "A40": {
+        "value": -1234.5,
+        "numberFormat": "#,##0;(#,##0)"
+       },
+       "B40": {
+        "formula": "CELL(\"format\",A40)"
+       },
+       "C40": {
+        "formula": "CELL(\"color\",A40)"
+       },
+       "D40": {
+        "formula": "CELL(\"parentheses\",A40)"
+       },
+       "A41": {
+        "value": -1234.5,
+        "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+       },
+       "B41": {
+        "formula": "CELL(\"format\",A41)"
+       },
+       "C41": {
+        "formula": "CELL(\"color\",A41)"
+       },
+       "D41": {
+        "formula": "CELL(\"parentheses\",A41)"
+       },
+       "A42": {
+        "value": -1234.5,
+        "numberFormat": "0.00;-0.00;\"zero\""
+       },
+       "B42": {
+        "formula": "CELL(\"format\",A42)"
+       },
+       "C42": {
+        "formula": "CELL(\"color\",A42)"
+       },
+       "D42": {
+        "formula": "CELL(\"parentheses\",A42)"
+       },
+       "A43": {
+        "value": -1234.5,
+        "numberFormat": "000-00-0000"
+       },
+       "B43": {
+        "formula": "CELL(\"format\",A43)"
+       },
+       "C43": {
+        "formula": "CELL(\"color\",A43)"
+       },
+       "D43": {
+        "formula": "CELL(\"parentheses\",A43)"
+       }
+      }
+     },
+     {
+      "name": "L",
+      "cells": {
+       "A1": {
+        "value": "t",
+        "style": 0
+       },
+       "A2": {
+        "value": "t",
+        "style": 1
+       },
+       "A3": {
+        "value": "t",
+        "style": 2
+       },
+       "A4": {
+        "value": "t",
+        "style": 3
+       },
+       "A5": {
+        "value": "t",
+        "style": 4
+       },
+       "A6": {
+        "value": "t"
+       },
+       "A7": {
+        "value": 5
+       },
+       "A8": {
+        "value": 5,
+        "style": 1
+       },
+       "B1": {
+        "formula": "CELL(\"prefix\",A1)"
+       },
+       "B2": {
+        "formula": "CELL(\"prefix\",A2)"
+       },
+       "B3": {
+        "formula": "CELL(\"prefix\",A3)"
+       },
+       "B4": {
+        "formula": "CELL(\"prefix\",A4)"
+       },
+       "B5": {
+        "formula": "CELL(\"prefix\",A5)"
+       },
+       "B6": {
+        "formula": "CELL(\"prefix\",A6)"
+       },
+       "B7": {
+        "formula": "CELL(\"prefix\",A7)"
+       },
+       "B8": {
+        "formula": "CELL(\"prefix\",A8)"
+       },
+       "C1": {
+        "formula": "CELL(\"protect\",A1)"
+       },
+       "C2": {
+        "value": 1,
+        "style": 5
+       },
+       "C3": {
+        "formula": "CELL(\"protect\",C2)"
+       },
+       "C4": {
+        "formula": "CELL(\"protect\",Z99)"
+       },
+       "D1": {
+        "formula": "INDEX(CELL(\"width\",D1),1,1)"
+       },
+       "D2": {
+        "formula": "INDEX(CELL(\"width\",E1),1,1)"
+       },
+       "D3": {
+        "formula": "INDEX(CELL(\"width\",G1),1,1)"
+       },
+       "D4": {
+        "formula": "INDEX(CELL(\"width\",H1),1,1)"
+       },
+       "D5": {
+        "formula": "INDEX(CELL(\"width\",D1),1,2)"
+       },
+       "D6": {
+        "formula": "INDEX(CELL(\"width\",E1),1,2)"
+       },
+       "D7": {
+        "formula": "COLUMNS(CELL(\"width\",D1))"
+       }
+      },
+      "columns": {
+       "E": {
+        "width": 20.7109375
+       },
+       "G": {
+        "width": 9.5703125
+       },
+       "H": {
+        "width": 0
+       }
+      }
+     }
+    ],
+    "styles": [
+     {
+      "alignment": {
+       "horizontal": "left"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "right"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "center"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "fill"
+      }
+     },
+     {
+      "alignment": {
+       "horizontal": "justify"
+      }
+     },
+     {
+      "protection": {
+       "locked": false
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "F",
+     "range": "B1:D43"
+    },
+    {
+     "sheet": "L",
+     "range": "B1:D8"
+    }
+   ]
+  },
+  {
+   "id": "active",
+   "about": "CELL without a reference reads the active cell of the book saved with sheet T active, at D4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 5
+       },
+       "B2": {
+        "value": 7
+       },
+       "C1": {
+        "formula": "MID(CELL(\"address\"),FIND(\"]\",CELL(\"address\"))+1,99)"
+       },
+       "C2": {
+        "formula": "CELL(\"row\")"
+       },
+       "C3": {
+        "formula": "CELL(\"contents\")"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D4": {
+        "value": "there"
+       }
+      },
+      "view": {
+       "activeCell": "D4"
+      }
+     }
+    ],
+    "activeSheet": "T"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "names": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!C3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 20
+    },
+    "S!C6": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C7": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C8": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C9": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(\"rate\")",
+    "S!C2": "=SUM(INDIRECT(\"span\"))",
+    "S!C3": "=SUM(INDIRECT(\"grow\"))",
+    "S!C4": "=SUM(grow)",
+    "S!C5": "=pick*10",
+    "S!C6": "=INDIRECT(\"S!rate\")",
+    "S!C7": "=INDIRECT(\"nosuch\")",
+    "S!C8": "=ROWS(grow)",
+    "S!C9": "=INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+   },
+   "tables": []
+  },
+  "names-typed": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 33
+    },
+    "S!C3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 33
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 300
+    },
+    "S!C6": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C7": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C8": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C9": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(\"rate\")",
+    "S!C2": "=SUM(INDIRECT(\"span\"))",
+    "S!C3": "=SUM(INDIRECT(\"grow\"))",
+    "S!C4": "=SUM(grow)",
+    "S!C5": "=pick*10",
+    "S!C6": "=INDIRECT(\"S!rate\")",
+    "S!C7": "=INDIRECT(\"nosuch\")",
+    "S!C8": "=ROWS(grow)",
+    "S!C9": "=INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+   },
+   "tables": []
+  },
+  "table": {
+   "values": {
+    "S!F1": {
+     "t": "n",
+     "v": 13
+    },
+    "S!F2": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F5": {
+     "t": "n",
+     "v": 290
+    },
+    "S!F6": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!F7": {
+     "t": "n",
+     "v": 113
+    },
+    "S!F8": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!F1": "=SUM(INDIRECT(\"Sales[Qty]\"))",
+    "S!F2": "=INDIRECT(\"Sales[[#Headers],[Price]]\")",
+    "S!F3": "=ROWS(INDIRECT(\"Sales\"))",
+    "S!F4": "=ROWS(INDIRECT(\"Sales[#All]\"))",
+    "S!F5": "=SUM(INDIRECT(\"sales[total]\"))",
+    "S!F6": "=INDIRECT(\"Sales[Nope]\")",
+    "S!F7": "=SUM(INDIRECT(\"Sales[[Qty]:[Price]]\"))",
+    "S!F8": "=COLUMNS(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "typed": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 70
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 502
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 501
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 500
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 7
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(B1)*10",
+    "S!D1": "=INDIRECT(\"D2\")+1",
+    "S!C2": "=SUM(OFFSET(A1,0,0,A3))",
+    "S!D2": "=INDIRECT(\"D3\")+1",
+    "S!C3": "=INDIRECT(\"A\"&A3)",
+    "S!D3": "=A1*100",
+    "S!C4": "=CELL(\"contents\",INDIRECT(B1))",
+    "S!C5": "=SUM(A1:INDIRECT(\"A\"&A3))"
+   },
+   "tables": []
+  },
+  "typed-formula": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 102
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 101
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(B1)*10",
+    "S!D1": "=INDIRECT(\"D2\")+1",
+    "S!C2": "=SUM(OFFSET(A1,0,0,A3))",
+    "S!D2": "=INDIRECT(\"D3\")+1",
+    "S!C3": "=INDIRECT(\"A\"&A3)",
+    "S!D3": "=A1*100",
+    "S!C4": "=CELL(\"contents\",INDIRECT(B1))",
+    "S!C5": "=SUM(A1:INDIRECT(\"A\"&A3))"
+   },
+   "tables": []
+  },
+  "insert-rows": {
+   "values": {
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B5": {
+     "t": "s",
+     "v": "tee"
+    },
+    "S!B6": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!B7": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!B2": "=INDIRECT(\"A2\")",
+    "S!B3": "=OFFSET(A2,1,0)",
+    "S!B4": "=SUM(OFFSET(A2,0,0,3))",
+    "S!B5": "=INDIRECT(\"T!A1\")",
+    "S!B6": "=INDIRECT(\"New!A1\")",
+    "S!B7": "=SUM(A2:OFFSET(A2,2,0))"
+   },
+   "tables": []
+  },
+  "delete-rows": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!B3": {
+     "t": "s",
+     "v": "tee"
+    },
+    "S!B4": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=INDIRECT(\"A2\")",
+    "S!B2": "=SUM(OFFSET(A1,0,0,3))",
+    "S!B3": "=INDIRECT(\"T!A1\")",
+    "S!B4": "=INDIRECT(\"New!A1\")",
+    "S!B5": "=SUM(A1:OFFSET(A1,2,0))"
+   },
+   "tables": []
+  },
+  "rename-sheet": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B4": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!B5": {
+     "t": "s",
+     "v": "tee"
+    },
+    "S!B6": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!B1": "=INDIRECT(\"A2\")",
+    "S!B2": "=OFFSET(A1,1,0)",
+    "S!B3": "=SUM(OFFSET(A1,0,0,3))",
+    "S!B4": "=INDIRECT(\"T!A1\")",
+    "S!B5": "=INDIRECT(\"New!A1\")",
+    "S!B6": "=SUM(A1:OFFSET(A1,2,0))"
+   },
+   "tables": []
+  },
+  "looks": {
+   "values": {
+    "F!B1": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C1": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D1": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B2": {
+     "t": "s",
+     "v": "F0"
+    },
+    "F!C2": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D2": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B3": {
+     "t": "s",
+     "v": "F2"
+    },
+    "F!C3": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D3": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B4": {
+     "t": "s",
+     "v": ",0"
+    },
+    "F!C4": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D4": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B5": {
+     "t": "s",
+     "v": ",2"
+    },
+    "F!C5": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D5": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B6": {
+     "t": "s",
+     "v": ",0"
+    },
+    "F!C6": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D6": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B7": {
+     "t": "s",
+     "v": ",0-"
+    },
+    "F!C7": {
+     "t": "n",
+     "v": 1
+    },
+    "F!D7": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B8": {
+     "t": "s",
+     "v": ",2"
+    },
+    "F!C8": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D8": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B9": {
+     "t": "s",
+     "v": ",2-"
+    },
+    "F!C9": {
+     "t": "n",
+     "v": 1
+    },
+    "F!D9": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B10": {
+     "t": "s",
+     "v": "P0"
+    },
+    "F!C10": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D10": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B11": {
+     "t": "s",
+     "v": "P2"
+    },
+    "F!C11": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D11": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B12": {
+     "t": "s",
+     "v": "S2"
+    },
+    "F!C12": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D12": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B13": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C13": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D13": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B14": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C14": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D14": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B15": {
+     "t": "s",
+     "v": "D4"
+    },
+    "F!C15": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D15": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B16": {
+     "t": "s",
+     "v": "D1"
+    },
+    "F!C16": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D16": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B17": {
+     "t": "s",
+     "v": "D2"
+    },
+    "F!C17": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D17": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B18": {
+     "t": "s",
+     "v": "D3"
+    },
+    "F!C18": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D18": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B19": {
+     "t": "s",
+     "v": "D7"
+    },
+    "F!C19": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D19": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B20": {
+     "t": "s",
+     "v": "D6"
+    },
+    "F!C20": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D20": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B21": {
+     "t": "s",
+     "v": "D9"
+    },
+    "F!C21": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D21": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B22": {
+     "t": "s",
+     "v": "D8"
+    },
+    "F!C22": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D22": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B23": {
+     "t": "s",
+     "v": "D4"
+    },
+    "F!C23": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D23": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B24": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C24": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D24": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B25": {
+     "t": "s",
+     "v": "F3"
+    },
+    "F!C25": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D25": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B26": {
+     "t": "s",
+     "v": ",1"
+    },
+    "F!C26": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D26": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B27": {
+     "t": "s",
+     "v": "F0()"
+    },
+    "F!C27": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D27": {
+     "t": "n",
+     "v": 1
+    },
+    "F!B28": {
+     "t": "s",
+     "v": "F0"
+    },
+    "F!C28": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D28": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B29": {
+     "t": "s",
+     "v": "F0"
+    },
+    "F!C29": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D29": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B30": {
+     "t": "s",
+     "v": "F0-"
+    },
+    "F!C30": {
+     "t": "n",
+     "v": 1
+    },
+    "F!D30": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B31": {
+     "t": "s",
+     "v": "F0-"
+    },
+    "F!C31": {
+     "t": "n",
+     "v": 1
+    },
+    "F!D31": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B32": {
+     "t": "s",
+     "v": ",2"
+    },
+    "F!C32": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D32": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B33": {
+     "t": "s",
+     "v": ",2"
+    },
+    "F!C33": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D33": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B34": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C34": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D34": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B35": {
+     "t": "s",
+     "v": "D5"
+    },
+    "F!C35": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D35": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B36": {
+     "t": "s",
+     "v": "D1"
+    },
+    "F!C36": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D36": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B37": {
+     "t": "s",
+     "v": "D4"
+    },
+    "F!C37": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D37": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B38": {
+     "t": "s",
+     "v": "G"
+    },
+    "F!C38": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D38": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B39": {
+     "t": "s",
+     "v": "S1"
+    },
+    "F!C39": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D39": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B40": {
+     "t": "s",
+     "v": ",0"
+    },
+    "F!C40": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D40": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B41": {
+     "t": "s",
+     "v": ",0"
+    },
+    "F!C41": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D41": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B42": {
+     "t": "s",
+     "v": "F2"
+    },
+    "F!C42": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D42": {
+     "t": "n",
+     "v": 0
+    },
+    "F!B43": {
+     "t": "s",
+     "v": "F0"
+    },
+    "F!C43": {
+     "t": "n",
+     "v": 0
+    },
+    "F!D43": {
+     "t": "n",
+     "v": 0
+    },
+    "L!B1": {
+     "t": "s",
+     "v": "'"
+    },
+    "L!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "L!D1": {
+     "t": "n",
+     "v": 8
+    },
+    "L!B2": {
+     "t": "s",
+     "v": "\""
+    },
+    "L!C2": {
+     "t": "n",
+     "v": 1
+    },
+    "L!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "L!B3": {
+     "t": "s",
+     "v": "^"
+    },
+    "L!C3": {
+     "t": "n",
+     "v": 0
+    },
+    "L!D3": {
+     "t": "n",
+     "v": 9
+    },
+    "L!B4": {
+     "t": "s",
+     "v": "\\"
+    },
+    "L!C4": {
+     "t": "n",
+     "v": 1
+    },
+    "L!D4": {
+     "t": "n",
+     "v": 0
+    },
+    "L!B5": {
+     "t": "s",
+     "v": "'"
+    },
+    "L!D5": {
+     "t": "b",
+     "v": true
+    },
+    "L!B6": {
+     "t": "s",
+     "v": "'"
+    },
+    "L!D6": {
+     "t": "b",
+     "v": false
+    },
+    "L!B7": {
+     "t": "s",
+     "v": ""
+    },
+    "L!D7": {
+     "t": "n",
+     "v": 2
+    },
+    "L!B8": {
+     "t": "s",
+     "v": ""
+    }
+   },
+   "formulas": {
+    "F!B1": "=CELL(\"format\",A1)",
+    "F!C1": "=CELL(\"color\",A1)",
+    "F!D1": "=CELL(\"parentheses\",A1)",
+    "F!B2": "=CELL(\"format\",A2)",
+    "F!C2": "=CELL(\"color\",A2)",
+    "F!D2": "=CELL(\"parentheses\",A2)",
+    "F!B3": "=CELL(\"format\",A3)",
+    "F!C3": "=CELL(\"color\",A3)",
+    "F!D3": "=CELL(\"parentheses\",A3)",
+    "F!B4": "=CELL(\"format\",A4)",
+    "F!C4": "=CELL(\"color\",A4)",
+    "F!D4": "=CELL(\"parentheses\",A4)",
+    "F!B5": "=CELL(\"format\",A5)",
+    "F!C5": "=CELL(\"color\",A5)",
+    "F!D5": "=CELL(\"parentheses\",A5)",
+    "F!B6": "=CELL(\"format\",A6)",
+    "F!C6": "=CELL(\"color\",A6)",
+    "F!D6": "=CELL(\"parentheses\",A6)",
+    "F!B7": "=CELL(\"format\",A7)",
+    "F!C7": "=CELL(\"color\",A7)",
+    "F!D7": "=CELL(\"parentheses\",A7)",
+    "F!B8": "=CELL(\"format\",A8)",
+    "F!C8": "=CELL(\"color\",A8)",
+    "F!D8": "=CELL(\"parentheses\",A8)",
+    "F!B9": "=CELL(\"format\",A9)",
+    "F!C9": "=CELL(\"color\",A9)",
+    "F!D9": "=CELL(\"parentheses\",A9)",
+    "F!B10": "=CELL(\"format\",A10)",
+    "F!C10": "=CELL(\"color\",A10)",
+    "F!D10": "=CELL(\"parentheses\",A10)",
+    "F!B11": "=CELL(\"format\",A11)",
+    "F!C11": "=CELL(\"color\",A11)",
+    "F!D11": "=CELL(\"parentheses\",A11)",
+    "F!B12": "=CELL(\"format\",A12)",
+    "F!C12": "=CELL(\"color\",A12)",
+    "F!D12": "=CELL(\"parentheses\",A12)",
+    "F!B13": "=CELL(\"format\",A13)",
+    "F!C13": "=CELL(\"color\",A13)",
+    "F!D13": "=CELL(\"parentheses\",A13)",
+    "F!B14": "=CELL(\"format\",A14)",
+    "F!C14": "=CELL(\"color\",A14)",
+    "F!D14": "=CELL(\"parentheses\",A14)",
+    "F!B15": "=CELL(\"format\",A15)",
+    "F!C15": "=CELL(\"color\",A15)",
+    "F!D15": "=CELL(\"parentheses\",A15)",
+    "F!B16": "=CELL(\"format\",A16)",
+    "F!C16": "=CELL(\"color\",A16)",
+    "F!D16": "=CELL(\"parentheses\",A16)",
+    "F!B17": "=CELL(\"format\",A17)",
+    "F!C17": "=CELL(\"color\",A17)",
+    "F!D17": "=CELL(\"parentheses\",A17)",
+    "F!B18": "=CELL(\"format\",A18)",
+    "F!C18": "=CELL(\"color\",A18)",
+    "F!D18": "=CELL(\"parentheses\",A18)",
+    "F!B19": "=CELL(\"format\",A19)",
+    "F!C19": "=CELL(\"color\",A19)",
+    "F!D19": "=CELL(\"parentheses\",A19)",
+    "F!B20": "=CELL(\"format\",A20)",
+    "F!C20": "=CELL(\"color\",A20)",
+    "F!D20": "=CELL(\"parentheses\",A20)",
+    "F!B21": "=CELL(\"format\",A21)",
+    "F!C21": "=CELL(\"color\",A21)",
+    "F!D21": "=CELL(\"parentheses\",A21)",
+    "F!B22": "=CELL(\"format\",A22)",
+    "F!C22": "=CELL(\"color\",A22)",
+    "F!D22": "=CELL(\"parentheses\",A22)",
+    "F!B23": "=CELL(\"format\",A23)",
+    "F!C23": "=CELL(\"color\",A23)",
+    "F!D23": "=CELL(\"parentheses\",A23)",
+    "F!B24": "=CELL(\"format\",A24)",
+    "F!C24": "=CELL(\"color\",A24)",
+    "F!D24": "=CELL(\"parentheses\",A24)",
+    "F!B25": "=CELL(\"format\",A25)",
+    "F!C25": "=CELL(\"color\",A25)",
+    "F!D25": "=CELL(\"parentheses\",A25)",
+    "F!B26": "=CELL(\"format\",A26)",
+    "F!C26": "=CELL(\"color\",A26)",
+    "F!D26": "=CELL(\"parentheses\",A26)",
+    "F!B27": "=CELL(\"format\",A27)",
+    "F!C27": "=CELL(\"color\",A27)",
+    "F!D27": "=CELL(\"parentheses\",A27)",
+    "F!B28": "=CELL(\"format\",A28)",
+    "F!C28": "=CELL(\"color\",A28)",
+    "F!D28": "=CELL(\"parentheses\",A28)",
+    "F!B29": "=CELL(\"format\",A29)",
+    "F!C29": "=CELL(\"color\",A29)",
+    "F!D29": "=CELL(\"parentheses\",A29)",
+    "F!B30": "=CELL(\"format\",A30)",
+    "F!C30": "=CELL(\"color\",A30)",
+    "F!D30": "=CELL(\"parentheses\",A30)",
+    "F!B31": "=CELL(\"format\",A31)",
+    "F!C31": "=CELL(\"color\",A31)",
+    "F!D31": "=CELL(\"parentheses\",A31)",
+    "F!B32": "=CELL(\"format\",A32)",
+    "F!C32": "=CELL(\"color\",A32)",
+    "F!D32": "=CELL(\"parentheses\",A32)",
+    "F!B33": "=CELL(\"format\",A33)",
+    "F!C33": "=CELL(\"color\",A33)",
+    "F!D33": "=CELL(\"parentheses\",A33)",
+    "F!B34": "=CELL(\"format\",A34)",
+    "F!C34": "=CELL(\"color\",A34)",
+    "F!D34": "=CELL(\"parentheses\",A34)",
+    "F!B35": "=CELL(\"format\",A35)",
+    "F!C35": "=CELL(\"color\",A35)",
+    "F!D35": "=CELL(\"parentheses\",A35)",
+    "F!B36": "=CELL(\"format\",A36)",
+    "F!C36": "=CELL(\"color\",A36)",
+    "F!D36": "=CELL(\"parentheses\",A36)",
+    "F!B37": "=CELL(\"format\",A37)",
+    "F!C37": "=CELL(\"color\",A37)",
+    "F!D37": "=CELL(\"parentheses\",A37)",
+    "F!B38": "=CELL(\"format\",A38)",
+    "F!C38": "=CELL(\"color\",A38)",
+    "F!D38": "=CELL(\"parentheses\",A38)",
+    "F!B39": "=CELL(\"format\",A39)",
+    "F!C39": "=CELL(\"color\",A39)",
+    "F!D39": "=CELL(\"parentheses\",A39)",
+    "F!B40": "=CELL(\"format\",A40)",
+    "F!C40": "=CELL(\"color\",A40)",
+    "F!D40": "=CELL(\"parentheses\",A40)",
+    "F!B41": "=CELL(\"format\",A41)",
+    "F!C41": "=CELL(\"color\",A41)",
+    "F!D41": "=CELL(\"parentheses\",A41)",
+    "F!B42": "=CELL(\"format\",A42)",
+    "F!C42": "=CELL(\"color\",A42)",
+    "F!D42": "=CELL(\"parentheses\",A42)",
+    "F!B43": "=CELL(\"format\",A43)",
+    "F!C43": "=CELL(\"color\",A43)",
+    "F!D43": "=CELL(\"parentheses\",A43)",
+    "L!B1": "=CELL(\"prefix\",A1)",
+    "L!C1": "=CELL(\"protect\",A1)",
+    "L!D1": "=INDEX(CELL(\"width\",D1),1,1)",
+    "L!B2": "=CELL(\"prefix\",A2)",
+    "L!D2": "=INDEX(CELL(\"width\",E1),1,1)",
+    "L!B3": "=CELL(\"prefix\",A3)",
+    "L!C3": "=CELL(\"protect\",C2)",
+    "L!D3": "=INDEX(CELL(\"width\",G1),1,1)",
+    "L!B4": "=CELL(\"prefix\",A4)",
+    "L!C4": "=CELL(\"protect\",Z99)",
+    "L!D4": "=INDEX(CELL(\"width\",H1),1,1)",
+    "L!B5": "=CELL(\"prefix\",A5)",
+    "L!D5": "=INDEX(CELL(\"width\",D1),1,2)",
+    "L!B6": "=CELL(\"prefix\",A6)",
+    "L!D6": "=INDEX(CELL(\"width\",E1),1,2)",
+    "L!B7": "=CELL(\"prefix\",A7)",
+    "L!D7": "=COLUMNS(CELL(\"width\",D1))",
+    "L!B8": "=CELL(\"prefix\",A8)"
+   },
+   "tables": []
+  },
+  "active": {
+   "values": {
+    "S!C1": {
+     "t": "s",
+     "v": "T!$A$1"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 0
+    }
+   },
+   "formulas": {
+    "S!C1": "=MID(CELL(\"address\"),FIND(\"]\",CELL(\"address\"))+1,99)",
+    "S!C2": "=CELL(\"row\")",
+    "S!C3": "=CELL(\"contents\")"
+   },
+   "tables": []
+  }
+ }
+}

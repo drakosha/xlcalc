@@ -1,0 +1,43 @@
+{
+ "started": "2026-10-29T17:58:45.976Z",
+ "uptimeStart": "20:58  up 9 days,  2:37, 2 users, load averages: 5.34 6.18 5.79",
+ "node": "v26.7.0",
+ "engineCommit": "75a6bcd25e90eac06edb95e62fbbe8b344071f11",
+ "versions": {
+  "hyperformula": "3.5.0",
+  "ironcalc": "0.9.0",
+  "exceljs": "4.4.0",
+  "xlsx": "0.18.5"
+ },
+ "machine": {
+  "cpu": "Apple M5 Pro",
+  "memoryGiB": 48
+ },
+ "results": [
+  {
+   "part": "engines",
+   "file": "iron-child.mjs",
+   "args": [
+    "business-34000",
+    "ironcalc"
+   ],
+   "loadBefore": [
+    5.33544921875,
+    6.18212890625,
+    5.78515625
+   ],
+   "loadAfter": [
+    5.53369140625,
+    6.18115234375,
+    5.80224609375
+   ],
+   "status": "timeout",
+   "phase": "warmup-build",
+   "code": null,
+   "signal": "SIGKILL",
+   "stderr": ""
+  }
+ ],
+ "finished": "2026-10-29T17:59:17.875Z",
+ "uptimeEnd": "20:59  up 9 days,  2:37, 2 users, load averages: 5.53 6.18 5.80"
+}

@@ -115,15 +115,6 @@ export const holdStored = (state: EngineState, f: Formula, v: V) => setHeld(stat
 /** Whether formula `f` keeps the value its file stores, not computed. */
 export const keepsStored = (state: EngineState, f: Formula): boolean => f.stored !== undefined && state.held.has(f.id) && !stopped(state, f.id)
 
-/** The formulas of `ids` that keep the value their file stores drop it: a change reaches them, so they are computed. */
-export function releaseStored(state: EngineState, ids: readonly number[]) {
-  if (!state.held.size) return
-  for (const id of ids) {
-    const f = state.formulas[id]
-    if (f && keepsStored(state, f)) setHeld(state, f, undefined)
-  }
-}
-
 /** The inputs `was` puts back, and those the engine changed besides (`EngineState.journal`) of the cells `was` does not hold. */
 export function journaled(was: CellReplace[], journal: Map<string, CellReplace> | undefined): CellReplace[] {
   if (!journal?.size) return was

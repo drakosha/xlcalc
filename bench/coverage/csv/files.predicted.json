@@ -1,0 +1,712 @@
+{
+ "now": "2026-10-29T12:00:00Z",
+ "answers": {
+  "basic": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Item"
+    },
+    "B1": {
+     "value": "Qty"
+    },
+    "C1": {
+     "value": "Price"
+    },
+    "A2": {
+     "value": "Apple"
+    },
+    "B2": {
+     "value": 3
+    },
+    "C2": {
+     "value": 1.5
+    },
+    "A3": {
+     "value": "Pear"
+    },
+    "B3": {
+     "value": 10
+    },
+    "C3": {
+     "value": 0.25
+    }
+   },
+   "csv": "Item,Qty,Price\r\nApple,3,1.5\r\nPear,10,0.25\r\n"
+  },
+  "quotes": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a,b"
+    },
+    "B1": {
+     "value": "say \"hi\""
+    },
+    "C1": {
+     "value": "line1\nline2"
+    },
+    "D1": {
+     "value": "plain\"quote"
+    },
+    "E1": {
+     "value": "xy"
+    },
+    "F1": {
+     "value": "open\r\nnext,row\r\n"
+    }
+   },
+   "csv": "\"a,b\",\"say \"\"hi\"\"\",\"line1\nline2\",\"plain\"\"quote\",xy,\"open\r\nnext,row\r\n\"\r\n"
+  },
+  "quote-unclosed": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b\r\nc,d\r\ne\r\n"
+    }
+   },
+   "csv": "a,\"b\r\nc,d\r\ne\r\n\"\r\n"
+  },
+  "quote-spaced": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": " \"b"
+    },
+    "C1": {
+     "value": "c\" "
+    },
+    "D1": {
+     "value": "d"
+    },
+    "B2": {
+     "value": "\""
+    }
+   },
+   "csv": "a,\" \"\"b\",\"c\"\" \",d\r\n,\"\"\"\",,\r\n"
+  },
+  "breaks": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    },
+    "A2": {
+     "value": "c"
+    },
+    "B2": {
+     "value": "d"
+    },
+    "A3": {
+     "value": "e"
+    },
+    "B3": {
+     "value": "f"
+    },
+    "A4": {
+     "value": "g"
+    }
+   },
+   "csv": "a,b\r\nc,d\r\ne,f\r\ng,\r\n"
+  },
+  "empty": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "C1": {
+     "value": "c"
+    },
+    "A4": {
+     "value": "d"
+    }
+   },
+   "csv": "a,,c\r\n,,\r\n,,\r\nd,,\r\n"
+  },
+  "numbers": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 1234.5
+    },
+    "B1": {
+     "value": 1234.5,
+     "numberFormat": 4
+    },
+    "C1": {
+     "value": 1000,
+     "numberFormat": 11
+    },
+    "D1": {
+     "value": -5
+    },
+    "E1": {
+     "value": -5
+    },
+    "F1": {
+     "value": 0.05,
+     "numberFormat": 9
+    },
+    "G1": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    },
+    "H1": {
+     "value": 46024,
+     "numberFormat": 16
+    },
+    "I1": {
+     "value": 0.5,
+     "numberFormat": 12
+    },
+    "J1": {
+     "value": 12
+    },
+    "K1": {
+     "value": 5
+    },
+    "L1": {
+     "value": 0.5
+    },
+    "M1": {
+     "value": -0.5
+    },
+    "N1": {
+     "value": 1
+    },
+    "O1": {
+     "value": "1,2,3"
+    }
+   },
+   "csv": "1234.5,\"1,234.50\",1.00E+03,-5,-5,5%,$1.50 ,2-Jan, 1/2,12,5,0.5,-0.5,1,\"1,2,3\"\r\n"
+  },
+  "numbers-more": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 1000,
+     "numberFormat": 11
+    },
+    "B1": {
+     "value": 0.0015,
+     "numberFormat": 11
+    },
+    "C1": {
+     "value": 12345678901
+    },
+    "D1": {
+     "value": "1e308",
+     "numberFormat": 11
+    },
+    "E1": {
+     "value": "1e309",
+     "numberFormat": 11
+    },
+    "F1": {
+     "value": "1 234"
+    },
+    "G1": {
+     "value": 0.5,
+     "numberFormat": 9
+    },
+    "H1": {
+     "value": 0.055,
+     "numberFormat": 10
+    },
+    "I1": {
+     "value": -0.05,
+     "numberFormat": 9
+    },
+    "J1": {
+     "value": -5,
+     "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    },
+    "K1": {
+     "value": -5,
+     "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    },
+    "L1": {
+     "value": 1234,
+     "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    },
+    "M1": {
+     "value": 5,
+     "numberFormat": "[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0"
+    },
+    "N1": {
+     "value": "£5"
+    }
+   },
+   "csv": "1.00E+03,1.50E-03,1.23E+10,1e308,1e309,1 234,50%,5.50%,-5%,($5),($5),\"$1,234 \",€ 5,£5\r\n"
+  },
+  "dates": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "B1": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "C1": {
+     "value": 46096,
+     "numberFormat": 15
+    },
+    "D1": {
+     "value": 46096,
+     "numberFormat": 16
+    },
+    "E1": {
+     "value": 46096,
+     "numberFormat": 16
+    },
+    "F1": {
+     "value": 0.7708333333333334,
+     "numberFormat": 20
+    },
+    "G1": {
+     "value": 0.7708333333333334,
+     "numberFormat": 18
+    },
+    "H1": {
+     "value": 46096.770833333336,
+     "numberFormat": 22
+    },
+    "I1": {
+     "value": 1.0416666666666667,
+     "numberFormat": 46
+    },
+    "J1": {
+     "value": 0.06302083333333333,
+     "numberFormat": 21
+    },
+    "K1": {
+     "value": 46026,
+     "numberFormat": 16
+    },
+    "L1": {
+     "value": 46096,
+     "numberFormat": 14
+    }
+   },
+   "csv": "#########,#########,15-Mar-26,15-Mar,15-Mar,18:30,6:30 PM,#########,25:00:00,1:30:45,4-Jan,#########\r\n"
+  },
+  "logic": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": true
+    },
+    "B1": {
+     "value": false
+    },
+    "C1": {
+     "value": true
+    },
+    "D1": {
+     "formula": "#N/A"
+    },
+    "E1": {
+     "formula": "#DIV/0!"
+    },
+    "F1": {
+     "formula": "#REF!"
+    },
+    "G1": {
+     "formula": "#NAME?"
+    },
+    "H1": {
+     "value": "#VALUE"
+    }
+   },
+   "csv": "TRUE,FALSE,TRUE,#N/A,#DIV/0!,#REF!,#NAME?,#VALUE\r\n"
+  },
+  "formulas": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "formula": "1+2"
+    },
+    "B1": {
+     "value": "=SUM(1"
+    },
+    "C1": {
+     "value": "2)"
+    },
+    "D1": {
+     "formula": "SUM(1,2)"
+    },
+    "E1": {
+     "formula": "1+2"
+    },
+    "F1": {
+     "formula": "-1+2"
+    },
+    "G1": {
+     "value": "@SUM(1)"
+    },
+    "H1": {
+     "value": "=1+"
+    },
+    "I1": {
+     "value": "="
+    },
+    "J1": {
+     "formula": "A1*2"
+    },
+    "K1": {
+     "formula": "foo(1)"
+    },
+    "L1": {
+     "formula": "-A1"
+    },
+    "M1": {
+     "formula": "+A1"
+    }
+   },
+   "csv": "3,=SUM(1,2),3,3,1,@SUM(1),=1+,=,6,#NAME?,-3,3\r\n"
+  },
+  "codes": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": 123
+    },
+    "B1": {
+     "value": 7
+    },
+    "C1": {
+     "value": 0
+    },
+    "D1": {
+     "value": 0.5
+    },
+    "E1": {
+     "value": 123.5
+    },
+    "F1": {
+     "value": 1234567890123450000
+    },
+    "G1": {
+     "value": 123456789012345
+    },
+    "H1": {
+     "value": 1234567890123450
+    },
+    "I1": {
+     "value": 12
+    },
+    "J1": {
+     "value": -7
+    }
+   },
+   "csv": "123,7,0,0.5,123.5,1.23E+18,1.23E+14,1.23E+15,12,-7\r\n"
+  },
+  "apostrophe": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "'007"
+    },
+    "B1": {
+     "value": "'abc"
+    },
+    "C1": {
+     "value": "'=1+2"
+    },
+    "D1": {
+     "value": "a'b"
+    }
+   },
+   "csv": "'007,'abc,'=1+2,a'b\r\n"
+  },
+  "spaces": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": " abc "
+    },
+    "B1": {
+     "value": "  "
+    },
+    "C1": {
+     "value": 5
+    },
+    "D1": {
+     "value": 7
+    },
+    "E1": {
+     "value": "x "
+    }
+   },
+   "csv": " abc ,  ,5,7,x \r\n"
+  },
+  "sep": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b,c"
+    },
+    "A2": {
+     "value": 1
+    },
+    "B2": {
+     "value": "2,5"
+    }
+   },
+   "csv": "a,\"b,c\"\r\n1,\"2,5\"\r\n"
+  },
+  "sep-bom": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b,c"
+    },
+    "A2": {
+     "value": 1
+    },
+    "B2": {
+     "value": "2,5"
+    }
+   },
+   "csv": "a,\"b,c\"\r\n1,\"2,5\"\r\n"
+  },
+  "sep-tab": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b,c"
+    }
+   },
+   "csv": "a,\"b,c\"\r\n"
+  },
+  "semicolons": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a;b;c"
+    },
+    "A2": {
+     "value": "1;2;3"
+    }
+   },
+   "csv": "a;b;c\r\n1;2;3\r\n"
+  },
+  "tabs": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a\tb\tc"
+    },
+    "A2": {
+     "value": "1\t2\t3"
+    }
+   },
+   "csv": "a\tb\tc\r\n1\t2\t3\r\n"
+  },
+  "utf8": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Café"
+    },
+    "B1": {
+     "value": "Привет"
+    },
+    "C1": {
+     "value": "€"
+    },
+    "D1": {
+     "value": "日本"
+    }
+   },
+   "csv": "Café,Привет,€,日本\r\n"
+  },
+  "utf8-bom": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Café"
+    },
+    "B1": {
+     "value": "Привет"
+    },
+    "C1": {
+     "value": "€"
+    },
+    "D1": {
+     "value": "日本"
+    }
+   },
+   "csv": "Café,Привет,€,日本\r\n"
+  },
+  "utf16le-bom": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b\tc"
+    },
+    "A2": {
+     "value": "Café"
+    },
+    "B2": {
+     "value": "Привет"
+    }
+   },
+   "csv": "a,b\tc\r\nCafé,Привет\r\n"
+  },
+  "utf16be-bom": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b\tc"
+    },
+    "A2": {
+     "value": "Café"
+    },
+    "B2": {
+     "value": "Привет"
+    }
+   },
+   "csv": "a,b\tc\r\nCafé,Привет\r\n"
+  },
+  "utf16le": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b\tc"
+    },
+    "A2": {
+     "value": "Café"
+    },
+    "B2": {
+     "value": "Привет"
+    }
+   },
+   "csv": "a,b\tc\r\nCafé,Привет\r\n"
+  },
+  "cp1252": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Café"
+    },
+    "B1": {
+     "value": "naïve"
+    },
+    "C1": {
+     "value": 5,
+     "numberFormat": "[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0"
+    },
+    "D1": {
+     "value": "“q”"
+    }
+   },
+   "csv": "Café,naïve,€ 5,“q”\r\n"
+  },
+  "cp1251": {
+   "sheet": "book",
+   "cells": {
+    "A1": {
+     "value": "Ïðèâåò"
+    },
+    "B1": {
+     "value": "ìèð"
+    }
+   },
+   "csv": "Ïðèâåò,ìèð\r\n"
+  },
+  "named": {
+   "sheet": "Sales 2026",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    }
+   },
+   "csv": "a,b\r\n"
+  },
+  "named-long": {
+   "sheet": "A very long file name of more t",
+   "cells": {
+    "A1": {
+     "value": "a"
+    },
+    "B1": {
+     "value": "b"
+    }
+   },
+   "csv": "a,b\r\n"
+  },
+  "empty-file": {
+   "sheet": "book",
+   "cells": {},
+   "csv": ""
+  },
+  "w-formats": {
+   "csv": "\"1,234.50\",#########,#########,$1.50 ,12.5%,1.234568,1.23E+20,TRUE,#DIV/0!,18:30,(5),1234568\r\n"
+  },
+  "w-texts": {
+   "csv": "\"a,b\",\"say \"\"hi\"\"\",\"line1\nline2\", lead,trail ,=1+2,007,'q,a;b\r\n"
+  },
+  "w-wide": {
+   "csv": "\"Sunday, March 15, 2026\",1.23456789\r\n"
+  },
+  "w-offset": {
+   "csv": ",,\r\n,b2,\r\n,,3\r\n"
+  },
+  "w-short-rows": {
+   "csv": "1,,c\r\n2,,\r\n3,,\r\n4,,\r\n5,,\r\n6,,\r\n7,,\r\n8,,\r\n9,,\r\n10,,\r\n11,,\r\n12,,\r\n13,,\r\n14,,\r\n15,,\r\n16,,\r\n17,,\r\n18,,\r\n19,,\r\n20,,\r\n"
+  },
+  "w-gap": {
+   "csv": "1,,\r\n,,c\r\n3,,\r\n"
+  },
+  "w-formatted": {
+   "csv": "1\r\n"
+  },
+  "w-sheets": {
+   "csv": "2,3\r\n"
+  },
+  "w-array": {
+   "csv": "1,2,,50\r\n3,4,,\r\n5,6,,\r\n"
+  },
+  "w-unicode": {
+   "csv": "Привет,€5,Café,日本\r\n"
+  },
+  "w-empty": {
+   "csv": ""
+  }
+ }
+}

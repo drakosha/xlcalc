@@ -1,6 +1,6 @@
 # Reference operators
 
-The kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` combines ranges on one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar. `A1:C3 B2:D4` is the cells two ranges share, and `A1:INDEX(B1:B9,3)` is the range from one reference to another.
+The kinds of references that Excel files use. `INDIRECT("B2")` and `OFFSET(A1,1,0)` find a reference as they calculate, and `A1:.C9` trims a range's blank edges. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` combines ranges on one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar. `A1:C3 B2:D4` is the cells two ranges share, and `A1:INDEX(B1:B9,3)` is the range from one reference to another.
 
 The rules below were verified in Excel 16.113 for Mac (en-US) with dynamic array formulas.
 
@@ -111,6 +111,43 @@ A formula with the range operator reads every cell between the ends, so a formul
 
 `:` binds tightest, then the space, then `@` and the other operators: `-A1:C3 C2:C2` is minus C2, and `@A1:C3 C2:C2` is C2. The comma of a union combines whole operands. The canonical text keeps one space for the intersection.
 
+## References a formula finds as it calculates
+
+`INDIRECT` turns text into a reference and `OFFSET` moves one: what they read is known only once they are calculated. The engine learns it then, so an edit of a cell they read recalculates them, and so does an edit that makes them read elsewhere; a workbook without them is calculated as before.
+
+```js
+import { createSession } from 'xlcalc'
+
+const s = createSession({
+  sheets: [{ name: 'S', cells: { A1: { value: 10 }, A2: { value: 20 }, B1: { value: 'A1' }, C1: { formula: 'INDIRECT(B1)*2' }, C2: { formula: 'SUM(OFFSET(A1,0,0,2))' } } }],
+})
+const show = (r) => r.changes.map((c) => `${c.cell}=${c.value}`).join(' ')
+console.log(show(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 'A2' } }])))
+// → B1=A2 C1=40
+console.log(show(s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 25 } }])))
+// → A2=25 C2=35 C1=50
+```
+
+| formula | returns |
+|---|---|
+| `INDIRECT("B2")`, `INDIRECT("'Q1 data'!A1:B9")`, `INDIRECT("A:A")` | the reference the text names, on the formula's sheet without one, in any case |
+| `INDIRECT("R2C3",FALSE)`, `INDIRECT("R[-1]C",FALSE)` | R1C1 text: rows and columns from 1, or in brackets from the formula's cell; `R2` and `C3` are a whole row and column |
+| `INDIRECT("rate")`, `INDIRECT("Sales[Qty]")` | a defined name that refers to a reference (a name of a formula, such as `OFFSET(...)`, is `#REF!`), a structured reference |
+| `INDIRECT("nowhere!A1")`, `INDIRECT("A1+1")`, `INDIRECT("[1]Sheet1!A1")` | `#REF!`: an unknown sheet or name, text that is no reference, another workbook's reference (Excel does not read a closed workbook) |
+| `OFFSET(A1,2,1)`, `OFFSET(A1,0,0,3,2)` | the reference moved by rows and columns, of the reference's size or the size given; the numbers are truncated |
+| `OFFSET(A3,0,0,-2)` | a negative height or width reaches up or left: A2:A3 |
+| `OFFSET(A1,-1,0)`, `OFFSET(A1,0,0,0)` | `#REF!`: off the sheet's edge, or of no size |
+| `SUM(A1:OFFSET(A1,2,0))`, `INDEX(OFFSET(A1,0,0,3),2)`, `ROWS(INDIRECT("A1:A9"))` | the found reference wherever a reference goes; one of several cells spills where a formula returns it |
+| `INDIRECT({"A1","A2"})` | each text's value: a reference of several cells gives its top-left cell |
+
+A text that names the formula's own cell, or a cell that reads the formula, is a circular reference, found once the text is read; another text breaks it again ([Circular references](cycles.md)). Where a formula uses a reference for its place alone, its cells are not read, and the formula's own cell there is no circular reference, as in Excel: `ROW(INDIRECT("1:"&A1))` in row 3, `ROWS(A1:OFFSET(A1,9,0))` in A5, `ROW(A1)`, `COLUMNS(A1:C1)`, `ISREF`, `AREAS`, `SHEET` and `CELL`'s address, row, column and width in A1. `FORMULATEXT` and `ISFORMULA` read a cell's formula, not its value, so their own cell is no circular reference either.
+
+`INDIRECT`'s text is never rewritten: a row inserted above the cell it names leaves `INDIRECT("A2")` as it is, reading the cell that moved there, while `OFFSET(A1,1,0)` becomes `OFFSET(A2,1,0)`. A sheet renamed makes a text with its old name `#REF!`.
+
+## Trim references
+
+`A1:.C9`, `A1.:C9` and `A1.:.C9` are Excel 365's trim references: the range without its blank rows and columns at the end, at the start or at both, the same as `TRIMRANGE(A1:C9,2,2)`, `TRIMRANGE(A1:C9,1,1)` and `TRIMRANGE(A1:C9,3,3)`. A cell is blank when it holds nothing; a formula's empty text is not blank. They work on cell ranges, whole columns and whole rows (`A:.A`, `1.:.9`), keep their dots through structure operations and in other locales, and a file stores them as `_xlfn._TRO_TRAILING(A1:C9)`, `_xlfn._TRO_LEADING` and `_xlfn._TRO_ALL`. A range with nothing in it is `#REF!`.
+
 ## Other functions
 
 A function that does not accept several areas returns an error, which depends on the function. By default it is `#VALUE!` for a union, and for a reference across sheets `#REF!` where the function accepts an array (`SUMPRODUCT`, `MMULT`, `CORREL`) and `#VALUE!` elsewhere (the criteria functions, the database functions). The lookups return `#N/A` for a union, and `ROWS`, `COLUMNS`, `ROW`, `COLUMN`, `FILTER` and `CHOOSECOLS` return `#REF!`. `src/functions/areas.ts` lists the functions found to differ from the default.
@@ -131,4 +168,4 @@ The `insertSheet` and `moveSheet` operations of `editStructure` follow these rul
 
 ## Checked against Excel
 
-Calculated in Excel: a union and a reference across sheets in every argument of every whitelisted function that accepts a range (1,137 cases), with held-out sets for the functions that handle them differently; sheet names in references were tested in Excel for Mac and for Windows.
+Calculated in Excel: a union and a reference across sheets in every argument of every whitelisted function that accepts a range (1,137 cases), with held-out sets for the functions that handle them differently; sheet names in references were tested in Excel for Mac and for Windows. `INDIRECT`, `OFFSET` and the trim references were calculated in Excel for Mac 16.114 and for Windows 16.0.20430 (the sets `indirect`, `indirect-held`, the table sets `indirect-held` and `indirect-held-2` with names, a table, cells typed after opening and structure operations, and `place-cycles-held` for formulas over their own cells); Excel for Windows 16.0.20430 does not know `TRIMRANGE` and the trim references (`#NAME?`).

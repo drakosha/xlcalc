@@ -6,6 +6,7 @@
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
  */
+import { plainFormula } from '../bench/coverage/xlsx/saved.js'
 import { readFileSync } from 'node:fs'
 import { compare, samePin } from '../bench/coverage/compare.js'
 import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
@@ -39,7 +40,8 @@ function dataInput(c: Cell): CellInput {
 }
 
 /** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
-export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
+/** A case's formula as the engine takes it (`plainFormula`). */
+export const engineFormula = plainFormula
 
 /** The measurement's data sheet, as in every book sent to Excel. */
 export function dataSheet(): BookInput['sheets'][number] {
@@ -137,6 +139,11 @@ export const REASONS = {
     '`PHONETIC` of a reference is `#N/A` here, as Excel for Windows answers in a workbook without readings (the workbook keeps none of those a file stores with Japanese text); Excel for Mac answers `#NUM!`, though the file it saves stores `#N/A`.',
   vdbSalvageAboveCost:
     '`VDB` with a salvage above the cost and a fractional start: the engine takes the negative amount in the period the start cuts, Excel in the next one, so `VDB(2400,3000,10,0.5,5)` is -600 in Excel and -300 here (with a whole start both give -600 or 0).',
+  infoConstants:
+    "`INFO` returns Excel for Windows' constants (`system` `pcdos`, `release` `16.0`), where Excel for Mac returns `mac` and its version, and `numfile` counts the workbook's sheets, where Excel counts those of every open workbook.",
+  cellBookName:
+    "`CELL(\"address\")` of another sheet's cell names the file the workbook was opened from, which a host passes as `file`; without it the engine names `Book1`, as Excel does for a workbook not saved yet, where Excel names the file it opened (`[book.xlsx]R!$B$3`).",
+  quotedLastSheet: "A reference across sheets whose last sheet alone is quoted (`R:'Two Words'!A1`) is `#NAME?` in a file Excel opens; the engine reads it as `'R:Two Words'!A1`.",
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel returns when it stands alone; inside one generated workbook of the random check, Excel 16.113 returned a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, in two runs).',
 } as const
@@ -172,6 +179,12 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'east-asian-held:PHONETIC#8': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
   'east-asian-held:PHONETIC#9': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
   'coupdays-vdb-held-3:VDB#15': { reason: 'vdbSalvageAboveCost', engine: { t: 'n', v: -300 } },
+  'indirect:cell#1': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$B$3' } },
+  'indirect:cell#3': { reason: 'cellBookName', engine: { t: 's', v: '[Book1]R!$A$1' } },
+  'indirect:info#1': { reason: 'infoConstants', engine: { t: 's', v: 'pcdos' } },
+  'indirect:info#2': { reason: 'infoConstants', engine: { t: 's', v: '16.0' } },
+  'indirect:info#10': { reason: 'infoConstants', engine: { t: 's', v: 'pcdos' } },
+  'indirect:sheets#3': { reason: 'quotedLastSheet', engine: { t: 'n', v: 2 } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

@@ -84,6 +84,27 @@ describe.each(['closures', 'eval'] as const)('formulas keeping their file values
   })
 })
 
+describe('formulas keeping their file values beside dynamic references (OFFSET)', () => {
+  const offsets: BookInput = {
+    sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 5 }, K1: { value: 0 }, B1: { formula: 'OFFSET(A1,0,0)*5', held: 20 }, D1: { formula: 'CUBEVALUE("Sales",OFFSET(A1,K1,0))' }, E1: { formula: 'D1*10' } } }],
+  }
+  const file: CachedValues = { sheets: [{ name: 'S', cells: { B1: { value: 20 }, D1: { value: 7 } } }] }
+
+  it('a formula over OFFSET, a function the engine knows, is computed, whatever value it held while OFFSET was unknown', () => {
+    const r = compute(offsets, { clock: CLOCK, cached: file, unknownFunctions: 'held' })
+    expect([r.sheets[0].cells.B1.value, r.sheets[0].cells.D1.value, r.sheets[0].cells.E1.value]).toEqual([5, 7, 70])
+    expect(marks(r.diagnostics)).toEqual(['D1 CONNECT file'])
+  })
+
+  it("a cube's formula keeps its value until a cell its OFFSET reads changes, also one OFFSET comes to read", () => {
+    const s = createSession(offsets, { clock: CLOCK, cached: file, unknownFunctions: 'held' })
+    s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 6 } }])
+    expect(s.getCell('S', 'D1')?.value).toBe(7)
+    s.setCells([{ sheet: 'S', cell: 'K1', input: { value: 1 } }])
+    expect([s.getCell('S', 'D1')?.value, s.getCell('S', 'E1')?.value]).toEqual([{ error: 'NA' }, { error: 'NA' }])
+  })
+})
+
 describe('unknownFunctions: the option checked', () => {
   it('takes name or held only', () => {
     expect(() => compute(book, { unknownFunctions: 'keep' as 'held' })).toThrow('opts.unknownFunctions: expected "name" or "held", got the string "keep"')

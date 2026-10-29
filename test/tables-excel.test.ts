@@ -16,7 +16,10 @@ import './locales.js'
 const SETS = localeSets<StoredTables>('tables').map((r) => ({ name: r.set, sub: localeDir(r.tag), tag: r.tag, ...r.stored }))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in docs/limitations.md's Known differences). */
+/** Excel for Mac's #NUM! in the first run of indirect-held, beside other workbooks' calculations; the same cases in indirect-held-2's books gave the engine's answers. */
+const MAC_NUM = 'Excel for Mac 16.114 answered #NUM! for INDIRECT and CELL in the first run, not in the books of indirect-held-2 (the same cases): not repeated'
 const KNOWN: Readonly<Record<string, string>> = {
+  ...Object.fromEntries(['names-typed', 'table', 'typed', 'typed-formula', 'insert-rows', 'delete-rows', 'looks', 'active'].map((id) => [`indirect-held:${id}`, MAC_NUM])),
   'ops-held:rename-cell': "a table renamed to a name Excel does not take (AB12): Excel's object model makes it one (AB12_), as its name box refuses it; renameTable refuses with table_name",
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1); renameTable refuses with table_name",
   'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row; setCells leaves the table as it is",

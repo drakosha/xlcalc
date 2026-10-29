@@ -104,15 +104,15 @@ console.log(session.undo().changes.map((c) => `${c.cell} ${c.value}`), session.h
 
 ## Excel files
 
-`readXlsx` returns a workbook and `cached`, the values Excel stored for its formulas. Comparing them with the engine's result shows where the engine differs from Excel on this file before a host relies on it: here it is `INDIRECT`, a function outside the whitelist, which the engine evaluates to `#NAME?`. The workbook then opens in a session, and `writeXlsx` saves it with the new values.
+`readXlsx` returns a workbook and `cached`, the values Excel stored for its formulas. Comparing them with the engine's result shows where the engine differs from Excel on this file before a host relies on it: here the file stores 250 for `C1`, a value saved before `B1` changed, where the engine calculates 240. The workbook then opens in a session, and `writeXlsx` saves it with the new values.
 
 ```js
 import { compute, createSession, sameValue } from 'xlcalc'
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
 
 // a file saved by Excel, as `await readFile('report.xlsx')` returns it; here, one written for the example
-const saved = { sheets: [{ name: 'Report', cells: { B1: { value: 120 }, B2: { value: 80 }, B3: { formula: 'SUM(B1:B2)' }, C1: { formula: 'INDIRECT("B1")' } } }] }
-const file = (await writeXlsx({ book: saved, result: { sheets: [{ name: 'Report', cells: { B3: { value: 200 }, C1: { value: 120 } } }] } })).data
+const saved = { sheets: [{ name: 'Report', cells: { B1: { value: 120 }, B2: { value: 80 }, B3: { formula: 'SUM(B1:B2)' }, C1: { formula: 'B1*2' } } }] }
+const file = (await writeXlsx({ book: saved, result: { sheets: [{ name: 'Report', cells: { B3: { value: 200 }, C1: { value: 250 } } }] } })).data
 
 const read = await readXlsx(file)
 const result = compute(read.book, { cached: read.cached })
@@ -138,7 +138,7 @@ Before a formula from a form, an API or an import is stored, `validateFormula` c
 import { validateFormula } from 'xlcalc'
 
 const book = { sheets: ['Sales', 'Costs'], names: ['tax_rate'] }
-for (const text of ['sum(Sales!b:b)*tax_rate', 'SUM(Sales!B:B', 'Sales!B1*vat', 'Budget!A1', 'INDIRECT("A1")']) {
+for (const text of ['sum(Sales!b:b)*tax_rate', 'SUM(Sales!B:B', 'Sales!B1*vat', 'Budget!A1', 'SUMM(A1)']) {
   const v = validateFormula(text, book)
   console.log(v.ok ? `ok ${v.canonical}` : `${v.code} at ${v.at}: ${v.message}`)
 }
@@ -146,7 +146,7 @@ for (const text of ['sum(Sales!b:b)*tax_rate', 'SUM(Sales!B:B', 'Sales!B1*vat', 
 // → syntax at 13: expected ), found end of formula
 // → unknown_name at 9: unknown name vat
 // → unknown_sheet at 0: unknown sheet Budget
-// → unknown_function at 0: unknown function INDIRECT
+// → unknown_function at 0: unknown function SUMM
 ```
 
 A formula stored without validation still calculates: an unknown function or name evaluates to `#NAME?` and an unknown sheet to `#REF!`, with the reason in `diagnostics`. Typed text goes through `setCellText` instead, which closes an unclosed parenthesis as Excel does. [Checking formulas](formulas.md#checking-formulas) lists the error codes, and `validateLocalFormula` validates text in a locale.

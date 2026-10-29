@@ -570,5 +570,7 @@ export const XLFN: Record<string, string> = Object.fromEntries(
     // the functions of the web, of connections and of regular expressions
     'DETECTLANGUAGE', 'ECMA.CEILING', 'ENCODEURL', 'FILTERXML', 'FORECAST.ETS', 'FORECAST.ETS.CONFINT', 'FORECAST.ETS.SEASONALITY', 'FORECAST.ETS.STAT',
     'IMAGE', 'REGEXEXTRACT', 'REGEXREPLACE', 'REGEXTEST', 'STOCKHISTORY', 'TRANSLATE', 'WEBSERVICE',
+    // the functions about references and the book
+    'FORMULATEXT', 'ISFORMULA', 'SHEET', 'SHEETS', 'TRIMRANGE',
   ].map((n) => [n, `_xlfn.${n}`] as const).concat([['SORT', '_xlfn._xlws.SORT'], ['FILTER', '_xlfn._xlws.FILTER']]),
 )

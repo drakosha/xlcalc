@@ -15,6 +15,7 @@ import type { Spill } from './spill/state.js'
 import type { Place } from './structure/geometry.js'
 import { quoteSheet } from './syntax.js'
 import { isErr, type Rng } from './values.js'
+import { refsOf } from './graph/dynamic.js'
 
 const GENERIC: Record<ErrorCode, string> = {
   DIV0: 'division by zero',
@@ -149,8 +150,9 @@ function cellIssue(state: EngineState, s: number, r: number, c: number): Issue |
  * reference. `memo` keeps each range's first cell of a code (null for none), which every formula reading it shares.
  */
 function errorSource(state: EngineState, f: Formula, code: ErrorCode, memo?: Map<string, Place | null>): (Place & { ref: number }) | null {
-  for (let k = 0; k < f.refs.length; k++) {
-    const g = f.refs[k]
+  const refs = refsOf(f)
+  for (let k = 0; k < refs.length; k++) {
+    const g = refs[k]
     let p = memo?.get(`${code}:${g.key}`)
     if (p === undefined) {
       p = firstError(state, g, code)
@@ -185,8 +187,9 @@ function firstError(state: EngineState, g: Rng, code: ErrorCode): Place | null {
 
 /** The first formula a circular reference stops among the cells `f` reads, row by row, with the index of its reference. */
 function stoppedSource(state: EngineState, f: Formula): (Place & { ref: number }) | null {
-  for (let k = 0; k < f.refs.length; k++) {
-    const g = f.refs[k]
+  const refs = refsOf(f)
+  for (let k = 0; k < refs.length; k++) {
+    const g = refs[k]
     if (g.s >= state.links.first) continue
     const b = state.rt.bounds(g)
     const cols = state.ctx.sheets[g.s].cols

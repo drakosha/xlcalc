@@ -1,0 +1,906 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 22.7
+ },
+ "cases": [
+  {
+   "id": "names-typed-again",
+   "about": "the cells the names read typed: the OFFSET grows, the INDIRECT points elsewhere",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A2"
+       },
+       "C1": {
+        "formula": "INDIRECT(\"rate\")"
+       },
+       "C2": {
+        "formula": "SUM(INDIRECT(\"span\"))"
+       },
+       "C3": {
+        "formula": "SUM(INDIRECT(\"grow\"))"
+       },
+       "C4": {
+        "formula": "SUM(grow)"
+       },
+       "C5": {
+        "formula": "pick*10"
+       },
+       "C6": {
+        "formula": "INDIRECT(\"S!rate\")"
+       },
+       "C7": {
+        "formula": "INDIRECT(\"nosuch\")"
+       },
+       "C8": {
+        "formula": "ROWS(grow)"
+       },
+       "C9": {
+        "formula": "INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "rate",
+      "ref": "'S'!$A$1"
+     },
+     {
+      "name": "span",
+      "ref": "'S'!$A$1:$A$3"
+     },
+     {
+      "name": "grow",
+      "ref": "OFFSET('S'!$A$1,0,0,'S'!$A$4)"
+     },
+     {
+      "name": "pick",
+      "ref": "INDIRECT('S'!$B$1)"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A4",
+      "value": 3
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": "A3"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A3",
+      "value": 30
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C9"
+    }
+   ]
+  },
+  {
+   "id": "table-again",
+   "about": "a table's columns, areas and the whole table through INDIRECT",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F1": {
+        "formula": "SUM(INDIRECT(\"Sales[Qty]\"))"
+       },
+       "F2": {
+        "formula": "INDIRECT(\"Sales[[#Headers],[Price]]\")"
+       },
+       "F3": {
+        "formula": "ROWS(INDIRECT(\"Sales\"))"
+       },
+       "F4": {
+        "formula": "ROWS(INDIRECT(\"Sales[#All]\"))"
+       },
+       "F5": {
+        "formula": "SUM(INDIRECT(\"sales[total]\"))"
+       },
+       "F6": {
+        "formula": "INDIRECT(\"Sales[Nope]\")"
+       },
+       "F7": {
+        "formula": "SUM(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+       },
+       "F8": {
+        "formula": "COLUMNS(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B2",
+      "value": 4
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F1:F8"
+    }
+   ]
+  },
+  {
+   "id": "typed-again",
+   "about": "typed after opening: the cell INDIRECT reads, its text, the size OFFSET takes, a chain read backwards",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A1"
+       },
+       "C1": {
+        "formula": "INDIRECT(B1)*10"
+       },
+       "C2": {
+        "formula": "SUM(OFFSET(A1,0,0,A3))"
+       },
+       "C3": {
+        "formula": "INDIRECT(\"A\"&A3)"
+       },
+       "C4": {
+        "formula": "CELL(\"contents\",INDIRECT(B1))"
+       },
+       "C5": {
+        "formula": "SUM(A1:INDIRECT(\"A\"&A3))"
+       },
+       "D1": {
+        "formula": "INDIRECT(\"D2\")+1"
+       },
+       "D2": {
+        "formula": "INDIRECT(\"D3\")+1"
+       },
+       "D3": {
+        "formula": "A1*100"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A1",
+      "value": 5
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": "A2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A3",
+      "value": 1
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A2",
+      "value": 7
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:D5"
+    }
+   ]
+  },
+  {
+   "id": "typed-formula-again",
+   "about": "a formula typed that INDIRECT reads, then one typed over its text",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": "A1"
+       },
+       "C1": {
+        "formula": "INDIRECT(B1)*10"
+       },
+       "C2": {
+        "formula": "SUM(OFFSET(A1,0,0,A3))"
+       },
+       "C3": {
+        "formula": "INDIRECT(\"A\"&A3)"
+       },
+       "C4": {
+        "formula": "CELL(\"contents\",INDIRECT(B1))"
+       },
+       "C5": {
+        "formula": "SUM(A1:INDIRECT(\"A\"&A3))"
+       },
+       "D1": {
+        "formula": "INDIRECT(\"D2\")+1"
+       },
+       "D2": {
+        "formula": "INDIRECT(\"D3\")+1"
+       },
+       "D3": {
+        "formula": "A1*100"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A2",
+      "value": {
+       "formula": "A1*3"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": {
+       "formula": "\"A\"&A3"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:D5"
+    }
+   ]
+  },
+  {
+   "id": "insert-rows-again",
+   "about": "a row inserted above: the text stays and reads the cell that came there, OFFSET moves",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "formula": "INDIRECT(\"A2\")"
+       },
+       "B2": {
+        "formula": "OFFSET(A1,1,0)"
+       },
+       "B3": {
+        "formula": "SUM(OFFSET(A1,0,0,3))"
+       },
+       "B4": {
+        "formula": "INDIRECT(\"T!A1\")"
+       },
+       "B5": {
+        "formula": "INDIRECT(\"New!A1\")"
+       },
+       "B6": {
+        "formula": "SUM(A1:OFFSET(A1,2,0))"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "tee"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertRows",
+      "sheet": "S",
+      "row": 1,
+      "count": 1
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B8"
+    }
+   ]
+  },
+  {
+   "id": "delete-rows-again",
+   "about": "the row of the cell INDIRECT and OFFSET read deleted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "formula": "INDIRECT(\"A2\")"
+       },
+       "B2": {
+        "formula": "OFFSET(A1,1,0)"
+       },
+       "B3": {
+        "formula": "SUM(OFFSET(A1,0,0,3))"
+       },
+       "B4": {
+        "formula": "INDIRECT(\"T!A1\")"
+       },
+       "B5": {
+        "formula": "INDIRECT(\"New!A1\")"
+       },
+       "B6": {
+        "formula": "SUM(A1:OFFSET(A1,2,0))"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "tee"
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteRows",
+      "sheet": "S",
+      "row": 2,
+      "count": 1
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B7"
+    }
+   ]
+  },
+  {
+   "id": "active-selected",
+   "about": "CELL without a reference, the book saved with T!D4 active and selected",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 5
+       },
+       "B2": {
+        "value": 7
+       },
+       "C1": {
+        "formula": "MID(CELL(\"address\"),FIND(\"]\",CELL(\"address\"))+1,99)"
+       },
+       "C2": {
+        "formula": "CELL(\"row\")"
+       },
+       "C3": {
+        "formula": "CELL(\"contents\")"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D4": {
+        "value": "there"
+       }
+      },
+      "view": {
+       "activeCell": "D4",
+       "selection": [
+        "D4"
+       ]
+      }
+     }
+    ],
+    "activeSheet": "T"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "names-typed-again": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 33
+    },
+    "S!C3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 33
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 300
+    },
+    "S!C6": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C7": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!C8": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C9": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(\"rate\")",
+    "S!C2": "=SUM(INDIRECT(\"span\"))",
+    "S!C3": "=SUM(INDIRECT(\"grow\"))",
+    "S!C4": "=SUM(grow)",
+    "S!C5": "=pick*10",
+    "S!C6": "=INDIRECT(\"S!rate\")",
+    "S!C7": "=INDIRECT(\"nosuch\")",
+    "S!C8": "=ROWS(grow)",
+    "S!C9": "=INDIRECT(\"rate\")+INDIRECT(\"Rate\")"
+   },
+   "tables": []
+  },
+  "table-again": {
+   "values": {
+    "S!F1": {
+     "t": "n",
+     "v": 13
+    },
+    "S!F2": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F5": {
+     "t": "n",
+     "v": 290
+    },
+    "S!F6": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!F7": {
+     "t": "n",
+     "v": 113
+    },
+    "S!F8": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!F1": "=SUM(INDIRECT(\"Sales[Qty]\"))",
+    "S!F2": "=INDIRECT(\"Sales[[#Headers],[Price]]\")",
+    "S!F3": "=ROWS(INDIRECT(\"Sales\"))",
+    "S!F4": "=ROWS(INDIRECT(\"Sales[#All]\"))",
+    "S!F5": "=SUM(INDIRECT(\"sales[total]\"))",
+    "S!F6": "=INDIRECT(\"Sales[Nope]\")",
+    "S!F7": "=SUM(INDIRECT(\"Sales[[Qty]:[Price]]\"))",
+    "S!F8": "=COLUMNS(INDIRECT(\"Sales[[Qty]:[Price]]\"))"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "typed-again": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 70
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 502
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 501
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 500
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 7
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(B1)*10",
+    "S!D1": "=INDIRECT(\"D2\")+1",
+    "S!C2": "=SUM(OFFSET(A1,0,0,A3))",
+    "S!D2": "=INDIRECT(\"D3\")+1",
+    "S!C3": "=INDIRECT(\"A\"&A3)",
+    "S!D3": "=A1*100",
+    "S!C4": "=CELL(\"contents\",INDIRECT(B1))",
+    "S!C5": "=SUM(A1:INDIRECT(\"A\"&A3))"
+   },
+   "tables": []
+  },
+  "typed-formula-again": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 102
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 101
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!C1": "=INDIRECT(B1)*10",
+    "S!D1": "=INDIRECT(\"D2\")+1",
+    "S!C2": "=SUM(OFFSET(A1,0,0,A3))",
+    "S!D2": "=INDIRECT(\"D3\")+1",
+    "S!C3": "=INDIRECT(\"A\"&A3)",
+    "S!D3": "=A1*100",
+    "S!C4": "=CELL(\"contents\",INDIRECT(B1))",
+    "S!C5": "=SUM(A1:INDIRECT(\"A\"&A3))"
+   },
+   "tables": []
+  },
+  "insert-rows-again": {
+   "values": {
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B5": {
+     "t": "s",
+     "v": "tee"
+    },
+    "S!B6": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!B7": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!B2": "=INDIRECT(\"A2\")",
+    "S!B3": "=OFFSET(A2,1,0)",
+    "S!B4": "=SUM(OFFSET(A2,0,0,3))",
+    "S!B5": "=INDIRECT(\"T!A1\")",
+    "S!B6": "=INDIRECT(\"New!A1\")",
+    "S!B7": "=SUM(A2:OFFSET(A2,2,0))"
+   },
+   "tables": []
+  },
+  "delete-rows-again": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!B3": {
+     "t": "s",
+     "v": "tee"
+    },
+    "S!B4": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=INDIRECT(\"A2\")",
+    "S!B2": "=SUM(OFFSET(A1,0,0,3))",
+    "S!B3": "=INDIRECT(\"T!A1\")",
+    "S!B4": "=INDIRECT(\"New!A1\")",
+    "S!B5": "=SUM(A1:OFFSET(A1,2,0))"
+   },
+   "tables": []
+  },
+  "active-selected": {
+   "values": {
+    "S!C1": {
+     "t": "s",
+     "v": "T!$D$4"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!C3": {
+     "t": "s",
+     "v": "there"
+    }
+   },
+   "formulas": {
+    "S!C1": "=MID(CELL(\"address\"),FIND(\"]\",CELL(\"address\"))+1,99)",
+    "S!C2": "=CELL(\"row\")",
+    "S!C3": "=CELL(\"contents\")"
+   },
+   "tables": []
+  }
+ }
+}
