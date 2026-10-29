@@ -57,6 +57,7 @@ export const ENTRY_KNOWN: ReadonlyMap<string, EntryReason> = new Map([
     'ru-RU:typed-held-2': ['ffx2-1', 'ffx2-8', 'ffx2-9', ...['sci', 'frac', 'mmss', 'pct2', 'elapsed'].map((f) => `in-code-${f}-5`)],
     'ru-RU:close-held-3': ['call-2'],
     'ru-RU:refs': ['op-33', 'fn-31', ...['1', '4', '6', '7', '8', '17'].map((n) => `fn-${n}`), 'sheet-4'],
+    'ru-RU:refs-held': ['diff-13', 'diff-14', 'diff-15', ...['4', '6', '10', '12'].map((n) => `pass-${n}`), ...['1', '2', '7', '8'].map((n) => `range-${n}`), 'sheet-3'],
   }),
   ...cases('gettingData', { 'en-US:typed': ['err-19'], 'ru-RU:typed': ['err-20'] }),
   ...cases('plusPercent', { 'en-US:typed-keys-held-2': ['key2-sign-13'], 'ru-RU:typed-keys-held-2': ['key2-sign-13'] }),

@@ -20,7 +20,7 @@ const general = (f: NumberFormat | undefined) => f === undefined || f === 0 || (
 const FORMATS: Readonly<Record<string, NumberFormat | 'money'>> = { TODAY: 14, DATE: 14, NOW: 22, TIME: 18, PMT: 'money', PV: 'money', FV: 'money', IPMT: 'money', PPMT: 'money', NPV: 'money' }
 
 /** The functions that take the format of their first argument with one. */
-const PASSING = new Set(['SUM', 'MAX', 'MIN', 'AVERAGE', 'MEDIAN', 'ROUND', 'ROUNDUP', 'ROUNDDOWN', 'TRUNC', 'INT'])
+const PASSING = new Set(['SUM', 'MAX', 'MIN', 'AVERAGE', 'MEDIAN', 'ROUND', 'ROUNDUP', 'ROUNDDOWN', 'TRUNC', 'INT', 'MOD'])
 
 /** Whether a formula's format shows a date. */
 const isDate = (f: NumberFormat | 'money' | undefined) => f !== undefined && f !== 'money' && shows(f, 'day')
