@@ -4,7 +4,8 @@
  * sheets, the file it was opened from. INFO's facts of the system are constants, Excel for Windows' own.
  */
 import type { Arg, Cx, FnDef } from '../args.js'
-import { arr } from '../arrays/value.js'
+import { arr, Arr } from '../arrays/value.js'
+import { allot } from '../exec/budget.js'
 import { indexToCol } from '../model.js'
 import { quoteSheet } from '../syntax.js'
 import { Areas, E, isErr, Rng, type V } from '../values.js'
@@ -13,10 +14,10 @@ import { formatCodes } from './cell-format.js'
 /** The longest formula text FORMULATEXT gives: a longer one is #N/A. */
 const LONGEST = 8192
 
-/** A reference's top-left cell on one of the book's sheets, of its first area with `areas`, or the error a function answers for anything else. */
-function topLeft(cx: Cx, x: Arg, areas = false): Rng | V {
+/** A reference's top-left cell on one of the book's sheets (of a union's or a reference across sheets' first area), or #VALUE!. */
+function topLeft(cx: Cx, x: Arg): Rng | V {
   if (isErr(x)) return x
-  const g = x instanceof Rng ? x : areas && x instanceof Areas ? x.list[0] : undefined
+  const g = x instanceof Rng ? x : x instanceof Areas ? x.list[0] : undefined
   return g && g.s < cx.book.sheets ? new Rng(g.s, g.r1, g.c1, g.r1, g.c1) : E.VALUE
 }
 
@@ -39,7 +40,7 @@ function cell(cx: Cx, s: number, r: number, c: number, info: string, ref?: Arg):
     const a = cx.book.activeCell()
     g = new Rng(a.s, a.r, a.c, a.r, a.c)
     cx.found(g)
-  } else g = topLeft(cx, ref, true)
+  } else g = topLeft(cx, ref)
   if (!(g instanceof Rng)) return g
   const v = () => cx.scalar(g)
   switch (info.toLowerCase()) {
@@ -115,6 +116,7 @@ function sheet(cx: Cx, s: number, _r: number, _c: number, x?: Arg): V {
   if (isErr(x)) return x
   if (x instanceof Rng) return x.s < cx.book.sheets ? x.s + 1 : E.NA
   if (x instanceof Areas) return x.list[0].s < cx.book.sheets ? x.list[0].s + 1 : E.NA
+  if (x instanceof Arr) return E.NA
   const v = cx.scalar(x)
   if (typeof v !== 'string') return isErr(v) ? v : E.NA
   const i = cx.book.sheetOf(v)
@@ -127,7 +129,25 @@ function sheets(cx: Cx, x?: Arg): V {
   if (isErr(x)) return x
   if (x instanceof Rng) return 1
   if (x instanceof Areas) return x.cube ? x.list.length : 1
-  return E.VALUE
+  return E.NA
+}
+
+/**
+ * FORMULATEXT's and ISFORMULA's answer of each cell of a reference (an array of them for several), a union's first
+ * area; a reference across sheets is #VALUE!, anything else `other`.
+ */
+function cellwise(cx: Cx, x: Arg, other: V, at: (s: number, r: number, c: number) => V): Arg {
+  if (isErr(x)) return x
+  if (x instanceof Areas && x.cube) return E.VALUE
+  const g = x instanceof Rng ? x : x instanceof Areas ? x.list[0] : undefined
+  if (!g) return other
+  if (g.s >= cx.book.sheets) return E.VALUE
+  const [h, w] = [g.r2 - g.r1 + 1, g.c2 - g.c1 + 1]
+  if (h === 1 && w === 1) return at(g.s, g.r1, g.c1)
+  allot(h * w)
+  const v: V[] = []
+  for (let r = g.r1; r <= g.r2; r++) for (let c = g.c1; c <= g.c2; c++) v.push(at(g.s, r, c))
+  return arr(h, w, v)
 }
 
 export const functions: Record<string, FnDef> = {
@@ -136,22 +156,16 @@ export const functions: Record<string, FnDef> = {
   FORMULATEXT: {
     args: 'R',
     cx: true,
-    fn: (cx: Cx, x: Arg) => {
-      const g = topLeft(cx, x)
-      if (!(g instanceof Rng)) return isErr(g) ? (g.code === 'VALUE' ? E.NA : g) : E.NA
-      const text = cx.book.formula(g.s, g.r1, g.c1)
-      return text === undefined || text.length > LONGEST ? E.NA : text
-    },
+    areas: true,
+    array: true,
+    fn: (cx: Cx, x: Arg) =>
+      cellwise(cx, x, E.NA, (s, r, c) => {
+        const text = cx.book.formula(s, r, c)
+        return text === undefined || text.length > LONGEST ? E.NA : text
+      }),
   },
   INFO: { args: 's', cx: true, fn: info },
-  ISFORMULA: {
-    args: 'R',
-    cx: true,
-    fn: (cx: Cx, x: Arg) => {
-      const g = topLeft(cx, x)
-      return g instanceof Rng ? cx.book.hasFormula(g.s, g.r1, g.c1) : g
-    },
-  },
-  SHEET: { args: 'R?', cx: true, cell: true, fn: sheet },
+  ISFORMULA: { args: 'R', cx: true, areas: true, array: true, fn: (cx: Cx, x: Arg) => cellwise(cx, x, E.VALUE, (s, r, c) => cx.book.hasFormula(s, r, c)) },
+  SHEET: { args: 'R?', cx: true, cell: true, areas: true, fn: sheet },
   SHEETS: { args: 'R?', cx: true, areas: true, fn: sheets },
 }
