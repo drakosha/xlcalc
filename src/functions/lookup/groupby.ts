@@ -36,19 +36,15 @@ const labelOf = (f: Lambda): V => f.name ?? 'CUSTOM'
 function functionsOf(x: Arg): Functions | CErr {
   if (x instanceof Lambda) return { fns: [x], labels: [labelOf(x)], down: false }
   if (!(x instanceof Arr)) return isErr(x) ? x : E.VALUE
-  const at = (r: number, c: number) => x.at(r, c) as unknown
-  const line = x.rows <= 2 && x.cols > 1 ? 'row' : x.cols <= 2 ? 'col' : undefined
-  if (!line) return E.VALUE
-  const n = line === 'row' ? x.cols : x.rows
-  const fns: Lambda[] = []
-  for (let i = 0; i < n; i++) {
-    const f = line === 'row' ? at(0, i) : at(i, 0)
-    if (!(f instanceof Lambda)) return E.VALUE
-    fns.push(f)
-  }
-  const labelled = line === 'row' ? x.rows === 2 : x.cols === 2
-  const labels = fns.map((f, i) => (labelled ? (line === 'row' ? x.at(1, i) : x.at(i, 1)) : labelOf(f)))
-  return { fns, labels, down: line === 'col' && n > 1 }
+  // the i-th function (part 0) or label (part 1) along the row or the column
+  const row = x.rows <= 2 && x.cols > 1
+  if (!row && x.cols > 2) return E.VALUE
+  const at = (i: number, part: number) => (row ? x.at(part, i) : x.at(i, part)) as unknown
+  const n = row ? x.cols : x.rows
+  const fns = Array.from({ length: n }, (_, i) => at(i, 0))
+  if (!fns.every((f): f is Lambda => f instanceof Lambda)) return E.VALUE
+  const labelled = (row ? x.rows : x.cols) === 2
+  return { fns, labels: fns.map((f, i) => (labelled ? (at(i, 1) as V) : labelOf(f))), down: !row && n > 1 }
 }
 
 /** Whether a function takes the values relative to which it aggregates as a second argument (PERCENTOF). */
@@ -240,7 +236,7 @@ function aggregator(cx: Cx, values: Grid, start: number, fns: Functions) {
 }
 
 /** A summary, or #CALC! when a function answered more than one value. */
-function summary(make: () => Arg): Arg {
+function summary(make: () => Arr): Arg {
   try {
     return make()
   } catch (e) {
@@ -277,6 +273,7 @@ function rowsArray(out: V[][]): Arr {
 
 /** What GROUPBY and PIVOTBY read alike: the functions, the fields' headers, the data rows kept and the aggregation. */
 interface Summary {
+  values: Grid
   fns: Functions
   heads: { has: boolean; show: boolean }
   start: number
@@ -296,7 +293,7 @@ function summaryOf(cx: Cx, fields: Grid[], values: Grid, fn: Arg, mode: number |
   const start = heads.has ? 1 : 0
   const rows = kept(filter, n, start)
   if (isErr(rows)) return rows
-  return { fns, heads, start, rows, m: values.cols, measuredCols: values.cols * fns.fns.length, agg: aggregator(cx, values, start, fns) }
+  return { values, fns, heads, start, rows, m: values.cols, measuredCols: values.cols * fns.fns.length, agg: aggregator(cx, values, start, fns) }
 }
 
 function groupby(cx: Cx, rowFields: Grid, values: Grid, fn: Arg, fieldHeadersMode?: number, totalDepth?: number, sortOrderGrid?: Grid, filterGrid?: Grid, relationship?: number): Arg {
@@ -306,27 +303,13 @@ function groupby(cx: Cx, rowFields: Grid, values: Grid, fn: Arg, fieldHeadersMod
   const depth = depthOf(option(totalDepth), k, table)
   const sm = summaryOf(cx, [rowFields], values, fn, fieldHeadersMode, filterGrid)
   if (isErr(sm)) return sm
-  const { fns, heads, start, rows, m, measuredCols, agg } = sm
+  const { start, rows, measuredCols, agg } = sm
   const sort = sortKeys(sortOrderGrid, k + measuredCols, k)
   if (rel !== 0 && rel !== 1) return E.VALUE
   if (isErr(depth)) return depth
   if (isErr(sort)) return sort
-  return summary(() => {
-    const axis = lines(rowFields, start, rows, k, { depth, table, sort }, (r, c) => agg(r, c, rows), cx)
-    const out: V[][] = []
-    const { headers, labels } = measuredLabels(values, heads.has, fns, !fns.down)
-    const fieldsRow = heads.show ? fieldHeaders(rowFields, heads.has, 'Row Field') : blanks(k)
-    if (fns.down) {
-      // a column of functions: a line for each function, its label beside the fields
-      if (heads.show) out.push([...fieldsRow, EMPTY_CELL, ...headers])
-      for (const line of axis) fns.fns.forEach((_, f) => out.push([...line.keys, fns.labels[f], ...Array.from({ length: m }, (_, c) => agg(line.rows, f * m + c, rows))]))
-      return rowsArray(out)
-    }
-    if (fns.fns.length > 1) out.push([...blanks(k), ...labels])
-    if (heads.show) out.push([...fieldsRow, ...headers])
-    for (const line of axis) out.push([...line.keys, ...Array.from({ length: measuredCols }, (_, c) => agg(line.rows, c, rows))])
-    return rowsArray(out)
-  })
+  // one column line over every row, without column fields: PIVOTBY's layout
+  return summary(() => layout(cx, sm, rowFields, undefined, lines(rowFields, start, rows, k, { depth, table, sort }, (r, c) => agg(r, c, rows), cx), [{ kind: 'item', keys: [], rows, parent: rows }], 0))
 }
 
 /** The rows of `a` that are also in `b`. */
@@ -341,7 +324,7 @@ function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg
   const [k, j] = [rowFields.cols, colFields.cols]
   const sm = summaryOf(cx, [rowFields, colFields], values, fn, fieldHeadersMode, filterGrid)
   if (isErr(sm)) return sm
-  const { fns, heads, start, rows, m, measuredCols, agg } = sm
+  const { start, rows, measuredCols, agg } = sm
   const rel = option(relativeTo) ?? 0
   const [rd, cd] = [depthOf(option(rowDepth), k, false), depthOf(option(colDepth), j, false)]
   const [rs, cs] = [sortKeys(rowSort, k + measuredCols, k), sortKeys(colSort, j + measuredCols, j)]
@@ -350,42 +333,59 @@ function pivotby(cx: Cx, rowFields: Grid, colFields: Grid, values: Grid, fn: Arg
   if (isErr(cd)) return cd
   if (isErr(rs)) return rs
   if (isErr(cs)) return cs
-  return summary(() => {
-    const rowLines = lines(rowFields, start, rows, k, { depth: rd, table: false, sort: rs }, (r, c) => agg(r, c, rows), cx)
-    const colLines = lines(colFields, start, rows, j, { depth: cd, table: false, sort: cs }, (r, c) => agg(r, c, rows), cx)
-    const { headers, labels } = measuredLabels(values, heads.has, fns, !fns.down)
-    // a column of functions repeats each row line for each function, its label beside the row fields
-    const [per, side] = fns.down ? [m, 1] : [measuredCols, 0]
-    const corner = blanks(k + side)
-    const across = (cell: (c: Line, i: number) => V) => colLines.flatMap((c) => Array.from({ length: per }, (_, i) => cell(c, i)))
-    const out: V[][] = []
-    // the column fields' headers in one, as text joined by commas
-    if (heads.show) {
-      const names = fieldHeaders(colFields, heads.has, 'Column Field').map((v) => cx.rules.toText(v)).join(', ')
-      out.push([...corner, ...across((c, i) => (c === colLines[0] && i === 0 ? names : EMPTY_CELL))])
+  return summary(() =>
+    layout(
+      cx,
+      sm,
+      rowFields,
+      colFields,
+      lines(rowFields, start, rows, k, { depth: rd, table: false, sort: rs }, (r, c) => agg(r, c, rows), cx),
+      lines(colFields, start, rows, j, { depth: cd, table: false, sort: cs }, (r, c) => agg(r, c, rows), cx),
+      rel,
+    ),
+  )
+}
+
+/**
+ * A summary's cells: the row lines down, the column lines across (GROUPBY's one line over every row, without column
+ * fields), each meeting's values aggregated, an empty cell where no row meets; a column of functions repeats each row
+ * line for each function, its label beside the row fields. With headers shown, the column fields' headers above their
+ * keys, joined in one cell, and the row fields' beside the values' own. With several value columns the total columns
+ * stay empty, as Excel for Mac leaves them (the set `groupby`).
+ */
+function layout(cx: Cx, sm: Summary, rowFields: Grid, colFields: Grid | undefined, rowLines: Line[], colLines: Line[], rel: number): Arr {
+  const { fns, heads, rows, m, measuredCols, agg } = sm
+  const [k, j] = [rowFields.cols, colFields?.cols ?? 0]
+  const { headers, labels } = measuredLabels(sm.values, heads.has, fns, !fns.down)
+  const [per, side] = fns.down ? [m, 1] : [measuredCols, 0]
+  const corner = blanks(k + side)
+  const across = (cell: (c: Line, i: number) => V) => colLines.flatMap((c) => Array.from({ length: per }, (_, i) => cell(c, i)))
+  const out: V[][] = []
+  if (heads.show && colFields) {
+    const names = fieldHeaders(colFields, heads.has, 'Column Field').map((v) => cx.rules.toText(v)).join(', ')
+    out.push([...corner, ...across((c, i) => (c === colLines[0] && i === 0 ? names : EMPTY_CELL))])
+  }
+  for (let level = 0; level < j; level++) out.push([...corner, ...across((c) => c.keys[level])])
+  if (!fns.down && fns.fns.length > 1) out.push([...corner, ...across((_, i) => labels[i])])
+  if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...blanks(side), ...across((_, i) => headers[i])])
+  const sets = new Map<Line, Set<number>>()
+  const setOf = (l: Line) => {
+    let x = sets.get(l)
+    if (!x) sets.set(l, (x = new Set(l.rows)))
+    return x
+  }
+  for (const r of rowLines)
+    for (let f = 0; f < (fns.down ? fns.fns.length : 1); f++) {
+      const cells = across((c, i) => {
+        if (m > 1 && c.kind !== 'item') return EMPTY_CELL
+        const here = j ? meet(r.rows, setOf(c)) : r.rows
+        // the total a function of two parameters is relative to: the column's, the row's, the grand, a parent's
+        const total = rel === 0 ? c.rows : rel === 1 ? r.rows : rel === 2 ? rows : rel === 3 ? meet(r.rows, new Set(c.parent)) : meet(c.rows, new Set(r.parent))
+        return here.length ? agg(here, f * m + i, total) : EMPTY_CELL
+      })
+      out.push([...r.keys, ...(fns.down ? [fns.labels[f]] : []), ...cells])
     }
-    for (let level = 0; level < j; level++) out.push([...corner, ...across((c) => c.keys[level])])
-    if (!fns.down && fns.fns.length > 1) out.push([...corner, ...across((_, i) => labels[i])])
-    if (heads.show) out.push([...fieldHeaders(rowFields, heads.has, 'Row Field'), ...blanks(side), ...across((_, i) => headers[i])])
-    const sets = new Map<Line, Set<number>>()
-    const setOf = (l: Line) => {
-      let x = sets.get(l)
-      if (!x) sets.set(l, (x = new Set(l.rows)))
-      return x
-    }
-    for (const r of rowLines)
-      for (let f = 0; f < (fns.down ? fns.fns.length : 1); f++) {
-        const cells = across((c, i) => {
-          if (m > 1 && c.kind !== 'item') return EMPTY_CELL
-          const here = meet(r.rows, setOf(c))
-          // the total a function of two parameters is relative to: the column's, the row's, the grand, a parent's
-          const total = rel === 0 ? c.rows : rel === 1 ? r.rows : rel === 2 ? rows : rel === 3 ? meet(r.rows, new Set(c.parent)) : meet(c.rows, new Set(r.parent))
-          return here.length ? agg(here, f * m + i, total) : EMPTY_CELL
-        })
-        out.push([...r.keys, ...(fns.down ? [fns.labels[f]] : []), ...cells])
-      }
-    return rowsArray(out)
-  })
+  return rowsArray(out)
 }
 
 /** The optional arguments left out between commas take their defaults. */
