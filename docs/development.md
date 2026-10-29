@@ -175,6 +175,22 @@ Line breaks were tested by the `rows` step (`bench/coverage/rows.ts`, `docs/form
 
 Rejecting a value a rule does not allow (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not test: the alert is a dialog, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a rejected call leaves the workbook, the revision and the history as they were, and that a value the rules allow is written as it would be without the option.
 
+### Cell entry: A formula's format from its references
+
+From [Cell entry](entry.md#formulas).
+
+The format a typed formula takes from the cells it refers to was tested by the same `entry` step, in Excel 16.114 for Mac and 16.0.20430 for Windows, en-US and ru-RU, with sets whose workbooks carry their own data (`data` of the set: cells of the sheet `S` beside column A, its columns, another sheet, a defined name). The engine's answer is `parseEntry` with `numberFormatAt` over that data (`engineEntry`, `bench/coverage/entry/compare.ts`). The two versions of Excel answered alike in every case.
+
+| set | cases per locale | how | predicted correctly before the run, en-US |
+|---|---:|---|---|
+| `refs` | 118 | object model, Mac and Windows | 111: a difference takes a format from either term (`=C1-C3`, `=C5-C1`), where the engine took it only from the first over a plain number; `MEDIAN`, `ROUNDUP` and `INT` pass a format on |
+| `refs-held` | 105 | object model, Mac and Windows | 104: `MOD` passes its first argument's format on; two dates' difference has none, a date minus a time or a percentage keeps the date's, and `ROUNDDOWN` and `TRUNC` pass a format, as predicted |
+| `refs-keys-held` | 13 (en-US) | keyboard, Mac | 13 |
+| `refs-held-2` | 7 (en-US) | object model, Mac and Windows | 7 |
+| `ui/fill-refs-held` | 9 (en-US) | Control+Return and AutoSum, Mac keyboard | 7: the two misses are selections of one cell, where Control+Return left the formula's value as a constant, twice; they say nothing of the format (`oneCellFill` in `test/ui-known.ts`) |
+
+The first set's data covered every kind of built-in format, a code of the book's own, a blank cell with a format and Text; the operators and 31 functions around a percentage beside a General number; ranges whose first cell is General or blank; another sheet; a name; and cells of other formats typed into. Every format passes to a reference, `0.00` and Text included, and a range takes its first cell's alone (`=SUM(C1:C3)` with C1 General gets none, `=SUM(C:C)` that of C1). A defined name gives none, even one over a percentage. In ru-RU Excel reads an English function's name as an unknown name and gives the formula no format, the known difference `english` (`test/entry-known.ts`); the Russian names (`СУММ`, `ОКРУГЛВВЕРХ`, `ЦЕЛОЕ`, `МЕДИАНА`, `ОТБР`) gave what the English ones give in en-US. Control+Return gives every cell the format its active cell's formula takes (`=A1+A3` over B1:B3 with a percentage in A1 shows percentages in B3 too, where `=A3+A5` alone takes A5's money), and AutoSum the format of its range's first cell. The known difference `reference` of the entry and ui sets is gone with this rule.
+
 ### Cell entry: A formula left open
 
 From [Cell entry, A formula left open](entry.md#a-formula-left-open).
