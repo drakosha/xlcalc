@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.66.0 (2026-10-29)
+
+Added:
+
+- `xlcalc/regex` and `registerRegex`: two more levels of match mode 3 of `XLOOKUP` and `XMATCH`. `pcreSyntax` reads Excel's PCRE2 syntax (possessive quantifiers, atomic groups, `(?i)` anywhere, `\Q…\E`, POSIX classes, `$` before a final newline) and runs it as JavaScript's regular expressions; `pcreEngine` is a PCRE2 engine of the package's own with Excel's match limit (`#VALUE!`), which a call's `timeoutMs` stops in a pattern that backtracks heavily. A pool's threads take the level registered where the pool runs (Excel for Mac, 197 patterns and 64 predicted before it ran them) ([Regular expressions](docs/regex.md)).
+- `loadLocale(tag)` in `xlcalc/locales`: a package's locale loaded by its tag, as read from a file, for every call and a pool's threads; the root and `xlcalc/xlsx` stay without it ([Locales](docs/locale.md)).
+- `Session.getSpecialCells(sheet, range, kind)`, Excel's Go To Special: blanks, constants and formulas by the kinds of their values, and visible cells, as the rectangles Excel selects ([A viewport for a grid](docs/grid.md#a-viewport-for-a-grid)).
+- `Session.getNamesFromSelection(sheet, range, labels)`, Excel's Create from Selection: the names its labels on the chosen sides make, for `setNames` ([Names from a selection](docs/names.md#names-from-a-selection)).
+- `SheetInput.tabColor` and `SheetView.gridlines` and `headings`: a sheet's tab color, set by `setLayout` (`{ sheet, tabColor }`), and whether its gridlines and headings show; read, written and kept over the file ([The saved active sheet and view](docs/xlsx.md#the-saved-active-sheet-and-view)).
+- `AlignmentStyle.rotation`, the text's orientation in degrees or `vertical`; `CellNote.shown`, a note shown all the time; `BookInput.calculation`, Excel's manual calculation and automatic except for data tables, which the engine records and does not apply. Each is read, written and kept over the file (Excel for Windows read and saved each kind).
+- `copyRange`'s `paste: 'allMergingConditionalFormats'` (Excel for Windows's All Merging Conditional Formats): as `all`, the destination's conditional formats kept beside the copy's, a rule copied on its own sheet growing where it makes one rectangle with the pasted cells ([Paste Special](docs/structure.md#paste-special)).
+
+Changed:
+
+- Match mode 3 without a level reads `\d \s \w \b` with Unicode, `\A \z \Z`, `{,m}` and a leading `(?i)` as Excel's PCRE2 reads them: `^\w+$` matches `привет`, where it did not.
+- Paste Special over entire columns and rows, tables and filtered sheets as Excel pastes it: an operation combines each cell, a table's header keeping its text; a copy that left out a filter's hidden rows is laid over the destination whole, hidden rows too; an operation onto an array spilled over more than one cell is refused (`array`); a combined formula is shown in the workbook's language (Excel for Mac and for Windows, in ru-RU too) ([Paste Special on a filtered sheet](docs/structure.md#paste-special-on-a-filtered-sheet)).
+- Conditional formats a deletion of rows or columns changes go after the others where Excel puts them, and stay where it keeps them, in a session and in `writeKept` (37 workbooks in four sets, each held out after the one before) ([Conditional formats](docs/conditional-formats.md)).
+- `writeKept`'s refusals are in the language of its `locale`, as its issues are ([Refusals](docs/xlsx-keep.md#refusals)).
+- `getDependents` returns its cells sheet by sheet in the workbook's order, then by rows and columns; a cursor of the order before is rejected. The order of `getBook`'s keys is not part of the workbook.
+- `readXlsx` no longer reports `textRotation`, `noteShown` and a calculation mode not kept, which the workbook now holds.
+- Faster, with the same values and bytes: number and date display, typed entries and formulas in a locale; `writeXlsx` and `readXlsx`, which take one formula of each shape; a session's reads (viewports, `readCells`, `findCells`, `summarizeRanges`, `issues`, `getDependents`); and `WORKDAY`, `NETWORKDAYS`, `SORT`, `SORTBY`, `UNIQUE`, `SUBTOTAL`, `AGGREGATE`, `SUMPRODUCT`, `LARGE`, `SMALL`, `MEDIAN`, `PERCENTILE`, `QUARTILE`, `RANK`, `SEARCH`, `PROPER`, `YIELD`, `ODDFYIELD`, `XLOOKUP` and `XMATCH` in match modes −1 and 1, `MMULT` and `NORM.DIST`.
+- The `compute` bundle is kept under 325 KB, where it was 310 KB.
+
 ## 0.65.0 (2026-10-28)
 
 Added:
