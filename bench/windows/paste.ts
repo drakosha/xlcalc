@@ -8,17 +8,14 @@
  * (`FormulaLocal`). Answers go to `test/excel/win/paste/[<tag>/]<set>.json` in the Mac's shape, the saved files beside
  * them; `test/paste-win.test.ts` reads them.
  */
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
 import { localeDir } from '../coverage/locales.js'
 import { pasteAnswer, pasteSet } from '../coverage/paste.js'
 import { painterSelection, type PasteAnswer, type PasteCase, type PasteOperation, type PasteWhat } from '../coverage/paste/cases.js'
 import { fileAnswers, secondsSince, type FileAnswers } from '../coverage/stored.js'
 import { fileJobs } from './books.js'
 import { winFile } from './functions.js'
-import { HOST, metaOf, type Tag, type WinEnv } from './remote.js'
-import { onScreen, runOnScreen, scp } from './screen.js'
+import { metaOf, type Tag, type WinEnv } from './remote.js'
+import { onScreen, savedOnScreen } from './screen.js'
 
 /** Excel's `XlPasteType` of each kind the harness pastes. */
 const PASTE_TYPE: Record<Exclude<PasteWhat, 'copy' | 'painter'>, number> = {
@@ -41,27 +38,13 @@ const OPERATION: Record<PasteOperation, number> = { add: 2, subtract: 3, multipl
 
 /** The Format Painter's cases of the store still to do, on the screen; each a book saved, or left to do where the painter did not apply. */
 async function paintOnScreen(cases: PasteCase[], files: Map<string, Uint8Array>, store: FileAnswers<PasteCase, PasteAnswer>): Promise<void> {
-  const dir = mkdtempSync(join(tmpdir(), 'xlwin-painter-'))
-  for (const c of cases) writeFileSync(join(dir, `${c.id}.xlsx`), files.get(c.id)!)
-  const job = cases.map((c) => {
+  const byId = new Map(cases.map((c) => [c.id, c]))
+  const saved = await savedOnScreen('painter', 'painter.ps1', new Map(cases.map((c) => [c.id, files.get(c.id)!])), (id) => {
+    const c = byId.get(id)!
     const { select, key } = painterSelection(c.to.range)
-    return { file: `${c.id}.xlsx`, out: `${c.id}-saved.xlsx`, from: [c.from.sheet, c.from.range], to: [c.to.sheet, select], key }
-  })
-  writeFileSync(join(dir, 'job.json'), JSON.stringify(job))
-  await runOnScreen('painter', 'painter.ps1', dir, 60 + 15 * cases.length)
-  scp(`${HOST}:C:/xlcalc/painter/out.json`, join(dir, 'out.json'))
-  const raw = JSON.parse(readFileSync(join(dir, 'out.json'), 'utf8').replace(/^\uFEFF/, '')) as { error?: string; answers: { error: string }[] }
-  if (raw.error) throw new Error(`painter: ${raw.error}`)
-  for (const [i, c] of cases.entries()) {
-    const err = raw.answers[i]?.error
-    // a painter that did not apply is the step's failure, not Excel's answer
-    if (err === undefined || err) {
-      console.log(`${c.id}: ${err ?? 'no answer'}`)
-      continue
-    }
-    scp(`${HOST}:C:/xlcalc/painter/${c.id}-saved.xlsx`, join(dir, `${c.id}-saved.xlsx`))
-    store.got(c.id, { answer: {}, saved: new Uint8Array(readFileSync(join(dir, `${c.id}-saved.xlsx`))) })
-  }
+    return { from: [c.from.sheet, c.from.range], to: [c.to.sheet, select], key }
+  }, 60 + 15 * cases.length)
+  for (const [id, data] of saved) store.got(id, { answer: {}, saved: data })
 }
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {

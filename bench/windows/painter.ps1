@@ -17,24 +17,7 @@ function Painter($hwnd) {
   $b.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
 }
 function IsOn($t) { [int]$t.Current.ToggleState -eq 1 }
-Add-Type -Namespace XlPaint -Name Win -MemberDefinition @'
-[DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
-[DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-[DllImport("user32.dll")] public static extern void keybd_event(byte k, byte s, uint f, UIntPtr x);
-'@
-# Excel in front: Windows lets a process take the foreground once it sent the last input, so Shift goes down and up
-# first; a window that keeps the foreground (Windows's Get Started did) stops the step
-function Front($hwnd) {
-  $h = [IntPtr]$hwnd
-  for ($i = 0; $i -lt 3; $i++) {
-    [XlPaint.Win]::keybd_event(0x10, 0, 0, [UIntPtr]::Zero)
-    [XlPaint.Win]::keybd_event(0x10, 0, 2, [UIntPtr]::Zero)
-    [void][XlPaint.Win]::SetForegroundWindow($h)
-    Start-Sleep -Milliseconds 400
-    if ([XlPaint.Win]::GetForegroundWindow() -eq $h) { return }
-  }
-  throw "Excel did not come to the front: $([XlPaint.Win]::GetForegroundWindow()) is, not $hwnd"
-}
+. (Join-Path $PSScriptRoot 'front.ps1')
 $books = [IO.File]::ReadAllText($job, [Text.Encoding]::UTF8) | ConvertFrom-Json
 $dir = Split-Path $job
 $res = [ordered]@{ answers = New-Object System.Collections.ArrayList }

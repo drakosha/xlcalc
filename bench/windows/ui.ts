@@ -3,16 +3,30 @@
  * Excel has no screen: a case of `bars` reads its cells' formulas through the object model alone (`Formula2`,
  * `FormulaArray`, `HasArray`, `HasSpill`, `SpillParent`), a paste puts the text on the clipboard (`Set-Clipboard`) and
  * pastes it with the cell selected (`Worksheet.Paste`), and the cases of `fill` (the keyboard's), `ribbon` and `choose`
- * (the ribbon's Number Format box, which Excel shows on a screen alone) are the Mac's alone. Then
+ * (the ribbon's Number Format box) are the Mac's alone. The ribbon's buttons (`press`) need a session on the screen
+ * (`screen.ts`): `press.ps1` presses them there by UI Automation, by their names in the interface's language
+ * (`pressName`), and saves each book, which is then read as the others are; without a session on the screen they wait. Then
  * the cells and their columns are read and the book saved, as on the Mac. The answers go to
  * `test/excel/win/ui/[<tag>/]<set>.json`; a paste Excel or the clipboard refuses stops the run with its error.
  */
 import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
-import { caseAnswer, uiFile, type RawCell, type StoredUi } from '../coverage/ui.js'
-import { clipboardText, macOnly, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
+import { caseAnswer, caseFile, uiFile, type RawCell, type StoredUi } from '../coverage/ui.js'
+import { clipboardText, macOnly, pressName, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
 import { answeredLine, answerSaver, keptSame, loadStored, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
+import { onScreen, savedOnScreen } from './screen.js'
+
+/** The cases of the ribbon's buttons on the screen: each case's book with its buttons pressed and saved, by id; a case whose press failed is left out, with its error said. */
+async function pressOnScreen(set: string, tag: Tag, cases: UiCase[]): Promise<Map<string, Uint8Array>> {
+  const books = new Map<string, Uint8Array>()
+  for (const c of cases) books.set(c.id, await caseFile(c, `${set} ${c.id}`))
+  const byId = new Map(cases.map((c) => [c.id, c.act as Extract<UiCase['act'], { do: 'press' }>]))
+  return savedOnScreen('press', 'press.ps1', books, (id) => {
+    const act = byId.get(id)!
+    return { range: act.range, buttons: act.buttons.map((b) => pressName(b, 'Windows', tag)), enter: act.enter === true }
+  }, 60 + 15 * cases.length)
+}
 
 export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<UiSet>('ui', set)).buildUiCases().filter((c) => !macOnly(c.act))
@@ -20,10 +34,13 @@ export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const answers = keptSame({ cases }, loadStored<StoredUi>(file))
   const t0 = Date.now()
   const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
-  const todo = cases.filter((c) => !answers[c.id])
+  const waiting = cases.filter((c) => !answers[c.id] && c.act.do === 'press')
+  const pressed = waiting.length && onScreen() ? await pressOnScreen(set, tag, waiting) : new Map<string, Uint8Array>()
+  if (waiting.length > pressed.size) console.log(`ui ${set} ${tag}: ${waiting.length - pressed.size} cases of the ribbon's buttons wait for a session on the screen`)
+  const todo = cases.filter((c) => !answers[c.id] && (c.act.do !== 'press' || pressed.has(c.id)))
   const results: [UiCase, unknown[], Uint8Array][] = []
   const book = async (c: UiCase, f: string) => {
-    const { data, issues } = await writeXlsx({ book: uiBook(c) }, { values: 'omit' })
+    const { data, issues } = pressed.has(c.id) ? { data: pressed.get(c.id)!, issues: [] } : await writeXlsx({ book: uiBook(c) }, { values: 'omit' })
     if (issues.length) throw new Error(`ui ${set} ${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(f, data)
     const paste: Step[] = c.act.do === 'paste' ? [{ do: 'paste', sheet: 'S', at: c.act.at, text: clipboardText(c.act) }] : []
