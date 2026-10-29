@@ -1,7 +1,7 @@
 /**
- * A formula as a file stores it, in the engine's spelling: the prefixes of newer functions and of LET's names go
- * (`_xlfn.`, `_xlfn._xlws.`, `_xlpm.`, `_xludf.`), `_xlfn.ANCHORARRAY(E2)` becomes the spill reference `E2#` and
- * `_xlfn.SINGLE(x)` the operator `@x`; a column name that starts with `@` in a structured reference gets its escape
+ * A formula as a file stores it, in the engine's spelling: the prefixes of newer functions, of LET's names and LAMBDA's
+ * parameters and of functions as values go (`_xlfn.`, `_xlfn._xlws.`, `_xlpm.`, `_xludf.`, `_xleta.`),
+ * `_xlfn.ANCHORARRAY(E2)` becomes the spill reference `E2#` and `_xlfn.SINGLE(x)` the operator `@x`; a column name that starts with `@` in a structured reference gets its escape
  * (`Sales[@at]` in a file is `Sales['@at]`). What the engine has no spelling for is reported: user-defined functions,
  * a structured reference without a table name, references to other workbooks, a LET name that reads as a reference or
  * a boolean once its prefix goes. Text in quotes is left as it is.
@@ -21,7 +21,7 @@ export interface Converted {
   userFunctions?: string[]
 }
 
-const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
+const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf|xleta)\./i
 /** A function's or a LET name's word after its prefix, `?` and `\` inside too (`_xlpm.a?b`, the set `entry/names-held`). */
 const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
