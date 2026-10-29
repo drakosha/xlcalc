@@ -1,0 +1,265 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.1
+ },
+ "books": {
+  "arrays": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 2
+      },
+      "A2": {
+       "value": 3
+      },
+      "A3": {
+       "value": 4
+      },
+      "B1": {
+       "value": 5
+      },
+      "B2": {
+       "value": 6
+      },
+      "C1": {
+       "formula": "A1:A2*10",
+       "array": "C1:C2"
+      },
+      "E1": {
+       "formula": "SUM(A1:A2)",
+       "array": "E1"
+      },
+      "G1": {
+       "formula": "A1:B2+1",
+       "array": "G1:H2"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "whole-add-values",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "whole-add-formulas",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "formulas",
+   "operation": "add"
+  },
+  {
+   "id": "whole-add-all",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "corner-multiply",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "multiply"
+  },
+  {
+   "id": "one-cell-add",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "one-cell-add-all",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E1"
+   },
+   "what": "all",
+   "operation": "add"
+  },
+  {
+   "id": "square-add",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:B2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "beyond-add",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "part-add",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1"
+   },
+   "what": "values",
+   "operation": "add"
+  },
+  {
+   "id": "whole-values",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "values"
+  },
+  {
+   "id": "whole-skip",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "values",
+   "skipBlanks": true
+  },
+  {
+   "id": "formats-add",
+   "book": "arrays",
+   "from": {
+    "sheet": "S",
+    "range": "A1:A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C1:C2"
+   },
+   "what": "formats",
+   "operation": "add"
+  }
+ ],
+ "sent": {
+  "whole-add-values": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "whole-add-formulas": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "whole-add-all": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "corner-multiply": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "one-cell-add": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "one-cell-add-all": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "square-add": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "beyond-add": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "part-add": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "whole-values": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "whole-skip": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda",
+  "formats-add": "13e49844aea79374f77adbe8cc64ee5b0d55a6fdc707415de9080fd29300dcda"
+ },
+ "answers": {
+  "whole-add-values": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "whole-add-formulas": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "whole-add-all": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "corner-multiply": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "one-cell-add": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "one-cell-add-all": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "square-add": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "beyond-add": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "part-add": {
+   "error": "-2146827284 You can't change part of an array."
+  },
+  "whole-values": {},
+  "whole-skip": {},
+  "formats-add": {}
+ }
+}
