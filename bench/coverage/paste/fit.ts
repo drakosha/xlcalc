@@ -13,7 +13,7 @@ import type { PasteCase, PasteCases, PasteWhat } from './cases.js'
 const STYLES = [{}, { font: { size: 20, bold: true } }, { font: { size: 8 } }, { font: { size: 16 } }]
 
 /** A1 large, A2 small, A3 plain, A4 middle; targets C5, C7 (large), C9 (own height), C13:C15, C17 with D17 large; rows fitted as a session fits them. */
-function fitBook(): BookInput {
+export function fitBook(): BookInput {
   const cells: Record<string, CellInput> = { A1: { value: 'big' }, A2: { value: 'small' }, A3: { value: 'plain' }, A4: { value: 'mid' }, C5: { value: 'x' }, C7: { value: 'y' }, C9: { value: 'z' }, C13: { value: 1 }, C14: { value: 2 }, C15: { value: 3 }, C17: { value: 'v' }, D17: { value: 'w' } }
   const s = createSession({ styles: STYLES, sheets: [{ name: 'S', cells, rows: { 9: { height: 30 } } }] }, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
   const at = (cell: string, style: number) => ({ sheet: 'S', range: cell, set: { style } })

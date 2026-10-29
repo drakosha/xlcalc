@@ -2,7 +2,7 @@
  * Paste Special in Excel for Windows: each case of `bench/coverage/paste/<set>.ts` in the file the Mac step sends
  * (`writeXlsx`), its range copied (`Range.Copy`) and pasted at the target (`Range.PasteSpecial` with the case's
  * `XlPasteType`, operation, Skip Blanks and Transpose; a plain copy is `Range.Copy` with a destination), and the book
- * saved. The Format Painter's cases need a session on the screen (`screen.ts`): `painter.ps1` runs them there, the
+ * saved; a case that copies from another workbook sends that book with the step, opened beside. The Format Painter's cases need a session on the screen (`screen.ts`): `painter.ps1` runs them there, the
  * source selected, the painter turned on and the target selected with the keyboard as on the Mac; without a session on
  * the screen they wait. The formula of each cell a case names (`local`) is read in the user's language
  * (`FormulaLocal`). Answers go to `test/excel/win/paste/[<tag>/]<set>.json` in the Mac's shape, the saved files beside
@@ -45,7 +45,11 @@ async function paintOnScreen(cases: PasteCase[], files: Map<string, Uint8Array>,
   for (const c of cases) writeFileSync(join(dir, `${c.id}.xlsx`), files.get(c.id)!)
   const job = cases.map((c) => {
     const { select, key } = painterSelection(c.to.range)
-    return { file: `${c.id}.xlsx`, out: `${c.id}-saved.xlsx`, from: [c.from.sheet, c.from.range], to: [c.to.sheet, select], key }
+    const more = (c.more ?? []).map((t) => {
+      const q = painterSelection(t.range)
+      return { to: [t.sheet, q.select], key: q.key }
+    })
+    return { file: `${c.id}.xlsx`, out: `${c.id}-saved.xlsx`, from: [c.from.sheet, c.from.range], to: [c.to.sheet, select], key, more }
   })
   writeFileSync(join(dir, 'job.json'), JSON.stringify(job))
   await runOnScreen('painter', 'painter.ps1', dir, 60 + 15 * cases.length)
@@ -65,7 +69,7 @@ async function paintOnScreen(cases: PasteCase[], files: Map<string, Uint8Array>,
 }
 
 export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const { built, files, sent } = await pasteSet(set)
+  const { built, files, sources, sent } = await pasteSet(set)
   const store = fileAnswers<PasteCase, PasteAnswer>(winFile(`paste/${localeDir(tag)}${set}.json`), built.cases, sent)
   const t0 = Date.now()
   const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
@@ -76,7 +80,7 @@ export async function stepPasteWin(set: string, tag: Tag, e: WinEnv): Promise<vo
     { ...store, todo: store.todo.filter((c) => c.what !== 'painter') },
     files,
     (c) => [
-      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what as keyof typeof PASTE_TYPE] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose },
+      { do: 'pasteSpecial', sheet: c.from.sheet, range: c.from.range, target: c.to.sheet, to: c.to.range, ...(c.what === 'copy' ? { copy: true } : { paste: PASTE_TYPE[c.what as keyof typeof PASTE_TYPE] }), ...(c.operation ? { operation: OPERATION[c.operation] } : {}), skipBlanks: !!c.skipBlanks, transpose: !!c.transpose, ...(sources.has(c.id) ? { source: Buffer.from(sources.get(c.id)!).toString('base64') } : {}) },
       ...(c.local ?? []).map((cell) => ({ do: 'formulasLocal', sheet: c.to.sheet, range: cell })),
       { do: 'saveAs' },
     ],

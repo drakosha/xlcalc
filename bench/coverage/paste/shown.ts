@@ -16,8 +16,8 @@ import type { PasteCase } from './cases.js'
 /** The kinds of paste the engine has. */
 export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation', 'valuesAndNumberFormats', 'formulasAndNumberFormats', 'columnWidths', 'allExceptBorders', 'notes', 'allMergingConditionalFormats', 'painter'] satisfies (PasteKind | 'copy' | 'painter')[]
 
-/** Whether the engine has a case's paste. */
-export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what)
+/** Whether the engine has a case's paste: none from another workbook, as `copyRange` copies within one. */
+export const engineHas = (c: PasteCase): boolean => ENGINE_KINDS.includes(c.what) && c.fromBook === undefined
 
 const WINDOW = { rows: 30, cols: 20 }
 
@@ -71,15 +71,18 @@ export const shownFile = async (data: Uint8Array) => shownBook((await readXlsx(d
 
 /**
  * The engine's outcome of a case in a session, as a host pastes (a session fits the rows a copy laid its looks on): what
- * its book shows after the paste, written and read back, or why it is refused.
+ * its book shows after the paste, written and read back, or why it is refused. A double-clicked Format Painter is a paste
+ * of formats onto each target in turn.
  */
 export async function engineOutcome(book: BookInput, c: PasteCase): Promise<{ refused: string } | { shown: ReturnType<typeof shownBook> }> {
   // the harness pastes with Paste Special, `all` too; `copy` is a copy without it; the Format Painter is a paste of formats
   const paste = c.what === 'painter' ? 'formats' : (c.what as PasteKind)
-  const op = { op: 'copyRange' as const, from: c.from, to: c.to, ...(c.what === 'copy' ? {} : { paste }), ...(c.transpose ? { transpose: true } : {}), ...(c.operation ? { operation: c.operation } : {}), ...(c.skipBlanks ? { skipBlanks: true } : {}) }
   const s = createSession(book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
-  const r = s.editStructure(op)
-  return r.ok ? { shown: await shownFile((await writeXlsx({ book: s.getBook() })).data) } : { refused: r.message }
+  for (const to of [c.to, ...(c.more ?? [])]) {
+    const r = s.editStructure({ op: 'copyRange', from: c.from, to, ...(c.what === 'copy' ? {} : { paste }), ...(c.transpose ? { transpose: true } : {}), ...(c.operation ? { operation: c.operation } : {}), ...(c.skipBlanks ? { skipBlanks: true } : {}) })
+    if (!r.ok) return { refused: r.message }
+  }
+  return { shown: await shownFile((await writeXlsx({ book: s.getBook() })).data) }
 }
 
 /** The formulas of a case's `local` cells in a book that shows them, as Excel reads them in the book's language (`FormulaLocal`). */

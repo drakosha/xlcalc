@@ -3,14 +3,14 @@ import type { BookInput, RangeRef } from '../../../src/contract.js'
 import { colToIndex, formatAddress } from '../../../src/model.js'
 
 /**
- * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`,
- * `allMergingConditionalFormats` Excel for Windows alone, which the Mac's AppleScript does not name); `copy`, a plain copy
- * (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab.
+ * What Paste Special pastes, as the harness names Excel's `XlPasteType` (`notes` is `xlPasteComments`;
+ * `allMergingConditionalFormats`, which the Mac's AppleScript does not name, goes through the Mac's Paste Special window);
+ * `copy`, a plain copy (`Range.Copy` with a destination); `painter`, the Format Painter of the Home tab.
  */
 export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders' | 'notes' | 'allMergingConditionalFormats' | 'allUsingSourceTheme' | 'painter'
 
-/** The kinds Excel for Windows alone pastes: All Merging Conditional Formats. */
-export const WINDOWS_ONLY: readonly PasteWhat[] = ['allMergingConditionalFormats']
+/** Whether Excel for Mac pastes a case through its Paste Special window: All Merging Conditional Formats, which AppleScript does not name. */
+export const viaWindow = (c: PasteCase): boolean => c.what === 'allMergingConditionalFormats'
 
 /** Paste Special's operation (`XlPasteSpecialOperation`), none when left out. */
 export type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'
@@ -28,6 +28,10 @@ export interface PasteCase {
   skipBlanks?: boolean
   /** Cells of the target's sheet whose formula Excel reads after the paste in the user's language (`FormulaLocal`). */
   local?: string[]
+  /** The key of the book the source is copied from, open in Excel beside the target's (another workbook); the target's own when left out. */
+  fromBook?: string
+  /** The Format Painter double-clicked: the targets it paints after `to`, in order, before it is turned off. */
+  more?: RangeRef[]
 }
 
 export interface PasteCases {
@@ -35,6 +39,8 @@ export interface PasteCases {
   cases: PasteCase[]
   /** By book, the cells (on any sheet) whose formulas go to Excel as it saves a formula typed into a cell, not as dynamic array formulas. */
   plain?: Record<string, string[]>
+  /** By book, its file changed or written by hand after `writeXlsx` wrote it (a theme of its own, colors of the theme). */
+  made?: Record<string, (data: Uint8Array) => Promise<Uint8Array>>
 }
 
 /** What Excel answered: the error of a paste it refused (its saved file is the book as it was); the formulas of `local` by cell, in the user's language. */
@@ -45,6 +51,8 @@ export interface PasteAnswer {
 
 export interface PasteSet {
   buildPasteCases(): PasteCases
+  /** What the set predicts for a case the engine has no paste of (from another workbook, `fromBook`). */
+  carried?(c: PasteCase): Promise<unknown>
 }
 
 /**
@@ -60,8 +68,15 @@ export function painterSelection(range: string): { select: string; key: 'left' |
   return { select: `${range.includes(':') ? range.slice(0, range.indexOf(':')) : range}:${next}${end[2]}`, key: 'left' }
 }
 
-/** The paste as the script takes it; the Format Painter's target as it selects it and the key. */
+/**
+ * The paste as the script takes it; the Format Painter's target as it selects it and the key, and its further targets
+ * (`more`) as sheet, selection and key; whether the source is in the other book (`fromBook`).
+ */
 export function pasteArgs(c: PasteCase): string {
   const p = c.what === 'painter' ? painterSelection(c.to.range) : null
-  return JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, p ? p.select : c.to.range, c.what, c.transpose ? '1' : '0', c.operation ?? 'none', c.skipBlanks ? '1' : '0', p ? p.key : '', (c.local ?? []).join(',')])
+  const more = (c.more ?? []).map((t) => {
+    const q = painterSelection(t.range)
+    return [t.sheet, q.select, q.key]
+  })
+  return JSON.stringify([c.from.sheet, c.from.range, c.to.sheet, p ? p.select : c.to.range, c.what, c.transpose ? '1' : '0', c.operation ?? 'none', c.skipBlanks ? '1' : '0', p ? p.key : '', (c.local ?? []).join(','), more, c.fromBook ? '1' : '0'])
 }

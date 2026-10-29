@@ -3620,8 +3620,8 @@ type PasteKind = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'val
 Paste Special's operation ([`StructureOp`](#structureop) `copyRange`): each number of the copy is added to, subtracted from,
 multiplied into or divided into the destination cell's, a blank counting as 0; a formula on either side makes a
 formula of both (`10+(A1*2)`). Text, booleans and errors of the copy leave the destination's cell. It applies to the
-kinds that paste contents and is ignored by the others; onto an array spilled over more than one cell it is refused
-(`array`).
+kinds that paste contents and is ignored by the others; onto an array spilled over more than one cell or a legacy
+array formula, of one cell or its whole range, it is refused (`array`).
 
 ```ts
 type PasteOperation = 'add' | 'subtract' | 'multiply' | 'divide'

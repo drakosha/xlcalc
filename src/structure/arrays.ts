@@ -54,6 +54,12 @@ export function arrayRefusal(book: BookInput, p: Paste): EngineMessage | null {
   return null
 }
 
+/** Why Excel refuses an operation of Paste Special over `area` of `sheet`, or null: any legacy array formula it meets, of one cell or its whole range (the paste set `array-ops`). */
+export function operationRefusal(sheet: SheetInput, area: Rect): EngineMessage | null {
+  for (const [addr, x] of arraysOf(sheet)) if (meets(x, area)) return refuse(sheet.name, addr, x)
+  return null
+}
+
 /**
  * The cells of a copy's source that lie in an area without all of it: each as its own array formula over the cell, its
  * area's formula as copied from the area's cell to it (`shift`), with the cell's own looks, note, link and meta; whole

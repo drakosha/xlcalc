@@ -1,0 +1,203 @@
+{
+ "tiled-over-one-cell": {
+  "refused": "the operation would change part of the array formula S!E1 (E1)"
+ },
+ "transposed-onto-one-cell": {
+  "refused": "the operation would change part of the array formula S!E1 (E1)"
+ },
+ "skip-onto-one-cell": {
+  "refused": "the operation would change part of the array formula S!E1 (E1)"
+ },
+ "last-cell-alone": {
+  "refused": "the operation would change part of the array formula S!C1 (C1:C2)"
+ },
+ "other-sheet-one-cell": {
+  "refused": "the operation would change part of the array formula T!B2 (B2)"
+ },
+ "beside-array": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B1": {
+      "value": 5
+     },
+     "C1": {
+      "formula": "A1:A2*10",
+      "array": "C1:C2"
+     },
+     "D1": {
+      "value": 2
+     },
+     "E1": {
+      "formula": "SUM(A1:A2)",
+      "array": "E1"
+     },
+     "J1": {
+      "value": 1
+     },
+     "A2": {
+      "value": 3
+     },
+     "D2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 7
+     },
+     "J2": {
+      "value": 1
+     },
+     "A3": {
+      "value": 4
+     },
+     "J3": {
+      "value": 1
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "B2": {
+      "formula": "MAX('S'!A1:A3)",
+      "array": "B2"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "array-onto-plain": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B1": {
+      "value": 5
+     },
+     "C1": {
+      "formula": "A1:A2*10",
+      "array": "C1:C2"
+     },
+     "E1": {
+      "formula": "SUM(A1:A2)",
+      "array": "E1"
+     },
+     "J1": {
+      "value": 21
+     },
+     "A2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 7
+     },
+     "J2": {
+      "value": 31
+     },
+     "A3": {
+      "value": 4
+     },
+     "J3": {
+      "value": 1
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "B2": {
+      "formula": "MAX('S'!A1:A3)",
+      "array": "B2"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ },
+ "array-formulas-onto-plain": {
+  "shown": {
+   "S": {
+    "cells": {
+     "A1": {
+      "value": 2
+     },
+     "B1": {
+      "value": 5
+     },
+     "C1": {
+      "formula": "A1:A2*10",
+      "array": "C1:C2"
+     },
+     "E1": {
+      "formula": "SUM(A1:A2)",
+      "array": "E1"
+     },
+     "J1": {
+      "value": 1
+     },
+     "A2": {
+      "value": 3
+     },
+     "E2": {
+      "value": 7
+     },
+     "J2": {
+      "formula": "1+(H2:H3*10)"
+     },
+     "A3": {
+      "value": 4
+     },
+     "J3": {
+      "value": 1
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   },
+   "T": {
+    "cells": {
+     "B2": {
+      "formula": "MAX('S'!A1:A3)",
+      "array": "B2"
+     }
+    },
+    "merges": [],
+    "rules": [],
+    "validations": [],
+    "widths": {},
+    "heights": {},
+    "tables": []
+   }
+  }
+ }
+}
