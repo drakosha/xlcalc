@@ -22,7 +22,7 @@ const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp
 const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url))
 
 /** ERROR.TYPE → error code. */
-const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
+const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 10: 'CONNECT', 11: 'BLOCKED', 14: 'CALC' }
 
 /** A cell read through its type code (`READ_COLUMNS` in `book.ts`: 0 number, -1 TRUE, -2 FALSE, -3 text, > 0 ERROR.TYPE), number and text. */
 export function typedValue(type: number, num: unknown, text: unknown): Val {
