@@ -1680,6 +1680,11 @@ interface CellIssue extends CellRef {
   at?: number
   /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
   fn?: string
+  /**
+   * The formula is not calculated and shows the value its file stores (`cached`) or its cell holds: it calls a function
+   * the engine does not know (`unknownFunctions: 'held'`, `error` NAME) or a function of connections (`error` CONNECT).
+   */
+  fromFile?: true
 }
 ```
 
@@ -1698,6 +1703,8 @@ interface CellIssueDetail {
   check?: CheckCode
   at?: number
   fn?: string
+  /** As `CellIssue.fromFile`: the formula shows the value its file stores, not calculated. */
+  fromFile?: true
   origin: CellRef
 }
 ```
@@ -2232,6 +2239,8 @@ interface ComputeOptions {
    * it, or empty text when the file stores none. Nothing else is read from them.
    */
   cached?: CachedValues
+  /** How a formula calling a function the engine does not know is calculated: `name` by default (`UnknownFunctions`). */
+  unknownFunctions?: UnknownFunctions
   /** The file the workbook was opened from (`BookFile`): what CELL and INFO tell of it. A workbook not saved yet without it. */
   file?: BookFile
 }
@@ -2790,10 +2799,13 @@ interface EntryWidthOptions extends DisplayOptions {
 `CALC`: Excel's #CALC!, an empty array (`FILTER` that matches nothing) or text longer than 32,767 characters
 (`CONCAT`). `SPILL`: an array that cannot spill from its formula's cell (the range is not empty, overlaps a merged
 area or runs off the sheet). `NULL`: Excel's #NULL!, ranges that do not intersect under the intersection operator
-(`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse).
+(`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse). The errors of
+the functions that reach outside the workbook (`WEBSERVICE`, `STOCKHISTORY`, the cube functions): `CONNECT`, Excel's
+#CONNECT!, a service that cannot be reached; `BLOCKED`, #BLOCKED!, a service that is not allowed or needs a sign-in;
+`BUSY`, #BUSY!, and `GETTING_DATA`, #GETTING_DATA (a cube function's), an answer still on its way.
 
 ```ts
-type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
+type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR' | 'CONNECT' | 'BLOCKED' | 'BUSY' | 'GETTING_DATA'
 ```
 
 ### `Execution`
@@ -3141,10 +3153,11 @@ interface FunctionArgument {
 ### `FunctionCategory`
 
 A function category, as Excel's Insert Function dialog lists them; `compatibility` holds the old names Excel keeps
-alongside their newer versions (`NORMDIST` alongside `NORM.DIST`).
+alongside their newer versions (`NORMDIST` alongside `NORM.DIST`); `user` the functions of add-ins (`EUROCONVERT`,
+`CALL`), `cube` those of an OLAP cube's connection, `web` those over web addresses (`WEBSERVICE`, `ENCODEURL`).
 
 ```ts
-type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'engineering' | 'compatibility'
+type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'user' | 'engineering' | 'cube' | 'compatibility' | 'web'
 ```
 
 ### `FunctionSignature`
@@ -4519,7 +4532,7 @@ stored in the workbook's file; from then on, the session's workbook holds them a
 it, is the file the workbook was opened from ([`BookFile`](#bookfile)).
 
 ```ts
-type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions; cached?: CachedValues; file?: BookFile }
+type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions; cached?: CachedValues; unknownFunctions?: UnknownFunctions; file?: BookFile }
 ```
 
 ### `SessionStructureResult`
@@ -5174,6 +5187,20 @@ interface UndoResult extends EditResult {
    */
   mapCell?(ref: CellRef): CellRef | null
 }
+```
+
+### `UnknownFunctions`
+
+A formula that calls a function the engine does not know (an add-in's, a host's not given as `externals`), whose check
+is `unknown_function`: `name` makes it `#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell
+holds ([`CellInput.held`](#cellinput)) or its file stores (`cached`), as Excel shows a file's value until it calculates the cell, and
+the cells that depend on it are calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once
+the cell is edited or a cell it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at
+once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
+same way, whatever this option.
+
+```ts
+type UnknownFunctions = 'name' | 'held'
 ```
 
 ### `ValidateContext`

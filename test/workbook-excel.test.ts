@@ -14,7 +14,6 @@ const SETS = storedSets<StoredWorkbook>('workbook')
 
 /** Cells whose answer differs from Excel's for a reason outside the case's feature: `<set>:<case>` → cell → why. */
 const OUTSIDE = {
-  'F!A82': 'COUPDAYS is not in the whitelist (#NAME?)',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets)',
 }
 /** Excel starts a cycle from the value the file stores for its cells; a book stores none and the engine starts from 0. */

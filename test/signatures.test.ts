@@ -53,7 +53,7 @@ describe('functionSignature', () => {
   })
 
   it('gives every function a category of the window and a line in en-US and ru-RU', () => {
-    expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'engineering', 'compatibility'])
+    expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'user', 'engineering', 'cube', 'compatibility', 'web'])
     for (const name of FUNCTION_NAMES) {
       expect(FUNCTION_CATEGORIES, name).toContain(functionSignature(name)!.category)
       for (const locale of [undefined, ru]) expect(functionDescription(name, locale), `${locale ? 'ru' : 'en'} ${name}`).toMatch(/^\S.*\.$/)

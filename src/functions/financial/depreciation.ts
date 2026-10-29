@@ -33,6 +33,50 @@ function amorFirst(purchased: number, first: number, basis: number): number {
 }
 
 /** AMORDEGRC's coefficient by asset life 1/rate; a life of 2 years or less is #NUM!. */
+/**
+ * VDB from `start` to `end`. Excel's periods run from the fractional part of `start` (0.5, 1.5, 2.5… for a start of 8.5),
+ * after a first one of that length: each period declines the book value by the rate, never below the salvage (with a
+ * rate of 1 or more, all of it but the salvage), and from the period where the rest spread evenly over the rest of the
+ * life gives more, by that even amount; a period cut short takes its share of its amount. Without the switch, each whole
+ * period's double-declining amount, the first and last ones in part.
+ */
+function vdb(cost: number, salvage: number, life: number, start: number, end: number, factor: number, noSwitch: boolean): number {
+  if (noSwitch) {
+    const s0 = Math.floor(start)
+    const e0 = Math.ceil(end)
+    let sum = 0
+    for (let i = s0 + 1; i <= e0; i++) {
+      spend(1)
+      const d = ddb(cost, salvage, life, i, factor)
+      sum += i === s0 + 1 ? d * (Math.min(end, s0 + 1) - start) : i === e0 ? d * (end + 1 - e0) : d
+    }
+    return sum
+  }
+  const rate = factor / life
+  const frac = start - Math.floor(start)
+  // period k runs from `at(k)` to `at(k + 1)`: 0, then the fractional part of start and whole periods after it
+  const at = (k: number) => (k === 0 ? 0 : frac ? frac + k - 1 : k)
+  const first = frac ? Math.floor(start) + 1 : start
+  let left = cost - salvage
+  let even = 0
+  let sum = 0
+  for (let k = 0; at(k) < end; k++) {
+    spend(1)
+    const t = at(k)
+    let amount = even
+    if (!even) {
+      // the decline before the salvage limits it decides the switch; a rate of 1 or more takes everything at once
+      const declined = rate >= 1 ? left : (left + salvage) * rate
+      if (rate < 1 && left / (life - t) > declined) even = amount = left / (life - t)
+      else amount = Math.min(declined, left)
+    }
+    const part = amount * (Math.min(at(k + 1), end) - t)
+    left -= part
+    if (k >= first) sum += part
+  }
+  return sum
+}
+
 const coefficient = (life: number) => (life <= 2 ? NaN : life <= 4 ? 1.5 : life <= 6 ? 2 : 2.5)
 
 /** AMORDEGRC and AMORLINC check cost, dates, salvage, period and rate before they read the basis. */
@@ -99,6 +143,11 @@ export const functions: Record<string, FnDef> = {
     args: 'n n n n n?',
     fn: (cost: number, salvage: number, life: number, period: number, factor = 2) =>
       cost < 0 || salvage < 0 || life <= 0 || period <= 0 || period > life || factor <= 0 ? E.NUM : ddb(cost, salvage, life, Math.max(1, period), factor),
+  },
+  VDB: {
+    args: 'n n n n n n? b?',
+    fn: (cost: number, salvage: number, life: number, start: number, end: number, factor = 2, noSwitch = false) =>
+      cost < 0 || salvage < 0 || life <= 0 || start < 0 || end < start || end > life || factor < 0 ? E.NUM : vdb(cost, salvage, life, start, end, factor, noSwitch),
   },
   SLN: { args: 'n n n', fn: (cost: number, salvage: number, life: number) => (life === 0 ? E.DIV0 : (cost - salvage) / life) },
   SYD: {

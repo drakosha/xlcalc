@@ -44,6 +44,8 @@ export const WIN_SETS: WinSet[] = [
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
 export const WIN_REASONS = {
+  winTranslate:
+    '`TRANSLATE` and `DETECTLANGUAGE` are not functions of Excel 16.0.20430 for Windows (`#NAME?`); the engine answers `#BLOCKED!`, as Excel answers `STOCKHISTORY` where Microsoft\'s service is not reached.',
   winGroupby: '`GROUPBY` and `PIVOTBY`: Excel for Windows 16.0.20430 (Current Channel 2024) does not know them and answers `#NAME?`; Excel for Mac 16.114 and the engine summarize.',
   winEta: 'A function by its name as a value (`BYROW(A1:C3,SUM)`, `_xleta.SUM` in a file): Excel for Windows 16.0.20430 does not know it and answers `#NAME?`; Excel for Mac 16.114 and the engine call the function.',
   winLambdaCount: 'MAP, REDUCE, BYROW and MAKEARRAY given a LAMBDA with the wrong number of parameters: Excel for Windows 16.0.20430 calls it at each value and answers an array of errors (REDUCE `#N/A`); Excel for Mac 16.114 and the engine answer `#VALUE!` for the call, as Microsoft documents.',

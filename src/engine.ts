@@ -7,14 +7,14 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
+import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput, UnknownFunctions } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { externalNames } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
-import { builtAnew, putHeld } from './held.js'
+import { builtAnew, holdStored, putHeld, storedOf } from './held.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
@@ -34,7 +34,7 @@ import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
 import { quoteSheet, sheetKey } from './syntax.js'
-import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js'
+import { prepare, preparedHolding, prepareShaped, type Prepared, type Shapes } from './prepare.js'
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
@@ -52,6 +52,8 @@ export interface Formula extends FormulaCode {
   text: string
   /** An array formula of the old kind: its area (`CellInput.array`, `spill/fixed.ts`). */
   area?: Rect
+  /** A call to a function the engine does not know, which the formula keeps a value over: the check's refusal, reported once it is calculated. */
+  unknown?: Invalid
   /** A dynamic formula's references found in its last computation (`graph/dynamic.ts`); none on any other formula. */
   reads?: Rng[]
 }
@@ -77,8 +79,10 @@ export interface EngineOptions {
   own?: (cells: Record<string, CellInput>) => boolean
   /** The addresses of cells objects in their order, listed already (`checkBook`): the state reads those it takes by them. */
   keys?: Map<object, string[]>
-  /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none. */
+  /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none, and those that keep the file's value (`held.ts`). */
   cached?: CachedValues
+  /** `ComputeOptions.unknownFunctions`. */
+  unknownFunctions?: UnknownFunctions
   /** What a formula showed before a session's book was built again, for one a circular reference stops now that holds none (`held.ts`). */
   prior?: (f: Formula) => V | undefined
   /** Gets the sheets whose cells the state copied to change a held value: the book given holds other inputs there. */
@@ -97,6 +101,8 @@ export interface EngineState {
   nameIssues: NameIssue[]
   tables: Tables
   externalFunctions: string[]
+  /** A formula calling a function the engine does not know keeps the value its cell holds or its file stores (`unknownFunctions: 'held'`). */
+  unknownHeld: boolean
   ctx: RuntimeContext
   rt: Runtime
   compiler: Compiler
@@ -203,7 +209,7 @@ function emptySheet(name: string): SheetData {
 
 // ---------- preparation ----------
 
-export const codegenContext = (state: EngineState, s: number, area?: Rect): CodegenContext => ({
+export const codegenContext = (state: EngineState, s: number, area?: Rect, unknown?: boolean): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
   table: (n, r) => {
@@ -213,6 +219,7 @@ export const codegenContext = (state: EngineState, s: number, area?: Rect): Code
   },
   link: (book, sheet) => linkedSheet(state.links, book, sheet),
   ...(area ? { area } : {}),
+  ...(unknown ? { unknown: (name: string) => !state.externalFunctions.includes(name) } : {}),
 })
 
 /** The area of a formula cell's array formula of the old kind, if it is one. */
@@ -225,10 +232,10 @@ const areaOf = (cell: CellInput, row: number, col: number) => (cell.array === un
 const erring = (cell: CellInput, invalid: Invalid): Extract<Prepared, { ok: true }> => ({ ok: true, text: cell.formula!, ast: { k: 'err', code: invalid.error } })
 
 /** A formula cell compiled: its code, and the area of an old-kind array formula. */
-function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }>): Formula {
+function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }> & { unknown?: Invalid }): Formula {
   const area = areaOf(cell, row, col)
-  const g = state.compiler.formula(codegenContext(state, s, area), p.ast, s, row, col)
-  return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}) }
+  const g = state.compiler.formula(codegenContext(state, s, area, !!p.unknown), p.ast, s, row, col)
+  return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}), ...(p.unknown ? { unknown: p.unknown } : {}) }
 }
 
 /** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
@@ -292,6 +299,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     nameIssues: prepared.issues,
     tables,
     externalFunctions,
+    unknownHeld: opts.unknownFunctions === 'held',
     ctx,
     rt,
     compiler: makeCompiler(rt, opts.execution ?? 'closures'),
@@ -319,6 +327,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   }
   ctx.book = bookFacts(state, opts.file)
   const pending: Formula[] = []
+  // the value the file stores for a formula that keeps it (a function of connections, one the engine does not know)
+  const stored = opts.cached && storedOf(state, opts.cached)
   // the formulas of one shape are prepared once while this state is built
   const shapes: Shapes = new Map()
   for (let s = 0; s < input.sheets.length; s++) {
@@ -339,7 +349,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (due()) yield
       step()
       count(pending.length + state.invalid.size + 1)
-      let p = prepareShaped(state, shapes, s, row, col, cellIn.formula)
+      const kept = cellIn.held ?? stored?.(s, addr)
+      let p = preparedHolding(state, s, row, col, cellIn.formula, prepareShaped(state, shapes, s, row, col, cellIn.formula), kept)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         if (cellIn.array !== undefined) p = erring(cellIn, p.invalid)
@@ -351,6 +362,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
       if (cellIn.held !== undefined) state.held.set(f.id, fromCellValue(cellIn.held))
+      else if (f.stored !== undefined && kept !== undefined) holdStored(state, f, fromCellValue(kept))
       pending.push(f)
       if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
@@ -413,7 +425,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
-      let p = prepare(state, s, row, col, input.formula)
+      let p = preparedHolding(state, s, row, col, input.formula, prepare(state, s, row, col, input.formula), input.held)
       if (!p.ok) {
         state.invalid.set(k, p.invalid)
         if (input.array !== undefined) p = erring(input, p.invalid)

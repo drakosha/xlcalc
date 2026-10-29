@@ -151,6 +151,7 @@ const MAC_NUM = 'Excel for Mac answered #NUM! in the first run of indirect, not 
 const SAVED_UNSTABLE: Record<string, string> = {
   'fuzz:1#1263': 'DAY(WEEKNUM(40977,1E+3)<>2.5): 1 or #NUM! from run to run (bench/coverage/README.md)',
   ...Object.fromEntries(['a1#26', 'offset#37', 'arrays#1', 'arrays#2', 'arrays#3', 'arrays#4', 'arrays#5', 'cell#26', 'formulatext#4'].map((id) => [`indirect:${id}`, MAC_NUM])),
+  ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [`east-asian-held:PHONETIC#${i + 1}`, "PHONETIC: Excel for Mac answers the case's reading #NUM! and stores #N/A, Excel for Windows's answer"])),
 }
 
 /** Cells Excel left uncomputed, in a circular reference without iterative calculation: the file stores empty text for them. */

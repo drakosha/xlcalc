@@ -5,7 +5,7 @@
 import { dateToSerial, formatAddress } from '../../src/model.js'
 import { parseRange } from '../../src/structure/area.js'
 
-export type ErrCode = 'NULL' | 'DIV0' | 'VALUE' | 'REF' | 'NAME' | 'NUM' | 'NA' | 'GETTING_DATA' | 'SPILL' | 'CALC' | 'ERROR'
+export type ErrCode = 'NULL' | 'DIV0' | 'VALUE' | 'REF' | 'NAME' | 'NUM' | 'NA' | 'GETTING_DATA' | 'SPILL' | 'CONNECT' | 'BLOCKED' | 'CALC' | 'ERROR'
 
 /** A cell's value: a date is kept as a serial number and written with a date format. */
 export type Cell = number | string | boolean | { error: ErrCode; formula: string } | { date: number } | { text: string; formula: string }

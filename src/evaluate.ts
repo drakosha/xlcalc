@@ -78,9 +78,9 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
  * (`held.ts`), unless `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set
  * `iterate`): a number by `delta` or more, a number turned into another type or back; text, a boolean or an error
  * changed into another of them does not count. Between two formulas the steps yield when the computation's slice is
- * used up.
+ * used up. `edited`: a change, not a book built, computes them, so a formula keeping the value its file stores is computed.
  */
-function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>): Steps<boolean> {
+function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>, edited = false): Steps<boolean> {
   const { rt, spills } = state
   const independent = active && active.size > 1
   if (ids.length >= 64) state.ctx.aggregates.invalidateCells(ids.map((id) => state.formulas[id]!))
@@ -107,6 +107,10 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
       endSpill(state, f, t, true)
       // in a book with dynamic formulas a round may compute a formula before the cycle it is in is found: it holds what it showed before the edits
       v = heldAt(state, f, shown(state.dyn ? (t?.cells.get(placeOf(f.s, f.r, f.c)) ?? was) : was))
+    } else if (f.stored !== undefined && !edited && state.held.has(id)) {
+      // the value its file stores, until a change reaches it: then it is computed and drops the value (`unhold`)
+      endSpill(state, f, t, false)
+      v = state.held.get(id)!
     } else {
       // out of a cycle's way, a formula holding a value drops it once the computation settles (a spill may close the cycle again)
       if (state.held.size && state.held.has(id)) state.outside.add(id)
@@ -230,7 +234,7 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
     for (const id of roots) dirty.add(id)
     active = dirty
   }
-  yield* settle(state, lists, t, active)
+  yield* settle(state, lists, t, active, true)
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
   for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
@@ -269,8 +273,11 @@ function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {
 /** A guard on rounds: arrays settle in a few (a spill only gives way to one of lower rank, `spill/rank.ts`). */
 const ROUNDS = 100_000
 
-/** Rounds of evaluation until no spill changes cells already read or frees cells an array waits for. */
-function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, active?: Set<number>): Steps<void> {
+/**
+ * Rounds of evaluation until no spill changes cells already read or frees cells an array waits for. `edited`: a change
+ * starts them (an edit, not a book built): a formula keeping the value its file stores is computed when a round reaches it.
+ */
+function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, active?: Set<number>, edited = false): Steps<void> {
   const sp = state.spills
   state.dyn?.seen.clear()
   let last: string | undefined
@@ -279,7 +286,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     sp.touched = []
     sp.since = sp.step
     sp.claimsChanged = false
-    yield* evaluate(state, lists[0], t, false, 0, active)
+    yield* evaluate(state, lists[0], t, false, 0, active, edited)
     // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
     const iterated = state.input.iteration && lists[1].length ? sp.step : Infinity
     if (iterated < Infinity) yield* iterate(state, t)

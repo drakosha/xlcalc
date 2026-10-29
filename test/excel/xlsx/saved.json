@@ -484,6 +484,24 @@
   },
   "indirect-held-3-1": {
    "sent": "3d67eca60b992ef08938a17bbc979a0100b0e2d364fa1e88998bf514f9cb5459"
+  },
+  "coupdays-vdb-1": {
+   "sent": "3b55179bbfa9b714d84557ac243645fec85508bb1d54d87e9caf06861baaad62"
+  },
+  "coupdays-vdb-2": {
+   "sent": "1d316d9fc0e7fc855fdd3859586c84ee8d5d6d0f436a4a4608eb1c62e2332339"
+  },
+  "coupdays-vdb-held-1": {
+   "sent": "6732264f8872f538ea7bfaaa6543f52d85b9d918827c3134bb942a0c3c7a6f49"
+  },
+  "coupdays-vdb-held-2-1": {
+   "sent": "3c9b430d9acee89cd1537dbc0e853857604d794d058939cf1cd318bb405b0d01"
+  },
+  "coupdays-vdb-held-3-1": {
+   "sent": "ab88f14e7838c936c4e289077f4bfe426744fffb808c606e79d2d6ab00769c30"
+  },
+  "east-asian-held-1": {
+   "sent": "e4d6d688b304b045aa5a75457e882e0e081b5f85714504606fd2bf4429ad16da"
   }
  }
 }

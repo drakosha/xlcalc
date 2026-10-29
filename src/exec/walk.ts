@@ -9,6 +9,7 @@ import { shapes, sizeOf, type NameRef, type Size } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { holds } from '../arity.js'
 import { FUNCTIONS } from '../functions.js'
+import { STORED_FUNCTIONS } from '../functions/connections.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { decode, trimOf, type Area, type Bound, type Rect } from '../structure/area.js'
@@ -42,6 +43,11 @@ export interface CodegenContext {
   table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
   /** The runtime index of a linked workbook's sheet (`links.ts`), undefined for none: the reference is `#REF!`. */
   link?(book: number, sheet: string): number | undefined
+  /**
+   * Whether a call is to a function the engine does not know, in a formula that keeps the value its file stores
+   * (`unknownFunctions: 'held'`): its value is #NAME?, and its arguments are read for the cells they refer to.
+   */
+  unknown?(name: string): boolean
 }
 
 export type Operator = 'add' | 'sub' | 'addLast' | 'subLast' | 'mul' | 'div' | 'pow' | 'cat'
@@ -168,6 +174,11 @@ export interface FormulaInfo {
   nested: boolean
   /** Calls an external function (its missing value is #N/A). */
   external: boolean
+  /**
+   * The first function it calls whose value comes from outside the workbook, so that the formula can keep the value its
+   * file stores (`held.ts`): one of connections (`CUBEVALUE`), or one the engine does not know (`CodegenContext.unknown`).
+   */
+  stored?: string
   /** An array formula: the most rows and columns it answers, where the formula tells them (`arrays/shape.ts`). */
   size?: Size
 }
@@ -547,10 +558,16 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
         if (param) return param
         const spec = FUNCTIONS[n.name]
+        if (!spec && ctx.unknown?.(n.name)) {
+          info.stored ??= n.name
+          for (const a of n.args) if (a.k !== 'missing') go(a, true)
+          return b.value(E.NAME)
+        }
         if (!spec) {
           info.external = true
           return b.external(canonical(n))
         }
+        if (STORED_FUNCTIONS.has(n.name)) info.stored ??= n.name
         if (spec.volatile) info.volatile = true
         if (spec.dynamic) info.dynamic = true
         if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)

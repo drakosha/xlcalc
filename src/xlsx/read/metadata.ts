@@ -9,6 +9,15 @@ import { attributes, element, elements, flag } from '../xml/scan.js'
 /** The errors of rich values by their `errorType`, in ERROR.TYPE's order: the typed ones first. */
 export const RICH_ERRORS = [...TYPED_ERRORS, '#GETTING_DATA', ERROR_TEXT.SPILL, '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', ERROR_TEXT.CALC]
 
+/** The rich value `errorType` of the errors Excel keeps as rich values; those of connections after the first two. */
+export const RICH_TYPE = {
+  SPILL: RICH_ERRORS.indexOf(ERROR_TEXT.SPILL),
+  CALC: RICH_ERRORS.indexOf(ERROR_TEXT.CALC),
+  CONNECT: RICH_ERRORS.indexOf(ERROR_TEXT.CONNECT),
+  BLOCKED: RICH_ERRORS.indexOf(ERROR_TEXT.BLOCKED),
+  GETTING_DATA: RICH_ERRORS.indexOf(ERROR_TEXT.GETTING_DATA),
+}
+
 export interface CellMetadata {
   /** Whether a cell metadata index (`cm`, 1-based) marks a dynamic array formula. */
   dynamic(cm: number): boolean

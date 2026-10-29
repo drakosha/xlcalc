@@ -23,8 +23,8 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** Where the Windows answers are stored, beside the Mac's in `test/excel/`. */
 export const winFile = (rel: string) => join(ROOT, 'test/excel/win', rel)
 
-/** Excel's error codes (`CVErr` numbers) as COM gives them, 0x800A0000 + code; codes past `#CALC!` are `ERROR`, as the Mac's ERROR.TYPE reading has them. */
-const XL_ERRORS: Record<number, ErrCode> = { 2000: 'NULL', 2007: 'DIV0', 2015: 'VALUE', 2023: 'REF', 2029: 'NAME', 2036: 'NUM', 2042: 'NA', 2043: 'GETTING_DATA', 2045: 'SPILL', 2050: 'CALC' }
+/** Excel's error codes (`CVErr` numbers) as COM gives them, 0x800A0000 + code; other codes are `ERROR`, as the Mac's ERROR.TYPE reading has them. */
+const XL_ERRORS: Record<number, ErrCode> = { 2000: 'NULL', 2007: 'DIV0', 2015: 'VALUE', 2023: 'REF', 2029: 'NAME', 2036: 'NUM', 2042: 'NA', 2043: 'GETTING_DATA', 2045: 'SPILL', 2046: 'CONNECT', 2047: 'BLOCKED', 2050: 'CALC' }
 const COM_ERROR_BASE = -2146828288
 
 /** A cell as `xl.ps1` writes it: null blank, a number, a string, a boolean, `{ e }` an error code, `{ other }` anything else. */

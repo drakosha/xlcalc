@@ -10,9 +10,12 @@ export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that matches nothing) or text longer than 32,767 characters
  * (`CONCAT`). `SPILL`: an array that cannot spill from its formula's cell (the range is not empty, overlaps a merged
  * area or runs off the sheet). `NULL`: Excel's #NULL!, ranges that do not intersect under the intersection operator
- * (`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse).
+ * (`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse). The errors of
+ * the functions that reach outside the workbook (`WEBSERVICE`, `STOCKHISTORY`, the cube functions): `CONNECT`, Excel's
+ * #CONNECT!, a service that cannot be reached; `BLOCKED`, #BLOCKED!, a service that is not allowed or needs a sign-in;
+ * `BUSY`, #BUSY!, and `GETTING_DATA`, #GETTING_DATA (a cube function's), an answer still on its way.
  */
-export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
+export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR' | 'CONNECT' | 'BLOCKED' | 'BUSY' | 'GETTING_DATA'
 
 /** A calculated value. Dates are returned as serial numbers, and numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }

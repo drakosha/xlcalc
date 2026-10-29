@@ -16,7 +16,6 @@ const SETS = storedSets<StoredWorkbook>('win/workbook')
 /** `<set>:<case>` → cell → why it differs from Excel for Windows (at any read). */
 const PIXELS = 'a date that does not fit shows `#` across the cell: Excel for Windows measures the column in pixels, the engine in the Mac\'s points, so the count of `#` differs'
 const OUTSIDE = {
-  'F!A82': 'COUPDAYS is not in the whitelist (#NAME?), as on the Mac',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets), as on the Mac',
 }
 /** Excel starts a cycle from what the file stores, on Windows as on the Mac; the engine from 0. */
