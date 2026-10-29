@@ -7,17 +7,8 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { bookCalculation, bookFields, bookNotes, bookPanes, bookTurned, caseBook, fieldsFile, savedDir, seenPanes, splitOf, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
+import { bookCalculation, bookFields, bookNotes, bookPanes, bookTurned, caseBook, fieldsFile, onScreen, savedDir, seenPanes, splitOf, type FieldsAnswer, type FieldsSet } from '../bench/coverage/fields/cases.js'
 import { readXlsx } from '../src/xlsx.js'
-import type { SplitPanes } from '../src/contract.js'
-
-/** A split's lines where Excel for Windows saves them: on its screen's nearest pixel (0.75 points at 96 DPI). */
-function onScreen(s: SplitPanes, dpi: number): SplitPanes {
-  const pixel = 72 / dpi
-  const out = { ...s }
-  for (const axis of ['x', 'y'] as const) if (out[axis] !== undefined) out[axis] = Math.round(out[axis] / pixel) * pixel
-  return out
-}
 
 describe.each(['sheets', 'book', 'notes', 'rotation', 'split'])('the set %s', (set) => {
   const stored = JSON.parse(readFileSync(fieldsFile(set), 'utf8')) as { meta: { dpi: number }; answers: Record<string, FieldsAnswer> }
@@ -42,7 +33,7 @@ describe.each(['sheets', 'book', 'notes', 'rotation', 'split'])('the set %s', (s
       const panes = stored.answers[c.id].panes
       if (panes !== undefined) {
         expect([panes.map((p) => seenPanes(p.panes)), bookPanes(saved.book)], c.id).toEqual([bookPanes(caseBook(c)), bookPanes(caseBook(c))])
-        expect(splitOf(saved.book), c.id).toEqual(splitOf(caseBook(c)).map((s) => s && onScreen(s, stored.meta.dpi)))
+        expect(splitOf(saved.book), c.id).toEqual(splitOf(caseBook(c)).map((s) => s && onScreen(s, 72 / stored.meta.dpi, Math.round)))
       }
     }
   })

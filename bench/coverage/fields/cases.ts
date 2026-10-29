@@ -7,7 +7,7 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, CellEdit, CellPatch, LayoutEdit, SheetView } from '../../../src/contract.js'
+import type { BookInput, CellEdit, CellPatch, LayoutEdit, SheetView, SplitPanes } from '../../../src/contract.js'
 import { withField } from '../../../src/looks/sheet.js'
 import { createSession } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
@@ -143,6 +143,13 @@ export const seenPanes = (p: SheetPanes): SheetPanes => (p[1] ? [p[0], true, fal
 
 /** The split of each sheet's window where frozen panes do not take its place. */
 export const splitOf = (b: BookInput) => b.sheets.map((s) => (s.frozen ? undefined : s.view?.split))
+
+/** A split's lines where an Excel saves them: on a pixel of its screen (`pixel` points), found by `round`. */
+export function onScreen(s: SplitPanes, pixel: number, round: (n: number) => number): SplitPanes {
+  const out = { ...s }
+  for (const axis of ['x', 'y'] as const) if (out[axis] !== undefined) out[axis] = round(out[axis] / pixel) * pixel
+  return out
+}
 
 /** What the sheets of a book hold of the fields, as Excel reads them. */
 export const bookFields = (b: BookInput): SheetFields[] => b.sheets.map((s) => [s.name, s.tabColor ?? null, s.view?.gridlines !== false, s.view?.headings !== false])
