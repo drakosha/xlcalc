@@ -9,6 +9,7 @@ import { parseTokens } from '../../syntax/parse.js'
 import { mapAst, sheetKey, walk } from '../../syntax/print.js'
 import { bindable, bindCalls, bindTables } from '../../syntax/check.js'
 import { caseKey } from '../../collate.js'
+import { FUNCTION_WORDS } from '../../function-words.js'
 import { bindLinks } from '../../syntax/links.js'
 import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
@@ -43,7 +44,9 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   }
   const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
-  ast = bindable(bound.ast) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name))), names) : bound.ast
+  // the functions by their names alone: the writer runs without the engine (`xlcalc/xlsx`)
+  const isFn = (name: string) => FUNCTION_WORDS.has(name)
+  ast = bindable(bound.ast, isFn) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name)), undefined, true, isFn), names) : bound.ast
   let ok = true
   // a defined name's ref may name a sheet the book does not have; its links are bound without the walk
   let linked = !!opts.anySheet

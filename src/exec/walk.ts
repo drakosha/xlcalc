@@ -8,6 +8,7 @@
 import { shapes, sizeOf, type NameRef, type Size } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { holds } from '../arity.js'
+import { wordKey } from '../collate.js'
 import { FUNCTIONS } from '../functions.js'
 import { STORED_FUNCTIONS } from '../functions/connections.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
@@ -445,187 +446,188 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // how deep the walk is in the formula and in the names it expands, and the deepest it went: a LAMBDA's calculation's height
   let level = 0
   let deepest = 0
+  // one frame a node, as a long flat formula (`1+1+…`) nests as deep as it is long
   const go = (n: Ast, rangeOk = false): T => {
     if (++level > deepest) deepest = level
-    const code = node(n, rangeOk)
-    level--
-    return code
-  }
-  const node = (n: Ast, rangeOk: boolean): T => {
-    switch (n.k) {
-      case 'num':
-      case 'str':
-      case 'bool':
-        return b.value(n.v)
-      case 'err':
-        return b.value(E[n.code])
-      case 'arr': {
-        const v = n.rows.flat().map((x) => (x.k === 'err' ? E[x.code] : x.v))
-        return b.array(new Arr(n.rows.length, n.rows[0].length, n.rows.length, n.rows[0].length, v))
-      }
-      case 'ref': {
-        const g = rng(n, ctx.sheet(n.sheet))
-        // a trim reference reads its cells to trim them
-        const trim = trimOf(n.ref.text)
-        if (trim) info.refs.push(g)
-        else read(n, g)
-        // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
-        const a = ctx.here && relative(n.ref)
-        if (a) {
-          const [here, o] = [ctx.here!, ctx.origin!]
-          const at = () => {
-            const x = placed(a, here.r - o.r + MAX_ROWS, here.c - o.c + MAX_COLS)
-            return new Rng(g.s, x.r1, x.c1, x.r2, x.c2)
+    try {
+      switch (n.k) {
+        case 'num':
+        case 'str':
+        case 'bool':
+          return b.value(n.v)
+        case 'err':
+          return b.value(E[n.code])
+        case 'arr': {
+          const v = n.rows.flat().map((x) => (x.k === 'err' ? E[x.code] : x.v))
+          return b.array(new Arr(n.rows.length, n.rows[0].length, n.rows.length, n.rows[0].length, v))
+        }
+        case 'ref': {
+          const g = rng(n, ctx.sheet(n.sheet))
+          // a trim reference reads its cells to trim them
+          const trim = trimOf(n.ref.text)
+          if (trim) info.refs.push(g)
+          else read(n, g)
+          // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
+          const a = ctx.here && relative(n.ref)
+          if (a) {
+            const [here, o] = [ctx.here!, ctx.origin!]
+            const at = () => {
+              const x = placed(a, here.r - o.r + MAX_ROWS, here.c - o.c + MAX_COLS)
+              return new Rng(g.s, x.r1, x.c1, x.r2, x.c2)
+            }
+            return b.moving!(at, n.ref.spill ? 'spill' : n.ref.kind === 'cell' && !rangeOk ? 'cell' : rangeOk ? 'range' : 'value')
           }
-          return b.moving!(at, n.ref.spill ? 'spill' : n.ref.kind === 'cell' && !rangeOk ? 'cell' : rangeOk ? 'range' : 'value')
+          if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
+          // a trim reference (`A1:.C9`) is TRIMRANGE over its range
+          if (trim) return b.call('TRIMRANGE', [b.range(g, false), b.value(trim), b.value(trim)], false)
+          if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
+          return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
         }
-        if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
-        // a trim reference (`A1:.C9`) is TRIMRANGE over its range
-        if (trim) return b.call('TRIMRANGE', [b.range(g, false), b.value(trim), b.value(trim)], false)
-        if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
-        return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
-      }
-      case 'xref': {
-        const k = linked(n)
-        if (k === undefined) return b.value(E.REF)
-        const g = rng(n, k)
-        info.refs.push(g)
-        if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
-        return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
-      }
-      // the engine puts a linked workbook's name's reference in its place before it compiles (`links.ts`)
-      case 'xname':
-        return b.value(E.REF)
-      case 'table': {
-        const x = table(n)
-        if (typeof x === 'string') return b.value(E[x])
-        const g = new Rng(x.s, x.r1, x.c1, x.r2, x.c2)
-        read(n, g)
-        const one = g.r2 === g.r1 && g.c2 === g.c1
-        return one && !rangeOk ? b.cell(g.s, g.r1, g.c1) : b.range(g, false)
-      }
-      case 'ref3d': {
-        // under an operator or alone Excel answers #REF! for it
-        if (!rangeOk) return b.value(E.REF)
-        const x = rect(n)
-        const [i, j] = [ctx.sheet(n.first), ctx.sheet(n.last)]
-        const list: Rng[] = []
-        for (let k = Math.min(i, j); k <= Math.max(i, j); k++) list.push(new Rng(k, x.r1, x.c1, x.r2, x.c2))
-        read(n, ...list)
-        return b.areas(list)
-      }
-      case 'name': {
-        const d = resolve(n, scope)
-        if (!d) return b.value(E.NAME)
-        // a name that uses itself, through other names or not: a LAMBDA's calls itself, any other is a cycle
-        if (inside.has(d)) return selves.get(d) ?? b.value(E.CYCLE)
-        if (d.ast.k !== 'lambda') return enter(d, () => go(d.ast, rangeOk))
-        return b.recursive((self) => {
-          selves.set(d, self)
-          const code = enter(d, () => go(d.ast))
-          selves.delete(d)
-          return code
-        })
-      }
-      case 'at':
-        return value(b.at(go(n.a, true), r, c), n, rangeOk)
-      case 'union':
-        return value(
-          b.union(n.items.map((x) => go(x, true))),
-          n,
-          rangeOk,
-        )
-      case 'paren':
-        return go(n.a, rangeOk)
-      case 'un':
-        // unary plus keeps a reference (SUM(+A1:A3) sums the range)
-        return n.op === '+' ? go(n.a) : b.unary('neg', go(n.a), many(n.a))
-      case 'pct':
-        return b.unary('pct', go(n.a), many(n.a))
-      case 'bin': {
-        if (isRefOp(n.op)) {
-          // the cells between the range's ends are read too, not only the operands'
-          if (n.op === ':') around(n)
-          const [x, y] = [go(n.a, true), go(n.b, true)]
-          return value(b.refOp(n.op === ':' && placeOnly?.get(n) === 'place' ? QUIET_RANGE : n.op, x, y), n, rangeOk)
+        case 'xref': {
+          const k = linked(n)
+          if (k === undefined) return b.value(E.REF)
+          const g = rng(n, k)
+          info.refs.push(g)
+          if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
+          return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
         }
-        const x = go(n.a)
-        return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
+        // the engine puts a linked workbook's name's reference in its place before it compiles (`links.ts`)
+        case 'xname':
+          return b.value(E.REF)
+        case 'table': {
+          const x = table(n)
+          if (typeof x === 'string') return b.value(E[x])
+          const g = new Rng(x.s, x.r1, x.c1, x.r2, x.c2)
+          read(n, g)
+          const one = g.r2 === g.r1 && g.c2 === g.c1
+          return one && !rangeOk ? b.cell(g.s, g.r1, g.c1) : b.range(g, false)
+        }
+        case 'ref3d': {
+          // under an operator or alone Excel answers #REF! for it
+          if (!rangeOk) return b.value(E.REF)
+          const x = rect(n)
+          const [i, j] = [ctx.sheet(n.first), ctx.sheet(n.last)]
+          const list: Rng[] = []
+          for (let k = Math.min(i, j); k <= Math.max(i, j); k++) list.push(new Rng(k, x.r1, x.c1, x.r2, x.c2))
+          read(n, ...list)
+          return b.areas(list)
+        }
+        case 'name': {
+          const d = resolve(n, scope)
+          // a function's word no name defines: the function as a value (`BYROW(A1:C3,SUM)`)
+          if (!d) return n.sheet === undefined && FUNCTIONS[wordKey(n.name)] ? b.eta(wordKey(n.name)) : b.value(E.NAME)
+          // a name that uses itself, through other names or not: a LAMBDA's calls itself, any other is a cycle
+          if (inside.has(d)) return selves.get(d) ?? b.value(E.CYCLE)
+          if (d.ast.k !== 'lambda') return enter(d, () => go(d.ast, rangeOk))
+          return b.recursive((self) => {
+            selves.set(d, self)
+            const code = enter(d, () => go(d.ast))
+            selves.delete(d)
+            return code
+          })
+        }
+        case 'at':
+          return value(b.at(go(n.a, true), r, c), n, rangeOk)
+        case 'union':
+          return value(
+            b.union(n.items.map((x) => go(x, true))),
+            n,
+            rangeOk,
+          )
+        case 'paren':
+          return go(n.a, rangeOk)
+        case 'un':
+          // unary plus keeps a reference (SUM(+A1:A3) sums the range)
+          return n.op === '+' ? go(n.a) : b.unary('neg', go(n.a), many(n.a))
+        case 'pct':
+          return b.unary('pct', go(n.a), many(n.a))
+        case 'bin': {
+          if (isRefOp(n.op)) {
+            // the cells between the range's ends are read too, not only the operands'
+            if (n.op === ':') around(n)
+            const [x, y] = [go(n.a, true), go(n.b, true)]
+            return value(b.refOp(n.op === ':' && placeOnly?.get(n) === 'place' ? QUIET_RANGE : n.op, x, y), n, rangeOk)
+          }
+          const x = go(n.a)
+          return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
+        }
+        case 'fn': {
+          if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
+          // ISOMITTED of a parameter: whether its call left it out
+          const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
+          if (param) return param
+          const spec = FUNCTIONS[n.name]
+          if (!spec && ctx.unknown?.(n.name)) {
+            info.stored ??= n.name
+            for (const a of n.args) if (a.k !== 'missing') go(a, true)
+            return b.value(E.NAME)
+          }
+          if (!spec) {
+            info.external = true
+            return b.external(canonical(n))
+          }
+          if (STORED_FUNCTIONS.has(n.name)) info.stored ??= n.name
+          if (spec.volatile) info.volatile = true
+          if (spec.dynamic) info.dynamic = true
+          if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)
+          if (spec.looks) info.looks = true
+          if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
+          const open = OPEN_REFERENCE[n.name]
+          if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
+          const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
+          if ((n.name === 'SUMIF' || n.name === 'AVERAGEIF') && n.args.length === 3 && n.args[2].k !== 'missing') resized(n.args[0], n.args[2])
+          // a reference across sheets is passed to any argument, which takes it or answers its error
+          const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))
+          let code: T
+          if (spec.lazy) {
+            // lifted when a lifting argument is an array
+            code = b.lazy(n.name, args, n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : [])))
+          } else {
+            // RAND gets its cell, or the cell the code runs at
+            const here = ctx.here
+            if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
+            // a reference found for its place alone is not learnt by the graph: the function's quiet form
+            code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+          }
+          // a reference answered where one value goes is read here; a range position takes it as a reference
+          return spec.refs ? value(code, n, rangeOk) : code
+        }
+        case 'missing':
+          return b.value(null)
+        case 'let':
+          // the values are kept as references; the result is read where one value goes
+          return b.let(n.binds.length, (local) => {
+            n.binds.forEach((x, i) => see(x.slot, local(i), x.value))
+            const values = n.binds.map((x) => go(x.value, true))
+            return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
+          })
+        case 'local':
+          return value(uses[n.slot], n, rangeOk)
+        case 'lambda':
+          // the calculation keeps a reference it answers: its call reads it where one value goes
+          return b.lambda(n.params.length, (param, omitted) => {
+            n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
+            const [from, outer] = [level, deepest]
+            deepest = level
+            const body = go(n.body, true)
+            const height = deepest - from
+            deepest = Math.max(outer, deepest)
+            return { body, height }
+          })
+        case 'call':
+          return value(
+            b.invoke(
+              go(n.fn),
+              n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true))),
+            ),
+            n,
+            rangeOk,
+          )
+        case 'eta':
+          return b.eta(n.name)
       }
-      case 'fn': {
-        if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
-        // ISOMITTED of a parameter: whether its call left it out
-        const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
-        if (param) return param
-        const spec = FUNCTIONS[n.name]
-        if (!spec && ctx.unknown?.(n.name)) {
-          info.stored ??= n.name
-          for (const a of n.args) if (a.k !== 'missing') go(a, true)
-          return b.value(E.NAME)
-        }
-        if (!spec) {
-          info.external = true
-          return b.external(canonical(n))
-        }
-        if (STORED_FUNCTIONS.has(n.name)) info.stored ??= n.name
-        if (spec.volatile) info.volatile = true
-        if (spec.dynamic) info.dynamic = true
-        if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)
-        if (spec.looks) info.looks = true
-        if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
-        const open = OPEN_REFERENCE[n.name]
-        if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
-        const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
-        if ((n.name === 'SUMIF' || n.name === 'AVERAGEIF') && n.args.length === 3 && n.args[2].k !== 'missing') resized(n.args[0], n.args[2])
-        // a reference across sheets is passed to any argument, which takes it or answers its error
-        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))
-        let code: T
-        if (spec.lazy) {
-          // lifted when a lifting argument is an array
-          code = b.lazy(n.name, args, n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : [])))
-        } else {
-          // RAND gets its cell, or the cell the code runs at
-          const here = ctx.here
-          if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
-          // a reference found for its place alone is not learnt by the graph: the function's quiet form
-          code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
-        }
-        // a reference answered where one value goes is read here; a range position takes it as a reference
-        return spec.refs ? value(code, n, rangeOk) : code
-      }
-      case 'missing':
-        return b.value(null)
-      case 'let':
-        // the values are kept as references; the result is read where one value goes
-        return b.let(n.binds.length, (local) => {
-          n.binds.forEach((x, i) => see(x.slot, local(i), x.value))
-          const values = n.binds.map((x) => go(x.value, true))
-          return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
-        })
-      case 'local':
-        return value(uses[n.slot], n, rangeOk)
-      case 'lambda':
-        // the calculation keeps a reference it answers: its call reads it where one value goes
-        return b.lambda(n.params.length, (param, omitted) => {
-          n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
-          const [from, outer] = [level, deepest]
-          deepest = level
-          const body = go(n.body, true)
-          const height = deepest - from
-          deepest = Math.max(outer, deepest)
-          return { body, height }
-        })
-      case 'call':
-        return value(
-          b.invoke(
-            go(n.fn),
-            n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true))),
-          ),
-          n,
-          rangeOk,
-        )
-      case 'eta':
-        return b.eta(n.name)
+    } finally {
+      level--
     }
   }
   const code = go(ast)
