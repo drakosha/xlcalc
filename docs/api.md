@@ -1095,6 +1095,7 @@ interface AsyncSession {
   getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   getNamesFromSelection(sheet: string, range: string, labels: SelectionLabels): Promise<NameInput[]>
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): Promise<string[]>
+  getWorkbookStatistics(sheet: string): Promise<WorkbookStatistics>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
@@ -4197,6 +4198,8 @@ interface Session {
    * larger one is taken within it.
    */
   getSpecialCells(sheet: string, range: string, kind: SpecialCells): string[]
+  /** What Excel's Workbook Statistics shows with `sheet` active: the sheet's end and counts, and the workbook's counts. */
+  getWorkbookStatistics(sheet: string): WorkbookStatistics
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -4565,6 +4568,29 @@ interface SplitPanes {
   topLeft?: string
   /** The pane that holds the active cell and the selection; the first without it. */
   activePane?: PaneName
+}
+```
+
+### `StatisticsCounts`
+
+What Excel's Workbook Statistics (Review > Workbook Statistics) counts, on a sheet or in the workbook. The workbook
+holds no PivotTables, charts, pictures, form controls, other objects or threads of comments (a thread read from a
+file is a note): those counts are null.
+
+```ts
+interface StatisticsCounts {
+  /** Cells holding a value or a formula; each cell of a spilled array or of a legacy array formula is one. */
+  cells: number
+  tables: number
+  /** Cells with a formula; each cell of a spilled array or of a legacy array formula is one, as Excel counts them. */
+  formulas: number
+  notes: number
+  pivotTables: null
+  charts: null
+  images: null
+  formControls: null
+  objects: null
+  comments: null
 }
 ```
 
@@ -5200,6 +5226,23 @@ interface ViewportTable {
   headers: boolean
   /** Its last row is a totals row (`TableInput.totals`, false by default). */
   totals: boolean
+}
+```
+
+### `WorkbookStatistics`
+
+Excel's Workbook Statistics ([`Session.getWorkbookStatistics`](#session)): the counts of a sheet and of the whole workbook.
+
+```ts
+interface WorkbookStatistics {
+  /**
+   * The sheet's counts and its end: the cell of the last row and the last column that hold data or a note, or that a
+   * merged area over such a cell covers (`E9` for data in B9 and E2), not reached by styles, hyperlinks alone or tables
+   * as the used range is; null on a sheet without.
+   */
+  sheet: StatisticsCounts & { end: string | null }
+  /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
+  workbook: StatisticsCounts & { sheets: number }
 }
 ```
 

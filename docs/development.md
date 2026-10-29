@@ -340,6 +340,19 @@ The step `select` (above) also calls `Range.SpecialCells` with Excel's `XlCellTy
 | `special-held-2` | 2 | held out: visible cells over one cell and over an entire column |
 
 `special` held in 13 of 16: Excel's used range started at A1, where the sheet's cells started at B2, as its hidden row and column reach it at column A and row 1; and visible cells are the range's own, not those of the used range. `special-held`, predicted after the fit, held in 6 of 8: rows and columns of their own reach the used range at its far ends too (a styled row below the cells, a styled column right of them). `special-held-2` (visible cells over one cell, the whole sheet's, and over an entire column) held in 2 of 2.
+### Workbook Statistics
+
+From [A viewport for a grid](grid.md#a-viewport-for-a-grid).
+
+`npx tsx bench/coverage/run.ts stats <set>` writes each case's workbook with `writeXlsx` (threads of comments put in as Excel 365 writes them), and Excel 16.114 for Mac opens it with the case's sheet active; the step presses Review and Workbook Statistics through Accessibility, reads the rows of the window it opens and closes it. `test/stats-excel.test.ts` compares each row with `getWorkbookStatistics` over the workbook the reader reads from the case's file; a count Excel does not show must be 0. The engine's answers were committed before each set ran (`bench/coverage/stats/*.predicted.json`).
+
+| set | cases | what |
+|---|---|---|
+| `fit` | 14 | an empty sheet; constants of each kind, an error, empty text, a formula answering empty text; a style, a row, a column and a hyperlink of their own past the data; spills, one blocked and one of 5,000 cells; a legacy array formula; a merged area; two tables; a hidden sheet and another active one; notes and a thread |
+| `held` | 10 | held out: a note far past the data, data on two edges, a merged area past its value, hidden rows and columns, the sheet's last cell, a table's header alone, arrays over two dimensions, a spill over a cell with a note alone, a thread alone, the last sheet active |
+
+`fit` held in 5 of 14 cases. Excel's end of sheet is not the used range, as the engine predicted, but the last row and column of data and notes: a style, a row and a column of their own, a hyperlink alone and a table's empty rows do not reach it, a legacy array formula's cells do, and an empty sheet shows no end (fixed). Excel for Mac shows a row only where its count is above 0, except the cells, tables and formulas, which it always shows, and it never shows the workbook's notes; it shows no PivotTables, charts, images, form controls, objects or comments, of which these workbooks had none. `held`, created after it, held in 9 of 10: a merged area over a value reaches the end with its last cell (fixed). Both sets were taken twice, the second time whole after a click on Excel during the first runs, with the same answers. Excel for Windows was not checked.
+
 ### Editing a grid
 
 From [Editing a grid](edits.md).
