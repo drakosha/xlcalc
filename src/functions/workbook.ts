@@ -14,10 +14,10 @@ import { formatCodes } from './cell-format.js'
 /** The longest formula text FORMULATEXT gives: a longer one is #N/A. */
 const LONGEST = 8192
 
-/** A reference's top-left cell on one of the book's sheets (of a union's or a reference across sheets' first area), or #VALUE!. */
+/** A reference's top-left cell on one of the book's sheets (of a union's first area), or #VALUE! (a reference across sheets too). */
 function topLeft(cx: Cx, x: Arg): Rng | V {
   if (isErr(x)) return x
-  const g = x instanceof Rng ? x : x instanceof Areas ? x.list[0] : undefined
+  const g = x instanceof Rng ? x : x instanceof Areas && (!x.cube || x.list.length === 1) ? x.list[0] : undefined
   return g && g.s < cx.book.sheets ? new Rng(g.s, g.r1, g.c1, g.r1, g.c1) : E.VALUE
 }
 
@@ -151,7 +151,7 @@ function cellwise(cx: Cx, x: Arg, other: V, at: (s: number, r: number, c: number
 }
 
 export const functions: Record<string, FnDef> = {
-  // a union's or a reference across sheets' first area
+  // a union's first area
   CELL: { args: 's R?', cx: true, cell: true, dynamic: true, looks: true, array: true, areas: true, fn: (cx: Cx, s: number, r: number, c: number, type: string, ref?: Arg) => cell(cx, s, r, c, type, ref) },
   FORMULATEXT: {
     args: 'R',

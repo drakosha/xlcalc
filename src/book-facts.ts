@@ -12,6 +12,7 @@ import { showFormula } from './locale/index.js'
 import { formatAddress, parseAddress, placeOf } from './model.js'
 import { enCode } from './numfmt.js'
 import { tableAt } from './tables/model.js'
+import { parseRange } from './structure/area.js'
 
 /** The book's facts over a state, read as they are when asked: a session changes them in place. */
 export function bookFacts(state: EngineState, file: BookFile | undefined): BookFacts {
@@ -69,10 +70,15 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
     },
     file,
     manual: state.input.calculation === 'manual',
+    // the active cell where the selection holds it, else the selection's first cell, as Excel opens a file (`<selection>`'s
+    // `sqref` is A1 when not given): the set `indirect-held-2`
     activeCell: () => {
       const { s, view } = active()
-      const at = view?.activeCell ? parseAddress(view.activeCell.split(':')[0]) : { row: 0, col: 0 }
-      return { s, r: at.row, c: at.col }
+      const sel = (view?.selection ?? []).flatMap((x) => parseRange(x) ?? [])
+      if (!sel.length) sel.push({ r1: 0, c1: 0, r2: 0, c2: 0 })
+      const at = view?.activeCell ? parseAddress(view.activeCell) : undefined
+      const inside = at && sel.some((x) => at.row >= x.r1 && at.row <= x.r2 && at.col >= x.c1 && at.col <= x.c2)
+      return inside ? { s, r: at.row, c: at.col } : { s, r: sel[0].r1, c: sel[0].c1 }
     },
     topLeft: () => {
       const at = active().view?.topLeft

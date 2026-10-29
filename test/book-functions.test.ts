@@ -23,7 +23,7 @@ const book = (): BookInput => ({
         B8: { formula: 'SHEET(T!A1)&"/"&SHEETS()' }, B9: { formula: 'CELL("address")' },
       },
     },
-    { name: 'T', cells: {}, view: { activeCell: 'C4' } },
+    { name: 'T', cells: {}, view: { activeCell: 'C4', selection: ['C4'] } },
   ],
   activeSheet: 'T',
 })
@@ -41,7 +41,7 @@ describe.each(['closures', 'eval'] as Execution[])('the book functions, %s', (ex
       try {
         expect(await at(s)).toEqual(['/Users/me/[Budget.xlsx]S', '[Budget.xlsx]T!$B$3', '/Users/me/', 'G', 8, '=A1*2', true, '2/2', '[Budget.xlsx]T!$C$4'])
         await s.patchCells([{ sheet: 'S', cell: 'A1', set: { numberFormat: '$#,##0.00_);[Red]($#,##0.00)' } }])
-        expect(await at(s, 'B4')).toEqual(['C2-'])
+        expect(await at(s, 'B4')).toEqual([',2-'])
         await s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 20.7109375 } }])
         expect(await at(s, 'B5')).toEqual([20])
         await s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1+1' } }])
