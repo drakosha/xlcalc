@@ -2,7 +2,8 @@ import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig } from 'vitest/config'
 
 // FORMULA_TARGET=dist (`npm run test:dist`): tests import the built dist instead of src, and so do the
-// child processes (test/fixtures/target.ts).
+// child processes (test/fixtures/target.ts) and the bench modules the tests import, from any depth: a module left on
+// src would keep a registry of its own (a locale registered in dist not loaded there).
 const dist = fileURLToPath(new URL('./dist/', import.meta.url))
 
 /**
@@ -36,6 +37,6 @@ export default defineConfig({
     ],
   },
   resolve: {
-    alias: process.env.FORMULA_TARGET === 'dist' ? [{ find: /^\.\.\/src\/(.*)$/, replacement: `${dist}$1` }] : [],
+    alias: process.env.FORMULA_TARGET === 'dist' ? [{ find: /^(?:\.\.\/)+src\/(.*)$/, replacement: `${dist}$1` }] : [],
   },
 })
