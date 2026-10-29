@@ -84,6 +84,20 @@ it('selects the active tab alone, and keeps a hidden preceding sheet and the sel
   expect(second.book.sheets[2].frozen).toEqual({ rows: 1, columns: 1 })
 })
 
+it("reads the selection of the active pane, the top left one where the pane names none, and no other pane's", async () => {
+  const zip = await JSZip.loadAsync((await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })).data)
+  const path = 'xl/worksheets/sheet1.xml'
+  const xml = await zip.file(path)!.async('string')
+  const read = async (body: string) => {
+    zip.file(path, xml.replace(/<sheetView[^>]*\/>/, `<sheetView workbookViewId="0" tabSelected="1"><pane xSplit="3640" ySplit="1940" topLeftCell="D6"/>${body}</sheetView>`))
+    return (await readXlsx(await zip.generateAsync({ type: 'uint8array' }))).book.sheets[0].view
+  }
+  // as Excel for Mac saves a window split with its cursor on A1: the other panes' selections, none of the first
+  const others = '<selection pane="bottomLeft" activeCell="A6" sqref="A6"/><selection pane="topRight" activeCell="D1" sqref="D1"/><selection pane="bottomRight" activeCell="D6" sqref="D6"/>'
+  expect((await read(others))?.activeCell).toBeUndefined()
+  expect((await read(`<selection activeCell="B2" sqref="B2"/>${others}`))?.activeCell).toBe('B2')
+})
+
 it('roundtrips an explicitly saved first active sheet', async () => {
   const book: BookInput = { activeSheet: 'S', sheets: [{ name: 'S', cells: {} }, { name: 'Other', cells: {} }] }
   const data = (await writeXlsx({ book })).data

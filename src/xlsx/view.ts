@@ -10,10 +10,11 @@ export function readSheetView(first: Element | undefined): SheetView | undefined
   if (!first) return undefined
   const attrs = attributes(first.attrs)
   const body = first.body ?? ''
-  const pane = attributes(element(body, 'pane')?.attrs ?? '')
-  const activePane = pane.activePane
+  const paneElement = element(body, 'pane')
+  const pane = attributes(paneElement?.attrs ?? '')
   const selections = elements(body, 'selection').map((s) => attributes(s.attrs))
-  const selected = selections.find((s) => s.pane === activePane) ?? selections[0] ?? {}
+  // the active pane's selection, a pane named by neither the top left one; without panes the first selection
+  const selected = (paneElement ? selections.find((s) => (s.pane ?? 'topLeft') === (pane.activePane ?? 'topLeft')) : selections[0]) ?? {}
   const out: SheetView = {}
   const topLeft = scrollOf(attrs.topLeftCell, pane)
   if (topLeft !== undefined) out.topLeft = topLeft
