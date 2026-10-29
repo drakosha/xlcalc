@@ -20,7 +20,7 @@ import { hasCell } from '../structure/area.js'
 import { parseSpan, spanKey } from './spans.js'
 import { fitHeights, stateRows } from './heights.js'
 import { resultSheet, type Placed } from './result-sheet.js'
-import { fontSize, turnedPoints, turnOf } from './turned.js'
+import { fontSize, turnedPoints, turnedStyles, turnOf } from './turned.js'
 
 /** The widest column of the model (`ColumnInput.width`); Excel's widest is 255.83, 255 digits and the padding. */
 const MAX_WIDTH = 255
@@ -36,25 +36,22 @@ function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput
   const formats = sheetLines(sheet)
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
+  const turned = turnedStyles(styles)
   for (const [r, c, v] of cells) {
     if (c < lo || c > hi || v === null || across.some((x) => hasCell(x, r, c))) continue
-    const id = formats.look(r, c).style
-    const points = cellPoints(rules, v, formats.format(r, c), id === undefined ? undefined : styles[id])
+    // a book without turned styles looks up no cell's style
+    const id = turned && formats.look(r, c).style
+    const points = id !== null && id !== undefined && turned!.has(id) ? turnedCell(rules, v, formats.format(r, c), styles[id]) : rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
   return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points)]))
 }
 
-/**
- * The points AutoFit gives a cell: level text by its text (`fitPoints`), turned text by its turn (`turnedPoints`), its
- * line breaks lines across the column when it wraps at 90 degrees; null when it shows nothing.
- */
-function cellPoints(rules: Rules, v: CellValue, format: NumberFormat | undefined, style: CellStyle | undefined): number | null {
-  const turn = turnOf(style)
-  if (turn === undefined) return rules.fitPoints(v, format)
+/** The points AutoFit gives a turned cell (`turnedPoints`), its line breaks lines across the column when it wraps; null when it shows nothing. */
+function turnedCell(rules: Rules, v: CellValue, format: NumberFormat | undefined, style: CellStyle): number | null {
   const laid = rules.fitLaid(v, format)
-  const lines = style!.alignment!.wrap ? laid?.text.split('\n') ?? [] : []
-  return laid && turnedPoints(laid.text, fontSize(style), turn, Math.max(1, lines.length))
+  const lines = style.alignment!.wrap ? (laid?.text.split('\n') ?? []) : []
+  return laid && turnedPoints(laid.text, fontSize(style), turnOf(style)!, Math.max(1, lines.length))
 }
 
 /** What AutoFit sets on a column it fits: the width as Excel's own, the column shown; the default width bare. */
