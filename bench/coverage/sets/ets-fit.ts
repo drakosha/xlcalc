@@ -4,7 +4,10 @@
  * the final level and trend and so, with Excel's own alpha and beta, its start; series with a season given, whose
  * forecasts over one season and one step more give the final seasonal states; series to detect a season in; and how
  * the timeline and values are read (order, points at one time, gaps, blanks, steps, targets, every argument's range).
- * Answers: `test/excel/cases/ets-fit.json`; `PREDICTED`, the first model's answers, was committed before Excel ran it.
+ * Answers, kept as a measurement outside `test/excel/` as the functions are not in the whitelist
+ * (`docs/development.md`, "FORECAST.ETS"): `bench/coverage/ets/win/ets-fit.json` (Excel for Windows) and
+ * `bench/coverage/ets/mac/ets-fit.json`; `probes ets-fit` writes them to `test/excel/cases/` again. `PREDICTED`,
+ * the first model's answers, was committed before Excel ran it.
  */
 import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
