@@ -23,6 +23,7 @@ import type {
   PivotShowAs,
   PivotTable,
 } from '../../contract.js'
+import { serialToDate, type DateSystemOptions } from '../../date-serial.js'
 import type { Dxf } from '../styles/dxf.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { attrText, values } from './pivot-cache.js'
@@ -112,7 +113,9 @@ function fieldOf(e: Element, layout: PivotLayout, format: (id: string | undefine
     .filter((i) => i.t === undefined || i.t === 'data')
     .map(itemOf)
   if (items.length) f.items = items
-  if (!flag(a.defaultSubtotal, true)) f.subtotals = subtotals(a)
+  // custom subtotals by their functions' flags, which Excel writes without taking the automatic one away; none without either
+  const custom = subtotals(a)
+  if (custom.length || !flag(a.defaultSubtotal, true)) f.subtotals = custom
   if (a.subtotalCaption !== undefined) f.subtotalCaption = attrText(a.subtotalCaption)
   const own = layoutOf(flag(a.compact, true), flag(a.outline, true))
   if (own !== layout) f.layout = own
@@ -160,13 +163,18 @@ function dataFieldOf(e: Element, format: (id: string | undefined) => NumberForma
   return d
 }
 
-function filterOf(e: Element): PivotFilter {
-  const a = attributes(e.attrs)
+/** The opening tags of a PivotTable's filters, which name their field (`fld`): the AutoFilter inside one has `<filter>` tags of its own. */
+const PIVOT_FILTER = /<(?:[\w.-]+:)?filter\s((?:"[^"]*"|'[^']*'|[^>"'])*?\bfld=(?:"[^"]*"|'[^']*'|[^>"'])*?)\/?>/g
+
+/** A filter from its opening tag's attributes and its text up to the next filter: the dialog's values, a date filter's as ISO dates. */
+function filterOf(attrs: string, body: string, dates: DateSystemOptions): PivotFilter {
+  const a = attributes(attrs)
   const f: PivotFilter = { field: Number(a.fld ?? 0), type: a.type as PivotFilterType }
-  const body = e.body ?? ''
   const top = element(body, 'top10')
   const ta = top && attributes(top.attrs)
-  const args = a.stringValue1 !== undefined ? [a.stringValue1, a.stringValue2].filter((s) => s !== undefined).map(attrText) : ta ? [Number(ta.val)] : elements(body, 'customFilter').map((c) => Number(attributes(c.attrs).val))
+  const given = (k: string) => a[k] !== undefined
+  const day = (n: number) => (f.type.startsWith('date') ? serialToDate(n, dates) : n)
+  const args = given('stringValue1') ? ['stringValue1', 'stringValue2'].filter(given).map((k) => attrText(a[k])) : ta ? [Number(ta.val)] : elements(body, 'customFilter').map((c) => day(Number(attributes(c.attrs).val)))
   if (args.length) f.args = args
   if (a.iMeasureFld !== undefined) f.value = Number(a.iMeasureFld)
   if (ta && !flag(ta.top, true)) f.bottom = true
@@ -174,6 +182,12 @@ function filterOf(e: Element): PivotFilter {
   if (a.name !== undefined) f.name = attrText(a.name)
   if (a.description !== undefined) f.description = attrText(a.description)
   return f
+}
+
+/** The PivotTable's filters: each from its tag to the next one's. */
+function filtersOf(xml: string, dates: DateSystemOptions): PivotFilter[] {
+  const tags = [...xml.matchAll(PIVOT_FILTER)]
+  return tags.map((m, k) => filterOf(m[1], xml.slice(m.index! + m[0].length, tags[k + 1]?.index ?? xml.length), dates))
 }
 
 const LINE_TYPES: Record<string, PivotLine['type']> = { default: 'subtotal', grand: 'grand', blank: 'blank', ...ITEM_FUNCTIONS }
@@ -217,7 +231,7 @@ function formatOf(e: Element, dxfs: Dxf[]): PivotFormat {
 }
 
 /** What the reader of a PivotTable needs of the workbook: number formats by id and the differential formats. */
-export interface TableContext {
+export interface TableContext extends DateSystemOptions {
   format: (id: string | undefined) => NumberFormat | undefined
   dxfs: Dxf[]
 }
@@ -250,8 +264,8 @@ export function readPivotTable(xml: string, cache: number, ctx: TableContext): {
   if (data) t.values = elements(data.body ?? '', 'dataField').map((e) => dataFieldOf(e, ctx.format))
   if (flag(a.dataOnRows)) t.valuesOnRows = true
   if (a.dataPosition !== undefined) t.valuesPosition = Number(a.dataPosition)
-  const filters = element(xml, 'filters')
-  if (filters) t.filters = elements(filters.body ?? '', 'filter').map(filterOf)
+  const filters = filtersOf(xml, { dateSystem: ctx.dateSystem })
+  if (filters.length) t.filters = filters
   const grand: NonNullable<PivotTable['grandTotals']> = {}
   flags(grand, a, [
     ['rowGrandTotals', 'rows', true],
@@ -262,6 +276,8 @@ export function readPivotTable(xml: string, cache: number, ctx: TableContext): {
   if (a.indent !== undefined && Number(a.indent) !== 1) t.indent = Number(a.indent)
   const x14 = attributes(element(xml.slice(xml.lastIndexOf('<extLst')), 'pivotTableDefinition')?.attrs ?? '')
   if (flag(x14.fillDownLabelsDefault)) t.repeatLabels = true
+  // the Values row, which Excel shows unless Excel 2010's extension hides it
+  if (!flag(x14.hideValuesRow)) t.valuesRow = true
   flags(t, a, [
     ['mergeItem', 'mergeLabels', false],
     ['showHeaders', 'fieldHeaders', true],

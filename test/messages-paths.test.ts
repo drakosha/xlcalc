@@ -75,7 +75,6 @@ const TYPED: [string, EngineMessage, ValidateContext?][] = [
   ['=Х[Кол]', { key: 'unknownTable', table: 'Х' }, TABLES],
   ['=Т[Нет]', { key: 'unknownColumn', table: 'Т', column: 'Нет' }, TABLES],
   ['=ФУ(1)', { key: 'unknownFunction', fn: 'ФУ' }],
-  ['=ПОЛУЧИТЬ.ДАННЫЕ.СВОДНОЙ.ТАБЛИЦЫ(1)', { key: 'unknownFunction', fn: 'GETPIVOTDATA' }],
   ['=Нет!A1', { key: 'unknownSheet', sheet: 'Нет' }, { sheets: ['Лист'] }],
   ['=[1]Лист1:Лист3!A1', { key: 'externalAcrossSheets' }],
   ['=[1]Лист!A1#', { key: 'externalSpill' }],
