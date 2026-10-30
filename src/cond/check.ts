@@ -7,7 +7,6 @@ import type { ConditionalFormat, IconSetName } from '../contract.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkRange } from '../input/range.js'
-import { checkPivotRuleScope } from '../input/pivot.js'
 import { checkBorder, checkColor, checkFill, checkFont, checkFormat, type Given } from '../input/styles.js'
 
 /** The icon sets by name, with their number of icons. */
@@ -105,7 +104,12 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
   if (!ranges.length) throw new InputError(`${p}.ranges`, 'a conditional format applies to at least one range')
   ranges.forEach((r, i) => checkRange(r, `${p}.ranges[${i}]`, false))
   if (o.stopIfTrue !== undefined) checkBoolean(o.stopIfTrue, `${p}.stopIfTrue`)
-  if (o.pivot !== undefined) checkPivotRuleScope(o.pivot, `${p}.pivot`)
+  // a PivotTable's scope: its name and areas here, their shape by the full check of PivotTables (`pivot/check.ts`)
+  if (o.pivot !== undefined) {
+    const s = object(o.pivot, `${p}.pivot`, 'a PivotTable\'s scope such as { pivot: "PivotTable1", areas: [{ type: "data" }] }')
+    checkString(s.pivot, `${p}.pivot.pivot`)
+    array(s.areas, `${p}.pivot.areas`, 'an array of areas')
+  }
   if (o.style !== undefined) checkStyle(o.style, `${p}.style`)
   if (o.formula !== undefined) checkString(o.formula, `${p}.formula`)
   switch (type) {

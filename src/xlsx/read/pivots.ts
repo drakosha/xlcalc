@@ -7,7 +7,8 @@
 import { caseKey } from '../../collate.js'
 import type { BookInput, NumberFormat, PivotCache, SheetInput } from '../../contract.js'
 import { InputError } from '../../input-error.js'
-import { BOOK_PIVOT_KEYS, checkPivots, SHEET_PIVOT_KEYS } from '../../input/pivot.js'
+import { checkPivots } from '../../input/pivot.js'
+import { checkPivotShapes } from '../../pivot/check.js'
 import type { Issues } from '../issues.js'
 import { numberFormatOf, type StyleTable } from '../styles/read.js'
 import type { Dxf } from '../styles/dxf.js'
@@ -123,11 +124,21 @@ export async function readSlicerCaches(archive: Archive, wb: string, rels: Rel[]
 /** The book's PivotTables and the rest as the model takes them, or all left out and reported when it cannot (a file's ids or names that clash). */
 export function checkedPivots(book: BookInput, issues: Issues) {
   try {
+    checkPivotShapes(book)
     checkPivots(book as unknown as Record<string, unknown>, 'book')
   } catch (e) {
     if (!(e instanceof InputError)) throw e
     issues.add('pivotTable', { key: 'pivotUnread', detail: e.message })
-    for (const k of BOOK_PIVOT_KEYS) delete (book as unknown as Record<string, unknown>)[k]
-    for (const s of book.sheets) for (const k of SHEET_PIVOT_KEYS) delete (s as unknown as Record<string, unknown>)[k]
+    delete book.pivotCaches
+    delete book.slicerCaches
+    delete book.timelineCaches
+    for (const s of book.sheets) {
+      delete s.pivotTables
+      delete s.slicers
+      delete s.timelines
+      const rules = s.conditionalFormats?.filter((c) => !c.pivot)
+      if (rules?.length) s.conditionalFormats = rules
+      else delete s.conditionalFormats
+    }
   }
 }
