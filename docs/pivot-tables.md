@@ -167,7 +167,7 @@ session.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'Report', name: '
 
 The same lines serve Node and a browser bundle, the inline calculator and a pool, whose threads import the engine themselves. Without it, `refreshPivots` is refused (`pivot`) and the cells keep the values the file saved.
 
-A PivotTable is not recalculated when the cells of its source change, only by a refresh, as in Excel: the cells of its area keep their values until then. One refresh is one step of undo. Refreshing one PivotTable refreshes its cache, and with it every PivotTable over that cache; Refresh All passes over the caches it cannot refresh, while naming a PivotTable of one is refused with the reason:
+A PivotTable is not recalculated when the cells of its source change, only by a refresh, as in Excel: the cells of its area keep their values until then. Opening a workbook refreshes nothing, also a cache saved to refresh on opening (`refreshOnLoad`, which `getBook` returns as the file had it): the host refreshes it with `refreshPivots` after opening. One refresh is one step of undo. Refreshing one PivotTable refreshes its cache, and with it every PivotTable over that cache; Refresh All passes over the caches it cannot refresh, while naming a PivotTable of one is refused with the reason:
 
 - the source is in another workbook, consolidates several ranges, is an external connection, the data model or scenarios;
 - the cache does not allow refreshing (`enableRefresh: false`);
