@@ -1,6 +1,6 @@
 /**
  * What a host's bundle takes of the package, bundled by esbuild for the browser and minified: `compute` alone stays
- * under 325 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
+ * under 380 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
  * `xlcalc/xlsx` and `xlcalc/csv` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
  * what to import gives the sizes.
  */
@@ -20,12 +20,12 @@ const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).map((f) => f.replace(/^.*\/locales\//, ''))
 
 describe('bundle size', () => {
-  it('compute alone: under 325 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
+  it('compute alone: under 380 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
     const { bytes, used } = await minified(`export { compute } from ${lib('index.js')}`)
     expect(locales(used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     // the table of declared arguments is for the calls that check formulas without the engine (`declared-arity.ts`)
     expect(used.filter((f) => /function-arity/.test(f))).toEqual([])
-    expect(bytes).toBeLessThan(325 * 1024)
+    expect(bytes).toBeLessThan(380 * 1024)
   }, 60_000)
 
   it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation', async () => {

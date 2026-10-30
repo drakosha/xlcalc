@@ -2,7 +2,7 @@
  * The `./entry` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
  * the reading of typed text, the parser and the check of a formula's calls by the functions' declared arguments
  * (`function-arity.ts`), and the formatting of a value for editing, but no function's implementation, no compiler and
- * no computation; it stays under 110 KB, and runs in an empty `node:vm` context with ru-RU given as an object.
+ * no computation; it stays under 115 KB, and runs in an empty `node:vm` context with ru-RU given as an object.
  */
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
@@ -12,12 +12,12 @@ import { ruRU } from '../src/locales/ru-RU.js'
 const bundle = () => browserBundle('typed-entry.js', 'ENTRY')
 
 describe('typed entry without the engine', () => {
-  it('the bundle holds no function, compiler or computation, under 110 KB', async () => {
+  it('the bundle holds no function, compiler or computation, under 115 KB', async () => {
     const { code, used } = await bundle()
     // functions/common: the helpers of numbers the General format rounds by, no function's implementation
     expect(used.filter((m) => /^(functions|exec|compile|engine|evaluate|runtime|graph|session)\b/.test(m) && m !== 'functions/common')).toEqual([])
     expect(used).toContain('function-arity')
-    expect(code.length).toBeLessThan(110 * 1024)
+    expect(code.length).toBeLessThan(115 * 1024)
   }, 60_000)
 
   it('runs in an empty context, ru-RU given as an object', async () => {

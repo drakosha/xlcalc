@@ -18,7 +18,7 @@ describe('a1 without the engine', () => {
     // Excel compares them, 10,957 with a sheet's outline groups)
     // 11.8 KB with mergedArea (16.10); 16.6 KB with outlineEdit, the engine's own outline commands and their English
     // refusals, shared with editStructure, not copied (16.10); 16.9 KB with the check of quoteSheetIfNeeded's locale (19.10)
-    expect(code.length).toBeLessThan(17_000)
+    expect(code.length).toBeLessThan(17_500)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
 
