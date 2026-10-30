@@ -45,6 +45,8 @@
  * Excel computes in parts of up to 400 cases; after each part Excel is checked for a modal window.
  */
 import { spawn } from 'node:child_process'
+// every group of functions loaded, as the tests load them: the sets built from the engine's modules take them all
+import '../../test/fixtures/all-functions.js'
 import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { inCaseOrder, loadStored, setModule, took, writeAnswers } from './stored.js'
