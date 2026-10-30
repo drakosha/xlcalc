@@ -216,6 +216,7 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
   GCD: 'The greatest common divisor.',
   GEOMEAN: 'The geometric mean.',
   GESTEP: 'Whether a number is at least a step: 1 or 0.',
+  GETPIVOTDATA: 'A value a PivotTable shows, by its value field and the items of its fields.',
   GROUPBY: 'A summary of values grouped by row fields.',
   GROWTH: 'Values along an exponential trend.',
   HARMEAN: 'The harmonic mean.',

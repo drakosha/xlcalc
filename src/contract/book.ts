@@ -546,6 +546,15 @@ export interface RegexLevel {
   compile(pattern: string): RegexPattern | null
 }
 
+/**
+ * The PivotTable engine of `xlcalc/pivot` (`pivotEngine`), which `registerPivot` loads for every session, a pool's
+ * threads too: without it a PivotTable operation leaves the cells and marks the cache `stale`, and `refreshPivots` is
+ * refused.
+ */
+export interface PivotEngine {
+  readonly kind: 'xlcalc-pivot'
+}
+
 /** The groups of `xlcalc/functions`, by name (`docs/function-groups.md`). */
 export type FunctionGroupName = 'engineering' | 'finance' | 'lambda' | 'statistics' | 'xml'
 

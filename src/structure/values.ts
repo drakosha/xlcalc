@@ -8,8 +8,8 @@ import { meets, type Rect } from './area.js'
 
 /**
  * The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included:
- * [row, column, value]; the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`); and
- * the calculation's day as `TODAY` gives it (`today`, for a PivotTable's relative date filters).
+ * [row, column, value]; the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`); and the
+ * day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take.
  */
 export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number }
 

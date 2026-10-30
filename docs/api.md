@@ -19,6 +19,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/locales`](#xlcalclocales)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/regex`](#xlcalcregex)
+- [`xlcalc/pivot`](#xlcalcpivot)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
 
@@ -637,6 +638,15 @@ of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, 
 the same object again does nothing; a different object with an already loaded tag throws an [`InputError`](#xlcalc-inputerror). A pool's
 threads load it too.
 
+### <a id="xlcalc-registerpivot"></a>`registerPivot`
+
+```ts
+function registerPivot(engine: PivotEngine): void
+```
+
+Loads the PivotTable engine of `xlcalc/pivot` for every session from now on, a pool's threads too: `import {
+pivotEngine } from 'xlcalc/pivot'`, then `registerPivot(pivotEngine)`.
+
 ### <a id="xlcalc-registerregex"></a>`registerRegex`
 
 ```ts
@@ -794,7 +804,7 @@ layout; with `appearance`, its conditional formats calculated over the result's 
 
 ## xlcalc/core
 
-Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
+Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
 
 ### <a id="xlcalccore-registerfunctions"></a>`registerFunctions`
 
@@ -1058,6 +1068,16 @@ const pcreSyntax: RegexLevel
 ```
 
 Excel's syntax by JavaScript's regular expressions: fast, without Excel's match limit, a heavy pattern not stopped.
+
+## xlcalc/pivot
+
+### <a id="xlcalcpivot-pivotengine"></a>`pivotEngine`
+
+```ts
+const pivotEngine: PivotEngine
+```
+
+The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)).
 
 ## xlcalc/contract
 
@@ -1988,10 +2008,12 @@ type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; wi
 
 ### `CellTextRefusal`
 
-Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)) or one that refers to a workbook not among the links (`external_ref`), part of an array formula, or a formula in a table's header cell.
+Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)) or one that refers to a
+workbook not among the links (`external_ref`), part of an array formula, a formula in a table's header cell, or a cell
+of a PivotTable's area that Excel does not let an entry change (`pivot`).
 
 ```ts
-type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header'
+type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header' | 'pivot'
 ```
 
 ### `CellTextRefused`
@@ -3950,11 +3972,12 @@ type PasteTextPreview = { ok: true; range: string; cells: PreviewCell[] } | Past
 
 ### `PasteTextRefusal`
 
-Why [`Session.pasteText`](#session) pasted nothing, with the cell: part of an array formula, a formula into a table's header cell
-(as `setCellText` rejects them), or a rectangle that runs beyond the sheet's last row or column (`off_sheet`).
+Why [`Session.pasteText`](#session) pasted nothing, with the cell: part of an array formula, a formula into a table's header cell,
+a cell of a PivotTable's area (as `setCellText` rejects them), or a rectangle that runs beyond the sheet's last row or
+column (`off_sheet`).
 
 ```ts
-type PasteTextRefusal = Refusal<'array' | 'header' | 'off_sheet'> & CellRef
+type PasteTextRefusal = Refusal<'array' | 'header' | 'pivot' | 'off_sheet'> & CellRef
 ```
 
 ### `PasteTextResult`
@@ -4136,6 +4159,18 @@ interface PivotDataField {
   /** The base item: an index into the base field's `items`, or the previous or next item. */
   baseItem?: number | 'previous' | 'next'
   numberFormat?: NumberFormat
+}
+```
+
+### `PivotEngine`
+
+The PivotTable engine of `xlcalc/pivot` ([`pivotEngine`](#xlcalcpivot-pivotengine)), which [`registerPivot`](#xlcalc-registerpivot) loads for every session, a pool's
+threads too: without it a PivotTable operation leaves the cells and marks the cache `stale`, and `refreshPivots` is
+refused.
+
+```ts
+interface PivotEngine {
+  readonly kind: 'xlcalc-pivot'
 }
 ```
 
@@ -4498,7 +4533,10 @@ interface PivotTable {
   /** The Values row shown (Show the Values Row): the row with the value fields' header above them when there are several; hidden without it, as Excel 365 makes a PivotTable. */
   valuesRow?: boolean
   filters?: PivotFilter[]
-  /** Grand totals of the rows (a column at the right) and of the columns (a row at the bottom), each shown by default. */
+  /**
+   * Grand totals, each shown by default: `rows` the grand total row at the bottom, the total of the rows (xlsx
+   * `rowGrandTotals`); `columns` the grand total column at the right (`colGrandTotals`).
+   */
   grandTotals?: { rows?: boolean; columns?: boolean }
   /** Its form, compact by default; a field can have its own. */
   layout?: PivotLayout
@@ -5014,7 +5052,8 @@ interface Session {
    * cell renames its column, as in Excel: the structured references to it follow, a number or a boolean becomes its
    * text, a cleared cell names the column `Column1` (the first free name of this kind, using the word of the workbook's
    * locale: `Столбец1` in ru-RU), and a name already used by another column gets a number appended for the column
-   * further right (`Price2`). A formula in a header cell throws `InputError`.
+   * further right (`Price2`). A formula in a header cell throws `InputError`, and so does an edit of a cell of a
+   * PivotTable's area (`SheetInput.pivotTables`, its Filters area too), which Excel does not let an entry change.
    */
   setCells(edits: CellEdit[], opts?: EditOptions): EditResult
   /** Cells replaced as a whole, otherwise applied as `setCells` applies edits: the cell loses whatever the input omits, and null removes the cell. */
@@ -5042,8 +5081,8 @@ interface Session {
    * the cell (its style gets `alignment.wrap`, using a matching style in the workbook's table or adding one), and the row
    * of a wrapping cell is fitted to it (`fitRows`) in the same step, unless its height was set manually; a value that
    * the cell's data validation rule does not allow is written and returned with the rule (`validation`), or, with
-   * `refuseInvalid`, rejected with the rule and nothing is written. A formula Excel would reject, or a change to part of
-   * an array, is rejected with a message in the workbook's locale.
+   * `refuseInvalid`, rejected with the rule and nothing is written. A formula Excel would reject, a change to part of
+   * an array, or to a cell of a PivotTable's area (`pivot`), is rejected with a message in the workbook's locale.
    */
   setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextResult
   /** What `setCellText` would do, without changing anything. */
@@ -5069,8 +5108,8 @@ interface Session {
    * `setCellText` interprets it, except that an apostrophe stays part of the text, a formula Excel would reject is
    * pasted as text, a percentage cell has no percent entry (`5` becomes 500%) and `€5` gets the euro format; no column
    * is widened and no data validation rule is checked. One recalculation, one revision and one undo step. Rejected, with
-   * the cell, where Excel would not paste: part of an array formula, a formula into a table's header cell, and a
-   * rectangle beyond the sheet's edge.
+   * the cell, where Excel would not paste: part of an array formula, a formula into a table's header cell, a cell of a
+   * PivotTable's area (`pivot`), and a rectangle beyond the sheet's edge.
    */
   pasteText(sheet: string, cell: string, text: string, opts?: EditOptions): PasteTextResult
   /** What `pasteText` would do, without changing anything. */
@@ -5084,7 +5123,8 @@ interface Session {
    * their rows, as `setCellText` does; a value that the active cell's data validation rule does not allow is written
    * and returned with that rule's alert (`validation`), the only rule checked, or, with `refuseInvalid`, rejected with
    * the active cell. One recalculation, one revision and one undo step. A formula Excel would reject, part of an array
-   * formula and a formula in a table's header cell are rejected, with the cell, and nothing is written.
+   * formula, a formula in a table's header cell and a cell of a PivotTable's area are rejected, with the cell, and
+   * nothing is written.
    */
   fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextResult
   /** What `fillCellText` would do, without changing anything. */
@@ -6014,7 +6054,7 @@ interface Timeline {
   /** The level shown, months by default, and the level the selection was made at. */
   level?: TimelineLevel
   selectionLevel?: TimelineLevel
-  /** Its header, the selection's label, the level, the scrollbar; each but the scrollbar shown by default. */
+  /** Its header, the selection's label, the level, the scrollbar; each shown by default (x15 `showHeader`, `showSelectionLabel`, `showTimeLevel`, `showHorizontalScrollbar`). */
   showHeader?: boolean
   showSelectionLabel?: boolean
   showLevel?: boolean

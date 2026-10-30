@@ -49,7 +49,8 @@
  *    takes only an array's numbers, `Y` counts its text as 0); a one-value kind given an array or a range
  *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
-import type { BookFile, ErrorCode } from './contract.js'
+import type { BookFile, ErrorCode, PivotCache, PivotTable } from './contract.js'
+import type { Rect } from './structure/area.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
 import { arityOf, type Positions } from './arity.js'
@@ -120,6 +121,8 @@ export interface BookFacts {
   /** The active cell of the active sheet, and the top-left cell of its window. */
   activeCell(): { s: number; r: number; c: number }
   topLeft(): { r: number; c: number }
+  /** The PivotTable of sheet `s` whose cells (`pivotArea`) hold a cell, with its cache and those cells (GETPIVOTDATA). */
+  pivotAt(s: number, r: number, c: number): { table: PivotTable; cache: PivotCache | undefined; area: Rect } | undefined
 }
 
 /** What a function declared with `cx` gets as its first argument. */

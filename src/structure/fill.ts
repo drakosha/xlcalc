@@ -14,11 +14,10 @@ import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
-import { localeOf } from '../locale/registry.js'
+import { listsOf } from '../locale/lists.js'
 import { formatAddress, inner } from '../model.js'
 import { shownAs } from '../numfmt/shown-as.js'
 import { sheetLines } from '../layout/lines.js'
-import { EN_NAMES } from '../numfmt/style.js'
 import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import { chain, type Applied } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
@@ -146,13 +145,6 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
     }
   }
   return out
-}
-
-/** The lists a text goes on through: en-US's short and long day and month names, and the book's locale's. */
-function listsOf(book: BookInput): (readonly string[])[] {
-  const en = [EN_NAMES.daysShort, EN_NAMES.days, EN_NAMES.monthsShort, EN_NAMES.months]
-  const r = localeOf(book.locale).regional
-  return r && r.lcid !== '409' ? [...en, r.daysShort, r.days, r.monthsShort, r.months] : en
 }
 
 /** A quarter: `Q1`, `Qtr 2`, `Quarter 4`. */

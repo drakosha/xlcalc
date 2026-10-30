@@ -9,6 +9,7 @@ import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
 import { checkString, object, onlyKeys } from '../input/basic.js'
+import { pivotRefs } from '../input/pivot-refs.js'
 import { checkAddress } from '../input/range.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
@@ -23,7 +24,6 @@ import { moveRange } from './move.js'
 import { checkedPivots, movedPivot, patched, pivotArea, pivotsOn, relaid, withoutPivot } from './pivots.js'
 import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
-import { slicerOp } from './slicer-ops.js'
 import type { ValuesIn } from './values.js'
 
 export type PivotOp = Extract<StructureOp, { op: `${string}Pivot${string}` | `${string}Slicer` | `${string}Timeline` }>
@@ -153,7 +153,7 @@ function sourceCells(book: BookInput, src: PivotSource): { sheet: string; x: Rec
 }
 
 /** A source's fields by its header row's values; a refusal for an empty header or a source without a row of data. */
-function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn): PivotCacheField[] | Applied | null {
+function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn, pivot: string): PivotCacheField[] | Applied | null {
   const at = sourceCells(book, src)
   if (!at) return null
   const label = src.type === 'range' ? `${quoteSheet(at.sheet)}!${rectText(at.x)}` : src.type === 'table' ? src.table : src.type === 'name' ? src.name : ''
@@ -162,25 +162,25 @@ function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn): Pivo
   const names: string[] = []
   for (let c = at.x.c1; c <= at.x.c2; c++) {
     const n = head.get(c) ?? ''
-    if (!n) return refuse(book, { key: 'pivotFieldName', sheet: at.sheet, cell: formatAddress(at.x.r1, c) })
+    if (!n) return refuse(book, { key: 'pivotFieldName', pivot })
     names.push(n)
   }
   return uniqueNames(names).map((name) => ({ name }))
 }
 
 /** A refusal of a PivotTable's place over cells that are not empty, a table or another PivotTable. */
-function placeRefusal(book: BookInput, s: number, x: Rect, own?: PivotTable): Applied | null {
+function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable): Applied | null {
   const sheet = book.sheets[s]
   const range = areaText(x)
   const other = pivotsOn(book, s).find((t) => t.p !== own && meets(t.x, x))
-  if (other) return refuse(book, { key: 'pivotOverPivot', sheet: sheet.name, range, pivot: other.p.name })
+  if (other) return refuse(book, { key: 'pivotOverPivot', pivot, other: other.p.name })
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, x))
-  if (table) return refuse(book, { key: 'pivotOverTable', sheet: sheet.name, range, table: table.name })
+  if (table) return refuse(book, { key: 'pivotOverTable', pivot, table: table.name })
   const ownArea = own && pivotArea(own)
   for (const [a, cell] of Object.entries(sheet.cells)) {
     if (cell.value === undefined && cell.formula === undefined) continue
     const { row, col } = parseAddress(a)
-    if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2 && !(ownArea && row >= ownArea.r1 && row <= ownArea.r2 && col >= ownArea.c1 && col <= ownArea.c2)) return refuse(book, { key: 'pivotOverCells', sheet: sheet.name, range })
+    if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2 && !(ownArea && row >= ownArea.r1 && row <= ownArea.r2 && col >= ownArea.c1 && col <= ownArea.c2)) return refuse(book, { key: 'pivotOverData', sheet: sheet.name, range, pivot })
   }
   return null
 }
@@ -208,6 +208,9 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
   }
   const s = start.sheets.indexOf(checkSheetOf(start, o.sheet, 'op.sheet'))
   const at = parseAddress(o.cell === undefined && o.newSheet !== undefined ? 'A3' : checkAddress(o.cell, 'op.cell'))
+  const pivotName = name ?? freeName(start, 'PivotTable')
+  if (!pivotName) return refuse(start, { key: 'pivotNameEmpty' })
+  if (start.sheets[s].pivotTables?.some((p) => caseKey(p.name) === caseKey(pivotName))) return refuse(start, { key: 'pivotTableNameTaken', sheet: start.sheets[s].name, name: pivotName })
   const source = object(o.source, 'op.source', 'a source such as { type: "range", sheet: "Data", range: "A1:C21" } or { cache: 1 }')
   let cache: PivotCache
   let caches = start.pivotCaches ?? []
@@ -218,23 +221,20 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
     cache = c
   } else {
     const src = source as unknown as PivotSource
-    const fields = sourceFields(start, src, values)
+    const fields = sourceFields(start, src, values, pivotName)
     if (fields && !Array.isArray(fields)) return fields
     cache = { id: caches.reduce((m, c) => Math.max(m, c.id), 0) + 1, source: src, fields: fields ?? [] }
     caches = [...caches, cache]
   }
-  const pivotName = name ?? freeName(start, 'PivotTable')
-  if (!pivotName) return refuse(start, { key: 'pivotNameEmpty' })
-  if (start.sheets[s].pivotTables?.some((p) => caseKey(p.name) === caseKey(pivotName))) return refuse(start, { key: 'pivotNameTaken', sheet: start.sheets[s].name, name: pivotName })
   const x = { r1: at.row, c1: at.col, r2: at.row + EMPTY_ROWS - 1, c2: at.col + EMPTY_COLUMNS - 1 }
-  const over = placeRefusal(start, s, x)
+  const over = placeRefusal(start, s, x, pivotName)
   if (over) return over
   let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
   if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition')
   const sheets = [...start.sheets]
   sheets[s] = withField(sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
   const out = checkedPivots({ ...start, sheets, pivotCaches: caches }, 'op')
-  return relaid(out, [{ sheet: sheets[s].name, name: pivotName }], values, true, geometry)
+  return relaid(out, [{ sheet: sheets[s].name, name: pivotName }], values, true, geometry, 'refuse')
 }
 
 function editPivotTable(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
@@ -245,7 +245,7 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
   if (o.source !== undefined) {
     // Change Data Source: a cache of its own when another PivotTable or a slicer shares it
     const src = object(o.source, 'op.source', 'a source such as { type: "range", sheet: "Data", range: "A1:C21" }') as unknown as PivotSource
-    const fields = sourceFields(book, src, values)
+    const fields = sourceFields(book, src, values, p.name)
     if (fields && !Array.isArray(fields)) return fields
     const shared = book.sheets.some((x) => x.pivotTables?.some((q) => q !== p && q.cache === p.cache)) || book.slicerCaches?.some((x) => x.cache === p.cache) || book.timelineCaches?.some((x) => x.cache === p.cache)
     const id = shared ? caches.reduce((m, x) => Math.max(m, x.id), 0) + 1 : c.id
@@ -286,7 +286,7 @@ function renamePivotTable(book: BookInput, o: Record<string, unknown>): Applied 
   const { s, k, p } = pivotAt(book, o.sheet, o.pivot, 'op')
   const name = checkString(o.name, 'op.name')
   if (!name) return refuse(book, { key: 'pivotNameEmpty' })
-  if (book.sheets[s].pivotTables!.some((q, i) => i !== k && caseKey(q.name) === caseKey(name))) return refuse(book, { key: 'pivotNameTaken', sheet: book.sheets[s].name, name })
+  if (book.sheets[s].pivotTables!.some((q, i) => i !== k && caseKey(q.name) === caseKey(name))) return refuse(book, { key: 'pivotTableNameTaken', sheet: book.sheets[s].name, name })
   let out = withPivot(book, s, k, { ...p, name })
   // the PivotTable's conditional formats name it
   const rules = out.sheets[s].conditionalFormats
@@ -306,7 +306,7 @@ function movePivotTable(book: BookInput, o: Record<string, unknown>, values: Val
   const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
   const x = pivotArea(p)
   const dest = { r1: at.row, c1: at.col, r2: at.row + x.r2 - x.r1, c2: at.col + x.c2 - x.c1 }
-  const over = placeRefusal(book, t, dest, t === s ? p : undefined)
+  const over = placeRefusal(book, t, dest, p.name, t === s ? p : undefined)
   if (over) return over
   // the cells move as cut and paste moves them, the PivotTable with them, to its sheet's list
   const r = moveRange(book, book.sheets[s].name, x, book.sheets[t].name, at.row, at.col)
@@ -320,7 +320,7 @@ function movePivotTable(book: BookInput, o: Record<string, unknown>, values: Val
     sheets[t] = withField(sheets[t], 'pivotTables', [...(sheets[t].pivotTables ?? []), moved])
     out = renamedRefs({ ...out, sheets }, { sheet: book.sheets[s].name, name: p.name }, { sheet: book.sheets[t].name, name: p.name })
   }
-  return relaid(out, [{ sheet: book.sheets[t].name, name: p.name }], values, false, r.geometry)
+  return relaid(out, [{ sheet: book.sheets[t].name, name: p.name }], values, false, r.geometry, 'refuse')
 }
 
 function deletePivotTable(book: BookInput, o: Record<string, unknown>): Applied {
@@ -337,20 +337,11 @@ function deletePivotTable(book: BookInput, o: Record<string, unknown>): Applied 
 }
 
 function refreshPivots(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
-  let refs: PivotRef[] | undefined
-  if (o.pivots !== undefined) {
-    if (!Array.isArray(o.pivots)) throw new InputError('op.pivots', 'expected an array of PivotTables such as [{ sheet: "P", name: "PivotTable1" }]')
-    refs = o.pivots.map((r, i) => {
-      const x = object(r, `op.pivots[${i}]`, 'a PivotTable such as { sheet: "P", name: "PivotTable1" }')
-      onlyKeys(x, `op.pivots[${i}]`, ['sheet', 'name'])
-      return { sheet: checkString(x.sheet, `op.pivots[${i}].sheet`), name: checkString(x.name, `op.pivots[${i}].name`) }
-    })
-    const missing = refs.find((r) => !book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.some((p) => caseKey(p.name) === caseKey(r.name)))
-    if (missing) return refuse(book, { key: 'pivotUnknown', sheet: missing.sheet, name: missing.name })
-  }
+  const refs = o.pivots === undefined ? undefined : pivotRefs(o.pivots, 'op.pivots')
+  const missing = refs?.find((r) => !book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.some((p) => caseKey(p.name) === caseKey(r.name)))
+  if (missing) return refuse(book, { key: 'pivotUnknown', sheet: missing.sheet, pivot: missing.name })
   const refresh = pivotRefresh()
-  if (!refresh) return refs ? refuse(book, { key: 'pivotNotLoaded' }) : { ok: true, book, geometry: [] }
-  return refresh(book, refs, values, values.today?.() ?? 0, true)
+  return refresh ? refresh(book, refs, values, values.today?.() ?? 0, true) : refuse(book, { key: 'pivotNotLoaded' })
 }
 
 export function pivotOp(book: BookInput, op: PivotOp, values: ValuesIn): Applied {
@@ -369,7 +360,7 @@ export function pivotOp(book: BookInput, op: PivotOp, values: ValuesIn): Applied
     case 'refreshPivots':
       return refreshPivots(book, o, values)
     default:
-      return slicerOp(book, o, values)
+      throw new InputError('op.op', `${op.op} is not supported yet`)
   }
 }
 

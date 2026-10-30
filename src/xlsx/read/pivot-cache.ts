@@ -14,6 +14,25 @@ const VALUES = /<(?:[\w.-]+:)?(r|[xnsbedm])((?:\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?)
 /** An attribute's text, its entities and escapes decoded. */
 export const attrText = (v: string | undefined): string => decodeEscapes(decodeXml(v ?? ''))
 
+/**
+ * Attributes set on `out` by a table of entries `attr=key:kind` (the key the attribute's name without `=key`): `s` text
+ * (the default), `n` a number, `p` a number above 0, `t` a flag true by default, set where false, `f` a flag false by
+ * default, set where true. An attribute absent sets nothing.
+ */
+export function take<T extends object>(out: T, a: Record<string, string>, spec: string): T {
+  const o = out as Record<string, unknown>
+  for (const e of spec.split(' ')) {
+    const [name, kind = 's'] = e.split(':')
+    const [attr, key = attr] = name.split('=')
+    const v = a[attr]
+    if (v === undefined) continue
+    if (kind === 's') o[key] = attrText(v)
+    else if (kind === 'n' || (kind === 'p' && Number(v) > 0)) o[key] = Number(v)
+    else if (kind !== 'p' && flag(v) !== (kind === 't')) o[key] = kind === 'f'
+  }
+  return out
+}
+
 /** The value of a tag of `VALUES` by its name and attributes; for `x`, the item's index. */
 function valueOf(k: string, a: string): PivotValue {
   if (k === 'm') return null
@@ -61,8 +80,7 @@ function factsOf(a: Record<string, string>, items: PivotValue[]): PivotFieldFact
   for (const v of items) if (typeof v === 'boolean') types.add('boolean')
   for (const v of items) if (v !== null && typeof v === 'object' && 'error' in v) types.add('error')
   const facts: PivotFieldFacts = { types: [...types] }
-  if (flag(a.containsInteger)) facts.integer = true
-  if (flag(a.longText)) facts.longText = true
+  take(facts, a, 'containsInteger=integer:f longText:f')
   const min = numberOrDate(a.minValue, a.minDate)
   const max = numberOrDate(a.maxValue, a.maxDate)
   if (min !== undefined) facts.min = min
@@ -75,8 +93,7 @@ const GROUP_BY: Record<string, PivotGroupBy> = { range: 'numbers', seconds: 'sec
 function groupOf(xml: string): PivotFieldGroup {
   const a = attributes(element(xml, 'fieldGroup')?.attrs ?? '')
   const g: PivotFieldGroup = {}
-  if (a.base !== undefined) g.base = Number(a.base)
-  if (a.par !== undefined) g.parent = Number(a.par)
+  take(g, a, 'base:n par=parent:n')
   const r = element(xml, 'rangePr')
   if (r) {
     const ra = attributes(r.attrs)
@@ -85,8 +102,7 @@ function groupOf(xml: string): PivotFieldGroup {
     const end = numberOrDate(ra.endNum, ra.endDate)
     if (start !== undefined) range.start = start
     if (end !== undefined) range.end = end
-    if (!flag(ra.autoStart, true)) range.autoStart = false
-    if (!flag(ra.autoEnd, true)) range.autoEnd = false
+    take(range, ra, 'autoStart:t autoEnd:t')
     if (ra.groupInterval !== undefined && Number(ra.groupInterval) !== 1) range.interval = Number(ra.groupInterval)
     g.range = range
   }
@@ -156,9 +172,5 @@ export function readPivotCache(id: number, xml: string, records: string | undefi
     return r && typeof item === 'number' ? [{ field: Number(attributes(r.attrs).field ?? 0), item, formula: attrText(attributes(e.attrs).formula) }] : []
   })
   if (calculated.length) cache.calculatedItems = calculated
-  if (flag(a.refreshOnLoad)) cache.refreshOnLoad = true
-  if (!flag(a.saveData, true)) cache.saveData = false
-  if (!flag(a.enableRefresh, true)) cache.enableRefresh = false
-  if (a.missingItemsLimit !== undefined) cache.retainItems = Number(a.missingItemsLimit)
-  return cache
+  return take(cache, a, 'refreshOnLoad:f saveData:t enableRefresh:t missingItemsLimit=retainItems:n')
 }

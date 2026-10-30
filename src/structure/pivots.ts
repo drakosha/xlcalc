@@ -10,6 +10,7 @@ import { say } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { areaText, contains, meets, parseRange, type Rect } from './area.js'
+import { pivotArea as areaOf } from '../pivot/area.js'
 import type { Applied, Geometry } from './geometry.js'
 import type { ValuesIn } from './values.js'
 import { checkBook } from '../input.js'
@@ -41,14 +42,6 @@ export function renamePivotSheets(book: BookInput, rename: (name: string) => str
 
 /** The prefix of the hidden names that carry PivotTables' places, caches' sources and slicers' and timelines' anchors through an operation. */
 const CARRIER = '_xlcalc.pivot.'
-
-/** A PivotTable's cells with its Filters area: the filters' rows above its range with a blank row between, two columns a filter (three across). */
-export function pivotArea(p: PivotTable): Rect {
-  const x = parseRange(p.location.range)!
-  const rows = p.location.pageRows ?? 0
-  const cols = p.location.pageColumns ?? 0
-  return { r1: rows ? Math.max(0, x.r1 - rows - 1) : x.r1, r2: x.r2, c1: x.c1, c2: Math.max(x.c2, x.c1 + (cols ? 3 * cols - 2 : 0)) }
-}
 
 const absolute = (sheet: string, x: Rect) => `${quoteSheet(sheet)}!${areaText(x).replace(/([A-Z]+)(\d+)/g, '$$$1$$$2')}`
 
@@ -256,12 +249,12 @@ export function patched<T extends object>(target: T, patch: Record<string, unkno
  * The PivotTables `refs` laid out again by `xlcalc/pivot` (`fromSource`: their caches refreshed from the sources); without
  * it, their caches marked `stale`, the cells left.
  */
-export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = []): Applied {
+export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = [], blocked: 'spill' | 'refuse' = 'spill'): Applied {
   const refresh = pivotRefresh()
-  if (refresh) {
-    const r = refresh(book, refs, values, values.today?.() ?? 0, fromSource)
-    return r.ok ? { ...r, geometry: [...geometry, ...r.geometry] } : r
-  }
+  const r = refresh?.(book, refs, values, values.today?.() ?? 0, fromSource, blocked)
+  if (r && !r.ok) return r
+  // laid out, unless the cache keeps no rows to lay it out from
+  if (r && r.book !== book) return { ...r, geometry: [...geometry, ...r.geometry] }
   const caches = new Set(refs.flatMap((r) => book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.filter((p) => caseKey(p.name) === caseKey(r.name)).map((p) => p.cache) ?? []))
   const pivotCaches = book.pivotCaches?.map((c) => (caches.has(c.id) && !c.stale ? { ...c, stale: true } : c))
   return { ok: true, book: pivotCaches ? { ...book, pivotCaches } : book, geometry, stale: refs }
@@ -273,3 +266,6 @@ export function checkedPivots(book: BookInput, path = 'op'): BookInput {
   pivotCheck()?.(out, path)
   return out
 }
+
+/** A PivotTable's cells with its Filters area (one the model holds, whose range parses). */
+export const pivotArea = (p: PivotTable): Rect => areaOf(p)!

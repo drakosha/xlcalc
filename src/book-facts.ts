@@ -1,7 +1,7 @@
 /**
- * What CELL, INFO, SHEET, SHEETS, FORMULATEXT and ISFORMULA read of a book beside its values (`Cx.book`): its sheets,
- * the formula a cell holds as Excel's formula bar shows it, a cell's look and its column's width, the file it was
- * opened from (`EngineOptions.file`) and the active sheet's window.
+ * What CELL, INFO, SHEET, SHEETS, FORMULATEXT, ISFORMULA and GETPIVOTDATA read of a book beside its values (`Cx.book`):
+ * its sheets, the formula a cell holds as Excel's formula bar shows it, a cell's look and its column's width, the file it
+ * was opened from (`EngineOptions.file`), the active sheet's window and its PivotTables.
  */
 import type { BookFacts, CellFacts } from './args.js'
 import { charsOfPoints, columnPoints } from './column-width.js'
@@ -13,6 +13,7 @@ import { closingQuote } from './syntax/scan.js'
 import { formatAddress, parseAddress, placeOf } from './model.js'
 import { enCode } from './numfmt.js'
 import { parseRange } from './structure/area.js'
+import { pivotArea } from './pivot/area.js'
 
 /**
  * A formula's canonical text with its sheets quoted only where Excel quotes them (`'Sales'!A1` is `Sales!A1`), outside
@@ -99,6 +100,13 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
       const at = view?.activeCell ? parseAddress(view.activeCell) : undefined
       const inside = at && sel.some((x) => at.row >= x.r1 && at.row <= x.r2 && at.col >= x.c1 && at.col <= x.c2)
       return inside ? { s, r: at.row, c: at.col } : { s, r: sel[0].r1, c: sel[0].c1 }
+    },
+    pivotAt: (s, r, c) => {
+      for (const table of state.input.sheets[s]?.pivotTables ?? []) {
+        const area = pivotArea(table)
+        if (area && r >= area.r1 && r <= area.r2 && c >= area.c1 && c <= area.c2) return { table, cache: state.input.pivotCaches?.find((x) => x.id === table.cache), area }
+      }
+      return undefined
     },
     topLeft: () => {
       const at = active().view?.topLeft

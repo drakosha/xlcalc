@@ -1,0 +1,187 @@
+{
+ "columns": {
+  "G!A1": 1026.76,
+  "G!A2": 1026.76,
+  "G!A3": 1026.76,
+  "G!A4": 1026.76,
+  "G!A5": {
+   "error": "REF"
+  },
+  "G!A6": {
+   "error": "REF"
+  },
+  "G!A7": {
+   "error": "REF"
+  },
+  "G!A8": 237.8,
+  "G!A9": 237.8,
+  "G!A10": 237.8,
+  "G!A11": {
+   "error": "REF"
+  },
+  "G!A12": 0,
+  "G!A13": {
+   "error": "REF"
+  },
+  "G!A14": 112.07,
+  "G!A15": 112.07,
+  "G!A16": 299.41,
+  "G!A17": 14.85,
+  "G!A18": {
+   "error": "REF"
+  },
+  "G!A19": 112.83,
+  "G!A20": {
+   "error": "REF"
+  },
+  "G!A21": {
+   "error": "REF"
+  },
+  "G!A22": 301.91,
+  "G!A23": 1026.76,
+  "G!A24": 237.8,
+  "G!A25": 1026.76,
+  "G!A26": {
+   "error": "REF"
+  },
+  "G!A27": 1026.76,
+  "G!A28": {
+   "error": "REF"
+  },
+  "G!A29": 0.294041450777202,
+  "G!A30": 163.26,
+  "P!K1": 348.4,
+  "P!K2": 1026.76
+ },
+ "two-rows": {
+  "G!A1": 1026.76,
+  "G!A2": 237.8,
+  "G!A3": 112.07,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 0,
+  "G!A6": 0,
+  "G!A7": {
+   "error": "REF"
+  },
+  "G!A8": 42.84,
+  "G!A9": 1026.76
+ },
+ "code": {
+  "G!A1": 212,
+  "G!A2": 73,
+  "G!A3": 73,
+  "G!A4": 67,
+  "G!A5": 67,
+  "G!A6": 65,
+  "G!A7": 73,
+  "G!A8": 73,
+  "G!A9": 73,
+  "G!A10": {
+   "error": "REF"
+  },
+  "G!A11": 65,
+  "G!A12": 67
+ },
+ "date": {
+  "G!A1": 19,
+  "G!A2": 19,
+  "G!A3": 19,
+  "G!A4": 19,
+  "G!A5": 19,
+  "G!A6": 19,
+  "G!A7": 19,
+  "G!A8": 19,
+  "G!A9": 19,
+  "G!A10": {
+   "error": "REF"
+  },
+  "G!A11": 2,
+  "G!A12": {
+   "error": "REF"
+  }
+ },
+ "flag": {
+  "G!A1": 138,
+  "G!A2": 138,
+  "G!A3": 138,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 74,
+  "G!A6": 138
+ },
+ "two-values": {
+  "G!A1": 138.65,
+  "G!A2": 10,
+  "G!A3": 10,
+  "G!A4": 48,
+  "G!A5": 301.91,
+  "G!A6": {
+   "error": "REF"
+  }
+ },
+ "two-values-rows": {
+  "G!A1": 138.65,
+  "G!A2": 10,
+  "G!A3": 48,
+  "G!A4": 1026.76
+ },
+ "page-all": {
+  "G!A1": 1026.76,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 138.65,
+  "G!A5": 1026.76,
+  "G!A6": 1026.76
+ },
+ "page-one": {
+  "G!A1": 355.65,
+  "G!A2": 355.65,
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 42.49,
+  "G!A5": 42.49
+ },
+ "errors": {
+  "G!A1": {
+   "error": "NA"
+  },
+  "G!A2": {
+   "error": "NA"
+  },
+  "G!A3": 801,
+  "G!A4": {
+   "error": "DIV0"
+  },
+  "G!A5": 0
+ },
+ "caption": {
+  "G!A1": 1026.76,
+  "G!A2": 1026.76,
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 237.8
+ },
+ "other-book": {
+  "closed, computed G!A1": "{\"error\":\"REF\"}",
+  "reopened, computed G!A1": "{\"error\":\"REF\"}",
+  "reopened G!A1": "as open",
+  "closed, computed G!A2": "{\"error\":\"REF\"}",
+  "reopened, computed G!A2": "{\"error\":\"REF\"}",
+  "reopened G!A2": "as open",
+  "closed, computed G!A3": "{\"error\":\"REF\"}",
+  "reopened, computed G!A3": "{\"error\":\"REF\"}",
+  "reopened G!A3": "as open",
+  "closed, computed G!A4": "{\"error\":\"REF\"}",
+  "reopened, computed G!A4": "{\"error\":\"REF\"}",
+  "reopened G!A4": "as open"
+ }
+}

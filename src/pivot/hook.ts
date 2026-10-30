@@ -3,7 +3,7 @@
  * the PivotTable an add, edit or move changed), and without it they leave the cells and mark the cache `stale`. Its
  * registration (`registerPivot`) is the subpath's.
  */
-import type { BookInput, PivotRef } from '../contract.js'
+import type { BookInput, CellInput, PivotRef, Refusal, StructureOp } from '../contract.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 
@@ -11,9 +11,10 @@ import type { ValuesIn } from '../structure/values.js'
  * Lays out the PivotTables `refs` again and every PivotTable over their caches, every cache that can be without `refs`:
  * with `fromSource`, the caches refreshed from the sources' computed values (`values`), as `refreshPivots` and
  * `addPivotTable` do; without it, from the cache as saved, as Excel lays out an edit, a move, a slicer's choice. Relative
- * date filters go by the session's day `today`.
+ * date filters go by the session's day `today`. A PivotTable laid over cells it cannot take spills, as a refresh in
+ * Excel 365 (`spill`, the default), or is refused, as a new or moved one (`refuse`).
  */
-export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean) => Applied
+export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse') => Applied
 
 let refresh: PivotRefresh | null = null
 
@@ -36,4 +37,20 @@ export const pivotCheck = (): PivotCheck | null => check
 /** Registers the full check of PivotTables, the last one registered used. */
 export function setPivotCheck(f: PivotCheck): void {
   check = f
+}
+
+/**
+ * An entry into a PivotTable's cell as `xlcalc/pivot` takes it (`pivot/entry.ts`): an edit of the PivotTable's
+ * definition, nothing, or a refusal; null for a cell of no PivotTable. Without it, every entry there is refused.
+ */
+export type PivotEntryHook = (book: BookInput, sheet: string, cell: string, input: CellInput | null) => { ok: true; op: StructureOp | null } | Refusal<'pivot'> | null
+
+let entry: PivotEntryHook | null = null
+
+/** The entry registered, or null. */
+export const pivotEntryHook = (): PivotEntryHook | null => entry
+
+/** Registers the entry into PivotTables' cells, the last one registered used. */
+export function setPivotEntry(f: PivotEntryHook): void {
+  entry = f
 }

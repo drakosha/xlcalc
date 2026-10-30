@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 6.7,
+  "seconds": 1.7,
   "date": "2026-10-30"
  },
  "books": {
@@ -243,7 +243,7 @@
    "sent": "3a5b82b87cbed77dec9fc3a76216e19fe5362a8f7660b4b06458f487da0f0900"
   },
   "arity-1": {
-   "sent": "c1df8fb819633f589e0203286c80515cbb518d143d4cdb6cd948b723464d483d"
+   "sent": "60097880e867af1915c9676349b52e8300262c7c74aefb95521193cde769e0be"
   },
   "char-code-1": {
    "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
