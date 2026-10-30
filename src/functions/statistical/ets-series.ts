@@ -85,7 +85,8 @@ function modeStep(ds: readonly number[]): number | undefined {
 
 /**
  * The calendar timeline the dates make, if each is on one day of the month (or the last of a shorter month) and each is
- * a month or a quarter after the one before: its months and each date's place counted back from the last.
+ * a month, a quarter, half a year or a year after the one before: its months and each date's place counted back from
+ * the last.
  */
 function calendarOf(ts: readonly number[]): { c: Calendar; back: Map<number, number> } | undefined {
   const dates = ts.map((t) => (t === Math.trunc(t) && t > 60 ? ymd(t) : undefined))
@@ -94,7 +95,7 @@ function calendarOf(ts: readonly number[]): { c: Calendar; back: Map<number, num
   if (dates.some((d) => d!.d !== Math.min(day, daysInMonth(d!.y, d!.m)))) return undefined
   const index = dates.map((d) => d!.y * 12 + d!.m)
   const months = index[1] - index[0]
-  if ((months !== 1 && months !== 3) || index.some((v, i) => i > 0 && v - index[i - 1] !== months)) return undefined
+  if (![1, 3, 6, 12].includes(months) || index.some((v, i) => i > 0 && v - index[i - 1] !== months)) return undefined
   return { c: { months, ...dates[dates.length - 1]! }, back: new Map(ts.map((t, i) => [t, ts.length - 1 - i])) }
 }
 
