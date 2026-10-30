@@ -24,7 +24,7 @@ import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
 import { utf8 } from '../zip/platform.js'
-import { zip } from '../zip/write.js'
+import { zip, type EntryRecord } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
 import { keyOf } from '../../style-table.js'
 import { externalLinkXml } from '../write/links.js'
@@ -844,11 +844,28 @@ class Kept {
       const k = name.toLowerCase()
       if (this.parts.removed.has(k)) continue
       const text = this.parts.text.get(k)
-      files.push(text !== undefined ? { name, data: utf8(text) } : kept.get(k)!)
+      files.push(text === undefined ? kept.get(k)! : rewritten(name, text, (await archive.bytes(name))!, kept.get(k)!))
     }
     for (const name of this.parts.added) files.push({ name, data: utf8(this.parts.text.get(name.toLowerCase())!) })
     return zip(files)
   }
+}
+
+const BOM = [0xef, 0xbb, 0xbf]
+
+/**
+ * A part written again over the file's `was`: the file's own entry when the text came out the same, else the text with
+ * the file's byte order mark when it had one (writers that start a part with one expect it back).
+ */
+function rewritten(name: string, text: string, was: Uint8Array, entry: EntryRecord): EntryRecord | { name: string; data: Uint8Array } {
+  const body = utf8(text)
+  const bom = BOM.every((b, i) => was[i] === b) ? BOM.length : 0
+  if (body.length + bom === was.length && body.every((b, i) => b === was[i + bom])) return entry
+  if (!bom) return { name, data: body }
+  const data = new Uint8Array(body.length + bom)
+  data.set(BOM)
+  data.set(body, bom)
+  return { name, data }
 }
 
 /** The issues of writing a sheet that concern what was written from the model: the cells written, and the elements written. */
