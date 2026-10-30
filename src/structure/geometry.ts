@@ -5,7 +5,7 @@
  * are zero-based. A geometry never brings two cells to one place, and its inverse takes back every cell it brings
  * somewhere, so a cell of the book after it that no cell came to is new.
  */
-import type { AddressMove, BookInput, CellRef, StructureResult } from '../contract.js'
+import type { AddressMove, BookInput, CellRef, PivotRef, StructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { areaText, hasCell, LINES, LIMIT, minus, shiftRect, type Axis, type Rect } from './area.js'
@@ -28,9 +28,10 @@ export type Geometry = Move[]
 /** An operation's result inside the library: the new book and where its cells went, or Excel's refusal. */
 /**
  * An operation applied: the new book and where its cells went; `looked`, the area of sheet `s` on which a copy laid the
- * looks of its source, whose rows a session fits as after a patch of styles.
+ * looks of its source, whose rows a session fits as after a patch of styles; `stale`, the PivotTables it changed and
+ * did not lay out again.
  */
-export type Applied = { ok: true; book: BookInput; geometry: Geometry; looked?: { s: number; area: Rect } } | Exclude<StructureResult, { ok: true }>
+export type Applied = { ok: true; book: BookInput; geometry: Geometry; looked?: { s: number; area: Rect }; stale?: PivotRef[] } | Exclude<StructureResult, { ok: true }>
 
 /** Applies the steps in turn, each to the book the last one gave; the geometry is theirs one after another. */
 export function chain(book: BookInput, steps: ((b: BookInput) => Applied)[]): Applied {

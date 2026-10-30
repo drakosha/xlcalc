@@ -10,7 +10,10 @@ import { say } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { areaText, contains, meets, parseRange, type Rect } from './area.js'
-import type { Applied } from './geometry.js'
+import type { Applied, Geometry } from './geometry.js'
+import type { ValuesIn } from './values.js'
+import { checkBook } from '../input.js'
+import { pivotCheck, pivotRefresh } from '../pivot/hook.js'
 import { sheetIndex } from './rewrite.js'
 
 /** A source's sheet renamed; a source in another workbook keeps its sheet. */
@@ -237,4 +240,36 @@ export function pivotRefusal(book: BookInput, op: StructureOp): Exclude<Applied,
     default:
       return null
   }
+}
+
+/** The patch's fields set on `target`: a value replaces, null removes. */
+export function patched<T extends object>(target: T, patch: Record<string, unknown>): T {
+  const out: Record<string, unknown> = { ...(target as Record<string, unknown>) }
+  for (const [k, v] of Object.entries(patch)) {
+    if (v === null) delete out[k]
+    else if (v !== undefined) out[k] = v
+  }
+  return out as T
+}
+
+/**
+ * The PivotTables `refs` laid out again by `xlcalc/pivot` (`fromSource`: their caches refreshed from the sources); without
+ * it, their caches marked `stale`, the cells left.
+ */
+export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = []): Applied {
+  const refresh = pivotRefresh()
+  if (refresh) {
+    const r = refresh(book, refs, values, values.today?.() ?? 0, fromSource)
+    return r.ok ? { ...r, geometry: [...geometry, ...r.geometry] } : r
+  }
+  const caches = new Set(refs.flatMap((r) => book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.filter((p) => caseKey(p.name) === caseKey(r.name)).map((p) => p.cache) ?? []))
+  const pivotCaches = book.pivotCaches?.map((c) => (caches.has(c.id) && !c.stale ? { ...c, stale: true } : c))
+  return { ok: true, book: pivotCaches ? { ...book, pivotCaches } : book, geometry, stale: refs }
+}
+
+/** The book checked as input, the full check of PivotTables too when `xlcalc/pivot` registered it. */
+export function checkedPivots(book: BookInput, path = 'op'): BookInput {
+  const out = checkBook(book, path)
+  pivotCheck()?.(out, path)
+  return out
 }

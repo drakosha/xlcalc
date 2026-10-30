@@ -39,6 +39,7 @@ import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
+import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -67,6 +68,7 @@ const FIELDS: Record<string, string[]> = {
   mergeCells: ['sheet', 'range', 'across', 'center'],
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
+  ...PIVOT_FIELDS,
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
@@ -111,7 +113,7 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
   const computed = () => (values ??= stateValues(createState(book, clockOptions(currentClock()))))
-  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect) })
+  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!() })
 }
 
 /**
@@ -126,7 +128,7 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
     // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
-    const carried = carryPivots(input)
+    const carried = Object.hasOwn(PIVOT_FIELDS, (op as { op?: string })?.op ?? '') ? null : carryPivots(input)
     const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
     const refused = r.ok ? pivotRefusal(input, op) : null
     if (refused) return refused
@@ -273,7 +275,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'addTimeline':
     case 'editTimeline':
     case 'deleteTimeline':
-      throw new InputError('op.op', `${o.op} is not supported yet`)
+      r = pivotOp(book, op as PivotOp, values)
+      break
   }
   return r
 }
