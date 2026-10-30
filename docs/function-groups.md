@@ -2,7 +2,7 @@
 
 The package root calculates every function it has. A host that bundles the engine for a browser can take a lighter
 entry, `xlcalc/core`: the same API without five groups of rarely used functions, which it loads only if its workbooks
-need them. `compute` from `xlcalc/core` is 313.7 KB minified, from the root 379.5 KB.
+need them. `compute` from `xlcalc/core` is 318.6 KB minified, from the root 379.5 KB.
 
 ```js
 import { compute, registerFunctions } from 'xlcalc/core'
