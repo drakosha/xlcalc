@@ -3,41 +3,11 @@
  * (`rowLines`, `columnLines`) and the values from the cells of the area, so that laying the PivotTable out again should
  * give back the lines, the place and the cells Excel saved. Not the calculation: that is `computePivot`'s.
  */
-import type { CellInput, PivotCache, PivotFunction, PivotLine, PivotTable, SheetInput } from '../src/contract.js'
+import type { CellInput, PivotCache, PivotFunction, PivotTable, SheetInput } from '../src/contract.js'
 import { ERROR_CODE } from '../src/syntax/errors.js'
 import { formatAddress, parseAddress } from '../src/model.js'
-import type { PivotAxisResult, PivotNode, PivotResult } from '../src/pivot/result.js'
-
-/** A saved line in full: the items of each field from the first (`values` holding its value field), its type and value field. */
-interface Full {
-  items: number[]
-  type?: PivotLine['type']
-  value: number
-}
-
-function fullLines(lines: PivotLine[] | undefined): Full[] {
-  let last: number[] = []
-  return (lines ?? []).map((l) => {
-    const items = l.type === 'grand' ? [] : [...last.slice(0, l.repeat ?? 0), ...l.items]
-    if (l.type !== 'grand') last = items
-    return { items, ...(l.type ? { type: l.type } : {}), value: l.value ?? 0 }
-  })
-}
-
-/** The tree of an axis from its data lines, items in the order of their first line. */
-function treeOf(fields: PivotAxisResult['fields'], lines: Full[]): PivotNode[] {
-  const top: PivotNode[] = []
-  for (const l of lines) {
-    if (l.type) continue
-    let level = top
-    l.items.forEach((item, k) => {
-      let n = level.find((x) => x.item === item)
-      if (!n) level.push((n = { field: fields[k], item, children: [] }))
-      level = n.children
-    })
-  }
-  return top
-}
+import type { PivotAxisResult, PivotResult } from '../src/pivot/result.js'
+import { fullLines, savedResult as savedLayout, type Full } from '../src/pivot/saved.js'
 
 const key = (path: readonly number[], v: number, fn: PivotFunction | undefined) => `${path.join(',')}|${v}|${fn ?? ''}`
 
@@ -78,17 +48,8 @@ export function savedResult(table: PivotTable, cache: PivotCache, sheet: SheetIn
   }
   const rowAt = index(rowFields, rows)
   const colAt = index(colFields, cols)
-  // a page field's item shown, else the items it does not hide
-  const pages = (table.pages ?? []).map((p) => {
-    const items = p.item !== undefined ? [p.item] : (table.fields[p.field].items ?? []).flatMap((it, i) => (it.hidden ? [] : [i]))
-    return { field: p.field, items, all: p.item === undefined && !table.fields[p.field].items?.some((it) => it.hidden) }
-  })
   return {
-    table,
-    cache,
-    rows: { fields: rowFields, items: treeOf(rowFields, rows) },
-    columns: { fields: colFields, items: treeOf(colFields, cols) },
-    pages,
+    ...savedLayout(table, cache),
     value(r, c, v, fn) {
       // a line by its path, value field and subtotal function: the function is the line's of one axis only
       const find = (at: Map<string, number>, path: readonly number[], own: boolean) => {

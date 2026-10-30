@@ -34,7 +34,7 @@ const book = (): BookInput => ({
   pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'Data', range: 'A1:B2' }, fields: [{ name: 'K', items: ['a'] }, { name: 'N' }] }],
 })
 
-const refusal = { ok: false, code: 'pivot', message: 'P!B4 is part of the PivotTable PT: you cannot change this part of a PivotTable report' }
+const refusal = { ok: false, code: 'pivot', message: "P!B4 is part of the PivotTable PT: we can't change this part of the PivotTable" }
 
 describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
   it.each(['closures', 'eval'] as const)('is refused, the Filters area too; looks may change, cells outside take anything (execution %s)', async (execution) => {

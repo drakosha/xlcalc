@@ -364,6 +364,10 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pivotOverPivot: { pivot: string; other: string }
   pivotOverTable: { pivot: string; table: string }
   pivotPart: { sheet: string; cell: string; pivot: string }
+  pivotClear: { sheet: string; cell: string; pivot: string }
+  pivotFormula: { sheet: string; cell: string; pivot: string }
+  pivotNameTaken: { name: string }
+  pivotNotItem: { item: string }
   // typing into a cell
   headerFormula: { sheet: string; cell: string; table: string }
   validationError: object
@@ -388,7 +392,7 @@ export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
   | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
-  | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart'
+  | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 

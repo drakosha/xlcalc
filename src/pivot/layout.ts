@@ -3,7 +3,7 @@
  * (`rowLines`, `columnLines`), its place (`location`, the Filters area above it), and the cells of its area: the
  * headers, the items' labels, the values with their value field's number format, the subtotals and grand totals.
  */
-import type { BookInput, CellValue, ErrorCode, NumberFormat, PivotAxisField, PivotLine, PivotLocation, PivotShowAs } from '../contract.js'
+import type { BookInput, CellValue, ErrorCode, NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotLocation, PivotShowAs, PivotTable } from '../contract.js'
 import { dateToSerial } from '../date-serial.js'
 import { epochOf } from '../dates.js'
 import { displayRules } from '../locale/rules.js'
@@ -23,7 +23,21 @@ export interface PivotCell {
   numberFormat?: NumberFormat
   /** Levels of indent of a label in a column of several fields (compact form). */
   indent?: number
+  /** The part of the PivotTable the cell shows, which an entry into it changes (`pivotEntry`); a value without it. */
+  part?: PivotPart
 }
+
+/**
+ * The parts of a PivotTable's cells: a field's name (`field`, on the Filters area too), an item's label on an axis
+ * (`item`, of a value field for `values`) or on the Filters area (`page`), a subtotal's label, the grand total's, the
+ * header of the rows or columns in compact form, a value field's name at the corner (`value`).
+ */
+export type PivotPart =
+  | { kind: 'field'; field: PivotAxisField }
+  | { kind: 'item' | 'subtotal'; field: PivotAxisField; item: number }
+  | { kind: 'page'; field: number }
+  | { kind: 'grand' | 'rowHeader' | 'columnHeader' }
+  | { kind: 'value'; value: number }
 
 /** A PivotTable laid out: its saved layout and place, the rectangle of its cells, its Filters area included, and the cells. */
 export interface PivotLaidOut {
@@ -44,17 +58,11 @@ const PERCENT = new Set<PivotShowAs>(['percentOfTotal', 'percentOfColumn', 'perc
 
 type Label = { value: PivotCell['value']; error?: ErrorCode; numberFormat?: NumberFormat }
 
-
-/** Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. */
-export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>): PivotLaidOut {
-  const { table, cache } = result
+/** A PivotTable's labels: of its fields, value fields and items, as cells and as text. */
+export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInput, 'locale' | 'dateSystem'>) {
   const words = wordsOf(book.locale)
   const rules = displayRules(book.locale, epochOf(book.dateSystem))
   const values = table.values ?? []
-  const rowFields = result.rows.fields
-  const colFields = result.columns.fields
-  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.rows !== false)
-  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.columns !== false)
   const fieldName = (f: PivotAxisField) => (f === 'values' ? (table.captions?.values ?? words.values) : (table.fields[f]?.name ?? cache.fields[f]?.name ?? ''))
   const valueName = (v: number) => {
     const d = values[v]
@@ -81,6 +89,18 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const shown: CellValue = typeof v === 'object' && v ? dateToSerial(v.date, { dateSystem: book.dateSystem }) : (v ?? null)
     return rules.display(shown, l.numberFormat, Infinity).text
   }
+  return { words, rules, fieldName, valueName, itemLabel, labelText }
+}
+
+/** Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. */
+export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>): PivotLaidOut {
+  const { table, cache } = result
+  const values = table.values ?? []
+  const rowFields = result.rows.fields
+  const colFields = result.columns.fields
+  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.rows !== false)
+  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.columns !== false)
+  const { words, rules, fieldName, valueName, itemLabel, labelText } = labeler(table, cache, book)
   // a subtotal's label: the field's own caption, else its item's with `Total`, the function's name, or the value field's
   const subtotalLabel = (fields: readonly PivotAxisField[], a: AxisLine): string => {
     const d = a.items.length - 1
@@ -131,8 +151,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   if (pageRows) Object.assign(location, { pageRows, pageColumns: pageCols })
 
   const cells = new Map<string, PivotCell>()
-  const put = (row: number, col: number, l: Label | string, indent = 0) => {
+  const put = (row: number, col: number, l: Label | string, part?: PivotPart, indent = 0) => {
     const cell: PivotCell = { row, col }
+    if (part) cell.part = part
     const label = typeof l === 'string' ? { value: l } : l
     if (label.value !== undefined) cell.value = label.value
     if (label.error) cell.error = label.error
@@ -147,36 +168,37 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const [r, pair] = table.pagesAcrossFirst ? [Math.floor(k / run), k % run] : [k % run, Math.floor(k / run)]
     const row = top - pageRows - 1 + r
     const col = left + pair * 3
-    put(row, col, fieldName(p.field))
-    put(row, col + 1, p.all ? words.all : p.items.length === 1 ? itemLabel(p.field, p.items[0]) : words.multiple)
+    put(row, col, fieldName(p.field), { kind: 'field', field: p.field })
+    put(row, col + 1, p.all ? words.all : p.items.length === 1 ? itemLabel(p.field, p.items[0]) : words.multiple, { kind: 'page', field: p.field })
   })
 
   // the headers: the value field's name at the corner, `Column Labels` (the column fields' names in outline and tabular forms), `Row Labels` (the row fields')
   const headers = table.fieldHeaders !== false
   const compact = (table.layout ?? 'compact') === 'compact'
   if (captionRow) {
-    if (values.length === 1 && rowFields.length) put(top, left, valueName(0))
+    if (values.length === 1 && rowFields.length) put(top, left, valueName(0), { kind: 'value', value: 0 })
     if (headers) {
-      if (compact) put(top, left + width, table.captions?.columnHeader ?? words.columnHeader)
-      else colFields.forEach((f, k) => put(top, left + width + k, fieldName(f)))
+      if (compact) put(top, left + width, table.captions?.columnHeader ?? words.columnHeader, { kind: 'columnHeader' })
+      else colFields.forEach((f, k) => put(top, left + width + k, fieldName(f), { kind: 'field', field: f }))
     }
   }
   if (rowFields.length && headers) {
     rowFields.forEach((f, k) => {
       if (k > 0 && labelCol[k] === labelCol[k - 1]) return
-      put(top + height - 1, left + labelCol[k], k === 0 && compact ? (table.captions?.rowHeader ?? words.rowHeader) : fieldName(f))
+      const header = k === 0 && compact
+      put(top + height - 1, left + labelCol[k], header ? (table.captions?.rowHeader ?? words.rowHeader) : fieldName(f), header ? { kind: 'rowHeader' } : { kind: 'field', field: f })
     })
   }
-  if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, valueName(0))
-  if (!rowFields.length && width === 1 && values.length === 1) put(top + height, left, valueName(0))
+  if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, valueName(0), { kind: 'value', value: 0 })
+  if (!rowFields.length && width === 1 && values.length === 1) put(top + height, left, valueName(0), { kind: 'value', value: 0 })
 
   // the labels of the columns' lines, a field per row under the caption row
   columnLines.forEach((a, j) => {
     const col = left + width + j
     const d = a.items.length - 1
-    if (a.kind === 'grand') put(top + captionRow, col, grandLabel(a))
-    else if (a.kind === 'subtotal') put(top + captionRow + d, col, subtotalLabel(colFields, a))
-    else for (let k = a.from; k <= d; k++) put(top + captionRow + k, col, itemLabel(colFields[k], a.items[k]))
+    if (a.kind === 'grand') put(top + captionRow, col, grandLabel(a), { kind: 'grand' })
+    else if (a.kind === 'subtotal') put(top + captionRow + d, col, subtotalLabel(colFields, a), { kind: 'subtotal', field: colFields[d], item: a.items[d] })
+    else for (let k = a.from; k <= d; k++) put(top + captionRow + k, col, itemLabel(colFields[k], a.items[k]), { kind: 'item', field: colFields[k], item: a.items[k] })
   })
 
   // the labels of the rows' lines, the deepest of a shared column last; outline and tabular fields repeat theirs on the
@@ -186,14 +208,14 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const row = top + height + i
     const d = a.items.length - 1
     if (a.kind === 'grand' || a.kind === 'blank') {
-      if (a.kind === 'grand') put(row, left, grandLabel(a))
+      if (a.kind === 'grand') put(row, left, grandLabel(a), { kind: 'grand' })
       return
     }
     const subtotal = a.kind === 'subtotal'
     for (let k = 0; k <= d; k++) {
       const f = rowFields[k]
-      if (subtotal && k === d) put(row, left + labelCol[d], subtotalLabel(rowFields, a))
-      else if ((!subtotal && k >= a.from) || repeats(f)) put(row, left + labelCol[k], itemLabel(f, a.items[k]), level[k] * Math.max(1, table.indent ?? 1))
+      if (subtotal && k === d) put(row, left + labelCol[d], subtotalLabel(rowFields, a), { kind: 'subtotal', field: f, item: a.items[d] })
+      else if ((!subtotal && k >= a.from) || repeats(f)) put(row, left + labelCol[k], itemLabel(f, a.items[k]), { kind: 'item', field: f, item: a.items[k] }, level[k] * Math.max(1, table.indent ?? 1))
     }
   })
 
