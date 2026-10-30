@@ -21,8 +21,8 @@ let refresh: PivotRefresh | null = null
 /** The refresh registered, or null. */
 export const pivotRefresh = (): PivotRefresh | null => refresh
 
-/** Registers the refresh of `xlcalc/pivot`, the last one registered used. */
-export function setPivotRefresh(f: PivotRefresh): void {
+/** Registers the refresh of `xlcalc/pivot`, the last one registered used; null takes it away (a test's session without it). */
+export function setPivotRefresh(f: PivotRefresh | null): void {
   refresh = f
 }
 
