@@ -6,20 +6,22 @@
  * (`<set>/<id>.xlsx`, and `<set>/<id>-<k>.xlsx` for the copy saved at the end of phase k before the last).
  */
 import { createHash } from 'node:crypto'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { CellValue } from '../../src/contract.js'
 import { writeXlsx } from '../../src/xlsx.js'
 import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type SlicerItem, type TableProps } from '../coverage/pivot/cases.js'
 import { cellsOf } from '../coverage/case-book.js'
 import { DATA, sourceBook, sourceText } from '../coverage/pivot/data.js'
-import { rewritten } from '../coverage/pivot/rewrite.js'
 import { localeDir } from '../coverage/locales.js'
 import { fileAnswers, secondsSince, setModule } from '../coverage/stored.js'
 import { caseFiles } from '../coverage/xlsx/sent.js'
 import { comEdit, fileJobs } from './books.js'
 import { valOf, winFile, type WinCell } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
+
+const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 
 /** `XlConsolidationFunction`. */
 const FN: Record<Agg, number> = { sum: -4157, count: -4112, average: -4106, max: -4136, min: -4139, product: -4149, countNums: -4113, stdDev: -4155, stdDevp: -4156, var: -4164, varp: -4165 }
@@ -51,7 +53,7 @@ function tableProps(t: TableProps): Props {
   if (t.errorText !== undefined) p.push(['DisplayErrorString', true], ['ErrorString', t.errorText])
   if (t.emptyText !== undefined) p.push(['DisplayNullString', true], ['NullString', t.emptyText])
   if (t.multipleFilters !== undefined) p.push(['AllowMultipleFilters', t.multipleFilters])
-  if (t.subtotalHidden !== undefined) p.push(['SubtotalHiddenPageItems', t.subtotalHidden])
+  if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
   return p
 }
 
@@ -69,7 +71,7 @@ function fieldProps(f: FieldProps): Props {
 }
 
 /** What each step of a case is for, to read its answer: an operation (by index, -1 the first pivot table), a read of a pivot table, a watched range, a slicer, the copy or the save. */
-type Role = { op: number } | { read: string } | { watch: string } | { slicer: string } | { external: string[] } | { end: true }
+type Role = { op: number } | { read: string } | { readAll: true } | { watch: string } | { slicer: string } | { external: string[] } | { end: true }
 
 /** A case's steps and what each is for. */
 export interface Planned {
@@ -92,7 +94,8 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
   const phase = (last: boolean) => {
     // formulas typed over the pivot tables settle in a full calculation
     add({ op: -2 }, { do: 'full' })
-    for (const [pt, sheet] of sheets) add({ read: pt }, { do: 'pivot', op: 'read', sheet, pt })
+    if (c.file) add({ readAll: true }, { do: 'pivot', op: 'readAll' })
+    else for (const [pt, sheet] of sheets) add({ read: pt }, { do: 'pivot', op: 'read', sheet, pt })
     for (const w of c.watch ?? []) {
       const [sheet, range] = w.split('!')
       add({ watch: w }, { do: 'values', sheet, range })
@@ -100,7 +103,7 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     for (const name of slicers) add({ slicer: name }, { do: 'pivot', op: 'slicerRead', field: name })
     add({ end: true }, last ? { do: 'saveAs' } : { do: 'pivot', op: 'copy', k: ++copies })
   }
-  if (!c.from) {
+  if (!c.from && !c.file) {
     const cols = DATA[c.data ?? 'sales']()
     add({ op: -1 }, { do: 'pivot', op: 'create', sheet: 'P', at: 'A3', pt: 'PT1', source: sourceText(c.source ?? 'range', cols), version: VERSION })
   }
@@ -165,8 +168,11 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       add(role, set('cache', props))
     } else if ('edit' in o) {
       const [sheet, cell] = o.edit.split('!')
-      add(role, { do: 'set', sheet, cell, ...comEdit(o.to) })
+      add(role, { do: 'set', sheet, cell, ...(o.to !== null && typeof o.to === 'object' && 'typed' in o.to ? { kind: 'f2', value: o.to.typed } : comEdit(o.to)) })
     } else if ('refresh' in o) add(role, { ...at, op: 'refresh' })
+    else if ('refreshAll' in o) add(role, { do: 'pivot', op: 'refreshAll' })
+    else if ('define' in o) add(role, { do: 'table', line: ['name', '', o.define, `=${o.ref}`].join('\t') })
+    else if ('resize' in o) add(role, { do: 'pivot', op: 'resize', table: o.resize, range: o.range })
     else if ('external' in o) add({ external: Object.keys(o.cells) }, { do: 'pivot', op: 'external', source: Buffer.from(book(o.external)).toString('base64'), cells: o.cells })
   })
   phase(true)
@@ -181,6 +187,12 @@ const cellValue = (c: WinCell): CellValue => {
 
 const errorOf = (x: unknown): string | undefined => (x && typeof x === 'object' && 'error' in x ? String((x as { error: unknown }).error) : undefined)
 
+/** A pivot table's area as `pivot.ps1` reads it. */
+function areaOf(got: unknown): PivotArea {
+  const [table, area, body, values, text, formats] = got as [string, string, string, WinCell[][], string[][], string[][]]
+  return { table, area, body, values: values.map((r) => r.map(cellValue)), text, formats }
+}
+
 /** A case's answer from its steps' answers, phase by phase. */
 export function pivotAnswer(plan: Planned, answers: unknown[]): PivotAnswer {
   const phases: PivotPhase[] = []
@@ -190,12 +202,11 @@ export function pivotAnswer(plan: Planned, answers: unknown[]): PivotAnswer {
     const error = errorOf(got)
     if ('op' in role) {
       if (error) (cur.errors ??= []).push(`${role.op === -1 ? 'create' : role.op === -2 ? 'calculate' : `op ${role.op}`}: ${error}`)
-    } else if ('read' in role) {
-      if (error) cur.pivots[role.read] = { error }
-      else {
-        const [table, area, body, values, text, formats] = got as [string, string, string, WinCell[][], string[][], string[][]]
-        cur.pivots[role.read] = { table, area, body, values: values.map((r) => r.map(cellValue)), text, formats } satisfies PivotArea
-      }
+      else if (got !== null && role.op >= 0) (cur.results ??= {})[`op ${role.op}`] = got
+    } else if ('read' in role) cur.pivots[role.read] = error ? { error } : areaOf(got)
+    else if ('readAll' in role) {
+      if (error) cur.pivots['*'] = { error }
+      else for (const [sheet, name, area] of got as [string, string, unknown][]) cur.pivots[`${sheet}!${name}`] = errorOf(area) ? { error: errorOf(area)! } : areaOf(area)
     } else if ('watch' in role) {
       const [sheet, range] = role.watch.split('!')
       const vals = (got as WinCell[][]).flat()
@@ -227,7 +238,7 @@ const savedBook = (tag: Tag) => (name: string) => new Uint8Array(readFileSync(wi
 export async function stepPivot(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<PivotSet>('pivot', set)).buildPivotCases()
   const saved = savedBook(tag)
-  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.from ? await rewritten(saved(c.from), c.rewrite) : (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range') }, { values: 'omit' })).data))
+  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.file ? new Uint8Array(readFileSync(resolve(ROOT, c.file))) : c.from ? saved(c.from) : (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range') }, { values: 'omit' })).data))
   const plans = new Map(cases.map((c) => [c.id, pivotSteps(c, saved)]))
   // a case runs again when its file or its steps change (the steps carry the books of external operations)
   const sent = Object.fromEntries(cases.map((c) => [c.id, `${parts[c.id]} ${createHash('sha256').update(JSON.stringify(plans.get(c.id)!.steps)).digest('hex').slice(0, 16)}`]))
@@ -249,4 +260,14 @@ export async function stepPivot(set: string, tag: Tag, e: WinEnv): Promise<void>
     },
     save,
   )
+  pruneSaved(dir, new Set(cases.map((c) => c.id)))
+}
+
+/** Removes the saved books of cases the set no longer has (`<id>.xlsx`, `<id>-<k>.xlsx`). */
+function pruneSaved(dir: string, ids: Set<string>) {
+  if (!existsSync(dir)) return
+  for (const f of readdirSync(dir)) {
+    const id = f.replace(/(-\d+)?\.xlsx$/, '')
+    if (!ids.has(id) && !ids.has(f.slice(0, -'.xlsx'.length))) rmSync(join(dir, f))
+  }
 }
