@@ -3,28 +3,21 @@
  * canonical text, its AST with linked workbooks' names put in their place (`expandLinkNames`). While a workbook's state
  * is built, the formulas of one shape (`syntax/shape.ts`) are prepared once.
  */
-import type { CheckCode, ErrorCode } from './contract.js'
 import type { EngineState, Invalid } from './engine.js'
 import { expandLinkNames } from './links.js'
 import { nameFor } from './names.js'
 import { printFormula, sheetKey, type Ast, type PrintOptions, type Tok } from './syntax.js'
-import { validateTokens } from './syntax/check.js'
+import { invalidError, validateTokens } from './syntax/check.js'
 import { instance, ready, shaped, SHAPES, tableShapeKey, type Template } from './syntax/shape.js'
 import { tableAt, tableNames } from './tables/model.js'
 
 /**
  * A prepared formula; `unknown` the check's refusal of a name the workbook does not define or a function the engine
- * does not know, which the formula is calculated over all the same: #NAME? where it is computed, as in Excel
+ * does not know or has not loaded, which the formula is calculated over all the same: #NAME? where it is computed, as in Excel
  * (`IF(TRUE,1,Nope)` is 1); `holds` when the formula keeps the value its file stores over such a function
  * (`unknownFunctions: 'held'`).
  */
 export type Prepared = { ok: true; text: string; ast: Ast; unknown?: Invalid; holds?: true } | { ok: false; invalid: Invalid }
-
-export function invalidError(code: CheckCode): ErrorCode {
-  if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
-  if (code === 'unknown_sheet' || code === 'external_ref') return 'REF'
-  return 'ERROR'
-}
 
 type Named = (name: string, sheet: string | undefined) => ReturnType<typeof nameFor>
 
@@ -40,13 +33,13 @@ const spelling = (state: EngineState, named: Named): PrintOptions => ({
 /** The check of a formula in the table named `enclosing` (none: outside tables), over its tokens when they are read (`toks`). */
 function checked(state: EngineState, enclosing: string | undefined, text: string, toks: Tok[] | null, named: Named): { ok: true; ast: Ast; unknown?: Invalid } | { ok: false; invalid: Invalid } {
   const check = (lenient: boolean) =>
-    validateTokens(text, toks, { sheets: state.sheetNames, known: (name, sheet) => !!named(name, sheet), externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], ...(enclosing ? { table: enclosing } : {}), ...(lenient ? { unknown: true, anyName: true } : {}), ...(state.ctx.hosts ? { answered: true } : {}) })
+    validateTokens(text, toks, { sheets: state.sheetNames, known: (name, sheet) => !!named(name, sheet), externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], notLoaded: state.groups.notLoaded, ...(enclosing ? { table: enclosing } : {}), ...(lenient ? { unknown: true, anyName: true } : {}), ...(state.ctx.hosts ? { answered: true } : {}) })
   const r = check(false)
   if (r.ok) return r
   const invalid: Invalid = { code: r.code, message: r.message, at: r.at, error: invalidError(r.code), ...(r.fn !== undefined ? { fn: r.fn } : {}) }
-  // a name the book does not define or a function the engine does not know fails only where it is computed, as in
-  // Excel: checked again taking every name and function, the formula keeps the refusal
-  if (r.code !== 'unknown_name' && r.code !== 'unknown_function') return { ok: false, invalid }
+  // a name the book does not define, or a function the engine does not know or has not loaded, fails only where it is
+  // computed, as in Excel: checked again taking every name and function, the formula keeps the refusal
+  if (r.code !== 'unknown_name' && r.code !== 'unknown_function' && r.code !== 'function_not_loaded') return { ok: false, invalid }
   const again = check(true)
   return again.ok ? { ok: true, ast: again.ast, unknown: invalid } : { ok: false, invalid }
 }
@@ -61,6 +54,7 @@ export const validateIn = (state: EngineState, s: number, enclosing?: string) =>
   known: (name: string, sheet: string | undefined) => !!namedFrom(state, s)(name, sheet),
   externalFunctions: state.externalFunctions,
   tables: tableNames(state.tables),
+  notLoaded: state.groups.notLoaded,
   ...(enclosing ? { table: enclosing } : {}),
 })
 
@@ -74,9 +68,9 @@ export function prepare(state: EngineState, s: number, row: number, col: number,
   return r.ok ? accepted(state, printFormula(r.ast, spelling(state, named)), r.ast, r.unknown) : r
 }
 
-/** A formula over a function the engine does not know that keeps the value its file stores (`held`) under `unknownFunctions: 'held'`; otherwise `p` as it is. */
+/** A formula over a function the engine does not know or has not loaded that keeps the value its file stores (`held`) under `unknownFunctions: 'held'`; otherwise `p` as it is. */
 export const preparedHolding = (state: EngineState, p: Prepared, held: unknown): Prepared =>
-  p.ok && p.unknown?.code === 'unknown_function' && state.unknownHeld && held !== undefined ? { ...p, holds: true } : p
+  p.ok && (p.unknown?.code === 'unknown_function' || p.unknown?.code === 'function_not_loaded') && state.unknownHeld && held !== undefined ? { ...p, holds: true } : p
 
 /** The shapes of one build of a state, by their key: a template, or null for a shape prepared formula by formula. */
 export type Shapes = Map<string, Template | null>

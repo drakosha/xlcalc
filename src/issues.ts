@@ -68,7 +68,7 @@ const STORED = ': not calculated, the value the file stores is held'
  */
 const storedIssue = (f: Formula): Issue =>
   f.unknown
-    ? { s: f.s, r: f.r, c: f.c, error: 'NAME', reason: f.unknown.message + STORED, check: 'unknown_function', at: f.unknown.at, fn: f.unknown.fn, fromFile: true }
+    ? { s: f.s, r: f.r, c: f.c, error: 'NAME', reason: f.unknown.message + STORED, check: f.unknown.code, at: f.unknown.at, fn: f.unknown.fn, fromFile: true }
     : { s: f.s, r: f.r, c: f.c, error: 'CONNECT', reason: `${f.stored} has no connection${STORED}`, fn: f.stored, fromFile: true }
 
 /** The issue of a formula calculated over a function the engine does not know: its check's refusal, as a formula refused has. */

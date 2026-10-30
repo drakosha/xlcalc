@@ -71,6 +71,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   unknownTable: [{ table: 'Sales' }],
   unknownColumn: [{ table: 'Sales', column: 'Qty' }],
   unknownFunction: [{ fn: 'FOO' }, { fn: 'STOCKHISTORY' }],
+  functionNotLoaded: [{ fn: 'BESSELJ', group: 'engineering' }, { fn: 'NORM.DIST', group: 'statistics' }],
   unknownSheet: [{ sheet: 'Data' }],
   unknownLink: [{ book: 'Book2.xlsx' }],
   unknownLinkSheet: [{ book: 'Book2.xlsx', sheet: 'Data' }],

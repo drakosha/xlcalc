@@ -71,6 +71,7 @@ export const EN_MESSAGES: EnglishMessages = {
   unknownTable: (p) => `unknown table ${p.table}`,
   unknownColumn: (p) => `the table ${p.table} has no column ${p.column}`,
   unknownFunction: (p) => `unknown function ${p.fn}`,
+  functionNotLoaded: (p) => `${p.fn} is in the function group ${p.group}, which is not loaded (registerFunctions)`,
   unknownSheet: (p) => `unknown sheet ${p.sheet}`,
   unknownLink: (p) => `the workbook has no link to ${p.book}`,
   unknownLinkSheet: (p) => `the workbook ${p.book} has no sheet ${p.sheet}`,

@@ -25,6 +25,7 @@ import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type St
 import { InputError } from './input-error.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
+import { functionsVersion } from './groups/state.js'
 import { checkBook, checkCell, checkClock, checkEdits, checkExternalBooks, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
 import { array, checkBoolean, checkNumber, checkString } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
@@ -204,7 +205,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   function* ready(): Steps<EngineState> {
     const s = st()
-    if (stale) {
+    // a group of functions loaded since a formula called one of it (`groups/registry.ts`): built again too, the formulas
+    // over it calculated; no change is told, the host reads what it shows again
+    if (stale || (s.groups.waiting && s.groups.version !== functionsVersion())) {
       // what an earlier call left to do does not count in this call's soft deadline
       state = yield* untimed(build(s.input, unlent))
       stale = false

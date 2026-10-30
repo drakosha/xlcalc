@@ -316,6 +316,7 @@ const MESSAGES: Messages = {
   unknownTable: (p) => `Неизвестная таблица ${q(p.table)}`,
   unknownColumn: (p) => `В таблице ${q(p.table)} нет столбца ${q(p.column)}`,
   unknownFunction: (p, w) => `Неизвестная функция ${w.fn(p.fn)}`,
+  functionNotLoaded: (p, w) => `Функция ${w.fn(p.fn)} входит в группу функций ${p.group}, которая не загружена (registerFunctions)`,
   unknownSheet: (p) => `Неизвестный лист ${q(p.sheet)}`,
   unknownLink: (p) => `В книге нет связи с книгой ${q(p.book)}`,
   unknownLinkSheet: (p) => `В книге ${q(p.book)} нет листа ${q(p.sheet)}`,

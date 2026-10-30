@@ -11,7 +11,7 @@ import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellVal
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { answered, changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
-import { externalNames } from './functions.js'
+import { externalNames } from './arity.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
 import { builtAnew, holdStored, putHeld, storedOf } from './held.js'
@@ -43,6 +43,7 @@ import { E, fromCellValue, isErr, type Rng, type V } from './values.js'
 import { newDynamic, type Dynamic } from './graph/dynamic.js'
 import { referrer } from './indirect.js'
 import { bookFacts } from './book-facts.js'
+import { functionsVersion, notLoaded } from './groups/state.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -65,6 +66,30 @@ export interface Invalid {
   at: number
   error: ErrorCode
   fn?: string
+}
+
+/**
+ * What a state knows of the groups of functions (`groups/registry.ts`): the loads it was built after, and whether a
+ * formula or a name of it called a function of a group not loaded then (a session builds such a state again once groups
+ * are loaded); `notLoaded` is the check's, which marks it.
+ */
+export interface GroupWatch {
+  version: number
+  waiting: boolean
+  notLoaded(fn: string): string | undefined
+}
+
+function groupWatch(): GroupWatch {
+  const w: GroupWatch = {
+    version: functionsVersion(),
+    waiting: false,
+    notLoaded: (fn) => {
+      const g = notLoaded(fn)
+      if (g) w.waiting = true
+      return g
+    },
+  }
+  return w
 }
 
 export interface EngineOptions {
@@ -157,6 +182,7 @@ export interface EngineState {
   links: LinkState
   /** The references dynamic formulas found as they computed, in the graph (`graph/dynamic.ts`): only once the book has such a formula. */
   dyn?: Dynamic
+  groups: GroupWatch
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -269,7 +295,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = externalNames(opts.externals?.functions)
   const tables = tablesOf(input)
-  const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
+  const groups = groupWatch()
+  const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks, groups.notLoaded)
   const linked = linkSheets(book.externalBooks, sheetNames.length)
   const names = prepared.names.map((n) => ({ ...n, ast: expandLinkNames(n.ast, linked.links, book.externalBooks) }))
   const epoch = epochOf(book.dateSystem)
@@ -331,6 +358,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     spills: newSpills(),
     bare: new Map(),
     links: linked.links,
+    groups,
   }
   ctx.book = bookFacts(state, opts.file)
   const pending: Formula[] = []

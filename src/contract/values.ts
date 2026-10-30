@@ -23,7 +23,8 @@ export type CellValue = Scalar | { error: ErrorCode }
 /**
  * Formula check codes. `unsupported`: an external function called with arguments that are not literals.
  * `unknown_name` also covers tables: an unknown table or column, or a structured reference without a table name outside
- * a table.
+ * a table. `function_not_loaded`: a function of a group of `xlcalc/functions` that `xlcalc/core` has not loaded
+ * (`registerFunctions`), a cell's issue alone: `validateFormula` knows every function.
  */
 export type CheckCode =
   | 'empty'
@@ -32,6 +33,7 @@ export type CheckCode =
   | 'too_deep'
   | 'external_ref'
   | 'unknown_function'
+  | 'function_not_loaded'
   | 'unknown_sheet'
   | 'unknown_name'
   | 'unsupported'

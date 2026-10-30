@@ -1,8 +1,7 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
 import { gridAt, occupied, type Arg, type Cx, type FnDef } from '../../args.js'
 import { E, isErr, whole, type CErr, type V } from '../../values.js'
-import { fact, sum } from '../common.js'
-import { MAX_COUNT } from '../statistical/distributions.js'
+import { fact, MAX_COUNT, sum } from '../common.js'
 
 /** Excel: GCD and LCM take values up to 2^53, and LCM's answer as well. */
 const MAX_INT = 2 ** 53

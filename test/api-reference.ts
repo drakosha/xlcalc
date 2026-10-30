@@ -13,6 +13,8 @@ const root = resolve(import.meta.dirname, '..')
 /** The package's entries and their sources, in the order the reference lists them. */
 export const ENTRIES: readonly [string, string][] = [
   ['xlcalc', 'src/index.ts'],
+  ['xlcalc/core', 'src/core.ts'],
+  ['xlcalc/functions', 'src/groups/index.ts'],
   ['xlcalc/a1', 'src/a1.ts'],
   ['xlcalc/text', 'src/text.ts'],
   ['xlcalc/entry', 'src/typed-entry.ts'],
@@ -35,8 +37,24 @@ examples are the [README](../README.md) and the other files of \`docs/\`. This f
 (\`npx tsx test/api-reference.ts --write\`): change the comments in the source, not here.
 `
 
-/** A symbol's comment: its text and its tags but the internal ones. */
+/** The function a value wraps without a comment of its own (`withAllFunctions(api.compute)`), whose comment it has. */
+function wrapped(symbol: ts.Symbol, checker: ts.TypeChecker): ts.Symbol | undefined {
+  const decl = symbol.declarations?.[0]
+  const call = decl && ts.isVariableDeclaration(decl) && decl.initializer
+  const arg = call && ts.isCallExpression(call) ? call.arguments[0] : undefined
+  return arg && (ts.isIdentifier(arg) || ts.isPropertyAccessExpression(arg)) ? checker.getSymbolAtLocation(arg) : undefined
+}
+
+/** The function a chain of wrappers ends at: the root's `compute` and the light entry's are one, described once. */
+function unwrapped(symbol: ts.Symbol, checker: ts.TypeChecker): ts.Symbol {
+  const inner = wrapped(symbol, checker)
+  return inner ? unwrapped(inner.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(inner) : inner, checker) : symbol
+}
+
+/** A symbol's comment: its text and its tags but the internal ones; a wrapper's without one of its own, the wrapped function's. */
 function commentOf(symbol: ts.Symbol, checker: ts.TypeChecker, signature?: ts.Signature): string {
+  const inner = !symbol.getDocumentationComment(checker).length && wrapped(symbol, checker)
+  if (inner) return commentOf(inner.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(inner) : inner, checker, signature)
   const parts = symbol.getDocumentationComment(checker)
   const text = ts.displayPartsToString(parts.length || !signature ? parts : signature.getDocumentationComment(checker)).trim()
   const tags = (signature ? signature.getJsDocTags() : symbol.getJsDocTags(checker))
@@ -84,13 +102,13 @@ export function apiReference(): string {
         if (!types.has(symbol)) types.set(symbol, { name: exported.name, section: entry, key: exported.name })
         continue
       }
-      const where = described.get(symbol)
+      const where = described.get(unwrapped(symbol, checker))
       if (where) {
         seeAlso.push(`[\`${exported.name}\`](#${where})`)
         continue
       }
       const anchor = `${slug(entry)}-${exported.name.toLowerCase()}`
-      described.set(symbol, anchor)
+      described.set(unwrapped(symbol, checker), anchor)
       lines.push(`### <a id="${anchor}"></a>\`${exported.name}\``, '')
       const decl = symbol.declarations?.[0]
       const type = checker.getTypeOfSymbolAtLocation(symbol, decl ?? source)

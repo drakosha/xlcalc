@@ -4,7 +4,9 @@
  * (`editStructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
  * text of `explain`. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
  * without messages of its own (and in an en-US book) the English one, at the same place. Together the cases reach
- * every message of the catalog but the rules of names, which only `validateName` gives, in English.
+ * every message of the catalog but the rules of names, which only `validateName` gives, in English, and the call of a
+ * function of a group not loaded, which only a cell's issue gives, in English as the other issues of cells
+ * (`test/function-groups.test.ts`).
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { closeTyped } from '../src/entry/close.js'
@@ -319,6 +321,6 @@ it("an edit over limits.writes says it in the book's language, in a session as i
   }
 })
 
-it('the cases reach every message of the catalog but the rules of names', () => {
-  expect([...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES)].filter((k) => !reached.has(k as MessageKey))).toEqual(['nameRule'])
+it('the cases reach every message of the catalog but the rules of names and a group not loaded', () => {
+  expect([...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES)].filter((k) => !reached.has(k as MessageKey))).toEqual(['functionNotLoaded', 'nameRule'])
 })
