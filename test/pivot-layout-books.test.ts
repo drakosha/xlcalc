@@ -55,7 +55,9 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
         if (!shown) continue
         seen++
         const cache = book.pivotCaches!.find((c) => c.id === t.cache)!
-        const laid = layoutPivot(savedResult(t, cache, sheet), book)
+        // the saved cells hold the values as shown, Show Values As applied
+        const saved = savedResult(t, cache, sheet)
+        const laid = layoutPivot(saved, book, saved.value)
         expect(laid.rowLines).toEqual(t.rowLines)
         expect(laid.columnLines).toEqual(t.columnLines)
         if (sheet.cells[t.location.range]?.formula === '#SPILL!') {
