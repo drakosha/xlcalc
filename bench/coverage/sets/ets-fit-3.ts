@@ -147,3 +147,24 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./ets-fit-3.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel did not confirm: a season of 70 % of the points or more is none (the longest-* cases), the
+ * largest seasonality is 8,784, a tie of the most frequent steps is #NUM!, a timeline every second month is no calendar,
+ * a calendar's step is the most frequent of its days, a calendar's last day carries past a shorter month's end, a target
+ * before the first date is taken while its step is, and COUNTA counts text.
+ */
+export const MISSED: readonly string[] = [
+  'longest-6#3', 'longest-6#4', 'longest-8#4', 'longest-8#5', 'longest-8#6', 'longest-9#5', 'longest-9#6',
+  'longest-9#7', 'longest-10#6', 'longest-10#7', 'longest-10#8', 'longest-11#6', 'longest-11#7', 'longest-11#8',
+  'longest-11#9', 'longest-12#7', 'longest-12#8', 'longest-12#9', 'longest-12#10', 'longest-13#8', 'longest-13#9',
+  'longest-13#10', 'longest-13#11', 'longest-14#8', 'longest-14#9', 'longest-14#10', 'longest-14#11', 'longest-14#12',
+  'longest-16#10', 'longest-16#11', 'longest-16#12', 'longest-16#13', 'longest-16#14', 'longest-20#13',
+  'longest-20#14', 'longest-20#15', 'longest-20#16', 'longest-20#17', 'longest-20#18', 'longest-24#15',
+  'longest-24#16', 'longest-24#17', 'longest-24#18', 'longest-24#19', 'longest-24#20', 'longest-24#21',
+  'longest-24#22', 'longest-40#8', 'longest-40#9', 'longest-40#10', 'longest-40#11', 'longest-40#12', 'longest-40#13',
+  'longest-40#14', 'longest-40#15', 'longest-40#16', 'longest-40#17', 'longest-40#18', 'longest-40#19', 'largest#2',
+  'tie-larger#1', 'tie-larger#2', 'tie-larger#3', 'tie-larger#4', 'tie-smaller#1', 'tie-smaller#2', 'tie-smaller#3',
+  'tie-smaller#4', 'tie-three#1', 'tie-three#2', 'tie-three#3', 'tie-three#4', 'cal-every2#1', 'cal-every2#5',
+  'cal-feb15#1', 'cal-day30#4', 'cal-before#7', 'agg-text-3#1', 'agg-text#1',
+]
