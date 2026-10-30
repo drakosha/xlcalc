@@ -188,10 +188,14 @@ describe.each(['closures', 'eval'] as const)('xlsx: what a write changes is repo
     const values = await writeXlsx({ book, result }, { mode: 'values' })
     expect(issuesOf(values)).toEqual([['errorValue', ['A1', 'A2'], NULL]])
     expect(await sheetData(values.data)).toBe('<sheetData><row r="1"><c r="A1" t="e"><v>#NULL!</v></c></row><row r="2"><c r="A2" t="e"><v>#NULL!</v></c></row><row r="3"><c r="A3"><v>1</v></c></row></sheetData>')
-    // a stored #GETTING_DATA, read as #ERROR!, written back
-    const read = await sheet('<row r="1"><c r="A1" t="e"><f>NOW()</f><v>#GETTING_DATA</v></c></row>')
+    // a stored #FIELD!, an error the model has no code for, read as #ERROR!, written back
+    const read = await sheet('<row r="1"><c r="A1" t="e"><f>NOW()</f><v>#FIELD!</v></c></row>')
     const again = await writeXlsx({ book: read.book, result: read.cached })
     expect(issuesOf(again)).toEqual([['errorValue', ['A1'], NULL]])
+    // a stored #GETTING_DATA, the model's own code since the cube functions, is read and written as itself
+    const cube = await sheet('<row r="1"><c r="A1" t="e"><f>NOW()</f><v>#GETTING_DATA</v></c></row>')
+    const written = await writeXlsx({ book: cube.book, result: cube.cached })
+    expect([cube.cached.sheets[0].cells.A1.value, issuesOf(written), (await readXlsx(written.data)).cached.sheets[0].cells.A1.value]).toEqual([{ error: 'GETTING_DATA' }, [], { error: 'GETTING_DATA' }])
     expect((await writeXlsx({ book, result }, { locale: ruRU })).issues.find((i) => i.code === 'errorValue')?.message).toBe('#ERROR!, ошибка формулы, которая не вычисляется, записана как #ПУСТО!: в Excel нет #ERROR!')
   })
 })
