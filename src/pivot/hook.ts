@@ -5,9 +5,13 @@
  */
 import type { BookInput, PivotRef } from '../contract.js'
 import type { Applied } from '../structure/geometry.js'
+import type { ValuesIn } from '../structure/values.js'
 
-/** Refreshes the caches of the PivotTables `refs` and every PivotTable over them, every cache that can be without `refs`. */
-export type PivotRefresh = (book: BookInput, refs?: PivotRef[]) => Applied
+/**
+ * Refreshes the caches of the PivotTables `refs` and every PivotTable over them, every cache that can be without `refs`,
+ * from the sources' computed values (`values`), relative date filters by the session's day `today`.
+ */
+export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number) => Applied
 
 let refresh: PivotRefresh | null = null
 
