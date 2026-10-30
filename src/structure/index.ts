@@ -38,6 +38,7 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { carryPivots, pivotRefusal } from './pivots.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -124,8 +125,13 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    const [r, loose] = withLooseLooks(() => applied(input, op, values, whole))
-    const out = r.ok ? linesMoved(input, r) : r
+    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
+    const carried = carryPivots(input)
+    const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
+    const refused = r.ok ? pivotRefusal(input, op) : null
+    if (refused) return refused
+    const both = r.ok ? linesMoved(input, r) : r
+    const out = both.ok && carried ? carried.after(both) : both
     // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
     return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
   })
