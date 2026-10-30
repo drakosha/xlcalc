@@ -1,12 +1,11 @@
 /**
  * PivotTables laid out written to their sheets as one step (a refresh of a cache shared by several): every new area
  * checked first, then the old areas cleared and the new cells written, the definitions with their new layout and place.
- * An area over cells that hold something, a table or another PivotTable refuses the whole step, and nothing changes.
  */
 import type { BookInput, CellInput, PivotTable, SheetInput } from '../contract.js'
 import { CONTENT, holds } from '../array-areas.js'
 import { say } from '../locale/messages.js'
-import { formatAddress, readAddress } from '../model.js'
+import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { cornersText, hasCell, meets, parseRange, type Rect } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { sheetIndex } from '../structure/rewrite.js'
@@ -30,32 +29,46 @@ const cleared = (c: CellInput): CellInput | undefined => {
   return Object.keys(out).length ? out : undefined
 }
 
-/** Writes the PivotTables `placed` to their sheets at once (`Placement`), or refuses (`pivot`) when an area cannot be laid. */
-export function placePivots(book: BookInput, placed: Placement[]): Applied {
+/** What a PivotTable laid out over cells it cannot take becomes: refused (`pivot`), or spilled, as Excel 365 refreshes it. */
+export type Blocked = 'spill' | 'refuse'
+
+/**
+ * Writes the PivotTables `placed` to their sheets at once (`Placement`). An area over cells that hold something, a table,
+ * another PivotTable or a PivotTable laid before it in `placed` is refused (`pivot`) with `blocked: 'refuse'` (Excel's
+ * new and moved PivotTable); with `spill`, as a refresh in Excel 365, the PivotTable shrinks to the top-left cell of its
+ * old range, which shows #SPILL!, keeping its new lines, its old cells cleared and the others left as they are.
+ */
+export function placePivots(book: BookInput, placed: Placement[], blocked: Blocked = 'spill'): Applied {
   const steps = placed.map((p) => {
     const s = sheetIndex(book, p.sheet)
     const pivots = book.sheets[s]?.pivotTables ?? []
     const at = pivots.findIndex((t) => t.name === p.table.name)
     if (at < 0) throw new Error(`no PivotTable ${p.table.name} on ${p.sheet}`)
-    return { ...p, s, at, old: pivotArea(pivots[at].location) }
+    return { ...p, s, at, old: pivotArea(pivots[at].location), spill: false }
   })
-  // each new area against what lies there that is not a PivotTable laid again: cells, tables, other PivotTables
-  for (const p of steps) {
+  // each new area against the cells it takes: cells holding something outside its own old area, tables, the other
+  // PivotTables where they are, and those laid before it where they go
+  for (const [n, p] of steps.entries()) {
     const sheet = book.sheets[p.s]
     const x = p.laid.area
-    const fail = (key: 'pivotOverPivot' | 'pivotOverTable' | 'pivotOverData', more: Record<string, string>): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, { key, pivot: p.table.name, ...more } as never) })
-    for (const q of steps) if (q !== p && q.s === p.s && meets(x, q.laid.area)) return fail('pivotOverPivot', { other: q.table.name })
-    for (const [i, t] of (sheet.pivotTables ?? []).entries()) {
-      const area = steps.some((q) => q.s === p.s && q.at === i) ? null : pivotArea(t.location)
-      if (area && meets(x, area)) return fail('pivotOverPivot', { other: t.name })
-    }
-    for (const t of sheet.tables ?? []) {
+    const others = (sheet.pivotTables ?? []).flatMap((t, i) => {
+      if (i === p.at) return []
+      const q = steps.find((y) => y.s === p.s && y.at === i)
+      const areas = [pivotArea(t.location), q && steps.indexOf(q) < n && !q.spill ? q.laid.area : null]
+      return areas.some((a) => a && meets(x, a)) ? [t.name] : []
+    })
+    const table = (sheet.tables ?? []).find((t) => {
       const r = parseRange(t.range)
-      if (r && meets(x, r)) return fail('pivotOverTable', { table: t.name })
+      return r && meets(x, r)
+    })
+    const data = filled(sheet, x, p.old ? [p.old] : [])
+    if (!others.length && !table && !data) continue
+    if (blocked === 'spill') {
+      p.spill = true
+      continue
     }
-    const own = steps.flatMap((q) => (q.s === p.s && q.old ? [q.old] : []))
-    const hit = filled(sheet, x, own)
-    if (hit) return fail('pivotOverData', { sheet: sheet.name, range: cornersText(x) })
+    const more = others.length ? { key: 'pivotOverPivot', other: others[0] } : table ? { key: 'pivotOverTable', table: table.name } : { key: 'pivotOverData', sheet: sheet.name, range: cornersText(x) }
+    return { ok: false, code: 'pivot', message: say(book.locale, { pivot: p.table.name, ...more } as never) }
   }
   const sheets = [...book.sheets]
   for (const p of steps) {
@@ -66,7 +79,9 @@ export function placePivots(book: BookInput, placed: Placement[]): Applied {
       if (rest) cells[addr] = rest
       else delete cells[addr]
     }
-    for (const c of p.laid.cells) {
+    const old = sheet.pivotTables![p.at].location.range.split(':')[0]
+    const laid: PivotLaidOut = p.spill ? { ...p.laid, location: { range: old, firstHeaderRow: 0, firstDataRow: 0, firstDataColumn: 0 }, cells: [{ ...parseAddress(old), error: 'SPILL' }] } : p.laid
+    for (const c of laid.cells) {
       const addr = formatAddress(c.row, c.col)
       const out: CellInput = { ...cells[addr] }
       if (c.error) out.formula = ERROR_TEXT[c.error]
@@ -75,7 +90,7 @@ export function placePivots(book: BookInput, placed: Placement[]): Applied {
       cells[addr] = out
     }
     const pivotTables = [...(sheet.pivotTables ?? [])]
-    pivotTables[p.at] = { ...p.table, location: p.laid.location, rowLines: p.laid.rowLines, columnLines: p.laid.columnLines }
+    pivotTables[p.at] = { ...p.table, location: laid.location, rowLines: laid.rowLines, columnLines: laid.columnLines }
     sheets[p.s] = { ...sheet, cells, pivotTables }
   }
   return { ok: true, book: { ...book, sheets }, geometry: [] }

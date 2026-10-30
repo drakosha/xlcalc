@@ -191,28 +191,43 @@ describe('placePivots', () => {
     const sh = r.book.sheets[0]
     expect(sh.cells.A3).toEqual({ value: 'Row Labels' })
     expect(sh.cells.B5).toEqual({ value: 4, style: 0 })
-    expect(placePivots(book({ B6: { value: 1, style: 0 } }), [{ sheet: 'P', table: t, laid: l }]).ok).toBe(false)
+    expect(placePivots(book({ B6: { value: 1, style: 0 } }), [{ sheet: 'P', table: t, laid: l }], 'refuse').ok).toBe(false)
     expect(sh.cells.A6).toEqual({ value: 'Grand Total' })
     expect(sh.pivotTables![0]).toMatchObject({ rows: [3], location: { range: 'A3:B6' }, rowLines: l.rowLines })
   })
 
-  it('refuses an area over cells that hold something, a table or another PivotTable, changing nothing', () => {
+  it('refuses, when asked to, an area over cells that hold something, a table or another PivotTable, changing nothing', () => {
     const t = table({ rows: [0, 1] })
     const l = layoutPivot(calc(t), {})
-    const over = placePivots(book({ A9: { value: 1 } }), [{ sheet: 'P', table: t, laid: l }])
+    const over = placePivots(book({ A9: { value: 1 } }), [{ sheet: 'P', table: t, laid: l }], 'refuse')
     expect(over).toMatchObject({ ok: false, code: 'pivot', message: "there's already data in P!A3:B9, where the PivotTable PT would be laid out" })
-    expect(placePivots(book({ A9: { style: 0 } }), [{ sheet: 'P', table: t, laid: l }]).ok).toBe(true)
-    expect(placePivots(book({}, { tables: [{ name: 'T', range: 'A9:B11', columns: [{ name: 'a' }, { name: 'b' }] }] }), [{ sheet: 'P', table: t, laid: l }])).toMatchObject({ ok: false, code: 'pivot', message: 'the PivotTable PT would overlap the table T' })
+    expect(placePivots(book({ A9: { style: 0 } }), [{ sheet: 'P', table: t, laid: l }], 'refuse').ok).toBe(true)
+    expect(placePivots(book({}, { tables: [{ name: 'T', range: 'A9:B11', columns: [{ name: 'a' }, { name: 'b' }] }] }), [{ sheet: 'P', table: t, laid: l }], 'refuse')).toMatchObject({ ok: false, code: 'pivot', message: 'the PivotTable PT would overlap the table T' })
     const other = { ...table({ name: 'PT2', location: { range: 'A9:B11', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 } }) }
     const b = book()
     b.sheets[0].pivotTables!.push(other)
-    expect(placePivots(b, [{ sheet: 'P', table: t, laid: l }])).toMatchObject({ ok: false, code: 'pivot' })
+    expect(placePivots(b, [{ sheet: 'P', table: t, laid: l }], 'refuse')).toMatchObject({ ok: false, code: 'pivot' })
     // both laid again at once: the second's old area is free, the new areas must not meet
     const t2 = { ...other, rows: [3] as PivotTable['rows'] }
     const l2 = layoutPivot(calc(t2), {})
-    expect(placePivots(b, [{ sheet: 'P', table: t, laid: l }, { sheet: 'P', table: t2, laid: l2 }])).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('PT2') })
+    expect(placePivots(b, [{ sheet: 'P', table: t, laid: l }, { sheet: 'P', table: t2, laid: l2 }], 'refuse')).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('PT2') })
     const far = { ...t2, location: { ...t2.location, range: 'D10:E13' } }
     const moved = placePivots({ ...b, sheets: [{ ...b.sheets[0], pivotTables: [b.sheets[0].pivotTables![0], far] }] }, [{ sheet: 'P', table: t, laid: l }, { sheet: 'P', table: far, laid: layoutPivot(calc(far), {}) }])
     expect(moved.ok).toBe(true)
+  })
+
+  it('shrinks a PivotTable laid out over cells that hold something to #SPILL! at its corner, keeping its new lines', () => {
+    const t = table({ rows: [0, 1] })
+    const l = layoutPivot(calc(t), {})
+    const b = book({ A9: { value: 'kept' } })
+    const other = table({ name: 'PT2', location: { range: 'A11:B12', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 } })
+    b.sheets[0].pivotTables!.push(other)
+    const r = placePivots(b, [{ sheet: 'P', table: t, laid: l }, { sheet: 'P', table: other, laid: layoutPivot(calc(other), {}) }])
+    if (!r.ok) throw new Error(r.message)
+    const sh = r.book.sheets[0]
+    expect(sh.cells).toMatchObject({ A3: { formula: '#SPILL!' }, A9: { value: 'kept' }, B5: { style: 0 }, A11: { value: 'Sum of Amount' }, A12: { value: 7 } })
+    expect(sh.cells.B3).toBeUndefined()
+    expect(sh.pivotTables![0]).toMatchObject({ location: { range: 'A3', firstHeaderRow: 0, firstDataRow: 0, firstDataColumn: 0 }, rowLines: l.rowLines })
+    expect(sh.pivotTables![1].location.range).toBe('A11:A12')
   })
 })

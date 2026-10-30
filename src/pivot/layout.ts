@@ -3,7 +3,7 @@
  * (`rowLines`, `columnLines`), its place (`location`, the Filters area above it), and the cells of its area: the
  * headers, the items' labels, the values with their value field's number format, the subtotals and grand totals.
  */
-import type { BookInput, CellValue, ErrorCode, NumberFormat, PivotAxisField, PivotLine, PivotLocation, PivotTable } from '../contract.js'
+import type { BookInput, CellValue, ErrorCode, NumberFormat, PivotAxisField, PivotLine, PivotLocation, PivotShowAs } from '../contract.js'
 import { dateToSerial } from '../date-serial.js'
 import { epochOf } from '../dates.js'
 import { displayRules } from '../locale/rules.js'
@@ -38,6 +38,9 @@ export interface PivotLaidOut {
 /** The cells of a PivotTable with no field anywhere: Excel keeps the place of its drop zones, 18 rows by 3 columns. */
 const EMPTY_ROWS = 18
 const EMPTY_COLS = 3
+
+/** The calculations Excel shows as a percentage (0.00%, built-in format 10) for a value field without a format of its own. */
+const PERCENT = new Set<PivotShowAs>(['percentOfTotal', 'percentOfColumn', 'percentOfRow', 'percent', 'percentOfParentRow', 'percentOfParentColumn', 'percentOfParent', 'percentDiff', 'percentOfRunningTotal'])
 
 type Label = { value: PivotCell['value']; error?: ErrorCode; numberFormat?: NumberFormat }
 
@@ -204,7 +207,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
         const v = ra.value ?? ca.value ?? 0
         const fn = ra.fn ?? ca.fn
         const x = result.value(ra.path, ca.path, v, fn)
-        const numberFormat = values[v].numberFormat
+        const numberFormat = values[v].numberFormat ?? (PERCENT.has(values[v].showAs ?? 'normal') ? 10 : undefined)
         const row = top + height + i
         const col = left + width + j
         const cell: Label = { value: undefined }
