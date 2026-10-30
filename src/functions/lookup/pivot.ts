@@ -19,6 +19,8 @@ import { E, isErr, Rng, type V } from '../../values.js'
 interface Slot {
   items: Map<number, number>
   value: number
+  /** A line of an outer field's item, which holds its subtotal where no line of the subtotal's own does (several functions, `subtotals-three-compact`). */
+  header?: boolean
 }
 
 /** The PivotTable's form of a field: its own, else the PivotTable's. */
@@ -45,7 +47,7 @@ function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undef
     const f = axis[depth - 1]
     if (f === 'values') return null
     const field = t.fields[f]
-    return field?.subtotals?.length !== 0 && field?.subtotalTop !== false && formOf(t, f) !== 'tabular' ? out : null
+    return field?.subtotals?.length !== 0 && field?.subtotalTop !== false && formOf(t, f) !== 'tabular' ? { ...out, header: true } : null
   })
 }
 
@@ -111,12 +113,14 @@ function valueNamed(t: PivotTable, c: PivotCache, name: string): number {
 
 /** A slot whose fields are exactly those of `wanted` on its axis, each with one of its items, and of the value field `value` where it tells one. */
 function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f: number) => boolean, value: number, tells: boolean): number {
-  return list.findIndex((x) => {
+  const fits = (x: Slot | null): x is Slot => {
     if (!x || (tells && x.value !== value)) return false
     for (const [f, items] of wanted) if (own(f) && !(x.items.has(f) && items.has(x.items.get(f)!))) return false
     for (const f of x.items.keys()) if (!wanted.has(f)) return false
     return true
-  })
+  }
+  const k = list.findIndex((x) => fits(x) && !x.header)
+  return k >= 0 ? k : list.findIndex(fits)
 }
 
 function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {

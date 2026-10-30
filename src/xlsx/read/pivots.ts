@@ -6,6 +6,7 @@
  */
 import { caseKey } from '../../collate.js'
 import type { BookInput, NumberFormat, PivotCache, SheetInput } from '../../contract.js'
+import type { DateSystem } from '../../dates.js'
 import { InputError } from '../../input-error.js'
 import { checkPivots } from '../../input/pivot.js'
 import { checkPivotShapes } from '../../pivot/check.js'
@@ -26,6 +27,7 @@ export interface PivotBook {
   x14: Map<string, number>
   format: (id: string | undefined) => NumberFormat | undefined
   dxfs: Dxf[]
+  dateSystem: DateSystem
 }
 
 /** The ids of the connections that are the workbook's data model. */
@@ -41,10 +43,10 @@ async function modelConnections(archive: Archive, rels: Rel[]): Promise<Set<numb
 }
 
 /** The workbook's pivot caches with their records, by the ids `<pivotCaches>` gives them. */
-export async function readPivotCaches(archive: Archive, wb: string, rels: Rel[], styles: StyleTable, dxfs: Dxf[], issues: Issues): Promise<PivotBook> {
+export async function readPivotCaches(archive: Archive, wb: string, rels: Rel[], styles: StyleTable, dxfs: Dxf[], dateSystem: DateSystem, issues: Issues): Promise<PivotBook> {
   const byId = new Map(rels.map((r) => [r.id, r]))
   const format = (id: string | undefined) => (id === undefined ? undefined : numberFormatOf(styles.formats, Number(id)))
-  const out: PivotBook = { caches: [], x14: new Map(), format, dxfs }
+  const out: PivotBook = { caches: [], x14: new Map(), format, dxfs, dateSystem }
   const listed = elements(element(wb, 'pivotCaches')?.body ?? '', 'pivotCache')
   if (!listed.length) return out
   const model = await modelConnections(archive, rels)
