@@ -2,6 +2,7 @@
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
 import type { CellStyle, Color, ConditionalFormat, DataValidation } from './looks.js'
+import type { PivotCache, PivotTable, Slicer, SlicerCache, Timeline, TimelineCache } from './pivot.js'
 
 /**
  * An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number; a
@@ -204,6 +205,15 @@ export interface SheetInput {
    * not enforce it: the host does. The workbook holds no password.
    */
   protection?: SheetProtection
+  /**
+   * The sheet's PivotTables, each over a pivot cache of the workbook (`BookInput.pivotCaches`), as Excel last laid them
+   * out; their cells hold the values Excel saved, and `GETPIVOTDATA` reads them by that layout ([PivotTables](pivot-tables.md)).
+   */
+  pivotTables?: PivotTable[]
+  /** The sheet's slicers, each over a slicer cache of the workbook (`BookInput.slicerCaches`). */
+  slicers?: Slicer[]
+  /** The sheet's timelines, each over a timeline cache of the workbook (`BookInput.timelineCaches`). */
+  timelines?: Timeline[]
 }
 
 /**
@@ -456,6 +466,11 @@ export interface BookInput {
    * included in `inputHash` when given.
    */
   font?: { name: string; size: number }
+  /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
+  pivotCaches?: PivotCache[]
+  /** The caches of its slicers and timelines, by name. */
+  slicerCaches?: SlicerCache[]
+  timelineCaches?: TimelineCache[]
 }
 
 /**
