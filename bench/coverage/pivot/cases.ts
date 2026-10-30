@@ -11,6 +11,7 @@
  */
 import type { CellValue } from '../../../src/contract.js'
 import type { SourceKind } from './data.js'
+import type { Rewrite } from './rewrite.js'
 
 /** A data field's function (`ST_DataConsolidateFunction`). */
 export type Agg = 'sum' | 'count' | 'average' | 'max' | 'min' | 'product' | 'countNums' | 'stdDev' | 'stdDevp' | 'var' | 'varp'
@@ -161,6 +162,8 @@ export interface PivotCase {
   source?: SourceKind
   /** A saved book of another set (`basic/sum`) to start from instead of the rows; its pivot table `PT1` is there. */
   from?: string
+  /** The saved book of `from` read and written again by the engine before Excel opens it (`rewrite.ts`). */
+  rewrite?: Rewrite
   ops: PivotOp[]
   /** Ranges read at the end of each phase (`G!A1:A20`). */
   watch?: string[]

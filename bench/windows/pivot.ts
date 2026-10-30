@@ -13,6 +13,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type SlicerItem, type TableProps } from '../coverage/pivot/cases.js'
 import { cellsOf } from '../coverage/case-book.js'
 import { DATA, sourceBook, sourceText } from '../coverage/pivot/data.js'
+import { rewritten } from '../coverage/pivot/rewrite.js'
 import { localeDir } from '../coverage/locales.js'
 import { fileAnswers, secondsSince, setModule } from '../coverage/stored.js'
 import { caseFiles } from '../coverage/xlsx/sent.js'
@@ -226,7 +227,7 @@ const savedBook = (tag: Tag) => (name: string) => new Uint8Array(readFileSync(wi
 export async function stepPivot(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<PivotSet>('pivot', set)).buildPivotCases()
   const saved = savedBook(tag)
-  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.from ? saved(c.from) : (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range') }, { values: 'omit' })).data))
+  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.from ? await rewritten(saved(c.from), c.rewrite) : (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range') }, { values: 'omit' })).data))
   const plans = new Map(cases.map((c) => [c.id, pivotSteps(c, saved)]))
   // a case runs again when its file or its steps change (the steps carry the books of external operations)
   const sent = Object.fromEntries(cases.map((c) => [c.id, `${parts[c.id]} ${createHash('sha256').update(JSON.stringify(plans.get(c.id)!.steps)).digest('hex').slice(0, 16)}`]))
