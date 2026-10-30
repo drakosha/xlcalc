@@ -207,9 +207,9 @@ export function pivotTableXml(p: PivotTable, c: PivotCache, w: PivotWriting): st
   const st = p.style
   const style = st ? `<pivotTableStyleInfo${st.name === undefined ? '' : ` name="${escapeAttr(st.name)}"`} showRowHeaders="${st.rowHeaders ? 1 : 0}" showColHeaders="${st.columnHeaders ? 1 : 0}" showRowStripes="${st.rowStripes ? 1 : 0}" showColStripes="${st.columnStripes ? 1 : 0}" showLastColumn="${st.lastColumn ? 1 : 0}"/>` : ''
   const filters = p.filters?.length ? `<filters count="${p.filters.length}">${p.filters.map((f, i) => filterXml(f, i + 1, w)).join('')}</filters>` : ''
-  // Excel 2010's settings: Repeat All Item Labels and the alt text
-  const x14 = (p.repeatLabels ? ' fillDownLabelsDefault="1"' : '') + (p.altText?.title === undefined ? '' : ` altText="${escapeAttr(p.altText.title)}"`) + (p.altText?.description === undefined ? '' : ` altTextSummary="${escapeAttr(p.altText.description)}"`)
-  const alt = x14 ? `<ext uri="{962EF5D1-5CA2-4c93-8EF4-DBF5C05439D2}" xmlns:x14="${X14}"><x14:pivotTableDefinition${x14}/></ext>` : ''
-  const body = `${location}${fields}${axisFields('rowFields', p.rows)}${linesXml('rowItems', p.rowLines)}${axisFields('colFields', p.columns)}${linesXml('colItems', p.columnLines)}${pages}${data}${formats}${rules}${style}${filters}${alt ? `<extLst>${alt}</extLst>` : ''}`
+  // Excel 2010's settings: the Values row hidden (as Excel 365 makes a PivotTable; shown without it), Repeat All Item Labels, the alt text
+  const x14 = ' hideValuesRow="1"' + (p.repeatLabels ? ' fillDownLabelsDefault="1"' : '') + (p.altText?.title === undefined ? '' : ` altText="${escapeAttr(p.altText.title)}"`) + (p.altText?.description === undefined ? '' : ` altTextSummary="${escapeAttr(p.altText.description)}"`)
+  const alt = `<ext uri="{962EF5D1-5CA2-4c93-8EF4-DBF5C05439D2}" xmlns:x14="${X14}"><x14:pivotTableDefinition${x14}/></ext>`
+  const body = `${location}${fields}${axisFields('rowFields', p.rows)}${linesXml('rowItems', p.rowLines)}${axisFields('colFields', p.columns)}${linesXml('colItems', p.columnLines)}${pages}${data}${formats}${rules}${style}${filters}<extLst>${alt}</extLst>`
   return `${HEAD}<pivotTableDefinition xmlns="${MAIN}"${a}>${body}</pivotTableDefinition>`
 }
