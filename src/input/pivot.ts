@@ -126,6 +126,7 @@ const cache = shape(
     saveData: bool,
     retainItems: count,
     enableRefresh: bool,
+    stale: bool,
   },
   ['id', 'source', 'fields'],
   'a pivot cache such as { id: 1, source: { type: "range", sheet: "Data", range: "A1:C21" }, fields: [{ name: "Region" }] }',
