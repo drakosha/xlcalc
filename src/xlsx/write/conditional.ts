@@ -58,8 +58,8 @@ const VALUE_2007: Record<string, string> = { autoMin: 'min', autoMax: 'max' }
 
 // the model's ranges as they are: Excel saves `A:A` as `A1:A1048576` and reads both (the set `cond/files`, case `wide`)
 /** A `<conditionalFormatting>` of rules over ranges, and Excel 2010's. */
-export const block = (ranges: string[], rules: string) => `<conditionalFormatting sqref="${escapeAttr(ranges.join(' '))}">${rules}</conditionalFormatting>`
-export const block14 = (ranges: string[], rules: string) => `<x14:conditionalFormatting xmlns:xm="${XM}">${rules}<xm:sqref>${escapeText(ranges.join(' '))}</xm:sqref></x14:conditionalFormatting>`
+export const block = (ranges: string[], rules: string, pivot = false) => `<conditionalFormatting${pivot ? ' pivot="1"' : ''} sqref="${escapeAttr(ranges.join(' '))}">${rules}</conditionalFormatting>`
+export const block14 = (ranges: string[], rules: string, pivot = false) => `<x14:conditionalFormatting xmlns:xm="${XM}"${pivot ? ' pivot="1"' : ''}>${rules}<xm:sqref>${escapeText(ranges.join(' '))}</xm:sqref></x14:conditionalFormatting>`
 
 /** Thrown by a formula the file cannot hold, which leaves its rule out. */
 const UNFIT = Symbol('unfit')
@@ -97,6 +97,8 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
       return
     }
     const priority = ` priority="${ctx.priority?.(i) ?? i + 1}"`
+    // a PivotTable's rule: its block marked, the PivotTable naming the rule by its priority
+    const pv = rule.pivot !== undefined
     const out = (m: string, x = '') => (each[i] = { main: m, ext: x })
     const stop = rule.stopIfTrue ? ' stopIfTrue="1"' : ''
     const style = 'style' in rule && rule.style ? rule.style : undefined
@@ -140,7 +142,7 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
       const lengths = old ? `${rule.minLength !== undefined && rule.minLength !== 10 ? ` minLength="${rule.minLength}"` : ''}${rule.maxLength !== undefined && rule.maxLength !== 90 ? ` maxLength="${rule.maxLength}"` : ''}` : ''
       const link = old ? '' : `<extLst><ext uri="${BAR_ID}" xmlns:x14="${X14}"><x14:id>${id}</x14:id></ext></extLst>`
       const bar = `<dataBar${lengths}${rule.showValue === false ? ' showValue="0"' : ''}>${values!(rule.min, false)}${values!(rule.max, false)}<color rgb="${rgb(rule.color)}"/></dataBar>`
-      const own = block(rule.ranges, `<cfRule type="dataBar"${priority}${stop}>${bar}${link}</cfRule>`)
+      const own = block(rule.ranges, `<cfRule type="dataBar"${priority}${stop}>${bar}${link}</cfRule>`, pv)
       if (old) return void out(own)
       const a = [
         ` minLength="${rule.minLength ?? 0}" maxLength="${rule.maxLength ?? 100}"`,
@@ -157,15 +159,15 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
         rule.border && rule.negativeBorder ? `<x14:negativeBorderColor rgb="${rgb(rule.negativeBorder)}"/>` : '',
         `<x14:axisColor rgb="${rgb(rule.axisColor ?? '#000000')}"/>`,
       ].join('')
-      return void out(own, block14(rule.ranges, `<x14:cfRule type="dataBar" id="${id}"><x14:dataBar${a}>${values!(rule.min, true)}${values!(rule.max, true)}${colors}</x14:dataBar></x14:cfRule>`))
+      return void out(own, block14(rule.ranges, `<x14:cfRule type="dataBar" id="${id}"><x14:dataBar${a}>${values!(rule.min, true)}${values!(rule.max, true)}${colors}</x14:dataBar></x14:cfRule>`, pv))
     }
     const [attrs, content] = parts(x14)
     if (x14) {
       const dxf = style ? `<x14:dxf>${ctx.styles.dxfBody(ctx.styles.dxf(style))}</x14:dxf>` : ''
-      return void out('', block14(rule.ranges, `<x14:cfRule type="${rule.type}"${priority}${stop}${attrs} id="${id}">${content}${dxf}</x14:cfRule>`))
+      return void out('', block14(rule.ranges, `<x14:cfRule type="${rule.type}"${priority}${stop}${attrs} id="${id}">${content}${dxf}</x14:cfRule>`, pv))
     }
     const dxf = style ? ` dxfId="${ctx.styles.dxf(style)}"` : ''
-    out(block(rule.ranges, `<cfRule type="${rule.type}"${dxf}${priority}${stop}${attrs}>${content}</cfRule>`))
+    out(block(rule.ranges, `<cfRule type="${rule.type}"${dxf}${priority}${stop}${attrs}>${content}</cfRule>`, pv))
   })
   for (const x of each) {
     main += x?.main ?? ''

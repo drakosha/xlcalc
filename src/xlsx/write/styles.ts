@@ -112,6 +112,8 @@ export interface CellFormats {
   dxf(s: ConditionalStyle): number
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
   dxfBody(i: number): string
+  /** The id of a number format, a custom one added (a pivot cache's field, a value field). */
+  numFmt(code: NumberFormat | undefined): number
 }
 
 export class StyleWriter implements CellFormats {
@@ -131,7 +133,7 @@ export class StyleWriter implements CellFormats {
     this.fonts = new Table(fontXml({}, base))
   }
 
-  private numFmt(code: NumberFormat | undefined): number {
+  numFmt(code: NumberFormat | undefined): number {
     return numFmtId(code, (c) => {
       let id = this.formats.get(c)
       if (id === undefined) this.formats.set(c, (id = 164 + this.formats.size))

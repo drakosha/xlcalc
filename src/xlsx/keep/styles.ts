@@ -126,6 +126,7 @@ export class KeptStyles {
       },
       dxf: (s: ConditionalStyle) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c))),
       dxfBody: (i) => this.added.dxfs[i - this.counts.dxfs].slice(5, -6),
+      numFmt: (code) => this.numFmt(code),
     }
   }
 

@@ -1,5 +1,6 @@
 /** What the writer's parts share: the XML declaration and the SpreadsheetML namespace they start with, colours, and text cut to Excel's limits. */
 import type { Issues, Where, XlsxMessage } from '../issues.js'
+import { escapeAttr } from '../xml/text.js'
 
 export const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 export const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
@@ -16,3 +17,9 @@ export function clip(text: string, max: number, issues: Issues, message: XlsxMes
   const high = (text.charCodeAt(max - 1) & 0xfc00) === 0xd800 && (text.charCodeAt(max) & 0xfc00) === 0xdc00
   return text.slice(0, high ? max - 1 : max)
 }
+
+const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
+
+/** A part's relationships, `rId1` on; an external one (a hyperlink's address, another workbook's path) keeps its target as written. */
+export const relsXml = (items: [type: string, target: string, external?: boolean][]) =>
+  `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target, external], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${external ? escapeAttr(target) : target}"${external ? ' TargetMode="External"' : ''}/>`).join('')}</Relationships>`

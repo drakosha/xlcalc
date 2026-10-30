@@ -19,7 +19,6 @@ export interface PivotWriting {
   date1904: boolean
   /** The PivotTable's conditional formats: each rule's priority on its sheet and its areas. */
   rules: { priority: number; scope?: 'selection' | 'data' | 'field'; type?: 'none' | 'all' | 'row' | 'column'; areas: PivotArea[] }[]
-  locale?: string
 }
 
 const AXIS = { rows: 'axisRow', columns: 'axisCol', pages: 'axisPage' } as const
@@ -95,7 +94,7 @@ function dataFieldXml(d: PivotDataField, c: PivotCache, w: PivotWriting): string
   const show = d.showAs ?? 'normal'
   const x14 = SHOW_X14.has(show)
   const base = d.baseItem === undefined ? 0 : typeof d.baseItem === 'number' ? d.baseItem : BASE_ITEM[d.baseItem]
-  const name = d.name ?? valueFieldName(d.function ?? "sum", c.fields[d.field]?.name ?? "")
+  const name = d.name ?? valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '')
   const a =
     ` name="${escapeAttr(name)}" fld="${d.field}"` +
     (d.function && d.function !== 'sum' ? ` subtotal="${d.function}"` : '') +

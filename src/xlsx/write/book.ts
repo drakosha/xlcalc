@@ -28,14 +28,14 @@ import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
-import { HEAD, MAIN } from './xml.js'
+import { pivotPackage } from './pivot-parts.js'
+import { HEAD, MAIN, relsXml as rels } from './xml.js'
 import { RICH_TYPE } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseRange } from '../../structure/area.js'
 import { areaText, sheetPrefix } from '../keep/refs.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 
 export const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
@@ -70,9 +70,6 @@ export function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): st
 /** The rich values of errors, each by the one structure. */
 export const richValuesXml = (rich: (keyof typeof RICH_TYPE)[]) => `${HEAD}<rvData xmlns="${RICH}" count="${rich.length}">${rich.map((code) => richError(code, 0)).join('')}</rvData>`
 
-/** A part's relationships, `rId1` on; an external one (a hyperlink's address) keeps its target as written. */
-const rels = (items: [type: string, target: string, external?: boolean][]) =>
-  `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target, external], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${external ? escapeAttr(target) : target}"${external ? ' TargetMode="External"' : ''}/>`).join('')}</Relationships>`
 
 /**
  * Each name of the book as its `<definedName>`, undefined for one the file cannot hold (reported); `place` is a sheet's
@@ -208,6 +205,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
+  const pivots = pivotPackage(book, styles)
   let vml = false
   sheets.forEach((s, i) => {
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(s) })
@@ -222,9 +220,16 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       contentTypes.push([`/xl/comments${i + 1}.xml`, `${TYPE}.comments+xml`])
       vml = true
     }
-    const sheetRels: [string, string, boolean?][] = [...parts[i].map(({ id }): [string, string] => [`${REL}/table`, `../tables/table${id}.xml`]), ...s.rels.map((r): [string, string, boolean] => [`${REL}/${r.type}`, r.target, r.type === 'hyperlink'])]
+    const sheetRels: [string, string, boolean?][] = [
+      ...parts[i].map(({ id }): [string, string] => [`${REL}/table`, `../tables/table${id}.xml`]),
+      ...s.rels.map((r): [string, string, boolean] => [`${REL}/${r.type}`, r.target, r.type === 'hyperlink']),
+      ...pivots.sheets[i].map((target): [string, string] => [`${REL}/pivotTable`, target]),
+    ]
     if (sheetRels.length) files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(sheetRels) })
   })
+  files.push(...pivots.files)
+  contentTypes.push(...pivots.contentTypes)
+  const pivotCaches = pivots.caches.map((c) => `<pivotCache cacheId="${c.id}" r:id="rId${wbRels.push([`${REL}/pivotCacheDefinition`, c.target])}"/>`).join('')
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
@@ -256,7 +261,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {
