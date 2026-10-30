@@ -23,8 +23,12 @@ export interface CellTextOptions extends EditOptions {
   inPlace?: boolean
 }
 
-/** Why `Session.setCellText` rejected the text: a formula Excel would reject (`CheckCode`) or one that refers to a workbook not among the links (`external_ref`), part of an array formula, or a formula in a table's header cell. */
-export type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header'
+/**
+ * Why `Session.setCellText` rejected the text: a formula Excel would reject (`CheckCode`) or one that refers to a
+ * workbook not among the links (`external_ref`), part of an array formula, a formula in a table's header cell, or a cell
+ * of a PivotTable's area that Excel does not let an entry change (`pivot`).
+ */
+export type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header' | 'pivot'
 
 /** A value that a cell's data validation rule does not allow (`Session.setCellText`): the rule, and its alert's style and message. */
 export interface ValidationAlert {
@@ -92,10 +96,11 @@ export interface PreviewCell extends CellRef {
 export type CellTextsPreview = { ok: true; cells: PreviewCell[]; widths?: ColumnWidth[]; validations?: CellValidationAlert[] } | CellTextsRefusal
 
 /**
- * Why `Session.pasteText` pasted nothing, with the cell: part of an array formula, a formula into a table's header cell
- * (as `setCellText` rejects them), or a rectangle that runs beyond the sheet's last row or column (`off_sheet`).
+ * Why `Session.pasteText` pasted nothing, with the cell: part of an array formula, a formula into a table's header cell,
+ * a cell of a PivotTable's area (as `setCellText` rejects them), or a rectangle that runs beyond the sheet's last row or
+ * column (`off_sheet`).
  */
-export type PasteTextRefusal = Refusal<'array' | 'header' | 'off_sheet'> & CellRef
+export type PasteTextRefusal = Refusal<'array' | 'header' | 'pivot' | 'off_sheet'> & CellRef
 
 /** Text pasted from the clipboard (`Session.pasteText`): the edit's result with the range the clipboard's rectangle filled (`B1:D2`); or why nothing was pasted. */
 export type PasteTextResult = (EditResult & { ok: true; range: string }) | PasteTextRefusal
