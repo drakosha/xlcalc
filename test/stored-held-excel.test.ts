@@ -25,8 +25,12 @@ const STORED: Record<string, Val> = {
   H1: { t: 'n', v: 3 },
 }
 
-/** The values Excel was predicted to store in `blocked`: #BLOCKED! as a rich value of `errorType` 10, ERROR.TYPE 11. */
-const BLOCKED: Record<string, CellValue> = { B1: { error: 'BLOCKED' }, C1: { error: 'BLOCKED' }, D1: 11, E1: 11 }
+/**
+ * The values Excel stores in `blocked`: STOCKHISTORY's #BLOCKED! as a rich value of `errorType` 10, ERROR.TYPE 11, as
+ * predicted. IMAGE was predicted #BLOCKED! too, as the set `connections-held` shows it; the file stores an empty text
+ * (the place of a picture Excel did not get), and so does ERROR.TYPE over it.
+ */
+const BLOCKED: Record<string, CellValue> = { B1: '', C1: { error: 'BLOCKED' }, D1: '', E1: 11 }
 
 /** The `errorType` of each rich value a file's errors keep. */
 async function richTypes(data: Uint8Array): Promise<string[]> {
@@ -46,13 +50,14 @@ describe.skipIf(!existsSync(new URL('stored.json', dir)))('formulas keeping the 
     expect(marked).toEqual([...(FUNCTION_NAMES.includes('OFFSET') ? [] : ['B1']), 'D1', 'E1', 'F1', 'G1'])
   })
 
-  it("blocked: #BLOCKED! is stored as a rich value, read as itself and written back as Excel writes it", async () => {
+  it("blocked: #BLOCKED! is stored as a rich value, read as itself and written back with Excel's errorType", async () => {
     const data = readFileSync(new URL('stored/blocked.xlsx', dir))
     const r = await readXlsx(data)
     expect(Object.fromEntries(Object.keys(BLOCKED).map((a) => [a, r.cached.sheets[0].cells[a].value]))).toEqual(BLOCKED)
     expect(r.issues).toEqual([])
     const again = await writeXlsx({ book: r.book, result: r.cached })
-    expect([again.issues, await richTypes(again.data), await richTypes(data)]).toEqual([[], ['10', '10'], ['10', '10']])
+    // Excel's file also keeps a rich value no cell refers to (`errorType` 14) and STOCKHISTORY's `subType` 9
+    expect([again.issues, await richTypes(again.data), await richTypes(data)]).toEqual([[], ['10'], ['14', '10']])
     const back = (await readXlsx(again.data)).cached.sheets[0].cells
     expect(Object.fromEntries(Object.keys(BLOCKED).map((a) => [a, back[a].value]))).toEqual(BLOCKED)
   })
