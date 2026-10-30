@@ -199,6 +199,8 @@ function Pivot($xl, $wb, $s) {
         foreach ($o in $s.also) { $sc.PivotTables.AddPivotTable($wb.Worksheets.Item([string]$o[0]).PivotTables([string]$o[1])) }
         Str ([string]$sc.Name)
       }
+      # the table of the sheet D named resized to a range there
+      'resize' { [void]$wb.Worksheets.Item('D').ListObjects.Item([string]$s.table).Resize($wb.Worksheets.Item('D').Range([string]$s.range)); 'null' }
       # what RefreshTable answers (true when Excel refreshed)
       'refresh' { Cell ([bool](PTable $wb $s).RefreshTable()) }
       # every pivot table of the book, [sheet, name], in the order of the sheets

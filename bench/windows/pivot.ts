@@ -171,6 +171,8 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       add(role, { do: 'set', sheet, cell, ...(o.to !== null && typeof o.to === 'object' && 'typed' in o.to ? { kind: 'f2', value: o.to.typed } : comEdit(o.to)) })
     } else if ('refresh' in o) add(role, { ...at, op: 'refresh' })
     else if ('refreshAll' in o) add(role, { do: 'pivot', op: 'refreshAll' })
+    else if ('define' in o) add(role, { do: 'table', line: ['name', '', o.define, `=${o.ref}`].join('\t') })
+    else if ('resize' in o) add(role, { do: 'pivot', op: 'resize', table: o.resize, range: o.range })
     else if ('external' in o) add({ external: Object.keys(o.cells) }, { do: 'pivot', op: 'external', source: Buffer.from(book(o.external)).toString('base64'), cells: o.cells })
   })
   phase(true)

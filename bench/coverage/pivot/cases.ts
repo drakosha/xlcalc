@@ -144,6 +144,9 @@ export type PivotOp = (
   /** A cell of the source edited, or a formula typed on `G` (as Excel 365 types it, `Formula2`). */
   | { edit: string; to: EditValue }
   | { refresh: true }
+  /** A defined name given another reference (`D!$A$1:$J$30`), the table `Sales` resized to a range of `D`. */
+  | { define: string; ref: string }
+  | { resize: string; range: string }
   /** Every pivot table of the book refreshed (`RefreshTable` each). */
   | { refreshAll: true }
   /** The end of a phase: each pivot table read, the cells watched, a copy of the book saved. */
