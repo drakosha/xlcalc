@@ -3,6 +3,7 @@
  * `SheetInput.pivotTables`): plain data, no XML, so a workbook with them goes to a pool's threads as any other.
  */
 import type { NumberFormat } from './book.js'
+import type { CellStyle } from './looks.js'
 import type { ErrorCode } from './values.js'
 
 /**
@@ -343,6 +344,8 @@ export interface PivotTable {
   enableDrill?: boolean
   /** Alt Text: its title and description. */
   altText?: { title?: string; description?: string }
+  /** Formats of its areas, which Excel applies after each update (with `preserveFormatting`); in its order, a later one over an earlier. */
+  formats?: PivotFormat[]
   /** The saved layout: the lines of the rows and of the columns as Excel last laid them out. */
   rowLines?: PivotLine[]
   columnLines?: PivotLine[]
@@ -457,4 +460,67 @@ export interface Timeline {
   scrollPosition?: string
   /** `TimeSlicerStyleLight1` and the others. */
   style?: string
+}
+
+/**
+ * A part of a PivotTable (xlsx `pivotArea`), which formats and conditional formats apply to: by default the values and
+ * labels at the items its references name, on whatever lines the PivotTable lays them out.
+ */
+export interface PivotArea {
+  /** `normal` by default: the cells its references and flags pick; `data` the values, `all` the whole PivotTable, `origin` the top left cell, `button` a field's button, `topEnd` and `topRight` the cells right of the column fields, `none` nothing. */
+  type?: 'normal' | 'none' | 'data' | 'all' | 'origin' | 'button' | 'topEnd' | 'topRight'
+  /** The field whose labels or button it is. */
+  field?: PivotAxisField
+  /** The axis and position of a button or of a field's labels. */
+  axis?: 'rows' | 'columns' | 'pages' | 'values'
+  fieldPosition?: number
+  /** Values only (true by default), or labels only. */
+  dataOnly?: boolean
+  labelOnly?: boolean
+  /** The grand total's row or column. */
+  grandRow?: boolean
+  grandColumn?: boolean
+  /** In outline form (true by default). */
+  outline?: boolean
+  /** A part of the area's cells, relative to its top left (`A1:B1`). */
+  offset?: string
+  /** Items by their index in the cache field's items rather than the PivotTable field's. */
+  cacheIndex?: boolean
+  collapsedLevelsAreSubtotals?: boolean
+  references?: PivotAreaReference[]
+}
+
+/** A field of a `PivotArea` and the items picked on it, all without them. */
+export interface PivotAreaReference {
+  field: PivotAxisField
+  /** Indexes into the field's `items` (or the value fields, for `values`). */
+  items?: number[]
+  /** The items are picked (true by default), by position among those shown, relative to the cell. */
+  selected?: boolean
+  byPosition?: boolean
+  relative?: boolean
+  /** The field's subtotals picked: automatic, or of each function. */
+  subtotals?: ('subtotal' | PivotFunction)[]
+}
+
+/** A format of a PivotTable's area (xlsx `format`): a style over its cells, each field set replacing the cell's own, or the area cleared (`blank`). */
+export interface PivotFormat {
+  area: PivotArea
+  style?: CellStyle
+  numberFormat?: NumberFormat
+  blank?: boolean
+}
+
+/**
+ * A conditional format of a PivotTable (`ConditionalBase.pivot`): the rule stays among the sheet's rules, and this names
+ * the PivotTable on its sheet and the areas it applies to, which follow the PivotTable as it is laid out again. `scope`:
+ * the selected cells (`selection`, by default), every value of the value field (`data`), or of the value field at the
+ * fields of the area (`field`); `type`: how a color scale, data bar or icon set ranks, over all cells, within a row or
+ * within a column (`none` by default).
+ */
+export interface PivotRuleScope {
+  pivot: string
+  scope?: 'selection' | 'data' | 'field'
+  type?: 'none' | 'all' | 'row' | 'column'
+  areas: PivotArea[]
 }

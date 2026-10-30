@@ -1,5 +1,6 @@
 /** Looks and rules: the categories of number formats, styles with their fonts, borders and alignments, a style's fields to change, conditional formats and what they give a cell, rules of data validation. */
 import type { NumberFormat } from './book.js'
+import type { PivotRuleScope } from './pivot.js'
 
 /**
  * A number format category, as the Number Format box on Excel's Home tab displays it for the active cell
@@ -118,6 +119,8 @@ export interface ConditionalBase {
   ranges: string[]
   /** Excel's Stop If True: the rules after this one do not apply to a cell for which this rule's condition is true. */
   stopIfTrue?: boolean
+  /** A PivotTable's rule: the PivotTable and its areas, which `ranges` holds as Excel last laid it out. */
+  pivot?: PivotRuleScope
 }
 
 /** The formatting a rule applies to the cells that meet its condition, like an xlsx differential format (`dxf`): each field it sets replaces the cell's own. */
