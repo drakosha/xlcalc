@@ -35,9 +35,10 @@ The four functions are in the group `statistics` ([Groups of functions](function
 
 - `values` and `timeline` have as many cells as each other (`#N/A` otherwise). A point whose time is not a number is
   left out; an error in either is the answer.
-- The step is the most frequent difference between successive times; two equally frequent steps are `#NUM!`. Times off
+- The step is the most frequent difference between successive times, differences close to each other (the lengths of
+  months or quarters) counted together as Excel counts them; two equally frequent steps far apart are `#NUM!`. Times off
   the step's grid go to the nearest slot counted back from the last point, a point halfway between two to the later one.
-- Dates on one day of every month, or of every third month, make a calendar timeline (a day a short month lacks is its
+- Dates on one day of every month, quarter, half year or year make a calendar timeline (a day a short month lacks is its
   last day): its targets are counted in months, so the first of the next month is one step ahead whatever the month's
   length, and a date between two steps lies on the line between them.
 - `aggregation` combines the values of one slot: 1 `AVERAGE` (the default), 2 `COUNT`, 3 `COUNTA` (text counts), 4 `MAX`,
@@ -63,6 +64,6 @@ The four functions are in the group `statistics` ([Groups of functions](function
 
 ## Checked against Excel
 
-The functions match Excel 16.0.20430 for Windows and Excel 16.114 for Mac on 4,037 cases of five sets, two of them held
+The functions match Excel 16.0.20430 for Windows and Excel 16.114 for Mac on 4,142 cases of seven sets, four of them held
 out and predicted before Excel ran them: the parameters and the statistics to the bit, the forecasts and intervals to
-their last digits. The step of quarterly dates from January is a known difference ([Limitations](limitations.md)).
+their last digits.
