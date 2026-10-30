@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 1.6,
+  "seconds": 6.7,
   "date": "2026-10-30"
  },
  "books": {
@@ -511,6 +511,24 @@
   },
   "unknown-name-1": {
    "sent": "0bcc46ca3136e1714b1ff4a5aaef21debe6da81229a9a3a44838df150a28cecb"
+  },
+  "ets-fit-2-1": {
+   "sent": "eaac36292203aef49268da4474b2fc182db98158749c3fb0c7195ffbb3833b64"
+  },
+  "ets-fit-2-2": {
+   "sent": "e9efb321904e7efb19c464a7bf1318e2e4a6cfd90a01e84c6ac5bd89817f93b2"
+  },
+  "ets-fit-2-3": {
+   "sent": "57069923088472fd2b5188c17893ffea9a2a8e3c256ceeeff8ae456deaadbda7"
+  },
+  "ets-held-1": {
+   "sent": "9f8f77bc33dcbf26f8de5fb80ab08ab3957f78fe3da525d8a9e77aa6e526bc23"
+  },
+  "ets-held-2": {
+   "sent": "b88e7e2615daa06bb9f06a82d367c4322b147cd0bd8c827645fa450940cf0b89"
+  },
+  "ets-held-3": {
+   "sent": "957317010e7146b5e54516573fe1f22f630e35c73d3883c7ff4e17085943fac2"
   }
  }
 }
