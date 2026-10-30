@@ -12,7 +12,7 @@ import type { PivotAnswer } from '../bench/coverage/pivot/cases.js'
 const answers = (set: string): Record<string, PivotAnswer> => JSON.parse(readFileSync(`test/excel/win/pivot/${set}.json`, 'utf8')).answers
 
 /** The sets of the engine's files and the sets of Excel's books they were written from. */
-const SETS: [ours: string, excel: string][] = [['write-1', 'basic']]
+const SETS: [ours: string, excel: string][] = [['write-1', 'basic'], ['write-layout', 'layout'], ['write-filter', 'filter'], ['write-sort', 'sort']]
 
 describe.each(SETS.filter(([ours]) => existsSync(`test/excel/win/pivot/${ours}.json`)))('%s: the books of %s written by writeXlsx, in Excel for Windows', (set, from) => {
   const excel = answers(from)

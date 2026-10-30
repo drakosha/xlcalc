@@ -7,6 +7,7 @@
  */
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import type { PivotCase } from './cases.js'
 import { openKept, writeKept } from '../../../src/xlsx-keep.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 
@@ -14,6 +15,11 @@ export type Rewrite = 'xlsx' | 'kept'
 
 /** Where the engine's file of a case's book is, from the package's folder. */
 export const oursPath = (how: Rewrite, set: string, id: string) => `bench/windows/out/pivot-ours/${how}/${set}/${id}.xlsx`
+
+/** The cases of a set of the engine's files: each case of the set `from` opened from its file, read, refreshed (`RefreshTable` of `PT1`) and read again. */
+export function oursCases(from: string, how: Rewrite, cases: PivotCase[]): PivotCase[] {
+  return cases.map((c): PivotCase => ({ id: c.id, file: oursPath(how, from, c.id), ops: [{ read: true }, { refresh: true }] }))
+}
 
 /** A book written again by the engine. */
 export async function rewritten(data: Uint8Array, how: Rewrite): Promise<Uint8Array> {
