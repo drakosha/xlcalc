@@ -3,6 +3,7 @@ import type { Locale } from '../locale/types.js'
 import type { BookFile, CellRef, CellValue, CheckCode, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
 import type { Book, ExternalBook, NumberFormat } from './book.js'
 import type { Color } from './looks.js'
+import type { AbortSignalLike } from './session.js'
 
 /**
  * External functions (host functions evaluated outside the workbook) and the answers to the calls a workbook makes
@@ -42,8 +43,11 @@ export interface ExternalCall {
   /** The cell of the formula. */
   sheet: string
   cell: string
-  /** Aborted when the calculation that asks is: its call aborted or past its deadline. */
-  signal: AbortSignal
+  /**
+   * Aborted with the call that asks (its `signal`), not at its deadline: a session takes an answer that arrives later.
+   * The platform's `AbortSignal` where the runtime has `AbortController`, which `fetch` takes.
+   */
+  signal: AbortSignalLike
 }
 
 /**
