@@ -14,7 +14,7 @@ import { areaNumbers, devsq, interpolate, mean, stdev, variance } from './common
 import { orderAt, sortedNumbers } from './order-stats.js'
 import { rankAvg, rankEq } from './rank.js'
 
-function median(xs: number[]): number {
+export function median(xs: number[]): number {
   const m = xs.length >> 1
   if (xs.length % 2) return orderAt(xs, m)[0]
   const [a, b] = orderAt(xs, m - 1, true)
