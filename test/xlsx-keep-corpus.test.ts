@@ -59,7 +59,7 @@ function formulas(v: unknown): unknown {
 }
 
 /**
- * A read book with its styles by their fields, its formulas canonical, a rule's built-in number format by its code, and
+ * A read book without its PivotTables, with its styles by their fields, its formulas canonical, a rule's built-in number format by its code, and
  * its active sheet by name (a file with chart sheets names its first worksheet, which a file without leaves out).
  */
 function norm(r: XlsxRead) {
@@ -67,18 +67,19 @@ function norm(r: XlsxRead) {
   const key = (i: number | undefined) => (i === undefined ? undefined : keyOf(st[i] ?? {}))
   const line = <T extends { style?: number }>(e: T) => (e.style !== undefined ? { ...e, style: key(e.style) } : e)
   const map = <T extends { style?: number }>(o: Record<string, T> | undefined) => o && Object.fromEntries(Object.entries(o).map(([k, v]) => [k, line(v)]))
-  const { styles: _, ...book } = r.book
+  // writeXlsx does not write PivotTables yet: they are left out, and their parts compared below
+  const { styles: _, pivotCaches: _c, slicerCaches: _s, timelineCaches: _t, ...book } = r.book
   return {
     book: formulas({
       ...book,
       activeSheet: book.activeSheet ?? book.sheets.find((x) => !x.hidden)?.name,
-      sheets: book.sheets.map((s) => ({
+      sheets: book.sheets.map(({ pivotTables: _p, slicers: _l, timelines: _m, ...s }) => ({
         ...s,
         cells: map(s.cells),
         rows: map(s.rows),
         columns: map(s.columns),
         looks: s.looks?.map(line),
-        conditionalFormats: s.conditionalFormats?.map((c) => ('style' in c && typeof c.style?.numberFormat === 'number' ? { ...c, style: { ...c.style, numberFormat: BUILTIN[c.style.numberFormat] ?? c.style.numberFormat } } : c)),
+        conditionalFormats: s.conditionalFormats?.filter((c) => !c.pivot).map((c) => ('style' in c && typeof c.style?.numberFormat === 'number' ? { ...c, style: { ...c.style, numberFormat: BUILTIN[c.style.numberFormat] ?? c.style.numberFormat } } : c)),
       })),
     }),
     cached: r.cached,
