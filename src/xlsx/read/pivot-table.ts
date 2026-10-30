@@ -23,7 +23,8 @@ import type {
   PivotShowAs,
   PivotTable,
 } from '../../contract.js'
-import { serialToDate, type DateSystemOptions } from '../../date-serial.js'
+import type { DateSystemOptions } from '../../date-serial.js'
+import { serialToUtcMs } from '../../model.js'
 import type { Dxf } from '../styles/dxf.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { attrText, take, values } from './pivot-cache.js'
@@ -135,7 +136,8 @@ function filterOf(attrs: string, body: string, dates: DateSystemOptions): PivotF
   const top = element(body, 'top10')
   const ta = top && attributes(top.attrs)
   const given = (k: string) => a[k] !== undefined
-  const day = (n: number) => (f.type.startsWith('date') ? serialToDate(n, dates) : n)
+  // a date of the 1904 system is 1,462 days after the 1900 system's of its number
+  const day = (n: number) => (f.type.startsWith('date') ? new Date(serialToUtcMs(n + (dates.dateSystem === 1904 ? 1462 : 0))).toISOString().slice(0, 10) : n)
   const args = given('stringValue1') ? ['stringValue1', 'stringValue2'].filter(given).map((k) => attrText(a[k])) : ta ? [Number(ta.val)] : elements(body, 'customFilter').map((c) => day(Number(attributes(c.attrs).val)))
   if (args.length) f.args = args
   if (ta && !flag(ta.top, true)) f.bottom = true
