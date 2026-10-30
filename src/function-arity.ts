@@ -131,7 +131,7 @@ export const FUNCTION_ARITY: Readonly<Record<string, ArityDef>> = {
   FVSCHEDULE: { args: 'x R' },
   GCD: { args: 'R', rep: 1 },
   GEOMEAN: { args: 'N', rep: 1 },
-  GETPIVOTDATA: { args: 'R R v?', rep: 1, max: 252 },
+  GETPIVOTDATA: { args: 'R R v?', rep: 1 },
   HARMEAN: { args: 'N', rep: 1 },
   HLOOKUP: { args: 'a R R a?' },
   HOUR: { args: 'h' },

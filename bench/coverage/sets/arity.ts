@@ -64,6 +64,8 @@ export const SHAPES: Record<string, Shape> = {
   RTD: { head: ['"NoSuch.Server"', '""'], rep: ['"Topic"'], never: true },
   STOCKHISTORY: { head: ['"MSFT"', '45658', '45688', '0', '1'], rep: ['0'], never: true },
   CALL: { head: ['"NoSuchLibrary.dll"', '"NoSuchFunction"', '"J"'], rep: ['1'], never: true },
+  // a field without its item counts: Excel loads an odd number of arguments (the set gpd-1)
+  GETPIVOTDATA: { head: ['"Sum of Price"', 'D!B1'], rep: ['"Region"'] },
 }
 
 /** Functions whose calls Excel opens no book with (both Excels, the set `connections-held`): their limit is not measured. */
