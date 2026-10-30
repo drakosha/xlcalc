@@ -39,6 +39,13 @@ export function noise(seed: number, n: number): number[] {
 /** A date's serial number. */
 export const day = (y: number, m: number, d: number) => Date.UTC(y, m, d) / 86400000 + 25569
 
+/** n dates `every` months apart from a month of a year (1 to 12), on a day or a shorter month's last. */
+export const dates = (year: number, month: number, d: number, every: number, n: number) =>
+  steps(n, 0).map((i) => {
+    const m = month - 1 + i * every
+    return day(year, m, Math.min(d, new Date(Date.UTC(year, m + 1, 0)).getUTCDate()))
+  })
+
 export const ETS = 'FORECAST.ETS'
 export const CI = 'FORECAST.ETS.CONFINT'
 export const SEA = 'FORECAST.ETS.SEASONALITY'

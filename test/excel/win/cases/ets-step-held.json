@@ -1,0 +1,617 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 14.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "m-2020-1#1",
+   "group": "m-2020-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B12,E!A1:A12,8,0)"
+  },
+  {
+   "id": "m-2020-1#2",
+   "group": "m-2020-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44176,E!B1:B12,E!A1:A12,0)"
+  },
+  {
+   "id": "m-2020-15#1",
+   "group": "m-2020-15",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D12,E!C1:C12,8,0)"
+  },
+  {
+   "id": "m-2020-15#2",
+   "group": "m-2020-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44190,E!D1:D12,E!C1:C12,0)"
+  },
+  {
+   "id": "m-2020-28#1",
+   "group": "m-2020-28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F12,E!E1:E12,8,0)"
+  },
+  {
+   "id": "m-2020-28#2",
+   "group": "m-2020-28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44203,E!F1:F12,E!E1:E12,0)"
+  },
+  {
+   "id": "m-2020-30#1",
+   "group": "m-2020-30",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H12,E!G1:G12,8,0)"
+  },
+  {
+   "id": "m-2020-30#2",
+   "group": "m-2020-30",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44205,E!H1:H12,E!G1:G12,0)"
+  },
+  {
+   "id": "m-2020-31#1",
+   "group": "m-2020-31",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J12,E!I1:I12,8,0)"
+  },
+  {
+   "id": "m-2020-31#2",
+   "group": "m-2020-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44206,E!J1:J12,E!I1:I12,0)"
+  },
+  {
+   "id": "m-2021-1#1",
+   "group": "m-2021-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L12,E!K1:K12,8,0)"
+  },
+  {
+   "id": "m-2021-1#2",
+   "group": "m-2021-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44541,E!L1:L12,E!K1:K12,0)"
+  },
+  {
+   "id": "m-2021-15#1",
+   "group": "m-2021-15",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N12,E!M1:M12,8,0)"
+  },
+  {
+   "id": "m-2021-15#2",
+   "group": "m-2021-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44555,E!N1:N12,E!M1:M12,0)"
+  },
+  {
+   "id": "m-2021-28#1",
+   "group": "m-2021-28",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P12,E!O1:O12,8,0)"
+  },
+  {
+   "id": "m-2021-28#2",
+   "group": "m-2021-28",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44568,E!P1:P12,E!O1:O12,0)"
+  },
+  {
+   "id": "m-2021-30#1",
+   "group": "m-2021-30",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R12,E!Q1:Q12,8,0)"
+  },
+  {
+   "id": "m-2021-30#2",
+   "group": "m-2021-30",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44570,E!R1:R12,E!Q1:Q12,0)"
+  },
+  {
+   "id": "m-2021-31#1",
+   "group": "m-2021-31",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!T1:T12,E!S1:S12,8,0)"
+  },
+  {
+   "id": "m-2021-31#2",
+   "group": "m-2021-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44571,E!T1:T12,E!S1:S12,0)"
+  },
+  {
+   "id": "q-2019-1#1",
+   "group": "q-2019-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!V1:V12,E!U1:U12,8,0)"
+  },
+  {
+   "id": "q-2019-1#2",
+   "group": "q-2019-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44494,E!V1:V12,E!U1:U12,0)"
+  },
+  {
+   "id": "q-2019-2#1",
+   "group": "q-2019-2",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!X1:X12,E!W1:W12,8,0)"
+  },
+  {
+   "id": "q-2019-2#2",
+   "group": "q-2019-2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44525,E!X1:X12,E!W1:W12,0)"
+  },
+  {
+   "id": "q-2019-3#1",
+   "group": "q-2019-3",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!Z1:Z12,E!Y1:Y12,8,0)"
+  },
+  {
+   "id": "q-2019-3#2",
+   "group": "q-2019-3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44555,E!Z1:Z12,E!Y1:Y12,0)"
+  },
+  {
+   "id": "q-2019-4#1",
+   "group": "q-2019-4",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AB1:AB12,E!AA1:AA12,8,0)"
+  },
+  {
+   "id": "q-2019-4#2",
+   "group": "q-2019-4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44586,E!AB1:AB12,E!AA1:AA12,0)"
+  },
+  {
+   "id": "q-2020-1#1",
+   "group": "q-2020-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AD1:AD12,E!AC1:AC12,8,0)"
+  },
+  {
+   "id": "q-2020-1#2",
+   "group": "q-2020-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44859,E!AD1:AD12,E!AC1:AC12,0)"
+  },
+  {
+   "id": "q-2020-2#1",
+   "group": "q-2020-2",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AF1:AF12,E!AE1:AE12,8,0)"
+  },
+  {
+   "id": "q-2020-2#2",
+   "group": "q-2020-2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44890,E!AF1:AF12,E!AE1:AE12,0)"
+  },
+  {
+   "id": "q-2020-3#1",
+   "group": "q-2020-3",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AH1:AH12,E!AG1:AG12,8,0)"
+  },
+  {
+   "id": "q-2020-3#2",
+   "group": "q-2020-3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44920,E!AH1:AH12,E!AG1:AG12,0)"
+  },
+  {
+   "id": "q-2020-4#1",
+   "group": "q-2020-4",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AJ1:AJ12,E!AI1:AI12,8,0)"
+  },
+  {
+   "id": "q-2020-4#2",
+   "group": "q-2020-4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44951,E!AJ1:AJ12,E!AI1:AI12,0)"
+  },
+  {
+   "id": "q-2021-1#1",
+   "group": "q-2021-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AL1:AL12,E!AK1:AK12,8,0)"
+  },
+  {
+   "id": "q-2021-1#2",
+   "group": "q-2021-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45224,E!AL1:AL12,E!AK1:AK12,0)"
+  },
+  {
+   "id": "q-2021-2#1",
+   "group": "q-2021-2",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AN1:AN12,E!AM1:AM12,8,0)"
+  },
+  {
+   "id": "q-2021-2#2",
+   "group": "q-2021-2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45255,E!AN1:AN12,E!AM1:AM12,0)"
+  },
+  {
+   "id": "q-2021-3#1",
+   "group": "q-2021-3",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AP1:AP12,E!AO1:AO12,8,0)"
+  },
+  {
+   "id": "q-2021-3#2",
+   "group": "q-2021-3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45285,E!AP1:AP12,E!AO1:AO12,0)"
+  },
+  {
+   "id": "q-2021-4#1",
+   "group": "q-2021-4",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AR1:AR12,E!AQ1:AQ12,8,0)"
+  },
+  {
+   "id": "q-2021-4#2",
+   "group": "q-2021-4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45316,E!AR1:AR12,E!AQ1:AQ12,0)"
+  },
+  {
+   "id": "q-short-2020-2#1",
+   "group": "q-short-2020-2",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AT1:AT2,E!AS1:AS2,8,0)"
+  },
+  {
+   "id": "q-short-2020-2#2",
+   "group": "q-short-2020-2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43932,E!AT1:AT2,E!AS1:AS2,0)"
+  },
+  {
+   "id": "q-short-2020-3#1",
+   "group": "q-short-2020-3",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AV1:AV3,E!AU1:AU3,8,0)"
+  },
+  {
+   "id": "q-short-2020-3#2",
+   "group": "q-short-2020-3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44023,E!AV1:AV3,E!AU1:AU3,0)"
+  },
+  {
+   "id": "q-short-2020-4#1",
+   "group": "q-short-2020-4",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AX1:AX4,E!AW1:AW4,8,0)"
+  },
+  {
+   "id": "q-short-2020-4#2",
+   "group": "q-short-2020-4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44115,E!AX1:AX4,E!AW1:AW4,0)"
+  },
+  {
+   "id": "q-short-2021-2#1",
+   "group": "q-short-2021-2",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!AZ1:AZ2,E!AY1:AY2,8,0)"
+  },
+  {
+   "id": "q-short-2021-2#2",
+   "group": "q-short-2021-2",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44297,E!AZ1:AZ2,E!AY1:AY2,0)"
+  },
+  {
+   "id": "q-short-2021-3#1",
+   "group": "q-short-2021-3",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BB1:BB3,E!BA1:BA3,8,0)"
+  },
+  {
+   "id": "q-short-2021-3#2",
+   "group": "q-short-2021-3",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44388,E!BB1:BB3,E!BA1:BA3,0)"
+  },
+  {
+   "id": "q-short-2021-4#1",
+   "group": "q-short-2021-4",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BD1:BD4,E!BC1:BC4,8,0)"
+  },
+  {
+   "id": "q-short-2021-4#2",
+   "group": "q-short-2021-4",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44480,E!BD1:BD4,E!BC1:BC4,0)"
+  },
+  {
+   "id": "months-6#1",
+   "group": "months-6",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BF1:BF12,E!BE1:BE12,8,0)"
+  },
+  {
+   "id": "months-6#2",
+   "group": "months-6",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45118,E!BF1:BF12,E!BE1:BE12,0)"
+  },
+  {
+   "id": "months-12#1",
+   "group": "months-12",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!BH1:BH12,E!BG1:BG12,8,0)"
+  },
+  {
+   "id": "months-12#2",
+   "group": "months-12",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(47129,E!BH1:BH12,E!BG1:BG12,0)"
+  }
+ ],
+ "values": {
+  "m-2020-1#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2020-1#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2020-15#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2020-15#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2020-28#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2020-28#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2020-30#1": {
+   "t": "n",
+   "v": 30
+  },
+  "m-2020-30#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2020-31#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2020-31#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2021-1#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2021-1#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2021-15#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2021-15#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2021-28#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2021-28#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2021-30#1": {
+   "t": "n",
+   "v": 30
+  },
+  "m-2021-30#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "m-2021-31#1": {
+   "t": "n",
+   "v": 31
+  },
+  "m-2021-31#2": {
+   "t": "n",
+   "v": 12.32258064516129
+  },
+  "q-2019-1#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-2019-1#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2019-2#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2019-2#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2019-3#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2019-3#2": {
+   "t": "n",
+   "v": 12.11111111111111
+  },
+  "q-2019-4#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2019-4#2": {
+   "t": "n",
+   "v": 12.11111111111111
+  },
+  "q-2020-1#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-2020-1#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2020-2#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2020-2#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2020-3#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2020-3#2": {
+   "t": "n",
+   "v": 12.11111111111111
+  },
+  "q-2020-4#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2020-4#2": {
+   "t": "n",
+   "v": 12.11111111111111
+  },
+  "q-2021-1#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-2021-1#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2021-2#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2021-2#2": {
+   "t": "n",
+   "v": 12.108695652173912
+  },
+  "q-2021-3#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2021-3#2": {
+   "t": "n",
+   "v": 12.10989010989011
+  },
+  "q-2021-4#1": {
+   "t": "n",
+   "v": 92
+  },
+  "q-2021-4#2": {
+   "t": "n",
+   "v": 12.10989010989011
+  },
+  "q-short-2020-2#1": {
+   "t": "n",
+   "v": 91
+  },
+  "q-short-2020-2#2": {
+   "t": "n",
+   "v": 2.10989010989011
+  },
+  "q-short-2020-3#1": {
+   "t": "n",
+   "v": 91
+  },
+  "q-short-2020-3#2": {
+   "t": "n",
+   "v": 3.108695652173913
+  },
+  "q-short-2020-4#1": {
+   "t": "n",
+   "v": 91
+  },
+  "q-short-2020-4#2": {
+   "t": "n",
+   "v": 4.108695652173913
+  },
+  "q-short-2021-2#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-short-2021-2#2": {
+   "t": "n",
+   "v": 2.10989010989011
+  },
+  "q-short-2021-3#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-short-2021-3#2": {
+   "t": "n",
+   "v": 3.108695652173913
+  },
+  "q-short-2021-4#1": {
+   "t": "n",
+   "v": 90
+  },
+  "q-short-2021-4#2": {
+   "t": "n",
+   "v": 4.108695652173913
+  },
+  "months-6#1": {
+   "t": "n",
+   "v": 181
+  },
+  "months-6#2": {
+   "t": "n",
+   "v": 12.054347826086957
+  },
+  "months-12#1": {
+   "t": "n",
+   "v": 365
+  },
+  "months-12#2": {
+   "t": "n",
+   "v": 12.027397260273972
+  }
+ }
+}

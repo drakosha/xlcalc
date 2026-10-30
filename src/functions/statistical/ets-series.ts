@@ -48,13 +48,30 @@ function aggregate(k: number, ys: number[], others: number): number {
 }
 
 /**
- * The step of a timeline: the most frequent difference between successive times, those within `near` of the first
- * of a group counted in it, and in that group its most frequent value; undefined where two groups tie.
+ * The step of differences close to each other, under 12 % apart (months, quarters, a constant step): a histogram of
+ * them from the least, of bins of a width near a 25th of it, its fullest bin (the earlier of equals) giving its value
+ * where all its differences are within 3E-7 of its first, else its lower bound; undefined for differences further apart.
  */
-function stepOf(ds: readonly number[], near: (d: number, first: number) => boolean): number | undefined {
+function narrowStep(ds: readonly number[]): number | undefined {
+  const lo = min(ds)
+  const hi = max(ds)
+  if (lo === hi) return lo
+  const width = (hi - lo) / Math.trunc((hi - lo) / (lo / 5 / 5) + 1)
+  const count = Math.trunc((hi - lo) / width + 1.5)
+  if (count >= 5) return undefined
+  const bins = Array.from({ length: count }, (): number[] => [])
+  for (const d of ds) bins[Math.trunc((d - lo) / width)].push(d)
+  let at = 0
+  for (let i = 1; i < count; i++) if (bins[i].length > bins[at].length) at = i
+  const fullest = bins[at]
+  return fullest.every((d) => Math.abs(d - fullest[0]) <= 3e-7) ? fullest[0] : lo + at * width
+}
+
+/** The step of differences further apart: the most frequent of them (within 1E-8), undefined where two tie. */
+function modeStep(ds: readonly number[]): number | undefined {
   const groups: number[][] = []
   for (const d of ds) {
-    const g = groups.find((g) => near(d, g[0]))
+    const g = groups.find((g) => Math.abs(d - g[0]) <= 1e-8 * Math.max(1, Math.abs(d)))
     if (g) g.push(d)
     else groups.push([d])
   }
@@ -63,21 +80,13 @@ function stepOf(ds: readonly number[], near: (d: number, first: number) => boole
   for (const g of groups)
     if (g.length > best.length) [best, tie] = [g, false]
     else if (g !== best && g.length === best.length) tie = true
-  if (tie) return undefined
-  const count = new Map<number, number>()
-  for (const d of best) count.set(d, (count.get(d) ?? 0) + 1)
-  let step = best[0]
-  for (const [d, c] of count) if (c > count.get(step)!) step = d
-  return step
+  return tie ? undefined : best[0]
 }
-
-/** Differences of one group: equal to 1E-8 of them, or on a calendar timeline within a day. */
-const sameStep = (d: number, first: number) => Math.abs(d - first) <= 1e-8 * Math.max(1, Math.abs(d))
-const sameDays = (d: number, first: number) => Math.abs(d - first) <= 1
 
 /**
  * The calendar timeline the dates make, if each is on one day of the month (or the last of a shorter month) and each is
- * a month or a quarter after the one before: its months and each date's place counted back from the last.
+ * a month, a quarter, half a year or a year after the one before: its months and each date's place counted back from
+ * the last.
  */
 function calendarOf(ts: readonly number[]): { c: Calendar; back: Map<number, number> } | undefined {
   const dates = ts.map((t) => (t === Math.trunc(t) && t > 60 ? ymd(t) : undefined))
@@ -86,7 +95,7 @@ function calendarOf(ts: readonly number[]): { c: Calendar; back: Map<number, num
   if (dates.some((d) => d!.d !== Math.min(day, daysInMonth(d!.y, d!.m)))) return undefined
   const index = dates.map((d) => d!.y * 12 + d!.m)
   const months = index[1] - index[0]
-  if ((months !== 1 && months !== 3) || index.some((v, i) => i > 0 && v - index[i - 1] !== months)) return undefined
+  if (![1, 3, 6, 12].includes(months) || index.some((v, i) => i > 0 && v - index[i - 1] !== months)) return undefined
   return { c: { months, ...dates[dates.length - 1]! }, back: new Map(ts.map((t, i) => [t, ts.length - 1 - i])) }
 }
 
@@ -125,7 +134,8 @@ export function seriesOf(values: Grid, timeline: Grid, complete: boolean, aggreg
   if (ts.length < 2) return E.NUM
   const last = ts[ts.length - 1]
   const calendar = calendarOf(ts)
-  const step = stepOf(ts.slice(1).map((t, i) => t - ts[i]), calendar ? sameDays : sameStep)
+  const ds = ts.slice(1).map((t, i) => t - ts[i])
+  const step = narrowStep(ds) ?? modeStep(ds)
   if (step === undefined) return E.NUM
   // slots counted back from the last point, a point halfway between two in the later one
   const slots = new Map<number, { ys: number[]; others: number }>()

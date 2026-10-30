@@ -109,8 +109,6 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:stat:GAMMA.INV#33': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 5999959379.86929 } },
   'en-US:stat:CHISQ.INV#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232618.5678 } },
   'en-US:stat:CHISQ.INV.RT#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990232502.22995 } },
-  'en-US:ets-held:cal-3-20-4#5': { reason: 'etsQuarterStep', engine: { t: 'n', v: 91 } },
-  'en-US:ets-held:cal-3-28-1#6': { reason: 'etsQuarterStep', engine: { t: 'n', v: 91 } },
   'en-US:stat-edges-held:VAR.P#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'en-US:stat-edges-held:VAR.P#2': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'en-US:stat-edges-held:VAR.S#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668069581190745 } },

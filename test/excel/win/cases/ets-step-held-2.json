@@ -1,0 +1,467 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.3,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "every-6-1-1#1",
+   "group": "every-6-1-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!B1:B10,E!A1:A10,8,0)"
+  },
+  {
+   "id": "every-6-1-1#2",
+   "group": "every-6-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44043,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "every-6-1-1#3",
+   "group": "every-6-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44103,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "every-6-1-1#4",
+   "group": "every-6-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44213,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "every-6-1-1#5",
+   "group": "every-6-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44413,E!B1:B10,E!A1:A10,0)"
+  },
+  {
+   "id": "every-6-3-15#1",
+   "group": "every-6-3-15",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!D1:D9,E!C1:C9,8,0)"
+  },
+  {
+   "id": "every-6-3-15#2",
+   "group": "every-6-3-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43935,E!D1:D9,E!C1:C9,0)"
+  },
+  {
+   "id": "every-6-3-15#3",
+   "group": "every-6-3-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43995,E!D1:D9,E!C1:C9,0)"
+  },
+  {
+   "id": "every-6-3-15#4",
+   "group": "every-6-3-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44105,E!D1:D9,E!C1:C9,0)"
+  },
+  {
+   "id": "every-6-3-15#5",
+   "group": "every-6-3-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44305,E!D1:D9,E!C1:C9,0)"
+  },
+  {
+   "id": "every-6-8-31#1",
+   "group": "every-6-8-31",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!F1:F8,E!E1:E8,8,0)"
+  },
+  {
+   "id": "every-6-8-31#2",
+   "group": "every-6-8-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43920,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "every-6-8-31#3",
+   "group": "every-6-8-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43980,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "every-6-8-31#4",
+   "group": "every-6-8-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44090,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "every-6-8-31#5",
+   "group": "every-6-8-31",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44290,E!F1:F8,E!E1:E8,0)"
+  },
+  {
+   "id": "every-12-1-1#1",
+   "group": "every-12-1-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!H1:H9,E!G1:G9,8,0)"
+  },
+  {
+   "id": "every-12-1-1#2",
+   "group": "every-12-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45322,E!H1:H9,E!G1:G9,0)"
+  },
+  {
+   "id": "every-12-1-1#3",
+   "group": "every-12-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45382,E!H1:H9,E!G1:G9,0)"
+  },
+  {
+   "id": "every-12-1-1#4",
+   "group": "every-12-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45492,E!H1:H9,E!G1:G9,0)"
+  },
+  {
+   "id": "every-12-1-1#5",
+   "group": "every-12-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45692,E!H1:H9,E!G1:G9,0)"
+  },
+  {
+   "id": "every-12-2-29#1",
+   "group": "every-12-2-29",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!J1:J8,E!I1:I8,8,0)"
+  },
+  {
+   "id": "every-12-2-29#2",
+   "group": "every-12-2-29",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45015,E!J1:J8,E!I1:I8,0)"
+  },
+  {
+   "id": "every-12-2-29#3",
+   "group": "every-12-2-29",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45075,E!J1:J8,E!I1:I8,0)"
+  },
+  {
+   "id": "every-12-2-29#4",
+   "group": "every-12-2-29",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45185,E!J1:J8,E!I1:I8,0)"
+  },
+  {
+   "id": "every-12-2-29#5",
+   "group": "every-12-2-29",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45385,E!J1:J8,E!I1:I8,0)"
+  },
+  {
+   "id": "every-12-7-10#1",
+   "group": "every-12-7-10",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!L1:L10,E!K1:K10,8,0)"
+  },
+  {
+   "id": "every-12-7-10#2",
+   "group": "every-12-7-10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45878,E!L1:L10,E!K1:K10,0)"
+  },
+  {
+   "id": "every-12-7-10#3",
+   "group": "every-12-7-10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(45938,E!L1:L10,E!K1:K10,0)"
+  },
+  {
+   "id": "every-12-7-10#4",
+   "group": "every-12-7-10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(46048,E!L1:L10,E!K1:K10,0)"
+  },
+  {
+   "id": "every-12-7-10#5",
+   "group": "every-12-7-10",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(46248,E!L1:L10,E!K1:K10,0)"
+  },
+  {
+   "id": "every-2-1-1#1",
+   "group": "every-2-1-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!N1:N12,E!M1:M12,8,0)"
+  },
+  {
+   "id": "every-2-1-1#2",
+   "group": "every-2-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43070,E!N1:N12,E!M1:M12,0)"
+  },
+  {
+   "id": "every-2-1-1#3",
+   "group": "every-2-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43130,E!N1:N12,E!M1:M12,0)"
+  },
+  {
+   "id": "every-2-1-1#4",
+   "group": "every-2-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43240,E!N1:N12,E!M1:M12,0)"
+  },
+  {
+   "id": "every-2-1-1#5",
+   "group": "every-2-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43440,E!N1:N12,E!M1:M12,0)"
+  },
+  {
+   "id": "every-4-1-1#1",
+   "group": "every-4-1-1",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!P1:P12,E!O1:O12,8,0)"
+  },
+  {
+   "id": "every-4-1-1#2",
+   "group": "every-4-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43739,E!P1:P12,E!O1:O12,0)"
+  },
+  {
+   "id": "every-4-1-1#3",
+   "group": "every-4-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43799,E!P1:P12,E!O1:O12,0)"
+  },
+  {
+   "id": "every-4-1-1#4",
+   "group": "every-4-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43909,E!P1:P12,E!O1:O12,0)"
+  },
+  {
+   "id": "every-4-1-1#5",
+   "group": "every-4-1-1",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(44109,E!P1:P12,E!O1:O12,0)"
+  },
+  {
+   "id": "every-4-2-15#1",
+   "group": "every-4-2-15",
+   "fn": "FORECAST.ETS.STAT",
+   "formula": "_xlfn.FORECAST.ETS.STAT(E!R1:R10,E!Q1:Q10,8,0)"
+  },
+  {
+   "id": "every-4-2-15#2",
+   "group": "every-4-2-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43541,E!R1:R10,E!Q1:Q10,0)"
+  },
+  {
+   "id": "every-4-2-15#3",
+   "group": "every-4-2-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43601,E!R1:R10,E!Q1:Q10,0)"
+  },
+  {
+   "id": "every-4-2-15#4",
+   "group": "every-4-2-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43711,E!R1:R10,E!Q1:Q10,0)"
+  },
+  {
+   "id": "every-4-2-15#5",
+   "group": "every-4-2-15",
+   "fn": "FORECAST.ETS",
+   "formula": "_xlfn.FORECAST.ETS(43911,E!R1:R10,E!Q1:Q10,0)"
+  }
+ ],
+ "values": {
+  "every-6-1-1#1": {
+   "t": "n",
+   "v": 181
+  },
+  "every-6-1-1#2": {
+   "t": "n",
+   "v": 103.0574672343957
+  },
+  "every-6-1-1#3": {
+   "t": "n",
+   "v": 109.18130047952926
+  },
+  "every-6-1-1#4": {
+   "t": "n",
+   "v": 120.43539476188425
+  },
+  "every-6-1-1#5": {
+   "t": "n",
+   "v": 141.12729724164257
+  },
+  "every-6-3-15#1": {
+   "t": "n",
+   "v": 181
+  },
+  "every-6-3-15#2": {
+   "t": "n",
+   "v": 83.7313802807727
+  },
+  "every-6-3-15#3": {
+   "t": "n",
+   "v": 89.20303961784575
+  },
+  "every-6-3-15#4": {
+   "t": "n",
+   "v": 99.25859919881295
+  },
+  "every-6-3-15#5": {
+   "t": "n",
+   "v": 117.74686249291011
+  },
+  "every-6-8-31#1": {
+   "t": "n",
+   "v": 181
+  },
+  "every-6-8-31#2": {
+   "t": "n",
+   "v": 66.43177404718972
+  },
+  "every-6-8-31#3": {
+   "t": "n",
+   "v": 71.30422090769181
+  },
+  "every-6-8-31#4": {
+   "t": "n",
+   "v": 80.22115173827007
+  },
+  "every-6-8-31#5": {
+   "t": "n",
+   "v": 96.33136922928732
+  },
+  "every-12-1-1#1": {
+   "t": "n",
+   "v": 365
+  },
+  "every-12-1-1#2": {
+   "t": "n",
+   "v": 82.37094039095399
+  },
+  "every-12-1-1#3": {
+   "t": "n",
+   "v": 85.12171994838961
+  },
+  "every-12-1-1#4": {
+   "t": "n",
+   "v": 90.16481580368827
+  },
+  "every-12-1-1#5": {
+   "t": "n",
+   "v": 99.33835161180488
+  },
+  "every-12-2-29#1": {
+   "t": "n",
+   "v": 365
+  },
+  "every-12-2-29#2": {
+   "t": "n",
+   "v": 65.210325039694
+  },
+  "every-12-2-29#3": {
+   "t": "n",
+   "v": 67.63987388520462
+  },
+  "every-12-2-29#4": {
+   "t": "n",
+   "v": 72.09404676864077
+  },
+  "every-12-2-29#5": {
+   "t": "n",
+   "v": 80.18867068857634
+  },
+  "every-12-7-10#1": {
+   "t": "n",
+   "v": 365
+  },
+  "every-12-7-10#2": {
+   "t": "n",
+   "v": 101.53909214210917
+  },
+  "every-12-7-10#3": {
+   "t": "n",
+   "v": 104.62617520266964
+  },
+  "every-12-7-10#4": {
+   "t": "n",
+   "v": 110.28582748036384
+  },
+  "every-12-7-10#5": {
+   "t": "n",
+   "v": 120.57610434889874
+  },
+  "every-2-1-1#1": {
+   "t": "n",
+   "v": 61
+  },
+  "every-2-1-1#2": {
+   "t": "n",
+   "v": 155.08793037227883
+  },
+  "every-2-1-1#3": {
+   "t": "n",
+   "v": 177.70870621353316
+  },
+  "every-2-1-1#4": {
+   "t": "n",
+   "v": 219.1801285891661
+  },
+  "every-2-1-1#5": {
+   "t": "n",
+   "v": 294.5827147266805
+  },
+  "every-4-1-1#1": {
+   "t": "n",
+   "v": 120
+  },
+  "every-4-1-1#2": {
+   "t": "n",
+   "v": 149.52698964463713
+  },
+  "every-4-1-1#3": {
+   "t": "n",
+   "v": 161.0258840306081
+  },
+  "every-4-1-1#4": {
+   "t": "n",
+   "v": 182.10719040488817
+  },
+  "every-4-1-1#5": {
+   "t": "n",
+   "v": 220.43683835812465
+  },
+  "every-4-2-15#1": {
+   "t": "n",
+   "v": 120
+  },
+  "every-4-2-15#2": {
+   "t": "n",
+   "v": 104.69048943309798
+  },
+  "every-4-2-15#3": {
+   "t": "n",
+   "v": 114.08036707563609
+  },
+  "every-4-2-15#4": {
+   "t": "n",
+   "v": 131.2951427536226
+  },
+  "every-4-2-15#5": {
+   "t": "n",
+   "v": 162.59473489541625
+  }
+ }
+}
