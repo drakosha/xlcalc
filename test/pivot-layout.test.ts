@@ -147,6 +147,10 @@ describe('layoutPivot', () => {
     const cols = laid({ rows: [0], columns: ['values'], values })
     expect(cols.location).toEqual({ range: 'A3:C6', firstHeaderRow: 0, firstDataRow: 1, firstDataColumn: 1 })
     expect(grid(cols)).toEqual([['Row Labels', 'Sum of Amount', 'Count of Amount'], ['North', 3, 2], ['South', 4, 1], ['Grand Total', 7, 3]])
+    // the Values row shown: a caption row over the value fields' names
+    const shown = laid({ rows: [0], columns: ['values'], values, valuesRow: true })
+    expect(shown.location).toEqual({ range: 'A3:C7', firstHeaderRow: 1, firstDataRow: 2, firstDataColumn: 1 })
+    expect(grid(shown).slice(0, 2)).toEqual([['', 'Column Labels', ''], ['Row Labels', 'Sum of Amount', 'Count of Amount']])
   })
 
   it('lays the Filters area out above the table, moving it down when the rows above are too few', () => {

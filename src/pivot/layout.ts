@@ -101,7 +101,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   })
   const colItems = hasItems(colFields)
   const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems ? 1 : 0
-  const captionRow = colItems ? 1 : 0
+  // the caption row over the column fields; over value fields alone only with the Values row shown
+  const captionRow = colItems || (table.valuesRow && colFields.includes('values')) ? 1 : 0
   const height = captionRow + Math.max(colFields.length, 1)
   const empty = !rowFields.length && !colFields.length && !values.length
   const dataCols = empty ? EMPTY_COLS - width : !values.length && !colFields.length ? 0 : columnLines.length
@@ -150,7 +151,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   // the headers: the value field's name at the corner, `Column Labels` (the column fields' names in outline and tabular forms), `Row Labels` (the row fields')
   const headers = table.fieldHeaders !== false
   const compact = (table.layout ?? 'compact') === 'compact'
-  if (colItems) {
+  if (captionRow) {
     if (values.length === 1 && rowFields.length) put(top, left, valueName(0))
     if (headers) {
       if (compact) put(top, left + width, table.captions?.columnHeader ?? words.columnHeader)
