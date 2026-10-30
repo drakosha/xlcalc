@@ -6,12 +6,9 @@ import type { FnDef, Grid } from '../../args.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { sumSquares } from '../common.js'
 import { etsFit, etsForecast, etsSpread, type EtsFit } from './ets-model.js'
-import { detectSeason, UNDETECTED } from './ets-season.js'
+import { detectSeason, MAX_SEASON } from './ets-season.js'
 import { horizonOf, seriesOf, type Series } from './ets-series.js'
 import { normInv } from './special.js'
-
-/** The longest season Excel takes; one of as many points as the series or more is none. */
-const MAX_SEASON = 8761
 
 const whole = (x: number) => x === Math.trunc(x)
 
@@ -28,8 +25,8 @@ function modelOf(values: Grid, timeline: Grid, season = 1, completion = 1, aggre
   if (!(season >= 0 && season <= MAX_SEASON) || !whole(season)) return E.NUM
   const s = seriesOf(values, timeline, completion === 1, aggregation)
   if (isErr(s)) return s
-  const m = season === 1 ? detectSeason(s.y) : season < s.y.length ? season : 0
-  if (m === UNDETECTED) return E.NA
+  // a season given is none from 70 % of the series' points on
+  const m = season === 1 ? detectSeason(s.y) : season < Math.trunc((70 * s.y.length) / 100) ? season : 0
   return { s, m, fit: etsFit(s.y, m) }
 }
 
