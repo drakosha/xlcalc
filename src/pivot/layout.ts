@@ -49,8 +49,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   const values = table.values ?? []
   const rowFields = result.rows.fields
   const colFields = result.columns.fields
-  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.columns !== false)
-  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.rows !== false)
+  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.rows !== false)
+  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.columns !== false)
   const fieldName = (f: PivotAxisField) => (f === 'values' ? (table.captions?.values ?? words.values) : (table.fields[f]?.name ?? cache.fields[f]?.name ?? ''))
   const valueName = (v: number) => {
     const d = values[v]
@@ -90,11 +90,11 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   }
   const grandLabel = (a: AxisLine) => (a.value !== undefined ? `${words.total} ${valueName(a.value)}` : (table.captions?.grandTotal ?? words.grandTotal))
 
-  // the columns of the rows' labels: a compact field shares the column of the field before it
+  // the columns of the rows' labels: a compact field shares the column of a compact field before it
   const labelCol: number[] = []
   const level: number[] = []
   rowFields.forEach((f, k) => {
-    const shared = k > 0 && formOf(table, f) === 'compact' && formOf(table, rowFields[k - 1]) !== 'tabular'
+    const shared = k > 0 && formOf(table, f) === 'compact' && formOf(table, rowFields[k - 1]) === 'compact'
     labelCol.push(k === 0 ? 0 : labelCol[k - 1] + (shared ? 0 : 1))
     level.push(shared ? level[k - 1] + 1 : 0)
   })
@@ -157,8 +157,10 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     }
   }
   if (rowFields.length && headers) {
-    if (compact) put(top + height - 1, left, table.captions?.rowHeader ?? words.rowHeader)
-    else rowFields.forEach((f, k) => (k === 0 || labelCol[k] !== labelCol[k - 1]) && put(top + height - 1, left + labelCol[k], fieldName(f)))
+    rowFields.forEach((f, k) => {
+      if (k > 0 && labelCol[k] === labelCol[k - 1]) return
+      put(top + height - 1, left + labelCol[k], k === 0 && compact ? (table.captions?.rowHeader ?? words.rowHeader) : fieldName(f))
+    })
   }
   if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, valueName(0))
   if (!rowFields.length && width === 1 && values.length === 1) put(top + height, left, valueName(0))
@@ -172,18 +174,22 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     else for (let k = a.from; k <= d; k++) put(top + captionRow + k, col, itemLabel(colFields[k], a.items[k]))
   })
 
-  // the labels of the rows' lines, the deepest of a shared column last; outline and tabular fields repeat theirs when set to
+  // the labels of the rows' lines, the deepest of a shared column last; outline and tabular fields repeat theirs on the
+  // lines of their group when set to, a subtotal's line of an inner field too
+  const repeats = (f: PivotAxisField) => formOf(table, f) !== 'compact' && (f === 'values' ? table.repeatLabels : (table.fields[f]?.repeatLabels ?? table.repeatLabels)) === true
   rowLines.forEach((a, i) => {
     const row = top + height + i
     const d = a.items.length - 1
-    if (a.kind === 'grand') put(row, left, grandLabel(a))
-    else if (a.kind === 'subtotal') put(row, left + labelCol[d], subtotalLabel(rowFields, a))
-    else if (a.kind !== 'blank')
-      for (let k = 0; k <= d; k++) {
-        const f = rowFields[k]
-        const repeat = k < a.from && formOf(table, f) !== 'compact' && (f === 'values' ? table.repeatLabels : (table.fields[f]?.repeatLabels ?? table.repeatLabels))
-        if (k >= a.from || repeat) put(row, left + labelCol[k], itemLabel(f, a.items[k]), level[k] * Math.max(1, table.indent ?? 1))
-      }
+    if (a.kind === 'grand' || a.kind === 'blank') {
+      if (a.kind === 'grand') put(row, left, grandLabel(a))
+      return
+    }
+    const subtotal = a.kind === 'subtotal'
+    for (let k = 0; k <= d; k++) {
+      const f = rowFields[k]
+      if (subtotal && k === d) put(row, left + labelCol[d], subtotalLabel(rowFields, a))
+      else if ((!subtotal && k >= a.from) || repeats(f)) put(row, left + labelCol[k], itemLabel(f, a.items[k]), level[k] * Math.max(1, table.indent ?? 1))
+    }
   })
 
   // the values: each line with values against each column's, by the value field of either and a subtotal's function

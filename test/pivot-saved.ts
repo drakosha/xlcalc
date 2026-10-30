@@ -69,8 +69,9 @@ export function savedResult(table: PivotTable, cache: PivotCache, sheet: SheetIn
       const fn = l.type && l.type !== 'subtotal' && l.type !== 'grand' ? l.type : undefined
       const v = vAt >= 0 && vAt < l.items.length ? l.items[vAt] : l.value
       for (const vv of vAt >= 0 && vAt >= l.items.length && l.type === undefined ? [] : [v]) {
+        // a subtotal's own line over the line of its item, which shows none when the subtotal goes below
         const k = key(path, vv, fn)
-        if (!m.has(k)) m.set(k, i)
+        if (!m.has(k) || l.type) m.set(k, i)
       }
     })
     return m
