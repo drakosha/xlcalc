@@ -1,7 +1,7 @@
 /**
  * A session refuses an entry into a PivotTable's area, as Excel refuses one: `setCells`, `replaceCells`, `clearCells`
  * and `applyChanges` throw `InputError`, `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` answer `pivot`,
- * the Filters area too; a cell's style and number format may change, and a cell outside the area takes anything. In
+ * the Filters area too (not the blank row under it); a cell's style and number format may change, and a cell outside the area takes anything. In
  * every kind of session and both execution modes; nothing is written, so there is no step to undo.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -54,6 +54,9 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     await s.setCells([{ sheet: 'P', cell: 'B4', input: { numberFormat: '0.00' } }, { sheet: 'P', cell: 'D4', input: { value: 1 } }])
     await s.clearCells([{ sheet: 'P', range: 'B4' }], 'formats')
     expect(await s.getValues('P', 'B4:D5')).toEqual([[2, 1, 1], [2, 1, null]])
+    // the blank row between the Filters area and the table takes anything, as in Excel
+    await s.setCellText('P', 'A2', 'x')
+    expect(await s.getValues('P', 'A2')).toEqual([['x']])
     await s.close()
   })
 })

@@ -41,6 +41,7 @@ const EMPTY_COLS = 3
 
 type Label = { value: PivotCell['value']; error?: ErrorCode; numberFormat?: NumberFormat }
 
+
 /** Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. */
 export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>): PivotLaidOut {
   const { table, cache } = result
@@ -65,15 +66,14 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const cf = cache.fields[f]
     const v = fi?.item === undefined ? undefined : (cf?.items ?? cf?.group?.items)?.[fi.item]
     if (v === null || v === undefined) return { value: words.blank }
-    if (typeof v === 'object') return 'error' in v ? { value: undefined, error: v.error } : { value: v, numberFormat: formatOf(f, true) }
-    // a boolean is the locale's word for it, as text
-    if (typeof v === 'boolean') return { value: rules.display(v, undefined, Infinity).text }
+    // an error and a boolean are the locale's words for them, as text
+    if (typeof v === 'boolean' || (typeof v === 'object' && 'error' in v)) return { value: rules.display(v, undefined, Infinity).text }
+    if (typeof v === 'object') return { value: v, numberFormat: formatOf(f, true) }
     const numberFormat = typeof v === 'number' ? formatOf(f, false) : undefined
     return numberFormat === undefined ? { value: v } : { value: v, numberFormat }
   }
   const labelText = (f: PivotAxisField, item: number): string => {
     const l = itemLabel(f, item)
-    if (l.error) return rules.display({ error: l.error }, undefined, Infinity).text
     const v = l.value
     const shown: CellValue = typeof v === 'object' && v ? dateToSerial(v.date, { dateSystem: book.dateSystem }) : (v ?? null)
     return rules.display(shown, l.numberFormat, Infinity).text
@@ -83,8 +83,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const d = a.items.length - 1
     const f = fields[d]
     const own = f === 'values' ? undefined : table.fields[f]?.subtotalCaption
-    if (own !== undefined) return own
     const item = labelText(f, a.items[d])
+    // a caption of its own stands `?` for the item's label (`? all` is `East all`)
+    if (own !== undefined) return own.replaceAll('?', item)
     const under = fields.indexOf('values') > d && a.value !== undefined
     return `${item} ${under ? valueName(a.value!) : a.fn ? words.functions[a.fn] : words.total}`
   }
