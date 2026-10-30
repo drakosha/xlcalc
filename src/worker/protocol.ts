@@ -46,15 +46,18 @@ export interface Snapshot {
 export type ToThread =
   /**
    * `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those
-   * loaded but en-US; `regex`: the kind of match mode 3's registered level; `functions`: the groups of functions the
+   * loaded but en-US; `regex`: the kind of match mode 3's registered level; `pivot`: the PivotTable engine is loaded;
+   * `functions`: the groups of functions the
    * thread loads (`groups/state.ts`, `groupsWanted`); `cancelled`: shared memory where the pool writes the task it
    * cancels, which the thread reads inside a formula.
    */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; functions: FunctionGroupName[]; cancelled?: Int32Array }
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; pivot?: true; functions: FunctionGroupName[]; cancelled?: Int32Array }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
   /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
   | { t: 'regex'; kind: RegexLevel['kind'] }
+  /** The PivotTable engine registered since: the thread imports it from `xlcalc/pivot` itself. */
+  | { t: 'pivot' }
   /** Groups of functions registered since: the thread imports their modules itself (`groups/modules.ts`). */
   | { t: 'functions'; functions: FunctionGroupName[] }
   /** `asks`: the host's `Externals.resolve`, which stays with the pool, answers the calls outside the workbook (`ask`). */

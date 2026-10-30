@@ -30,6 +30,8 @@ import { shift } from './shift.js'
 import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
+import { pivotRefresh } from '../pivot/hook.js'
+import { pivotRefs } from '../input/pivot-refs.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS } from './outline-command.js'
@@ -110,7 +112,7 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
   const computed = () => (values ??= stateValues(createState(book, clockOptions(currentClock()))))
-  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect) })
+  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!() })
 }
 
 /**
@@ -260,7 +262,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'renamePivotTable':
     case 'movePivotTable':
     case 'deletePivotTable':
-    case 'refreshPivots':
+    case 'refreshPivots': {
+      onlyKeys(o, 'op', ['op', 'pivots'])
+      const refs = o.pivots === undefined ? undefined : pivotRefs(o.pivots, 'op.pivots')
+      const refresh = pivotRefresh()
+      r = refresh ? refresh(book, refs, values, values.today?.() ?? 0, true) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
+      break
+    }
     case 'addSlicer':
     case 'editSlicer':
     case 'deleteSlicer':

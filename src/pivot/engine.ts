@@ -13,32 +13,20 @@ import type { ValuesIn } from '../structure/values.js'
 import { computePivot } from './compute.js'
 import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
-import type { PivotResult } from './result.js'
+import { layoutPivot } from './layout.js'
+import { placePivots, type Placement } from './place.js'
 import { sourceGrid } from './source.js'
 
-/** A PivotTable of the book: its sheet's index and its place among the sheet's PivotTables. */
+/** A PivotTable of the book and its sheet's index. */
 interface Spot {
   s: number
-  i: number
   table: PivotTable
 }
 
 const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
 
-/**
- * Lays a calculated PivotTable on its sheet: its definition as calculated. The cells of its area are the layout's
- * (`pivot/layout`), which takes `result` here; until then the book keeps them.
- */
-function laid(book: BookInput, spot: Spot, result: PivotResult): BookInput {
-  const sheets = book.sheets.slice()
-  const tables = (sheets[spot.s].pivotTables ?? []).slice()
-  tables[spot.i] = result.table
-  sheets[spot.s] = { ...sheets[spot.s], pivotTables: tables }
-  return { ...book, sheets }
-}
-
 export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource) => {
-  const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table, i) => ({ s, i, table })))
+  const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table) => ({ s, table })))
   const caches = new Map((book.pivotCaches ?? []).map((c) => [c.id, c]))
   let wanted: Set<number>
   if (refs) {
@@ -51,7 +39,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
   } else wanted = new Set(caches.keys())
   const epoch = book.dateSystem === 1904 ? EPOCH_1904 : 0
   const options = { today, date1904: epoch > 0, lists: listsOf(book) }
-  let out = book
+  const placed: Placement[] = []
   const newCaches = new Map<number, PivotCache>()
   for (const id of wanted) {
     const cache = caches.get(id)
@@ -79,10 +67,10 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     over.forEach((spot, k) => {
       const result = computePivot(tables[k], next, options)
       next = result.cache
-      out = laid(out, spot, result)
+      placed.push({ sheet: book.sheets[spot.s].name, table: { ...result.table, name: spot.table.name }, laid: layoutPivot(result, book) })
     })
     newCaches.set(id, next)
   }
-  if (newCaches.size) out = { ...out, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }
-  return { ok: true, book: out, geometry: [] }
+  if (!newCaches.size) return { ok: true, book, geometry: [] }
+  return placePivots({ ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }, placed)
 }

@@ -17,6 +17,7 @@ import * as worker from '../src/worker/index.js'
 import * as functionText from '../src/function-text/index.js'
 import * as typedEntry from '../src/typed-entry.js'
 import * as regex from '../src/regex/index.js'
+import * as pivot from '../src/pivot/index.js'
 import * as core from '../src/core.js'
 import * as groups from '../src/groups/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
@@ -119,7 +120,7 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
 describe('the functions of the package take no options they do not', () => {
   const ROOT = {
     compute: 2, createSession: 2, createInlineCalc: 1, liveBook: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
-    toLocal: 3, toInvariant: 3, registerLocale: 1, registerRegex: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, fitRows: 4, displayValue: 2, builtinFormatCode: 2, numberFormatCategory: 2, numberFormatChoices: 1, errorText: 2,
+    toLocal: 3, toInvariant: 3, registerLocale: 1, registerRegex: 1, registerPivot: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, fitRows: 4, displayValue: 2, builtinFormatCode: 2, numberFormatCategory: 2, numberFormatChoices: 1, errorText: 2,
     scanReferences: 2, refAt: 3, callAt: 3, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, functionSignature: 2,
     parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, nameAt: 3, columnWidthFromChars: 1, columnWidthToChars: 1, compareValues: 3, findMatcher: 2, findReplacer: 3, mergedArea: 2, valueComparator: 1, outlineEdit: 2, stepDecimals: 4,
   }
@@ -140,6 +141,8 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/function-text', functionText, { functionDescription: 2 }],
     // its levels are objects, which registerRegex takes
     ['xlcalc/regex', regex, {}],
+    // its engine is an object, which registerPivot takes
+    ['xlcalc/pivot', pivot, {}],
   ]
 
   for (const [entry, mod, table] of FUNCTIONS)
