@@ -62,6 +62,8 @@ export interface TableProps {
   emptyText?: string
   /** Several filters on one field (a label filter and a value filter). */
   multipleFilters?: boolean
+  /** Items sorted by Excel's custom lists (the month and day names), as by default. */
+  customLists?: boolean
 }
 
 /** A field's settings. */
@@ -95,8 +97,8 @@ export type Period = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'quar
 /** A filter's or a group's value: a number, text, or a date as `{ d: serial }`. */
 export type FilterValue = number | string | { d: number }
 
-/** An edit of a cell (`D!A50`): a number, text, a formula, or null to clear it. */
-export type EditValue = null | number | string | { formula: string }
+/** An edit of a cell (`D!A50`): a number or text set as its value (`Value2`), a formula, text typed as Excel 365 takes it (`Formula2`), or null to clear it. */
+export type EditValue = null | number | string | { formula: string } | { typed: string }
 
 /**
  * An operation of a case, on the pivot table `pt` (`PT1` by default). `PT1` is made first over the case's source at
@@ -142,6 +144,8 @@ export type PivotOp = (
   /** A cell of the source edited, or a formula typed on `G` (as Excel 365 types it, `Formula2`). */
   | { edit: string; to: EditValue }
   | { refresh: true }
+  /** Every pivot table of the book refreshed (`RefreshTable` each). */
+  | { refreshAll: true }
   /** The end of a phase: each pivot table read, the cells watched, a copy of the book saved. */
   | { read: true }
   /**
@@ -159,6 +163,11 @@ export interface PivotCase {
   source?: SourceKind
   /** A saved book of another set (`basic/sum`) to start from instead of the rows; its pivot table `PT1` is there. */
   from?: string
+  /**
+   * An xlsx file to start from (a path from the package's folder, or absolute), such as one the engine wrote: Excel
+   * opens it as it is, and each phase reads every pivot table of the book, keyed `sheet!name`.
+   */
+  file?: string
   ops: PivotOp[]
   /** Ranges read at the end of each phase (`G!A1:A20`). */
   watch?: string[]
@@ -184,6 +193,8 @@ export type SlicerItem = [name: string, selected: boolean, hasData: boolean]
 /** The end of a phase: Excel's refusals of its operations (`op <index>: <error>`), each pivot table's area or Excel's error reading it, the cells watched, the slicers' items. */
 export interface PivotPhase {
   errors?: string[]
+  /** What the operations that answer something answered, by `op <index>`: a data field's caption, `RefreshTable`'s answer, each pivot table's for `refreshAll`. */
+  results?: Record<string, unknown>
   pivots: Record<string, PivotArea | { error: string }>
   cells?: Record<string, CellValue>
   slicers?: Record<string, SlicerItem[] | { error: string }>
