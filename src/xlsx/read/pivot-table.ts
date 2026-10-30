@@ -262,6 +262,8 @@ export function readPivotTable(xml: string, cache: number, ctx: TableContext): {
   if (a.indent !== undefined && Number(a.indent) !== 1) t.indent = Number(a.indent)
   const x14 = attributes(element(xml.slice(xml.lastIndexOf('<extLst')), 'pivotTableDefinition')?.attrs ?? '')
   if (flag(x14.fillDownLabelsDefault)) t.repeatLabels = true
+  // the Values row, which Excel shows unless Excel 2010's extension hides it
+  if (!flag(x14.hideValuesRow)) t.valuesRow = true
   flags(t, a, [
     ['mergeItem', 'mergeLabels', false],
     ['showHeaders', 'fieldHeaders', true],

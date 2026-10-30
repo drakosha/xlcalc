@@ -49,8 +49,10 @@ export function pivotSheet(): BookInput['sheets'][number] {
   return { name: 'Pivot', cells, pivotTables: [PIVOT], slicers: [{ name: 'Region', cache: 'Slicer_Region' }] }
 }
 
-export const pivotBook = (): BookInput => ({
-  sheets: [dataSheet(), pivotSheet()],
-  pivotCaches: [CACHE],
-  slicerCaches: [{ name: 'Slicer_Region', field: 'Region', pivots: [{ sheet: 'Pivot', name: 'PivotTable1' }], cache: 1 }],
-})
+/** The book anew each time: a test may change its PivotTable and cache. */
+export const pivotBook = (): BookInput =>
+  structuredClone({
+    sheets: [dataSheet(), pivotSheet()],
+    pivotCaches: [CACHE],
+    slicerCaches: [{ name: 'Slicer_Region', field: 'Region', pivots: [{ sheet: 'Pivot', name: 'PivotTable1' }], cache: 1 }],
+  })

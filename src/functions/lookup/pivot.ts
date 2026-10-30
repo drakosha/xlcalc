@@ -9,9 +9,10 @@
  */
 import type { Arg, Cx, FnDef } from '../../args.js'
 import { caseKey } from '../../collate.js'
-import type { PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
+import type { NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
 import { dateToSerial } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
+import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, Rng, type V } from '../../values.js'
 
 /** A line of an axis as a cell's place: the fields it names with their items, the value field, and whether it holds values. */
@@ -40,8 +41,9 @@ function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undef
     for (let k = 0; k < depth; k++) if (axis[k] !== 'values') out.items.set(axis[k] as number, items[k])
     if (line.type !== undefined || depth >= axis.length) return out
     if (at >= depth) return null
-    // a line of an outer field's item: its subtotal where it is shown at the top
-    const f = axis[depth - 1] as number
+    // a line of an outer field's item: its subtotal where it is shown at the top; a value field's above the items, none
+    const f = axis[depth - 1]
+    if (f === 'values') return null
     const field = t.fields[f]
     return field?.subtotals?.length !== 0 && field?.subtotalTop !== false && formOf(t, f) !== 'tabular' ? out : null
   })
@@ -54,33 +56,42 @@ function cellOf(v: PivotValue, epoch: number): V {
   return E[v.error]
 }
 
+/** The format of an item's label: its field's, a date's the short date (with the time where it has one), as Excel shows a date item (the set basic). */
+function formatOf(c: PivotCache, f: number, v: PivotValue): NumberFormat | undefined {
+  const own = c.fields[f].numberFormat
+  if (own !== undefined || v === null || typeof v !== 'object' || !('date' in v)) return own
+  return v.date.endsWith('T00:00:00') || !v.date.includes('T') ? 14 : 22
+}
+
 /** The values of a cache field's items, or of its groups' where it is grouped. */
 const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.items ?? c.fields[f]?.items ?? []
 
 /**
- * Whether an argument names an item: text by the item's label (in any case; `(blank)` a blank item, a number or a date
- * by its text in the field's format) or by the number it reads as; a number by an equal number or date; a boolean by an
- * equal boolean.
+ * Whether an argument names an item: text by the item's label alone (in any case; `(blank)` a blank item, a number or a
+ * date by its text in the field's format: `"1/1/2024"`, not `"2024-01-01"`, `"10"`, not `"10.0"`); a number by an equal
+ * number or date; a boolean by an equal boolean.
  */
-function names(cx: Cx, arg: V, item: V, label: string | undefined, format: Parameters<Cx['rules']['display']>[1]): boolean {
+function names(cx: Cx, arg: V, item: V, label: string | undefined, format: NumberFormat | undefined): boolean {
   if (typeof arg !== 'string') return typeof arg === typeof item && arg === item
   const key = caseKey(arg)
   if (label !== undefined) return caseKey(label) === key
   if (item === null) return key === caseKey('(blank)')
-  if (typeof item === 'number') return caseKey(cx.rules.display(item, format, Infinity).text) === key || cx.rules.valueText(arg) === item
-  if (typeof item === 'boolean' || isErr(item)) return caseKey(cx.rules.toText(item) as string) === key
+  if (typeof item === 'number') return caseKey(cx.rules.display(item, format, Infinity).text) === key
+  if (typeof item === 'boolean') return caseKey(cx.rules.toText(item) as string) === key
+  if (isErr(item)) return caseKey(ERROR_TEXT[item.code]) === key
   return caseKey(item) === key
 }
 
-/** The indexes of a field's items (its place in the PivotTable's field) an argument names. */
+/** The indexes of a field's items (its place in the PivotTable's field) an argument names: text its text items before others of that label. */
 function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Set<number> {
   const values = itemsOf(c, f)
-  const out = new Set<number>()
+  const found: [k: number, text: boolean][] = []
   t.fields[f]?.items?.forEach((it, k) => {
     const v = it.item === undefined ? undefined : values[it.item]
-    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, c.fields[f].numberFormat)) out.add(k)
+    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, formatOf(c, f, v))) found.push([k, typeof v === 'string'])
   })
-  return out
+  const text = typeof arg === 'string' && found.some(([, x]) => x)
+  return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
 }
 
 /** A field by its name in the PivotTable or the source, in any case. */
@@ -108,14 +119,18 @@ function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f
   })
 }
 
-function getPivotData(cx: Cx, data: V, ref: Arg, pairs: V[]): Arg {
-  if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.REF
+function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {
+  if (isErr(data)) return data
+  // the value field by a reference to a cell holding its name: #REF! (the set gpd-1)
+  if (!(ref instanceof Rng) || data instanceof Rng) return isErr(ref) ? ref : E.REF
   if (ref.s >= cx.book.sheets) return E.REF
   const at = cx.book.pivotAt(ref.s, ref.r1, ref.c1)
   if (!at?.cache || at.cache.stale) return E.REF
   const { table: t, cache: c, area } = at
   cx.found(new Rng(ref.s, area.r1, area.c1, area.r2, area.c2))
-  const value = valueNamed(t, c, cx.rules.toText(data) as string)
+  const name = cx.rules.toText(cx.scalar(data))
+  if (isErr(name)) return name
+  const value = valueNamed(t, c, name)
   if (value < 0 || pairs.length % 2) return E.REF
   const rows = t.rows ?? []
   const columns = t.columns ?? []
@@ -144,5 +159,5 @@ function getPivotData(cx: Cx, data: V, ref: Arg, pairs: V[]): Arg {
 }
 
 export const functions: Record<string, FnDef> = {
-  GETPIVOTDATA: { args: 'v R v?', rep: 1, max: 252, cx: true, dynamic: true, fn: getPivotData },
+  GETPIVOTDATA: { args: 'R R v?', rep: 1, max: 252, cx: true, dynamic: true, fn: getPivotData },
 }

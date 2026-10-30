@@ -23,7 +23,9 @@ export async function pivotGpdBook(c: PivotCase): Promise<BookInput | null> {
     if (!('edit' in o)) continue
     const [sheet, cell] = o.edit.split('!')
     const s = book.sheets.find((x) => x.name === sheet)!
-    s.cells[cell] = typeof o.to === 'object' && o.to !== null && 'formula' in o.to ? { formula: o.to.formula } : { value: o.to as string | number }
+    // a value typed as Excel reads it: text of a number a number
+    const typed = typeof o.to === 'string' && o.to.trim() !== '' && Number.isFinite(Number(o.to)) ? Number(o.to) : o.to
+    s.cells[cell] = typeof o.to === 'object' && o.to !== null && 'formula' in o.to ? { formula: o.to.formula } : { value: typed as string | number }
   }
   return book
 }
