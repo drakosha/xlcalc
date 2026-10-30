@@ -7,12 +7,13 @@ season, so the two agree only on an exact line.
 
 ```js
 compute({ sheets: [{ name: 'S', cells: {
-  A1: 1, A2: 2, A3: 3, A4: 4, A5: 5, A6: 6, A7: 7, A8: 8,
-  B1: 12, B2: 15, B3: 11, B4: 14, B5: 18, B6: 13, B7: 16, B8: 19,
-  C1: { formula: 'FORECAST.ETS(9,B1:B8,A1:A8)' },
-  C2: { formula: 'FORECAST.ETS.CONFINT(9,B1:B8,A1:A8)' },
-  C3: { formula: 'FORECAST.ETS.SEASONALITY(B1:B8,A1:A8)' },
+  ...Object.fromEntries([12, 15, 11, 14, 18, 13, 16, 19, 15, 17, 20, 18].flatMap((v, i) => [[`A${i + 1}`, { value: i + 1 }], [`B${i + 1}`, { value: v }]])),
+  C1: { formula: 'FORECAST.ETS(13,B1:B12,A1:A12)' },
+  C2: { formula: 'FORECAST.ETS.CONFINT(13,B1:B12,A1:A12)' },
+  C3: { formula: 'FORECAST.ETS.SEASONALITY(B1:B12,A1:A12)' },
+  C4: { formula: 'FORECAST.LINEAR(13,B1:B12,A1:A12)' },
 } }] })
+// C1 19.51 with the season of 3 points it detects (C3 3), give or take 1.21 (C2); along the line, C4 19.39
 ```
 
 The four functions are in the group `statistics` ([Groups of functions](function-groups.md)).
