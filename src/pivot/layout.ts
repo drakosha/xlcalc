@@ -140,7 +140,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     if (indent) cell.indent = indent
     cells.set(formatAddress(row, col), cell)
   }
-  const out: PivotLaidOut = { location, rowLines: rowLines.map((a) => a.line), columnLines: columnLines.map((a) => a.line), area: pivotArea(location)!, cells: [] }
+  const out: PivotLaidOut = { location, rowLines: rowLines.map((a) => a.line), columnLines: columnLines.map((a) => a.line), area: pivotArea({ location })!, cells: [] }
   if (empty) return out
 
   pages.forEach((p, k) => {

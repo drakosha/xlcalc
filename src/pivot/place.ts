@@ -44,7 +44,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const pivots = book.sheets[s]?.pivotTables ?? []
     const at = pivots.findIndex((t) => t.name === p.table.name)
     if (at < 0) throw new Error(`no PivotTable ${p.table.name} on ${p.sheet}`)
-    return { ...p, s, at, old: pivotArea(pivots[at].location), spill: false }
+    return { ...p, s, at, old: pivotArea(pivots[at]), spill: false }
   })
   // each new area against the cells it takes: cells holding something outside its own old area, tables, the other
   // PivotTables where they are, and those laid before it where they go
@@ -54,7 +54,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const others = (sheet.pivotTables ?? []).flatMap((t, i) => {
       if (i === p.at) return []
       const q = steps.find((y) => y.s === p.s && y.at === i)
-      const areas = [pivotArea(t.location), q && steps.indexOf(q) < n && !q.spill ? q.laid.area : null]
+      const areas = [pivotArea(t), q && steps.indexOf(q) < n && !q.spill ? q.laid.area : null]
       return areas.some((a) => a && meets(x, a)) ? [t.name] : []
     })
     const table = (sheet.tables ?? []).find((t) => {

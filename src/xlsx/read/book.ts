@@ -192,7 +192,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   const strings = readStrings(stringsXml, issues)
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
-  const pivots = await readPivotCaches(archive, wb, rels, table, cond.dxfs, issues)
+  const pivots = await readPivotCaches(archive, wb, rels, table, cond.dxfs, dateSystem, issues)
   // tables by their ids in the file, which a table's slicer names
   const tableIds = new Map<string, string>()
   const all = worksheets.map((d) => d.name)

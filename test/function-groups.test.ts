@@ -29,14 +29,14 @@ const KNOWN = {
   entry: { ok: true, input: { formula: 'BESSELJ(A1,1)' } },
   description: 'The Bessel function ',
   names: FUNCTION_NAMES,
-  external: ['MYFN', 'GETPIVOTDATA'],
+  external: ['MYFN'],
 }
 
 describe('the groups of functions', () => {
   it("the whitelist is 0.68.0's whatever is loaded: the functions the engine calculates and LAMBDA, LET", () => {
     expect(FUNCTION_NAMES).toEqual([...FUNCTION_WORDS, ...SYNTAX].sort())
     expect(FUNCTION_NAMES).toEqual([...Object.keys(FUNCTIONS), ...SYNTAX].sort())
-    expect(FUNCTION_NAMES.length).toBe(521)
+    expect(FUNCTION_NAMES.length).toBe(522)
     expect(externalNames(['besselj', 'MyFn', 'GETPIVOTDATA', 'SUM'])).toEqual(KNOWN.external)
   })
 

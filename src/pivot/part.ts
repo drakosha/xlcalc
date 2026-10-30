@@ -22,7 +22,7 @@ export function pivotPart(state: EngineState, edits: CellReplace[]): { sheet: st
     const sh = sheets[sheetIndexOf(state, e.sheet) ?? -1]
     if (!sh?.pivotTables?.length || !changes(sh.cells[e.cell], e.input)) continue
     const { row, col } = parseAddress(e.cell)
-    const t = sh.pivotTables.find((p) => pivotParts(p.location).some((x) => hasCell(x, row, col)))
+    const t = sh.pivotTables.find((p) => pivotParts(p).some((x) => hasCell(x, row, col)))
     if (t) return { sheet: sh.name, cell: e.cell, pivot: t.name }
   }
   return null

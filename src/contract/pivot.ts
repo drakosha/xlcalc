@@ -312,7 +312,10 @@ export interface PivotTable {
   /** The Values row shown (Show the Values Row): the row with the value fields' header above them when there are several; hidden without it, as Excel 365 makes a PivotTable. */
   valuesRow?: boolean
   filters?: PivotFilter[]
-  /** Grand totals of the rows (a column at the right) and of the columns (a row at the bottom), each shown by default. */
+  /**
+   * Grand totals, each shown by default: `rows` the grand total row at the bottom, the total of the rows (xlsx
+   * `rowGrandTotals`); `columns` the grand total column at the right (`colGrandTotals`).
+   */
   grandTotals?: { rows?: boolean; columns?: boolean }
   /** Its form, compact by default; a field can have its own. */
   layout?: PivotLayout
