@@ -75,7 +75,7 @@ export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInp
     const fi = table.fields[f]?.items?.[item]
     if (fi?.caption !== undefined) return { value: fi.caption }
     const cf = cache.fields[f]
-    const v = fi?.item === undefined ? undefined : (cf?.items ?? cf?.group?.items)?.[fi.item]
+    const v = fi?.item === undefined ? undefined : (cf?.group?.items ?? cf?.items)?.[fi.item]
     if (v === null || v === undefined) return { value: words.blank }
     // an error and a boolean are the locale's words for them, as text
     if (typeof v === 'boolean' || (typeof v === 'object' && 'error' in v)) return { value: rules.display(v, undefined, Infinity).text }
