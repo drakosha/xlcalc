@@ -1,7 +1,7 @@
 /**
- * Formulas that begin with `#REF!` against Excel for Mac and Windows (`bench/coverage/errstore`): both compute them as
- * the book opens, whatever value the file stores (`#VALUE!`, 7), and deleting what a formula reads makes it `#REF!-…`
- * with the value `#REF!`, which the file Excel saves holds. The engine computes the file as Excel opened it, and its
+ * Formulas that begin with `#REF!` against Excel for Mac and Windows (`bench/coverage/errstore`): both compute the book
+ * as it opens, `#REF!-B1` as `#REF!` whatever value the file stores (`#VALUE!`, 7), and deleting what a formula reads
+ * makes it `#REF!-…` with the value `#REF!`, which the file Excel saves holds. The engine computes the file as Excel opened it, and its
  * structure operations write the formulas Excel for Windows's object model shows.
  */
 import { readFileSync } from 'node:fs'
@@ -15,7 +15,7 @@ const json = (path: string) => JSON.parse(readFileSync(new URL(path, import.meta
 const mac = json('./excel/errstore/mac.json')
 const win = json('./excel/win/errstore/win.json')
 /** Excel for Windows's `Value2` errors, by their HRESULT. */
-const WIN_ERROR: Record<number, string> = { [-2146826273]: '#VALUE!', [-2146826265]: '#REF!' }
+const WIN_ERROR: Record<number, string> = { [-2146826273]: '#VALUE!', [-2146826265]: '#REF!', [-2146826246]: '#N/A' }
 const winShown = (v: unknown) => (typeof v === 'object' && v && 'e' in v ? WIN_ERROR[(v as { e: number }).e] : String(v))
 const rows = (n: number, col: string) => Array.from({ length: n }, (_, i) => `${col}${i + 1}`)
 
@@ -32,8 +32,8 @@ describe('formulas that begin with #REF!', async () => {
     expect(win.sent).toBe(await partsHash(data))
   })
 
-  it('the engine computes the book as both Excels opened it, not the values stored', () => {
-    const engine = shown(book, rows(10, 'C'))
+  it('the engine computes the book as both Excels opened it, not the values stored (the controls C11 and C12 among them)', () => {
+    const engine = shown(book, rows(12, 'C'))
     expect(engine).toEqual(mac.opened.map((x: string[]) => x[1]))
     expect(engine).toEqual(win.opening[1].map((r: unknown[]) => winShown(r[0])))
   })
@@ -46,7 +46,7 @@ describe('formulas that begin with #REF!', async () => {
     const cells = t.book.sheets[0].cells
     const saved = new Map<string, string>(mac.saved.map((c: string) => [/r="(\w+)"/.exec(c)![1], /<v>(.*)<\/v>/.exec(c)![1]]))
     expect(win.saved).toEqual(mac.saved)
-    rows(10, 'B').forEach((c, i) => {
+    rows(12, 'B').forEach((c, i) => {
       // Excel for Windows's object model keeps a reference to the deleted sheet as #REF!A1, as the engine does; the file both save holds #REF!
       expect([c, `=${cells[c]?.formula}`, shown(t.book, [c])[0]]).toEqual([c, win.deleted[0][i][0], saved.get(c)])
       expect(mac.full[i][1]).toBe(saved.get(c))
