@@ -9,16 +9,9 @@ import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'
-import { day, ETS, seriesSheet, STAT, steps } from './ets/sheet.js'
+import { dates, ETS, seriesSheet, STAT, steps } from './ets/sheet.js'
 
 const { cells, series } = seriesSheet()
-
-/** n dates `every` months apart from a month of a year (1 to 12), on a day or a shorter month's last. */
-const dates = (year: number, month: number, d: number, every: number, n: number) =>
-  steps(n, 0).map((i) => {
-    const m = month - 1 + i * every
-    return day(year, m, Math.min(d, new Date(Date.UTC(year, m + 1, 0)).getUTCDate()))
-  })
 
 function build(): Probe[] {
   const { out, add } = collector()
@@ -42,3 +35,6 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./ets-step-held.predicted.json', import.meta.url), 'utf8'))
+
+/** The predictions Excel did not confirm: a forecast between half years, which Excel counts in the calendar's days (`ets-step-held-2`). */
+export const MISSED: readonly string[] = ['months-6#2']
