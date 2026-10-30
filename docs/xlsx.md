@@ -308,11 +308,12 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text |
 | `hyperlink` | a hyperlink whose address is not an external relationship of the sheet; one over more than 4,096 cells, read on its cells that contain something |
 | `frozenPanes` | panes frozen on a sheet scrolled down or right, read from the first row and column |
-| `conditionalFormat` | a rule of a kind the model does not support, a pivot table's rules, a rule without its formulas or thresholds; anything in a rule's differential format beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and standard deviations, read with equal |
+| `conditionalFormat` | a rule of a kind the model does not support, a PivotTable's rule that no PivotTable of its sheet names, a rule without its formulas or thresholds; anything in a rule's differential format beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and standard deviations, read with equal |
 | `dataValidation` | a rule without a range on the sheet, without the formula its type needs, or of an unknown type, left out; cells a rule shares with an earlier one, which keep the earlier one; an IME mode; a list whose items contain commas (`x12ac:list`), read split at them |
 | `outline` | automatic outline styles |
 | `protection` | workbook protection; a sheet protection's password (`sheetPassword`), the sheet read as protected without one; ranges a protected sheet allows to edit (`protectedRanges`) |
-| `drawing`, `pivotTable`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
+| `pivotTable` | a pivot cache over an external connection, the data model, consolidated ranges or scenarios, read as stored and not refreshed; a cache's OLAP part; a PivotTable's chart formats; a PivotTable or a timeline whose cache is missing, left out ([PivotTables](pivot-tables.md)) |
+| `drawing`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
 

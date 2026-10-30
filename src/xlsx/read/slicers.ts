@@ -6,7 +6,7 @@
 import type { DrawingPlace, PivotRef, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { formatAddress } from '../../model.js'
 import { attributes, element, elements, flag } from '../xml/scan.js'
-import { attrText } from './pivot-cache.js'
+import { attrText, take } from './pivot-cache.js'
 
 /** The PivotTables a cache names by the sheet's id (`tabId`, the workbook's `sheetId`) and name. */
 function pivotsOf(xml: string, sheetOf: (id: string | undefined) => string | undefined): PivotRef[] {
@@ -37,8 +37,7 @@ export function readSlicerCache(xml: string, ctx: SlicerContext): SlicerCache {
       return { item: Number(ia.x ?? 0), ...(flag(ia.s) ? {} : { selected: false }), ...(flag(ia.nd) ? { noData: true } : {}) }
     })
     if (ta.sortOrder === 'descending') c.sort = 'descending'
-    if (!flag(ta.customListSort, true)) c.customListSort = false
-    if (!flag(ta.showMissing, true)) c.showMissing = false
+    take(c, ta, 'customListSort:t showMissing:t')
     const cross = ta.crossFilter ?? 'showItemsWithDataAtTop'
     const noData: NonNullable<SlicerCache['noData']> = {}
     if (element(xml, 'slicerCacheHideItemsWithNoData')) noData.hide = true
@@ -92,32 +91,18 @@ export function drawingPlaces(xml: string | undefined): Map<string, DrawingPlace
 export function readSlicers(xml: string, places: Map<string, DrawingPlace>): Slicer[] {
   return elements(xml, 'slicer').map((e) => {
     const a = attributes(e.attrs)
-    const s: Slicer = { name: attrText(a.name), cache: attrText(a.cache) }
-    if (a.caption !== undefined) s.caption = attrText(a.caption)
-    if (!flag(a.showCaption, true)) s.showCaption = false
+    const s = take<Slicer>({ name: '', cache: '' }, a, 'name cache caption showCaption:t style columnCount=columns:n rowHeight:n startItem:p lockedPosition=locked:f')
     const place = places.get(s.name)
-    if (place) s.place = place
-    if (a.style !== undefined) s.style = attrText(a.style)
-    if (a.columnCount !== undefined) s.columns = Number(a.columnCount)
-    if (a.rowHeight !== undefined) s.rowHeight = Number(a.rowHeight)
-    if (Number(a.startItem ?? 0)) s.startItem = Number(a.startItem)
-    if (flag(a.lockedPosition)) s.locked = true
-    return s
+    return place ? { ...s, place } : s
   })
 }
 
 export function readTimelines(xml: string, places: Map<string, DrawingPlace>): Timeline[] {
   return elements(xml, 'timeline').map((e) => {
     const a = attributes(e.attrs)
-    const t: Timeline = { name: attrText(a.name), cache: attrText(a.cache) }
-    if (a.caption !== undefined) t.caption = attrText(a.caption)
+    const t = take<Timeline>({ name: '', cache: '' }, a, 'name cache caption showHeader:t showSelectionLabel:t showTimeLevel=showLevel:t showHorizontalScrollbar=showScrollbar:t scrollPosition style')
+    for (const k of ['level', 'selectionLevel'] as const) if (a[k] !== undefined) t[k] = LEVELS[Number(a[k])] ?? 'months'
     const place = places.get(t.name)
-    if (place) t.place = place
-    if (a.level !== undefined) t.level = LEVELS[Number(a.level)] ?? 'months'
-    if (a.selectionLevel !== undefined) t.selectionLevel = LEVELS[Number(a.selectionLevel)] ?? 'months'
-    for (const [k, key] of [['showHeader', 'showHeader'], ['showSelectionLabel', 'showSelectionLabel'], ['showTimeLevel', 'showLevel'], ['showHorizontalScrollbar', 'showScrollbar']] as const) if (!flag(a[k], true)) t[key] = false
-    if (a.scrollPosition !== undefined) t.scrollPosition = a.scrollPosition
-    if (a.style !== undefined) t.style = attrText(a.style)
-    return t
+    return place ? { ...t, place } : t
   })
 }

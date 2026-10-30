@@ -461,7 +461,7 @@ export interface Timeline {
   /** The level shown, months by default, and the level the selection was made at. */
   level?: TimelineLevel
   selectionLevel?: TimelineLevel
-  /** Its header, the selection's label, the level, the scrollbar; each but the scrollbar shown by default. */
+  /** Its header, the selection's label, the level, the scrollbar; each shown by default (x15 `showHeader`, `showSelectionLabel`, `showTimeLevel`, `showHorizontalScrollbar`). */
   showHeader?: boolean
   showSelectionLabel?: boolean
   showLevel?: boolean

@@ -6,7 +6,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput, type CellValue, type PivotCache, type PivotTable, type PivotValue } from '../src/index.js'
+import { compute, type BookInput, type CellValue, type PivotCache, type PivotFilterType, type PivotTable, type PivotValue } from '../src/index.js'
 import { readXlsx, type XlsxRead } from '../src/xlsx.js'
 import { openKept } from '../src/xlsx-keep.js'
 import { formatAddress } from '../src/model.js'
@@ -164,5 +164,37 @@ describe('PivotTables of the books Excel for Windows saved', () => {
     // a PivotTable Excel for Mac laid out from a part without the extension shows it
     const mac = await readXlsx(readFileSync(new URL('./excel/keep/made/pivot.xlsx', import.meta.url)))
     expect(mac.book.sheets[1].pivotTables![0].valuesRow).toBe(true)
+  }, 60_000)
+
+  it('filters and sorting as the cases of the sets filter and sort made them', async () => {
+    const FILE: Record<string, [type: PivotFilterType, bottom?: true]> = {
+      TopCount: ['count'], BottomCount: ['count', true], TopPercent: ['percent'], BottomPercent: ['percent', true], TopSum: ['sum'], BottomSum: ['sum', true],
+      SpecificDate: ['dateEqual'], NotSpecificDate: ['dateNotEqual'], Before: ['dateOlderThan'], BeforeOrEqualTo: ['dateOlderThanOrEqual'], After: ['dateNewerThan'], AfterOrEqualTo: ['dateNewerThanOrEqual'],
+      DateBetween: ['dateBetween'], DateNotBetween: ['dateNotBetween'], AllDatesInPeriodJanuary: ['M1'], AllDatesInPeriodQuarter2: ['Q2'],
+    }
+    // the object model's names of the others: Caption and Value, Is and DoesNot (CaptionIsGreaterThanOrEqualTo, captionGreaterThanOrEqual)
+    const fileType = (t: string): [PivotFilterType, true?] => FILE[t] ?? [t.replace(/^(Caption|Value)/, (m) => m.toLowerCase()).replace('DoesNot', 'Not').replace('Is', '').replace(/Equals$/, 'Equal').replace('OrEqualTo', 'OrEqual').replace(/Not(Begin|End)With$/, 'Not$1sWith').replace(/NotContain$/, 'NotContains') as PivotFilterType]
+    const iso = (v: unknown) => (typeof v === 'object' && v && 'd' in v ? new Date(Date.UTC(1899, 11, 30) + (v as { d: number }).d * 864e5).toISOString().slice(0, 10) : v)
+    for (const set of ['filter', 'sort']) {
+      const { buildPivotCases: build } = (await import(`../bench/coverage/pivot/${set}.ts`)) as { buildPivotCases: () => typeof cases }
+      for (const c of build()) {
+        const file = new URL(`${set}/${c.id}.xlsx`, dir)
+        if (c.ops.some((o) => 'read' in o || 'refresh' in o || 'item' in o) || !existsSync(file)) continue
+        const r = await readXlsx(readFileSync(file))
+        const t = r.book.sheets.flatMap((x) => x.pivotTables ?? [])[0]
+        const cache = r.book.pivotCaches!.find((x) => x.id === t.cache)!
+        const field = (name: string) => cache.fields.findIndex((f) => f.name === name)
+        const value = (name?: string) => (name === undefined ? {} : { value: t.values!.findIndex((v) => v.name === name) })
+        const filters = c.ops.flatMap((o) => ('filter' in o ? [o] : []))
+        const want = filters.map((o) => {
+          const [type, bottom] = fileType(o.type)
+          const args = [o.value1, o.value2].filter((v) => v !== undefined).map(iso)
+          return { field: field(o.filter), type, ...(args.length ? { args } : {}), ...value(o.by), ...(bottom ? { bottom } : {}) }
+        })
+        expect([c.id, [...(t.filters ?? [])].sort((a, b) => a.field - b.field || a.type.localeCompare(b.type))]).toEqual([c.id, want.sort((a, b) => a.field - b.field || a.type.localeCompare(b.type))])
+        const sorts = c.ops.flatMap((o) => ('sort' in o ? [o] : []))
+        expect([c.id, t.fields.flatMap((f, k) => (f.sort ? [[k, f.sort]] : []))]).toEqual([c.id, sorts.map((o) => [field(o.sort), { order: o.order, ...(o.by ? { by: value(o.by) } : {}) }])])
+      }
+    }
   }, 60_000)
 })

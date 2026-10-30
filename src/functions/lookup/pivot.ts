@@ -163,5 +163,5 @@ function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {
 }
 
 export const functions: Record<string, FnDef> = {
-  GETPIVOTDATA: { args: 'R R v?', rep: 1, max: 252, cx: true, dynamic: true, fn: getPivotData },
+  GETPIVOTDATA: { args: 'R R v?', rep: 1, max: 254, cx: true, dynamic: true, fn: getPivotData },
 }

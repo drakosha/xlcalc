@@ -64,6 +64,8 @@ export const SHAPES: Record<string, Shape> = {
   RTD: { head: ['"NoSuch.Server"', '""'], rep: ['"Topic"'], never: true },
   STOCKHISTORY: { head: ['"MSFT"', '45658', '45688', '0', '1'], rep: ['0'], never: true },
   CALL: { head: ['"NoSuchLibrary.dll"', '"NoSuchFunction"', '"J"'], rep: ['1'], never: true },
+  // a field without its item counts: Excel loads an odd number of arguments (the set gpd-1)
+  GETPIVOTDATA: { head: ['"Sum of Price"', 'D!B1'], rep: ['"Region"'] },
 }
 
 /** Functions whose calls Excel opens no book with (both Excels, the set `connections-held`): their limit is not measured. */
@@ -89,6 +91,8 @@ export function call(fn: string, n: number): string | null {
 export const LIMITS: Record<string, number> = {
   ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'STOCKHISTORY', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
   COUNTIFS: 254,
+  // 126 pairs of a field and an item, as Microsoft's reference says: Excel refused the call of 255
+  GETPIVOTDATA: 254,
   MAXIFS: 253,
   MINIFS: 253,
   SORTBY: 253,
