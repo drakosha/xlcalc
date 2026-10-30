@@ -85,6 +85,17 @@ describe('refreshPivots', () => {
     s.close()
   })
 
+  it('opens a workbook whose cache refreshes on opening as saved: the host refreshes it', () => {
+    const book = { ...BOOK, pivotCaches: [{ ...BOOK.pivotCaches![0], refreshOnLoad: true }] }
+    const s = createSession(book)
+    expect(s.getValues('P', 'A3:B8')).toEqual(EMPTY)
+    expect(s.getBook().pivotCaches?.[0].refreshOnLoad).toBe(true)
+    s.editStructure(REFRESH)
+    expect(s.getValues('P', 'A3:B8')).toEqual(LAID)
+    expect(s.getBook().pivotCaches?.[0].refreshOnLoad).toBe(true)
+    s.close()
+  })
+
   it('refuses a PivotTable not there, and leaves the book', () => {
     const s = createSession(BOOK)
     const r = s.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'P', name: 'PT9' }] })
