@@ -4,18 +4,20 @@
  * fill (`readFill`: a dxf keeps its colour in `bgColor`), borders and a number format. What it cannot hold is named for the reader
  * to report on the rules that use it.
  */
-import type { ConditionalStyle } from '../../contract.js'
+import type { CellStyle, ConditionalStyle } from '../../contract.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
-import { border, readFill, underlineOf } from './read.js'
+import { alignment, border, protection, readFill, underlineOf } from './read.js'
 
 export interface Dxf {
   style: ConditionalStyle
   lost: StyleLoss[]
+  /** What a cell's style holds beyond a conditional one: the font's name and size, the alignment and protection (a PivotTable's formats take them). */
+  cell?: Pick<CellStyle, 'alignment' | 'protection'> & { name?: string; size?: number }
 }
 
 /** The elements of a dxf's font that a conditional style has no place for. */
@@ -79,9 +81,18 @@ export function readDxf(e: Element, p: Palette): Dxf {
       if (isBuiltin(id)) style.numberFormat = id
     } else style.numberFormat = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
   }
+  const cell: NonNullable<Dxf['cell']> = {}
+  const name = f?.body && element(f.body, 'name')
+  const size = f?.body && element(f.body, 'sz')
+  if (name) cell.name = decodeXml(attributes(name.attrs).val ?? '')
+  if (size) cell.size = Number(attributes(size.attrs).val)
+  const al = alignment(element(b, 'alignment'))
+  if (al.alignment) cell.alignment = al.alignment
+  const pr = protection(element(b, 'protection'))
+  if (pr) cell.protection = pr
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')
-  return { style, lost }
+  return Object.keys(cell).length ? { style, lost, cell } : { style, lost }
 }
 
 /** The dxfs of styles.xml in order. */

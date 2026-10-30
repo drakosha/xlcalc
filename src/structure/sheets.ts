@@ -16,13 +16,14 @@ import { renaming, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, she
 import { rewriteConditional } from '../cond/structure.js'
 import { withField } from '../looks/sheet.js'
 import { rewriteValidations } from '../validation/structure.js'
+import { renamePivotSheets } from './pivots.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
   const key = sheetKey(sheet)
   const problem = nameProblem(book, name, sheet)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
   const renamed = (s: string) => (sheetKey(s) === key ? name : s)
-  const out = rewriteBook(book, renaming(new Map([[key, name]])), sheetNames(book), renamed)
+  const out = renamePivotSheets(rewriteBook(book, renaming(new Map([[key, name]])), sheetNames(book), renamed), renamed)
   if (out.activeSheet !== undefined) out.activeSheet = renamed(out.activeSheet)
   if (out.names) out.names = out.names.map((n) => (n.scope !== undefined && sheetKey(n.scope) === key ? { ...n, scope: name } : n))
   return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: sheetIndex(book, sheet) }] }

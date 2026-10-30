@@ -21,6 +21,7 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
+import { checkPivots } from './input/pivot.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
@@ -211,7 +212,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.font !== undefined) {
     const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
@@ -236,7 +237,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -284,6 +285,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
   checkTables(book as unknown as BookInput, path)
+  checkPivots(book, path)
   const out = bookTaken(book as unknown as BookInput, taken)
   const sheetsTaken = out.sheets.map((s, i) => (looked && !hasLooks(s) ? s : looksTaken(s, alone[i] ?? [])))
   sheetsTaken.forEach((s, i) => s.cells === (book.sheets as BookInput['sheets'])[i].cells && keys?.set(s.cells, listed[i]))

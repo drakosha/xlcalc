@@ -74,7 +74,14 @@ export interface XlsxMessageParams {
   iterationChange: { change: string }
   workbookProtection: object
   externalLinks: object
+  /** @deprecated Never given: `readXlsx` reads PivotTables (`SheetInput.pivotTables`); what it holds only as stored has its own messages. */
   pivotTables: object
+  pivotCacheMissing: object
+  pivotSourceHeld: { source: 'external' | 'dataModel' | 'consolidation' | 'scenario' }
+  pivotOlap: object
+  pivotChartFormats: object
+  pivotNotWritten: object
+  pivotUnread: { detail: string }
   macros: object
   connections: object
   defaultFont: { name?: string; size?: number }
@@ -400,7 +407,7 @@ export type CoreKey = Exclude<EngineKey, EditKey>
  */
 export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, precisionAsDisplayed: 0,
-  iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, macros: 0, connections: 0, defaultFont: 0,
+  iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, pivotCacheMissing: 0, pivotSourceHeld: 0, pivotOlap: 0, pivotChartFormats: 0, pivotNotWritten: 0, pivotUnread: 0, macros: 0, connections: 0, defaultFont: 0,
   sheetKind: 0, sheetPartMissing: 0, sheetNameRepaired: 0, stringsOpen: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
   mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, autoFilterRange: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, sheetPassword: 0, protectedRanges: 0, drawings: 0, sparklines: 0,
   printSettings: 0, defaultWidth: 0, errorTyped: 0, sheetDataOpen: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,

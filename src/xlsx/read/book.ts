@@ -6,7 +6,7 @@
  * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
  */
 import { caseKey } from '../../collate.js'
-import type { BookInput, NameInput, SheetInput } from '../../contract.js'
+import type { BookInput, NameInput, PivotRuleScope, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
 import { checkBook, ITERATION, SHEET_STATES } from '../../input.js'
 import { InputError, what } from '../../input-error.js'
@@ -28,6 +28,8 @@ import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
 import { partText, relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
+import { checkedPivots, pivotTableParts, readPivotCaches, readSheetPivots, readSlicerCaches } from './pivots.js'
+import { pivotRuleScopes } from './pivot-table.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
 import { readStrings } from './strings.js'
@@ -35,9 +37,8 @@ import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 
 /** Parts the workbook links to that the model has no place for, by relationship kind. */
-const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection', XlsxMessage]> = {
+const LINKED: Record<string, ['macros' | 'connection', XlsxMessage]> = {
   vbaProject: ['macros', { key: 'macros' }],
-  pivotCacheDefinition: ['pivotTable', { key: 'pivotTables' }],
   connections: ['connection', { key: 'connections' }],
 }
 
@@ -110,7 +111,6 @@ function calculation(xml: string, issues: Issues): BookInput['iteration'] {
 
 function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
   if (has(xml, 'workbookProtection')) issues.add('protection', { key: 'workbookProtection' })
-  if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', { key: 'pivotTables' })
   for (const r of rels) {
     const linked = ownEntry(LINKED, r.kind)
     if (linked) issues.add(...linked)
@@ -192,6 +192,9 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   const strings = readStrings(stringsXml, issues)
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
+  const pivots = await readPivotCaches(archive, wb, rels, table, cond.dxfs, issues)
+  // tables by their ids in the file, which a table's slicer names
+  const tableIds = new Map<string, string>()
   const all = worksheets.map((d) => d.name)
   const formulas: FormulaOptions = { links: links.known, ...(repaired.renamed.size ? { rename: renamedIn(repaired.renamed) } : {}) }
   // a sheet whose part is missing is left out below, and so is a name scoped to it
@@ -218,10 +221,18 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     const drawing = named < 0 ? undefined : attr(attributes(element(xml.slice(Math.max(0, xml.lastIndexOf('<', named))), 'legacyDrawing')?.attrs ?? ''), 'id')
     const linked = (kind: string, id?: string) => partText(archive, sheetRels, kind, id)
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
+    const pivotParts = await pivotTableParts(archive, sheetRels)
+    const pivotRules = new Map<number, PivotRuleScope>()
+    for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
+    for (const t of tableParts) {
+      const a = attributes(element(t ?? '', 'table')?.attrs ?? '')
+      if (a.id !== undefined) tableIds.set(a.id, readText(a.displayName ?? a.name ?? ''))
+    }
+    await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, pivots, issues)
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
     cached.sheets.push({ name: d.name, cells: read.cached })
   }
@@ -243,6 +254,9 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     if (!sh.tables.length) delete sh.tables
   }
   const book: BookInput = { sheets }
+  if (pivots.caches.length) book.pivotCaches = pivots.caches
+  await readSlicerCaches(archive, wb, rels, pivots, book, tableIds, issues)
+  checkedPivots(book, issues)
   const activeSheet = readActiveSheet(wb, decls, sheets)
   if (activeSheet) book.activeSheet = activeSheet
   if (names.length) book.names = names
