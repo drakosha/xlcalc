@@ -112,7 +112,9 @@ function fieldOf(e: Element, layout: PivotLayout, format: (id: string | undefine
     .filter((i) => i.t === undefined || i.t === 'data')
     .map(itemOf)
   if (items.length) f.items = items
-  if (!flag(a.defaultSubtotal, true)) f.subtotals = subtotals(a)
+  // custom subtotals by their functions' flags, which Excel writes without taking the automatic one away; none without either
+  const custom = subtotals(a)
+  if (custom.length || !flag(a.defaultSubtotal, true)) f.subtotals = custom
   if (a.subtotalCaption !== undefined) f.subtotalCaption = attrText(a.subtotalCaption)
   const own = layoutOf(flag(a.compact, true), flag(a.outline, true))
   if (own !== layout) f.layout = own
