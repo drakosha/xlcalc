@@ -43,6 +43,8 @@ function Rg($wb, $sheet, $addr) { , $wb.Worksheets.Item($sheet).Range($addr) }
 
 # conditional formats: CondMake, CondLooks, CondRules (bench/windows/cond.ts)
 . (Join-Path $PSScriptRoot 'cond.ps1')
+# pivot tables: Pivot (bench/windows/pivot.ts)
+. (Join-Path $PSScriptRoot 'pivot.ps1')
 
 # what a cell shows (Range.Text), the colour of its display format's font (BGR) and, with codes, its format codes
 function Shown($c, $codes) {
@@ -544,6 +546,7 @@ function Step($xl, $wb, $s) {
     }
     'make' { try { Make $xl $wb $s; 'null' } catch { Err $_ } }
     'cond' { Cond $wb $s }
+    'pivot' { Pivot $xl $wb $s }
     'vmake' { try { VMake $wb $s; 'null' } catch { Err $_ } }
     'ocmd' { try { OCommand $wb.Worksheets.Item('S') $s; 'null' } catch { Err $_ } }
     'oread' { ORead $wb $s }

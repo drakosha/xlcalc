@@ -60,7 +60,7 @@ export const env = (): WinEnv => JSON.parse(host('env', '', 180_000)) as WinEnv
 /** The scripts the machine runs, copied from here at the start of a run. */
 function syncScripts() {
   ssh(`New-Item -ItemType Directory -Force ${BASE}\\bin, ${BASE}\\work | Out-Null`)
-  exec('scp', ['-q', ...OPTS, join(HERE, 'host.ps1'), join(HERE, 'xl.ps1'), join(HERE, 'cond.ps1'), `${HOST}:C:/xlcalc/bin/`], 120_000)
+  exec('scp', ['-q', ...OPTS, join(HERE, 'host.ps1'), join(HERE, 'xl.ps1'), join(HERE, 'cond.ps1'), join(HERE, 'pivot.ps1'), `${HOST}:C:/xlcalc/bin/`], 120_000)
 }
 
 const bootTime = () => ssh('(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString(\'o\')', 30_000)
@@ -159,8 +159,8 @@ export interface Book {
   steps: Step[]
 }
 
-/** A book's answer: one value per step (and the file a `saveAs` step saved), or why Excel did not open it; undefined when the job stopped before it. */
-export type Answer = { answers: unknown[]; seconds: number; saved?: Uint8Array } | { rejected: string; seconds: number } | undefined
+/** A book's answer: one value per step (and the file a `saveAs` step saved, the copies `copy` steps saved, from 1), or why Excel did not open it; undefined when the job stopped before it. */
+export type Answer = { answers: unknown[]; seconds: number; saved?: Uint8Array; copies?: Uint8Array[] } | { rejected: string; seconds: number } | undefined
 
 let jobs = 0
 
@@ -174,7 +174,7 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
   const remote = `${BASE}\\work\\${name}`
   rmSync(local, { recursive: true, force: true })
   mkdirSync(local, { recursive: true })
-  for (const script of ['xl.ps1', 'cond.ps1']) copyFileSync(join(HERE, script), join(local, script))
+  for (const script of ['xl.ps1', 'cond.ps1', 'pivot.ps1']) copyFileSync(join(HERE, script), join(local, script))
   books.forEach((b, i) => copyFileSync(b.file, join(local, `${i}.xlsx`)))
   writeFileSync(join(local, 'job.json'), JSON.stringify({ books: books.map((b, i) => ({ file: `${i}.xlsx`, steps: b.steps })) }))
   try {
@@ -201,8 +201,11 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
     return books.map((_, i) => {
       if (!existsSync(join(done, `${i}.json`))) return undefined
       const a = JSON.parse(readFileSync(join(done, `${i}.json`), 'utf8')) as Answer
+      if (!a || !('answers' in a)) return a
       const saved = join(done, `${i}.saved.xlsx`)
-      return a && 'answers' in a && existsSync(saved) ? { ...a, saved: new Uint8Array(readFileSync(saved)) } : a
+      const copies: Uint8Array[] = []
+      for (let k = 1; existsSync(join(done, `${i}.copy${k}.xlsx`)); k++) copies.push(new Uint8Array(readFileSync(join(done, `${i}.copy${k}.xlsx`))))
+      return { ...a, ...(existsSync(saved) ? { saved: new Uint8Array(readFileSync(saved)) } : {}), ...(copies.length ? { copies } : {}) }
     })
   } finally {
     // the machine's copy goes with the next `clean`

@@ -255,6 +255,19 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       r = fillRange(book, sheet, checkRange(o.range, 'op.range'), checkRange(o.to, 'op.to'), String(o.to), (o.type ?? 'default') as FillType, copy)
       break
     }
+    case 'addPivotTable':
+    case 'editPivotTable':
+    case 'renamePivotTable':
+    case 'movePivotTable':
+    case 'deletePivotTable':
+    case 'refreshPivots':
+    case 'addSlicer':
+    case 'editSlicer':
+    case 'deleteSlicer':
+    case 'addTimeline':
+    case 'editTimeline':
+    case 'deleteTimeline':
+      throw new InputError('op.op', `${o.op} is not supported yet`)
   }
   return r
 }
