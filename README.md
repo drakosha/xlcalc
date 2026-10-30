@@ -4,7 +4,7 @@ A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook
 
 Under heavy development. AI-engineered.
 
-- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 44,356, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
+- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 49,589, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
 - **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
 - **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
 - **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
