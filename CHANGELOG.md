@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.69.0 (2026-10-30)
+
+Added:
+
+- `xlcalc/core`, the package's API without its rarely used large functions, and `xlcalc/functions`, those functions in groups: `engineering`, `finance`, `lambda`, `statistics`, `xml` and `allFunctions`. `registerFunctions(...groups)` of `xlcalc/core` loads them for the calculations from then on, in a pool's threads too; a session opened before rebuilds on its next call. The package root loads every group, as before. `compute` of `xlcalc/core` is 16 % smaller than the root's ([Groups of functions](docs/function-groups.md)).
+- `CheckCode` `function_not_loaded`: a function of a group not loaded is `#NAME?` where its call is computed, with the group in the cell's issue; under `unknownFunctions: 'held'` the formula keeps the value its file stores.
+- `[$-FC19]` in number formats gives ru-RU's months in the genitive and lowercase, as Excel for Windows writes them (`15 марта 2025`).
+- Structured references to a table of a linked workbook (`[1]!Sales[[#This Row],[Qty]]`) are read, shown and written as Excel does, and are `#REF!` while that workbook is closed.
+
+Changed:
+
+- A name the workbook does not define, or a function the engine does not know, is `#NAME?` only where it is computed, as in Excel: `IF(TRUE,1,Nope)` is 1 and `IFERROR(NOPE(1),5)` is 5, where the whole formula was `#NAME?` (Excel for Mac and Windows, 52 cases). The check's refusal stays in `diagnostics`. `IFNA(1,Nope)` is still 1 where Excel gives `#NAME?`.
+- Overlapping `<col>` elements no longer fail the workbook check: each column takes the last element over it, as Excel for Mac and Windows read them, and the file is written without overlaps.
+- `writeKept` without edits gives every part as the file holds it, byte for byte; a part written again keeps its UTF-8 byte order mark.
+- A sheet's tables are checked in linear time: a workbook of 1,200 tables is read in 0.11 s, where it took 4.5, and written over its file in 0.35 s, where it took 5.8.
+
 ## 0.68.0 (2026-10-30)
 
 Added:

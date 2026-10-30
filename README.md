@@ -4,7 +4,7 @@ A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook
 
 Under heavy development. AI-engineered.
 
-- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 49,589, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
+- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 50,132, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
 - **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
 - **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
 - **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
@@ -24,24 +24,26 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (30.10.2026, 0.68.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 380 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (30.10.2026, 0.69.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 380 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 369 KB (141) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 618 KB (234) |
+| `compute` from `xlcalc` | calculating a workbook | 372 KB (142) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 621 KB (235) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 694 KB (258) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 244 KB (91) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 322 KB (120) |
-| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 173 KB (63) |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 27 KB (10), its worker 798 KB (273), 617 KB (233) where a bundler splits off the locales and regex levels it loads |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 697 KB (260) |
+| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 313 KB (118), all 633 KB (234) |
+| `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 82 KB (33) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 247 KB (92) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 325 KB (121) |
+| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 176 KB (64) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 28 KB (10), its worker 810 KB (278), 524 KB (195) where a bundler splits off the locales, regex levels and groups of functions it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
-| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 52 KB (20) |
-| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 109 KB (40) |
+| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 53 KB (20) |
+| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 111 KB (41) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 128 KB (19) |
-| `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (4), and the locale's module |
+| `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (3), and the locale's module |
 | `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
