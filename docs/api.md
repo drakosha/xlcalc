@@ -4062,6 +4062,11 @@ interface PivotCache {
   retainItems?: number
   /** Refresh is allowed (true by default). */
   enableRefresh?: boolean
+  /**
+   * A PivotTable of the cache was changed by a session without `xlcalc/pivot`, so its cells are not laid out again: the
+   * file is written with Refresh data when opening the file, and a refresh clears it.
+   */
+  stale?: boolean
 }
 ```
 
@@ -4238,6 +4243,14 @@ interface PivotFieldItem {
   /** No longer in the source. */
   missing?: boolean
 }
+```
+
+### `PivotFieldPatch`
+
+An edit of a PivotTable's field ([`PivotTablePatch.fields`](#pivottablepatch)): the index of its cache field, and its fields set as in [`PivotTablePatch`](#pivottablepatch).
+
+```ts
+type PivotFieldPatch = { field: number } & { [K in keyof PivotField]?: PivotField[K] | null }
 ```
 
 ### `PivotFilter`
@@ -4527,6 +4540,18 @@ interface PivotTable {
   /** The saved layout: the lines of the rows and of the columns as Excel last laid them out. */
   rowLines?: PivotLine[]
   columnLines?: PivotLine[]
+}
+```
+
+### `PivotTablePatch`
+
+The fields of a PivotTable an edit sets (`editPivotTable`, `addPivotTable`), in the form [`PivotTable`](#pivottable) holds them: a
+value replaces the field, null removes it, an omitted field is left as it is; `fields` edits the PivotTable's fields,
+each by the index of its cache field.
+
+```ts
+type PivotTablePatch = { [K in Exclude<keyof PivotTable, 'name' | 'cache' | 'location' | 'fields' | 'rowLines' | 'columnLines'>]?: PivotTable[K] | null } & {
+  fields?: PivotFieldPatch[]
 }
 ```
 
@@ -5302,6 +5327,8 @@ type SessionStructureResult =
       ok: true
       /** Where a cell of the workbook before the operation is now; null if it was deleted or overwritten, or if its sheet is not in that workbook. */
       mapCell(ref: CellRef): CellRef | null
+      /** As `StructureResult.stale`. */
+      stale?: PivotRef[]
     })
   | Refusal<StructureRefusal>
 ```
@@ -5551,6 +5578,22 @@ interface SlicerCache {
 }
 ```
 
+### `SlicerCachePatch`
+
+The fields of a slicer's cache an edit sets (`editSlicer`): the PivotTables it filters, the items chosen, their order and display.
+
+```ts
+type SlicerCachePatch = { [K in 'pivots' | 'items' | 'sort' | 'customListSort' | 'noData' | 'showMissing']?: SlicerCache[K] | null }
+```
+
+### `SlicerPatch`
+
+The fields of a slicer an edit sets (`editSlicer`), as in [`PivotTablePatch`](#pivottablepatch).
+
+```ts
+type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null }
+```
+
 ### `SpecialCells`
 
 The cells Excel's Go To Special (Home > Editing > Find & Select) selects ([`Session.getSpecialCells`](#session)): blank cells,
@@ -5721,6 +5764,49 @@ type StructureOp =
    * other shape throws an `InputError`.
    */
   | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType }
+  /**
+   * Excel's Insert PivotTable: a PivotTable named `name` (the first free `PivotTable1`, `PivotTable2`… without it) at
+   * `cell` of `sheet`, or on a new sheet named `sheet` inserted as `insertSheet` inserts it (`newSheet`, at A3 without
+   * `cell`). A source by range, table or name makes a new pivot cache of its fields, its header row's; `{ cache }` shares
+   * a cache of the workbook by its `id`. `definition` lays out its fields as `editPivotTable` does. Refused (`pivot`)
+   * over cells that are not empty, over a table or another PivotTable, or with a name already used on the sheet.
+   */
+  | { op: 'addPivotTable'; sheet: string; cell?: string; newSheet?: { before?: string }; name?: string; source: PivotSource | { cache: number }; definition?: PivotTablePatch }
+  /**
+   * Changes a PivotTable's definition (`PivotTablePatch`): fields on its axes and their order, value fields, items hidden
+   * or collapsed, filters, sorting, totals, layout, captions, style, options; `source` is Excel's Change Data Source, a
+   * new cache for this PivotTable alone when its cache is shared. With `xlcalc/pivot` loaded the PivotTable is
+   * refreshed; without it, its cells stay and its cache is marked `stale` (`StructureResult.stale`).
+   */
+  | { op: 'editPivotTable'; sheet: string; pivot: string; set: PivotTablePatch; source?: PivotSource }
+  /** A new name for the PivotTable, unique among its sheet's; slicers and timelines that name it follow. */
+  | { op: 'renamePivotTable'; sheet: string; pivot: string; name: string }
+  /** Excel's Move PivotTable: the PivotTable's cells move so that its top-left cell (its filters' when it has them) lands on `to`, on its sheet or another. */
+  | { op: 'movePivotTable'; sheet: string; pivot: string; to: CellRef }
+  /** Deletes the PivotTable and clears its cells; its cache goes with the last PivotTable and slicer over it. */
+  | { op: 'deletePivotTable'; sheet: string; pivot: string }
+  /**
+   * Excel's Refresh: each cache of the PivotTables `pivots`, and every PivotTable over it, from its source; without
+   * `pivots`, every cache of the workbook that can be refreshed (Refresh All), the others skipped. Needs `xlcalc/pivot`;
+   * a PivotTable that is not there, a source that cannot be refreshed, or the subpath not loaded, is refused (`pivot`).
+   */
+  | { op: 'refreshPivots'; pivots?: PivotRef[] }
+  /**
+   * Excel's Insert Slicer on `sheet`: over a slicer cache of the workbook by its name, or a new one of the source field
+   * `field` that filters the PivotTables `pivots`, all of one pivot cache. Its name is the first free from the field's
+   * (`Region`, `Region 1`…) without `slicer.name`, and a new cache's `Slicer_Region`.
+   */
+  | { op: 'addSlicer'; sheet: string; slicer: Omit<Slicer, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
+  /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its look and place. */
+  | { op: 'editSlicer'; slicer: string; set?: SlicerPatch; cache?: SlicerCachePatch }
+  /** Deletes the slicer; its cache goes with its last slicer. */
+  | { op: 'deleteSlicer'; slicer: string }
+  /** Excel's Insert Timeline, as `addSlicer`, of a date field. */
+  | { op: 'addTimeline'; sheet: string; timeline: Omit<Timeline, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
+  /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its level, look and place. */
+  | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }
+  /** Deletes the timeline; its cache goes with its last timeline. */
+  | { op: 'deleteTimeline'; timeline: string }
 ```
 
 ### `StructureRefusal`
@@ -5757,6 +5843,12 @@ type StructureRefusal =
   | 'not_grouped'
   /** Show Detail on a group already shown, Hide Detail on one already hidden (its summary line marked `collapsed`). */
   | 'detail'
+  /**
+   * The operation would cut a PivotTable or lay one over cells that are not empty, a table or another PivotTable; a
+   * PivotTable's, slicer's or timeline's name breaks the rules or is used; a field not of the cache; a refresh that cannot
+   * be made (its source, or `xlcalc/pivot` not loaded).
+   */
+  | 'pivot'
 ```
 
 ### `StructureResult`
@@ -5771,6 +5863,8 @@ type StructureResult =
       book: Book
       /** Where a cell of the old workbook is now; null if it was deleted or overwritten, or if its sheet is not in the old workbook. */
       mapCell(ref: CellRef): CellRef | null
+      /** The PivotTables whose definition changed and whose cells were not laid out again, `xlcalc/pivot` not loaded (`PivotCache.stale`). */
+      stale?: PivotRef[]
     }
   /** A rejection: its code, and a message in the language of the workbook's locale (English for en-US). */
   | Refusal<StructureRefusal>
@@ -5948,12 +6042,28 @@ interface TimelineCache {
 }
 ```
 
+### `TimelineCachePatch`
+
+The fields of a timeline's cache an edit sets (`editTimeline`): the PivotTables it filters and the dates chosen.
+
+```ts
+type TimelineCachePatch = { [K in 'pivots' | 'selection']?: TimelineCache[K] | null }
+```
+
 ### `TimelineLevel`
 
 A timeline's level: years, quarters, months, days.
 
 ```ts
 type TimelineLevel = 'years' | 'quarters' | 'months' | 'days'
+```
+
+### `TimelinePatch`
+
+The fields of a timeline an edit sets (`editTimeline`), as in [`PivotTablePatch`](#pivottablepatch).
+
+```ts
+type TimelinePatch = { [K in Exclude<keyof Timeline, 'name' | 'cache'>]?: Timeline[K] | null }
 ```
 
 ### `TimePeriodFormat`
