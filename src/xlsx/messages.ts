@@ -7,7 +7,7 @@ import { ownText, type StyleLoss, type StylePart, type XlsxMessageParams } from 
 import type { Locale } from '../locale/types.js'
 import type { XlsxMessage } from './issues.js'
 
-const PIVOT_SOURCES = { external: 'an external connection', dataModel: "the workbook's data model", consolidation: 'consolidated ranges', scenario: 'scenarios' }
+const PIVOT_SOURCES = { external: 'a data connection', dataModel: "the workbook's data model", consolidation: 'consolidated ranges', scenario: "the workbook's Scenarios" }
 
 const STYLE_PARTS: Record<StylePart, string> = {
   accountingUnderline: 'accounting underline',
