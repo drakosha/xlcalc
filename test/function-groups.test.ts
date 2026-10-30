@@ -51,6 +51,8 @@ describe('the groups of functions', () => {
     const r = run('root')
     expect(r.before).toEqual(KNOWN)
     expect(r.values).toEqual({ closures: ALL, eval: ALL })
+    // the hash 0.68.0 gives the book, before the groups
+    expect(r.hash).toEqual({ closures: 'eac2febc78ff563e', eval: 'eac2febc78ff563e' })
   }, 60_000)
 
   it('the light entry: #NAME? naming the group, a name over one, the value its file stores when held; the checks of text know them; registered, they calculate', () => {
@@ -64,6 +66,7 @@ describe('the groups of functions', () => {
     expect(r.text).toEqual(KNOWN)
     expect(r.some).toEqual({ ...ALL, E1: NAME, F1: NAME, G1: NAME })
     expect(r.all).toEqual({ closures: ALL, eval: ALL })
+    expect(r.hash).toEqual({ closures: 'eac2febc78ff563e', eval: 'eac2febc78ff563e' })
   }, 60_000)
 
   it('a host with both entries has one table: once the root calculates, the light entry has every function', () => {

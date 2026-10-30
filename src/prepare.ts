@@ -8,13 +8,10 @@ import { expandLinkNames } from './links.js'
 import { nameFor } from './names.js'
 import { printFormula, sheetKey, type Ast, type PrintOptions, type Tok } from './syntax.js'
 import { invalidError, validateTokens } from './syntax/check.js'
-
-export { invalidError } from './syntax/check.js'
 import { instance, ready, shaped, SHAPES, tableShapeKey, type Template } from './syntax/shape.js'
 import { tableAt, tableNames } from './tables/model.js'
 
 export type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
-
 
 type Named = (name: string, sheet: string | undefined) => ReturnType<typeof nameFor>
 

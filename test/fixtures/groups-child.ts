@@ -64,7 +64,7 @@ const cases: Record<string, () => Promise<unknown>> = {
   async root() {
     const root = await lib<Root>('index.js')
     const before = await checks(root)
-    return { before, values: both((execution) => values(root.compute(BOOK, { clock: CLOCK, execution }))) }
+    return { before, values: both((execution) => values(root.compute(BOOK, { clock: CLOCK, execution }))), hash: both((execution) => root.compute(BOOK, { clock: CLOCK, execution }).hash.slice(0, 16)) }
   },
   /** The light entry: refusals, kept values, the checks of text, a name's formula, then the groups loaded. */
   async core() {
@@ -88,7 +88,7 @@ const cases: Record<string, () => Promise<unknown>> = {
     core.registerFunctions(groups.engineering, groups.statistics)
     const some = values(core.compute(BOOK, { clock: CLOCK }))
     core.registerFunctions(...groups.allFunctions)
-    return { before, held, heldValue, refused, text, some, all: both((execution) => values(core.compute(BOOK, { clock: CLOCK, execution }))), groups: groups.allFunctions.map((g) => [g.name, g.functions.length]) }
+    return { before, held, heldValue, refused, text, some, all: both((execution) => values(core.compute(BOOK, { clock: CLOCK, execution }))), hash: both((execution) => core.compute(BOOK, { clock: CLOCK, execution }).hash.slice(0, 16)), groups: groups.allFunctions.map((g) => [g.name, g.functions.length]) }
   },
   /** A host with both entries has one table: the light entry calculates every function once the root has calculated. */
   async both() {
