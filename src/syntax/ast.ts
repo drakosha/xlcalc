@@ -2,7 +2,7 @@
 import type { CheckCode, ErrorCode } from '../contract.js'
 import { english } from '../locale/english.js'
 import type { Message } from '../locale/messages.js'
-import type { TableSpec } from './table.js'
+import type { LinkedTable, TableSpec } from './table.js'
 
 export interface RangeRef {
   /** Zero-based rows and columns; a whole column has r1 = 0, r2 = MAX_ROWS - 1. */
@@ -21,8 +21,12 @@ export type Ast =
   | { k: 'num'; v: number }
   | { k: 'str'; v: string }
   | { k: 'bool'; v: boolean }
-  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#` (a spill reference); `book` another workbook's (`'[1]Sheet1'!#REF!`). */
-  | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string; book?: number | string }
+  /**
+   * `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#`
+   * (a spill reference); `book` another workbook's (`'[1]Sheet1'!#REF!`), and `table` the text after the book of a
+   * structured reference to one of its tables (`[1]!Sales[Qty]`), #REF! as the book is closed.
+   */
+  | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string; book?: number | string; table?: LinkedTable }
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
   /** A reference across the sheets from `first` to `last` in the book's order (`'Sheet1:Sheet3'!A1:B2`). */
   | { k: 'ref3d'; first: string; last: string; ref: RangeRef }

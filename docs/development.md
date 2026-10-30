@@ -784,6 +784,8 @@ The values of `written` were predicted and committed before Excel ran it. In the
 
 `test/xlsx-links-excel.test.ts` checks this without Excel, and also that the reader reads every link of the 48 files both versions of Excel saved in the six sets: the targets each one wrote (Excel for Mac keeps a relative target, or writes the absolute path it found next to the relative one in `alternateUrls`; Excel for Windows writes an absolute path without the drive), the markers and the stored values Excel kept, with no link reported as one the model does not support. Every workbook of `written` reads back from its file with the same links, names, formulas (by canonical text) and input hash. `test/xlsx-links.test.ts` reads hand-made links in every form above and writes the parts as Excel writes them.
 
+The set `tables-held` (four books) takes the structured references to a table of a linked book that a host's books hold (`[1]Таблица[[#This Row],[Столбец]]`), which the engine did not parse: the table's row and column, a whole column in SUM, `#All`, an operator, a Latin name, the form with `!` after the link, and a link whose book defines a name like the table. Predicted `#REF!` everywhere, as Excel calculates a table of a closed book. Excel for Mac and Windows gave `#REF!` in every case, and only the form with `!` kept its reference (`'…\Book2.xlsx'!Таблица[@Столбец]` shown, `[1]!Таблица[[#This Row],[Столбец]]` saved); without `!` the reference was lost as the book opened (`=#REF!`, `=SUM(#REF!)`) and the saved file dropped the link. The reader and the engine follow both.
+
 ### Reading and writing xlsx: Notes, hyperlinks and frozen panes
 
 From [Reading and writing xlsx, Notes, hyperlinks and frozen panes](xlsx.md#notes-hyperlinks-and-frozen-panes).
