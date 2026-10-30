@@ -37,6 +37,8 @@ const KNOWN: Record<string, string> = {
   'hand-3.xlsx': '.rows',
   'let-1.xlsx': '.formula',
   'let-held-1.xlsx': '.formula',
+  // Excel's own text of SHEETS(R:'Two Words'!A1), `'R':'Two Words'!A1`, which the engine does not parse
+  'indirect-1.xlsx': '.formula',
 }
 
 /** A formula canonical, so that `L!A1` (as Excel writes it) and `'L'!A1` (as the writer does) agree. */
