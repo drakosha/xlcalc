@@ -8,7 +8,7 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-30",
-  "seconds": 80.3
+  "seconds": 81.6
  },
  "cases": [
   {
@@ -637,54 +637,54 @@
   }
  ],
  "sent": {
-  "amount-sum": "4613b109925d63661497ad7b576f2e9d5ba7f64a10931d4c2f01fd37093224b4 ad916407c0309b7c",
-  "amount-count": "b02411b1e8e7d499ee3f54c3d82f7e5bb202559ba484909ecd44f7696c7774ba ad916407c0309b7c",
-  "amount-average": "819a04f10885cb5088969cc799730f7c2360ccc4a68310dba7f1343bd38232e6 ad916407c0309b7c",
-  "amount-max": "57155a335b1815f27c455e9a8a322da800995c5dbf73e09fb8a3a2827263e704 ad916407c0309b7c",
-  "amount-min": "50fa752446d4f0918643157dd5075ed78f2fd3619b93a6ad8e52121274c069b2 ad916407c0309b7c",
-  "amount-product": "525536dbdb81a077bedf227ea62c766b8e1a35542ae3ccf27937f5fdbe1c7df8 ad916407c0309b7c",
-  "amount-countNums": "2378a9e8e3b414ddab27708fb7bb47dda10f897e067499bb6575f551f9da1846 ad916407c0309b7c",
-  "amount-stdDev": "8f96526f199f97e8b6b5b1e0e5694e89c281bc4b68dc8e90999a2a0e30e74de2 ad916407c0309b7c",
-  "amount-stdDevp": "32c3b0cb1fad7b0a90d316dfd7c8f5e50be7761a4bce21313532eeecc922dad6 ad916407c0309b7c",
-  "amount-var": "0a3ad9eb3f0981772dd0ae460fdf8f1de10cb1d5e610b5644678e563bf2d3e86 ad916407c0309b7c",
-  "amount-varp": "7e0719951719108b5c22d7f565e559540bbbf763bd68777604d990f95a37ff9c ad916407c0309b7c",
-  "price-sum": "c8c579dbec83e1b6aca8e14b9f686c98d7ca1788ac5cb2ee22cf0ef5f9a9de61 ad916407c0309b7c",
-  "price-count": "c5e83e86bc4896ae630e422e5cb7e73dbddfd4ce9b66d41552fbc2fde3980df9 ad916407c0309b7c",
-  "price-average": "27f367b05c980ebaa51abfca2836670efef41771ff7cee585bbd5d25ebdfd0a6 ad916407c0309b7c",
-  "price-max": "9c8b678a2f0290df51830685d48b68463f05f4c6eb52c346a46c5230ddddc1d0 ad916407c0309b7c",
-  "price-min": "7ffd4452af48060f4c47f014b6913d9997e411433beecbda509268c57aafb223 ad916407c0309b7c",
-  "price-product": "b787464a6e055e7bf60e548db6045a89e6492d139c67a6bd9081f99823dc4c28 ad916407c0309b7c",
-  "price-countNums": "c403dd64ecaf04df884ca6c724888be19df3deb86b8cbf377ea50c3a05c7f407 ad916407c0309b7c",
-  "price-stdDev": "6b032839a7c087756f7a6c3c167c48532e228e34e2ce99c332537d6d970b8faa ad916407c0309b7c",
-  "price-stdDevp": "39efed9deaf4e8f606d84e3531227e04e356ed876bff4fb20eb9c7f8bdcf80f6 ad916407c0309b7c",
-  "price-var": "dba30f5d92029b653c9a7d8fca54f225b3dee161ecc763b596f00a21bfa2a9ef ad916407c0309b7c",
-  "price-varp": "de9b3ae3d6a9e8cadcfdb9bf3f8c6aa6250b887b42ba05079634e5268b04959b ad916407c0309b7c",
-  "region-count": "a081de59c362841a56e96fd96125e6233a19e9be28391ef42e5dba1fad110e57 ad916407c0309b7c",
-  "region-count-nums": "c71785ba53d6148daed9ee2189e4011d846ff659d3c9ad6a061186a768f62d50 ad916407c0309b7c",
-  "note-count": "dc093ebe4e0ff12af76aac5ed617fc73202fd8c99c0c1cc242870f15e3c451b3 ad916407c0309b7c",
-  "columns": "04cfbda2fca25c0f0fe5b3420c56b3bc0d481f02d17b3844262909f42dbc01a2 ad916407c0309b7c",
-  "columns-only": "a626b214cfcc79969fe505df29a0a7f7ba317a4033862009ce6065fcd9a9d88d ad916407c0309b7c",
-  "values-only": "c2dcc8b566c137fa6f6950b035f343d9739e9d06b643168f06e56cb7c08aa03c ad916407c0309b7c",
-  "rows-only": "8a31771e2f365633a9ee7c5d2391af1407046b2308546fb2b3128af201cc9564 ad916407c0309b7c",
-  "two-values": "5166bea223f5e79bec732f561095ae3e5fdabcecfe098c5d7f3b921809ad2d6f ad916407c0309b7c",
-  "two-values-rows": "8b29460da75e29fc791a0a8391d8c4a384672d03d617a17923d1880910cd8634 ad916407c0309b7c",
-  "two-values-rows-first": "a5347063c62e83130e769e437a0a8555f0d569b5693c04a09c3726d945281246 ad916407c0309b7c",
-  "two-values-columns": "6327f10ac19db29e1b33672affb1bc1c6c2bcf57c264150d60e9ef1b1902d6a7 ad916407c0309b7c",
-  "two-values-alone": "0fb087fd9caf8182cb7650392d0fec49e8ef921de9eefd4535aa55db96074524 ad916407c0309b7c",
-  "same-field-twice": "135f79a459e8490fff45659d4d26cc7aa897965ec026dbb8542c41082db3909e ad916407c0309b7c",
-  "code-rows": "fa0751bbeee004e1bf6b069bf9948a176179cede484d82c4d7e84a2199ff6e61 ad916407c0309b7c",
-  "date-rows": "83959aac35a6a178dd6483577358237f1b1b048099be323df36afbd9011d15c3 ad916407c0309b7c",
-  "flag-rows": "569c6805206236230ca542cbd9ef4bd24f452106e23fa3404b438235d7a808c8 ad916407c0309b7c",
-  "product-rows": "c1a792a3af9ec909f792efed70188d4d1efb4d5a357d905d1ac7dab7c0f0c8ca ad916407c0309b7c",
-  "note-rows": "f01eca531605a90417bd77217ade68036deea38ae1b7102b7e83db0155d6e443 ad916407c0309b7c",
-  "amount-rows": "155914db10810cefa790ffa4d2289850fec55903c541687fe6d2ebd2b97c92b6 ad916407c0309b7c",
-  "caption-format": "e99f2fbe1473c689ed4dc91377c0db1f03b9071e50dbdd9ce1c596f538b3138a ad916407c0309b7c",
-  "shown-errors": "d2dc1344af7637d88202957752777035d49b09cc8a59116d0a58e3026d5dcc1e ad916407c0309b7c",
-  "source-table": "e5216a053eef865e23516efb8a9ce7dd211492a373617951417393d5a1c1dc7b ad916407c0309b7c",
-  "source-name": "f382b4084db88944c2e6866918d5e0376c5fb716beeb5b731deb0d985a94fd68 ad916407c0309b7c",
-  "two-rows": "ac0120d0d192fd1e862202672d2a80ba61a49dfefb73fb48c9afaf4cffd08129 ad916407c0309b7c",
-  "page": "8551dcf3b180b9c9c1faab26d6227e4d4420306ef528c4e10d28bf0ba3c86c97 ad916407c0309b7c",
-  "page-one": "9f4b8a536ceaf89fd726e1bed1b3a1f5f26c00e85ffdd7b7181b385a232dc308 ad916407c0309b7c"
+  "amount-sum": "8a8183e063236d6036a2eec84fe5f17f7c78305cd2c136dc01286122c1e513a4 ad916407c0309b7c",
+  "amount-count": "d195831f17c222f88895c2f45aab6d8e32e9643d6152d06115ee80ea4a030096 ad916407c0309b7c",
+  "amount-average": "31825e8e4a0a30c6b2b8de098d494ddfa28451a71c38cac8ae038fe5c9ceb660 ad916407c0309b7c",
+  "amount-max": "bc6639267dae002eb5b4bdec1d9ac254b63df45a57612241d0931f9409032398 ad916407c0309b7c",
+  "amount-min": "31ac370631f852baa3c1f86115871b068d4e8dc53101313dc0a2b0186e3b20bc ad916407c0309b7c",
+  "amount-product": "4902ea6fce60b4cf83b2482f5a6b7fc1094a8379c826955d7b642013ca11a37b ad916407c0309b7c",
+  "amount-countNums": "1cfa9e8cff785871ad227056c615bbccc09933e266004c60244f5e481d668d56 ad916407c0309b7c",
+  "amount-stdDev": "813ed476cc01f6609c4f7eecb75dc716ee22cd2531806cfb8713dd304dc418a7 ad916407c0309b7c",
+  "amount-stdDevp": "9f02c6817c74d0321fd9623b789a10b406efcf65739815b59b512a5165d9cd00 ad916407c0309b7c",
+  "amount-var": "7a0b12a5fb44c8ef8ffdd7f2fa4f4beab0fb1662f8fdc5e425542ea4ffa900ac ad916407c0309b7c",
+  "amount-varp": "6ac672ea39080b203855e75d1cbe46ed0a7544656dc8192bc919fee4004a0411 ad916407c0309b7c",
+  "price-sum": "6c653213943d98cb24f2daafe9a621a2d86ff7c8bf4440e74573ebd91e80af33 ad916407c0309b7c",
+  "price-count": "67a12cfb2840a215d75ac8c65c4eccd124183e8521b9284972f5b7af7afb2f80 ad916407c0309b7c",
+  "price-average": "00ce5e1cce98af02a32cadcd65d011505a664b3c1a24aaf1f53b76c1d6787970 ad916407c0309b7c",
+  "price-max": "899fc19238640ae19a6e60ff62c382e8dd03631b679b82c5bd75a5627cb4abea ad916407c0309b7c",
+  "price-min": "6cccca42f6e6d22810a2bab2530db880c169f93fddb9ed779836b773dbe3e0c2 ad916407c0309b7c",
+  "price-product": "d5d0652979d34a8f274d361291fd9c1a0739c0215e4f1f6db12d0a5d62fb447e ad916407c0309b7c",
+  "price-countNums": "b8c727daea3dad57d55620b78e13a5075ffac25b3928ea7d090e803491eac5d5 ad916407c0309b7c",
+  "price-stdDev": "d53aed3a2a629c07bebe2003ea3d3faa12d4f80f1c0a78da2a7e5d94347a0881 ad916407c0309b7c",
+  "price-stdDevp": "1bd2c228f89cf7301b7cf8a4efdfb253f530287f565cbca97640bdc4caec3f4c ad916407c0309b7c",
+  "price-var": "f2fd16a7c646296665c32fdd1ee6f4b7a10a049a19a2daf310db485cab0d1f41 ad916407c0309b7c",
+  "price-varp": "cda1c56dc3372be14440e03a5f65c6fba97c0c90638ca42f31a77aac2eb44939 ad916407c0309b7c",
+  "region-count": "ef794ada7e2bc08fa4ec70debeeb396c0d3777acd38f5133c3dcc515d9722163 ad916407c0309b7c",
+  "region-count-nums": "7afe527235c3bd0f335240c24d67e5cfd2215c8edcf387dbcea2bcb1ad4dd403 ad916407c0309b7c",
+  "note-count": "07e248534775e5784bbcb29475d71960f73ac2106142f05c06c3f8b34409bddc ad916407c0309b7c",
+  "columns": "72a9fcca4086573ed3efc410697af5f3ca431456bf3909191cc9fb40f11d45cb ad916407c0309b7c",
+  "columns-only": "cb3928895ea1dc9eaf4aa3fc3386a4e0f15ef854549f727c1d92d2b2002d9163 ad916407c0309b7c",
+  "values-only": "23ed8fee0a6bcec67728d0a020ae748dbbd2bd04956f78593ad45cebd95c73a5 ad916407c0309b7c",
+  "rows-only": "1bdc96ffe08eb6cea6fe2414e91eb275ab6fc4931246577c53fc739cc3857afb ad916407c0309b7c",
+  "two-values": "54440bcb6facd688e2126f2f6ce6e7158945fcbc364f24f1c4f599e6d4177218 ad916407c0309b7c",
+  "two-values-rows": "ab3e861263f967c2ce4f461c1b5c722aef31032eac94d10193923035f42f7a35 ad916407c0309b7c",
+  "two-values-rows-first": "2f274362710f5eba2d6f8972d0d2b8bad7f02eacd5f4ee85c7dd08410ba3fd43 ad916407c0309b7c",
+  "two-values-columns": "c3d515372d7fb6ad1bff0141bf8512cab3d6073f9b48d19160bdf38493558c1f ad916407c0309b7c",
+  "two-values-alone": "294064d10a15773fd55c042ced76a2906bcef8ee013513fa43e08d08db00cedd ad916407c0309b7c",
+  "same-field-twice": "42a5675ac76012b367f513cfd13baf977b4883c506b2787d38a0d1c9ca448b82 ad916407c0309b7c",
+  "code-rows": "ab68a50fceab974b92a9626b4b952cebaeb8ca19260e69986a242e9ca570d40b ad916407c0309b7c",
+  "date-rows": "2f4648d5bcf7f6e8c659a0dd0c681153f109d6ab221c89833b703d26cedd5a83 ad916407c0309b7c",
+  "flag-rows": "37357eed436ba93719847b0a88ead8a4cf9e09591a884d6388507bdecb3ae528 ad916407c0309b7c",
+  "product-rows": "dfe40719c5d09cb40dc3dd471b5a804d0b572a953eee8ab7ccfdd0512695deca ad916407c0309b7c",
+  "note-rows": "fd3edec37e9c9893a5e9c5ef6c2ee792b621c9e394b50f41d23a940d166c52b1 ad916407c0309b7c",
+  "amount-rows": "3e758c2990386c2d25c6c54fd42dff445f02cca98e486ee144325648b1616fa0 ad916407c0309b7c",
+  "caption-format": "69c3605706eb8f330e1f5aa4fe7d06dfba9cea6a3058ccd877057cdc1235b05a ad916407c0309b7c",
+  "shown-errors": "af04dcb60e89f48adbbc7bc5243a6c2f2e7447fc78ee0996d38dea0f665725ba ad916407c0309b7c",
+  "source-table": "b71bd4fd286490c8563e0e01514a72d2104e436900039e518014b922c9a2172f ad916407c0309b7c",
+  "source-name": "64b66acddfd82511c441dd720821b1fbb662d89670f4f06dceced588141637b6 ad916407c0309b7c",
+  "two-rows": "267949a807bdc0d26f7fd06bcd834a27a024f027de062351f07fc10db7fee12a ad916407c0309b7c",
+  "page": "d70f2e319647a37539eaec2756979a37fb62b39cc4cd1170feced2f9552c11bf ad916407c0309b7c",
+  "page-one": "268ca0a2de9ca824a31c043e9bae9523280632060244fe2a44931402288d7381 ad916407c0309b7c"
  },
  "answers": {
   "amount-sum": {
@@ -6606,15 +6606,10 @@
     {
      "pivots": {
       "PT1": {
-       "table": "A3:C10",
-       "area": "A3:C10",
-       "body": "B5:C10",
+       "table": "A3:C9",
+       "area": "A3:C9",
+       "body": "B4:C9",
        "values": [
-        [
-         null,
-         "Values",
-         null
-        ],
         [
          "Row Labels",
          "Sum of Price",
@@ -6653,11 +6648,6 @@
        ],
        "text": [
         [
-         "",
-         "Values",
-         ""
-        ],
-        [
          "Row Labels",
          "Sum of Price",
          "Count of Qty"
@@ -6694,11 +6684,6 @@
         ]
        ],
        "formats": [
-        [
-         "General",
-         "General",
-         "General"
-        ],
         [
          "General",
          "General",
@@ -8164,14 +8149,10 @@
     {
      "pivots": {
       "PT1": {
-       "table": "A3:B5",
-       "area": "A3:B5",
-       "body": "A5:B5",
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "A4:B4",
        "values": [
-        [
-         "Values",
-         null
-        ],
         [
          "Sum of Price",
          "Count of Amount"
@@ -8183,10 +8164,6 @@
        ],
        "text": [
         [
-         "Values",
-         ""
-        ],
-        [
          "Sum of Price",
          "Count of Amount"
         ],
@@ -8196,10 +8173,6 @@
         ]
        ],
        "formats": [
-        [
-         "General",
-         "General"
-        ],
         [
          "General",
          "General"
@@ -8339,15 +8312,10 @@
     {
      "pivots": {
       "PT1": {
-       "table": "A3:C10",
-       "area": "A3:C10",
-       "body": "B5:C10",
+       "table": "A3:C9",
+       "area": "A3:C9",
+       "body": "B4:C9",
        "values": [
-        [
-         null,
-         "Values",
-         null
-        ],
         [
          "Row Labels",
          "Sum of Price",
@@ -8386,11 +8354,6 @@
        ],
        "text": [
         [
-         "",
-         "Values",
-         ""
-        ],
-        [
          "Row Labels",
          "Sum of Price",
          "Average of Price"
@@ -8427,11 +8390,6 @@
         ]
        ],
        "formats": [
-        [
-         "General",
-         "General",
-         "General"
-        ],
         [
          "General",
          "General",
