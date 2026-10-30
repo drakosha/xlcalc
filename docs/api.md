@@ -5,6 +5,8 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 (`npx tsx test/api-reference.ts --write`): change the comments in the source, not here.
 
 - [`xlcalc`](#xlcalc)
+- [`xlcalc/core`](#xlcalccore)
+- [`xlcalc/functions`](#xlcalcfunctions)
 - [`xlcalc/a1`](#xlcalca1)
 - [`xlcalc/text`](#xlcalctext)
 - [`xlcalc/entry`](#xlcalcentry)
@@ -331,7 +333,7 @@ The function categories in the order Excel's Insert Function dialog lists them (
 const FUNCTION_NAMES: readonly string[]
 ```
 
-The whitelist: every function a formula can call, by its English name, in alphabetical order.
+The whitelist: every function a formula can call, by its English name, in alphabetical order, whichever groups are loaded.
 
 ### <a id="xlcalc-functionsignature"></a>`functionSignature`
 
@@ -789,6 +791,70 @@ function viewportOf(saved: BookSnapshot, sheet: string, range: string, opts?: Sa
 A viewport over a saved workbook and its result, as [`Session.getViewport`](#session) returns it over a session of that workbook,
 without calculating its formulas: the result's values, text and color, and the workbook's formats, styles and
 layout; with `appearance`, its conditional formats calculated over the result's values.
+
+## xlcalc/core
+
+Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
+
+### <a id="xlcalccore-registerfunctions"></a>`registerFunctions`
+
+```ts
+function registerFunctions(...groups: FunctionGroup[]): void
+```
+
+Loads groups of `xlcalc/functions` for the calculations from now on, a pool's threads too:
+`registerFunctions(engineering, xml)`, or `registerFunctions(...allFunctions)` for all of them. A session opened before
+builds its workbook again at its next call, calculating the formulas over them.
+
+## xlcalc/functions
+
+### <a id="xlcalcfunctions-allfunctions"></a>`allFunctions`
+
+```ts
+const allFunctions: readonly FunctionGroup[]
+```
+
+Every group: `registerFunctions(...allFunctions)` loads all the functions the package root has.
+
+### <a id="xlcalcfunctions-engineering"></a>`engineering`
+
+```ts
+const engineering: FunctionGroup
+```
+
+The group engineering: Bessel functions, complex numbers (IM…), CONVERT, number systems, bits, ERF, DELTA and GESTEP.
+
+### <a id="xlcalcfunctions-finance"></a>`finance`
+
+```ts
+const finance: FunctionGroup
+```
+
+The group finance: securities and their coupons, odd periods, discounted securities and depreciation.
+
+### <a id="xlcalcfunctions-lambda"></a>`lambda`
+
+```ts
+const lambda: FunctionGroup
+```
+
+The group lambda: the functions that call a function for each value (MAP, REDUCE, SCAN, BYROW, BYCOL, MAKEARRAY), GROUPBY and PIVOTBY.
+
+### <a id="xlcalcfunctions-statistics"></a>`statistics`
+
+```ts
+const statistics: FunctionGroup
+```
+
+The group statistics: the distributions, their inverses, the tests, LINEST and its kin, and their old names.
+
+### <a id="xlcalcfunctions-xml"></a>`xml`
+
+```ts
+const xml: FunctionGroup
+```
+
+The group xml: FILTERXML with its XML reader and XPath.
 
 ## xlcalc/a1
 
@@ -1680,11 +1746,12 @@ interface CellIssue extends CellRef {
   check?: CheckCode
   /** Position in the formula text for `check`. */
   at?: number
-  /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
+  /** The function, upper-case, for the checks `unknown_function`, `function_not_loaded` and `unsupported` (`ValidateResult`). */
   fn?: string
   /**
    * The formula is not calculated and shows the value its file stores (`cached`) or its cell holds: it calls a function
-   * the engine does not know (`unknownFunctions: 'held'`, `error` NAME) or a function of connections (`error` CONNECT).
+   * the engine does not know or one of a group not loaded (`unknownFunctions: 'held'`, `error` NAME) or a function of
+   * connections (`error` CONNECT).
    */
   fromFile?: true
 }
@@ -2094,7 +2161,8 @@ type ChangingMethod =
 
 Formula check codes. `unsupported`: an external function called with arguments that are not literals.
 `unknown_name` also covers tables: an unknown table or column, or a structured reference without a table name outside
-a table.
+a table. `function_not_loaded`: a function of a group of `xlcalc/functions` that `xlcalc/core` has not loaded
+([`registerFunctions`](#xlcalccore-registerfunctions)), a cell's issue alone: [`validateFormula`](#xlcalc-validateformula) knows every function.
 
 ```ts
 type CheckCode =
@@ -2104,6 +2172,7 @@ type CheckCode =
   | 'too_deep'
   | 'external_ref'
   | 'unknown_function'
+  | 'function_not_loaded'
   | 'unknown_sheet'
   | 'unknown_name'
   | 'unsupported'
@@ -3215,6 +3284,28 @@ alongside their newer versions (`NORMDIST` alongside `NORM.DIST`); `user` the fu
 
 ```ts
 type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'user' | 'engineering' | 'cube' | 'compatibility' | 'web'
+```
+
+### `FunctionGroup`
+
+A group of rarely used functions of `xlcalc/functions`, which [`registerFunctions`](#xlcalccore-registerfunctions) of `xlcalc/core` loads; the package
+root has them all. Without its group, a formula that calls one of them is `#NAME?` with the check `function_not_loaded`.
+
+```ts
+interface FunctionGroup {
+  readonly kind: 'xlcalc-functions'
+  readonly name: FunctionGroupName
+  /** The functions of the group, by their English names, in alphabetical order. */
+  readonly functions: readonly string[]
+}
+```
+
+### `FunctionGroupName`
+
+The groups of `xlcalc/functions`, by name (`docs/function-groups.md`).
+
+```ts
+type FunctionGroupName = 'engineering' | 'finance' | 'lambda' | 'statistics' | 'xml'
 ```
 
 ### `FunctionSignature`
@@ -5274,11 +5365,11 @@ interface UndoResult extends EditResult {
 ### `UnknownFunctions`
 
 A formula that calls a function the engine does not know (an add-in's, a host's not given as `externals`), whose check
-is `unknown_function`: `name` makes it `#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell
-holds ([`CellInput.held`](#cellinput)) or its file stores (`cached`), as Excel shows a file's value until it calculates the cell, and
-the cells that depend on it are calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once
-the cell is edited or a cell it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at
-once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
+is `unknown_function`, or one of a group `xlcalc/core` has not loaded (`function_not_loaded`): `name` makes it
+`#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell holds ([`CellInput.held`](#cellinput)) or its file
+stores (`cached`), as Excel shows a file's value until it calculates the cell, and the cells that depend on it are
+calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once the cell is edited or a cell
+it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
 same way, whatever this option.
 
 ```ts
