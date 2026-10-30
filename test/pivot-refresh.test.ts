@@ -79,6 +79,18 @@ describe('refreshPivots', () => {
     s.close()
   })
 
+  it('reads a source by a table, a name, and a name whose formula gives the reference', () => {
+    const sources: [BookInput['pivotCaches'], Partial<BookInput>][] = [
+      [[{ ...BOOK.pivotCaches![0], source: { type: 'table', table: 'sales' } }], { sheets: [{ ...BOOK.sheets[0], tables: [{ name: 'Sales', range: 'A1:D8', columns: SOURCE[0].map((name) => ({ name: String(name) })) }] }, BOOK.sheets[1]] }],
+      [[{ ...BOOK.pivotCaches![0], source: { type: 'name', name: 'Data' } }], { names: [{ name: 'Data', ref: 'D!$A$1:$D$8' }] }],
+      [[{ ...BOOK.pivotCaches![0], source: { type: 'name', name: 'Grown' } }], { names: [{ name: 'Grown', ref: 'OFFSET(D!$A$1,0,0,COUNTA(D!$B:$B),4)' }] }],
+    ]
+    for (const [caches, more] of sources) {
+      const r = editStructure({ ...BOOK, ...more, pivotCaches: caches }, { op: 'refreshPivots', pivots: [{ sheet: 'P', name: 'PT1' }] })
+      expect([caches![0].source, r.ok && r.book.sheets[1].cells.B8]).toEqual([caches![0].source, { value: 28 }])
+    }
+  })
+
   const { made } = closedAfter()
   for (const [kind, calc] of [['inline', async () => createInlineCalc()], ['pool', () => made({ threads: 1 })]] as const)
     it(`lays it out in the ${kind} calculator, undone`, async () => {

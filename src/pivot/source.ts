@@ -42,7 +42,8 @@ function tablePlace(book: BookInput, name: string): Place | null {
 /** The reference a name's formula gives, by calculating it in the workbook: its sheet, rows and columns. */
 function calculated(book: BookInput, name: string): Place | null {
   const probe = `__pivot_source_${book.sheets.length}`
-  const cells = Object.fromEntries(['SHEET', 'ROW', 'COLUMN', 'ROWS', 'COLUMNS'].map((f, i) => [`A${i + 1}`, { formula: `${f}(${name})` }]))
+  // ROW and COLUMN of a range spill: their least is its first row and column
+  const cells = Object.fromEntries(['SHEET(#)', 'MIN(ROW(#))', 'MIN(COLUMN(#))', 'ROWS(#)', 'COLUMNS(#)'].map((f, i) => [`A${i + 1}`, { formula: f.replace('#', name) }]))
   const state = createState({ ...book, sheets: [...book.sheets, { name: probe, cells }] }, clockOptions({ now: '2000-01-01', seed: 0 }))
   const got = new Map(stateValues(state)(probe, { r1: 0, r2: 4, c1: 0, c2: 0 }).map(([r, , v]) => [r, v]))
   const [s, r, c, h, w] = [0, 1, 2, 3, 4].map((i) => got.get(i))

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { CellValue, PivotCache, PivotTable } from '../src/contract.js'
+import type { CellValue, PivotCache, PivotFilter, PivotTable } from '../src/contract.js'
 import { computePivot } from '../src/pivot/compute.js'
 import { refreshCache } from '../src/pivot/refresh.js'
 import type { PivotNode, PivotResult } from '../src/pivot/result.js'
@@ -131,5 +131,24 @@ describe('pivot calculation', () => {
   it('places the value fields on the rows at a position', () => {
     const r = pivot((t) => ({ ...t, rows: [0, 'values'], values: [{ field: 3 }, { field: 2, function: 'count' }] }))
     expect(labels(r, r.rows.items)[0]).toEqual(['East', ['Σ0', 'Σ1']])
+  })
+
+  it('filters dates relative to today, weeks from Sunday', () => {
+    // 2026-10-28 (Wednesday) as today; the dates around it
+    const rows: CellValue[][] = [['D', 'V'], ...[46322, 46323, 46324, 46325, 46327, 46331, 46300, 46200].map((d, i) => [d, i + 1])]
+    const dated = (type: PivotFilter['type']) => {
+      const first = refreshCache(EMPTY, [], { rows, dated: (r, c) => r > 0 && c === 0 })
+      if (typeof first === 'string') throw new Error(first)
+      const t: PivotTable = { name: 'PT1', cache: 1, location: { range: 'A3:B9', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: [{}, {}], rows: [0], values: [{ field: 1 }], filters: [{ field: 0, type }] }
+      const r = computePivot(t, first.cache, { today: 46323 })
+      return r.value([], [], 0)
+    }
+    expect(dated('today')).toBe(2)
+    expect(dated('yesterday')).toBe(1)
+    expect(dated('thisWeek')).toBe(1 + 2 + 3 + 4)
+    expect(dated('nextWeek')).toBe(5 + 6)
+    expect(dated('thisMonth')).toBe(1 + 2 + 3 + 4 + 7)
+    expect(dated('lastMonth')).toBeNull()
+    expect(dated('yearToDate')).toBe(1 + 2 + 7 + 8)
   })
 })
