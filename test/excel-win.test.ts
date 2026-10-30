@@ -4,6 +4,7 @@
  * (`excel-win-cases.ts`); formulas Excel for Windows did not take are listed in `WIN_REJECTED` with the reason.
  */
 import { describe, expect, it } from 'vitest'
+import { WIN_OPEN } from './excel-open.js'
 import { describeWinOff, runWinSet, WIN_KNOWN, WIN_REASONS, WIN_SETS } from './excel-win-cases.js'
 
 /** Cases whose formula Excel for Windows did not take when it opened the book, by `<locale>:<source>:<case id>`, and why. */
@@ -39,8 +40,8 @@ for (const set of WIN_SETS) {
 }
 
 describe('known differences from Excel for Windows', () => {
-  it('every WIN_KNOWN entry names a stored case', () => {
-    expect(Object.keys(WIN_KNOWN).filter((k) => !keys.has(k))).toEqual([])
+  it('every WIN_KNOWN and WIN_OPEN entry names a stored case', () => {
+    expect([...Object.keys(WIN_KNOWN), ...Object.keys(WIN_OPEN)].filter((k) => !keys.has(k))).toEqual([])
   })
 
   it('every reason of WIN_REASONS has a case', () => {

@@ -5,10 +5,8 @@
  * 16), the start of a season (one season of forecasts and one step more at lengths 8 to 20), the reading of gaps,
  * blanks and points at one time with the parameters beside them, months as a timeline, intervals between steps, the
  * longest season, and seasons to detect.
- * Answers, kept as a measurement outside `test/excel/` as the functions are not in the whitelist
- * (`docs/development.md`, "FORECAST.ETS"): `bench/coverage/ets/win/ets-fit-2.json` (Excel for Windows) and
- * `bench/coverage/ets/mac/ets-fit-2.json`; `probes ets-fit-2` writes them to `test/excel/cases/` again. `PREDICTED`,
- * the model's answers after `ets-fit`, was committed before Excel ran it.
+ * Answers in `test/excel/cases/ets-fit-2.json` (Excel for Mac) and `test/excel/win/cases/ets-fit-2.json` (Excel for
+ * Windows). `PREDICTED`, the model's answers after `ets-fit`, was committed before Excel ran it.
  */
 import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
