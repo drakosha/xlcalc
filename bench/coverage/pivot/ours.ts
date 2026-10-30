@@ -16,9 +16,12 @@ export type Rewrite = 'xlsx' | 'kept'
 /** Where the engine's file of a case's book is, from the package's folder. */
 export const oursPath = (how: Rewrite, set: string, id: string) => `bench/windows/out/pivot-ours/${how}/${set}/${id}.xlsx`
 
-/** The cases of a set of the engine's files: each case of the set `from` opened from its file, read, refreshed (`RefreshTable` of `PT1`) and read again. */
-export function oursCases(from: string, how: Rewrite, cases: PivotCase[]): PivotCase[] {
-  return cases.map((c): PivotCase => ({ id: c.id, file: oursPath(how, from, c.id), ops: [{ read: true }, { refresh: true }] }))
+/**
+ * The cases of a set of files: each case of the set `from` opened from the engine's file (`how`), or from Excel's own
+ * book without it (the control of what Excel's refresh makes of it), read, refreshed (`RefreshTable` of `PT1`) and read again.
+ */
+export function oursCases(from: string, how: Rewrite | undefined, cases: PivotCase[]): PivotCase[] {
+  return cases.map((c): PivotCase => ({ id: c.id, file: how ? oursPath(how, from, c.id) : `test/excel/win/pivot/${from}/${c.id}.xlsx`, ops: [{ read: true }, { refresh: true }] }))
 }
 
 /** A book written again by the engine. */
