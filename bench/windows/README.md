@@ -121,7 +121,7 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 
 ## What is not run here
 
-- The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `FormulaLocal`) but are not ported; only the filters and the built-in formats are.
+- The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`: they work through COM (`SaveAs`, `Interior.Color`) but are not ported; only the filters and the built-in formats are. The ru-RU formula text snapshot is (`snapshot ru`, `snapshot.ts`): the probe books of `bench/locale/probes.ts`, column A read through `Formula` and `FormulaLocal` into `locale/<tag>.json`, nothing calculated.
 - The spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
 
 ## How it was checked

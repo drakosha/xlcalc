@@ -36,7 +36,7 @@ describe('the groups of functions', () => {
   it("the whitelist is 0.68.0's whatever is loaded: the functions the engine calculates and LAMBDA, LET", () => {
     expect(FUNCTION_NAMES).toEqual([...FUNCTION_WORDS, ...SYNTAX].sort())
     expect(FUNCTION_NAMES).toEqual([...Object.keys(FUNCTIONS), ...SYNTAX].sort())
-    expect(FUNCTION_NAMES.length).toBe(517)
+    expect(FUNCTION_NAMES.length).toBe(521)
     expect(externalNames(['besselj', 'MyFn', 'GETPIVOTDATA', 'SUM'])).toEqual(KNOWN.external)
   })
 
@@ -44,7 +44,7 @@ describe('the groups of functions', () => {
     expect(allFunctions.map((g) => [g.name, g.functions])).toEqual(Object.entries(GROUP_ARITY).map(([g, defs]) => [g, Object.keys(defs).sort()]))
     const all = allFunctions.flatMap((g) => g.functions)
     expect(new Set(all).size).toBe(all.length)
-    expect(allFunctions.map((g) => [g.name, g.functions.length])).toEqual([['engineering', 54], ['finance', 33], ['lambda', 8], ['statistics', 77], ['xml', 1]])
+    expect(allFunctions.map((g) => [g.name, g.functions.length])).toEqual([['engineering', 54], ['finance', 33], ['lambda', 8], ['statistics', 81], ['xml', 1]])
   })
 
   it('the root knows every function before it calculates, and calculates all of them in both kinds of execution', () => {
