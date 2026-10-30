@@ -353,6 +353,11 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   tableOverFilter: { range: string; filter: string }
   mergeInTable: { range: string; table: string }
   arrayInTable: { area: string; table: string }
+  pivotUnknown: { sheet: string; pivot: string }
+  pivotSourceKept: { pivot: string; why: 'outside' | 'kind' | 'disabled' }
+  pivotSourceGone: { pivot: string }
+  pivotFieldName: { pivot: string }
+  pivotNotLoaded: object
   // typing into a cell
   headerFormula: { sheet: string; cell: string; table: string }
   validationError: object
@@ -377,6 +382,7 @@ export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
   | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
+  | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 
