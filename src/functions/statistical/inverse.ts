@@ -6,7 +6,8 @@
 import { gammapinvStart, ibetainvStart } from '../jstat.js'
 import type { FnDef } from '../../args.js'
 import { E, type V } from '../../values.js'
-import { badDf, fCdf, fPdf, MAX_COUNT, tCdf, tPdf } from './distributions.js'
+import { badDf, fCdf, fPdf, tCdf, tPdf } from './distributions.js'
+import { MAX_COUNT } from '../common.js'
 import { betaPrefix, dgamma, gammaPQ, ibeta, normInv, solve } from './special.js'
 
 /** x with P(a, x) = p, q = 1 − p given precisely; 0 where the quantile underflows. */

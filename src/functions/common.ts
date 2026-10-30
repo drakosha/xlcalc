@@ -12,6 +12,9 @@ import { nearZero, zeroed } from '../values.js'
 /** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
 export const NEWER_MAX_ARGS = 254
 
+/** Counts at or past 2^31 − 1 are #NUM! in BINOM.DIST, BINOM.DIST.RANGE, BINOM.INV, PERMUT, PERMUTATIONA, COMBIN and COMBINA. */
+export const MAX_COUNT = 2147483647
+
 /** Excel: sine, cosine and their kin are #NUM! from 2^27 on, for a real argument (IMSIN …) and BESSELJ and BESSELY too. */
 export const MAX_TRIG = 2 ** 27
 

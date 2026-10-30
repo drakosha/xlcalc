@@ -3,22 +3,18 @@
  * canonical text, its AST with linked workbooks' names put in their place (`expandLinkNames`). While a workbook's state
  * is built, the formulas of one shape (`syntax/shape.ts`) are prepared once.
  */
-import type { CheckCode, ErrorCode } from './contract.js'
 import type { EngineState, Invalid } from './engine.js'
 import { expandLinkNames } from './links.js'
 import { nameFor } from './names.js'
 import { printFormula, sheetKey, type Ast, type PrintOptions, type Tok } from './syntax.js'
-import { validateTokens } from './syntax/check.js'
+import { invalidError, validateTokens } from './syntax/check.js'
+
+export { invalidError } from './syntax/check.js'
 import { instance, ready, shaped, SHAPES, tableShapeKey, type Template } from './syntax/shape.js'
 import { tableAt, tableNames } from './tables/model.js'
 
 export type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
-export function invalidError(code: CheckCode): ErrorCode {
-  if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
-  if (code === 'unknown_sheet' || code === 'external_ref') return 'REF'
-  return 'ERROR'
-}
 
 type Named = (name: string, sheet: string | undefined) => ReturnType<typeof nameFor>
 
@@ -37,7 +33,7 @@ const spelling = (state: EngineState, named: Named): PrintOptions => ({
  */
 function checked(state: EngineState, enclosing: string | undefined, text: string, toks: Tok[] | null, named: Named, unknown = false): { ok: true; ast: Ast } | { ok: false; invalid: Invalid } {
   const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
-  const r = validateTokens(text, toks, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], ...(enclosing ? { table: enclosing } : {}), ...(unknown ? { unknown } : {}), ...(state.ctx.hosts ? { answered: true } : {}) })
+  const r = validateTokens(text, toks, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], notLoaded: state.groups.notLoaded, ...(enclosing ? { table: enclosing } : {}), ...(unknown ? { unknown } : {}), ...(state.ctx.hosts ? { answered: true } : {}) })
   return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code), ...(r.fn !== undefined ? { fn: r.fn } : {}) } }
 }
 
@@ -51,6 +47,7 @@ export const validateIn = (state: EngineState, s: number, enclosing?: string) =>
   known: (name: string, sheet: string | undefined) => !!namedFrom(state, s)(name, sheet),
   externalFunctions: state.externalFunctions,
   tables: tableNames(state.tables),
+  notLoaded: state.groups.notLoaded,
   ...(enclosing ? { table: enclosing } : {}),
 })
 
@@ -65,11 +62,11 @@ export function prepare(state: EngineState, s: number, row: number, col: number,
 }
 
 /**
- * A formula refused for a function the engine does not know, prepared again to keep a value (`held`) under
- * `unknownFunctions: 'held'`: with the refusal, which it reports once it is calculated. Otherwise `p` as it is.
+ * A formula refused for a function the engine does not know or has not loaded, prepared again to keep a value (`held`)
+ * under `unknownFunctions: 'held'`: with the refusal, which it reports once it is calculated. Otherwise `p` as it is.
  */
 export function preparedHolding(state: EngineState, s: number, row: number, col: number, text: string, p: Prepared, held: unknown): Prepared & { unknown?: Invalid } {
-  if (p.ok || !state.unknownHeld || p.invalid.code !== 'unknown_function' || held === undefined) return p
+  if (p.ok || !state.unknownHeld || (p.invalid.code !== 'unknown_function' && p.invalid.code !== 'function_not_loaded') || held === undefined) return p
   const again = prepare(state, s, row, col, text, null, true)
   return again.ok ? { ...again, unknown: p.invalid } : p
 }

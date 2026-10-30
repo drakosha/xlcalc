@@ -8,7 +8,7 @@
  * without either, a volatile one or one whose arguments are all ranges has no cases here.
  */
 import { readFileSync } from 'node:fs'
-import { FUNCTION_NAMES } from '../../../../src/functions.js'
+import { FUNCTION_NAMES } from '../../../../src/declared-arity.js'
 import type { Add } from './common.js'
 
 /** Typical calls of the whitelisted functions the measurement has no typical case for. */

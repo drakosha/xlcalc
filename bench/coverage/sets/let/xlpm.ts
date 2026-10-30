@@ -4,7 +4,8 @@
  * calculation; a parameter in the calculation), while the same word elsewhere is a defined name; a function's name
  * as a value is `_xleta.SUM`. The engine's text has no prefix; this adds it, by the tokens of the formula.
  */
-import { FUNCTION_NAMES, SYNTAX } from '../../../../src/functions.js'
+import { SYNTAX } from '../../../../src/functions.js'
+import { FUNCTION_NAMES } from '../../../../src/declared-arity.js'
 import { boolWord } from '../../../../src/syntax/parse.js'
 import { tokenize } from '../../../../src/syntax.js'
 

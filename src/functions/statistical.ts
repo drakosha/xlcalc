@@ -1,12 +1,9 @@
-/** Statistical and compatibility functions, assembled from `./statistical/`. */
+/** Statistical and compatibility functions of the core, assembled from `./statistical/`. */
 import type { FnDef } from '../args.js'
 import { functions as compatibility } from './statistical/compatibility.js'
 import { functions as conditional } from './statistical/conditional.js'
 import { functions as descriptive } from './statistical/descriptive.js'
-import { functions as distributions } from './statistical/distributions.js'
-import { functions as fit } from './statistical/fit.js'
-import { functions as inverse } from './statistical/inverse.js'
 import { functions as regression } from './statistical/regression.js'
-import { functions as tests } from './statistical/tests.js'
 
-export const functions: Record<string, FnDef> = { ...descriptive, ...conditional, ...distributions, ...inverse, ...tests, ...regression, ...fit, ...compatibility }
+// the distributions, their inverses, the tests and the fits are the group `statistics` (`groups/statistics.ts`)
+export const functions: Record<string, FnDef> = { ...descriptive, ...conditional, ...regression, ...compatibility }

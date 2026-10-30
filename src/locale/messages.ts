@@ -303,6 +303,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   unknownTable: { table: string }
   unknownColumn: { table: string; column: string }
   unknownFunction: { fn: string }
+  functionNotLoaded: { fn: string; group: string }
   unknownSheet: { sheet: string }
   unknownLink: { book: string }
   unknownLinkSheet: { book: string; sheet: string }

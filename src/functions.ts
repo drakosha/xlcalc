@@ -1,14 +1,14 @@
 /**
- * The function whitelist, assembled from the category files in `src/functions/`. A function gets into its
- * category's registry only when all of its cases in the Excel acceptance test (`test/excel.test.ts`) match
- * Excel en-US, or with its own semantics tests where the measurement has no cases.
+ * The function whitelist, assembled from the category files in `src/functions/`, and the groups of `xlcalc/functions`
+ * added when they are loaded (`groups/registry.ts`). A function gets into its category's registry only when all of its
+ * cases in the Excel acceptance test (`test/excel.test.ts`) match Excel en-US, or with its own semantics tests where the
+ * measurement has no cases.
  */
 import { specOf, type FnDef, type FunctionSpec } from './args.js'
-import { SYNTAX, useArities } from './arity.js'
+import { useArities } from './arity.js'
 import { functions as connections } from './functions/connections.js'
 import { functions as database } from './functions/database.js'
 import { functions as date } from './functions/date.js'
-import { functions as engineering } from './functions/engineering.js'
 import { functions as financial } from './functions/financial.js'
 import { functions as information } from './functions/information.js'
 import { functions as logical } from './functions/logical.js'
@@ -22,7 +22,8 @@ import { functions as text } from './functions/text.js'
 export type { FunctionSpec } from './args.js'
 export { isFunction, SYNTAX } from './arity.js'
 
-const CATEGORIES = { connections, database, date, engineering, financial, information, logical, lookup, math, statistical, text }
+// the engineering functions and the rare ones of the other categories are the groups (`groups/`)
+const CATEGORIES = { connections, database, date, financial, information, logical, lookup, math, statistical, text }
 
 /**
  * The former Analysis ToolPak's functions, with NETWORKDAYS.INTL and WORKDAY.INTL. Excel 365 takes an argument
@@ -63,27 +64,25 @@ function measured(name: string, def: FnDef): FnDef {
   }
 }
 
-function assemble(): Record<string, FnDef> {
-  const out: Record<string, FnDef> = {}
-  for (const [category, defs] of Object.entries(CATEGORIES))
-    for (const [name, def] of Object.entries(defs)) {
-      if (out[name]) throw new Error(`function ${name} is defined twice (again in ${category})`)
-      out[name] = measured(name, def)
-    }
-  return out
+const defs: Record<string, FnDef> = {}
+const specs: Record<string, FunctionSpec> = {}
+
+/** Adds the definitions of a category or of a group: the calculations from then on call them. */
+export function addFunctions(from: string, list: Readonly<Record<string, FnDef>>): void {
+  for (const [name, def] of Object.entries(list)) {
+    if (defs[name]) throw new Error(`function ${name} is defined twice (again in ${from})`)
+    defs[name] = measured(name, def)
+    specs[name] = specOf(name, defs[name])
+  }
 }
 
-/** Implementations and argument kinds by function name. */
-export const DEFS: Readonly<Record<string, FnDef>> = assemble()
+for (const [category, list] of Object.entries(CATEGORIES)) addFunctions(category, list)
+
+/** Implementations and argument kinds by function name: the core's and those of the groups loaded. */
+export const DEFS: Readonly<Record<string, FnDef>> = defs
 
 /** Argument counts and range positions by function name, for the parser and the code generator. */
-export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = Object.fromEntries(Object.entries(DEFS).map(([name, def]) => [name, specOf(name, def)]))
+export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = specs
 
 // the check of a formula's calls counts by the engine's own specs
 useArities((name) => (Object.hasOwn(FUNCTIONS, name) ? FUNCTIONS[name] : undefined))
-
-/** The whitelist: every function a formula can call, by its English name, in alphabetical order. */
-export const FUNCTION_NAMES: readonly string[] = [...Object.keys(FUNCTIONS), ...SYNTAX].sort()
-
-/** The names a book gives as its external functions, upper-cased, the whitelisted ones left out: what a check takes as external. */
-export const externalNames = (fns?: readonly string[]): string[] => (fns ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])

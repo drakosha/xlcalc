@@ -11,3 +11,9 @@ export { dateToSerial, formatAddress, indexToCol, inputScalar, parseAddress } fr
 export { clockSerial, outValue } from './result.js'
 export { randAt } from './runtime.js'
 export { parse, printFormula, sheetKey, validate, walk, type Ast } from './syntax.js'
+
+import { allFunctions } from './groups/index.js'
+import { loadGroups } from './groups/registry.js'
+
+// the harnesses calculate with every function, as the package root does
+loadGroups(allFunctions)

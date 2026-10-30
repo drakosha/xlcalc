@@ -7,12 +7,11 @@
 import { gammaln, gammafn } from '../jstat.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, type V } from '../../values.js'
+import { MAX_COUNT } from '../common.js'
 import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, lognormCdf, normCdf, normPdf } from './special.js'
 
 /** Excel's ceiling on degrees of freedom of the chi-squared, t and F distributions. */
 const MAX_DF = 1e10
-/** Counts at or past 2^31 − 1 are #NUM! in BINOM.DIST, BINOM.DIST.RANGE, BINOM.INV, PERMUT, PERMUTATIONA, COMBIN and COMBINA. */
-export const MAX_COUNT = 2147483647
 
 function normDist(x: number, m: number, sd: number, cumulative: boolean): V {
   if (sd <= 0) return E.NUM

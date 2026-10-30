@@ -10,6 +10,7 @@ import { Arr } from '../arrays/value.js'
 import { holds } from '../arity.js'
 import { wordKey } from '../collate.js'
 import { FUNCTIONS } from '../functions.js'
+import { notLoaded } from '../groups/state.js'
 import { STORED_FUNCTIONS } from '../functions/connections.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
@@ -564,6 +565,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             for (const a of n.args) if (a.k !== 'missing') go(a, true)
             return b.value(E.NAME)
           }
+          // a function of a group not loaded where no check refused it (a linked workbook's name): as a refused call
+          if (!spec && notLoaded(n.name)) return b.value(E.NAME)
           if (!spec && ctx.hosted) {
             info.external = true
             const args = n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true)))
