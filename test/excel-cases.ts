@@ -124,8 +124,6 @@ export const REASONS = {
     'Excel for Mac writes month names in ru-RU in lowercase (`TEXT` with `ММММ`, `МММММ` or `[$-419]mmmm`, and cells: `январь`, `я`); the engine capitalizes them, as Excel for Windows does (`Январь`, `Я`).',
   momentRounding:
     '`VAR`, `STDEV`, `DEVSQ`, `CORREL`, `RSQ`, `SLOPE`, `STEYX` and related functions, including the database ones, are calculated here from exact sums; Excel calculates them in double precision around a mean computed by plain summation, and where the spread is small relative to the mean, or the residual relative to the variation, it loses the digits of the result: for 10,000 values 1E12 + 0, 0.01, 0.02, `VAR.P` is 1.598E-04 in Excel and 6.680E-05 here, the exact value; `CORREL` of them with their steps 0, 1, 2 is 0.647 in Excel and 1 here; and `STEYX` of 1, 2.00000001, 3 on 1, 2, 3 is 0 in Excel and 8.16E-09 here.',
-  etsQuarterStep:
-    '`FORECAST.ETS.STAT` 8, the step of a timeline, on quarterly dates from January (the 1st or the 10th, 2018 to 2024) is 90 in Excel and 91 here, the most frequent of its 90 to 91 day steps; the forecasts, the parameters and the other statistics agree, and months and quarters from other months give Excel\'s step.',
   momentRange:
     'Where the squares or products of the values fall outside the range of doubles, Excel returns what is left of them and the engine the exact result: the squares of 1E-200 and 2E-200 are 0 in Excel, so `STDEV.P` of them is 0 (5E-201 here, within the tests\' tolerance), and `CORREL` with 1, 2 and `SLOPE` of 1, 2 on them are `#DIV/0!` (1 and 1E+200 here); a sum or a product beyond 1.8E+308 is `#NUM!` in Excel even where the result fits (`AVERAGE` of 1E+308 three times and its variance 0, and the covariance of 1E+308, −1E+308, 1E-200 with 0, 0, 1E+308, which is 2.2E+107 here).',
   lookupReadZone:
@@ -263,8 +261,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat-edges-held:DVARP#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:DSTDEV#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.00817355235617137 } },
   'stat-edges-held:DSTDEVP#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.00817314366833611 } },
-  'ets-held:cal-3-20-4#5': { reason: 'etsQuarterStep', engine: { t: 'n', v: 91 } },
-  'ets-held:cal-3-28-1#6': { reason: 'etsQuarterStep', engine: { t: 'n', v: 91 } },
   'stat-edges-held:CORREL#3': { reason: 'momentRange', engine: { t: 'n', v: 1 } },
   'stat-edges-held:PEARSON#3': { reason: 'momentRange', engine: { t: 'n', v: 1 } },
   'stat-edges-held:RSQ#3': { reason: 'momentRange', engine: { t: 'n', v: 1 } },
