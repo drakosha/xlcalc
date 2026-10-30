@@ -73,9 +73,12 @@ function fieldXml(f: PivotField, i: number, p: PivotTable, place: ReturnType<typ
   if (f.pageBreak) a += ' insertPageBreak="1"'
   if (f.multipleItems) a += ' multipleItemSelectionAllowed="1"'
   if (f.includeNewItems) a += ' includeNewItemsInFilter="1"'
+  // a field filtered by a value field's values (a value filter, Top 10)
+  if (p.filters?.some((x) => x.field === i && x.value !== undefined)) a += ' measureFilter="1"'
   if (sort) a += ` sortType="${sort.order}"`
   if (subs !== undefined && !own) a += ' defaultSubtotal="0"'
-  if (own) a += ' defaultSubtotal="0"' + subs.map((s) => ` ${SUBTOTAL_ATTR[s]}Subtotal="1"`).join('')
+  // functions of its own, each flagged, without defaultSubtotal="0" as Excel writes them
+  if (own) a += subs.map((s) => ` ${SUBTOTAL_ATTR[s]}Subtotal="1"`).join('')
   const items = f.items?.map((t) => {
     const x = (t.item === undefined ? '' : ` x="${t.item}"`) + (t.caption === undefined ? '' : ` n="${escapeAttr(t.caption)}"`) + (t.hidden ? ' h="1"' : '') + (t.collapsed ? ' sd="0"' : '') + (t.calculated ? ' f="1"' : '') + (t.missing ? ' m="1"' : '')
     return `<item${x}/>`
@@ -85,8 +88,9 @@ function fieldXml(f: PivotField, i: number, p: PivotTable, place: ReturnType<typ
   if (items && own) for (const s of subs) items.push(`<item t="${SUBTOTAL_ATTR[s]}"/>`)
   const list = items ? `<items count="${items.length}">${items.join('')}</items>` : ''
   const scope = sort?.by ? `<autoSortScope>${pivotAreaXml({ dataOnly: false, outline: false, fieldPosition: 0, references: [{ field: 'values', items: [sort.by.value], selected: false }, ...(sort.by.at ?? []).map((r) => ({ field: r.field, items: [r.item], selected: false }))] })}</autoSortScope>` : ''
-  // Repeat Item Labels of a field unlike the PivotTable's, an Excel 2010 setting
-  const fill = f.repeatLabels !== undefined && f.repeatLabels !== (p.repeatLabels ?? false) ? `<extLst><ext uri="{2946ED86-A175-432a-8AC1-64E0C546D7DE}" xmlns:x14="${X14}"><x14:pivotField fillDownLabels="${f.repeatLabels ? 1 : 0}"/></ext></extLst>` : ''
+  // Repeat Item Labels, an Excel 2010 setting each field of a PivotTable that repeats them holds, which a refresh reads
+  const repeat = f.repeatLabels ?? p.repeatLabels
+  const fill = repeat !== undefined && (repeat || f.repeatLabels !== undefined) ? `<extLst><ext uri="{2946ED86-A175-432a-8AC1-64E0C546D7DE}" xmlns:x14="${X14}"><x14:pivotField fillDownLabels="${repeat ? 1 : 0}"/></ext></extLst>` : ''
   return list || scope || fill ? `<pivotField${a}>${list}${scope}${fill}</pivotField>` : `<pivotField${a}/>`
 }
 
@@ -125,6 +129,8 @@ function conditionXml(f: PivotFilter, w: PivotWriting): string {
   const one = (op: string, v: string) => `<customFilter${op ? ` operator="${op}"` : ''} val="${v}"/>`
   if (/NotBetween$/.test(t)) return `<customFilters>${one('lessThan', arg(0))}${one('greaterThan', arg(1))}</customFilters>`
   if (/Between$/.test(t)) return `<customFilters and="1">${one('greaterThanOrEqual', arg(0))}${one('lessThanOrEqual', arg(1))}</customFilters>`
+  // a label equal to the text is a value of the column's list, as Excel writes it
+  if (t === 'captionEqual') return `<filters><filter val="${arg(0)}"/></filters>`
   const not = /^caption(Not)/.test(t)
   const pattern = /BeginsWith$/.test(t) ? `${arg(0)}*` : /EndsWith$/.test(t) ? `*${arg(0)}` : /Contains$/.test(t) ? `*${arg(0)}*` : arg(0)
   const op = not && pattern !== arg(0) ? 'notEqual' : (OPERATOR.find(([re]) => re.test(t))?.[1] ?? '')
@@ -133,8 +139,8 @@ function conditionXml(f: PivotFilter, w: PivotWriting): string {
 
 function filterXml(f: PivotFilter, id: number, w: PivotWriting): string {
   const label = f.type.startsWith('caption')
-  const date = f.type.startsWith('date')
-  const s = (k: number) => (f.args?.[k] === undefined || !(label || date) ? '' : ` stringValue${k + 1}="${escapeAttr(String(f.args[k]))}"`)
+  // a label filter keeps its text; a date filter's dates are in its condition alone
+  const s = (k: number) => (f.args?.[k] === undefined || !label ? '' : ` stringValue${k + 1}="${escapeAttr(String(f.args[k]))}"`)
   const a =
     ` fld="${f.field}"` +
     (f.value === undefined ? '' : ` iMeasureFld="${f.value}"`) +
