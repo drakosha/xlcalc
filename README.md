@@ -24,25 +24,25 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (29.10.2026, 0.67.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 380 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (30.10.2026, 0.68.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 380 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 316 KB (121) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 565 KB (213) |
+| `compute` from `xlcalc` | calculating a workbook | 369 KB (141) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 618 KB (234) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 635 KB (236) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 235 KB (87) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 313 KB (116) |
-| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 26 KB (9), its worker 739 KB (251), 564 KB (213) where a bundler splits off the locales and regex levels it loads |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 694 KB (258) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 244 KB (91) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 322 KB (120) |
+| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 173 KB (63) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 27 KB (10), its worker 798 KB (273), 617 KB (233) where a bundler splits off the locales and regex levels it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
-| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 50 KB (19) |
-| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 105 KB (39) |
+| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order | 52 KB (20) |
+| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 109 KB (40) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
-| `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 124 KB (19) |
-| `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 7 KB (3), and the locale's module |
-| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 34 KB (12) |
+| `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 128 KB (19) |
+| `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (4), and the locale's module |
+| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
 `xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.

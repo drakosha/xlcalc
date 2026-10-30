@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.68.0 (2026-10-30)
+
+Added:
+
+- `LAMBDA`: a formula's own function, called in place, kept in `LET` or a defined name and called by its name, recursive; `ISOMITTED`, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, `GROUPBY` and `PIVOTBY`. A function left as a cell's value is `#CALC!`, as in Excel; a call by a function's name (`BYROW(A1:C3,SUM)`) is decided when the formula is compiled, and a defined name of the same word stays the name (Excel for Mac; Excel for Windows 16.0.20430 does not know them) ([Functions of your own: LAMBDA](docs/formulas.md#functions-of-your-own-lambda)).
+- `INDIRECT` and `OFFSET`: the references they find are learned as they calculate, so edits of what they read, and edits that make them read elsewhere, recalculate them; a workbook without them is calculated as before. `CELL`, `INFO`, `SHEET`, `SHEETS`, `FORMULATEXT`, `ISFORMULA`, `TRIMRANGE` and the trim references `A1:.C9`, `A1.:C9`, `A1.:.C9`. `ComputeOptions.file` (`BookFile`) tells `CELL` and `INFO` of the file the workbook came from ([References a formula finds as it calculates](docs/references.md#references-a-formula-finds-as-it-calculates)).
+- `FILTERXML`, with an XML 1.0 parser and XPath 1.0 of the package's own (Excel for Windows, 319 cases).
+- `REGEXTEST`, `REGEXEXTRACT` and `REGEXREPLACE` over the level of regular expressions in use, `xlcalc/regex`'s or JavaScript's ([Regular expressions](docs/regex.md)); neither Excel for Mac 16.114 nor Excel for Windows 16.0.20430 has them yet, so they follow Microsoft's description.
+- `COUPDAYS` of basis 1, `VDB`, `ASC`, `DBCS`, `JIS`, `PHONETIC`, `ENCODEURL` (Excel for Mac and Windows, with held-out sets).
+- The functions of connections, `CUBEVALUE` and the other cube functions, `RTD`, `WEBSERVICE`, `IMAGE`, `STOCKHISTORY`, `TRANSLATE`, `DETECTLANGUAGE`, `CALL`, `REGISTER.ID`, `EUROCONVERT`: known functions, with Excel's answers where nothing answers them (Excel for Windows, 47 cases). A formula over one keeps the value its file stores until it is calculated ([Values a file stores](docs/formulas.md#values-a-file-stores)).
+- `externals.resolve`: the host answers the calls of its own functions with any arguments and of the functions of connections at the time of the calculation, with a value, an array, a cube member or a promise. Until a promise settles the cell is `#BUSY!` (`#GETTING_DATA` for a cube function) and listed in the result's `pending`; `Session.settleConnections()` waits for the answers, `Session.refreshConnections(names?)` asks again as Excel's Refresh All, `createInlineCalc` and a pool wait within the call's `timeoutMs` ([A resolver](docs/formulas.md#a-resolver)).
+- `unknownFunctions: 'held'`: a formula over a function the engine does not know keeps the value its file stores until it is calculated, and the cells reading it are calculated from that value; `CellIssue.fromFile` marks such a formula in `diagnostics` ([Values a file stores](docs/formulas.md#values-a-file-stores)).
+- `xlcalc/csv`, `readCsv` and `writeCsv`: a CSV file read into a workbook of one sheet as Excel opens it in the workbook's locale (numbers, dates, percentages, the encoding and delimiter found), a sheet written as Excel saves it; no dependencies and none of the calculation (Excel for Mac) ([Reading and writing CSV](docs/csv.md)).
+- `ErrorCode` `CONNECT`, `BLOCKED`, `BUSY`, `GETTING_DATA`, read and written as Excel stores them; `FunctionCategory` `user`, `cube`, `web`.
+
+Changed:
+
+- A host's exhaustive `switch` over `ErrorCode` or `FunctionCategory` needs the new members.
+- A word that is a workbook's defined name stays the name where a function of that word is now known (`Ставка` in ru-RU is no longer read as `RATE`).
+- The xlsx writers tell functions by a list of their names alone, without the engine.
+- A formula that uses a reference only for its place (`ROW`, `COLUMNS`, `CELL`'s address) does not make its own cell a circular reference, as in Excel.
+- Tables are checked against merged areas once per sheet: a workbook of 600 tables and 3,000 merged areas opens in 36 ms, where it took 211.
+- The bundle of `compute` alone is under 380 KB minified, up from 325 KB.
+
 ## 0.67.0 (2026-10-29)
 
 Added:
@@ -460,7 +484,7 @@ A session closed at once after it opened can look held for a few milliseconds: t
 
 ## 0.50.0 (2026-10-18)
 
-Internal release; not published to npm. Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md), "Parity on the branch `perf/parity`"). The synthetic book's values and hashes are as in 0.49.1.
+Internal release; not published to npm. Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md) as it was then, in the history of that file). The synthetic book's values and hashes are as in 0.49.1.
 
 Added:
 
