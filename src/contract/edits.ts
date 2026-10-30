@@ -119,6 +119,8 @@ export type ChangingMethod =
   | 'setNames'
   | 'setExternalBooks'
   | 'setClock'
+  | 'refreshConnections'
+  | 'settleConnections'
   | 'editStructure'
   | 'setStyles'
   | 'setLayout'

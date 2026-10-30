@@ -29,6 +29,8 @@ import type { NestedMarks } from './nested-marks.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
 import { Areas, asValue, E, fitNumber, fromCellValue, holds, isErr, Lambda, nearZero, Rng, whole, type CErr, type V } from './values.js'
 import type { Column } from './column.js'
+import { STORED_FUNCTIONS } from './functions/connections.js'
+import type { Outside } from './outside.js'
 
 export interface SheetData {
   name: string
@@ -72,6 +74,9 @@ export interface RuntimeContext {
   book?: BookFacts
   /** INDIRECT's reading of a text as a reference (`indirect.ts`); without it every text is #REF!. */
   refer?: (text: string, a1: boolean, s: number, r: number, c: number) => Rng | CErr
+  /** The answers to calls outside the workbook (`outside.ts`), and the host's functions it answers whatever their arguments. */
+  outside?: Outside
+  hosts?: readonly string[]
 }
 
 /** Whether SUBTOTAL and AGGREGATE skip a sheet's hidden rows by their rule: all of them, or those of a filtered sheet. */
@@ -406,8 +411,15 @@ export function makeRuntime(ctx: RuntimeContext) {
   }
   // a dynamic function's quiet form tells the graph nothing it finds (`exec/placed.ts`)
   const quiet: Cx = Object.create(cx, { found: { value: () => {} } })
+  // a function of connections asks the host first (its cell's place before its arguments, `cell`), then answers as without it
+  const outward = (name: string, caller: (...a: Arg[]) => Arg): ((...a: Arg[]) => Arg) => {
+    const cube = name.startsWith('CUBE')
+    return (s, r, c, ...args) => ctx.outside?.ask(cx, name, args, ctx.sheets[s as number].name, s as number, r as number, c as number, cube) ?? caller(s, r, c, ...args)
+  }
+  // the host's functions with a resolver: any arguments, #N/A without an answer
+  for (const name of ctx.hosts ?? []) F[name] = (s, r, c, ...args) => ctx.outside?.ask(cx, name, args, ctx.sheets[s as number].name, s as number, r as number, c as number, false) ?? E.NA
   for (const [name, def] of Object.entries(DEFS)) {
-    F[name] = route(name, makeCaller(def, cx))
+    F[name] = STORED_FUNCTIONS.has(name) ? outward(name, makeCaller(def, cx)) : route(name, makeCaller(def, cx))
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
     if (!def.dynamic) continue
     F[name + QUIET] = makeCaller(def, quiet)

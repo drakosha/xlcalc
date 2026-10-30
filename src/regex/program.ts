@@ -28,6 +28,8 @@ export interface Program {
   names: string[]
   /** Registers: three for each group (0 the whole pattern: start pending, start, end), then counters and starts of iterations. */
   slots: number
+  /** The pattern's capturing groups. */
+  groups: number
   groupPc: number[]
   head: Head
   anchored: boolean
@@ -371,6 +373,7 @@ export function compile(parsed: Parsed): Program {
     refs,
     names,
     slots,
+    groups: parsed.groups,
     groupPc,
     head: parsed.head,
     anchored: anchoredAt(root),

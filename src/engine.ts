@@ -9,7 +9,7 @@
  */
 import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput, UnknownFunctions } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
-import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
+import { answered, changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { externalNames } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
@@ -35,6 +35,7 @@ import { arrayArea, holds } from './array-areas.js'
 import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
 import { quoteSheet, sheetKey } from './syntax.js'
 import { prepare, preparedHolding, prepareShaped, type Prepared, type Shapes } from './prepare.js'
+import { Outside } from './outside.js'
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
@@ -83,6 +84,8 @@ export interface EngineOptions {
   cached?: CachedValues
   /** `ComputeOptions.unknownFunctions`. */
   unknownFunctions?: UnknownFunctions
+  /** A session's answers to calls outside the workbook, kept from one state to the next (`outside.ts`); else the state's own from `externals`. */
+  outside?: Outside
   /** What a formula showed before a session's book was built again, for one a circular reference stops now that holds none (`held.ts`). */
   prior?: (f: Formula) => V | undefined
   /** Gets the sheets whose cells the state copied to change a held value: the book given holds other inputs there. */
@@ -210,6 +213,7 @@ function emptySheet(name: string): SheetData {
 // ---------- preparation ----------
 
 export const codegenContext = (state: EngineState, s: number, area?: Rect, unknown?: boolean): CodegenContext => ({
+  ...(state.ctx.hosts ? { hosted: true } : {}),
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
   table: (n, r) => {
@@ -278,6 +282,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     seed: opts.seed,
     rules: rulesOf(book.locale, clock, epoch),
     externals: opts.externals?.values ?? {},
+    ...(opts.externals ? { outside: opts.outside ?? new Outside(opts.externals.resolve, opts.externals.values ?? {}) } : {}),
+    ...(opts.externals?.resolve ? { hosts: externalFunctions } : {}),
     cache,
     flat: new RangeCache(cache),
     index: new RangeCache(cache),
@@ -377,6 +383,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   state.anew = builtAnew(state, opts.cached, opts.prior)
   yield* evaluateAll(state)
   state.anew = state.cow = undefined
+  yield* answered(state, tracker())
   return state
 }
 
@@ -508,6 +515,21 @@ export function* applyClock(state: EngineState, now: number, seed: number): Step
   setNow(state, now, seed)
   const track = tracker()
   yield* recompute(state, new Set(state.volatile), track)
+  return changed(state, track)
+}
+
+/** The formulas `ids`, over calls outside the workbook, computed again: their answers are to be asked again. */
+export function* applyOutside(state: EngineState, ids: number[]): Steps<number[]> {
+  if (!ids.length) return []
+  const track = tracker()
+  yield* recompute(state, new Set(ids), track)
+  return changed(state, track)
+}
+
+/** The cells waiting for answers from outside the workbook computed again with those that arrived (`answered`). */
+export function* applyAnswers(state: EngineState): Steps<number[]> {
+  const track = tracker()
+  yield* answered(state, track)
   return changed(state, track)
 }
 

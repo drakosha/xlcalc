@@ -14,18 +14,19 @@ import { checkCopyOptions, copyText } from './session/clipboard.js'
 import { checkValuesOptions, valuesIn } from './session/values.js'
 import type { CellValue, CopyTextOptions, ValuesOptions } from './contract.js'
 import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
-import { tracker } from './evaluate.js'
+import { ANSWER_ROUNDS, tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
 import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, ExternalBook, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, SelectionLabels, Session, SpecialCells, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions, WorkbookStatistics } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyLooks, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
+import { applyAnswers, applyClock, applyEdits, applyHidden, applyLooks, applyMerges, applyOutside, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState, type Formula } from './engine.js'
+import { Outside } from './outside.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { InputError } from './input-error.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkBook, checkCell, checkClock, checkEdits, checkExternalBooks, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
-import { checkBoolean, checkNumber, checkString } from './input/basic.js'
+import { array, checkBoolean, checkNumber, checkString } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
@@ -115,6 +116,13 @@ export interface SessionSteps {
   setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
   setExternalBooks(books: ExternalBook[], opts?: EditOptions): Steps<EditResult>
   setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
+  refreshConnections(names?: string[], opts?: EditOptions): Steps<EditResult>
+  /** The cells waiting for answers computed again with those that arrived; driven asynchronously, it waits for them first. */
+  takeAnswers(): Steps<EditResult>
+  /** The answers on their way now, arrived (none without `externals`). */
+  settled(): Promise<void>
+  /** Whether a cell waits for an answer still on its way. */
+  onTheWay(): boolean
   editStructure(op: StructureOp, opts?: EditOptions): Steps<SessionStructureResult>
   setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
   setLayout(edits: LayoutEdit[], opts?: EditOptions): Steps<EditResult>
@@ -173,6 +181,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
   const { externals, execution, unknownFunctions } = o
+  // the answers to calls outside the workbook, kept by the session from one state to the next
+  const outside = externals && new Outside(externals.resolve, externals.values ?? {})
   const display = o.display !== false
   // the cells a host was given (`getBook`; `getSnapshot` gives a copy), which it may keep: a state built later copies
   // them, so they change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
@@ -183,7 +193,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const unlent = (cells: object) => !lent.has(cells)
   /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
-  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, unknownFunctions, file: o.file, own, ...more })
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, unknownFunctions, file: o.file, own, ...(outside ? { outside } : {}), ...more })
   let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
@@ -793,6 +803,24 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         throw e
       }
     },
+    *refreshConnections(names?: string[], eo?: EditOptions) {
+      if (names !== undefined) array(names, 'names', 'an array of function names').forEach((n, i) => checkString(n, `names[${i}]`))
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const up = names?.map((n) => n.toUpperCase())
+      outside?.drop(up)
+      // the formulas over calls outside the workbook (not over a function the engine does not know), of the functions named
+      const calls = (f: Formula) => !f.unknown && (f.external || f.stored !== undefined) && (!up || up.some((n) => f.text.toUpperCase().includes(`${n}(`)))
+      const keys = yield* applyOutside(s, s.formulas.flatMap((f) => (f && calls(f) ? [f.id] : [])))
+      return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
+    },
+    *takeAnswers() {
+      const s = yield* ready()
+      const keys = yield* applyAnswers(s)
+      return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
+    },
+    settled: () => outside?.settled() ?? Promise.resolve(),
+    onTheWay: () => outside?.onTheWay() ?? false,
     *editStructure(op: StructureOp, eo?: EditOptions) {
       const old = yield* ready()
       checkBase(eo, revision)
@@ -1002,6 +1030,17 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     setNames: (names, o) => subs.after('setNames', now(() => core.setNames(names, o))),
     setExternalBooks: (books, o) => subs.after('setExternalBooks', now(() => core.setExternalBooks(books, o))),
     setClock: (clock, o) => subs.after('setClock', now(() => core.setClock(clock, o))),
+    refreshConnections: (names, o) => subs.after('refreshConnections', now(() => core.refreshConnections(names, o))),
+    settleConnections: async () => {
+      // answers that lead to calls of their own are waited for in turn, the changes of every round told as one
+      let out: EditResult | undefined
+      for (let round = 0; round < ANSWER_ROUNDS && (!out || core.onTheWay()); round++) {
+        await core.settled()
+        const r = now(() => core.takeAnswers())
+        out = out ? { ...r, changes: [...new Map([...out.changes, ...r.changes].map((c) => [`${c.sheet}!${c.cell}`, c])).values()] } : r
+      }
+      return subs.after('settleConnections', out!)
+    },
     editStructure: (op, o) => subs.after('editStructure', now(() => core.editStructure(op, o))),
     setStyles: (styles, o) => subs.after('setStyles', core.setStyles(styles, o)),
     setLayout: (edits, o) => subs.after('setLayout', now(() => core.setLayout(edits, o))),

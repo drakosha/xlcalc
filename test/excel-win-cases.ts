@@ -44,6 +44,8 @@ export const WIN_SETS: WinSet[] = [
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
 export const WIN_REASONS = {
+  winRegexFunctions:
+    '`REGEXTEST`, `REGEXEXTRACT` and `REGEXREPLACE` are not functions of Excel 16.0.20430 for Windows (`#NAME?`), nor of Excel 16.114 for Mac; the engine computes them as Microsoft describes them.',
   winTranslate:
     '`TRANSLATE` and `DETECTLANGUAGE` are not functions of Excel 16.0.20430 for Windows (`#NAME?`); the engine answers `#BLOCKED!`, as Excel answers `STOCKHISTORY` where Microsoft\'s service is not reached.',
   winGroupby: '`GROUPBY` and `PIVOTBY`: Excel for Windows 16.0.20430 (Current Channel 2024) does not know them and answers `#NAME?`; Excel for Mac 16.114 and the engine summarize.',

@@ -81,6 +81,7 @@ export const ruRUFunctionText: Required<Pick<Locale, 'argumentWords' | 'function
     sizing: 'масштаб', sort_by: 'сортировать_по', source: 'источник', source_language: 'исходный_язык', stock: 'акция',
     target: 'цель', target_language: 'язык_перевода', topic: 'тема', triangulation_precision: 'точность_триангуляции',
     url: 'адрес_url',
+    case_sensitivity: 'учитывать_регистр', occurrence: 'вхождение', pattern: 'шаблон', replacement: 'замена', return_mode: 'режим_возврата',
   },
   functionText: {
     categories: {
@@ -485,6 +486,9 @@ export const ruRUFunctionText: Required<Pick<Locale, 'argumentWords' | 'function
       RATE: 'Процентная ставка аннуитета за период.',
       RECEIVED: 'Сумма, полученная при погашении полностью инвестированной ценной бумаги.',
       REDUCE: 'Значение, накопленное функцией по каждому значению массива.',
+      REGEXEXTRACT: 'Части текста, соответствующие регулярному выражению.',
+      REGEXREPLACE: 'Текст, в котором части, соответствующие регулярному выражению, заменены.',
+      REGEXTEST: 'Соответствует ли текст регулярному выражению.',
       'REGISTER.ID': 'Регистрационный идентификатор процедуры из библиотеки динамической компоновки.',
       REPLACE: 'Текст, в котором знаки заменены другим текстом.',
       REPLACEB: 'Текст, в котором байты заменены другим текстом.',

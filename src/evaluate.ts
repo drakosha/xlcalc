@@ -6,7 +6,7 @@
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { EngineState, Formula } from './engine.js'
-import { ArraySizeError, due, located, paced, step, type Steps } from './exec/budget.js'
+import { ArraySizeError, awaitAnswers, due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import { readsMade } from './graph/dynamic.js'
@@ -114,6 +114,8 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     } else {
       // out of a cycle's way, a formula holding a value drops it once the computation settles (a spill may close the cycle again)
       if (state.held.size && state.held.has(id)) state.outside.add(id)
+      // computed again, a call outside the workbook waits and answers anew
+      if (f.external || f.stored !== undefined) state.ctx.outside?.forget(f.s, f.r, f.c)
       try {
         const x = f.dynamic ? computed(state, f) : f.fn()
         if (f.area) { array = true; v = fixed(state, f, x, t) }
@@ -220,9 +222,37 @@ export function* evaluateAll(state: EngineState, t?: Tracker): Steps<void> {
 /**
  * Recomputes a set of formulas and everything that depends on them, in topological order. Where a cycle runs
  * through a spill range, before or after, everything is computed again from no spills, as a new state is: what
- * such a cycle holds depends on which arrays spilled first.
+ * such a cycle holds depends on which arrays spilled first. Then the answers from outside the workbook the cells wait for.
  */
 export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, prune = false): Steps<void> {
+  yield* recomputed(state, dirty, t, prune)
+  yield* answered(state, t)
+}
+
+/** Rounds of answers from outside the workbook a computation waits for: an answer may lead to calls of its own. */
+export const ANSWER_ROUNDS = 8
+
+/**
+ * The cells waiting for answers from outside the workbook (`outside.ts`) computed again once their answers arrive: a
+ * computation driven asynchronously waits for them (`awaitAnswers`), a synchronous one takes those already there.
+ */
+export function* answered(state: EngineState, t: Tracker): Steps<void> {
+  const o = state.ctx.outside
+  for (let round = 0; o?.waiting.size && round < ANSWER_ROUNDS; round++) {
+    if (o.onTheWay()) {
+      if (!awaitAnswers(o.settled())) return
+      yield
+    }
+    const ids = o.arrived().flatMap((p) => {
+      const id = state.at.get(p)
+      return id === undefined ? [] : [id]
+    })
+    if (!ids.length) return
+    yield* recomputed(state, new Set(ids), t)
+  }
+}
+
+function* recomputed(state: EngineState, dirty: Set<number>, t: Tracker, prune = false): Steps<void> {
   if (state.input.iteration) cyclesMoved(state, dirty)
   const before = spillCycle(state)
   // Reuse the reachability set as the active set. Large root batches and existing arrays keep the full pass.

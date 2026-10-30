@@ -81,31 +81,46 @@ export class Matcher {
 
   /** Whether the pattern is found anywhere in `s`, or `'limit'` past the match limit at a start position. */
   test(s: string): boolean | 'limit' {
+    const r = this.search(s, 0)
+    return r === 'limit' ? r : r >= 0
+  }
+
+  /** The first match at `from` or after it: its start and end, then each group's (-1 for one that took no part). */
+  exec(s: string, from: number): number[] | null | 'limit' {
+    const r = this.search(s, from)
+    if (r === 'limit' || r < 0) return r === 'limit' ? r : null
+    const out = [r, this.end]
+    for (let g = 1; g <= this.prog.groups; g++) out.push(this.slots[3 * g + 1], this.slots[3 * g + 2])
+    return out
+  }
+
+  /** The start of the first match at `from` or after it, -1 for none. */
+  private search(s: string, from: number): number | 'limit' {
     const p = this.prog
     this.s = s
     this.len = s.length
     const { first, prefix, required, minLength } = p
     // a required character found nowhere: no match, without trying (as PCRE2 does; Excel, for 6,000 characters too)
-    if (required && s.indexOf(required) < 0) return false
-    for (let at = 0; at <= this.len; ) {
-      if (this.len - at < minLength) return false
+    if (required && s.indexOf(required, from) < 0) return -1
+    for (let at = from; at <= this.len; ) {
+      if (this.len - at < minLength) return -1
       if (p.anchored) {
-        if (at > 0 || (prefix && !s.startsWith(prefix))) return false
+        if (at > 0 || (prefix && !s.startsWith(prefix))) return -1
       } else if (prefix) {
         at = s.indexOf(prefix, at)
-        if (at < 0) return false
+        if (at < 0) return -1
       } else if (first) {
         for (let c = cpAt(s, at); at < this.len && !first(c); c = cpAt(s, at)) at += c > 0xffff ? 2 : 1
-        if (at >= this.len) return false
+        if (at >= this.len) return -1
       }
       this.skipTo = -1
       const r = this.attempt(at)
-      if (r === MATCHED) return true
+      if (r === MATCHED) return at
       if (r === LIMITED) return 'limit'
-      if (r === NONE || p.anchored) return false
+      if (r === NONE || p.anchored) return -1
       at = Math.max(at + (at < this.len && cpAt(s, at) > 0xffff ? 2 : 1), this.skipTo)
     }
-    return false
+    return -1
   }
 
   private push(t: number, a: number, b: number, c: number) {
@@ -504,14 +519,14 @@ export class Matcher {
             pc = code[pc + 1]
           } else if (this.call) pc = this.ret()
           else pc = this.matchEnd(i) ? -1 : -2
-          if (pc === -1) return MATCHED
+          if (pc === -1) return this.matched(i)
           if (pc === -2) ok = false
           break
         case FAIL:
           ok = false
           break
         case MATCH:
-          if (this.matchEnd(i)) return MATCHED
+          if (this.matchEnd(i)) return this.matched(i)
           ok = false
           break
       }
@@ -521,6 +536,13 @@ export class Matcher {
       pc = this.pc
       i = this.pos
     }
+  }
+
+  /** The match's end kept (`exec`). */
+  private end = 0
+  private matched(i: number): number {
+    this.end = i
+    return MATCHED
   }
 
   private matchEnd(i: number): boolean {

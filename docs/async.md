@@ -118,6 +118,8 @@ await calc.compute(book, { signal })
 
 That one stops a formula in progress at its next check. A structure operation stops at its checks but does not yield to the event loop. On the same thread, a signal that fires while it runs is seen when it ends, and its deadline stops it partway: on the synthetic workbook of 34,000 rows, `insertRows` (0.3 s without a deadline) stops after 45 ms with `timeoutMs: 20`. A deadline that passes later, while the new workbook's state is being prepared, can be detected up to 0.4 s late there.
 
+A call whose workbook waits for answers from `externals.resolve` given as promises waits for them up to its `timeoutMs`, which then counts its calculation on from where it stopped: a call can last twice its `timeoutMs`, waiting and calculating. Past the wait the call succeeds with the cells still `#BUSY!` or `#GETTING_DATA` and the result's `pending` naming them; `signal` ends the wait as it stops a calculation ([A resolver](formulas.md#a-resolver)). In a pool a task's hard deadline starts again with each answer that reaches its thread.
+
 A call stopped by its deadline or its signal throws `CalcError` with `soft_timeout` or `aborted` (the signal's reason is the error's `cause`).
 
 ## Limits

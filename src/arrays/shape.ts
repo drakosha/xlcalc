@@ -44,9 +44,10 @@ const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: numbe
 
 /**
  * Shapes of every node of a formula on sheet `scope`; a name is judged by its formula (`nameRef`), which sees the
- * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula.
+ * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula; `hosted`: a function
+ * without a spec is the host's, which may answer an array (`Externals.resolve`).
  */
-export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false, tableRef: TableRef = () => 'REF'): Map<Ast, Shape> {
+export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false, tableRef: TableRef = () => 'REF', hosted = false): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
   // LET's names by slot (a name's formula has its own), the names being expanded
   let bound: Info[] = []
@@ -139,7 +140,7 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
   }
   const call = (name: string, args: Info[], nodes: Ast[]): Info => {
     const spec: FunctionSpec | undefined = FUNCTIONS[name]
-    if (!spec) return { s: 0, ref: false }
+    if (!spec) return { s: hosted ? 1 : 0, ref: false }
     if (name === 'ROW' || name === 'COLUMN') {
       const a = nodes[0]
       const r = (a?.k === 'ref' && !a.ref.spill) || a?.k === 'xref' ? a.ref : null

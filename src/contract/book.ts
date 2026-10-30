@@ -518,14 +518,26 @@ export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
 
 /**
- * A level of match mode 3 (`XLOOKUP`, `XMATCH`) beyond the one built in, which `registerRegex` loads: `pcreSyntax`
+ * A level of regular expressions (match mode 3 of `XLOOKUP` and `XMATCH`, `REGEXTEST`, `REGEXEXTRACT`, `REGEXREPLACE`)
+ * beyond the one built in, which `registerRegex` loads: `pcreSyntax`
  * of `xlcalc/regex`, Excel's syntax translated into JavaScript's regular expressions, or `pcreEngine`, a PCRE2 engine
- * of the package's own with Excel's match limit (`#VALUE!`), stopped by a call's `timeoutMs`. Without one, match
- * mode 3 uses JavaScript's regular expressions in JavaScript's syntax, Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}`
- * and a leading `(?i)` as PCRE2 takes them.
+ * of the package's own with Excel's match limit (`#VALUE!`), stopped by a call's `timeoutMs`. Without one, they use
+ * JavaScript's regular expressions in JavaScript's syntax, Unicode `\d \s \w \b`, `\A \z \Z`, `{,m}` and a leading
+ * `(?i)` as PCRE2 takes them.
  */
 export interface RegexLevel {
   readonly kind: 'xlcalc-pcre-syntax' | 'xlcalc-pcre-engine'
-  /** A pattern's test of a text: true, false or `'limit'` past Excel's match limit; null for a pattern refused (`#VALUE!`). */
-  compile(pattern: string): { test(text: string): boolean | 'limit' } | null
+  /** A pattern compiled; null for a pattern refused (`#VALUE!`). */
+  compile(pattern: string): RegexPattern | null
+}
+
+/** A pattern a level compiled. */
+export interface RegexPattern {
+  /** Whether the pattern is found in a text: true, false or `'limit'` past Excel's match limit. */
+  test(text: string): boolean | 'limit'
+  /**
+   * The first match at `from` or after it: the start and the end of the match, then of each of the pattern's groups in
+   * order, -1 and -1 for a group that took no part in it; null for none, `'limit'` past Excel's match limit.
+   */
+  exec(text: string, from: number): readonly number[] | null | 'limit'
 }

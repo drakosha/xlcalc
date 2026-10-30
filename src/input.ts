@@ -370,7 +370,8 @@ export function checkClock(v: unknown, path: string): Clock {
 
 function checkExternals(v: unknown, path: string): Externals {
   const e = object(v, path, 'externals such as { functions: ["BALANCE"], values: {} }')
-  onlyKeys(e, path, ['functions', 'values'])
+  onlyKeys(e, path, ['functions', 'values', 'resolve'])
+  if (e.resolve !== undefined && typeof e.resolve !== 'function') throw new InputError(`${path}.resolve`, `expected a function answering a call, got ${what(e.resolve)}`)
   array(e.functions, `${path}.functions`, 'an array of function names').forEach((f, i) => checkString(f, `${path}.functions[${i}]`))
   if (e.values !== undefined) {
     const values = object(e.values, `${path}.values`, 'an object of values by call text')

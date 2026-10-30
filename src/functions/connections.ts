@@ -6,10 +6,16 @@
  * IMAGE and STOCKHISTORY #BLOCKED! once their arguments pass, EUROCONVERT without its add-in #NAME?.
  */
 import type { FnDef } from '../args.js'
-import { E, type CErr } from '../values.js'
+import { E, type CErr, type V } from '../values.js'
 
-/** A function whose every call answers `e`, its arguments taken as they are (an error among them too). */
-const answering = (args: string, e: CErr, rep?: number): FnDef => ({ args, fn: () => e, ...(rep ? { rep } : {}) })
+/**
+ * A function of connections: its cell's place first (`cell`), which a host's answer takes (`outside.ts`), and an array
+ * it may answer; `fn` answers without the host.
+ */
+const outward = (args: string, fn: (...a: any[]) => V, more: Partial<FnDef> = {}): FnDef => ({ args, cell: true, array: true, fn: (_s: number, _r: number, _c: number, ...a: unknown[]) => fn(...a), ...more })
+
+/** A function whose every call answers `e` without the host, its arguments taken as they are (an error among them too). */
+const answering = (args: string, e: CErr, rep?: number): FnDef => outward(args, () => e, rep ? { rep } : {})
 
 /** IMAGE's source is a web address; sizing 0 to 3 (fit, fill, original, custom). */
 const WEB = /^https?:\/\//i
@@ -23,13 +29,13 @@ export const functions: Record<string, FnDef> = {
   CUBESETCOUNT: answering('a', E.NA),
   CUBEVALUE: answering('a a?', E.NA, 1),
   RTD: answering('a a a', E.NA, 1),
-  WEBSERVICE: { args: 's', fn: () => E.VALUE },
-  IMAGE: { args: 's s? n? n? n?', fn: (source: string, _alt?: string, sizing = 0) => (!WEB.test(source) || sizing < 0 || sizing > 3 ? E.VALUE : E.BLOCKED) },
+  WEBSERVICE: outward('s', () => E.VALUE),
+  IMAGE: outward('s s? n? n? n?', (source: string, _alt?: string, sizing = 0) => (!WEB.test(source) || sizing < 0 || sizing > 3 ? E.VALUE : E.BLOCKED)),
   // Excel loads as many properties as a function newer than Excel 2007 takes arguments (the set arity)
-  STOCKHISTORY: { args: 's d d? n? n? n?', rep: 1, max: 254, fn: () => E.BLOCKED },
+  STOCKHISTORY: outward('s d d? n? n? n?', () => E.BLOCKED, { rep: 1, max: 254 }),
   // Excel 16.0.20430 for Windows has neither (#NAME?); Microsoft's service unreached, as STOCKHISTORY's
-  TRANSLATE: { args: 's s? s?', fn: () => E.BLOCKED },
-  DETECTLANGUAGE: { args: 's', fn: () => E.BLOCKED },
+  TRANSLATE: outward('s s? s?', () => E.BLOCKED),
+  DETECTLANGUAGE: outward('s', () => E.BLOCKED),
   // Excel opens no file with CALL or REGISTER.ID in a formula
   CALL: answering('a', E.VALUE, 1),
   'REGISTER.ID': answering('a a a?', E.VALUE),
