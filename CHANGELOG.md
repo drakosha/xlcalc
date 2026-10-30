@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.70.0 (2026-10-30)
+
+Added:
+
+- `FORECAST.ETS`, `FORECAST.ETS.CONFINT`, `FORECAST.ETS.SEASONALITY` and `FORECAST.ETS.STAT`, in the group `statistics`: Hyndman's additive model with Excel's candidate parameters, its detection of a season, its timeline of dates, months, quarters, half years and years, and its statistics, checked on 4,142 cases of Excel for Windows and Mac in seven sets, four of them held out ([Forecasting with exponential smoothing](docs/forecast.md)).
+
+Changed:
+
+- In ru-RU the forecast functions take Excel for Windows's names: `ПРЕДСКАЗ.ЛИНЕЙН`, `ПРЕДСКАЗ.ETS`, `ПРЕДСКАЗ.ETS.СЕЗОННОСТЬ`, `ПРЕДСКАЗ.ETS.СТАТ` and `ПРЕДСКАЗ.ЕTS.ДОВИНТЕРВАЛ` (with a Cyrillic `Е`, as Excel writes it); the English names Excel for Mac shows are read too.
+- The bundle of `compute` from the package root is under 395 KB minified, up from 380 KB; `compute` of `xlcalc/core` stays under 320 KB.
+
 ## 0.69.0 (2026-10-30)
 
 Added:
