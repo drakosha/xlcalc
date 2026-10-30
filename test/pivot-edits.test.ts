@@ -7,7 +7,8 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { InputError, type BookInput, type PivotTable } from '../src/index.js'
 import { pivotEntry } from '../src/pivot/entry.js'
-import { setPivotEntry } from '../src/pivot/hook.js'
+import { setPivotEntry, setPivotRefresh } from '../src/pivot/hook.js'
+import { refreshPivots } from '../src/pivot/engine.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
@@ -18,9 +19,9 @@ const pivot: PivotTable = {
   name: 'PT',
   cache: 1,
   location: { range: 'A3:B5', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 1, pageColumns: 1 },
-  fields: [{ items: [{ item: 0 }] }, {}],
+  fields: [{ items: [{ item: 0 }] }, {}, { items: [{ item: 0 }] }],
   rows: [0],
-  pages: [{ field: 0 }],
+  pages: [{ field: 2 }],
   values: [{ field: 1, name: 'Sum of N' }],
   rowLines: [{ items: [0] }, { type: 'grand', items: [0] }],
   columnLines: [{ items: [] }],
@@ -28,14 +29,14 @@ const pivot: PivotTable = {
 
 const book = (): BookInput => ({
   sheets: [
-    { name: 'Data', cells: { A1: { value: 'K' }, B1: { value: 'N' }, A2: { value: 'a' }, B2: { value: 2 } } },
+    { name: 'Data', cells: { A1: { value: 'K' }, B1: { value: 'N' }, C1: { value: 'M' }, A2: { value: 'a' }, B2: { value: 2 }, C2: { value: 'x' } } },
     {
       name: 'P',
-      cells: { A1: { value: 'K' }, B1: { value: '(All)' }, A3: { value: 'Row Labels' }, B3: { value: 'Sum of N' }, A4: { value: 'a' }, B4: { value: 2 }, A5: { value: 'Grand Total' }, B5: { value: 2 } },
+      cells: { A1: { value: 'M' }, B1: { value: '(All)' }, A3: { value: 'Row Labels' }, B3: { value: 'Sum of N' }, A4: { value: 'a' }, B4: { value: 2 }, A5: { value: 'Grand Total' }, B5: { value: 2 } },
       pivotTables: [pivot],
     },
   ],
-  pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'Data', range: 'A1:B2' }, fields: [{ name: 'K', items: ['a'] }, { name: 'N' }] }],
+  pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'Data', range: 'A1:C2' }, fields: [{ name: 'K', items: ['a'] }, { name: 'N' }, { name: 'M', items: ['x'] }], records: [[0, 2, 0]] }],
 })
 
 const refusal = { ok: false, code: 'pivot', message: "P!B4 is part of the PivotTable PT: we can't change this part of the PivotTable" }
@@ -68,6 +69,7 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
 describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot in %s', (kind) => {
   it('names its part through editPivotTable, keeps its same name, and refuses as Excel does', async () => {
     setPivotEntry(pivotEntry)
+    setPivotRefresh(refreshPivots)
     try {
       const s = await (await opener(kind))(book(), { clock })
       expect(await s.setCellText('P', 'B4', '3')).toMatchObject(refusal)
@@ -76,11 +78,14 @@ describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot i
       expect(await s.setCellText('P', 'A4', '=1')).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('cannot enter a formula') })
       await expect(s.setCells([{ sheet: 'P', cell: 'A4', input: null }])).rejects.toThrow(/affect a PivotTable/)
       await expect(s.setCells([{ sheet: 'P', cell: 'B1', input: { value: 'b' } }])).rejects.toThrow('"b" is not an item of this field')
-      // a new name is an edit of the definition, which the session makes with editPivotTable
-      await expect(s.setCellText('P', 'A4', 'z')).rejects.toThrow(/editPivotTable/)
+      // a new name is an edit of the definition, which the session makes with editPivotTable: the item's caption, laid out again
+      expect(await s.setCellText('P', 'A4', 'z')).toMatchObject({ ok: true })
+      expect(await s.getValues('P', 'A3:B5')).toEqual([['Row Labels', 'Sum of N'], ['z', 2], ['Grand Total', 2]])
+      expect((await s.getBook()).sheets[1].pivotTables![0].fields[0].items).toEqual([{ item: 0, caption: 'z' }])
       await s.close()
     } finally {
       setPivotEntry(() => null)
+      setPivotRefresh(null)
     }
   })
 })

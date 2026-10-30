@@ -87,7 +87,7 @@ export function editStructure(book: BookInput, op: StructureOp): StructureResult
   const r = applyOp(book, op, lazyValues(book))
   if (!r.ok) return r
   const out = { ...r.book, sheets: r.book.sheets.map((s) => looksTaken(s)) }
-  return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }) }
+  return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }), ...(r.stale ? { stale: r.stale } : {}) }
 }
 
 /** The names of a book's sheets, in order. */
