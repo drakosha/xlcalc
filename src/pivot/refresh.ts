@@ -126,7 +126,9 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
     // the items it had, in their order, those still in the source first kept, then the new ones as they come
     const keys = new Map<string, number>()
     const before = prior?.items ?? []
-    const present = new Set(values.map(itemKey))
+    // each value's first spelling in the source, which an item still there takes (`north` once `North` is gone)
+    const present = new Map<string, PivotValue>()
+    for (const v of values) if (!present.has(itemKey(v))) present.set(itemKey(v), v)
     const limit = cache.retainItems ?? Infinity
     let retained = 0
     const items: PivotValue[] = []
@@ -143,7 +145,7 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
       }
       keys.set(k, items.length)
       map.set(i, items.length)
-      items.push(v)
+      items.push(there ? present.get(k)! : v)
     })
     values.forEach((v, i) => {
       const k = itemKey(v)
@@ -199,6 +201,10 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
       const { missing: _, ...rest } = x
       kept.push(unused.has(i) ? { ...rest, item: i, missing: true } : { ...rest, item: i })
     })
+    // the items new to the field come last, hidden where the field hides some and does not take new items in
+    const listed = new Set(kept.flatMap((x) => (x.item === undefined ? [] : [x.item])))
+    const hide = pf.items.some((x) => x.hidden) && !pf.includeNewItems
+    fields[n].items!.forEach((_, i) => !listed.has(i) && !unused.has(i) && kept.push(hide ? { item: i, hidden: true } : { item: i }))
     placeMaps.set(n, place)
     out[n] = { ...pf, items: kept }
   })
@@ -211,8 +217,10 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
     result.pages = t.pages.flatMap((p) => {
       const f = to(p.field)
       if (f === undefined) return []
-      const item = p.item === undefined ? undefined : placeMaps.get(f)?.get(p.item)
-      return [item === undefined ? { field: f } : { field: f, item }]
+      let item = p.item === undefined ? undefined : placeMaps.get(f)?.get(p.item)
+      // the item shown gone from the source: the first one still there
+      if (item !== undefined && out[f].items?.[item]?.missing) item = out[f].items!.findIndex((x) => !x.missing && !x.hidden)
+      return [item === undefined || item < 0 ? { field: f } : { field: f, item }]
     })
   if (t.values) result.values = t.values.flatMap((v) => (to(v.field) === undefined ? [] : [{ ...v, field: to(v.field)!, ...(v.baseField !== undefined && to(v.baseField) !== undefined ? { baseField: to(v.baseField) } : {}) }]))
   if (t.filters) result.filters = t.filters.flatMap((x) => (to(x.field) === undefined ? [] : [{ ...x, field: to(x.field)! }]))

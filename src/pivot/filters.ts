@@ -58,7 +58,8 @@ const quarter = (m: number) => Math.floor((m - 1) / 3)
 function date(f: PivotFilter, x: number, today: number, epoch: number): boolean {
   const whole = f.wholeDays !== false
   const at = (k: number) => {
-    const v = dateSerial(String(f.args?.[k] ?? ''), epoch)
+    const arg = f.args?.[k] ?? 0
+    const v = typeof arg === 'number' ? arg : dateSerial(arg, epoch)
     return whole ? Math.floor(v) : v
   }
   const d = Math.floor(x)
@@ -128,10 +129,11 @@ export function itemPasses(f: PivotFilter, item: PivotValue, caption: string | u
 
 /**
  * The items of one group (those under the same items of the fields before) that a value filter or Top 10 keeps, by
- * their values: an item whose value is no number fails it. Top 10 keeps the items tied with the last one it takes.
+ * their values: an empty value counts as 0, an error fails them. Top 10 keeps the items tied with the last one it takes.
  */
 export function valuesKept(f: PivotFilter, values: readonly CellValue[]): boolean[] {
-  const nums = values.map((v) => (typeof v === 'number' ? v : undefined))
+  // an empty value is 0 to them (the set filter: (blank) kept by "less than"), an error fails them
+  const nums = values.map((v) => (typeof v === 'number' ? v : v === null ? 0 : undefined))
   const [a = 0, b = 0] = (f.args ?? []).map(Number)
   if (!TOP.has(f.type)) {
     const [lo, hi] = a <= b ? [a, b] : [b, a]

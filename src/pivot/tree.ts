@@ -2,7 +2,8 @@
  * An axis's items as shown: the paths of the records let through as branches, items with no data where a field shows
  * them, each branch's items in the order shown (sorted by label or by a value), then as `PivotNode`s.
  */
-import type { CellValue, PivotAxisField, PivotCache, PivotTable } from '../contract.js'
+import type { CellValue, ErrorCode, PivotAxisField, PivotCache, PivotTable } from '../contract.js'
+import { ERROR_TYPE } from '../error-type.js'
 import { sortOrder } from '../sort-order.js'
 import type { PivotNode } from './result.js'
 import { labelOrder } from './values.js'
@@ -52,6 +53,18 @@ export function branches(s: Sorting, at: readonly Int32Array[], alive: readonly 
   return root
 }
 
+/**
+ * The order of items by a value: an empty value the least, numbers, then errors last either way, the later of
+ * ERROR.TYPE first going up, the earlier going down (the set sort: `#N/A` before `#DIV/0!` ascending).
+ */
+function valueOrder(a: CellValue, b: CellValue, desc: boolean): number {
+  const ea = a !== null && typeof a === 'object'
+  const eb = b !== null && typeof b === 'object'
+  if (ea || eb) return ea && eb ? (desc ? 1 : -1) * ((ERROR_TYPE[(a as { error: ErrorCode }).error] ?? 0) - (ERROR_TYPE[(b as { error: ErrorCode }).error] ?? 0)) : ea ? 1 : -1
+  const c = a === b ? 0 : a === null ? -1 : b === null ? 1 : sortOrder(a, b, false)
+  return desc ? -c : c
+}
+
 /** The path on the other axis that a sort by value reads its values at: its fields' items given, up to the first not given. */
 function otherPath(fields: readonly number[], given: readonly { field: number; item: number }[] = []): number[] {
   const out: number[] = []
@@ -78,7 +91,7 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
       const v = sort.by.value
       const val = new Map(b.order.map((p) => [p, rows ? value([...path, p], at, v) : value(at, [...path, p], v)]))
       const was = new Map(b.order.map((p, i) => [p, i]))
-      b.order.sort((x, y) => sortOrder(val.get(x), val.get(y), sort.order === 'descending') || was.get(x)! - was.get(y)!)
+      b.order.sort((x, y) => valueOrder(val.get(x)!, val.get(y)!, sort.order === 'descending') || was.get(x)! - was.get(y)!)
     } else if (sort) {
       const cached = s.cache.fields[f]?.items ?? []
       const item = (p: number) => {

@@ -67,8 +67,9 @@ function listPlace(lists: readonly (readonly string[])[], s: string): number | u
 }
 
 /**
- * The order of items by label: the texts of a custom list first, by its order (with `lists`, the first list a text is on), then numbers and dates,
- * text, booleans, errors, the blank last either way.
+ * The order of items by label: the texts of a custom list first, by its order (with `lists`, the first list a text is
+ * on), then numbers and dates, text, booleans, errors, the blank last; descending is the whole order turned round, the
+ * blank first (the set sort).
  */
 export function labelOrder(a: PivotValue, b: PivotValue, desc: boolean, lists: readonly (readonly string[])[] | null, epoch = 0): number {
   if (lists && typeof a === 'string' && typeof b === 'string') {
@@ -78,5 +79,6 @@ export function labelOrder(a: PivotValue, b: PivotValue, desc: boolean, lists: r
       return desc ? -c : c
     }
   }
-  return sortOrder(plainOf(a, epoch), plainOf(b, epoch), desc)
+  const c = sortOrder(plainOf(a, epoch), plainOf(b, epoch), false)
+  return desc ? -c : c
 }
