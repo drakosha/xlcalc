@@ -47,20 +47,30 @@ const SEASONAL = [
   0.0833333, 0.75, 0.1, 0.001, 0.899, 0.1, 0.099, 0.899,
 ]
 
-/** The least-squares slope of values on their places 1…n, its sums in the order of the points. */
-function slope(y: readonly number[]): number {
-  const n = y.length
-  if (n === 1) return 0
+/** The least-squares line through points (x, y): its slope and intercept, sums in the order of the points. */
+export function line(xs: readonly number[], ys: readonly number[]): [number, number] {
+  const n = xs.length
+  if (n < 2) return [0, n ? ys[0] : 0]
+  let sx = 0
   let sy = 0
+  let sxx = 0
   let sxy = 0
   for (let i = 0; i < n; i++) {
-    sy += y[i]
-    sxy += (i + 1) * y[i]
+    sx += xs[i]
+    sy += ys[i]
+    sxx += xs[i] * xs[i]
+    sxy += xs[i] * ys[i]
   }
-  const sx = (n * (n + 1)) / 2
-  const sxx = (n * (n + 1) * (2 * n + 1)) / 6
-  return (n * sxy - sx * sy) / (n * sxx - sx * sx)
+  const den = n * sxx - sx * sx
+  const slope = den ? (n * sxy - sx * sy) / den : 0
+  return [slope, (sy - slope * sx) / n]
 }
+
+/** The places from one number to another. */
+export const places = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+
+/** The least-squares slope of values on their places 1…n. */
+const slope = (y: readonly number[]) => line(places(1, y.length), y)[0]
 
 /**
  * A short series extended to 3.5 seasons for the start and the choice of parameters: each new point is the first point

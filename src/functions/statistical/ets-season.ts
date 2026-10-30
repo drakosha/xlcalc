@@ -4,6 +4,7 @@
  * candidates from the periodogram's peaks checked for a hill in the autocorrelation, ranked by power and correlation,
  * and a choice between the two. `round` is floor(x + 0.5) throughout; comparisons are strict and the first of equals wins.
  */
+import { line, places } from './ets-model.js'
 
 /** The longest season FORECAST.ETS takes. */
 export const MAX_SEASON = 8784
@@ -11,27 +12,6 @@ export const MAX_SEASON = 8784
 const MAX_POINTS = 175680
 
 const round = (x: number) => Math.floor(x + 0.5)
-
-/** The least-squares line through points (x, y): its slope and intercept, sums in the order of the points. */
-function line(xs: readonly number[], ys: readonly number[]): [number, number] {
-  const n = xs.length
-  if (n < 2) return [0, n ? ys[0] : 0]
-  let sx = 0
-  let sy = 0
-  let sxx = 0
-  let sxy = 0
-  for (let i = 0; i < n; i++) {
-    sx += xs[i]
-    sy += ys[i]
-    sxx += xs[i] * xs[i]
-    sxy += xs[i] * ys[i]
-  }
-  const den = n * sxx - sx * sx
-  const slope = den ? (n * sxy - sx * sy) / den : 0
-  return [slope, (sy - slope * sx) / n]
-}
-
-const places = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
 
 /** The residuals of the series about its line on 1…n, and them less their mean over a deviation (them, for none). */
 function preprocessed(y: readonly number[]): [number[], number[]] {
