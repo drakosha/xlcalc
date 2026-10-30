@@ -31,6 +31,7 @@ const TIMED = [
 export default defineConfig({
   test: {
     testTimeout: 15_000,
+    setupFiles: ['test/fixtures/all-functions.ts'],
     projects: [
       { extends: true, test: { name: 'main', include: ['test/**/*.test.ts', 'bench/**/*.test.ts'], exclude: [...configDefaults.exclude, ...TIMED] } },
       { extends: true, test: { name: 'timed', include: TIMED, fileParallelism: false } },

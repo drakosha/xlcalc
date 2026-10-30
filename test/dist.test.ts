@@ -26,7 +26,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/keep', './csv', './worker', './worker/thread', './locales', './locales/ru-RU', './regex'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './core', './functions', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/keep', './csv', './worker', './worker/thread', './locales', './locales/ru-RU', './regex'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -72,18 +72,36 @@ describe('built package', () => {
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
 
-  it('an app bundled by esbuild, which keeps the URL of the thread as written, runs the pool with the thread as a second entry point', async () => {
+  /** What an app bundled by esbuild with the pool's thread as a second entry point prints, and the files of the bundle. */
+  async function bundled(app: string): Promise<{ files: string[]; printed: string }> {
     const out = mkdtempSync(join(tmpdir(), 'xlcalc-thread-'))
     try {
-      const app = `import { createCalcPool } from 'xlcalc/worker'
-const pool = createCalcPool({ threads: 1 })
-console.log((await pool.compute({ sheets: [{ name: 'S', cells: { A1: { value: 40 }, B1: { formula: 'A1+2' } } }] })).sheets[0].cells.B1.value)`
       await build({ stdin: { contents: app, resolveDir: root, sourcefile: 'app.js' }, entryPoints: { thread: 'xlcalc/worker/thread' }, entryNames: '[name]', bundle: true, format: 'esm', platform: 'node', outdir: out, absWorkingDir: root, logLevel: 'silent' })
-      expect(readdirSync(out).sort()).toEqual(['stdin.js', 'thread.js'])
-      expect(execFileSync(process.execPath, [join(out, 'stdin.js')], { encoding: 'utf8' }).trim()).toBe('42')
+      return { files: readdirSync(out).sort(), printed: execFileSync(process.execPath, [join(out, 'stdin.js')], { encoding: 'utf8' }).trim() }
     } finally {
       rmSync(out, { recursive: true, force: true })
     }
+  }
+
+  it('an app bundled by esbuild, which keeps the URL of the thread as written, runs the pool with the thread as a second entry point', async () => {
+    const app = `import { createCalcPool } from 'xlcalc/worker'
+const pool = createCalcPool({ threads: 1 })
+console.log((await pool.compute({ sheets: [{ name: 'S', cells: { A1: { value: 40 }, B1: { formula: 'A1+2' } } }] })).sheets[0].cells.B1.value)`
+    expect(await bundled(app)).toEqual({ files: ['stdin.js', 'thread.js'], printed: '42' })
+  }, 60_000)
+
+  it("an app of the light entry calculates a group's functions once it registers the group, in the threads of a pool made after it calculated too", async () => {
+    const app = `import { compute, registerFunctions } from 'xlcalc/core'
+import { engineering } from 'xlcalc/functions'
+import { createCalcPool } from 'xlcalc/worker'
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'DEC2HEX(255)' } } }] }
+const here = compute(book).sheets[0].cells.A1.value
+const pool = createCalcPool({ threads: 1 })
+const before = [here, (await pool.compute(book)).sheets[0].cells.A1.value]
+registerFunctions(engineering)
+console.log(JSON.stringify([...before, compute(book).sheets[0].cells.A1.value, (await pool.compute(book)).sheets[0].cells.A1.value]))`
+    const { printed } = await bundled(app)
+    expect(JSON.parse(printed)).toEqual([{ error: 'NAME' }, { error: 'NAME' }, 'FF', 'FF'])
   }, 60_000)
 
   it('the attribution of ported code stays at the top of its built file', () => {

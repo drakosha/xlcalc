@@ -16,6 +16,8 @@ const display = process.argv[4] !== 'off'
 const { libUrl } = await import('./target.js')
 const { compute, createSession, validateFormula } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
 const { synthBook, classAEdits, classBEdit } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
+// every group of functions loaded, as the package root has them
+await import(libUrl('internal.js'))
 const { codegenContext, createState } = (await import(libUrl('engine.js'))) as typeof import('../../src/engine.js')
 const { makeCompiler } = (await import(libUrl('compile.js'))) as typeof import('../../src/compile.js')
 const { parse } = (await import(libUrl('syntax.js'))) as typeof import('../../src/syntax.js')
