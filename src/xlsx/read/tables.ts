@@ -7,9 +7,10 @@
  */
 import type { CellInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../../contract.js'
 import { InputError } from '../../input-error.js'
+import { localeBooleans } from '../../locale/registry.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
-import { checkTables, DEFAULT_TABLE_STYLE, STYLE_OPTIONS, TABLE_STYLE, TOTALS } from '../../tables/check.js'
+import { DEFAULT_TABLE_STYLE, sheetTables, STYLE_OPTIONS, TABLE_STYLE, TOTALS } from '../../tables/check.js'
 import type { Issues } from '../issues.js'
 import { setCell } from './cells.js'
 import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
@@ -70,9 +71,8 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
 export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, added?: Set<string>): TableInput[] {
   const out: TableInput[] = []
   if (!parts.length) return out
-  // what checkTables reads of the cells, the array formulas and the header cells, not a copy of all of them per part
-  const view: Record<string, CellInput> = {}
-  for (const [addr, cell] of Object.entries(cells)) if (cell.array !== undefined) view[addr] = cell
+  // each table checked against those kept before it, its header cells as it would make them
+  const tables = sheetTables({ cells, merges }, localeBooleans(undefined), new Map(), new Map())
   for (const xml of parts) {
     const read = tableOf(xml, opts)
     if (!read) {
@@ -80,20 +80,19 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
       continue
     }
     const { t, formulas, custom } = read
-    // the header cells the table needs: tried on a copy, kept with the table
+    // the header cells the table needs: tried beside the cells, kept with the table
     const x = parseRange(t.range)
-    const fixed: [string, CellInput][] = []
+    const fixed = new Map<string, CellInput>()
     if (x && t.headers !== false)
       t.columns.forEach((c, i) => {
         const addr = formatAddress(x.r1, x.c1 + i)
         const cell = cells[addr]
-        if (cell) view[addr] = cell
         if (cell?.formula === undefined && cell?.value === c.name) return
         const { formula: _, value: __, array: ___, ...look } = cell ?? {}
-        fixed.push([addr, { ...look, value: c.name }])
+        fixed.set(addr, { ...look, value: c.name })
       })
     try {
-      checkTables({ sheets: [{ name: sheet, cells: { ...view, ...Object.fromEntries(fixed) }, merges, tables: [...out, t] }] }, 'file')
+      tables.add(t, `file.sheets[0].tables[${out.length}]`, (addr) => fixed.get(addr) ?? cells[addr])
     } catch (e) {
       if (!(e instanceof InputError)) throw e
       issues.add('table', { key: 'tableLeftOut', table: t.name, reason: e.message.replace(/^[^:]*: /, '') }, { sheet })
@@ -103,7 +102,6 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
     for (const [addr, cell] of fixed) {
       issues.add('table', { key: 'headerGiven', name: cell.value as string }, { sheet, cell: addr })
       setCell(cells, addr, cell, added)
-      view[addr] = cell
     }
     // a calculated column formula reports what the engine cannot take of it as a cell's would, at the column's first cell
     if (x) formulas.forEach((f, i) => f && reportFormula(f, issues, { sheet, cell: formatAddress(x.r1, x.c1 + i) }))
