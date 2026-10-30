@@ -147,6 +147,10 @@ describe('layoutPivot', () => {
     const cols = laid({ rows: [0], columns: ['values'], values })
     expect(cols.location).toEqual({ range: 'A3:C6', firstHeaderRow: 0, firstDataRow: 1, firstDataColumn: 1 })
     expect(grid(cols)).toEqual([['Row Labels', 'Sum of Amount', 'Count of Amount'], ['North', 3, 2], ['South', 4, 1], ['Grand Total', 7, 3]])
+    // the Values row shown: a caption row over the value fields' names
+    const shown = laid({ rows: [0], columns: ['values'], values, valuesRow: true })
+    expect(shown.location).toEqual({ range: 'A3:C7', firstHeaderRow: 1, firstDataRow: 2, firstDataColumn: 1 })
+    expect(grid(shown).slice(0, 2)).toEqual([['', 'Column Labels', ''], ['Row Labels', 'Sum of Amount', 'Count of Amount']])
   })
 
   it('lays the Filters area out above the table, moving it down when the rows above are too few', () => {
@@ -162,6 +166,7 @@ describe('layoutPivot', () => {
   it('shows its text for errors and for empty cells, its captions, and the words of ru-RU', () => {
     const l = laid({ rows: [3], columns: [0], empty: { show: true, text: '-' }, captions: { grandTotal: 'All', rowHeader: 'Notes' } })
     expect(grid(l).slice(1)).toEqual([['Notes', 'North', 'South', 'All'], ['x', 3, '-', 3], ['(blank)', '-', 4, 4], ['All', 3, 4, 7]])
+    expect(grid(laid({ rows: [3], columns: [0], empty: { show: true, text: '0' } })).slice(2, 4)).toEqual([['x', 3, 0, 3], ['(blank)', 0, 4, 4]])
     expect(grid(laid({ rows: [3] }, 'ru-RU'))).toEqual([['Названия строк', 'Sum of Amount'], ['x', 3], ['(пусто)', 4], ['Общий итог', 7]])
   })
 

@@ -11,3 +11,11 @@ export function pivotArea(location: PivotLocation): Rect | null {
   const cols = (location.pageColumns ?? 1) * 3 - 1
   return { r1: Math.max(0, x.r1 - rows - 1), c1: x.c1, r2: x.r2, c2: Math.max(x.c2, x.c1 + cols - 1) }
 }
+
+/** The parts of a PivotTable an entry cannot change: its range and its Filters area, not the blank row between them, which takes anything as in Excel. */
+export function pivotParts(location: PivotLocation): Rect[] {
+  const whole = pivotArea(location)
+  const x = parseRange(location.range)
+  if (!whole || !x) return []
+  return whole.r1 < x.r1 - 1 ? [x, { ...whole, r2: x.r1 - 2 }] : [x]
+}

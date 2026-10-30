@@ -39,6 +39,7 @@ import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { subscribers } from './session/subscribers.js'
 import { checkArrayEdits } from './spill/fixed.js'
+import { checkPivotEdits } from './pivot/part.js'
 import { sheetExtent } from './session/extent.js'
 import { checkDirection, endOf } from './session/end.js'
 import { autoSumOf } from './session/auto-sum.js'
@@ -668,14 +669,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s)), s.input.locale))), 'setCells')
+      const taken = resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s)), s.input.locale)))
+      checkPivotEdits(s, taken)
+      const [next, out, back] = yield* writeCells(s, taken, 'setCells')
       keep(back)
       return answer(next, out)
     },
     *replaceCells(edits: CellReplace[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, written(checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[], s.input.locale), 'replaceCells')
+      const taken = written(checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[], s.input.locale)
+      checkPivotEdits(s, taken)
+      const [next, out, back] = yield* writeCells(s, taken, 'replaceCells')
       keep(back)
       return answer(next, out)
     },
@@ -683,7 +688,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       checkBase(eo, revision)
       const plan = clearPlan(s, ranges, what)
-      const write = what === 'formats' ? (x: EngineState, edits: CellReplace[], p: Plan) => lookCells(x, edits, p, 'clearCells') : (x: EngineState, edits: CellReplace[], p: Plan) => writeCells(x, edits, 'clearCells', p)
+      const write = what === 'formats' ? (x: EngineState, edits: CellReplace[], p: Plan) => lookCells(x, edits, p, 'clearCells') : (x: EngineState, edits: CellReplace[], p: Plan) => (checkPivotEdits(x, edits), writeCells(x, edits, 'clearCells', p))
       const [next, out, steps] = yield* applyPlan(s, plan, 'clearCells', write)
       if (ranges.length) keep(() => manyStep('clearCells', steps.map((f) => f())))
       return answer(next, out)
@@ -961,6 +966,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const [i, row, col] = at(s, sheet, cell)
       if (input !== null) input = cellTaken(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
+      checkPivotEdits(s, [{ sheet, cell, input }])
       if (!hasRule(s, i, row, col)) return { ok: true }
       return yield* previewed(s, [{ i, r: row, c: col, edit: { sheet: s.sheetNames[i], cell: formatAddress(row, col), input } }], () => entryCheck(s, i, row, col))
     },

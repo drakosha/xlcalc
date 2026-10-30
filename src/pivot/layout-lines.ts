@@ -74,10 +74,12 @@ export function axisLines(table: PivotTable, axis: PivotAxisResult, rows: boolea
       const each = sums.length ? subtotalValues(d, items) : []
       const form = formOf(table, n.field)
       const collapsed = !leaf && n.field !== 'values' && table.fields[n.field]?.items?.[n.item]?.collapsed === true
-      const top = rows && form !== 'tabular' && f?.subtotalTop !== false && sums.length === 1 && sums[0] === 'subtotal' && each.length === 1
-      if (leaf || collapsed) push('data', items)
+      const top = rows && form !== 'tabular' && f?.subtotalTop !== false && sums.length === 1 && each.length === 1
+      // the line of an item over its group shows its subtotal when that goes at the top, of its one function
+      const own = top && sums[0] !== 'subtotal' ? { fn: sums[0] as PivotFunction } : {}
+      if (leaf || collapsed) push('data', items, own)
       else {
-        if (rows && form !== 'tabular') push(top ? 'data' : 'item', items)
+        if (rows && form !== 'tabular') push(top ? 'data' : 'item', items, own)
         walk(n.children, items)
       }
       if (!leaf && !(top || (collapsed && each.length === 1 && sums.length === 1)))

@@ -41,6 +41,7 @@ const EMPTY_COLS = 3
 
 type Label = { value: PivotCell['value']; error?: ErrorCode; numberFormat?: NumberFormat }
 
+
 /** Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. */
 export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>): PivotLaidOut {
   const { table, cache } = result
@@ -49,8 +50,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   const values = table.values ?? []
   const rowFields = result.rows.fields
   const colFields = result.columns.fields
-  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.columns !== false)
-  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.rows !== false)
+  const rowLines = axisLines(table, result.rows, true, table.grandTotals?.rows !== false)
+  const columnLines = axisLines(table, result.columns, false, table.grandTotals?.columns !== false)
   const fieldName = (f: PivotAxisField) => (f === 'values' ? (table.captions?.values ?? words.values) : (table.fields[f]?.name ?? cache.fields[f]?.name ?? ''))
   const valueName = (v: number) => {
     const d = values[v]
@@ -65,15 +66,14 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const cf = cache.fields[f]
     const v = fi?.item === undefined ? undefined : (cf?.items ?? cf?.group?.items)?.[fi.item]
     if (v === null || v === undefined) return { value: words.blank }
-    if (typeof v === 'object') return 'error' in v ? { value: undefined, error: v.error } : { value: v, numberFormat: formatOf(f, true) }
-    // a boolean is the locale's word for it, as text
-    if (typeof v === 'boolean') return { value: rules.display(v, undefined, Infinity).text }
+    // an error and a boolean are the locale's words for them, as text
+    if (typeof v === 'boolean' || (typeof v === 'object' && 'error' in v)) return { value: rules.display(v, undefined, Infinity).text }
+    if (typeof v === 'object') return { value: v, numberFormat: formatOf(f, true) }
     const numberFormat = typeof v === 'number' ? formatOf(f, false) : undefined
     return numberFormat === undefined ? { value: v } : { value: v, numberFormat }
   }
   const labelText = (f: PivotAxisField, item: number): string => {
     const l = itemLabel(f, item)
-    if (l.error) return rules.display({ error: l.error }, undefined, Infinity).text
     const v = l.value
     const shown: CellValue = typeof v === 'object' && v ? dateToSerial(v.date, { dateSystem: book.dateSystem }) : (v ?? null)
     return rules.display(shown, l.numberFormat, Infinity).text
@@ -83,24 +83,26 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const d = a.items.length - 1
     const f = fields[d]
     const own = f === 'values' ? undefined : table.fields[f]?.subtotalCaption
-    if (own !== undefined) return own
     const item = labelText(f, a.items[d])
+    // a caption of its own stands `?` for the item's label (`? all` is `East all`)
+    if (own !== undefined) return own.replaceAll('?', item)
     const under = fields.indexOf('values') > d && a.value !== undefined
     return `${item} ${under ? valueName(a.value!) : a.fn ? words.functions[a.fn] : words.total}`
   }
   const grandLabel = (a: AxisLine) => (a.value !== undefined ? `${words.total} ${valueName(a.value)}` : (table.captions?.grandTotal ?? words.grandTotal))
 
-  // the columns of the rows' labels: a compact field shares the column of the field before it
+  // the columns of the rows' labels: a compact field shares the column of a compact field before it
   const labelCol: number[] = []
   const level: number[] = []
   rowFields.forEach((f, k) => {
-    const shared = k > 0 && formOf(table, f) === 'compact' && formOf(table, rowFields[k - 1]) !== 'tabular'
+    const shared = k > 0 && formOf(table, f) === 'compact' && formOf(table, rowFields[k - 1]) === 'compact'
     labelCol.push(k === 0 ? 0 : labelCol[k - 1] + (shared ? 0 : 1))
     level.push(shared ? level[k - 1] + 1 : 0)
   })
   const colItems = hasItems(colFields)
   const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems ? 1 : 0
-  const captionRow = colItems ? 1 : 0
+  // the caption row over the column fields; over value fields alone only with the Values row shown
+  const captionRow = colItems || (table.valuesRow && colFields.includes('values')) ? 1 : 0
   const height = captionRow + Math.max(colFields.length, 1)
   const empty = !rowFields.length && !colFields.length && !values.length
   const dataCols = empty ? EMPTY_COLS - width : !values.length && !colFields.length ? 0 : columnLines.length
@@ -149,7 +151,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   // the headers: the value field's name at the corner, `Column Labels` (the column fields' names in outline and tabular forms), `Row Labels` (the row fields')
   const headers = table.fieldHeaders !== false
   const compact = (table.layout ?? 'compact') === 'compact'
-  if (colItems) {
+  if (captionRow) {
     if (values.length === 1 && rowFields.length) put(top, left, valueName(0))
     if (headers) {
       if (compact) put(top, left + width, table.captions?.columnHeader ?? words.columnHeader)
@@ -157,8 +159,10 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     }
   }
   if (rowFields.length && headers) {
-    if (compact) put(top + height - 1, left, table.captions?.rowHeader ?? words.rowHeader)
-    else rowFields.forEach((f, k) => (k === 0 || labelCol[k] !== labelCol[k - 1]) && put(top + height - 1, left + labelCol[k], fieldName(f)))
+    rowFields.forEach((f, k) => {
+      if (k > 0 && labelCol[k] === labelCol[k - 1]) return
+      put(top + height - 1, left + labelCol[k], k === 0 && compact ? (table.captions?.rowHeader ?? words.rowHeader) : fieldName(f))
+    })
   }
   if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, valueName(0))
   if (!rowFields.length && width === 1 && values.length === 1) put(top + height, left, valueName(0))
@@ -172,20 +176,26 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     else for (let k = a.from; k <= d; k++) put(top + captionRow + k, col, itemLabel(colFields[k], a.items[k]))
   })
 
-  // the labels of the rows' lines, the deepest of a shared column last; outline and tabular fields repeat theirs when set to
+  // the labels of the rows' lines, the deepest of a shared column last; outline and tabular fields repeat theirs on the
+  // lines of their group when set to, a subtotal's line of an inner field too
+  const repeats = (f: PivotAxisField) => formOf(table, f) !== 'compact' && (f === 'values' ? table.repeatLabels : (table.fields[f]?.repeatLabels ?? table.repeatLabels)) === true
   rowLines.forEach((a, i) => {
     const row = top + height + i
     const d = a.items.length - 1
-    if (a.kind === 'grand') put(row, left, grandLabel(a))
-    else if (a.kind === 'subtotal') put(row, left + labelCol[d], subtotalLabel(rowFields, a))
-    else if (a.kind !== 'blank')
-      for (let k = 0; k <= d; k++) {
-        const f = rowFields[k]
-        const repeat = k < a.from && formOf(table, f) !== 'compact' && (f === 'values' ? table.repeatLabels : (table.fields[f]?.repeatLabels ?? table.repeatLabels))
-        if (k >= a.from || repeat) put(row, left + labelCol[k], itemLabel(f, a.items[k]), level[k] * Math.max(1, table.indent ?? 1))
-      }
+    if (a.kind === 'grand' || a.kind === 'blank') {
+      if (a.kind === 'grand') put(row, left, grandLabel(a))
+      return
+    }
+    const subtotal = a.kind === 'subtotal'
+    for (let k = 0; k <= d; k++) {
+      const f = rowFields[k]
+      if (subtotal && k === d) put(row, left + labelCol[d], subtotalLabel(rowFields, a))
+      else if ((!subtotal && k >= a.from) || repeats(f)) put(row, left + labelCol[k], itemLabel(f, a.items[k]), level[k] * Math.max(1, table.indent ?? 1))
+    }
   })
 
+  // the text shown for an empty cell or an error, a number as a number (`0`), as an entry takes it
+  const typed = (text: string) => rules.numberOnly(text) ?? text
   // the values: each line with values against each column's, by the value field of either and a subtotal's function
   if (values.length && dataCols)
     rowLines.forEach((ra, i) => {
@@ -200,9 +210,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
         const cell: Label = { value: undefined }
         if (numberFormat !== undefined) cell.numberFormat = numberFormat
         if (x === null) {
-          if (table.empty?.show !== false && table.empty?.text) cell.value = table.empty.text
+          if (table.empty?.show !== false && table.empty?.text) cell.value = typed(table.empty.text)
         } else if (typeof x === 'object') {
-          if (table.errors?.show && table.errors.text !== undefined) cell.value = table.errors.text
+          if (table.errors?.show && table.errors.text !== undefined) cell.value = typed(table.errors.text)
           else cell.error = x.error
         } else cell.value = x
         if (cell.value !== undefined || cell.error || cell.numberFormat !== undefined) put(row, col, cell)

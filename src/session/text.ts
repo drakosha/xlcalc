@@ -16,6 +16,7 @@ import { hasCell } from '../structure/area.js'
 import { say } from '../locale/messages.js'
 import { parseAddress } from '../model.js'
 import { arrayPart } from '../spill/fixed.js'
+import { pivotPart } from '../pivot/part.js'
 import { brokenRule } from '../validation/session.js'
 import { CONTENT, someField } from './cells.js'
 import { cellValue } from './looks.js'
@@ -83,10 +84,16 @@ export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'heade
   return table ? { ok: false, code: 'header', message: say(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null
 }
 
-/** Why Excel would not take an entry into the cell alone: it changes part of an array formula, or puts a formula into a table's header cell; null when it takes it. */
+/** Why Excel would not take the edits: they change a cell of a PivotTable's area; null when it takes them. */
+export function pivotRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'pivot'> & CellRef) | null {
+  const part = pivotPart(s, edits)
+  return part && { ok: false, code: 'pivot', message: say(s.input.locale, { key: 'pivotPart', ...part }), sheet: part.sheet, cell: part.cell }
+}
+
+/** Why Excel would not take an entry into the cell alone: it changes part of an array formula or a PivotTable's cell, or puts a formula into a table's header cell; null when it takes it. */
 export function textRefusal(s: EngineState, edit: CellReplace): Refusal<CellTextRefusal> | null {
-  const part = arrayRefusal(s, [edit])
-  return part ? { ok: false, code: 'array', message: part.message } : headerRefusal(s, edit)
+  const part = arrayRefusal(s, [edit]) ?? pivotRefusal(s, [edit])
+  return part ? { ok: false, code: part.code, message: part.message } : headerRefusal(s, edit)
 }
 
 /**

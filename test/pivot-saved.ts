@@ -69,15 +69,20 @@ export function savedResult(table: PivotTable, cache: PivotCache, sheet: SheetIn
       const fn = l.type && l.type !== 'subtotal' && l.type !== 'grand' ? l.type : undefined
       const v = vAt >= 0 && vAt < l.items.length ? l.items[vAt] : l.value
       for (const vv of vAt >= 0 && vAt >= l.items.length && l.type === undefined ? [] : [v]) {
+        // a subtotal's own line over the line of its item, which shows none when the subtotal goes below
         const k = key(path, vv, fn)
-        if (!m.has(k)) m.set(k, i)
+        if (!m.has(k) || l.type) m.set(k, i)
       }
     })
     return m
   }
   const rowAt = index(rowFields, rows)
   const colAt = index(colFields, cols)
-  const pages = (table.pages ?? []).map((p) => ({ field: p.field, items: p.item === undefined ? [] : [p.item], all: p.item === undefined }))
+  // a page field's item shown, else the items it does not hide
+  const pages = (table.pages ?? []).map((p) => {
+    const items = p.item !== undefined ? [p.item] : (table.fields[p.field].items ?? []).flatMap((it, i) => (it.hidden ? [] : [i]))
+    return { field: p.field, items, all: p.item === undefined && !table.fields[p.field].items?.some((it) => it.hidden) }
+  })
   return {
     table,
     cache,
@@ -85,8 +90,13 @@ export function savedResult(table: PivotTable, cache: PivotCache, sheet: SheetIn
     columns: { fields: colFields, items: treeOf(colFields, cols) },
     pages,
     value(r, c, v, fn) {
-      const i = rowAt.get(key(r, rowFields.includes('values') ? v : 0, fn)) ?? rowAt.get(key(r, 0, fn))
-      const j = colAt.get(key(c, colFields.includes('values') ? v : 0, fn)) ?? colAt.get(key(c, 0, fn))
+      // a line by its path, value field and subtotal function: the function is the line's of one axis only
+      const find = (at: Map<string, number>, path: readonly number[], own: boolean) => {
+        const vv = own ? v : 0
+        return at.get(key(path, vv, fn)) ?? at.get(key(path, vv, undefined))
+      }
+      const i = find(rowAt, r, rowFields.includes('values'))
+      const j = find(colAt, c, colFields.includes('values'))
       if (i === undefined || j === undefined) return null
       return valueOf(sheet.cells[formatAddress(top + i, left + j)])
     },
