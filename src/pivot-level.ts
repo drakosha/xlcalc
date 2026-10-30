@@ -1,6 +1,7 @@
 /**
  * The PivotTable engine of `xlcalc/pivot` that `registerPivot` loaded: the refresh a session's PivotTable operations
- * take and the full check of the workbook's PivotTables (`pivot/hook.ts`). A pool's threads load the same engine (`worker/thread.ts`).
+ * take and the full check of the workbook's PivotTables (`pivot/hook.ts`). A pool's threads load the same engine
+ * (`worker/thread.ts`).
  */
 import type { PivotEngine } from './contract.js'
 import { InputError } from './input-error.js'
@@ -21,9 +22,9 @@ export const pivotLoaded = (): boolean => pivotRefresh() !== null
  * Loads the PivotTable engine of `xlcalc/pivot` for every session from now on, a pool's threads too: `import {
  * pivotEngine } from 'xlcalc/pivot'`, then `registerPivot(pivotEngine)`.
  */
-export function registerPivot(e: PivotEngine): void {
-  const parts = e as PivotEngineParts
-  if (typeof e !== 'object' || e === null || e.kind !== 'xlcalc-pivot' || typeof parts.refresh !== 'function' || typeof parts.check !== 'function') throw new InputError('engine', "expected pivotEngine of 'xlcalc/pivot'")
+export function registerPivot(engine: PivotEngine): void {
+  const parts = engine as PivotEngineParts
+  if (typeof engine !== 'object' || engine === null || engine.kind !== 'xlcalc-pivot' || typeof parts.refresh !== 'function' || typeof parts.check !== 'function') throw new InputError('engine', "expected pivotEngine of 'xlcalc/pivot'")
   if (pivotRefresh() === parts.refresh) return
   setPivotRefresh(parts.refresh)
   setPivotCheck(parts.check)

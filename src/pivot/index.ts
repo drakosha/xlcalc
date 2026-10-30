@@ -8,5 +8,5 @@ import type { PivotEngineParts } from '../pivot-level.js'
 import { checkPivotShapes } from './check.js'
 import { refreshPivots } from './engine.js'
 
-/** The engine: `registerPivot(pivotEngine)`. */
+/** The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)). */
 export const pivotEngine: PivotEngine = { kind: 'xlcalc-pivot', refresh: refreshPivots, check: checkPivotShapes } as PivotEngineParts
