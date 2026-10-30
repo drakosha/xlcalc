@@ -1,7 +1,7 @@
 /**
- * `writeKept` over parts that start with a UTF-8 byte order mark, as some writers leave them before `<?xml`: without
- * edits every part stays byte for byte, a part written again keeps its mark, and one whose text comes out the same is
- * the file's own.
+ * `writeKept` over parts as other writers leave them, without edits byte for byte: parts that start with a UTF-8 byte
+ * order mark before `<?xml` (a part written again keeps its mark, and one whose text comes out the same is the file's
+ * own), and a workbook part with space between its sheets.
  */
 import { describe, expect, it } from 'vitest'
 import { writeXlsx } from '../src/xlsx.js'
@@ -12,11 +12,14 @@ import { zip } from '../src/xlsx/zip/write.js'
 const BOM = [0xef, 0xbb, 0xbf]
 const MARKED = ['xl/workbook.xml', 'xl/worksheets/sheet1.xml', 'xl/sharedStrings.xml']
 
-async function marked(): Promise<Uint8Array> {
-  const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 'x' }, B1: { formula: 'A1&"y"' } } }], names: [{ name: 'N', ref: 'S!$A$1' }] } })
+/** A file `writeXlsx` writes, each part `change` names changed by it. */
+async function file(change: (name: string, bytes: Uint8Array) => Uint8Array): Promise<Uint8Array> {
+  const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 'x' }, B1: { formula: 'A1&"y"' } } }, { name: 'T', cells: {} }], names: [{ name: 'N', ref: 'S!$A$1' }] } })
   const a = openArchive(data)
-  return zip(await Promise.all(a.names.map(async (name) => ({ name, data: MARKED.includes(name) ? new Uint8Array([...BOM, ...(await a.bytes(name))!]) : (await a.bytes(name))! }))))
+  return zip(await Promise.all(a.names.map(async (name) => ({ name, data: change(name, (await a.bytes(name))!) }))))
 }
+
+const marked = () => file((name, b) => (MARKED.includes(name) ? new Uint8Array([...BOM, ...b]) : b))
 
 const parts = async (data: Uint8Array) => {
   const a = openArchive(data)
@@ -39,5 +42,14 @@ describe('writeKept over parts with a byte order mark', () => {
     expect(after.get('xl/worksheets/sheet1.xml')).not.toEqual(before.get('xl/worksheets/sheet1.xml'))
     // the workbook's text comes out the same (it already asks for a full calculation on loading)
     expect(after.get('xl/workbook.xml')).toEqual(before.get('xl/workbook.xml'))
+  })
+})
+
+describe('writeKept over a workbook part with space between its sheets', () => {
+  it('leaves it as it was without edits', async () => {
+    const enc = new TextEncoder()
+    const data = await file((name, b) => (name === 'xl/workbook.xml' ? enc.encode(new TextDecoder().decode(b).replace(/(<sheets>|<sheet [^>]*\/>)/g, '$1\r\n    ')) : b))
+    const out = await writeKept(data, { book: (await openKept(data)).book })
+    expect(await parts(out.data)).toEqual(await parts(data))
   })
 })

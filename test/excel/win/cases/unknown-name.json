@@ -1,0 +1,485 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 14.4,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "untaken#1",
+   "group": "untaken",
+   "formula": "IF(ISNA(MATCH(99,E!A1:A3,0)),\"\",Nope)"
+  },
+  {
+   "id": "untaken#2",
+   "group": "untaken",
+   "formula": "IF(TRUE,1,Nope)"
+  },
+  {
+   "id": "untaken#3",
+   "group": "untaken",
+   "formula": "IF(FALSE,Nope,2)"
+  },
+  {
+   "id": "untaken#4",
+   "group": "untaken",
+   "formula": "IFERROR(1,Nope)"
+  },
+  {
+   "id": "untaken#5",
+   "group": "untaken",
+   "formula": "IFNA(1,Nope)"
+  },
+  {
+   "id": "untaken#6",
+   "group": "untaken",
+   "formula": "CHOOSE(1,3,Nope)"
+  },
+  {
+   "id": "untaken#7",
+   "group": "untaken",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,2,0)),\"\",VLOOKUP(99,E!A1:B3,2,0)+Nope)"
+  },
+  {
+   "id": "taken#1",
+   "group": "taken",
+   "formula": "IF(ISNA(Nope),\"\",1)"
+  },
+  {
+   "id": "taken#2",
+   "group": "taken",
+   "formula": "ISERROR(Nope)"
+  },
+  {
+   "id": "taken#3",
+   "group": "taken",
+   "formula": "IFERROR(Nope,5)"
+  },
+  {
+   "id": "taken#4",
+   "group": "taken",
+   "formula": "IF(TRUE,Nope,1)"
+  },
+  {
+   "id": "untaken#8",
+   "group": "untaken",
+   "formula": "IF(ISNA(MATCH(99,E!A1:A3,0)),\"\",NOPE(1))"
+  },
+  {
+   "id": "untaken#9",
+   "group": "untaken",
+   "formula": "IF(TRUE,1,NOPE(1))"
+  },
+  {
+   "id": "untaken#10",
+   "group": "untaken",
+   "formula": "IF(FALSE,NOPE(1),2)"
+  },
+  {
+   "id": "untaken#11",
+   "group": "untaken",
+   "formula": "IFERROR(1,NOPE(1))"
+  },
+  {
+   "id": "untaken#12",
+   "group": "untaken",
+   "formula": "IFNA(1,NOPE(1))"
+  },
+  {
+   "id": "untaken#13",
+   "group": "untaken",
+   "formula": "CHOOSE(1,3,NOPE(1))"
+  },
+  {
+   "id": "untaken#14",
+   "group": "untaken",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,2,0)),\"\",VLOOKUP(99,E!A1:B3,2,0)+NOPE(1))"
+  },
+  {
+   "id": "taken#5",
+   "group": "taken",
+   "formula": "IF(ISNA(NOPE(1)),\"\",1)"
+  },
+  {
+   "id": "taken#6",
+   "group": "taken",
+   "formula": "ISERROR(NOPE(1))"
+  },
+  {
+   "id": "taken#7",
+   "group": "taken",
+   "formula": "IFERROR(NOPE(1),5)"
+  },
+  {
+   "id": "taken#8",
+   "group": "taken",
+   "formula": "IF(TRUE,NOPE(1),1)"
+  },
+  {
+   "id": "untaken#15",
+   "group": "untaken",
+   "formula": "IF(ISNA(MATCH(99,E!A1:A3,0)),\"\",Nope+1)"
+  },
+  {
+   "id": "untaken#16",
+   "group": "untaken",
+   "formula": "IF(TRUE,1,Nope+1)"
+  },
+  {
+   "id": "untaken#17",
+   "group": "untaken",
+   "formula": "IF(FALSE,Nope+1,2)"
+  },
+  {
+   "id": "untaken#18",
+   "group": "untaken",
+   "formula": "IFERROR(1,Nope+1)"
+  },
+  {
+   "id": "untaken#19",
+   "group": "untaken",
+   "formula": "IFNA(1,Nope+1)"
+  },
+  {
+   "id": "untaken#20",
+   "group": "untaken",
+   "formula": "CHOOSE(1,3,Nope+1)"
+  },
+  {
+   "id": "untaken#21",
+   "group": "untaken",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,2,0)),\"\",VLOOKUP(99,E!A1:B3,2,0)+Nope+1)"
+  },
+  {
+   "id": "taken#9",
+   "group": "taken",
+   "formula": "IF(ISNA(Nope+1),\"\",1)"
+  },
+  {
+   "id": "taken#10",
+   "group": "taken",
+   "formula": "ISERROR(Nope+1)"
+  },
+  {
+   "id": "taken#11",
+   "group": "taken",
+   "formula": "IFERROR(Nope+1,5)"
+  },
+  {
+   "id": "taken#12",
+   "group": "taken",
+   "formula": "IF(TRUE,Nope+1,1)"
+  },
+  {
+   "id": "untaken#22",
+   "group": "untaken",
+   "formula": "IF(ISNA(MATCH(99,E!A1:A3,0)),\"\",SUM(Nope))"
+  },
+  {
+   "id": "untaken#23",
+   "group": "untaken",
+   "formula": "IF(TRUE,1,SUM(Nope))"
+  },
+  {
+   "id": "untaken#24",
+   "group": "untaken",
+   "formula": "IF(FALSE,SUM(Nope),2)"
+  },
+  {
+   "id": "untaken#25",
+   "group": "untaken",
+   "formula": "IFERROR(1,SUM(Nope))"
+  },
+  {
+   "id": "untaken#26",
+   "group": "untaken",
+   "formula": "IFNA(1,SUM(Nope))"
+  },
+  {
+   "id": "untaken#27",
+   "group": "untaken",
+   "formula": "CHOOSE(1,3,SUM(Nope))"
+  },
+  {
+   "id": "untaken#28",
+   "group": "untaken",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,2,0)),\"\",VLOOKUP(99,E!A1:B3,2,0)+SUM(Nope))"
+  },
+  {
+   "id": "taken#13",
+   "group": "taken",
+   "formula": "IF(ISNA(SUM(Nope)),\"\",1)"
+  },
+  {
+   "id": "taken#14",
+   "group": "taken",
+   "formula": "ISERROR(SUM(Nope))"
+  },
+  {
+   "id": "taken#15",
+   "group": "taken",
+   "formula": "IFERROR(SUM(Nope),5)"
+  },
+  {
+   "id": "taken#16",
+   "group": "taken",
+   "formula": "IF(TRUE,SUM(Nope),1)"
+  },
+  {
+   "id": "lookup#1",
+   "group": "lookup",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,Nope,0)),\"\",1)"
+  },
+  {
+   "id": "lookup#2",
+   "group": "lookup",
+   "formula": "IF(ISNA(VLOOKUP(99,E!A1:B3,2,Nope)),\"\",1)"
+  },
+  {
+   "id": "lookup#3",
+   "group": "lookup",
+   "formula": "IF(ISNA(MATCH(99,E!A1:A3,Nope)),\"\",1)"
+  },
+  {
+   "id": "lookup#4",
+   "group": "lookup",
+   "formula": "IF(ISNA(MATCH(Nope,E!A1:A3,0)),\"\",1)"
+  },
+  {
+   "id": "lookup#5",
+   "group": "lookup",
+   "formula": "IF(ISNA(INDEX(E!B1:B3,MATCH(99,E!A1:A3,0),Nope)),\"\",1)"
+  },
+  {
+   "id": "lookup#6",
+   "group": "lookup",
+   "formula": "IF(ISNA(HLOOKUP(99,E!A1:B3,Nope,0)),\"\",1)"
+  },
+  {
+   "id": "lookup#7",
+   "group": "lookup",
+   "formula": "IF(ISNA(LOOKUP(99,E!A1:A3,Nope)),\"\",1)"
+  },
+  {
+   "id": "lookup#8",
+   "group": "lookup",
+   "formula": "IF(ISNA(VLOOKUP(99,Nope,2,0)),\"\",1)"
+  }
+ ],
+ "values": {
+  "untaken#1": {
+   "t": "s",
+   "v": ""
+  },
+  "untaken#2": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#3": {
+   "t": "n",
+   "v": 2
+  },
+  "untaken#4": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#6": {
+   "t": "n",
+   "v": 3
+  },
+  "untaken#7": {
+   "t": "s",
+   "v": ""
+  },
+  "taken#1": {
+   "t": "n",
+   "v": 1
+  },
+  "taken#2": {
+   "t": "b",
+   "v": true
+  },
+  "taken#3": {
+   "t": "n",
+   "v": 5
+  },
+  "taken#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#8": {
+   "t": "s",
+   "v": ""
+  },
+  "untaken#9": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#10": {
+   "t": "n",
+   "v": 2
+  },
+  "untaken#11": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#12": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#13": {
+   "t": "n",
+   "v": 3
+  },
+  "untaken#14": {
+   "t": "s",
+   "v": ""
+  },
+  "taken#5": {
+   "t": "n",
+   "v": 1
+  },
+  "taken#6": {
+   "t": "b",
+   "v": true
+  },
+  "taken#7": {
+   "t": "n",
+   "v": 5
+  },
+  "taken#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#15": {
+   "t": "s",
+   "v": ""
+  },
+  "untaken#16": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#17": {
+   "t": "n",
+   "v": 2
+  },
+  "untaken#18": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#19": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#20": {
+   "t": "n",
+   "v": 3
+  },
+  "untaken#21": {
+   "t": "s",
+   "v": ""
+  },
+  "taken#9": {
+   "t": "n",
+   "v": 1
+  },
+  "taken#10": {
+   "t": "b",
+   "v": true
+  },
+  "taken#11": {
+   "t": "n",
+   "v": 5
+  },
+  "taken#12": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#22": {
+   "t": "s",
+   "v": ""
+  },
+  "untaken#23": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#24": {
+   "t": "n",
+   "v": 2
+  },
+  "untaken#25": {
+   "t": "n",
+   "v": 1
+  },
+  "untaken#26": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "untaken#27": {
+   "t": "n",
+   "v": 3
+  },
+  "untaken#28": {
+   "t": "s",
+   "v": ""
+  },
+  "taken#13": {
+   "t": "n",
+   "v": 1
+  },
+  "taken#14": {
+   "t": "b",
+   "v": true
+  },
+  "taken#15": {
+   "t": "n",
+   "v": 5
+  },
+  "taken#16": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "lookup#1": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#2": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#3": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#4": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#5": {
+   "t": "s",
+   "v": ""
+  },
+  "lookup#6": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#7": {
+   "t": "n",
+   "v": 1
+  },
+  "lookup#8": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}

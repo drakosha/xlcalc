@@ -619,7 +619,8 @@ class Kept {
     const moved = order.length !== decls.length || decls.some((_, i) => placeOf.get(i) !== i)
     const list = kids.find((c) => c.local === 'sheets')!
     const sheets = `${wb.slice(list.start, list.open)}${order.join('')}</${list.qname}>`
-    if (sheets !== wb.slice(list.start, list.end)) {
+    // the file's own list, the space between its sheets too, while each sheet stays as it was
+    if (moved || order.some((x, i) => x !== wb.slice(decls[i].at.start, decls[i].at.end))) {
       this.changed = true
       edits.push({ part: src.wbPath, start: list.start, end: list.end, text: sheets })
     }
