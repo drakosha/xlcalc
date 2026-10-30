@@ -91,6 +91,8 @@ export function call(fn: string, n: number): string | null {
 export const LIMITS: Record<string, number> = {
   ...Object.fromEntries(['CHOOSECOLS', 'CHOOSEROWS', 'CONCAT', 'HSTACK', 'IFS', 'MAP', 'MODE.MULT', 'MODE.SNGL', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'STOCKHISTORY', 'SWITCH', 'TEXTJOIN', 'VAR.P', 'VAR.S', 'VSTACK', 'XOR', 'AGGREGATE'].map((f) => [f, 254])),
   COUNTIFS: 254,
+  // 126 pairs of a field and an item, as Microsoft's reference says: Excel refused the call of 255
+  GETPIVOTDATA: 254,
   MAXIFS: 253,
   MINIFS: 253,
   SORTBY: 253,
