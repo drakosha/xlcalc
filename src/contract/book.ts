@@ -531,6 +531,20 @@ export interface RegexLevel {
   compile(pattern: string): RegexPattern | null
 }
 
+/** The groups of `xlcalc/functions`, by name (`docs/function-groups.md`). */
+export type FunctionGroupName = 'engineering' | 'finance' | 'lambda' | 'statistics' | 'xml'
+
+/**
+ * A group of rarely used functions of `xlcalc/functions`, which `registerFunctions` of `xlcalc/core` loads; the package
+ * root has them all. Without its group, a formula that calls one of them is `#NAME?` with the check `function_not_loaded`.
+ */
+export interface FunctionGroup {
+  readonly kind: 'xlcalc-functions'
+  readonly name: FunctionGroupName
+  /** The functions of the group, by their English names, in alphabetical order. */
+  readonly functions: readonly string[]
+}
+
 /** A pattern a level compiled. */
 export interface RegexPattern {
   /** Whether the pattern is found in a text: true, false or `'limit'` past Excel's match limit. */

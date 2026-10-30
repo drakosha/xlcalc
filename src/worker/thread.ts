@@ -20,6 +20,10 @@ import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
 import { LOCALE_MODULES } from '../locale/modules.js'
 import { setRegexLevel } from '../regex-level.js'
+import type { FunctionGroupName } from '../contract.js'
+import { GROUP_ARITY } from '../groups/manifest.js'
+import { GROUP_MODULES } from '../groups/modules.js'
+import { loadGroups, useManifest } from '../groups/registry.js'
 import type { RegexLevel } from '../contract.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackCached, unpackData, type Sent } from './pack.js'
@@ -42,7 +46,7 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'cancel' | 'answer' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'functions' | 'cancel' | 'answer' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
 /** Where the pool writes the task it cancels (`init`), none where threads share no memory: the engine's checks read it inside a formula. */
 let cancelled: Int32Array | undefined
@@ -86,6 +90,16 @@ function loadRegex(kind: RegexLevel['kind']) {
       const m = await import('../regex/index.js')
       setRegexLevel(kind === 'xlcalc-pcre-syntax' ? m.pcreSyntax : m.pcreEngine)
     })
+    .catch(() => {})
+}
+
+// a thread starts without the groups of functions and loads those the pool names: the root's all, the light entry's registered
+useManifest(GROUP_ARITY)
+
+/** Loads the groups of functions the pool names, each from its own module, before the next task. */
+function loadFunctions(names: FunctionGroupName[]) {
+  loading = loading
+    .then(async () => loadGroups(await Promise.all(names.map((n) => GROUP_MODULES[n]()))))
     .catch(() => {})
 }
 
@@ -321,11 +335,14 @@ function receive(m: ToThread) {
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
     if (m.locales) load(m.locales)
     if (m.regex) loadRegex(m.regex)
+    loadFunctions(m.functions)
     cancelled = m.cancelled
   } else if (m.t === 'locales') {
     load(m.locales)
   } else if (m.t === 'regex') {
     loadRegex(m.kind)
+  } else if (m.t === 'functions') {
+    loadFunctions(m.functions)
   } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort(CANCELLED)
   } else if (m.t === 'answer') {

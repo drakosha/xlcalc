@@ -1,5 +1,5 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
-import type { CheckCode, NameCheck, NameRefusal, ValidateContext, ValidateResult } from '../contract.js'
+import type { CheckCode, ErrorCode, NameCheck, NameRefusal, ValidateContext, ValidateResult } from '../contract.js'
 import { caseKey, wordKey } from '../collate.js'
 import { arityFor, isFunction, SYNTAX } from '../arity.js'
 import { english } from '../locale/english.js'
@@ -48,6 +48,8 @@ interface BookCheck {
   known?: (name: string, sheet: string | undefined) => boolean
   /** Functions the engine does not know are taken (`unknownFunctions: 'held'`, a formula keeping its file's value). */
   unknown?: boolean
+  /** The group of a function the engine has not loaded (`groups/registry.ts`): a call of it is refused, as the engine cannot calculate it. */
+  notLoaded?: (fn: string) => string | undefined
   /** The host answers its functions' calls at the calculation (`Externals.resolve`): their arguments need not be literals. */
   answered?: boolean
   /** Whether the book defines a name, for a name's formula, whose names are not checked (`known` answers it for the rest). */
@@ -104,9 +106,16 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
 
 type Checked = ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }>
 
+/** The error a formula refused by a check gives. */
+export function invalidError(code: CheckCode): ErrorCode {
+  if (code === 'unknown_function' || code === 'function_not_loaded' || code === 'unknown_name') return 'NAME'
+  if (code === 'unknown_sheet' || code === 'external_ref') return 'REF'
+  return 'ERROR'
+}
+
 /** A failed check in `say`'s language, with the function a call to an unknown function or an unsupported one names (`fn`). */
 function refused(code: CheckCode, m: Message, at: number, say: (m: Message) => string): Extract<ValidateResult, { ok: false }> {
-  const fn = (code === 'unknown_function' || code === 'unsupported') && 'fn' in m ? m.fn : undefined
+  const fn = (code === 'unknown_function' || code === 'function_not_loaded' || code === 'unsupported') && 'fn' in m ? m.fn : undefined
   return { ok: false, code, message: say(m), at, ...(fn !== undefined ? { fn } : {}) }
 }
 
@@ -162,6 +171,11 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
   })
   const fail = (code: CheckCode, m: Message, needle: string) => refused(code, m, positionOf(text, needle), say)
   for (const f of functions) if (!isFunction(f) && !externalSet.has(f) && !ctx.unknown) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
+  if (ctx.notLoaded && !ctx.unknown)
+    for (const f of functions) {
+      const group = ctx.notLoaded(f)
+      if (group) return fail('function_not_loaded', { key: 'functionNotLoaded', fn: f, group }, f)
+    }
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', { key: 'unknownSheet', sheet: s }, s)

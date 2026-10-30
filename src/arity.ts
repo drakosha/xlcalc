@@ -2,7 +2,9 @@
  * The arguments a function takes, as the check of a formula needs them, without its implementation: how many, by its
  * declared kinds and the group that repeats (`FnDef.args`, `rep`, `max`), and which it lets a formula leave out
  * (`notOmitted`). The engine's spec of a function (`args.ts`, `specOf`) counts them here; the check of a formula's calls
- * takes the arities the entry it is loaded by gives (`useArities`): the engine's specs, or `function-arity.ts` without it.
+ * takes the arities the entries loaded give: the engine's specs of the functions it has (`useArities`), the declared
+ * arguments of all of them (`function-arity.ts`, `useDeclaredArities`), those of the groups `xlcalc/core` has not loaded
+ * (`useGroupArities`), in that order.
  */
 import type { Counts } from './locale/messages.js'
 
@@ -58,21 +60,30 @@ export function arityOf(def: ArityDef): Arity {
   return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, omits: (i) => !holds(def.notOmitted, i) }
 }
 
-/** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), or without the engine its declared arguments (`declared-arity.ts`). */
-let given: ((name: string) => Arity | undefined) | undefined
+type Arities = (name: string) => Arity | undefined
 
-export function useArities(f: (name: string) => Arity | undefined) {
+/** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), its declared arguments (`declared-arity.ts`), the groups not loaded (`groups/registry.ts`). */
+let given: Arities | undefined
+let declared: Arities | undefined
+let grouped: Arities | undefined
+
+export function useArities(f: Arities) {
   given = f
 }
 
-/** Gives the check `f()`'s arities where no entry gave it any (`useArities`). */
-export function useAritiesUnlessGiven(f: () => (name: string) => Arity | undefined) {
-  given ??= f()
+/** Gives the check `f()`'s arities of every function, made once, for the functions the engine has not. */
+export function useDeclaredArities(f: () => Arities) {
+  declared ??= f()
+}
+
+/** Gives the check the arities of the functions of the groups not loaded. */
+export function useGroupArities(f: Arities) {
+  grouped = f
 }
 
 const arities = (name: string): Arity | undefined => {
-  if (!given) throw new Error(`no arities to check ${name}'s arguments by: an entry gives them (useArities)`)
-  return given(name)
+  if (!given && !declared) throw new Error(`no arities to check ${name}'s arguments by: an entry gives them (useArities)`)
+  return given?.(name) ?? declared?.(name) ?? grouped?.(name)
 }
 
 /** The arities of a table of declared arguments, each made once, by name. */
@@ -96,3 +107,6 @@ export const SYNTAX: readonly string[] = ['LAMBDA', 'LET']
 
 /** A whitelisted function, a call or syntax. */
 export const isFunction = (name: string): boolean => arities(name) !== undefined || SYNTAX.includes(name)
+
+/** The names a book gives as its external functions, upper-cased, the whitelisted ones left out: what a check takes as external. */
+export const externalNames = (fns?: readonly string[]): string[] => (fns ?? []).map((f) => f.toUpperCase()).filter((f) => arities(f) === undefined)

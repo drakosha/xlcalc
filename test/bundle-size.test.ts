@@ -2,7 +2,8 @@
  * What a host's bundle takes of the package, bundled by esbuild for the browser and minified: `compute` alone stays
  * under 380 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
  * `xlcalc/xlsx` and `xlcalc/csv` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
- * what to import gives the sizes.
+ * what to import gives the sizes. The light entry `xlcalc/core` takes none of the groups of functions, its `compute`
+ * under 320 KB.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -41,5 +42,17 @@ describe('bundle size', () => {
     expect(csv.filter((f) => !/functions\/common\.(ts|js)$/.test(f) && /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
     const ru = await minified(`export * from ${lib('locales/ru-RU.js')}`)
     expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
+  }, 60_000)
+
+  it("the light entry takes none of the groups' modules, its compute under 320 KB; the groups take the core's", async () => {
+    // the modules of the groups alone (`src/groups/`): each is in the bundle of xlcalc/functions
+    const GROUPS = [/\/groups\/(index|all|engineering|finance|lambda|statistics|xml)\./, /\/functions\/(engineering|xml)\//, /\/functions\/text\/filterxml\./, /\/functions\/financial\/(bond|coupon|odd|discount|depreciation)\./, /\/functions\/statistical\/(distributions|inverse|tests|fit|special|old-distributions)\./, /\/functions\/(jstat|lambda)\./, /\/functions\/lookup\/groupby\./]
+    const grouped = (used: string[]) => used.filter((f) => GROUPS.some((g) => g.test(f)))
+    const groups = (await minified(`export * from ${lib('groups/index.js')}`)).used
+    expect(GROUPS.filter((g) => !groups.some((f) => g.test(f)))).toEqual([])
+    const compute = await minified(`export { compute } from ${lib('core.js')}`)
+    expect(grouped(compute.used)).toEqual([])
+    expect(grouped((await minified(`export * from ${lib('core.js')}`)).used)).toEqual([])
+    expect(compute.bytes).toBeLessThan(320 * 1024)
   }, 60_000)
 })

@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+// every group of functions loaded, as the package root has them
+import '../../dist/internal.js'
 import { createState, applyEdits } from '../../dist/engine.js'
 import { run } from '../../dist/exec/budget.js'
 import { HyperFormula, HF_OPTIONS } from './shared.mjs'

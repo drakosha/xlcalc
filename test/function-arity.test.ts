@@ -1,15 +1,17 @@
 /**
- * The functions' arguments without their implementations (`src/function-arity.ts`) are the engine's own: the file is the
- * one `test/function-arity.ts` makes from the definitions, and each function's arity is its spec's.
+ * The functions' arguments without their implementations (`src/function-arity.ts`, the groups' `src/groups/manifest.ts`)
+ * are the engine's own: the files are the ones `test/function-arity.ts` makes from the definitions, and each function's
+ * arity is its spec's.
  */
 import { readFileSync } from 'node:fs'
 import { expect, it } from 'vitest'
 import { arityOf } from '../src/arity.js'
 import { FUNCTION_ARITY } from '../src/function-arity.js'
 import { FUNCTIONS } from '../src/functions.js'
-import { functionArity, functionWords } from './function-arity.js'
+import { functionArity, functionWords, groupManifest } from './function-arity.js'
 
-it('src/function-arity.ts and src/function-words.ts are made from the definitions (npx tsx test/function-arity.ts --write)', () => {
+it('src/function-arity.ts, src/groups/manifest.ts and src/function-words.ts are made from the definitions (npx tsx test/function-arity.ts --write)', () => {
+  expect(readFileSync(new URL('../src/groups/manifest.ts', import.meta.url), 'utf8')).toBe(groupManifest())
   expect(readFileSync(new URL('../src/function-arity.ts', import.meta.url), 'utf8')).toBe(functionArity())
   expect(readFileSync(new URL('../src/function-words.ts', import.meta.url), 'utf8')).toBe(functionWords())
 })

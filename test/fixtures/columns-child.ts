@@ -5,6 +5,8 @@
  * by index, and the values read back at a few rows.
  */
 const { libUrl } = await import('./target.js')
+// every group of functions loaded, as the package root has them
+await import(libUrl('internal.js'))
 const { createState } = (await import(libUrl('engine.js'))) as typeof import('../../src/engine.js')
 
 const cells: Record<string, { value: number | string }> = {}

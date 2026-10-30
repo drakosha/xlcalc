@@ -95,6 +95,24 @@ export function strict<F extends (...args: never[]) => unknown>(f: F, name = f.n
 }
 
 /**
+ * `f`, by its name and number of parameters, calling `setup` before each call (what an entry loads for the call: the
+ * declared arguments, the groups of functions); an async function stays one, so that `strict` refuses its options by a
+ * rejected promise.
+ */
+export function before<F extends (...args: never[]) => unknown>(f: F, setup: () => void): F {
+  const call = function (this: unknown, ...args: never[]) {
+    setup()
+    return f.apply(this, args)
+  }
+  const g = isAsync(f)
+    ? async function (this: unknown, ...args: never[]) {
+        return call.apply(this, args)
+      }
+    : call
+  return Object.defineProperties(g, { name: { value: f.name }, length: { value: f.length } }) as unknown as F
+}
+
+/**
  * An API object (a session, a calculator) with each of its methods `strict`, by its own name and parameters; getters
  * stay. `async`: its methods answer promises, and a refusal is a rejected one.
  */

@@ -2,7 +2,7 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, FunctionGroupName, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
@@ -46,14 +46,17 @@ export interface Snapshot {
 export type ToThread =
   /**
    * `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those
-   * loaded but en-US; `regex`: the kind of match mode 3's registered level; `cancelled`: shared memory where the pool
-   * writes the task it cancels, which the thread reads inside a formula.
+   * loaded but en-US; `regex`: the kind of match mode 3's registered level; `functions`: the groups of functions the
+   * thread loads (`groups/state.ts`, `groupsWanted`); `cancelled`: shared memory where the pool writes the task it
+   * cancels, which the thread reads inside a formula.
    */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; cancelled?: Int32Array }
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; functions: FunctionGroupName[]; cancelled?: Int32Array }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
   /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
   | { t: 'regex'; kind: RegexLevel['kind'] }
+  /** Groups of functions registered since: the thread imports their modules itself (`groups/modules.ts`). */
+  | { t: 'functions'; functions: FunctionGroupName[] }
   /** `asks`: the host's `Externals.resolve`, which stays with the pool, answers the calls outside the workbook (`ask`). */
   | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number; asks?: true }
   | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number; asks?: true }

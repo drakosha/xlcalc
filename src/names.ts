@@ -5,6 +5,7 @@
  */
 import type { ExternalBook, NameInput, NameIssue } from './contract.js'
 import { FormulaError, nameProblem, parse, sheetKey, validate, walk, type Ast } from './syntax.js'
+import { invalidError } from './syntax/check.js'
 import { caseKey } from './collate.js'
 
 export interface PreparedName {
@@ -16,7 +17,7 @@ export interface PreparedName {
 }
 
 /** Names in the book's order; an invalid one is left out with its issue. `booleans`: the book's locale's words for TRUE and FALSE, no names. */
-export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[], tables: { name: string; columns: string[] }[] = [], booleans: readonly string[] = [], externalBooks: ExternalBook[] = []): { names: PreparedName[]; issues: NameIssue[] } {
+export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[], tables: { name: string; columns: string[] }[] = [], booleans: readonly string[] = [], externalBooks: ExternalBook[] = [], notLoaded?: (fn: string) => string | undefined): { names: PreparedName[]; issues: NameIssue[] } {
   const out: PreparedName[] = []
   const issues: NameIssue[] = []
   const seen = new Set<string>()
@@ -55,10 +56,10 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
       continue
     }
     // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)
-    const v = validate(n.ref, { sheets, externalFunctions, union: true, tables, externalBooks, defined })
+    const v = validate(n.ref, { sheets, externalFunctions, union: true, tables, externalBooks, defined, ...(notLoaded ? { notLoaded } : {}) })
     if (!v.ok) {
       issue(v.message, false)
-      ast = { k: 'err', code: v.code === 'unknown_sheet' || v.code === 'external_ref' ? 'REF' : v.code === 'unknown_function' || v.code === 'unknown_name' ? 'NAME' : 'ERROR' }
+      ast = { k: 'err', code: invalidError(v.code) }
     } else ast = v.ast
     out.push({ name: n.name, scope, ast })
   }

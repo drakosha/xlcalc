@@ -142,11 +142,11 @@ export interface ComputeOptions {
 
 /**
  * A formula that calls a function the engine does not know (an add-in's, a host's not given as `externals`), whose check
- * is `unknown_function`: `name` makes it `#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell
- * holds (`CellInput.held`) or its file stores (`cached`), as Excel shows a file's value until it calculates the cell, and
- * the cells that depend on it are calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once
- * the cell is edited or a cell it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at
- * once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
+ * is `unknown_function`, or one of a group `xlcalc/core` has not loaded (`function_not_loaded`): `name` makes it
+ * `#NAME?`, as Excel answers without the add-in; `held` keeps the value the cell holds (`CellInput.held`) or its file
+ * stores (`cached`), as Excel shows a file's value until it calculates the cell, and the cells that depend on it are
+ * calculated from that value. Such a cell is listed in `diagnostics` with `fromFile`. Once the cell is edited or a cell
+ * it reads changes, it is calculated: `#NAME?`; without a value to keep, it is calculated at once. The functions of connections (`CUBEVALUE`, `WEBSERVICE` and the others) keep the value their file stores the
  * same way, whatever this option.
  */
 export type UnknownFunctions = 'name' | 'held'
@@ -193,11 +193,12 @@ export interface CellIssue extends CellRef {
   check?: CheckCode
   /** Position in the formula text for `check`. */
   at?: number
-  /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
+  /** The function, upper-case, for the checks `unknown_function`, `function_not_loaded` and `unsupported` (`ValidateResult`). */
   fn?: string
   /**
    * The formula is not calculated and shows the value its file stores (`cached`) or its cell holds: it calls a function
-   * the engine does not know (`unknownFunctions: 'held'`, `error` NAME) or a function of connections (`error` CONNECT).
+   * the engine does not know or one of a group not loaded (`unknownFunctions: 'held'`, `error` NAME) or a function of
+   * connections (`error` CONNECT).
    */
   fromFile?: true
 }
