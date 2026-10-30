@@ -20,7 +20,7 @@ import { say } from '../locale/messages.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { cellCount, hasCell, rectText, type Rect } from '../structure/area.js'
 import { formulaCopier } from '../structure/copy.js'
-import { arrayRefusal, cellText, columnWidening, headerRefusal, readText, textRefusal, validationAlert, withTyped } from './text.js'
+import { arrayRefusal, cellText, pivotRefusal, columnWidening, headerRefusal, readText, textRefusal, validationAlert, withTyped } from './text.js'
 import { cellValue } from './looks.js'
 import { inputAt } from './book.js'
 import { MAX_CELLS } from './styles.js'
@@ -87,7 +87,8 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
  * area they cover whole they replace) or put a formula into a table's header cell, as Excel refuses them, with the cell.
  */
 function takenTogether(s: EngineState, cells: Typed[]): TypedTexts {
-  const part = arrayRefusal(s, cells.map((x) => x.edit))
+  const edits = cells.map((x) => x.edit)
+  const part = arrayRefusal(s, edits) ?? pivotRefusal(s, edits)
   if (part) {
     const { sheet, cell, ...refusal } = part
     return { ok: false, refusal, ref: { sheet, cell } }

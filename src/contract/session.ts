@@ -74,7 +74,8 @@ export interface Session {
    * cell renames its column, as in Excel: the structured references to it follow, a number or a boolean becomes its
    * text, a cleared cell names the column `Column1` (the first free name of this kind, using the word of the workbook's
    * locale: `Столбец1` in ru-RU), and a name already used by another column gets a number appended for the column
-   * further right (`Price2`). A formula in a header cell throws `InputError`.
+   * further right (`Price2`). A formula in a header cell throws `InputError`, and so does an edit of a cell of a
+   * PivotTable's area (`SheetInput.pivotTables`, its Filters area too), which Excel does not let an entry change.
    */
   setCells(edits: CellEdit[], opts?: EditOptions): EditResult
   /** Cells replaced as a whole, otherwise applied as `setCells` applies edits: the cell loses whatever the input omits, and null removes the cell. */
@@ -102,8 +103,8 @@ export interface Session {
    * the cell (its style gets `alignment.wrap`, using a matching style in the workbook's table or adding one), and the row
    * of a wrapping cell is fitted to it (`fitRows`) in the same step, unless its height was set manually; a value that
    * the cell's data validation rule does not allow is written and returned with the rule (`validation`), or, with
-   * `refuseInvalid`, rejected with the rule and nothing is written. A formula Excel would reject, or a change to part of
-   * an array, is rejected with a message in the workbook's locale.
+   * `refuseInvalid`, rejected with the rule and nothing is written. A formula Excel would reject, a change to part of
+   * an array, or to a cell of a PivotTable's area (`pivot`), is rejected with a message in the workbook's locale.
    */
   setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextResult
   /** What `setCellText` would do, without changing anything. */
@@ -129,8 +130,8 @@ export interface Session {
    * `setCellText` interprets it, except that an apostrophe stays part of the text, a formula Excel would reject is
    * pasted as text, a percentage cell has no percent entry (`5` becomes 500%) and `€5` gets the euro format; no column
    * is widened and no data validation rule is checked. One recalculation, one revision and one undo step. Rejected, with
-   * the cell, where Excel would not paste: part of an array formula, a formula into a table's header cell, and a
-   * rectangle beyond the sheet's edge.
+   * the cell, where Excel would not paste: part of an array formula, a formula into a table's header cell, a cell of a
+   * PivotTable's area (`pivot`), and a rectangle beyond the sheet's edge.
    */
   pasteText(sheet: string, cell: string, text: string, opts?: EditOptions): PasteTextResult
   /** What `pasteText` would do, without changing anything. */
@@ -144,7 +145,8 @@ export interface Session {
    * their rows, as `setCellText` does; a value that the active cell's data validation rule does not allow is written
    * and returned with that rule's alert (`validation`), the only rule checked, or, with `refuseInvalid`, rejected with
    * the active cell. One recalculation, one revision and one undo step. A formula Excel would reject, part of an array
-   * formula and a formula in a table's header cell are rejected, with the cell, and nothing is written.
+   * formula, a formula in a table's header cell and a cell of a PivotTable's area are rejected, with the cell, and
+   * nothing is written.
    */
   fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextResult
   /** What `fillCellText` would do, without changing anything. */
