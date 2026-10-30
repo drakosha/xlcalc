@@ -5,7 +5,7 @@
  * values of the total it is relative to as the second. Groups compare as UNIQUE compares (text in any case), sort as
  * SORT sorts; a cell the summary leaves empty is empty text.
  */
-import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
+import { gridAt, values as numbers, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
 import { allot } from '../../exec/budget.js'
 import { callValue } from '../../exec/lambda.js'
@@ -187,12 +187,10 @@ const option = (n: number | undefined) => (n === undefined ? undefined : Number.
  */
 function sortKeys(g: Grid | undefined, columns: number, fields: number): AxisOptions['sort'] | CErr {
   if (!g) return []
+  const ns = numbers(g)
+  if (isErr(ns)) return ns
   const out: AxisOptions['sort'] = []
-  for (let i = 0; i < g.rows * g.cols; i++) {
-    const v = gridAt(g, i)
-    if (isErr(v)) return v
-    if (typeof v !== 'number') return E.VALUE
-    const n = v
+  for (const n of ns) {
     if (!Number.isInteger(n) || n === 0 || Math.abs(n) > columns) return E.VALUE
     out.push({ at: Math.abs(n) - 1, desc: n < 0 })
   }
