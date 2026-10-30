@@ -34,6 +34,19 @@ function POn($wb, $s) {
   }
 }
 
+# a step's arguments as an array of plain values: values that came through the pipeline are wrapped, and a COM method
+# called through InvokeMember takes a wrapped string as a type mismatch
+function PArgs($xs) {
+  $a = New-Object 'object[]' @($xs).Count
+  for ($k = 0; $k -lt $a.Count; $k++) { $v = PArg @($xs)[$k]; $a[$k] = if ($v -is [psobject]) { $v.PSObject.BaseObject } else { $v } }
+  , $a
+}
+
+# the book's pivot tables, [sheet, name] each
+function PAll($wb) {
+  foreach ($ws in $wb.Worksheets) { foreach ($pt in $ws.PivotTables()) { , @([string]$ws.Name, [string]$pt.Name) } }
+}
+
 $PInvoke = [Reflection.BindingFlags]::InvokeMethod
 $PPut = [Reflection.BindingFlags]::SetProperty
 
@@ -133,13 +146,13 @@ function Pivot($xl, $wb, $s) {
       # a method of the target with its arguments
       'call' {
         $o = POn $wb $s
-        $r = [System.__ComObject].InvokeMember([string]$s.method, $PInvoke, $null, $o, [object[]]@($s.args | ForEach-Object { PArg $_ }))
+        $r = [System.__ComObject].InvokeMember([string]$s.method, $PInvoke, $null, $o, (PArgs $s.args))
         if ($null -eq $r -or $r -is [__ComObject]) { 'null' } else { Cell $r }
       }
       # a property with an index set (Subtotals(i) = v), each pair in order
       'put' {
         $o = POn $wb $s
-        foreach ($p in $s.props) { [void][System.__ComObject].InvokeMember([string]$s.name, $PPut, $null, $o, [object[]]@((PArg $p[0]), (PArg $p[1]))) }
+        foreach ($p in $s.props) { [void][System.__ComObject].InvokeMember([string]$s.name, $PPut, $null, $o, (PArgs $p)) }
         'null'
       }
       # a label, value or date filter (PivotFilters.Add2), over a data field by its caption where given
@@ -186,7 +199,21 @@ function Pivot($xl, $wb, $s) {
         foreach ($o in $s.also) { $sc.PivotTables.AddPivotTable($wb.Worksheets.Item([string]$o[0]).PivotTables([string]$o[1])) }
         Str ([string]$sc.Name)
       }
-      'refresh' { [void](PTable $wb $s).RefreshTable(); 'null' }
+      # the table of the sheet D named resized to a range there
+      'resize' { [void]$wb.Worksheets.Item('D').ListObjects.Item([string]$s.table).Resize($wb.Worksheets.Item('D').Range([string]$s.range)); 'null' }
+      # what RefreshTable answers (true when Excel refreshed)
+      'refresh' { Cell ([bool](PTable $wb $s).RefreshTable()) }
+      # every pivot table of the book, [sheet, name], in the order of the sheets
+      'list' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1])) }) }
+      # each pivot table of the book read, [sheet, name, its area]
+      'readAll' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1]), (PRead $wb @{ sheet = $_[0]; pt = $_[1] })) }) }
+      # each pivot table of the book refreshed, [sheet, name, what RefreshTable answered or its error]
+      'refreshAll' {
+        List (PAll $wb | ForEach-Object {
+            $r = try { Cell ([bool]$wb.Worksheets.Item($_[0]).PivotTables($_[1]).RefreshTable()) } catch { Err $_ }
+            List @((Str $_[0]), (Str $_[1]), $r)
+          })
+      }
       'read' { PRead $wb $s }
       'external' { PExternal $xl $wb $s }
       'slicerRead' { PSlicerRead $wb $s }
