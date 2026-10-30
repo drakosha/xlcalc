@@ -53,7 +53,8 @@ function calculated(book: BookInput, name: string): Place | null {
 function namePlace(book: BookInput, name: string): Place | null {
   const local = /^(.+)!([^!]+)$/.exec(name)
   const found = (book.names ?? []).find((n) => caseKey(n.name) === caseKey(local ? local[2] : name) && (local ? n.scope !== undefined && caseKey(n.scope) === caseKey(local[1].replace(/^'|'$/g, '')) : n.scope === undefined))
-  if (!found) return null
+  // a file names a table's source as it names a defined name's
+  if (!found) return local ? null : tablePlace(book, name)
   const ref = found.ref.replace(/^=/, '').trim()
   const m = REF.exec(ref)
   if (m) {

@@ -63,13 +63,13 @@ describe('pivot calculation', () => {
     expect(r.value([], [], 0)).toBe(28)
   })
 
-  it('gives an error among the values as the value, text as no number', () => {
+  it('gives an error among the values as the value but for count, which counts it; text as no number', () => {
     const r = pivot((t) => ({ ...t, rows: [0], values: [{ field: 2 }, { field: 2, function: 'count' }, { field: 2, function: 'average' }] }))
     const [north, east] = [at(r, 0, 'North'), at(r, 0, 'East')]
     expect(r.value([north], [], 0)).toBe(10)
     expect(r.value([north], [], 1)).toBe(2)
     expect(r.value([east], [], 0)).toEqual({ error: 'NA' })
-    expect(r.value([east], [], 1)).toEqual({ error: 'NA' })
+    expect(r.value([east], [], 1)).toBe(1)
     expect(r.value([], [], 2)).toEqual({ error: 'NA' })
     expect(labels(r, r.columns.items)).toEqual(['Σ0', 'Σ1', 'Σ2'])
   })

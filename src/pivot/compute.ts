@@ -5,18 +5,12 @@
 import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
 import type { CellValue, ErrorCode, PivotCache, PivotFunction, PivotTable, PivotValue } from '../contract.js'
-import { keepsNumbers, Tally } from './aggregate.js'
+import { Tally } from './aggregate.js'
 import { byValue, itemPasses, valuesKept } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
 import type { PivotComputeOptions, PivotPageResult, PivotResult } from './result.js'
-import { axisTree, type Cube } from './tree.js'
+import { branches, nodesOf, sortBranches, type Branch } from './tree.js'
 import { numberOf } from './values.js'
-
-/** A cell of the cube: the records at it and each value field's tally. */
-interface Cell {
-  records: number
-  tallies: Tally[]
-}
 
 /** Each record's item on each grouping field (an index into the PivotTable field's `items`), −1 for a field not grouping. */
 function itemIndexes(table: PivotTable, cache: PivotCache): Int32Array[] {
@@ -74,8 +68,6 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const colFields = axes.columns.filter((f): f is number => f !== 'values')
   const values = table.values ?? []
   const fns = values.map((v) => v.function ?? 'sum')
-  const used = new Set<PivotFunction>([...fns, ...table.fields.flatMap((f) => f.subtotals ?? [])])
-  const keep = keepsNumbers(used)
   const readers = values.map((v) => valueReader(cache, v.field, epoch))
   const at = itemIndexes(table, cache)
   const shown = shownItems(table, cache, today, epoch)
@@ -86,7 +78,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   for (let r = 0; r < count; r++) if (shown.every((s, f) => !s || (at[f][r] >= 0 && s[at[f][r]]))) alive.push(r)
 
   const tally = (rs: readonly number[], v: number) => {
-    const t = new Tally(keep)
+    const t = new Tally()
     for (const r of rs) t.add(...readers[v](r))
     return t
   }
@@ -113,24 +105,53 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     })
   }
 
-  // the cube: each record at every prefix of its row path with every prefix of its column path
-  const cube = new Map<string, Cell>()
+  // the cells of the cube's last items on both axes, of the records in their order
+  const leaves = new Map<string, Tally[]>()
   for (const r of alive) {
-    const rk = prefixes(rowFields.map((f) => at[f][r]))
-    const ck = prefixes(colFields.map((f) => at[f][r]))
-    for (const a of rk)
-      for (const b of ck) {
-        const k = `${a}|${b}`
-        let cell = cube.get(k)
-        if (!cell) cube.set(k, (cell = { records: 0, tallies: values.map(() => new Tally(keep)) }))
-        cell.records++
-        for (let v = 0; v < values.length; v++) cell.tallies[v].add(...readers[v](r))
-      }
+    const k = `${key(rowFields.map((f) => at[f][r]))}|${key(colFields.map((f) => at[f][r]))}`
+    let cell = leaves.get(k)
+    if (!cell) leaves.set(k, (cell = values.map(() => new Tally())))
+    for (let v = 0; v < values.length; v++) cell[v].add(...readers[v](r))
   }
-  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue =>
-    cube.get(`${key(rows)}|${key(columns)}`)?.tallies[v]?.value(fn ?? fns[v]) ?? null
-  const hasData = (rows: readonly number[], columns: readonly number[]) => cube.has(`${key(rows)}|${key(columns)}`)
-  const view: Cube = { table, cache, at, shown, alive, value, epoch, lists }
+  const sorting = { table, cache, shown, epoch, lists }
+  const rowRoot = branches(sorting, at, alive, rowFields)
+  const colRoot = branches(sorting, at, alive, colFields)
+  // a total is made of the cells under it in the cache's order of their items, down the rows first, then across the
+  // columns, as Excel adds them (the set basic: a product's grand total)
+  const cacheOrder = (f: number, b: Branch) => [...b.next.keys()].sort((x, y) => (table.fields[f].items?.[x]?.item ?? x) - (table.fields[f].items?.[y]?.item ?? y))
+  let memo = new Map<string, Tally[] | null>()
+  const walk = (root: Branch, path: readonly number[]) => path.reduce<Branch | undefined>((b, p) => b?.next.get(p), root)
+  const cell = (rows: readonly number[], rb: Branch, cols: readonly number[], cb: Branch): Tally[] | null => {
+    const k = `${key(rows)}|${key(cols)}`
+    let out = memo.get(k)
+    if (out !== undefined) return out
+    if (rows.length === rowFields.length && cols.length === colFields.length) out = leaves.get(k) ?? null
+    else {
+      const down = rows.length < rowFields.length
+      const b = down ? rb : cb
+      out = null
+      for (const p of cacheOrder(down ? rowFields[rows.length] : colFields[cols.length], b)) {
+        const n = b.next.get(p)!
+        if (!n.data) continue
+        const t = down ? cell([...rows, p], n, cols, cb) : cell(rows, rb, [...cols, p], n)
+        if (!t) continue
+        out ??= values.map(() => new Tally())
+        out.forEach((x, v) => x.merge(t[v]))
+      }
+    }
+    memo.set(k, out)
+    return out
+  }
+  const reach = (rows: readonly number[], columns: readonly number[]) => {
+    const [rb, cb] = [walk(rowRoot, rows), walk(colRoot, columns)]
+    return rb?.data && cb?.data ? cell(rows, rb, columns, cb) : null
+  }
+  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue => reach(rows, columns)?.[v]?.value(fn ?? fns[v]) ?? null
+  const hasData = (rows: readonly number[], columns: readonly number[]) => reach(rows, columns) !== null
+  // sorting by values reads them in the order before; the cells are made again in the order shown
+  sortBranches(sorting, rowRoot, rowFields, colFields, true, value)
+  sortBranches(sorting, colRoot, colFields, rowFields, false, value)
+  memo = new Map()
   const pages = (table.pages ?? []).map((p): PivotPageResult => {
     const all = (table.fields[p.field].items ?? []).map((_, i) => i)
     const items = p.item !== undefined ? [p.item] : all.filter((i) => !table.fields[p.field].items![i].hidden)
@@ -139,17 +160,11 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   return {
     table,
     cache,
-    rows: { fields: axes.rows, items: axisTree(view, axes.rows, 'rows') },
-    columns: { fields: axes.columns, items: axisTree(view, axes.columns, 'columns') },
+    rows: { fields: axes.rows, items: nodesOf(rowRoot, axes.rows, values.length) },
+    columns: { fields: axes.columns, items: nodesOf(colRoot, axes.columns, values.length) },
     pages,
     value,
     hasData,
   }
 }
 
-/** The keys of a path's prefixes, the empty one first. */
-function prefixes(path: readonly number[]): string[] {
-  const out = ['']
-  for (let i = 0; i < path.length; i++) out.push(i ? `${out[i]},${path[i]}` : `${path[i]}`)
-  return out
-}

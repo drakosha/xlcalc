@@ -1,27 +1,56 @@
-/** An axis's items as shown: the paths of the records let through, items with no data where a field shows them, sorted. */
-import type { CellValue, PivotAxisField, PivotCache, PivotFunction, PivotTable } from '../contract.js'
+/**
+ * An axis's items as shown: the paths of the records let through as branches, items with no data where a field shows
+ * them, each branch's items in the order shown (sorted by label or by a value), then as `PivotNode`s.
+ */
+import type { CellValue, PivotAxisField, PivotCache, PivotTable } from '../contract.js'
 import { sortOrder } from '../sort-order.js'
 import type { PivotNode } from './result.js'
 import { labelOrder } from './values.js'
 
-/** What the trees are made from: the prepared PivotTable and cache, each record's items, the items let through, the records left, the cube's values. */
-export interface Cube {
+/** An item of an axis and the items of the next field under it, in the order shown (`order`); `data`: some record reaches it. */
+export interface Branch {
+  data: boolean
+  next: Map<number, Branch>
+  order: number[]
+}
+
+const branch = (data: boolean): Branch => ({ data, next: new Map(), order: [] })
+
+/** What sorting reads: the prepared PivotTable and cache, the items let through, the epoch and custom lists. */
+export interface Sorting {
   table: PivotTable
   cache: PivotCache
-  at: Int32Array[]
   shown: (boolean[] | undefined)[]
-  alive: readonly number[]
-  value(rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue
   epoch: number
   lists: readonly (readonly string[])[]
 }
 
-interface Branch {
-  data: boolean
-  next: Map<number, Branch>
+/** The branches of an axis's fields `real` from each record's items, with the items of no data where a field shows them, in the PivotTable's order. */
+export function branches(s: Sorting, at: readonly Int32Array[], alive: readonly number[], real: readonly number[]): Branch {
+  const root = branch(true)
+  for (const r of alive) {
+    let b = root
+    for (const f of real) {
+      const p = at[f][r]
+      let n = b.next.get(p)
+      if (!n) b.next.set(p, (n = branch(true)))
+      b = n
+    }
+  }
+  const fill = (b: Branch, level: number) => {
+    if (level === real.length) return
+    const f = real[level]
+    // items with no data, where the field shows them: every item let through, under every item before
+    if (s.table.fields[f].showEmpty)
+      (s.table.fields[f].items ?? []).forEach((_, p) => {
+        if (!b.next.has(p) && (s.shown[f]?.[p] ?? true)) b.next.set(p, branch(false))
+      })
+    b.order = [...b.next.keys()].sort((x, y) => x - y)
+    for (const n of b.next.values()) fill(n, level + 1)
+  }
+  fill(root, 0)
+  return root
 }
-
-const branch = (data: boolean): Branch => ({ data, next: new Map() })
 
 /** The path on the other axis that a sort by value reads its values at: its fields' items given, up to the first not given. */
 function otherPath(fields: readonly number[], given: readonly { field: number; item: number }[] = []): number[] {
@@ -34,55 +63,50 @@ function otherPath(fields: readonly number[], given: readonly { field: number; i
   return out
 }
 
-/** The axis's items as nodes, `values` among them where it lies. */
-export function axisTree(c: Cube, fields: readonly PivotAxisField[], axis: 'rows' | 'columns'): PivotNode[] {
-  const real = fields.filter((f): f is number => f !== 'values')
-  const root = branch(true)
-  for (const r of c.alive) {
-    let b = root
-    for (const f of real) {
-      const p = c.at[f][r]
-      let n = b.next.get(p)
-      if (!n) b.next.set(p, (n = branch(true)))
-      b = n
-    }
-  }
-  const otherFields = (axis === 'rows' ? c.table.columns : c.table.rows)?.filter((f): f is number => f !== 'values') ?? []
-  const nodes = (b: Branch, level: number, path: number[]): PivotNode[] => {
-    if (level === real.length) return []
+/**
+ * Sorts each branch's items by its field's sort: by label (custom lists first, with `customListSort`), or by a value
+ * field's values at the other axis's items (`value`, its paths on the rows and the columns); ties keep the order before.
+ */
+export function sortBranches(s: Sorting, root: Branch, real: readonly number[], other: readonly number[], rows: boolean, value: (path: number[], at: number[], v: number) => CellValue): void {
+  const walk = (b: Branch, level: number, path: number[]) => {
+    if (level === real.length) return
     const f = real[level]
-    const pf = c.table.fields[f]
-    // items with no data, where the field shows them: every item let through, under every item before
-    if (pf.showEmpty)
-      (pf.items ?? []).forEach((_, p) => {
-        if (!b.next.has(p) && (c.shown[f]?.[p] ?? true)) b.next.set(p, branch(false))
-      })
-    const items = [...b.next.keys()].sort((x, y) => x - y)
+    const pf = s.table.fields[f]
     const sort = pf.autoSort === false ? undefined : pf.sort
     if (sort?.by) {
-      const other = otherPath(otherFields, sort.by.at)
+      const at = otherPath(other, sort.by.at)
       const v = sort.by.value
-      const of = (p: number) => (axis === 'rows' ? c.value([...path, p], other, v) : c.value(other, [...path, p], v))
-      const val = new Map(items.map((p) => [p, of(p)]))
-      items.sort((x, y) => sortOrder(val.get(x), val.get(y), sort.order === 'descending') || x - y)
+      const val = new Map(b.order.map((p) => [p, rows ? value([...path, p], at, v) : value(at, [...path, p], v)]))
+      const was = new Map(b.order.map((p, i) => [p, i]))
+      b.order.sort((x, y) => sortOrder(val.get(x), val.get(y), sort.order === 'descending') || was.get(x)! - was.get(y)!)
     } else if (sort) {
-      const cached = c.cache.fields[f]?.items ?? []
-      const v = (p: number) => {
+      const cached = s.cache.fields[f]?.items ?? []
+      const item = (p: number) => {
         const i = pf.items?.[p]?.item
         return i === undefined ? null : (cached[i] ?? null)
       }
-      items.sort((x, y) => labelOrder(v(x), v(y), sort.order === 'descending', c.table.customListSort !== false ? c.lists : null, c.epoch) || x - y)
+      b.order.sort((x, y) => labelOrder(item(x), item(y), sort.order === 'descending', s.table.customListSort !== false ? s.lists : null, s.epoch) || x - y)
     }
-    return items.map((p) => {
-      const n = b.next.get(p)!
-      const node: PivotNode = { field: f, item: p, children: nodes(n, level + 1, [...path, p]) }
-      if (!n.data) node.empty = true
-      return node
-    })
+    for (const p of b.order) walk(b.next.get(p)!, level + 1, [...path, p])
   }
-  const tree = nodes(root, 0, [])
+  walk(root, 0, [])
+}
+
+/** The axis's items as nodes, `values` among them where it lies. */
+export function nodesOf(root: Branch, fields: readonly PivotAxisField[], values: number): PivotNode[] {
+  const real = fields.filter((f): f is number => f !== 'values')
+  const nodes = (b: Branch, level: number): PivotNode[] =>
+    level === real.length
+      ? []
+      : b.order.map((p) => {
+          const n = b.next.get(p)!
+          const node: PivotNode = { field: real[level], item: p, children: nodes(n, level + 1) }
+          if (!n.data) node.empty = true
+          return node
+        })
+  const tree = nodes(root, 0)
   const at = fields.indexOf('values')
-  return at < 0 ? tree : withValues(tree, at, c.table.values?.length ?? 0)
+  return at < 0 ? tree : withValues(tree, at, values)
 }
 
 const copied = (ns: readonly PivotNode[]): PivotNode[] => ns.map((n) => ({ ...n, children: copied(n.children) }))
