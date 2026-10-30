@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest'
 import * as basic from '../bench/coverage/pivot/basic.js'
 import type { PivotCase, PivotOp, PivotPhase, PivotSet } from '../bench/coverage/pivot/cases.js'
 import * as filter from '../bench/coverage/pivot/filter.js'
+import * as layout from '../bench/coverage/pivot/layout.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
 import type { BookInput, CellValue, PivotRef } from '../src/contract.js'
@@ -32,16 +33,18 @@ const CLOCK = { now: '2026-10-30', seed: 0 }
  * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. basic: empty cells with
  * "For empty cells show", which Excel shows as 0 (not measured further). sort: items of several custom lists at once,
  * which Excel orders by no order we found (`docs/development.md`). refresh: a refresh growing over cells or another
- * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it.
+ * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it. layout: a field's subtotals by
+ * several functions, which the reading of the file does not take yet.
  */
 const KNOWN: Record<string, string[]> = {
   basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
   filter: [],
   sort: ['months-down/0/saved', 'months-down/0/source'],
+  layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
   refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout }
 
 /** The values of `range` on `sheet` as its cells hold them. */
 function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
