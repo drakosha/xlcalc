@@ -1,8 +1,8 @@
 /**
  * How Excel keeps a formula that begins with `#REF!`: a host's books hold `#REF!-R` with the value `#VALUE!`, which
  * Excel computes as `#REF!`. The book's sheet S has formulas over a text and a number in column A and on the sheet T,
- * which become `#REF!-…` when column A and T are deleted, and two formulas already `#REF!-B1` with values stored
- * otherwise (`#VALUE!`, 7). Excel reads them as the book opens, after a recalculation, after the deletion and after a
+ * which become `#REF!-…` when column A and T are deleted, two formulas already `#REF!-B1` with values stored
+ * otherwise (`#VALUE!`, 7), and two controls stored wrong. Excel reads them as the book opens, after a recalculation, after the deletion and after a
  * full calculation, and saves the book after the deletion. `npx tsx bench/coverage/errstore/mac.ts`.
  */
 import type { BookInput } from '../../../src/contract.js'
@@ -10,9 +10,9 @@ import { writeXlsx } from '../../../src/xlsx.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
 import { rawFile } from '../xlsx/sent.js'
 
-export const FORMULAS = ['A1-B1', 'A2-B1', 'T!A1-B1', 'T!A2-B1', '-A1', 'A1&"x"', '#REF!-B1', '#REF!-B1', 'A1+B1', 'B1-A1']
+export const FORMULAS = ['A1-B1', 'A2-B1', 'T!A1-B1', 'T!A2-B1', '-A1', 'A1&"x"', '#REF!-B1', '#REF!-B1', 'A1+B1', 'B1-A1', 'B1*2', 'NA()']
 
-/** The cells read before the deletion (C1:C10) and after it, one column to the left. */
+/** The cells read before the deletion (C1:C12) and after it, one column to the left. */
 export const BEFORE = FORMULAS.map((_, i) => `C${i + 1}`)
 export const AFTER = FORMULAS.map((_, i) => `B${i + 1}`)
 
@@ -23,8 +23,11 @@ export const book = (): BookInput => ({
   ],
 })
 
-/** The values stored for FORMULAS as a writer that computed them leaves them, but C7's `#VALUE!` and C8's 7. */
-const STORED = ['e:#VALUE!', '-2', 'e:#VALUE!', '-2', 'e:#VALUE!', 's:abcx', 'e:#VALUE!', '7', 'e:#VALUE!', 'e:#VALUE!']
+/**
+ * The values stored for FORMULAS as a writer that computed them leaves them, but C7's `#VALUE!` and C8's 7, and the
+ * controls C11 (999 for 10) and C12 (`#VALUE!` for `#N/A`), which show whether Excel computes the book as it opens.
+ */
+const STORED = ['e:#VALUE!', '-2', 'e:#VALUE!', '-2', 'e:#VALUE!', 's:abcx', 'e:#VALUE!', '7', 'e:#VALUE!', 'e:#VALUE!', '999', 'e:#VALUE!']
 
 const cellXml = (f: string, v: string, i: number) => {
   const t = v.startsWith('e:') ? ' t="e"' : v.startsWith('s:') ? ' t="str"' : ''

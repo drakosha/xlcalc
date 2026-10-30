@@ -13,11 +13,11 @@ await withWindowsExcel('en-US', async (env) => {
   writeFileSync(file, data)
   const read = (range: string) => [{ do: 'formulas', sheet: 'S', range }, { do: 'values', sheet: 'S', range }]
   const steps = [
-    { do: 'opened' }, ...read('C1:C10'),
-    { do: 'calc' }, ...read('C1:C10'),
-    { do: 'struct', op: 'deleteColumns', sheet: 'S', range: 'A1' }, { do: 'struct', op: 'deleteSheet', sheet: 'T' }, ...read('B1:B10'),
+    { do: 'opened' }, ...read('C1:C12'),
+    { do: 'calc' }, ...read('C1:C12'),
+    { do: 'struct', op: 'deleteColumns', sheet: 'S', range: 'A1' }, { do: 'struct', op: 'deleteSheet', sheet: 'T' }, ...read('B1:B12'),
     { do: 'saveAs' },
-    { do: 'full' }, ...read('B1:B10'),
+    { do: 'full' }, ...read('B1:B12'),
   ]
   const [a] = await runJob('errstore', [{ file, steps }])
   if (!a || !('answers' in a) || !a.saved) throw new Error(JSON.stringify(a))
