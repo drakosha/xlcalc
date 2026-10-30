@@ -309,6 +309,8 @@ export interface PivotTable {
   valuesOnRows?: boolean
   /** The place of the value fields among the axis's fields when there is one, last without it. */
   valuesPosition?: number
+  /** The Values row shown (Show the Values Row): the row with the value fields' header above them when there are several; hidden without it, as Excel 365 makes a PivotTable. */
+  valuesRow?: boolean
   filters?: PivotFilter[]
   /** Grand totals of the rows (a column at the right) and of the columns (a row at the bottom), each shown by default. */
   grandTotals?: { rows?: boolean; columns?: boolean }
