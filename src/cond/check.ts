@@ -7,6 +7,7 @@ import type { ConditionalFormat, IconSetName } from '../contract.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkRange } from '../input/range.js'
+import { checkPivotRuleScope } from '../input/pivot.js'
 import { checkBorder, checkColor, checkFill, checkFont, checkFormat, type Given } from '../input/styles.js'
 
 /** The icon sets by name, with their number of icons. */
@@ -38,7 +39,7 @@ export const PERIODS = ['today', 'yesterday', 'tomorrow', 'last7Days', 'thisWeek
 export const VALUE_TYPES = ['min', 'max', 'num', 'percent', 'percentile', 'formula', 'autoMin', 'autoMax']
 export const WITH_VALUE: ReadonlySet<string> = new Set(['num', 'percent', 'percentile', 'formula'])
 
-const BASE = ['type', 'ranges', 'stopIfTrue']
+const BASE = ['type', 'ranges', 'stopIfTrue', 'pivot']
 
 /** The fields of each type of rule, besides `type`, `ranges` and `stopIfTrue`. */
 const FIELDS: Record<ConditionalFormat['type'], string[]> = {
@@ -104,6 +105,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
   if (!ranges.length) throw new InputError(`${p}.ranges`, 'a conditional format applies to at least one range')
   ranges.forEach((r, i) => checkRange(r, `${p}.ranges[${i}]`, false))
   if (o.stopIfTrue !== undefined) checkBoolean(o.stopIfTrue, `${p}.stopIfTrue`)
+  if (o.pivot !== undefined) checkPivotRuleScope(o.pivot, `${p}.pivot`)
   if (o.style !== undefined) checkStyle(o.style, `${p}.style`)
   if (o.formula !== undefined) checkString(o.formula, `${p}.formula`)
   switch (type) {
