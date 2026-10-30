@@ -1106,6 +1106,8 @@ interface AsyncSession {
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
   setExternalBooks(books: ExternalBook[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
+  refreshConnections(names?: string[], opts?: AsyncEditOptions): Promise<EditResult>
+  settleConnections(opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
@@ -2079,6 +2081,8 @@ type ChangingMethod =
   | 'setNames'
   | 'setExternalBooks'
   | 'setClock'
+  | 'refreshConnections'
+  | 'settleConnections'
   | 'editStructure'
   | 'setStyles'
   | 'setLayout'
@@ -2273,6 +2277,8 @@ interface ComputeResult {
   inputHash: string
   configVersion: string
   ms: number
+  /** Cells whose answer from `Externals.resolve` is on its way (`#BUSY!` or `#GETTING_DATA`); none when it is empty. */
+  pending?: CellRef[]
 }
 ```
 
@@ -2893,6 +2899,15 @@ interface ExpressionFormat extends ConditionalBase {
 }
 ```
 
+### `ExternalAnswer`
+
+A call's answer: a value, an array (spilled as a formula's array), a cube member as the caption its cell shows and the
+name the cube functions take, or undefined for none: the function's answer without its connection.
+
+```ts
+type ExternalAnswer = CellValue | CellValue[][] | { value: CellValue; member: string } | undefined
+```
+
 ### `ExternalBook`
 
 An external workbook, as stored alongside the formulas that refer to it (xlsx `externalLinkN.xml`): its location, and
@@ -2906,6 +2921,29 @@ interface ExternalBook {
   sheets: ExternalSheet[]
   /** Its defined names that the workbook's formulas use: workbook-level ones, or ones local to one of its sheets. */
   names?: ExternalName[]
+}
+```
+
+### `ExternalCall`
+
+A call [`ExternalResolver`](#externalresolver) answers.
+
+```ts
+interface ExternalCall {
+  /** The function, upper-case. */
+  name: string
+  /** The call's text with its arguments' values, as `Externals.values` takes it: `BALANCE("2025-01")`. */
+  key: string
+  /**
+   * The arguments' values: a range or an array as rows of values, an argument left out undefined; a cell a cube
+   * function answered with a member (`CUBEMEMBER`, `CUBESET`) gives the member's name to another cube function.
+   */
+  args: (CellValue | CellValue[][] | undefined)[]
+  /** The cell of the formula. */
+  sheet: string
+  cell: string
+  /** Aborted with the call that asks (its `signal`), not at its deadline: a session takes an answer that arrives later. */
+  signal: AbortSignal
 }
 ```
 
@@ -2923,17 +2961,33 @@ interface ExternalName {
 }
 ```
 
+### `ExternalResolver`
+
+Answers a call. A calculation asks once for each call text ([`ExternalCall.key`](#externalcall)); a session keeps the answers until
+`refreshConnections`. An answer given as a promise leaves the cell `#BUSY!` (a cube function's `#GETTING_DATA`) until
+it arrives: [`createInlineCalc`](#xlcalc-createinlinecalc) and a pool wait for it within the call's `timeoutMs`, a session takes it by
+`settleConnections`. A thrown error or a rejected promise is the function's answer without its connection.
+
+```ts
+type ExternalResolver = (call: ExternalCall) => ExternalAnswer | PromiseLike<ExternalAnswer>
+```
+
 ### `Externals`
 
-External functions (host functions evaluated outside the workbook): their values are resolved in
-advance, in a single request, and passed to the calculation. The key of a call is its canonical text
-(`BALANCE("2025-01")`); arguments must be literals. They are options of the calculation, not part of the
-workbook, so `inputHash` does not include them.
+External functions (host functions evaluated outside the workbook) and the answers to the calls a workbook makes
+outside itself. `values` gives answers in advance, by the call's text with its arguments (`BALANCE("2025-01")`);
+without `resolve` the arguments of the host's `functions` must be literals, and a call without a value is `#N/A`.
+`resolve` answers, at the time of the calculation, a call of the host's `functions` without an entry in `values`,
+whatever its arguments, and a call of a function of connections (`CUBEVALUE` and the other cube functions, `RTD`,
+`WEBSERVICE`, `IMAGE`, `STOCKHISTORY`, `TRANSLATE`, `DETECTLANGUAGE`, `CALL`, `REGISTER.ID`, `EUROCONVERT`), which
+without an answer gives what Excel gives where it reaches nothing. They are options of the calculation, not part of
+the workbook, so `inputHash` does not include them; their answers are values of cells, so `hash` does.
 
 ```ts
 interface Externals {
   functions: string[]
   values?: Record<string, CellValue>
+  resolve?: ExternalResolver
 }
 ```
 
@@ -4344,6 +4398,14 @@ interface Session {
   setExternalBooks(books: ExternalBook[], opts?: EditOptions): EditResult
   /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
+  /**
+   * Asks `Externals.resolve` again for every call of the functions `names` (upper-case), of every function of
+   * connections and host's function when none are given, as Excel's Refresh All does: the answers kept are dropped and
+   * the formulas calling them calculated, those keeping the value their file stores too.
+   */
+  refreshConnections(names?: string[], opts?: EditOptions): EditResult
+  /** Waits for the answers on their way from `Externals.resolve` and calculates the cells that wait for them. */
+  settleConnections(): Promise<EditResult>
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
   editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** Replaces the workbook's style table; every style that cells, rows and columns use must remain in it. Recalculates nothing; displayed text does not depend on styles. */

@@ -28,13 +28,13 @@ const book = (): BookInput => ({ styles: [{ font: { bold: true } }], sheets: [{ 
 /** The arguments each method of a synchronous session takes (`Session`). */
 const SESSION: Record<string, number> = {
   applyChanges: 2, previewChanges: 2, readCells: 2, findCells: 3, replaceInCells: 4, getDependents: 2, summarizeRanges: 2,
-  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, pasteText: 4, previewPasteText: 4, fillCellText: 4, previewFillCellText: 4, setNames: 2, setExternalBooks: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
+  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, pasteText: 4, previewPasteText: 4, fillCellText: 4, previewFillCellText: 4, setNames: 2, setExternalBooks: 2, setClock: 2, refreshConnections: 2, settleConnections: 0, editStructure: 2, setStyles: 2, setLayout: 2,
   getBook: 0, getLayout: 0, getUsedRange: 1, getAutoFilterRange: 1, getEnd: 3, getAutoSum: 2, getNamesFromSelection: 3, getSpecialCells: 3, getWorkbookStatistics: 1, explain: 3, getCells: 2, copyText: 3, getValues: 3, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
   getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, subscribe: 1, close: 0,
 }
 
 /** An asynchronous session's (`AsyncSession`): the calls that compute take a call's options too. */
-const ASYNC: Record<string, number> = { ...SESSION, validateEntry: 4, getResult: 1, getSnapshot: 1, getHash: 1, getCells: 3 }
+const ASYNC: Record<string, number> = { ...SESSION, settleConnections: 1, validateEntry: 4, getResult: 1, getSnapshot: 1, getHash: 1, getCells: 3 }
 
 const GETCELLS = new InputError('getCells', 'takes 2 arguments, got an object as argument 3 (formulaLocal is an option of getViewport)')
 
