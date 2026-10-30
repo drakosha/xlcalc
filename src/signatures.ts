@@ -226,6 +226,7 @@ export const SIGNATURES: Readonly<Record<string, string>> = {
   GCD: 'number1 [number2] ...',
   GEOMEAN: 'number1 [number2] ...',
   GESTEP: 'number [step]',
+  GETPIVOTDATA: 'data_field pivot_table [field1 item1] ...',
   GROUPBY: 'row_fields values function [field_headers] [total_depth] [sort_order] [filter_array] [field_relationship]',
   GROWTH: 'known_y [known_x] [new_x] [const]',
   HARMEAN: 'number1 [number2] ...',

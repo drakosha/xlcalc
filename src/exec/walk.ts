@@ -578,7 +578,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             info.external = true
             return b.external(canonical(n))
           }
-          if (STORED_FUNCTIONS.has(n.name)) info.stored ??= n.name
+          // GETPIVOTDATA over a PivotTable of another workbook, which a closed workbook does not give
+          if (STORED_FUNCTIONS.has(n.name) || (n.name === 'GETPIVOTDATA' && n.args.length > 1 && closed(n.args[1]))) info.stored ??= n.name
           if (spec.volatile) info.volatile = true
           if (spec.dynamic) info.dynamic = true
           if (spec.dynamic || placing(n.name)) placeOnly ??= placedOnly(ast)

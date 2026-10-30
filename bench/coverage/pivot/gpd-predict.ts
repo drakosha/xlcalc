@@ -1,0 +1,83 @@
+/**
+ * The engine's prediction of a set of GETPIVOTDATA formulas (`gpd-1`), written before Excel's answers are read: each
+ * case's book (the saved book of `from`, its values put and its formulas typed as the harness types them) computed,
+ * and the cells it watches. A formula over a pivot table in another book is predicted at each read of the harness:
+ * the engine does not open the other book, so a computation gives what it gives without it, and the file opened again
+ * keeps the value Excel saved (`held`). Run: `npx tsx bench/coverage/pivot/gpd-predict.ts gpd-1`; the cases' book
+ * and answers: `pivotGpdBook`, `test/pivot-gpd.test.ts`.
+ */
+import { readFileSync, writeFileSync } from 'node:fs'
+import { compute, type BookInput, type CellValue } from '../../../src/index.js'
+import { readXlsx } from '../../../src/xlsx.js'
+import { formatAddress } from '../../../src/model.js'
+import { parseRange } from '../../../src/structure/area.js'
+import type { PivotCase, PivotSet } from './cases.js'
+
+const ROOT = new URL('../../../', import.meta.url)
+
+/** The book of a case: its `from` book as Excel saved it, with the values and formulas of its operations; null for one over another book. */
+export async function pivotGpdBook(c: PivotCase): Promise<BookInput | null> {
+  if (!c.from || c.ops.some((o) => 'external' in o)) return null
+  const book = (await readXlsx(readFileSync(new URL(`test/excel/win/pivot/${c.from}.xlsx`, ROOT)))).book
+  for (const o of c.ops) {
+    if (!('edit' in o)) continue
+    const [sheet, cell] = o.edit.split('!')
+    const s = book.sheets.find((x) => x.name === sheet)!
+    s.cells[cell] = typeof o.to === 'object' && o.to !== null && 'formula' in o.to ? { formula: o.to.formula } : { value: o.to as string | number }
+  }
+  return book
+}
+
+/** The cells of a case's watched ranges (`G!A1:A9`), as `G!A1`. */
+export function watched(c: PivotCase): string[] {
+  return (c.watch ?? []).flatMap((w) => {
+    const [sheet, range] = w.split('!')
+    const x = parseRange(range)!
+    const out: string[] = []
+    for (let r = x.r1; r <= x.r2; r++) for (let col = x.c1; col <= x.c2; col++) out.push(`${sheet}!${formatAddress(r, col)}`)
+    return out
+  })
+}
+
+/** The engine's values of a case's watched cells. */
+export async function predictCase(c: PivotCase): Promise<Record<string, CellValue>> {
+  const book = await pivotGpdBook(c)
+  if (!book) return {}
+  const r = compute(book)
+  const out: Record<string, CellValue> = {}
+  for (const k of watched(c)) {
+    const [sheet, cell] = k.split('!')
+    out[k] = r.sheets[book.sheets.findIndex((x) => x.name === sheet)].cells[cell]?.value ?? null
+  }
+  return out
+}
+
+/** A formula over another book: computed without it, #REF! (`closed, computed`, `reopened, computed`); the file opened again keeps the value Excel saved (`reopened`, as `open`). */
+function predictExternal(c: PivotCase): Record<string, string> {
+  const o = c.ops.find((x) => 'external' in x) as { external: string; cells: Record<string, string> }
+  const book: BookInput = { sheets: [{ name: 'G', cells: {} }], externalBooks: [{ target: 'Src.xlsx', sheets: [{ name: 'P', cells: {} }] }] }
+  const cells = Object.keys(o.cells)
+  for (const k of cells) book.sheets[0].cells[k.split('!')[1]] = { formula: o.cells[k].slice(1).replace('[Src.xlsx]', '[1]') }
+  const r = compute(book)
+  const held = compute(book, { cached: { sheets: [{ name: 'G', cells: Object.fromEntries(cells.map((k) => [k.split('!')[1], { value: 7 }])) }] } })
+  return Object.fromEntries(
+    cells.flatMap((k) => {
+      const a = k.split('!')[1]
+      const v = r.sheets[0].cells[a].value
+      return [
+        [`closed, computed ${k}`, JSON.stringify(v)],
+        [`reopened, computed ${k}`, JSON.stringify(v)],
+        [`reopened ${k}`, held.sheets[0].cells[a].value === 7 ? 'as open' : JSON.stringify(held.sheets[0].cells[a].value)],
+      ]
+    }),
+  )
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const set = process.argv[2]
+  const { buildPivotCases } = (await import(`./${set}.ts`)) as PivotSet
+  const out: Record<string, Record<string, unknown>> = {}
+  for (const c of buildPivotCases()) out[c.id] = c.ops.some((o) => 'external' in o) ? predictExternal(c) : await predictCase(c)
+  writeFileSync(new URL(`bench/coverage/pivot/${set}.predicted.json`, ROOT), JSON.stringify(out, null, 1) + '\n')
+  console.log(Object.entries(out).map(([id, v]) => `${id}: ${Object.keys(v).length}`).join('\n'))
+}
