@@ -7,6 +7,7 @@ import type { PivotEngine } from '../contract.js'
 import type { PivotEngineParts } from '../pivot-level.js'
 import { checkPivotShapes } from './check.js'
 import { refreshPivots } from './engine.js'
+import { pivotEntry } from './entry.js'
 
 /** The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)). */
-export const pivotEngine: PivotEngine = { kind: 'xlcalc-pivot', refresh: refreshPivots, check: checkPivotShapes } as PivotEngineParts
+export const pivotEngine: PivotEngine = { kind: 'xlcalc-pivot', refresh: refreshPivots, check: checkPivotShapes, entry: pivotEntry } as PivotEngineParts

@@ -1,16 +1,19 @@
 /**
  * GETPIVOTDATA over a workbook's PivotTable (`test/pivot-books.ts`, Sum of Amount by Region): the value field and the
  * pairs as Excel matches them, the grand total, what the layout does not show, a stale cache; the PivotTable's cells as
- * the formula's references in every kind of session and both execution modes, with undo; its layout read by the formula
+ * the formula's references in every kind of session and both execution modes, a refresh changing them, with undo; its layout read by the formula
  * at each computation, so a PivotTable laid out otherwise over the same cells answers otherwise. Excel's answers are the
  * set `gpd-1` (`pivot-gpd.test.ts`).
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, type BookInput, type Execution } from '../src/index.js'
+import { compute, registerPivot, type BookInput, type Execution } from '../src/index.js'
+import { pivotEngine } from '../src/pivot/index.js'
 import { pivotBook } from './pivot-books.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 afterAll(closeCalcs)
+// a refresh lays the PivotTable out anew through xlcalc/pivot
+registerPivot(pivotEngine)
 
 /** The pivot book with formulas on a sheet G, from A1 down. */
 function withFormulas(formulas: string[], change?: (b: BookInput) => void): BookInput {
@@ -74,17 +77,21 @@ describe('GETPIVOTDATA', () => {
 describe.each(['closures', 'eval'] as Execution[])('GETPIVOTDATA in a session, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
     const open = openerFor(kind)
-    it("computes again when a cell of the PivotTable changes, and back with undo", async () => {
+    it('computes again when a refresh lays the PivotTable out anew, and back with undo', async () => {
       const s = await open(withFormulas(['GETPIVOTDATA("Amount",Pivot!A3,"Region","East")', 'GETPIVOTDATA("Amount",Pivot!A3)']), { execution })
       try {
         const at = async () => Object.values(await s.getCells('G', 'A1:A2')).map((c) => c.value)
+        const refresh = async () => expect((await s.editStructure({ op: 'refreshPivots' })).ok).toBe(true)
         expect(await at()).toEqual([100, 360])
-        await s.setCells([{ sheet: 'Pivot', cell: 'B6', input: { value: 7 } }])
-        expect(await at()).toEqual([7, 360])
-        await s.setCells([{ sheet: 'Pivot', cell: 'B8', input: { value: 1 } }])
-        expect(await at()).toEqual([7, 1])
-        await s.undo()
-        await s.undo()
+        // an East amount edited: the PivotTable keeps its cells until it is refreshed
+        await s.setCells([{ sheet: 'Data', cell: 'B4', input: { value: 7 } }])
+        expect(await at()).toEqual([100, 360])
+        await refresh()
+        expect(await at()).toEqual([77, 337])
+        await s.setCells([{ sheet: 'Data', cell: 'B9', input: { value: 1 } }])
+        await refresh()
+        expect(await at()).toEqual([77, 258])
+        for (let k = 0; k < 4; k++) await s.undo()
         expect(await at()).toEqual([100, 360])
         expect(await s.getHash()).toBe(compute(await s.getBook(), { execution }).hash)
       } finally {

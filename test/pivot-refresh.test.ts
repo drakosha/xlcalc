@@ -85,6 +85,17 @@ describe('refreshPivots', () => {
     s.close()
   })
 
+  it('opens a workbook whose cache refreshes on opening as saved: the host refreshes it', () => {
+    const book = { ...BOOK, pivotCaches: [{ ...BOOK.pivotCaches![0], refreshOnLoad: true }] }
+    const s = createSession(book)
+    expect(s.getValues('P', 'A3:B8')).toEqual(EMPTY)
+    expect(s.getBook().pivotCaches?.[0].refreshOnLoad).toBe(true)
+    s.editStructure(REFRESH)
+    expect(s.getValues('P', 'A3:B8')).toEqual(LAID)
+    expect(s.getBook().pivotCaches?.[0].refreshOnLoad).toBe(true)
+    s.close()
+  })
+
   it('refuses a PivotTable not there, and leaves the book', () => {
     const s = createSession(BOOK)
     const r = s.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'P', name: 'PT9' }] })
@@ -114,6 +125,18 @@ describe('refreshPivots', () => {
       expect(await s.getValues('P', 'A3:B8')).toEqual(LAID)
       await s.undo()
       expect(await s.getValues('P', 'A3:B8')).toEqual(EMPTY)
+      await s.close()
+    })
+
+  // registerPivot takes an entry into a PivotTable's cell too: an item's label typed anew is an edit of its definition (editPivotTable, which editStructure does not take yet)
+  for (const [kind, calc] of [['a session', async () => null], ['the inline calculator', async () => createInlineCalc()], ['a pool', () => made({ threads: 1 })]] as const)
+    it(`takes an entry into an item's label as editPivotTable in ${kind}`, async () => {
+      const c = await calc()
+      const s = c ? await c.createSession(BOOK) : createSession(BOOK)
+      await s.editStructure(REFRESH)
+      await expect(Promise.resolve().then(() => s.setCellText('P', 'A4', 'Восток'))).rejects.toThrow(/editPivotTable/)
+      expect(await s.setCellText('P', 'A4', 'east')).toMatchObject({ ok: true, changes: [] })
+      expect(await s.setCellText('P', 'B4', '3')).toMatchObject({ ok: false, code: 'pivot' })
       await s.close()
     })
 })
