@@ -196,10 +196,20 @@ function Pivot($xl, $wb, $s) {
         foreach ($it in $all) { if ($keep -cnotcontains [string]$it.Name -and $it.$prop) { $it.$prop = $false } }
         'null'
       }
-      # Ungroup on the label of the field's first item shown (DataRange is empty for a field grouped into several)
+      # Ungroup on the first item cell of the field on the rows or columns: Excel 365 names a date field grouped into
+      # several `Months (Date)` and `Years (Date)`, so a cell of a field named so is taken too
       'ungroup' {
+        $pt = PTable $wb $s
+        $name = [string]$s.field
         $c = $null
-        foreach ($it in (PTable $wb $s).PivotFields([string]$s.field).PivotItems()) { $c = try { $it.LabelRange } catch { $null }; if ($c) { break } }
+        foreach ($axis in @($pt.RowRange, $pt.ColumnRange)) {
+          if ($null -eq $axis) { continue }
+          foreach ($x in $axis.Cells) {
+            $pc = try { $x.PivotCell } catch { $null }
+            if ($pc -and $pc.PivotCellType -eq 1 -and ($pc.PivotField.Name -eq $name -or $pc.PivotField.Name.EndsWith(" ($name)"))) { $c = $x; break }
+          }
+          if ($c) { break }
+        }
         [void]$c.Ungroup()
         'null'
       }
