@@ -90,10 +90,10 @@ describe('validateNames', () => {
   })
 
   it('a name kept with an error is a name: a formula finds it, a dropped one is unknown', () => {
-    const cells = { B1: { formula: 'IF(FALSE,gone)' }, B2: { formula: 'IF(FALSE,ИСТИНА)' } }
+    const cells = { B1: { formula: 'ERROR.TYPE(gone)' }, B2: { formula: 'ERROR.TYPE(ИСТИНА)' } }
     const r = compute({ locale: 'ru-RU', sheets: [{ name: 'Data', cells }], names: [{ name: 'gone', ref: "'Other'!A1" }, { name: 'ИСТИНА', ref: '1' }] }, { display: false })
-    expect(r.sheets[0].cells.B1.value).toBe(false)
-    expect(r.sheets[0].cells.B2.value).toEqual({ error: 'NAME' })
+    // #REF! from the name kept, #NAME? from the one dropped
+    expect([r.sheets[0].cells.B1.value, r.sheets[0].cells.B2.value]).toEqual([4, 5])
   })
 
   it('needs the book\'s sheets and a locale of the package', () => {

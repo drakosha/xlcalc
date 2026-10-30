@@ -24,7 +24,8 @@ import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
 import { utf8 } from '../zip/platform.js'
-import { zip } from '../zip/write.js'
+import { crc32 } from '../zip/read.js'
+import { zip, type EntryRecord } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
 import { keyOf } from '../../style-table.js'
 import { externalLinkXml } from '../write/links.js'
@@ -619,7 +620,8 @@ class Kept {
     const moved = order.length !== decls.length || decls.some((_, i) => placeOf.get(i) !== i)
     const list = kids.find((c) => c.local === 'sheets')!
     const sheets = `${wb.slice(list.start, list.open)}${order.join('')}</${list.qname}>`
-    if (sheets !== wb.slice(list.start, list.end)) {
+    // the file's own list, the space between its sheets too, while each sheet stays as it was
+    if (moved || order.some((x, i) => x !== wb.slice(decls[i].at.start, decls[i].at.end))) {
       this.changed = true
       edits.push({ part: src.wbPath, start: list.start, end: list.end, text: sheets })
     }
@@ -844,11 +846,30 @@ class Kept {
       const k = name.toLowerCase()
       if (this.parts.removed.has(k)) continue
       const text = this.parts.text.get(k)
-      files.push(text !== undefined ? { name, data: utf8(text) } : kept.get(k)!)
+      files.push(text === undefined ? kept.get(k)! : rewritten(name, text, archive.marked(name), kept.get(k)!))
     }
     for (const name of this.parts.added) files.push({ name, data: utf8(this.parts.text.get(name.toLowerCase())!) })
     return zip(files)
   }
+}
+
+const BOM = [0xef, 0xbb, 0xbf]
+
+/**
+ * A part written again over the file's `entry`: the file's own entry when the text came out as its bytes (their size
+ * and CRC-32 in the central directory), with the byte order mark the file put before it (`bom`), which writers that
+ * start a part with one expect back.
+ */
+function rewritten(name: string, text: string, bom: boolean, entry: EntryRecord): EntryRecord | { name: string; data: Uint8Array } {
+  const body = utf8(text)
+  let data = body
+  if (bom) {
+    data = new Uint8Array(body.length + BOM.length)
+    data.set(BOM)
+    data.set(body, BOM.length)
+  }
+  const v = new DataView(entry.central.buffer, entry.central.byteOffset, entry.central.byteLength)
+  return v.getUint32(24, true) === data.length && v.getUint32(16, true) === crc32(data) ? entry : { name, data }
 }
 
 /** The issues of writing a sheet that concern what was written from the model: the cells written, and the elements written. */

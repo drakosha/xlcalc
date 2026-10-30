@@ -10,7 +10,7 @@ import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, Ro
 import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
 import { listOf, lookAlone } from '../../looks/sheet.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
-import { lines, spanKey } from '../../layout/spans.js'
+import { lines, overlaid, spanKey } from '../../layout/spans.js'
 import { formatAddress, MAX_COLS, parseAddress, readAddress, sortAddresses } from '../../model.js'
 import { cellCount, cellsWithin, cornersText, meets, parseRange, rectText, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
@@ -213,9 +213,10 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (flag(a.hidden) || col.width === 0) col.hidden = true
     if (a.style !== undefined) Object.assign(col, look(xfAt(a.style, read, where), read.issues, where))
     Object.assign(col, outlineOf(a))
-    if (Object.keys(col).length) lines.push([lo, hi, col])
+    lines.push([lo, hi, col])
   }
-  return spans(lines, 'c')
+  // a later <col> over an earlier one gives the columns it covers its own settings alone, as Excel reads them
+  return spans(overlaid(lines).filter((l) => Object.keys(l[2]).length), 'c')
 }
 
 function merges(rest: string, sheet: string, issues: Issues): string[] | undefined {

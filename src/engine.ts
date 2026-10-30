@@ -54,7 +54,7 @@ export interface Formula extends FormulaCode {
   text: string
   /** An array formula of the old kind: its area (`CellInput.array`, `spill/fixed.ts`). */
   area?: Rect
-  /** A call to a function the engine does not know, which the formula keeps a value over: the check's refusal, reported once it is calculated. */
+  /** A call to a function the engine does not know, which the formula keeps a value over, or a name the book does not define: the check's refusal, reported once it is calculated. */
   unknown?: Invalid
   /** A dynamic formula's references found in its last computation (`graph/dynamic.ts`); none on any other formula. */
   reads?: Rng[]
@@ -238,7 +238,8 @@ function emptySheet(name: string): SheetData {
 
 // ---------- preparation ----------
 
-export const codegenContext = (state: EngineState, s: number, area?: Rect, unknown?: boolean): CodegenContext => ({
+/** The code's context for a formula of sheet `s`; `unknown`, a formula over functions the engine does not know: #NAME? where called, the file's value kept (`held`) or not. */
+export const codegenContext = (state: EngineState, s: number, area?: Rect, unknown?: 'held' | 'lazy'): CodegenContext => ({
   ...(state.ctx.hosts ? { hosted: true } : {}),
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
@@ -249,7 +250,7 @@ export const codegenContext = (state: EngineState, s: number, area?: Rect, unkno
   },
   link: (book, sheet) => linkedSheet(state.links, book, sheet),
   ...(area ? { area } : {}),
-  ...(unknown ? { unknown: (name: string) => !state.externalFunctions.includes(name) } : {}),
+  ...(unknown ? { unknown: (name: string) => !state.externalFunctions.includes(name), ...(unknown === 'held' ? { holds: true as const } : {}) } : {}),
 })
 
 /** The area of a formula cell's array formula of the old kind, if it is one. */
@@ -262,9 +263,9 @@ const areaOf = (cell: CellInput, row: number, col: number) => (cell.array === un
 const erring = (cell: CellInput, invalid: Invalid): Extract<Prepared, { ok: true }> => ({ ok: true, text: cell.formula!, ast: { k: 'err', code: invalid.error } })
 
 /** A formula cell compiled: its code, and the area of an old-kind array formula. */
-function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }> & { unknown?: Invalid }): Formula {
+function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }>): Formula {
   const area = areaOf(cell, row, col)
-  const g = state.compiler.formula(codegenContext(state, s, area, !!p.unknown), p.ast, s, row, col)
+  const g = state.compiler.formula(codegenContext(state, s, area, p.unknown ? (p.holds ? 'held' : 'lazy') : undefined), p.ast, s, row, col)
   return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}), ...(p.unknown ? { unknown: p.unknown } : {}) }
 }
 
@@ -384,7 +385,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       step()
       count(pending.length + state.invalid.size + 1)
       const kept = cellIn.held ?? stored?.(s, addr)
-      let p = preparedHolding(state, s, row, col, cellIn.formula, prepareShaped(state, shapes, s, row, col, cellIn.formula), kept)
+      let p = preparedHolding(state, prepareShaped(state, shapes, s, row, col, cellIn.formula), kept)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         if (cellIn.array !== undefined) p = erring(cellIn, p.invalid)
@@ -460,7 +461,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
-      let p = preparedHolding(state, s, row, col, input.formula, prepare(state, s, row, col, input.formula), input.held)
+      let p = preparedHolding(state, prepare(state, s, row, col, input.formula), input.held)
       if (!p.ok) {
         state.invalid.set(k, p.invalid)
         if (input.array !== undefined) p = erring(input, p.invalid)

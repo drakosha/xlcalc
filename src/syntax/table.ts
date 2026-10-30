@@ -16,6 +16,15 @@ export interface TableSpec {
   cols?: [string] | [string, string]
 }
 
+/** A structured reference to a table of another workbook (`[1]!Sales[Qty]`): the table's name and what it takes. */
+export interface LinkedTable {
+  name: string
+  spec: TableSpec
+}
+
+/** A table of another workbook after its book and `!`: `Sales[Qty]`, `Sales[[#This Row],[Qty]]` in a file's spelling. */
+export const linkedTableText = (t: LinkedTable, file = false) => `${t.name}[${specText(t.spec, { file })}]`
+
 /** The specifiers' words in stored text, a locale's `tableItems` keyed by them; the reader takes them in any case. */
 export const AREA_WORDS = { all: '#All', data: '#Data', headers: '#Headers', totals: '#Totals', row: '#This Row' } as const satisfies Record<TableArea, `#${string}`>
 

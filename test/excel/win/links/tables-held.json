@@ -1,0 +1,599 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 16.2
+ },
+ "cases": [
+  {
+   "id": "this-row",
+   "about": "the row of the formula in a column of a table of a linked book, rows 2 to 4",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A2": "[1]Таблица[[#This Row],[Столбец]]",
+     "A3": "[1]Таблица[[#This Row],[Столбец]]",
+     "A4": "[1]Таблица[[#This Row],[Столбец]]"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Лист1",
+       "cells": {
+        "A1": "Столбец",
+        "B1": "Другой",
+        "A2": 1,
+        "B2": 10,
+        "A3": 2,
+        "B3": 20,
+        "A4": 3,
+        "B4": 30
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:A4"
+    }
+   ],
+   "predicted": {
+    "S!A2": {
+     "error": "REF"
+    },
+    "S!A3": {
+     "error": "REF"
+    },
+    "S!A4": {
+     "error": "REF"
+    }
+   },
+   "alternatives": {
+    "S!A2": [
+     1
+    ],
+    "S!A3": [
+     2
+    ],
+    "S!A4": [
+     3
+    ]
+   }
+  },
+  {
+   "id": "column",
+   "about": "a whole column, #All, the row with an operator, a Latin table name",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "SUM([1]Таблица[Столбец])",
+     "A2": "ROWS([1]Таблица[#All])",
+     "A3": "[1]Таблица[[#This Row],[Другой]]*2",
+     "A4": "IFERROR([1]Table1[[#This Row],[Col]],\"e\")"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Лист1",
+       "cells": {
+        "A1": "Столбец",
+        "B1": "Другой",
+        "A2": 1,
+        "B2": 10,
+        "A3": 2,
+        "B3": 20,
+        "A4": 3,
+        "B4": 30
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "REF"
+    },
+    "S!A2": {
+     "error": "REF"
+    },
+    "S!A3": {
+     "error": "REF"
+    },
+    "S!A4": "e"
+   },
+   "alternatives": {
+    "S!A1": [
+     6
+    ],
+    "S!A2": [
+     4
+    ],
+    "S!A3": [
+     40
+    ]
+   }
+  },
+  {
+   "id": "bang",
+   "about": "the form with ! after the link",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A2": "[1]!Таблица[[#This Row],[Столбец]]",
+     "A3": "[1]!Таблица[[#This Row],[Столбец]]",
+     "A4": "[1]!Таблица[[#This Row],[Столбец]]"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Лист1",
+       "cells": {
+        "A1": "Столбец",
+        "B1": "Другой",
+        "A2": 1,
+        "B2": 10,
+        "A3": 2,
+        "B3": 20,
+        "A4": 3,
+        "B4": 30
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:A4"
+    }
+   ],
+   "predicted": {
+    "S!A2": {
+     "error": "REF"
+    },
+    "S!A3": {
+     "error": "REF"
+    },
+    "S!A4": {
+     "error": "REF"
+    }
+   },
+   "alternatives": {
+    "S!A2": [
+     1
+    ],
+    "S!A3": [
+     2
+    ],
+    "S!A4": [
+     3
+    ]
+   }
+  },
+  {
+   "id": "named",
+   "about": "the linked book defines a name like the table over its rows",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A2": "[1]Таблица[[#This Row],[Столбец]]",
+     "A3": "[1]Таблица[[#This Row],[Столбец]]",
+     "A4": "[1]Таблица[[#This Row],[Столбец]]",
+     "A5": "SUM([1]Таблица[Столбец])"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Лист1",
+       "cells": {
+        "A1": "Столбец",
+        "B1": "Другой",
+        "A2": 1,
+        "B2": 10,
+        "A3": 2,
+        "B3": 20,
+        "A4": 3,
+        "B4": 30
+       }
+      }
+     ],
+     "names": [
+      {
+       "name": "Таблица",
+       "ref": "=Лист1!$A$2:$B$4"
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:A5"
+    }
+   ],
+   "predicted": {
+    "S!A2": {
+     "error": "REF"
+    },
+    "S!A3": {
+     "error": "REF"
+    },
+    "S!A4": {
+     "error": "REF"
+    },
+    "S!A5": {
+     "error": "REF"
+    }
+   },
+   "alternatives": {
+    "S!A2": [
+     1
+    ],
+    "S!A3": [
+     2
+    ],
+    "S!A4": [
+     3
+    ],
+    "S!A5": [
+     6
+    ]
+   }
+  }
+ ],
+ "sent": {
+  "this-row": "9bd2b98b8fd07a8cd79e6038f8e57cd60da8c77b5c92d660bdc236d53f5160c7",
+  "column": "f6e5fa7572f420c2a8db8384a7704847611e2d088952340c5216c9d87ade606a",
+  "bang": "42c1ef8a55276ab912794d3733dbd655f0497cca0306dd6a3f848b346a8ba61b",
+  "named": "2d8a53733955e1e8156e6f59ead8385f8ea9ddae202167e712114381aa3b411c"
+ },
+ "answers": {
+  "this-row": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-tables-held-77770-1",
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!"
+     },
+     "local": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!"
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!"
+     },
+     "local": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!"
+     }
+    }
+   ]
+  },
+  "column": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-tables-held-77770-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "s",
+       "v": "e"
+      }
+     },
+     "formulas": {
+      "S!A1": "=SUM(#REF!)",
+      "S!A2": "=ROWS(#REF!)",
+      "S!A3": "=#REF!*2",
+      "S!A4": "=IFERROR(#REF!,\"e\")"
+     },
+     "local": {
+      "S!A1": "=SUM(#REF!)",
+      "S!A2": "=ROWS(#REF!)",
+      "S!A3": "=#REF!*2",
+      "S!A4": "=IFERROR(#REF!,\"e\")"
+     },
+     "shown": {
+      "S!A1": "#REF!",
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "e"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "s",
+       "v": "e"
+      }
+     },
+     "formulas": {
+      "S!A1": "=SUM(#REF!)",
+      "S!A2": "=ROWS(#REF!)",
+      "S!A3": "=#REF!*2",
+      "S!A4": "=IFERROR(#REF!,\"e\")"
+     },
+     "local": {
+      "S!A1": "=SUM(#REF!)",
+      "S!A2": "=ROWS(#REF!)",
+      "S!A3": "=#REF!*2",
+      "S!A4": "=IFERROR(#REF!,\"e\")"
+     },
+     "shown": {
+      "S!A1": "#REF!",
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "e"
+     }
+    }
+   ]
+  },
+  "bang": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-tables-held-77770-1",
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]"
+     },
+     "local": {
+      "S!A2": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!"
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]"
+     },
+     "local": {
+      "S!A2": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='C:\\xlcalc\\work\\links-tables-held-77770-1\\Book2.xlsx'!Таблица[@Столбец]"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!"
+     }
+    }
+   ]
+  },
+  "named": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-tables-held-77770-1",
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A5": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!",
+      "S!A5": "=SUM(#REF!)"
+     },
+     "local": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!",
+      "S!A5": "=SUM(#REF!)"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!",
+      "S!A5": "#REF!"
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A5": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!",
+      "S!A5": "=SUM(#REF!)"
+     },
+     "local": {
+      "S!A2": "=#REF!",
+      "S!A3": "=#REF!",
+      "S!A4": "=#REF!",
+      "S!A5": "=SUM(#REF!)"
+     },
+     "shown": {
+      "S!A2": "#REF!",
+      "S!A3": "#REF!",
+      "S!A4": "#REF!",
+      "S!A5": "#REF!"
+     }
+    }
+   ]
+  }
+ }
+}

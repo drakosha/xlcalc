@@ -13,7 +13,7 @@ import { builtinCodes, builtinIn, EN_CODES, EN_NAMES, generalFormat, generalText
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
-import { RU_NAMES } from './lcid.js'
+import { RU_GENITIVE_NAMES, RU_NAMES } from './lcid.js'
 import { localeOf } from './registry.js'
 import type { CodePage, RulesClock } from './rules/data.js'
 import { cellNumberOf } from './rules/numbers.js'
@@ -82,8 +82,9 @@ const WINDOWS_1252: CodePage = {
   ),
 }
 
-/** The month and day names of a locale code (`[$-409]`, `[$-419]`), the same in a book of any locale (`lcid.ts`). */
-const namesOf = (lcid: string): Names | undefined => (lcid === '409' ? EN_NAMES : lcid === '419' ? RU_NAMES : undefined)
+/** The month and day names of a locale code (`[$-409]`, `[$-419]`, `[$-FC19]`), the same in a book of any locale (`lcid.ts`). */
+const LCID_NAMES: Readonly<Record<string, Names>> = { '409': EN_NAMES, '419': RU_NAMES, FC19: RU_GENITIVE_NAMES }
+const namesOf = (lcid: string): Names | undefined => LCID_NAMES[lcid]
 
 /** en-US's style: the measured long date and time, `/` for dates in TEXT and in cells alike. */
 const EN_STYLE: Style = {

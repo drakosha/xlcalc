@@ -14,6 +14,8 @@ export const RU_REASONS = {
     'Excel for Mac sorts Cyrillic before Latin in ru-RU (`"a"<"а"` is FALSE there); the engine sorts Latin first, as Excel for Windows does in every locale, in comparisons, criteria, lookups and SORT.',
   macMonthShort:
     'Excel for Mac writes the short month names of ru-RU (`МММ`) as `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`; the engine uses three letters, as Excel for Windows does (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`).',
+  macSpacedDate:
+    'Excel for Mac ru-RU reads a day-month-year date with a space next to a dot (`01. 03.2025`, `01 .03.2025`) as a date; the engine does not take such text as a number (not yet checked in Excel for Windows).',
 } as const
 
 type Reason = keyof typeof REASONS | keyof typeof RU_REASONS
@@ -175,4 +177,12 @@ export const RU_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>>
   'text-format-ru:date#58': { reason: 'macMonthCase', engine: { t: 's', v: "Февраль" } },
   'text-format-ru:date#59': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
   'text-format-ru:date#60': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
+  'date-text-minus:minus#20': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:minus#21': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:plus#20': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:plus#21': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:unary#20': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:unary#21': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:value#20': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
+  'date-text-minus:value#21': { reason: 'macSpacedDate', engine: { t: 'e', v: 'VALUE' } },
 }

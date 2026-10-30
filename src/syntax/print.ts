@@ -2,7 +2,7 @@
 import { caseKey } from '../collate.js'
 import { quoteSheet } from '../sheet-pattern.js'
 import { ERROR_TEXT, type Ast } from './ast.js'
-import { specText } from './table.js'
+import { linkedTableText, specText } from './table.js'
 
 export function walk(ast: Ast, visit: (n: Ast) => void): void {
   visit(ast)
@@ -136,6 +136,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'bool':
         return bool(n.v)
       case 'err':
+        if (n.table !== undefined) return `${typeof n.book === 'number' ? `[${n.book}]` : quoteSheet(n.book!)}!${linkedTableText(n.table)}`
         return (n.sheet === undefined ? '' : `${quoteSheet(n.book === undefined ? sheetOf(n.sheet) : linkedSheet(n.book, n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
       case 'ref':
         return (n.sheet === null ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.ref.text + (n.ref.spill ? '#' : '')

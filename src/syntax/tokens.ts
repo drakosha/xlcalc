@@ -10,13 +10,13 @@ import { colToIndex, MAX_COLS, MAX_ROWS, MIN_NORMAL, readNumber } from '../model
 import { bad, type RangeRef } from './ast.js'
 import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource, TRIM_END } from './scan.js'
-import { readSpec, type TableSpec } from './table.js'
+import { readSpec, type LinkedTable, type TableSpec } from './table.js'
 
 export type Tok =
   | { t: 'num'; v: number; at: number }
   | { t: 'str'; v: string; at: number }
   /** `book`: a reference another workbook lost (`'[1]Sheet1'!#REF!`), on its `sheet`. */
-  | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string; book?: number | string }
+  | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string; book?: number | string; table?: LinkedTable }
   /** `last`: the last sheet of a reference across sheets (`Sheet1:Sheet3!A1`). */
   | { t: 'ref'; sheet: string | null; last?: string; ref: RangeRef; at: number }
   /** `sheet`: a name seen from that sheet (`Sheet2!rate`). */
@@ -155,6 +155,9 @@ function literal(text: string, at: number): number {
   return v <= MIN_NORMAL ? 0 : v
 }
 
+/** A workbook's path or file name before `!`, which no sheet's name holds: a path separator, or an Excel file's extension. */
+const BOOK_FILE = /[\\/]|\.xl[a-z]{1,2}$/i
+
 /** A quoted sheet with a book in brackets (`'C:\data\[Book2.xlsx]My Sheet'`, `'[1]My Sheet'`): the path, the book, the sheet. */
 const BOOK_IN_QUOTES = /^([^[\]]*)\[([^[\]]+)\]([^[\]]*)$/
 
@@ -187,9 +190,21 @@ export function tokenize(src: string): Tok[] {
       return from + r.len
     }
     const nm = IDENT.exec(after)
+    // a table of the book (`[1]!Sales[[#This Row],[Qty]]`), #REF! as the book is closed
+    if (nm && sheet === '' && after[nm[0].length] === '[') return linkedTable(book, at, from)
     if (!nm || after[nm[0].length] === '(' || after[nm[0].length] === '[') bad(from, { key: 'referenceAfterSheet' })
     push({ t: 'xname', book, ...(sheet === '' ? {} : { sheet }), v: nm[0], at })
     return from + nm[0].length
+  }
+  /**
+   * A structured reference to a table of another workbook at `from` (`Sales[Qty]`, after `[1]!`): `#REF!`, as Excel
+   * takes it over a closed workbook, keeping its text; the end of it.
+   */
+  const linkedTable = (book: number | string, at: number, from: number): number => {
+    const nm = IDENT.exec(src.slice(from))!
+    const { spec, end } = readSpec(src, from + nm[0].length, at)
+    push({ t: 'err', code: 'REF', book, table: { name: nm[0], spec }, at })
+    return end
   }
   let i = 0
   while (i < src.length) {
@@ -223,6 +238,13 @@ export function tokenize(src: string): Tok[] {
       if (book) {
         const sheet = book[0].slice(0, -1)
         i = external(bookOf('', src.slice(i + 1, close - 1)), sheet.startsWith("'") ? sheet.slice(1, -1).replaceAll("''", "'") : sheet, i, close + book[0].length)
+        continue
+      }
+      // a link's number and a table without `!` (`[1]Sales[Qty]`): a reference Excel loses as it reads it, `#REF!`
+      const nm = /^\[[1-9][0-9]*\]$/.test(src.slice(i, close)) ? IDENT.exec(src.slice(close)) : null
+      if (nm && src[close + nm[0].length] === '[') {
+        push({ t: 'err', code: 'REF', at: i })
+        i = readSpec(src, close + nm[0].length, i).end
         continue
       }
       const { spec, end } = readSpec(src, i, i)
@@ -270,6 +292,11 @@ export function tokenize(src: string): Tok[] {
       // a name as one sheet sees it, not a function
       const nm = last === undefined ? IDENT.exec(after) : null
       if (!nm || after[nm[0].length] === '(') bad(i + sm[0].length, { key: 'referenceAfterSheet' })
+      // a table of another workbook as Excel shows it (`'C:\\data\\Book2.xlsx'!Sales[Qty]`), by the book's path or file name
+      if (after[nm[0].length] === '[' && last === undefined && BOOK_FILE.test(sheet!)) {
+        i = linkedTable(sheet!, i, i + sm[0].length)
+        continue
+      }
       // a table needs no sheet: Excel drops one written before it
       if (after[nm[0].length] === '[') {
         const start = i + sm[0].length + nm[0].length

@@ -73,9 +73,11 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
       it.each(set.cases.filter((c) => set.answers[c.id]).map((c) => [c.id, c] as const))('%s: every link read, with the values Excel kept', async (_, c) => {
         const r = await saved(root, set.name, c.id)
         expect(r.issues.filter((i) => i.message === NOT_IN_MODEL)).toEqual([])
-        const books = r.book.externalBooks!
-        // Excel drops a link no formula refers to when it saves, the one without sheets
-        const links = c.links.filter((l) => l.sheets.length)
+        const books = r.book.externalBooks ?? []
+        // Excel drops a link no formula refers to when it saves: the one without sheets, and every link of a book whose
+        // formulas lost their references (a table of a linked book written without `!`)
+        const refers = r.book.sheets.some((s) => Object.values(s.cells).some((x) => x.formula?.includes('[')))
+        const links = refers ? c.links.filter((l) => l.sheets.length) : []
         expect(books.length).toBe(links.length)
         books.forEach((b, i) => {
           const link = links[i]

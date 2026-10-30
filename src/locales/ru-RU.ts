@@ -11,7 +11,7 @@
  * (`test/excel/win/`): the order of text, month names, the short and long time, CHAR and CODE. The messages for people
  * are written by hand, close to Excel ru-RU's own where it has one for the same refusal.
  */
-import { RU_NAMES } from '../locale/lcid.js'
+import { RU_GENITIVE, RU_NAMES } from '../locale/lcid.js'
 import type { Counts, Found, KeptPart, KeptSheetPart, Lines, Messages, NameRule, RuleText, StyleLoss, StylePart, Words } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
 
@@ -557,7 +557,7 @@ export const ruRU: Locale = {
     longDate: 'dddd, d mmmm yyyy "г."',
     // the hour without a leading zero, as Windows writes the time (Excel for Mac: `hh:mm:ss`)
     longTime: 'h:mm:ss',
-    longMonths: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    longMonths: RU_GENITIVE,
     // Latin before Cyrillic, as Windows sorts in every locale (Excel for Mac ru-RU: Cyrillic first)
     collation: 'en-US',
     // the built-in formats Excel ru-RU shows by codes of its own (the display set `builtin`, `NumberFormatLocal`)

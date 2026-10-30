@@ -11,7 +11,7 @@ import type { Ast } from '../../syntax/ast.js'
 import { ERROR_TEXT } from '../../syntax/errors.js'
 import { plain } from '../../syntax/links.js'
 import { linkedSheet, printFormula, quoteSheet, type PrintOptions } from '../../syntax/print.js'
-import { specText } from '../../syntax/table.js'
+import { linkedTableText, specText } from '../../syntax/table.js'
 import { XLFN, XLWS } from './prefixes.js'
 import { trimOf } from '../../structure/area.js'
 import { TRIM_FUNCTIONS } from '../../syntax/scan.js'
@@ -28,6 +28,7 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
     case 'num':
       return String(n.v).toUpperCase()
     case 'err':
+      if (n.table !== undefined && typeof n.book === 'number') return `[${n.book}]!${linkedTableText(n.table, true)}`
       // a reference to a deleted sheet (`#REF!A1`, `#REF!E2#`) is `#REF!` in a file, as Excel writes it: Excel opens no
       // file with the other
       if (n.ref !== undefined && n.sheet === undefined && n.book === undefined) return n.ref.endsWith('#') ? `_xlfn.ANCHORARRAY(${ERROR_TEXT[n.code]})` : ERROR_TEXT[n.code]

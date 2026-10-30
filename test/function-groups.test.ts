@@ -62,6 +62,8 @@ describe('the groups of functions', () => {
     expect(r.before).toEqual({ closures: before, eval: before })
     expect(r.held).toEqual({ ...notLoaded('B1', 'BESSELJ', 'engineering'), reason: notLoaded('B1', 'BESSELJ', 'engineering').reason + ': not calculated, the value the file stores is held', fromFile: true })
     expect(r.heldValue).toBe(1)
+    const lazy = { values: { A1: 1, B1: 'e', C1: NAME }, issues: [notLoaded('C1', 'BESSELJ', 'engineering')] }
+    expect(r.lazy).toEqual({ closures: lazy, eval: lazy })
     expect(r.refused).toEqual(Array(3).fill("groups[0]: expected a group of 'xlcalc/functions' (engineering, finance, lambda, statistics, xml)"))
     expect(r.text).toEqual(KNOWN)
     expect(r.some).toEqual({ ...ALL, E1: NAME, F1: NAME, G1: NAME })

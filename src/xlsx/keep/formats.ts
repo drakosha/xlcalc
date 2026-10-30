@@ -7,6 +7,7 @@
  * writes that looks as the format of the rectangle it lies in now that format (`Formats`). Rows inserted inside a
  * rectangle stretch it, so the new cells take its format where they look the same, as Excel gives them the row above's.
  */
+import { overlaid, type Line } from '../../layout/spans.js'
 import { colToIndex, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Rect } from '../../structure/area.js'
 import type { KeptStyles } from './styles.js'
@@ -78,9 +79,14 @@ export function formatAreas(xml: string, data: Placed | undefined, cols: Placed 
     }
   }
   if (run) add('cells', run.s, run.r, run.c1, run.c2)
+  const spans: Line<number>[] = []
   for (const m of cols ? xml.slice(cols.open, cols.end).matchAll(COL) : []) {
     const [s, lo, hi] = [STYLE, MIN, MAX].map((x) => Number(x.exec(m[1])?.[1]))
-    if (!twin(s) || !(lo >= 1 && hi >= lo && hi <= MAX_COLS)) continue
+    if (lo >= 1 && hi >= lo && hi <= MAX_COLS) spans.push([lo, hi, s])
+  }
+  // a later <col> over an earlier one gives its columns its own format, as Excel reads them
+  for (const [lo, hi, s] of overlaid(spans)) {
+    if (!twin(s)) continue
     const last = lines.at(-1)
     if (last?.kind === 'cols' && last.s === s && last.rect.c2 === lo - 2) last.rect.c2 = hi - 1
     else lines.push({ kind: 'cols', s, rect: { r1: 0, r2: MAX_ROWS - 1, c1: lo - 1, c2: hi - 1 } })

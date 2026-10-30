@@ -3,13 +3,15 @@
  * a rectangle with a data row, one column entry per column with unique names, header cells holding the names, no
  * table over another, no merged area or array area of several cells in a table.
  */
-import type { BookInput, CellInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../contract.js'
+import type { BookInput, CellInput, SheetInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../contract.js'
+import { AreaIndex } from '../area-index.js'
+import type { Area } from '../spill/state.js'
 import { InputError } from '../input-error.js'
 import { isObject, onlyKeys } from '../input/basic.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
 import { arrayArea } from '../array-areas.js'
-import { meets, parseRange, type Rect } from '../structure/area.js'
+import { parseRange, type Rect } from '../structure/area.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameProblem } from '../syntax.js'
 import { tableKey } from './model.js'
@@ -53,7 +55,7 @@ function column(v: unknown, path: string): TableColumn {
 }
 
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
-function table(v: unknown, path: string, cells: Record<string, CellInput>, booleans: readonly string[]): Rect {
+function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | undefined, booleans: readonly string[]): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns', 'style'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
@@ -77,11 +79,33 @@ function table(v: unknown, path: string, cells: Record<string, CellInput>, boole
     seen.set(k, i)
     if (!headers) return
     const addr = formatAddress(x.r1, x.c1 + i)
-    const cell = cells[addr]
+    const cell = cellAt(addr)
     if (cell?.formula !== undefined || cell?.value !== col.name)
       throw new InputError(`${path}.columns[${i}].name`, `the header cell ${addr} holds ${cell?.formula !== undefined ? `a formula` : JSON.stringify(cell?.value ?? null)}, not the column's name ${JSON.stringify(col.name)} as text`)
   })
   return x
+}
+
+/** A rectangle among those a sheet's tables are checked against, with its text and its place in its list. */
+interface Box extends Area {
+  text: string
+  i: number
+}
+
+/** The boxes of rectangles in an index (one sheet, `s` 0), each by its place: overlaps found by the area, not by a scan of all. */
+function indexed(xs: [Rect, string][]): AreaIndex<Box> {
+  const index = new AreaIndex<Box>()
+  xs.forEach(([x, text], i) => index.add({ ...x, s: 0, text, i }))
+  return index
+}
+
+/** The first box, by its place, that meets `x`. */
+function firstOver(index: AreaIndex<Box>, x: Rect): Box | undefined {
+  let first: Box | undefined
+  index.forEach({ ...x, s: 0 }, (b) => {
+    if (!first || b.i < first.i) first = b
+  })
+  return first
 }
 
 /** A sheet's array formulas of several cells: each area with its text, in the order of the sheet's cells. */
@@ -98,6 +122,40 @@ function wideArrays(cells: Record<string, CellInput>): [Rect, string][] {
 /** Why an AutoFilter cannot lie over a table's cells. */
 export const autoFilterOverlap = (range: string, table: string) => `the AutoFilter over ${range} overlaps the table ${table} (a table has a filter of its own)`
 
+/**
+ * A sheet's tables checked one by one (`add`), each against the book's defined names (`names`) and table names
+ * (`taken`, which it joins) and the sheet's tables before it, merged areas and array formulas, by an index of their
+ * rectangles: a sheet of many tables costs about as many checks as it has tables. A table that fails changes nothing.
+ */
+export function sheetTables(sheet: Pick<SheetInput, 'cells' | 'merges'>, booleans: readonly string[], names: Map<string, string>, taken: Map<string, string>) {
+  const rects = new AreaIndex<Box>()
+  let count = 0
+  // indexed once for all the sheet's tables, where the first table gets to them
+  let arrays: AreaIndex<Box> | undefined
+  let merges: AreaIndex<Box> | undefined
+  return {
+    /** The table `t` at `tp`, its header cells read through `cellAt`; its rectangle. */
+    add(t: unknown, tp: string, cellAt: (addr: string) => CellInput | undefined): Rect {
+      const x = table(t, tp, cellAt, booleans)
+      const { name, range } = t as TableInput
+      const k = tableKey(name)
+      if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a workbook, regardless of case)`)
+      if (names.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also a defined name (tables and names share one namespace, regardless of case)`)
+      const over = firstOver(rects, x)
+      if (over) throw new InputError(`${tp}.range`, `${range} overlaps the table ${over.text}`)
+      const merge = firstOver((merges ??= indexed((sheet.merges ?? []).map((m) => [parseMerge(m)!, m]))), x)
+      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge.text} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
+      const array = firstOver((arrays ??= indexed(wideArrays(sheet.cells))), x)
+      if (array) throw new InputError(`${tp}.range`, `the array formula over ${array.text} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
+      taken.set(k, name)
+      rects.add({ ...x, s: 0, text: name, i: count++ })
+      return x
+    },
+    /** The first table, by its place, over `x`: its name. */
+    over: (x: Rect) => firstOver(rects, x)?.text,
+  }
+}
+
 /** The tables of a checked book's sheets, and their names against each other and against the defined names; no sheet's AutoFilter over one. */
 export function checkTables(book: BookInput, path = 'book'): void {
   const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
@@ -107,27 +165,9 @@ export function checkTables(book: BookInput, path = 'book'): void {
     if (sheet.tables === undefined) return
     const p = `${path}.sheets[${s}].tables`
     if (!Array.isArray(sheet.tables)) throw new InputError(p, 'expected an array of tables')
-    const rects: [Rect, string][] = []
-    // walked once for all the sheet's tables, where the first table gets to it
-    let arrays: [Rect, string][] | undefined
-    let merges: [Rect, string][] | undefined
-    sheet.tables.forEach((t, i) => {
-      const tp = `${p}[${i}]`
-      const x = table(t, tp, sheet.cells, booleans)
-      const { name, range } = t as TableInput
-      const k = tableKey(name)
-      if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a workbook, regardless of case)`)
-      if (names.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also a defined name (tables and names share one namespace, regardless of case)`)
-      taken.set(k, name)
-      const over = rects.find(([y]) => meets(x, y))
-      if (over) throw new InputError(`${tp}.range`, `${range} overlaps the table ${over[1]}`)
-      rects.push([x, name])
-      const merge = (merges ??= (sheet.merges ?? []).map((m) => [parseMerge(m)!, m])).find(([a]) => meets(a, x))
-      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge[1]} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
-      const array = (arrays ??= wideArrays(sheet.cells)).find(([a]) => meets(a, x))
-      if (array) throw new InputError(`${tp}.range`, `the array formula over ${array[1]} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
-    })
-    const f = sheet.autoFilter && rects.find(([y]) => meets(parseRange(sheet.autoFilter!.range)!, y))
-    if (f) throw new InputError(`${path}.sheets[${s}].autoFilter.range`, autoFilterOverlap(sheet.autoFilter!.range, f[1]))
+    const tables = sheetTables(sheet, booleans, names, taken)
+    sheet.tables.forEach((t, i) => tables.add(t, `${p}[${i}]`, (addr) => sheet.cells[addr]))
+    const f = sheet.autoFilter && tables.over(parseRange(sheet.autoFilter.range)!)
+    if (f) throw new InputError(`${path}.sheets[${s}].autoFilter.range`, autoFilterOverlap(sheet.autoFilter!.range, f))
   })
 }

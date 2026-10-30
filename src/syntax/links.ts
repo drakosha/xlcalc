@@ -10,6 +10,7 @@ import { PLAIN_NAME } from '../sheet-pattern.js'
 import { FormulaError, type Ast } from './ast.js'
 import { mapAst, quoteSheet, sheetKey } from './print.js'
 import { isSpace } from './scan.js'
+import { linkedTableText, shownSpec } from './table.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
 
 /** A link's target as a formula shows it: the folder (`C:\data\`, `../data/`, empty for a file name) and the file. */
@@ -117,7 +118,7 @@ export function showLinks(formula: string, books: readonly ExternalBook[]): stri
   return eachToken(formula, (tok) => {
     if ((tok.t !== 'xref' && tok.t !== 'xname' && tok.t !== 'err') || typeof tok.book !== 'number' || !books[tok.book - 1]) return undefined
     const target = books[tok.book - 1].target
-    if (tok.t === 'err') return `${shownLinkSheet(target, tok.sheet!)}!#REF!`
+    if (tok.t === 'err') return tok.table !== undefined ? shownLinkName(target, `${tok.table.name}[${shownSpec(tok.table.spec)}]`) : `${shownLinkSheet(target, tok.sheet!)}!#REF!`
     if (tok.t === 'xref') return `${shownLinkSheet(target, tok.sheet)}!${tok.ref.text}`
     return tok.sheet === undefined ? shownLinkName(target, tok.v) : `${shownLinkSheet(target, tok.sheet)}!${tok.v}`
   })
@@ -139,7 +140,7 @@ export function numberLinks(formula: string, books: readonly ExternalBook[], she
       miss = { at: tok.at, message: { key: 'unknownLink', book: tok.book } }
       return undefined
     }
-    if (tok.t === 'err') return `${quoteSheet(`[${k}]${tok.sheet}`)}!#REF!`
+    if (tok.t === 'err') return tok.table !== undefined ? `[${k}]!${linkedTableText(tok.table)}` : `${quoteSheet(`[${k}]${tok.sheet}`)}!#REF!`
     if (tok.t === 'xref') return `${quoteSheet(`[${k}]${tok.sheet}`)}!${tok.ref.text}`
     return tok.sheet === undefined ? `[${k}]!${tok.v}` : `${quoteSheet(`[${k}]${tok.sheet}`)}!${tok.v}`
   })

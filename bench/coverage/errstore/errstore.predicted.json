@@ -1,0 +1,46 @@
+{
+ "why": "The hypothesis before Excel ran: Excel opens the book without computing it, so C7 and C8 show the stored #VALUE! and 7; a recalculation leaves them, as nothing they read changed; deleting column A and the sheet T makes the formulas over them #REF!-… and computes them, #REF! each; a full calculation gives #REF! for every formula with #REF!.",
+ "opened": {
+  "C7": "#VALUE!",
+  "C8": "7",
+  "C11": "999",
+  "C12": "#VALUE!"
+ },
+ "recalculated": {
+  "C7": "#VALUE!",
+  "C8": "7"
+ },
+ "deleted": {
+  "B1": [
+   "=#REF!-A1",
+   "#REF!"
+  ],
+  "B3": [
+   "=#REF!-A1",
+   "#REF!"
+  ],
+  "B5": [
+   "=-#REF!",
+   "#REF!"
+  ],
+  "B6": [
+   "=#REF!&\"x\"",
+   "#REF!"
+  ],
+  "B9": [
+   "=#REF!+A1",
+   "#REF!"
+  ],
+  "B10": [
+   "=A1-#REF!",
+   "#REF!"
+  ]
+ },
+ "full": {
+  "B1": "#REF!",
+  "B3": "#REF!",
+  "B7": "#REF!",
+  "B8": "#REF!"
+ },
+ "controls": "Added before the second run: C11 (B1*2 stored 999) and C12 (NA() stored #VALUE!) show their stored values as the book opens, if Excel does not compute it then; after a full calculation 10 and #N/A."
+}

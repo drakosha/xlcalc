@@ -8,6 +8,7 @@
 import { MAX_FORMULA_LENGTH } from '../contract.js'
 import { FormulaError, type Ast, type RangeRef } from './ast.js'
 import { mapAst, printFormula, walk, type PrintOptions } from './print.js'
+import type { TableSpec } from './table.js'
 import { tokenize, type Tok } from './tokens.js'
 
 /** What a formula of a shape puts in its template: its references, and its numbers outside array constants. */
@@ -27,6 +28,8 @@ export interface Template {
 }
 
 const sized = (x: string) => `${x.length}:${x}`
+/** A structured reference's areas and columns in a shape's key. */
+const specKey = (spec: TableSpec) => `${spec.areas.join(',')};${spec.cols ? spec.cols.map(sized).join('') : '-'}`
 const bookText = (b: number | string) => (typeof b === 'number' ? `#${b}` : sized(b))
 
 /** At most this many shapes are kept by a cache of shapes: a workbook of formulas that share none keeps no more. */
@@ -69,7 +72,7 @@ export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
         key += `s${sized(t.v)}`
         break
       case 'err':
-        key += `e${t.code};${t.sheet === undefined ? '-' : sized(t.sheet)}${t.ref === undefined ? '-' : sized(t.ref)}${t.book === undefined ? '-' : bookText(t.book)}`
+        key += `e${t.code};${t.sheet === undefined ? '-' : sized(t.sheet)}${t.ref === undefined ? '-' : sized(t.ref)}${t.book === undefined ? '-' : bookText(t.book)}${t.table === undefined ? '-' : sized(t.table.name) + specKey(t.table.spec)}`
         break
       case 'ref':
         holes.push(t.ref)
@@ -86,7 +89,7 @@ export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
         key += `y${bookText(t.book)}${t.sheet === undefined ? '-' : sized(t.sheet)}${sized(t.v)}`
         break
       case 'table':
-        key += `t${t.table === null ? '-' : sized(t.table)}${t.spec.areas.join(',')};${t.spec.cols ? t.spec.cols.map(sized).join('') : '-'}`
+        key += `t${t.table === null ? '-' : sized(t.table)}${specKey(t.spec)}`
         break
       case 'fn':
         if (t.v === 'LET' || t.v === 'LAMBDA') return null

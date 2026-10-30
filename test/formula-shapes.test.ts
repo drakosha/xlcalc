@@ -97,7 +97,6 @@ const REJECTED = [
   'Calc "[1]Nope!A1" external_ref',
   `Calc "'Nope'!A1+1" unknown_sheet`,
   `Calc "'Nope'!A2+1" unknown_sheet`,
-  'Calc "FOO(A1)" unknown_function',
   'Calc "A1+" syntax',
   'Calc "SUM(A1" syntax',
   'Calc "IF()" syntax',
@@ -105,9 +104,6 @@ const REJECTED = [
   'Calc "   " empty',
   'Calc "A1+\\"open" syntax',
   'Calc "A1 … +1" too_long',
-  'Other "B2+only" unknown_name',
-  'Other "B3+only" unknown_name',
-  'Other "B4+nope" unknown_name',
 ]
 
 function trapBook(): { book: BookInput; places: { sheet: string; cell: string; group: number }[] } {

@@ -73,7 +73,7 @@ function applyOps(s: Session, ops: readonly LinksOp[] = []): ((ref: CellRef) => 
 const inFolder = (book: BookInput, folder: string, sep: string): BookInput => ({ ...book, externalBooks: book.externalBooks!.map((b) => ({ ...b, target: `${folder}${sep}${b.target}` })) })
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', 'refresh-held', 'written']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', 'refresh-held', 'tables-held', 'written']))
   for (const set of stored(root)) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()

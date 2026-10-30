@@ -15,6 +15,8 @@ export interface Archive {
   bytes(name: string): Promise<Uint8Array | undefined>
   /** The text of an entry as XML reads it (`xmlText`), undefined when there is none. */
   text(name: string): Promise<string | undefined>
+  /** Whether an entry whose text was read began with a UTF-8 byte order mark, which the text leaves out. */
+  marked(name: string): boolean
 }
 
 /** An entry of the central directory. */
@@ -164,13 +166,16 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (out.length !== e.usize) fail(`entry ${e.name} inflates to ${out.length} bytes, not ${e.usize}`)
     return checked(e, out, crc)
   }
+  const marks = new Set<string>()
   return {
     names: list.map((e) => e.name),
     bytes: bytesOf,
     async text(name) {
       const b = await bytesOf(name)
       if (!b) return undefined
+      if (b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf) marks.add(name.toLowerCase())
       return xmlText(text(b), name)
     },
+    marked: (name) => marks.has(name.toLowerCase()),
   }
 }

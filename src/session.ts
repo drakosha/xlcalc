@@ -812,8 +812,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       const up = names?.map((n) => n.toUpperCase())
       outside?.drop(up)
-      // the formulas over calls outside the workbook (not over a function the engine does not know), of the functions named
-      const calls = (f: Formula) => !f.unknown && (f.external || f.stored !== undefined) && (!up || up.some((n) => f.text.toUpperCase().includes(`${n}(`)))
+      // the formulas over calls outside the workbook (not one holding its value over a function the engine does not know), of the functions named
+      const calls = (f: Formula) => (f.external || (f.stored !== undefined && f.stored !== f.unknown?.fn)) && (!up || up.some((n) => f.text.toUpperCase().includes(`${n}(`)))
       const keys = yield* applyOutside(s, s.formulas.flatMap((f) => (f && calls(f) ? [f.id] : [])))
       return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
     },

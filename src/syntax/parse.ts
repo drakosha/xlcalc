@@ -127,7 +127,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
       case 'str':
         return { k: 'str', v: t.v }
       case 'err':
-        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}), ...(t.book !== undefined ? { book: t.book } : {}) }
+        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}), ...(t.book !== undefined ? { book: t.book } : {}), ...(t.table !== undefined ? { table: t.table } : {}) }
       case 'ref': {
         // inside a LET that declares it, a cell's word is the name
         const word = cellWord(t)
@@ -297,7 +297,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     }
     if (t.t === 'num') return { k: 'num', v: t.v }
     if (t.t === 'str') return { k: 'str', v: t.v }
-    if (t.t === 'err' && t.sheet === undefined && t.ref === undefined) return { k: 'err', code: t.code }
+    if (t.t === 'err' && t.sheet === undefined && t.ref === undefined && t.book === undefined) return { k: 'err', code: t.code }
     const bool = t.t === 'ident' ? boolWord(t.v) : undefined
     if (bool !== undefined) return { k: 'bool', v: bool }
     return bad(t.at, { key: 'arrayValue', found: found(t) })

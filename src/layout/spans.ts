@@ -51,6 +51,26 @@ export function toMap<T>(ls: Line<T>[], axis: Axis): Record<string, T> {
   return out
 }
 
+/**
+ * Entries in a file's order made into spans that do not overlap, each later one over the earlier ones where they meet,
+ * as Excel takes overlapping `<col>` elements: a line takes the whole entry of the last one over it.
+ */
+export function overlaid<T>(ls: Line<T>[]): Line<T>[] {
+  if (ls.every((e, i) => i === 0 || e[0] > ls[i - 1][1])) return ls
+  const out: Line<T>[] = []
+  for (const [lo, hi, v] of ls) {
+    const at = firstEnding(out, lo)
+    let end = at
+    while (end < out.length && out[end][0] <= hi) end++
+    const cut: Line<T>[] = []
+    if (at < end && out[at][0] < lo) cut.push([out[at][0], lo - 1, out[at][2]])
+    cut.push([lo, hi, v])
+    if (at < end && out[end - 1][1] > hi) cut.push([hi + 1, out[end - 1][1], out[end - 1][2]])
+    out.splice(at, end - at, ...cut)
+  }
+  return out
+}
+
 /** The entry of line `i` among entries. */
 export function entryAt<T>(ls: Line<T>[], i: number): T | undefined {
   const e = ls[firstEnding(ls, i)]

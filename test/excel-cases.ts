@@ -134,6 +134,8 @@ export const REASONS = {
     '`GROWTH` far from 0 in x is `#NUM!` in Excel even where the fitted value fits in a double: for 100·1.1^k rounded to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has the b of `LOGEST` equal to 0 and m^x beyond the largest double.',
   macLongS:
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
+  ifnaUnknown:
+    '`IFNA` whose second argument holds a name the book does not define or a function the engine does not know is `#NAME?` in Excel even where its first argument is no `#N/A` (`IFNA(1,Nope)`); the engine computes that argument only where it is taken, as `IF`, `IFERROR` and `CHOOSE` do in Excel, and gives 1.',
   macPhonetic:
     '`PHONETIC` of a reference is `#N/A` here, as Excel for Windows answers in a workbook without readings (the workbook keeps none of those a file stores with Japanese text); Excel for Mac answers `#NUM!`, though the file it saves stores `#N/A`.',
   vdbSalvageAboveCost:
@@ -172,6 +174,10 @@ export const BOTH_KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS;
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  'unknown-name:untaken#5': { reason: 'ifnaUnknown', engine: { t: 'n', v: 1 } },
+  'unknown-name:untaken#12': { reason: 'ifnaUnknown', engine: { t: 'n', v: 1 } },
+  'unknown-name:untaken#19': { reason: 'ifnaUnknown', engine: { t: 'n', v: 1 } },
+  'unknown-name:untaken#26': { reason: 'ifnaUnknown', engine: { t: 'n', v: 1 } },
   'east-asian-held:PHONETIC#1': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
   'east-asian-held:PHONETIC#2': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
   'east-asian-held:PHONETIC#3': { reason: 'macPhonetic', engine: { t: 'e', v: 'NA' } },
@@ -223,7 +229,7 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'name-case-held:bool#1': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
   'name-case-held:bool#2': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
-  'name-case-held:bool#3': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:bool#3': { reason: 'macLongS', engine: { t: 'n', v: 16 } },
   'name-case-held:bool#4': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
   'name-case-held:bool#5': { reason: 'macLongS', engine: { t: 'e', v: 'ERROR' } },
   'name-case-held:bool#6': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },

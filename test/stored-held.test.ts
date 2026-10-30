@@ -3,7 +3,7 @@
  * `unknownFunctions: 'held'`, and over a function of connections whatever the option. In every kind of session and both
  * execution modes: the cells that read them are computed from the value, diagnostics mark them `fromFile`, an edit that
  * reaches them computes them (`#NAME?`, the connection's answer), an unrelated one does not; without a stored value a
- * formula over a function the engine does not know is #NAME?, as without the option.
+ * formula over a function the engine does not know is #NAME? where the call is computed, as without the option.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, type BookInput, type CachedValues } from '../src/index.js'
@@ -37,13 +37,14 @@ const marks = (d: { kind: string; cell?: string; error?: string; fromFile?: true
 describe.each(['closures', 'eval'] as const)('formulas keeping their file values, execution %s', (execution) => {
   it('held: the file values, the cells reading them computed from them; the rest as without the option', () => {
     const r = compute(book, { clock: CLOCK, cached, unknownFunctions: 'held', execution })
-    expect(values(r.sheets[0].cells)).toEqual([40, 41, 7, 70, { error: 'NAME' }, { error: 'NAME' }])
-    expect(marks(r.diagnostics)).toEqual(['B1 NAME file unknown_function', 'D1 CONNECT file', 'F1 NAME unknown_function', 'G1 NAME unknown_function'])
+    expect(values(r.sheets[0].cells)).toEqual([40, 41, 7, 70, { error: 'NAME' }, 'none'])
+    // IFERROR takes the #NAME? of the unknown call, as in Excel: G1 has no issue
+    expect(marks(r.diagnostics)).toEqual(['B1 NAME file unknown_function', 'D1 CONNECT file', 'F1 NAME unknown_function'])
   })
 
   it('without the option a function the engine does not know is #NAME?; a function of connections keeps its value all the same', () => {
     const r = compute(book, { clock: CLOCK, cached, execution })
-    expect(values(r.sheets[0].cells)).toEqual([{ error: 'NAME' }, { error: 'NAME' }, 7, 70, { error: 'NAME' }, { error: 'NAME' }])
+    expect(values(r.sheets[0].cells)).toEqual([{ error: 'NAME' }, { error: 'NAME' }, 7, 70, { error: 'NAME' }, 'none'])
     expect(compute(book, { clock: CLOCK, unknownFunctions: 'held', execution }).sheets[0].cells.D1.value).toEqual({ error: 'NA' })
   })
 
@@ -51,7 +52,7 @@ describe.each(['closures', 'eval'] as const)('formulas keeping their file values
     const s = createSession(book, { clock: CLOCK, cached, unknownFunctions: 'held', execution })
     expect(s.getBook().sheets[0].cells.B1).toEqual({ formula: 'MYADDIN(A1)*2', held: 40 })
     s.setCells([{ sheet: 'S', cell: 'K9', input: { value: 1 } }])
-    expect(values(s.getResult().sheets[0].cells)).toEqual([40, 41, 7, 70, { error: 'NAME' }, { error: 'NAME' }])
+    expect(values(s.getResult().sheets[0].cells)).toEqual([40, 41, 7, 70, { error: 'NAME' }, 'none'])
     const { changes } = s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }])
     expect(changes.map((c) => `${c.cell} ${JSON.stringify(c.value)}`)).toEqual(['A1 3', 'B1 {"error":"NAME"}', 'C1 {"error":"NAME"}'])
     expect(s.getBook().sheets[0].cells.B1).toEqual({ formula: 'MYADDIN(A1)*2' })

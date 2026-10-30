@@ -46,8 +46,10 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
-  /** Functions the engine does not know are taken (`unknownFunctions: 'held'`, a formula keeping its file's value). */
+  /** Functions the engine does not know are taken (a formula calculated over them, #NAME? where they are called). */
   unknown?: boolean
+  /** Names the book does not define are taken (a formula calculated over them, #NAME? where they are computed). */
+  anyName?: boolean
   /** The group of a function the engine has not loaded (`groups/registry.ts`): a call of it is refused, as the engine cannot calculate it. */
   notLoaded?: (fn: string) => string | undefined
   /** The host answers its functions' calls at the calculation (`Externals.resolve`): their arguments need not be literals. */
@@ -59,13 +61,22 @@ interface BookCheck {
 
 type Fail = Extract<ValidateResult, { ok: false }>
 
+type Tables = NonNullable<ValidateContext['tables']>
+/** The tables of a context by their names' keys, made once per list: a book's formulas are bound against the same one. */
+const BY_KEY = new WeakMap<Tables, Map<string, Tables[number]>>()
+function tablesByKey(tables: Tables): Map<string, Tables[number]> {
+  let m = BY_KEY.get(tables)
+  if (!m) BY_KEY.set(tables, (m = new Map(tables.map((t) => [sheetKey(t.name), t]))))
+  return m
+}
+
 /**
  * Structured references bound to the tables of `ctx.tables`: a reference without a table name takes the formula's
  * table (`ctx.table`), tables and columns are spelled as named, a bare table name is the table's data (`Sales[]`, as a
  * file stores it). An unknown table or column, or a reference without a table name outside one, fails with `unknown_name`.
  */
 export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCheck): { ok: true; ast: Ast; tables: string[] } | Fail {
-  const known = ctx.tables ? new Map(ctx.tables.map((t) => [sheetKey(t.name), t])) : null
+  const known = ctx.tables ? tablesByKey(ctx.tables) : null
   const used = new Set<string>()
   let fail: Fail | null = null
   const unknown = (m: Message, needle: string): Fail => ({ ok: false, code: 'unknown_name', message: (ctx.say ?? english)(m), at: positionOf(text, needle) })
@@ -180,9 +191,9 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', { key: 'unknownSheet', sheet: s }, s)
   }
-  if (ctx.known) {
+  if (ctx.known && !ctx.anyName) {
     for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', { key: 'unknownName', name: n }, n)
-  } else if (ctx.names) {
+  } else if (ctx.names && !ctx.anyName) {
     const known = new Set(ctx.names.map(caseKey))
     for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }

@@ -39,6 +39,7 @@ A change the file cannot take without pointing a part at other cells is refused:
 |---|---|
 | a part the book did not change: charts, drawings, pictures, pivot tables and caches, the theme, `vbaProject.bin`, printer settings, custom XML, document properties | as the file has it, byte for byte (the archive's entry is copied, not compressed again) |
 | a sheet the book did not change | as the file has it |
+| a part written again whose text comes out as the file's | as the file has it, byte for byte; one that changed keeps the byte order mark the file put before `<?xml` |
 | a sheet the book changed | its rows, cells, columns, merged areas, conditional formats, data validation, hyperlinks, the tables' list, the panes and selection of its first view, written from the workbook, with the conditional formats the workbook does not read among its own ([Conditional formats the workbook does not read](#conditional-formats-the-workbook-does-not-read)); the other elements (page setup, protected ranges, the drawing, sparklines, printing options) stay in their place in the order of the schema, the references an operation of the structure moved written into them |
 | a row or a cell the book did not change | the file's own XML: formatted runs of text, rich values, the cell format, a shared formula |
 | a cell whose formula did not change but whose value did | the file's own `<f>` with the new value: a shared formula stays shared, and a formula the engine does not parse stays as written |

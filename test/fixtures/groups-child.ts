@@ -76,6 +76,11 @@ const cases: Record<string, () => Promise<unknown>> = {
     })
     const held = issues(core.compute(BOOK, { clock: CLOCK, unknownFunctions: 'held', cached: { sheets: [{ name: 'S', cells: { B1: { value: 0.5 } } }] } })).find((i) => i.cell === 'B1')
     const heldValue = core.compute(BOOK, { clock: CLOCK, unknownFunctions: 'held', cached: { sheets: [{ name: 'S', cells: { B1: { value: 0.5 } } }] } }).sheets[0].cells.C1.value
+    // a function of a group not loaded is #NAME? only where its call is computed, as an unknown function
+    const lazy = both((execution) => {
+      const r = core.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'IF(TRUE,1,BESSELJ(1,1))' }, B1: { formula: 'IFERROR(BESSELJ(1,1),"e")' }, C1: { formula: 'IF(FALSE,1,BESSELJ(1,1))' } } }] }, { clock: CLOCK, execution })
+      return { values: values(r), issues: issues(r) }
+    })
     const refused = [{}, 'engineering', { kind: 'xlcalc-functions', name: 'engineering' }].map((g) => {
       try {
         core.registerFunctions(g as never)
@@ -88,7 +93,7 @@ const cases: Record<string, () => Promise<unknown>> = {
     core.registerFunctions(groups.engineering, groups.statistics)
     const some = values(core.compute(BOOK, { clock: CLOCK }))
     core.registerFunctions(...groups.allFunctions)
-    return { before, held, heldValue, refused, text, some, all: both((execution) => values(core.compute(BOOK, { clock: CLOCK, execution }))), hash: both((execution) => core.compute(BOOK, { clock: CLOCK, execution }).hash.slice(0, 16)), groups: groups.allFunctions.map((g) => [g.name, g.functions.length]) }
+    return { before, held, heldValue, lazy, refused, text, some, all: both((execution) => values(core.compute(BOOK, { clock: CLOCK, execution }))), hash: both((execution) => core.compute(BOOK, { clock: CLOCK, execution }).hash.slice(0, 16)), groups: groups.allFunctions.map((g) => [g.name, g.functions.length]) }
   },
   /** A host with both entries has one table: the light entry calculates every function once the root has calculated. */
   async both() {

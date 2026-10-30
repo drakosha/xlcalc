@@ -29,6 +29,8 @@ const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
 /** A range of cells, columns or rows, with its sheet or without: what a trim reference's file form takes (`_xlfn._TRO_ALL(A1:C9)`). */
 const TRIMMED = new RegExp(`^((?:(?:'(?:[^']|'')+'|[^\\s'!(),]+)!)?${TRIM_END}):(${TRIM_END})$`)
+/** A link's number and a table's name before its brackets, without `!` between (`[1]Sales[`), up to the brackets. */
+const LOST_TABLE = new RegExp(`^\\[\\d+\\]${IDENT_RULE}(?=\\[)`, 'u')
 /** A link's number at the start of a bracketed run (`[1]`), quoted or not. */
 const LINK = /^'?\[(\d+)\]/
 
@@ -85,12 +87,18 @@ export function fromFile(src: string): Converted {
       i += 4
       continue
     }
+    let lost: RegExpExecArray | null
     if (c === '[') {
       const end = bracketEnd(src, i)
       const run = src.slice(i, end)
       // a structured reference: a file writes no `@` for the formula's row, so one before a column name is part of it
       if (FILE_WORD_CHAR.test(src[i - 1] ?? '')) out += run.replace(/(^|[^'])\[@/g, "$1['@")
-      else {
+      else if ((lost = LOST_TABLE.exec(src.slice(i)))) {
+        // a table of a linked book without `!` (`[1]Sales[Qty]`): a reference Excel loses as it reads the file
+        out += '#REF!'
+        i = bracketEnd(src, i + lost[0].length)
+        continue
+      } else {
         if (/[@#[]/.test(src[i + 1] ?? '')) found.add('table')
         else link(run)
         out += run
