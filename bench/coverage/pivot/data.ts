@@ -32,46 +32,72 @@ const LONG = 'Dragonfruit from the far southern orchards, packed in wooden crate
 const DATE = 'yyyy-mm-dd'
 const WHEN = 'yyyy-mm-dd hh:mm'
 
+/** What tells two data sets of the same columns apart: rows, seed, items and where the odd cells fall. */
+interface Variant {
+  rows: number
+  seed: number
+  regions: readonly string[]
+  /** The region written in lower case every tenth row from the fifth, and the row with no region. */
+  lower: string
+  noRegion: number
+  products: readonly string[]
+  long: string
+  /** The product kept as a number in text, and its row. */
+  numberText: [string, number]
+  codes: readonly number[]
+  /** The row whose code is text, and the rows of the odd Amounts: text, a number as text, a boolean, #N/A, #DIV/0!. */
+  codeText: number
+  odd: [text: number, numberText: number, bool: number, na: number, div0: number]
+  noDate: number
+}
+
+const SALES: Variant = { rows: 48, seed: 20_261_030, regions: ['North', 'South', 'East', 'West'], lower: 'north', noRegion: 9, products: ['Apple', 'Banana', 'Cherry'], long: LONG, numberText: ['100', 31], codes: [10, 20, 30], codeText: 22, odd: [5, 7, 30, 20, 41], noDate: 17 }
+
+/** The rows the held-out sets start from: the columns of `sales`, other rows, items and odd cells. */
+const STOCK: Variant = { rows: 60, seed: 20_261_031, regions: ['Central', 'West', 'east', 'South', 'North'], lower: 'west', noRegion: 23, products: ['Plum', 'Pear', 'Apple', 'Fig'], long: 'Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays', numberText: ['7', 44], codes: [5, 15, 25, 35], codeText: 13, odd: [11, 2, 38, 50, 27], noDate: 40 }
+
 /**
- * The rows of `sales`: Region (four regions, `north` beside `North`, one empty), Product (with a long name and a number
+ * The rows of a variant: Region (regions, one also in lower case, one row empty), Product (with a long name and a number
  * kept as text), Date (dates over 2024 to 2025, one empty), Amount (numbers with empty cells, text, a number kept as
  * text, a boolean, #N/A and #DIV/0!), Price (numbers with empty cells and text, no errors), Qty (whole numbers), Code
  * (numbers, one kept as text), Flag (booleans), Note (long and short text, empty cells), When (dates with times).
  */
-export function salesColumns(rows = 48): SourceColumn[] {
-  const rnd = sequence(20_261_030)
+function variantColumns(v: Variant): SourceColumn[] {
+  const rnd = sequence(v.seed)
   const pick = <T>(xs: readonly T[]) => xs[Math.floor(rnd() * xs.length)]
-  const regions = ['North', 'South', 'East', 'West'] as const
-  const products = ['Apple', 'Banana', 'Cherry', LONG, '100'] as const
   const cols: Record<string, (CellInput | undefined)[]> = { Region: [], Product: [], Date: [], Amount: [], Price: [], Qty: [], Code: [], Flag: [], Note: [], When: [] }
-  for (let k = 0; k < rows; k++) {
-    const region = k === 9 ? undefined : k % 10 === 4 ? 'north' : regions[k % 4]
+  const [text, numberText, bool, na, div0] = v.odd
+  for (let k = 0; k < v.rows; k++) {
+    const region = k === v.noRegion ? undefined : k % 10 === 4 ? v.lower : v.regions[k % v.regions.length]
     cols.Region.push(region === undefined ? undefined : { value: region })
-    cols.Product.push({ value: k % 9 === 8 ? LONG : pick(products.slice(0, 3)) })
-    if (k === 31) cols.Product[k] = { value: '100' }
-    cols.Date.push(k === 17 ? undefined : { value: serial(2024 + (k % 2), 1 + ((k * 5) % 12), 1 + ((k * 7) % 28)), numberFormat: DATE })
+    // the pick is drawn on the row of the number kept as text too, so the sequence is the same either way
+    const product = k % 9 === 8 ? v.long : pick(v.products)
+    cols.Product.push({ value: k === v.numberText[1] ? v.numberText[0] : product })
+    cols.Date.push(k === v.noDate ? undefined : { value: serial(2024 + (k % 2), 1 + ((k * 5) % 12), 1 + ((k * 7) % 28)), numberFormat: DATE })
     const amount = Math.round((rnd() * 900 - 100) * 100) / 100
     cols.Amount.push(
       k % 11 === 3 ? undefined
-      : k === 5 ? { value: 'n/a' }
-      : k === 7 ? { value: '12' }
-      : k === 30 ? { value: true }
-      : k === 20 ? { formula: 'NA()' }
-      : k === 41 ? { formula: '1/0' }
+      : k === text ? { value: 'n/a' }
+      : k === numberText ? { value: '12' }
+      : k === bool ? { value: true }
+      : k === na ? { formula: 'NA()' }
+      : k === div0 ? { formula: '1/0' }
       : { value: amount },
     )
     cols.Price.push(k % 7 === 2 ? undefined : k === 12 ? { value: 'free' } : { value: Math.round(rnd() * 5000) / 100 })
     cols.Qty.push({ value: 1 + Math.floor(rnd() * 9) })
-    cols.Code.push({ value: k === 22 ? '20' : [10, 20, 30][k % 3] })
+    cols.Code.push({ value: k === v.codeText ? String(v.codes[1]) : v.codes[k % v.codes.length] })
     cols.Flag.push({ value: k % 3 !== 1 })
-    cols.Note.push(k % 4 === 1 ? undefined : { value: k % 8 === 0 ? `${LONG}, row ${k + 1}` : pick(['ok', 'late', 'OK', 'check']) })
+    cols.Note.push(k % 4 === 1 ? undefined : { value: k % 8 === 0 ? `${v.long}, row ${k + 1}` : pick(['ok', 'late', 'OK', 'check']) })
     cols.When.push({ value: serial(2025, 1 + (k % 3), 1 + (k % 5), (k * 5) % 24, (k * 13) % 60), numberFormat: WHEN })
   }
   return Object.entries(cols).map(([name, values]) => ({ name, values }))
 }
 
+export const salesColumns = (): SourceColumn[] => variantColumns(SALES)
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { sales: () => salesColumns() }
+export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK) }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`
