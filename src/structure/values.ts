@@ -8,9 +8,10 @@ import { meets, type Rect } from './area.js'
 
 /**
  * The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included:
- * [row, column, value]; and the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`).
+ * [row, column, value]; the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`); and the
+ * day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take.
  */
-export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { spills?: (sheet: string, rect: Rect) => Rect[] }
+export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number }
 
 /** The spilled arrays of a computed state over more than one cell that meet `x` on `sheet`. */
 function spillsOf(state: EngineState, sheet: string, x: Rect): Rect[] {
@@ -45,5 +46,5 @@ export function stateValues(state: EngineState): ValuesIn {
     }
     return out
   }
-  return Object.assign(values, { spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x) })
+  return Object.assign(values, { spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x), today: () => Math.floor(state.ctx.now) })
 }

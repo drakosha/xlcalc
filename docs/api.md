@@ -19,6 +19,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/locales`](#xlcalclocales)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/regex`](#xlcalcregex)
+- [`xlcalc/pivot`](#xlcalcpivot)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
 
@@ -637,6 +638,15 @@ of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, 
 the same object again does nothing; a different object with an already loaded tag throws an [`InputError`](#xlcalc-inputerror). A pool's
 threads load it too.
 
+### <a id="xlcalc-registerpivot"></a>`registerPivot`
+
+```ts
+function registerPivot(engine: PivotEngine): void
+```
+
+Loads the PivotTable engine of `xlcalc/pivot` for every session from now on, a pool's threads too: `import {
+pivotEngine } from 'xlcalc/pivot'`, then `registerPivot(pivotEngine)`.
+
 ### <a id="xlcalc-registerregex"></a>`registerRegex`
 
 ```ts
@@ -794,7 +804,7 @@ layout; with `appearance`, its conditional formats calculated over the result's 
 
 ## xlcalc/core
 
-Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
+Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
 
 ### <a id="xlcalccore-registerfunctions"></a>`registerFunctions`
 
@@ -1058,6 +1068,16 @@ const pcreSyntax: RegexLevel
 ```
 
 Excel's syntax by JavaScript's regular expressions: fast, without Excel's match limit, a heavy pattern not stopped.
+
+## xlcalc/pivot
+
+### <a id="xlcalcpivot-pivotengine"></a>`pivotEngine`
+
+```ts
+const pivotEngine: PivotEngine
+```
+
+The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)).
 
 ## xlcalc/contract
 
@@ -4139,6 +4159,18 @@ interface PivotDataField {
   /** The base item: an index into the base field's `items`, or the previous or next item. */
   baseItem?: number | 'previous' | 'next'
   numberFormat?: NumberFormat
+}
+```
+
+### `PivotEngine`
+
+The PivotTable engine of `xlcalc/pivot` ([`pivotEngine`](#xlcalcpivot-pivotengine)), which [`registerPivot`](#xlcalc-registerpivot) loads for every session, a pool's
+threads too: without it a PivotTable operation leaves the cells and marks the cache `stale`, and `refreshPivots` is
+refused.
+
+```ts
+interface PivotEngine {
+  readonly kind: 'xlcalc-pivot'
 }
 ```
 

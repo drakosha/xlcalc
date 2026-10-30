@@ -64,4 +64,6 @@ export interface PivotComputeOptions {
   today?: number
   /** The workbook counts dates from 1904. */
   date1904?: boolean
+  /** The custom lists sorting by label takes first (`listsOf` the workbook), en-US's days and months without them. */
+  lists?: readonly (readonly string[])[]
 }
