@@ -48,6 +48,8 @@ interface BookCheck {
   known?: (name: string, sheet: string | undefined) => boolean
   /** Functions the engine does not know are taken (`unknownFunctions: 'held'`, a formula keeping its file's value). */
   unknown?: boolean
+  /** The host answers its functions' calls at the calculation (`Externals.resolve`): their arguments need not be literals. */
+  answered?: boolean
   /** Whether the book defines a name, for a name's formula, whose names are not checked (`known` answers it for the rest). */
   defined?: (name: string) => boolean
   say?: (m: Message) => string
@@ -167,7 +169,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     const known = new Set(ctx.names.map(caseKey))
     for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }
-  const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !arityFor(f))
+  const calls = checkCalls(ast, text, (f) => !ctx.answered && externalSet.has(f) && !arityFor(f))
   if (calls) return refused(calls.code, calls.msg, calls.at, say)
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }

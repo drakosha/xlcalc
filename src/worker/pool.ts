@@ -5,9 +5,9 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { CellValue, CopyTextOptions, Explanation, ValuesOptions } from '../contract.js'
+import type { CellValue, CopyTextOptions, Explanation, ExternalResolver, Externals, ValuesOptions } from '../contract.js'
 import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, ChangingMethod, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
-import { CalcError } from '../exec/budget.js'
+import { abortSource, CalcError, type Abort } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { addedLocales, onLocale } from '../locale/registry.js'
 import { onRegexLevel, regexLevel } from '../regex-level.js'
@@ -39,6 +39,8 @@ interface Task {
   /** Its book is still being written as text: it waits at the head of its queue, and so do those after it. */
   pending?: boolean
   unlisten?: () => void
+  /** A computation's `Externals.resolve`, which answers the calls its thread sends (`ask`). */
+  asks?: ExternalResolver
   resolve(v: unknown): void
   reject(e: unknown): void
 }
@@ -55,6 +57,8 @@ interface Slot {
   /** Sessions placed on the thread, and those it holds now. */
   sessions: Set<Rec>
   resident: Set<Rec>
+  /** The calls the thread sent the host's resolver, by the thread's number, till they are answered. */
+  asked: Map<number, Abort>
 }
 
 interface Rec {
@@ -72,14 +76,24 @@ interface Rec {
   /** Closed, or its restore failed: every call is refused with it. */
   gone: CalcError | null
   snapshotting: boolean
+  /** The session's `Externals.resolve`, kept here: it answers the calls the thread sends (`ask`). */
+  asks?: ExternalResolver
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setExternalBooks: 'books', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setExternalBooks: 'books', setClock: 'clock', refreshConnections: 'names', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
 
+
+/** Options without `externals.resolve`, a function no message carries, and the resolver: it stays with the pool, which answers its threads' calls (`ask`). */
+function unresolved<T extends { externals?: Externals }>(opts: T): [T, ExternalResolver | undefined] {
+  const e = opts.externals as Externals | undefined
+  if (typeof e?.resolve !== 'function') return [opts, undefined]
+  const { resolve, ...rest } = e
+  return [{ ...opts, externals: rest }, resolve]
+}
 
 /** What tests look into: the threads and the sessions. */
 export interface PoolInside {
@@ -130,7 +144,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
 
   const start = (slot: Slot): Thread => {
     const t: Thread = spawn(
-      (m) => slot.thread === t && answered(slot, m),
+      (m) => slot.thread === t && heard(slot, m),
       (l) => slot.thread === t && lose(slot, l),
     )
     // a thread computes in the locales loaded here, those loaded later as they are
@@ -141,7 +155,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
-    const slot = { busy: null, timer: undefined, queue: [], sessions: new Set(), resident: new Set() } as unknown as Slot
+    const slot = { busy: null, timer: undefined, queue: [], sessions: new Set(), resident: new Set(), asked: new Map() } as unknown as Slot
     slot.thread = start(slot)
     return slot
   })
@@ -208,10 +222,54 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
     slot.busy = task
     slot.thread.hold(true)
+    arm(slot, task)
+  }
+
+  /** The hard deadline of the task the thread runs, from now. */
+  function arm(slot: Slot, task: Task) {
     if (o.hardTimeoutMs === undefined) return
+    g.clearTimeout(slot.timer)
     // a restore opens the book and replays the journal: each of those was answered within the deadline once
     const ms = o.hardTimeoutMs * (task.msg.t === 'restore' ? 1 + task.msg.journal.length : 1)
     slot.timer = g.setTimeout(() => slot.busy === task && lose(slot, { code: 'hard_timeout', message: `the task ran past its hard deadline (${ms} ms); its thread was terminated` }), ms)
+  }
+
+  /**
+   * A call the thread sends the host's resolver: the session's, or the computing task's. Its answer goes back, and the
+   * task's hard deadline starts again: the thread waited for the host, not stuck.
+   */
+  function ask(slot: Slot, m: Extract<FromThread, { ask: number }>) {
+    const task = slot.busy
+    const resolver = m.sid !== undefined ? [...slot.sessions].find((r) => r.sid === m.sid)?.asks : task?.id === m.task ? task?.asks : undefined
+    const ac = abortSource()
+    slot.asked.set(m.ask, ac)
+    const reply = (x: Omit<Extract<ToThread, { t: 'answer' }>, 't' | 'ask'>) => {
+      if (!slot.asked.delete(m.ask) || !slot.thread) return
+      try {
+        slot.thread.post({ t: 'answer', ask: m.ask, ...x })
+      } catch {
+        slot.thread.post({ t: 'answer', ask: m.ask, failed: true })
+      }
+      if (slot.busy) arm(slot, slot.busy)
+    }
+    try {
+      if (!resolver) throw new Error('no resolver')
+      Promise.resolve(resolver({ ...m.call, signal: ac.signal })).then(
+        (value) => reply(value === undefined ? {} : { value }),
+        () => reply({ failed: true }),
+      )
+    } catch {
+      reply({ failed: true })
+    }
+  }
+
+  /** The thread's messages: a task's answer, a call for the host's resolver, a call aborted. */
+  function heard(slot: Slot, m: FromThread) {
+    if ('ask' in m) ask(slot, m)
+    else if ('unask' in m) {
+      slot.asked.get(m.unask)?.abort()
+      slot.asked.delete(m.unask)
+    } else answered(slot, m)
   }
 
   /** The thread's next task: its sessions' first, then a one-off computation. */
@@ -234,7 +292,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
           continue
         }
         slot.queue.unshift(task)
-        task = { id: ++ids, msg: { t: 'restore', sid: r.sid, snapshot: r.snapshot, journal: r.journal }, session: r, internal: true, resolve() {}, reject() {} }
+        task = { id: ++ids, msg: { t: 'restore', sid: r.sid, snapshot: r.snapshot, journal: r.journal, ...(r.asks ? { asks: true } : {}) }, session: r, internal: true, resolve() {}, reject() {} }
       }
       if ((task.msg.t === 'open' || task.msg.t === 'restore') && slot.resident.size >= perThread) {
         const out = [...slot.resident].filter((x) => x !== r).sort((a, b) => a.used - b.used)[0]
@@ -249,7 +307,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
   }
 
-  function answered(slot: Slot, m: FromThread) {
+  function answered(slot: Slot, m: Exclude<FromThread, { ask: number } | { unask: number }>) {
     const task = slot.busy
     if (!task || task.id !== m.task) return
     g.clearTimeout(slot.timer)
@@ -317,6 +375,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     g.clearTimeout(slot.timer)
     slot.thread?.terminate()
     slot.thread = null
+    for (const ac of slot.asked.values()) ac.abort()
+    slot.asked.clear()
     slot.busy = null
     slot.resident.clear()
     if (task) {
@@ -332,7 +392,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   }
 
   /** A task in the queue of `slot` (a session's) or in the shared one; `book`, its book and stored values while they are written as text. */
-  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Texts>): Promise<unknown> {
+  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Texts>, asks?: ExternalResolver): Promise<unknown> {
     // a task refused here leaves its text being written: a failure of it is not left unhandled
     void book?.catch(() => {})
     if (closed) return Promise.reject(closed)
@@ -342,7 +402,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     const idle = at ? !at.slot.busy && !at.slot.queue.length : !jobs.length && slots.some((s) => !s.busy && !s.queue.length)
     if (!internal && !idle && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks are already waiting for a thread`))
     return new Promise((resolve, reject) => {
-      const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
+      const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject, ...(asks ? { asks } : {}) }
       const queue = at ? at.slot.queue : jobs
       const go = () => (at ? pump(at.slot) : slots.forEach(pump))
       // a book written between turns: the task keeps its place in the queue, and goes when the text is ready
@@ -460,6 +520,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       setNames: (names, co) => told('setNames', value(edit('setNames', [names], co))),
       setExternalBooks: (books, co) => told('setExternalBooks', value(edit('setExternalBooks', [books], co))),
       setClock: (next, co) => told('setClock', value(edit('setClock', [next], co))),
+      refreshConnections: (names, co) => told('refreshConnections', value(edit('refreshConnections', [names], co))),
+      settleConnections: (co) => told('settleConnections', value(edit('settleConnections', [], co))),
       editStructure: (op, co) => told('editStructure', mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>),
       setStyles: (styles, co) => told('setStyles', value(edit('setStyles', [styles], co))),
       setLayout: (edits, co) => told('setLayout', value(edit('setLayout', [edits], co))),
@@ -504,15 +566,17 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   return strictMethods<Calc>({
     async compute(book, copts) {
       const { signal, timeoutMs, rest } = splitCall<{ cached?: CachedValues }>(copts)
-      const { cached, ...opts } = rest ?? {}
+      const { cached, ...given } = rest ?? {}
+      const [opts, asks] = unresolved(given)
       const [sent, later] = texts(book, cached)
-      return (await submit({ t: 'compute', ...sent, opts, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal, false, later)) as never
+      return (await submit({ t: 'compute', ...sent, opts, timeoutMs: timeoutMs ?? o.timeoutMs, ...(asks ? { asks: true } : {}) }, undefined, signal, false, later, asks)) as never
     },
     async createSession(book, sopts) {
       if (closed) throw closed
       if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool already holds ${o.maxSessions} sessions`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
-      const { clock: given, cached, ...own } = { ...rest } as SessionOptions & { clock?: Clock }
+      const { clock: given, cached, ...withResolver } = { ...rest } as SessionOptions & { clock?: Clock }
+      const [own, asks] = unresolved(withResolver)
       // the session's own copy of its options, as its snapshot keeps them: what the caller changes in them later (its
       // externals' values, say) does not reach a restore
       let opts: Omit<SessionOptions, 'cached'>
@@ -531,10 +595,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         Object.assign(r.snapshot, x)
         return x
       })
-      const r: Rec = { sid: ++ids, slot, snapshot: { ...sent, opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false }
+      const r: Rec = { sid: ++ids, slot, snapshot: { ...sent, opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false, ...(asks ? { asks } : {}) }
       recs.add(r)
       slot.sessions.add(r)
-      await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, ...(sent.cached ? { cached: sent.cached } : {}), opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
+      await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, ...(sent.cached ? { cached: sent.cached } : {}), opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs, ...(asks ? { asks: true } : {}) }, { slot, session: r }, signal, false, later).catch((e) => {
         bury(r, new CalcError('closed', 'the session did not open'))
         throw e
       })

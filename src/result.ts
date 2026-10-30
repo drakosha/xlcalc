@@ -1,12 +1,12 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
-import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic, NumberFormat } from './contract.js'
+import type { CellRef, CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic, NumberFormat } from './contract.js'
 import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { addressOrder, byPlace, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import { addressOrder, byPlace, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf, placeParts } from './model.js'
 import type { V } from './values.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
@@ -297,6 +297,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     .map((id) => state.formulas[id]!)
     .sort(byPlace)
     .map((f) => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
+  const pending = pendingCells(state)
   return {
     sheets,
     diagnostics: [
@@ -309,5 +310,18 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     inputHash,
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,
+    ...(pending.length ? { pending } : {}),
   }
+}
+
+/** The cells waiting for an answer on its way from `Externals.resolve`, in the workbook's order. */
+export function pendingCells(state: EngineState): CellRef[] {
+  const out = state.ctx.outside?.waiting
+  if (!out?.size) return []
+  return [...out.keys()]
+    .sort((a, b) => a - b)
+    .map((p) => {
+      const [s, r, c] = placeParts(p)
+      return { sheet: state.sheetNames[s], cell: formatAddress(r, c) }
+    })
 }

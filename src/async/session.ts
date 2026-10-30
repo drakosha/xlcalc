@@ -136,6 +136,8 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     setNames: (names, co) => edit((eo) => core.setNames(names, eo), co, undefined, 'setNames'),
     setExternalBooks: (books, co) => edit((eo) => core.setExternalBooks(books, eo), co, undefined, 'setExternalBooks'),
     setClock: (next, co) => edit((eo) => core.setClock(next, eo), co, undefined, 'setClock'),
+    refreshConnections: (names, co) => edit((eo) => core.refreshConnections(names, eo), co, undefined, 'refreshConnections'),
+    settleConnections: (co) => edit(() => core.takeAnswers(), co, undefined, 'settleConnections'),
     editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co, undefined, 'editStructure'),
     // eslint-disable-next-line require-yield
     setStyles: (styles, co) => edit(function* (eo) {

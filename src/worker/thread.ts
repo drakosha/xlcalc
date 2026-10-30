@@ -4,13 +4,12 @@
  * session's changing calls carry sequence numbers: the last one again gets the same answer, so a repeated message
  * never applies an edit twice. A restore opens a snapshot and replays the journal with the clocks the session had.
  */
-import { abortable } from '../async/queue.js'
 import { callLimits } from '../async/options.js'
 import { budgeted, openInlineSession, type InlineDefaults, type InlineSession } from '../async/session.js'
 import { computeSteps } from '../compute.js'
-import type { AbortSignalLike, BookInput, CalcOptions, Clock, StructureOp } from '../contract.js'
+import type { AbortSignalLike, BookInput, CalcOptions, Clock, ExternalAnswer, ExternalResolver, StructureOp } from '../contract.js'
 import { currentClock } from '../env.js'
-import { CalcError } from '../exec/budget.js'
+import { abortable, CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
 import { registerLocale } from '../locale/load.js'
 import { LOCALES } from '../locale/registry.js'
@@ -43,7 +42,7 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'cancel' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'cancel' | 'answer' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
 /** Where the pool writes the task it cancels (`init`), none where threads share no memory: the engine's checks read it inside a formula. */
 let cancelled: Int32Array | undefined
@@ -196,14 +195,45 @@ const taken = async (h: Held) => ({ book: await pack(await h.s.getBook()), clock
 /** Options with the stored values a message carries as text (`ComputeOptions.cached`), as objects again. */
 const withCached = <T extends object>(opts: T, cached: Sent | undefined): T => (cached === undefined ? opts : { ...opts, cached: unpackCached(cached) })
 
+/** The calls outside the workbook sent to the pool's resolver, by number, till their answers come. */
+const asked = new Map<number, (m: { value?: ExternalAnswer; failed?: true }) => void>()
+let asks = 0
+
+/** A resolver asking the pool's for session `sid`, or for the computation of task `task`; the call's abort reaches it as `unask`. */
+const asking =
+  (to: { sid: number } | { task: number }): ExternalResolver =>
+  ({ signal, ...call }) => {
+    if (signal.aborted) return Promise.reject(signal.reason)
+    const ask = ++asks
+    return new Promise<ExternalAnswer>((resolve, reject) => {
+      const unask = () => {
+        asked.delete(ask)
+        port.postMessage({ unask: ask })
+        reject(signal.reason)
+      }
+      asked.set(ask, (m) => {
+        signal.removeEventListener('abort', unask)
+        asked.delete(ask)
+        if (m.failed) reject(new Error('the resolver gave no answer'))
+        else resolve(m.value)
+      })
+      signal.addEventListener('abort', unask, { once: true })
+      port.postMessage({ ask, ...to, call })
+    })
+  }
+
+/** Options whose `externals` answer by the pool's resolver where the message says it has one (`asks`). */
+const withAsks = <T extends object>(opts: T, asks: true | undefined, to: { sid: number } | { task: number }): T =>
+  asks ? { ...opts, externals: { ...(opts as { externals?: object }).externals, resolve: asking(to) } } : opts
+
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {
     case 'compute': {
-      const c = checkComputeOptions(withCached(m.opts, m.cached))
+      const c = checkComputeOptions(withAsks(withCached(m.opts, m.cached), m.asks, { task: m.task }))
       return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(unpack(m.book), c), { signal, timeoutMs: m.timeoutMs })
     }
     case 'open': {
-      const h = await open(m.sid, unpack(m.book), withCached({ ...m.opts, signal, timeoutMs: m.timeoutMs }, m.cached), null)
+      const h = await open(m.sid, unpack(m.book), withAsks(withCached({ ...m.opts, signal, timeoutMs: m.timeoutMs }, m.cached), m.asks, { sid: m.sid }), null)
       return { value: null, clock: h.s.clock, history: h.s.history, revision: h.s.revision } satisfies Answer
     }
     case 'call': {
@@ -230,7 +260,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, unpack(snapshot.book), withCached({ ...snapshot.opts, signal }, snapshot.cached), snapshot.clock, snapshot.history && unpackData(snapshot.history), snapshot.revision)
+      const h = await open(m.sid, unpack(snapshot.book), withAsks(withCached({ ...snapshot.opts, signal }, snapshot.cached), m.asks, { sid: m.sid }), snapshot.clock, snapshot.history && unpackData(snapshot.history), snapshot.revision)
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {
@@ -298,6 +328,8 @@ function receive(m: ToThread) {
     loadRegex(m.kind)
   } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort(CANCELLED)
+  } else if (m.t === 'answer') {
+    asked.get(m.ask)?.(m)
   } else {
     waiting.push(m)
     if (!current) void next()

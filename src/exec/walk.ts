@@ -48,6 +48,8 @@ export interface CodegenContext {
    * (`unknownFunctions: 'held'`): its value is #NAME?, and its arguments are read for the cells they refer to.
    */
   unknown?(name: string): boolean
+  /** The host answers its functions' calls whatever their arguments (`Externals.resolve`): a call of one is compiled as a function's, its cell's place first. */
+  hosted?: boolean
 }
 
 export type Operator = 'add' | 'sub' | 'addLast' | 'subLast' | 'mul' | 'div' | 'pow' | 'cat'
@@ -234,7 +236,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // a name as the names of `scope` show it, or as its sheet's (`'S'!rate`)
   const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
   const table = (n: Extract<Ast, { k: 'table' }>) => ctx.table?.(n, r) ?? 'REF'
-  const shape = shapes(ast, s, resolve, !!ctx.area, table)
+  const shape = shapes(ast, s, resolve, !!ctx.area, table, ctx.hosted)
   // an array formula's most rows and columns, for the arrays that meet its spill (`spill/rank.ts`)
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
@@ -563,6 +565,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           for (const a of n.args) if (a.k !== 'missing') go(a, true)
           return b.value(E.NAME)
         }
+        if (!spec && ctx.hosted) {
+          info.external = true
+          const args = n.args.map((a) => (a.k === 'missing' ? b.absent() : go(a, true)))
+          return value(b.call(n.name, [b.value(s), b.value(r), b.value(c), ...args], false), n, rangeOk)
+        }
         if (!spec) {
           info.external = true
           return b.external(canonical(n))
@@ -577,8 +584,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
         const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
         if ((n.name === 'SUMIF' || n.name === 'AVERAGEIF') && n.args.length === 3 && n.args[2].k !== 'missing') resized(n.args[0], n.args[2])
-        // a reference across sheets is passed to any argument, which takes it or answers its error
-        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))
+        // a reference across sheets is passed to any argument, which takes it or answers its error; to a cube function
+        // a host answers, every reference, for the member a cell of another cube function holds (`outside.ts`)
+        const kept = ctx.hosted === true && n.name.startsWith('CUBE')
+        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, kept || spec.range(i) || a.k === 'ref3d')))
         let code: T
         if (spec.lazy) {
           // lifted when a lifting argument is an array

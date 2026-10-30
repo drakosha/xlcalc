@@ -8,6 +8,38 @@ import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../con
 import { nowMs } from '../env.js'
 import { say } from '../locale/messages.js'
 
+/** A signal and what aborts it. */
+export interface Abort {
+  signal: AbortSignalLike
+  abort(reason?: unknown): void
+}
+
+/** The platform's `AbortController` where the runtime has one (a host passes its signal on to `fetch`), else `abortable`. */
+export function abortSource(): Abort {
+  const Platform = (globalThis as { AbortController?: new () => Abort }).AbortController
+  return Platform ? new Platform() : abortable()
+}
+
+/** An abort signal of the engine's own (the platform's AbortController is not in every runtime's types). */
+export function abortable(): Abort {
+  const listeners = new Set<() => void>()
+  const signal = {
+    aborted: false,
+    reason: undefined as unknown,
+    addEventListener: (_type: 'abort', f: () => void) => void listeners.add(f),
+    removeEventListener: (_type: 'abort', f: () => void) => void listeners.delete(f),
+  }
+  return {
+    signal,
+    abort(reason?: unknown) {
+      if (signal.aborted) return
+      signal.aborted = true
+      signal.reason = reason
+      for (const f of [...listeners]) f()
+    },
+  }
+}
+
 /** Why an asynchronous or limited call failed, by `code`; a `limit` error names the limit, its maximum, the size and the formula's cell. */
 export class CalcError extends Error {
   readonly code: CalcErrorCode
@@ -60,6 +92,25 @@ export class Budget {
   /** Set by the host to stop the computation (its calculator closed). */
   halted: CalcError | null = null
 
+  /** Driven asynchronously (`drive`): the steps may wait for a promise (`awaitAnswers`). */
+  driven = false
+  /** A promise the steps wait for before their next portion, until `waitUntil`; the wait moves the deadline on by its time. */
+  waiting: Promise<void> | undefined = undefined
+  /** When waiting for answers ends (`nowMs`): the deadline as the computation started. */
+  waitUntil = Infinity
+  private controller: Abort | undefined = undefined
+
+  /** A signal aborted with the call (`signal`), for the host's work the computation asks for. */
+  abortSignal(): AbortSignalLike {
+    if (!this.controller) {
+      const c = (this.controller = abortSource())
+      const from = this.signal
+      if (from?.aborted) c.abort(from.reason)
+      else from?.addEventListener('abort', () => c.abort(from.reason), { once: true })
+    }
+    return this.controller.signal
+  }
+
   /** The reason to stop now, or null. */
   stopped(now = nowMs()): CalcError | null {
     if (this.halted) return this.halted
@@ -86,6 +137,22 @@ export class Budget {
 }
 
 let active: Budget | null = null
+
+/** A signal that never aborts: a synchronous computation's. */
+let never: AbortSignalLike | undefined
+
+/** The signal of the computation running now (`Budget.abortSignal`), or one that never aborts. */
+export const callSignal = (): AbortSignalLike => active?.abortSignal() ?? (never ??= abortSource().signal)
+
+/**
+ * The computation waits for `p` before its next step where it is driven asynchronously (the steps yield next, `drive`
+ * awaits it): true then, false for a synchronous one, which does not wait.
+ */
+export function awaitAnswers(p: Promise<void>): boolean {
+  if (!active?.driven) return false
+  active.waiting = p
+  return true
+}
 
 /** Counts `n` units of work: now and then stops the computation at its deadline or abort, or marks its slice used up. */
 export function spend(n: number): void {

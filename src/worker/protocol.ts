@@ -2,7 +2,7 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { CalcLimits, CellRef, Clock, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
@@ -12,11 +12,11 @@ import type { Sent } from './pack.js'
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['applyChanges', 'setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'pasteText', 'fillCellText', 'replaceInCells', 'setNames', 'setExternalBooks', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
+export const CHANGING = ['applyChanges', 'setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'pasteText', 'fillCellText', 'replaceInCells', 'setNames', 'setExternalBooks', 'setClock', 'refreshConnections', 'settleConnections', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
 export type Op = (typeof CHANGING)[number] | 'previewChanges' | 'readCells' | 'findCells' | 'getDependents' | 'summarizeRanges' | 'previewCellText' | 'previewCellTexts' | 'previewPasteText' | 'previewFillCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'getAutoFilterRange' | 'getEnd' | 'getAutoSum' | 'getNamesFromSelection' | 'getSpecialCells' | 'getWorkbookStatistics' | 'explain' | 'getCells' | 'copyText' | 'getValues' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
 
 /** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
-export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChanges: 1, readCells: 1, findCells: 2, getDependents: 1, summarizeRanges: 1, setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, pasteText: 3, previewPasteText: 3, fillCellText: 3, previewFillCellText: 3, replaceInCells: 3, setNames: 1, setExternalBooks: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
+export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChanges: 1, readCells: 1, findCells: 2, getDependents: 1, summarizeRanges: 1, setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, pasteText: 3, previewPasteText: 3, fillCellText: 3, previewFillCellText: 3, replaceInCells: 3, setNames: 1, setExternalBooks: 1, setClock: 1, refreshConnections: 1, settleConnections: 0, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
@@ -54,14 +54,17 @@ export type ToThread =
   | { t: 'locales'; locales: Locale[] }
   /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
   | { t: 'regex'; kind: RegexLevel['kind'] }
-  | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number }
-  | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number }
+  /** `asks`: the host's `Externals.resolve`, which stays with the pool, answers the calls outside the workbook (`ask`). */
+  | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number; asks?: true }
+  | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number; asks?: true }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
-  | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[] }
+  | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[]; asks?: true }
   | { t: 'snapshot'; task: number; sid: number }
   /** `keep`: the session leaves a full thread, its book comes back as its new snapshot. */
   | { t: 'drop'; task: number; sid: number; keep?: boolean }
   | { t: 'cancel'; task: number }
+  /** The answer to the thread's `ask`, or none (`failed`: the resolver threw or rejected, or its answer is not sent). */
+  | { t: 'answer'; ask: number; value?: ExternalAnswer; failed?: true }
 
 export interface ErrorData {
   name: string
@@ -75,8 +78,14 @@ export interface ErrorData {
   cause?: unknown
 }
 
-/** From a thread: a task's answer. */
-export type FromThread = { task: number; ok: true; value: unknown } | { task: number; ok: false; error: ErrorData }
+/** A call outside the workbook as a thread sends it: without its signal. */
+export type SentCall = Omit<ExternalCall, 'signal'>
+
+/**
+ * From a thread: a task's answer; a call for the host's resolver to answer, of session `sid` or of the task computing
+ * (`ask`), and that call aborted (`unask`).
+ */
+export type FromThread = { task: number; ok: true; value: unknown } | { task: number; ok: false; error: ErrorData } | { ask: number; sid?: number; task?: number; call: SentCall } | { unask: number }
 
 /** A call's value and the session's clock, history and revision after it. */
 export interface Answer {
