@@ -5,9 +5,15 @@
  */
 import type { BookInput, PivotRef } from '../contract.js'
 import type { Applied } from '../structure/geometry.js'
+import type { ValuesIn } from '../structure/values.js'
 
-/** Refreshes the caches of the PivotTables `refs` and every PivotTable over them, every cache that can be without `refs`. */
-export type PivotRefresh = (book: BookInput, refs?: PivotRef[]) => Applied
+/**
+ * Lays out the PivotTables `refs` again and every PivotTable over their caches, every cache that can be without `refs`:
+ * with `fromSource`, the caches refreshed from the sources' computed values (`values`), as `refreshPivots` and
+ * `addPivotTable` do; without it, from the cache as saved, as Excel lays out an edit, a move, a slicer's choice. Relative
+ * date filters go by the session's day `today`.
+ */
+export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean) => Applied
 
 let refresh: PivotRefresh | null = null
 
