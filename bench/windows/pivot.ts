@@ -11,7 +11,7 @@ import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CellValue } from '../../src/contract.js'
 import { writeXlsx } from '../../src/xlsx.js'
-import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type SlicerItem, type TableProps } from '../coverage/pivot/cases.js'
+import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type TableProps } from '../coverage/pivot/cases.js'
 import { cellsOf } from '../coverage/case-book.js'
 import { DATA, sourceBook, sourceText } from '../coverage/pivot/data.js'
 import { localeDir } from '../coverage/locales.js'
@@ -211,7 +211,7 @@ export function pivotAnswer(plan: Planned, answers: unknown[]): PivotAnswer {
       const [sheet, range] = role.watch.split('!')
       const vals = (got as WinCell[][]).flat()
       cellsOf(range).addrs.forEach((a, j) => ((cur.cells ??= {})[`${sheet}!${a}`] = cellValue(vals[j])))
-    } else if ('slicer' in role) (cur.slicers ??= {})[role.slicer] = error ? { error } : (got as SlicerItem[])
+    } else if ('slicer' in role) (cur.slicers ??= {})[role.slicer] = error ? { error } : (got as NonNullable<PivotPhase['slicers']>[string])
     else if ('external' in role) {
       const reads: Record<string, Record<string, CellValue>> = {}
       const errors: string[] = []
