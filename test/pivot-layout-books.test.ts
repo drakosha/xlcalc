@@ -17,15 +17,6 @@ import { savedResult } from './pivot-saved.js'
 const ROOT = new URL('./excel/win/pivot/', import.meta.url).pathname
 const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc'].filter((s) => existsSync(`${ROOT}${s}.json`))
 
-/**
- * Books whose PivotTables `readXlsx` does not read as Excel saved them yet: a field's subtotals of several functions
- * without `defaultSubtotal="0"`, and the label filters it refuses as input.
- */
-const WAITING = new Set([
-  'layout/subtotals-columns.xlsx', 'layout/subtotals-three-compact.xlsx', 'layout/subtotals-three.xlsx', 'calc/ratio-tabular.xlsx',
-  'filter/blank-label.xlsx', 'filter/equals-case.xlsx', 'filter/equals.xlsx', 'filter/label-numbers-equal.xlsx',
-])
-
 interface Shown {
   area: string
   values: unknown[][]
@@ -55,7 +46,6 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
   const { answers } = JSON.parse(readFileSync(`${ROOT}${set}.json`, 'utf8'))
   const books = readdirSync(`${ROOT}${set}`).filter((f) => f.endsWith('.xlsx'))
   it.each(books)('%s', async (file) => {
-    if (WAITING.has(`${set}/${file}`)) return
     const { book } = await readXlsx(readFileSync(`${ROOT}${set}/${file}`))
     const phase = answerOf(answers, file.replace(/\.xlsx$/, ''))
     let seen = 0
