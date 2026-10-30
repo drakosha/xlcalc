@@ -46,8 +46,10 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
-  /** Functions the engine does not know are taken (`unknownFunctions: 'held'`, a formula keeping its file's value). */
+  /** Functions the engine does not know are taken (a formula calculated over them, #NAME? where they are called). */
   unknown?: boolean
+  /** Names the book does not define are taken (a formula calculated over them, #NAME? where they are computed). */
+  anyName?: boolean
   /** The host answers its functions' calls at the calculation (`Externals.resolve`): their arguments need not be literals. */
   answered?: boolean
   /** Whether the book defines a name, for a name's formula, whose names are not checked (`known` answers it for the rest). */
@@ -175,9 +177,9 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', { key: 'unknownSheet', sheet: s }, s)
   }
-  if (ctx.known) {
+  if (ctx.known && !ctx.anyName) {
     for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', { key: 'unknownName', name: n }, n)
-  } else if (ctx.names) {
+  } else if (ctx.names && !ctx.anyName) {
     const known = new Set(ctx.names.map(caseKey))
     for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }

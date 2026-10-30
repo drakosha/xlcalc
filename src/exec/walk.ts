@@ -45,10 +45,12 @@ export interface CodegenContext {
   /** The runtime index of a linked workbook's sheet (`links.ts`), undefined for none: the reference is `#REF!`. */
   link?(book: number, sheet: string): number | undefined
   /**
-   * Whether a call is to a function the engine does not know, in a formula that keeps the value its file stores
-   * (`unknownFunctions: 'held'`): its value is #NAME?, and its arguments are read for the cells they refer to.
+   * Whether a call is to a function the engine does not know, in a formula calculated over one: its value is #NAME?,
+   * and its arguments are read for the cells they refer to.
    */
   unknown?(name: string): boolean
+  /** The formula keeps the value its file stores over such a call (`unknownFunctions: 'held'`). */
+  holds?: true
   /** The host answers its functions' calls whatever their arguments (`Externals.resolve`): a call of one is compiled as a function's, its cell's place first. */
   hosted?: boolean
 }
@@ -560,7 +562,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           if (param) return param
           const spec = FUNCTIONS[n.name]
           if (!spec && ctx.unknown?.(n.name)) {
-            info.stored ??= n.name
+            if (ctx.holds) info.stored ??= n.name
             for (const a of n.args) if (a.k !== 'missing') go(a, true)
             return b.value(E.NAME)
           }

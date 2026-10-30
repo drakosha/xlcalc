@@ -149,7 +149,7 @@ for (const text of ['sum(Sales!b:b)*tax_rate', 'SUM(Sales!B:B', 'Sales!B1*vat', 
 // → unknown_function at 0: unknown function SUMM
 ```
 
-A formula stored without validation still calculates: an unknown function or name evaluates to `#NAME?` and an unknown sheet to `#REF!`, with the reason in `diagnostics`. Typed text goes through `setCellText` instead, which closes an unclosed parenthesis as Excel does. [Checking formulas](formulas.md#checking-formulas) lists the error codes, and `validateLocalFormula` validates text in a locale.
+A formula stored without validation still calculates: an unknown function or name evaluates to `#NAME?` where it is computed, as in Excel (`IF(TRUE,1,Nope)` is 1), and an unknown sheet to `#REF!`, with the reason in `diagnostics`. Typed text goes through `setCellText` instead, which closes an unclosed parenthesis as Excel does. [Checking formulas](formulas.md#checking-formulas) lists the error codes, and `validateLocalFormula` validates text in a locale.
 
 ## Values from your own systems
 
