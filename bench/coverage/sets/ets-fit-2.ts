@@ -12,37 +12,10 @@ import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { CI, day, ETS, noise, round2, SEA, seriesSheet, STAT, steps } from './ets/sheet.js'
 
-const cells: Record<string, number | string | boolean> = {}
-let col = 0
-
-const letters = (i: number): string => (i < 26 ? String.fromCharCode(65 + i) : letters(Math.floor(i / 26) - 1) + letters(i % 26))
-
-/** A series on sheet E: its timeline and values in two new columns from row 1 (null leaves a cell blank); the two ranges. */
-function series(t: readonly (number | null)[], y: readonly (number | string | null)[]): [string, string] {
-  const [a, b] = [letters(col), letters(col + 1)]
-  col += 2
-  for (let i = 0; i < Math.max(t.length, y.length); i++) {
-    if (t[i] !== null && t[i] !== undefined) cells[`${a}${i + 1}`] = t[i]!
-    if (y[i] !== null && y[i] !== undefined) cells[`${b}${i + 1}`] = y[i]!
-  }
-  return [`E!${a}1:${a}${t.length}`, `E!${b}1:${b}${y.length}`]
-}
-
-const steps = (n: number, from = 1, step = 1) => Array.from({ length: n }, (_, i) => from + i * step)
-const round2 = (v: number) => Math.round(v * 100) / 100
-
-/** Noise from a seed: a linear congruential stream, centred, to two decimals. */
-function noise(seed: number, n: number): number[] {
-  let x = seed
-  return Array.from({ length: n }, () => {
-    x = (x * 1103515245 + 12345) % 2147483648
-    return round2((x / 2147483648 - 0.5) * 2)
-  })
-}
-
+const { cells, series } = seriesSheet()
 const Z = noise(7, 40)
-const ETS = 'FORECAST.ETS', CI = 'FORECAST.ETS.CONFINT', SEA = 'FORECAST.ETS.SEASONALITY', STAT = 'FORECAST.ETS.STAT'
 
 function build(): Probe[] {
   const { out, add } = collector()
@@ -112,7 +85,6 @@ function build(): Probe[] {
   read('off-twothirds', [1, 2, 2.6, 4, 5, 6, 7, 8, 9, 10], base.slice(0, 10), 10)
   read('off-mixed', [1, 2, 4, 6, 8, 10, 12, 13, 14, 16], base.slice(0, 10), 16)
   // months: the first, the fifteenth, the last day; quarters
-  const day = (y: number, m: number, d: number) => Date.UTC(y, m, d) / 86400000 + 25569
   const months = (d: number, every = 1) => steps(12, 0).map((k) => day(2021, k * every, d))
   for (const [name, t] of Object.entries({ first: months(1), fifteenth: months(15), last: steps(12, 1).map((k) => day(2021, k, 0)), quarters: months(1, 3) })) {
     const [rt, rv] = series(t, base.slice(0, 12))

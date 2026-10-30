@@ -12,25 +12,9 @@ import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { CI, ETS, SEA, seriesSheet, STAT, steps } from './ets/sheet.js'
 
-const cells: Record<string, number | string | boolean | { formula: string }> = {}
-let col = 0
-
-const letters = (i: number): string => (i < 26 ? String.fromCharCode(65 + i) : letters(Math.floor(i / 26) - 1) + letters(i % 26))
-
-/** A series on sheet E: its timeline and values in two new columns from row 1; the two ranges. */
-function series(t: readonly (number | string | boolean | null | { formula: string })[], y: readonly (number | string | boolean | null | { formula: string })[]): [string, string] {
-  const [a, b] = [letters(col), letters(col + 1)]
-  col += 2
-  const n = Math.max(t.length, y.length)
-  for (let i = 0; i < n; i++) {
-    if (t[i] !== null && t[i] !== undefined) cells[`${a}${i + 1}`] = t[i]!
-    if (y[i] !== null && y[i] !== undefined) cells[`${b}${i + 1}`] = y[i]!
-  }
-  return [`E!${a}1:${a}${t.length}`, `E!${b}1:${b}${y.length}`]
-}
-
-const steps = (n: number, from = 1, step = 1) => Array.from({ length: n }, (_, i) => from + i * step)
+const { cells, series } = seriesSheet()
 
 /** Small noise, the same for every series: exact in binary to a few digits. */
 const NOISE = [0.3, -0.2, 0.1, 0, -0.4, 0.2, 0.3, -0.1, 0.2, -0.3, 0, 0.1, -0.2, 0.4, -0.1, 0, 0.25, -0.15, 0.05, -0.35]
@@ -77,7 +61,6 @@ const MONTHS = steps(24, 0).map((k) => Date.UTC(2020, k, 1) / 86400000 + 25569)
 
 function build(): Probe[] {
   const { out, add } = collector()
-  const ETS = 'FORECAST.ETS', CI = 'FORECAST.ETS.CONFINT', SEA = 'FORECAST.ETS.SEASONALITY', STAT = 'FORECAST.ETS.STAT'
 
   // without a season: every statistic, three horizons, the interval at three horizons and three levels; then automatic
   for (const [name, y] of Object.entries(HOLT)) {
