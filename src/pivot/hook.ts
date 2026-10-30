@@ -24,3 +24,16 @@ export const pivotRefresh = (): PivotRefresh | null => refresh
 export function setPivotRefresh(f: PivotRefresh): void {
   refresh = f
 }
+
+/** The full check of PivotTables' shape (`pivot/check.ts`), which `xlcalc/pivot` registers for every check of a workbook. */
+export type PivotCheck = (book: BookInput, path: string) => void
+
+let check: PivotCheck | null = null
+
+/** The full check registered, or null. */
+export const pivotCheck = (): PivotCheck | null => check
+
+/** Registers the full check of PivotTables, the last one registered used. */
+export function setPivotCheck(f: PivotCheck): void {
+  check = f
+}

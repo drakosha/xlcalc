@@ -70,6 +70,8 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
   let ext = ''
   ;(sheet.conditionalFormats ?? []).map(withFormula).forEach((rule, i) => {
     const where = { sheet: sheet.name, cell: rule.ranges[0] }
+    // a PivotTable's rule goes with its PivotTable, which is not written yet
+    if (rule.pivot) return ctx.issues.add('pivotTable', { key: 'pivotNotWritten' }, where)
     const id = `{${hex(index + 1, 8)}-0000-4000-8000-${hex(i + 1, 12)}}`
     // every formula of the rule as the file holds it
     let other = false

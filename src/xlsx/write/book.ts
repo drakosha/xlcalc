@@ -202,6 +202,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   })
   const dynamic = sheets.some((s) => s.formulas)
   if (dynamic && unasked) issues.add('noCachedValues', { key: 'noResult' })
+  if (book.pivotCaches || book.slicerCaches || book.timelineCaches) issues.add('pivotTable', { key: 'pivotNotWritten' })
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []

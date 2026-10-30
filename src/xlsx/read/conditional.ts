@@ -5,7 +5,7 @@
  * formulas over other sheets) with their own priority and format (`x14:dxf`). Rules come in priority order. Formulas
  * come in the engine's spelling; what the model cannot hold is reported.
  */
-import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
+import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName, PivotRuleScope } from '../../contract.js'
 import { CELL_IS, ICON_SETS, PERIODS, STYLED, VALUE_TYPES, WITH_VALUE } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
@@ -260,7 +260,7 @@ class Noted extends Issues {
  * extension list, whose content is `ext`: Excel 2010's rules are there). `sources` gets every rule of the file, read or
  * not, in the order of the rules read.
  */
-export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions, sources?: RuleSource[]): ConditionalFormat[] | undefined {
+export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions, sources?: RuleSource[], scopes?: Map<number, PivotRuleScope>): ConditionalFormat[] | undefined {
   const noted = sources ? new Noted(issues) : undefined
   const ctx: Context = { sheet, dxfs, palette, issues: noted ?? issues, formulas }
   const met: (RuleSource & { read?: Read; order: number })[] = []
@@ -280,17 +280,22 @@ export function readConditional(tail: string, ext: string, sheet: string, dxfs: 
     const sqref = ranges(a.sqref ?? '', ctx)
     const own = since(k0)
     const pivot = flag(a.pivot)
-    if (pivot) issues.add('conditionalFormat', { key: 'condPivot' }, { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
     const body = b.body ?? ''
     const inner = bodyAt(tail, b)
     const block = { start: b.start, end: b.end, sqref: a.sqref ?? '' }
     for (const e of placed(body, 'cfRule')) {
       const k = at()
-      const r = pivot || !sqref.length ? null : rule(e, sqref, false, ctx)
+      // a PivotTable's rule with its scope, which its PivotTable names by priority; read alone where none is given (`fileRules`)
+      const priority = Number(attributes(e.attrs).priority ?? 0)
+      const scope = pivot ? scopes?.get(priority) : undefined
+      const lost = pivot && scopes !== undefined && !scope
+      if (lost) issues.add('conditionalFormat', { key: 'condPivot' }, { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
+      const r = lost || !sqref.length ? null : rule(e, sqref, false, ctx)
+      if (r && scope) r.rule = { ...r.rule, pivot: scope }
       if (r) found.push(r)
       const id = element(e.body ?? '', 'id')?.body?.trim()
       if (!r && id) lostBars.add(id)
-      note({ x14: false, start: inner + e.start, end: inner + e.end, block, priority: Number(attributes(e.attrs).priority ?? 0), ...(id ? { id } : {}), ...(pivot ? { pivot } : {}) }, [...own, ...since(k)], r)
+      note({ x14: false, start: inner + e.start, end: inner + e.end, block, priority, ...(id ? { id } : {}), ...(pivot ? { pivot } : {}) }, [...own, ...since(k)], r)
     }
   }
   // Excel 2010's rules: in their extension of the sheet's own extension list

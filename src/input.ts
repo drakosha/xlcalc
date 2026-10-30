@@ -21,7 +21,7 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
-import { BOOK_PIVOT_KEYS, checkPivots, SHEET_PIVOT_KEYS } from './input/pivot.js'
+import { checkPivots } from './input/pivot.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
@@ -212,7 +212,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', ...BOOK_PIVOT_KEYS])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.font !== undefined) {
     const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
@@ -237,7 +237,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', ...SHEET_PIVOT_KEYS])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))

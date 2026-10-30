@@ -174,8 +174,9 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    // conditional formats are read: a rule without its formula is left out
-    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'frozenPanes', 'conditionalFormat'])
+    // conditional formats are read: a rule without its formula is left out; a PivotTable whose part is missing too
+    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'conditionalFormat', 'pivotTable'])
+    expect(r.issues.at(-1)?.message).toBe("a PivotTable or a timeline whose pivot cache is not in the file is left out: the PivotTable's cells are read as stored")
     expect(r.book.sheets[0].filtered).toBeUndefined()
     expect(r.book.sheets[0].autoFilter).toEqual({ range: 'A1:A9' })
     // the protection is read, objects and scenarios not protected by the schema's defaults; its ranges reported
