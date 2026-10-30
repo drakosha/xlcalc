@@ -62,8 +62,6 @@ export interface TableProps {
   emptyText?: string
   /** Several filters on one field (a label filter and a value filter). */
   multipleFilters?: boolean
-  /** Subtotals count the items a page field hides. */
-  subtotalHidden?: boolean
 }
 
 /** A field's settings. */

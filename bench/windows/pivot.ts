@@ -50,7 +50,6 @@ function tableProps(t: TableProps): Props {
   if (t.errorText !== undefined) p.push(['DisplayErrorString', true], ['ErrorString', t.errorText])
   if (t.emptyText !== undefined) p.push(['DisplayNullString', true], ['NullString', t.emptyText])
   if (t.multipleFilters !== undefined) p.push(['AllowMultipleFilters', t.multipleFilters])
-  if (t.subtotalHidden !== undefined) p.push(['SubtotalHiddenPageItems', t.subtotalHidden])
   return p
 }
 
