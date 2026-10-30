@@ -142,3 +142,6 @@ export const buildProbes = (): Probe[] => PROBES
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./ets-held.predicted.json', import.meta.url), 'utf8'))
+
+/** The predictions Excel did not confirm: the step of quarterly dates from January (a known difference, `etsQuarterStep`). */
+export const MISSED: readonly string[] = ['cal-3-20-4#5', 'cal-3-28-1#6']
