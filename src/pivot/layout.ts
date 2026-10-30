@@ -194,6 +194,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     }
   })
 
+  // the text shown for an empty cell or an error, a number as a number (`0`), as an entry takes it
+  const typed = (text: string) => rules.numberOnly(text) ?? text
   // the values: each line with values against each column's, by the value field of either and a subtotal's function
   if (values.length && dataCols)
     rowLines.forEach((ra, i) => {
@@ -208,9 +210,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
         const cell: Label = { value: undefined }
         if (numberFormat !== undefined) cell.numberFormat = numberFormat
         if (x === null) {
-          if (table.empty?.show !== false && table.empty?.text) cell.value = table.empty.text
+          if (table.empty?.show !== false && table.empty?.text) cell.value = typed(table.empty.text)
         } else if (typeof x === 'object') {
-          if (table.errors?.show && table.errors.text !== undefined) cell.value = table.errors.text
+          if (table.errors?.show && table.errors.text !== undefined) cell.value = typed(table.errors.text)
           else cell.error = x.error
         } else cell.value = x
         if (cell.value !== undefined || cell.error || cell.numberFormat !== undefined) put(row, col, cell)
