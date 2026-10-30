@@ -189,6 +189,7 @@ const pivot = shape(
     values: list(shape({ field: index, name: text, function: fn, showAs: oneOf(SHOW_AS), baseField: index, baseItem: (v, p) => (v === 'previous' || v === 'next' ? undefined : index(v, p)), numberFormat: checkFormat }, ['field'], 'a value field such as { field: 1 }')),
     valuesOnRows: bool,
     valuesPosition: index,
+    valuesRow: bool,
     filters: list(shape({ field: index, type: oneOf(FILTERS), args: list((v, p) => (typeof v === 'number' ? finite(v, p) : text(v, p))), value: index, bottom: bool, wholeDays: bool, order: index, name: text, description: text }, ['field', 'type'], 'a filter such as { field: 0, type: "captionEqual", args: ["North"] }')),
     grandTotals: shape({ rows: bool, columns: bool }, [], 'grand totals such as { rows: false }'),
     layout,
