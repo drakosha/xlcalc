@@ -9,7 +9,7 @@ import { createInlineCalc, createSession, editStructure, InputError, registerPiv
 import { pivotEngine } from '../src/pivot/index.js'
 import { closedAfter } from './fixtures/pool.js'
 
-const SOURCE: CellValue[][] = [
+const SOURCE: (string | number | null)[][] = [
   ['Region', 'Product', 'Amount', 'Qty'],
   ['North', 'Apple', 10, 1],
   ['South', 'Banana', 20, 2],
@@ -57,7 +57,7 @@ describe('refreshPivots', () => {
     const s = createSession(BOOK)
     expect(s.editStructure(REFRESH).ok).toBe(true)
     expect(s.getValues('P', 'A3:B8')).toEqual(LAID)
-    s.setCells([{ sheet: 'D', cell: 'D2', value: 11 }])
+    s.setCells([{ sheet: 'D', cell: 'D2', input: { value: 11 } }])
     expect(s.getValues('P', 'B5')).toEqual([[4]])
     s.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'p', name: 'pt1' }] })
     expect(s.getValues('P', 'B5:B8')).toEqual([[14], [7], [7], [38]])

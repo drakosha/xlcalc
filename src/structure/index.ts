@@ -68,6 +68,7 @@ const FIELDS: Record<string, string[]> = {
   mergeCells: ['sheet', 'range', 'across', 'center'],
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
+  refreshPivots: ['pivots'],
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
@@ -263,7 +264,6 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'movePivotTable':
     case 'deletePivotTable':
     case 'refreshPivots': {
-      onlyKeys(o, 'op', ['op', 'pivots'])
       const refs = o.pivots === undefined ? undefined : pivotRefs(o.pivots, 'op.pivots')
       const refresh = pivotRefresh()
       r = refresh ? refresh(book, refs, values, values.today?.() ?? 0, true) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
