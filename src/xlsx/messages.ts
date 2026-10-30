@@ -7,6 +7,8 @@ import { ownText, type StyleLoss, type StylePart, type XlsxMessageParams } from 
 import type { Locale } from '../locale/types.js'
 import type { XlsxMessage } from './issues.js'
 
+const PIVOT_SOURCES = { external: 'a data connection', dataModel: "the workbook's data model", consolidation: 'consolidated ranges', scenario: "the workbook's Scenarios" }
+
 const STYLE_PARTS: Record<StylePart, string> = {
   accountingUnderline: 'accounting underline',
   underlineRemoved: 'removed underline',
@@ -47,6 +49,12 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   workbookProtection: () => 'workbook protection is not in the model',
   externalLinks: () => 'a link to the data of another program (DDE, OLE) rather than a workbook, or a link whose part is missing, is not in the model: a linked workbook without sheets keeps its number, and formulas that refer to it evaluate to an error',
   pivotTables: () => 'pivot tables are not in the model: their cells are read as stored',
+  pivotCacheMissing: () => "a PivotTable or a timeline whose pivot cache is not in the file is left out: the PivotTable's cells are read as stored",
+  pivotSourceHeld: (p) => `a pivot cache over ${PIVOT_SOURCES[p.source]} is read as the file stores it, and is not refreshed from its source`,
+  pivotOlap: () => "the OLAP part of a pivot cache (its hierarchies, measures and dimensions) is not in the model: its PivotTables' cells are read as stored",
+  pivotChartFormats: () => "a PivotTable's chart formats are not in the model, nor are its PivotCharts",
+  pivotUnread: (p) => `the file's PivotTables, slicers and timelines are left out, as the model cannot hold them (${p.detail}): their cells are read as stored`,
+  pivotNotWritten: () => "PivotTables, their caches, slicers and timelines are not written yet: the file holds the values of their cells alone, and a PivotTable's conditional formats are left out",
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
   defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and measured as Calibri 11`,
@@ -117,7 +125,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   condIconSet: (p) => `the icon set ${p.set} is not in the model`,
   condIcons: () => 'an icon set without a threshold for each icon is left out',
   condType: (p) => `a conditional format of type ${p.type || '(none)'} is not in the model`,
-  condPivot: () => "a pivot table's conditional formatting is not in the model",
+  condPivot: () => "a PivotTable's conditional format that no PivotTable of the sheet names is left out",
   // reading: data validation
   ruleListCommas: () => "list items that contain a comma are read as split at the comma",
   ruleType: (p) => `a rule of an unknown type ${JSON.stringify(p.type)} is left out`,
