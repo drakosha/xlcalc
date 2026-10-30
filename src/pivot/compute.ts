@@ -14,7 +14,7 @@ import { numberOf } from './values.js'
 
 /**
  * Each record's item on each grouping field (an index into the PivotTable field's `items`), −1 for a field not grouping.
- * A field a grouping made (`PivotCacheField.group`) has no value in the records: its item is its base field's item's group.
+ * A field a grouping made (`PivotCacheField.group`) has no value in the records: its item is to come from its base field's.
  */
 function itemIndexes(table: PivotTable, cache: PivotCache): Int32Array[] {
   const records = cache.records ?? []
@@ -71,7 +71,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const colFields = axes.columns.filter((f): f is number => f !== 'values')
   const values = table.values ?? []
   const fns = values.map((v) => v.function ?? 'sum')
-  // a calculated field is no record's value: its formula is calculated over the sums of the fields it names at each cell
+  // a calculated field is no record's value: its formula is to be calculated over the sums of the fields it names at each cell
   const readers = values.map((v) => valueReader(cache, v.field, epoch))
   const at = itemIndexes(table, cache)
   const shown = shownItems(table, cache, today, epoch)
