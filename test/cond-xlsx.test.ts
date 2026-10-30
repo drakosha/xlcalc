@@ -155,7 +155,7 @@ describe('conditional formats in xlsx', () => {
       "a conditional format's pattern fill is not in the model",
       'an average rule with both equal and standard deviations is read with equal only, as Excel keeps it',
       'a conditional format of type unknownKind is not in the model',
-      "a pivot table's conditional formatting is not in the model",
+      "a PivotTable's conditional format that no PivotTable of the sheet names is left out",
     ])
   })
 

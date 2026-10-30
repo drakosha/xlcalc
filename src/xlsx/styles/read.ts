@@ -30,6 +30,8 @@ export interface Xf {
 export interface StyleTable {
   styles: CellStyle[]
   xfs: Xf[]
+  /** The file's own number formats by id. */
+  formats?: Map<number, string>
   /** The default font (the first one), when there are fonts. */
   font?: { name?: string; size?: number }
 }
@@ -132,7 +134,7 @@ export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyl
   return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fillWithoutColor'] } : { lost }
 }
 
-function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: StyleLoss[] } {
+export function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: StyleLoss[] } {
   if (!e) return { lost: [] }
   const a = attributes(e.attrs)
   const out: AlignmentStyle = {}
@@ -159,7 +161,7 @@ function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: 
  * A cell format's protection (`<protection>`), its fields that differ from the default (locked, not hidden); none
  * without the element. `applyProtection` and the cell style's format (`xfId`) do not count.
  */
-function protection(e: Element | undefined): CellProtection | undefined {
+export function protection(e: Element | undefined): CellProtection | undefined {
   if (!e) return undefined
   const a = attributes(e.attrs)
   const out: CellProtection = {}
@@ -175,6 +177,14 @@ function relative(f: FontStyle, base: FontStyle): FontStyle | undefined {
   if (out.size === base.size) delete out.size
   if (out.color === base.color) delete out.color
   return Object.keys(out).length ? out : undefined
+}
+
+/** A number format by its id, as the model keeps it: the file's own by its code, a built-in one by its number, none for General or an id unknown. */
+export function numberFormatOf(formats: Map<number, string> | undefined, id: number): NumberFormat | undefined {
+  const own = formats?.get(id)
+  if (own !== undefined) return own === 'General' ? undefined : own
+  if (isBuiltin(id)) return id === 0 ? undefined : id
+  return BUILTIN[id]
 }
 
 export function readStyles(xml: string | undefined, p: Palette): StyleTable {
@@ -213,17 +223,13 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
       xf.style = i
     }
     const id = Number(a.numFmtId ?? 0)
-    const own = formats.get(id)
-    // a format of the file's own by its code, a built-in one by its number, as the model keeps it
-    if (own !== undefined) {
-      if (own !== 'General') xf.format = own
-    } else if (isBuiltin(id)) {
-      if (id !== 0) xf.format = id
-    } else if (BUILTIN[id] !== undefined) {
-      xf.format = BUILTIN[id]
-      xf.eastAsian = id
-    } else xf.unknownFormat = id
+    const format = numberFormatOf(formats, id)
+    if (format !== undefined) xf.format = format
+    if (!formats.has(id) && !isBuiltin(id)) {
+      if (format !== undefined) xf.eastAsian = id
+      else xf.unknownFormat = id
+    }
     return xf
   })
-  return { styles, xfs, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }
+  return { styles, xfs, formats, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }
 }

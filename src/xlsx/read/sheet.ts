@@ -6,7 +6,7 @@
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
-import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
+import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, PivotRuleScope, RowInput, SheetInput } from '../../contract.js'
 import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
 import { listOf, lookAlone } from '../../looks/sheet.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
@@ -48,6 +48,8 @@ export interface SheetSource {
   cond: { dxfs: Dxf[]; palette: Palette }
   /** How its formulas are read: the book's links to other workbooks they may refer to. */
   formulas: FormulaOptions
+  /** The scopes of its PivotTables' conditional formats, by priority. */
+  pivotRules: Map<number, PivotRuleScope>
 }
 
 export interface SheetRead {
@@ -67,11 +69,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: XlsxMessage][] = [
   ['rowBreaks', 'print', { key: 'printSettings' }],
   ['colBreaks', 'print', { key: 'printSettings' }],
 ]
-
-/** Parts a sheet links to that the model has no place for, by relationship kind. */
-const LINKED: Record<string, [XlsxIssueCode, XlsxMessage]> = {
-  pivotTable: ['pivotTable', { key: 'pivotTables' }],
-}
 
 /** Shared formulas in each of their cells: the master's formula copied and pasted over them (a cell made goes to `added`). */
 function spreadShared(src: SheetSource, read: SheetCells, issues: Issues, added?: Set<string>) {
@@ -288,10 +285,6 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
-  for (const r of src.rels) {
-    const linked = ownEntry(LINKED, r.kind)
-    if (linked) issues.add(...linked, where)
-  }
 }
 
 /** The addresses of the cells of a look of a layer in a rectangle. */
@@ -430,7 +423,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const frozen = readFrozen(first, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
   const { own, extensions } = rulesText(tail)
-  const cf = readConditional(own, extensions, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
+  const cf = readConditional(own, extensions, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas, undefined, src.pivotRules)
   if (cf) sheet.conditionalFormats = cf
   const validations = readValidations(own, extensions, name, src.sheets, ctx.issues, src.formulas)
   if (validations) sheet.validations = validations
