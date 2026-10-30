@@ -24,6 +24,7 @@ import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
 import { utf8 } from '../zip/platform.js'
+import { crc32 } from '../zip/read.js'
 import { zip, type EntryRecord } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
 import { keyOf } from '../../style-table.js'
@@ -845,7 +846,7 @@ class Kept {
       const k = name.toLowerCase()
       if (this.parts.removed.has(k)) continue
       const text = this.parts.text.get(k)
-      files.push(text === undefined ? kept.get(k)! : rewritten(name, text, (await archive.bytes(name))!, kept.get(k)!))
+      files.push(text === undefined ? kept.get(k)! : rewritten(name, text, archive.marked(name), kept.get(k)!))
     }
     for (const name of this.parts.added) files.push({ name, data: utf8(this.parts.text.get(name.toLowerCase())!) })
     return zip(files)
@@ -855,18 +856,20 @@ class Kept {
 const BOM = [0xef, 0xbb, 0xbf]
 
 /**
- * A part written again over the file's `was`: the file's own entry when the text came out the same, else the text with
- * the file's byte order mark when it had one (writers that start a part with one expect it back).
+ * A part written again over the file's `entry`: the file's own entry when the text came out as its bytes (their size
+ * and CRC-32 in the central directory), with the byte order mark the file put before it (`bom`), which writers that
+ * start a part with one expect back.
  */
-function rewritten(name: string, text: string, was: Uint8Array, entry: EntryRecord): EntryRecord | { name: string; data: Uint8Array } {
+function rewritten(name: string, text: string, bom: boolean, entry: EntryRecord): EntryRecord | { name: string; data: Uint8Array } {
   const body = utf8(text)
-  const bom = BOM.every((b, i) => was[i] === b) ? BOM.length : 0
-  if (body.length + bom === was.length && body.every((b, i) => b === was[i + bom])) return entry
-  if (!bom) return { name, data: body }
-  const data = new Uint8Array(body.length + bom)
-  data.set(BOM)
-  data.set(body, bom)
-  return { name, data }
+  let data = body
+  if (bom) {
+    data = new Uint8Array(body.length + BOM.length)
+    data.set(BOM)
+    data.set(body, BOM.length)
+  }
+  const v = new DataView(entry.central.buffer, entry.central.byteOffset, entry.central.byteLength)
+  return v.getUint32(24, true) === data.length && v.getUint32(16, true) === crc32(data) ? entry : { name, data }
 }
 
 /** The issues of writing a sheet that concern what was written from the model: the cells written, and the elements written. */
