@@ -6,6 +6,8 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { InputError, type BookInput, type PivotTable } from '../src/index.js'
+import { pivotEntry } from '../src/pivot/entry.js'
+import { setPivotEntry } from '../src/pivot/hook.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
@@ -20,6 +22,8 @@ const pivot: PivotTable = {
   rows: [0],
   pages: [{ field: 0 }],
   values: [{ field: 1, name: 'Sum of N' }],
+  rowLines: [{ items: [0] }, { type: 'grand', items: [0] }],
+  columnLines: [{ items: [] }],
 }
 
 const book = (): BookInput => ({
@@ -58,5 +62,25 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     await s.setCellText('P', 'A2', 'x')
     expect(await s.getValues('P', 'A2')).toEqual([['x']])
     await s.close()
+  })
+})
+
+describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot in %s', (kind) => {
+  it('names its part through editPivotTable, keeps its same name, and refuses as Excel does', async () => {
+    setPivotEntry(pivotEntry)
+    try {
+      const s = await (await opener(kind))(book(), { clock })
+      expect(await s.setCellText('P', 'B4', '3')).toMatchObject(refusal)
+      expect(await s.setCellText('P', 'A4', 'A')).toMatchObject({ ok: true, changes: [] })
+      expect(await s.setCellText('P', 'B3', 'n')).toMatchObject({ ok: false, code: 'pivot', message: 'PivotTable field name already exists: "n"' })
+      expect(await s.setCellText('P', 'A4', '=1')).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('cannot enter a formula') })
+      await expect(s.setCells([{ sheet: 'P', cell: 'A4', input: null }])).rejects.toThrow(/affect a PivotTable/)
+      await expect(s.setCells([{ sheet: 'P', cell: 'B1', input: { value: 'b' } }])).rejects.toThrow('"b" is not an item of this field')
+      // a new name is an edit of the definition, which the session makes with editPivotTable
+      await expect(s.setCellText('P', 'A4', 'z')).rejects.toThrow(/editPivotTable/)
+      await s.close()
+    } finally {
+      setPivotEntry(() => null)
+    }
   })
 })

@@ -3,7 +3,7 @@
  * the PivotTable an add, edit or move changed), and without it they leave the cells and mark the cache `stale`. Its
  * registration (`registerPivot`) is the subpath's.
  */
-import type { BookInput, PivotRef } from '../contract.js'
+import type { BookInput, CellInput, PivotRef, Refusal, StructureOp } from '../contract.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 
@@ -36,4 +36,20 @@ export const pivotCheck = (): PivotCheck | null => check
 /** Registers the full check of PivotTables, the last one registered used. */
 export function setPivotCheck(f: PivotCheck): void {
   check = f
+}
+
+/**
+ * An entry into a PivotTable's cell as `xlcalc/pivot` takes it (`pivot/entry.ts`): an edit of the PivotTable's
+ * definition, nothing, or a refusal; null for a cell of no PivotTable. Without it, every entry there is refused.
+ */
+export type PivotEntryHook = (book: BookInput, sheet: string, cell: string, input: CellInput | null) => { ok: true; op: StructureOp | null } | Refusal<'pivot'> | null
+
+let entry: PivotEntryHook | null = null
+
+/** The entry registered, or null. */
+export const pivotEntryHook = (): PivotEntryHook | null => entry
+
+/** Registers the entry into PivotTables' cells, the last one registered used. */
+export function setPivotEntry(f: PivotEntryHook): void {
+  entry = f
 }
