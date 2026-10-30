@@ -2,7 +2,7 @@
 
 The package root calculates every function it has. A host that bundles the engine for a browser can take a lighter
 entry, `xlcalc/core`: the same API without five groups of rarely used functions, which it loads only if its workbooks
-need them. `compute` from `xlcalc/core` is 320.8 KB minified, from the root 381.7 KB.
+need them. `compute` from `xlcalc/core` is 321.1 KB minified, from the root 393.8 KB.
 
 ```js
 import { compute, registerFunctions } from 'xlcalc/core'
@@ -22,9 +22,9 @@ existed.
 | `engineering` | Bessel functions (`BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`), complex numbers (`COMPLEX` and the 25 `IM…`), `CONVERT`, number systems (`BIN2DEC` and the other 11), bits (`BITAND`, `BITOR`, `BITXOR`, `BITLSHIFT`, `BITRSHIFT`), `ERF`, `ERFC` and their `.PRECISE` forms, `DELTA`, `GESTEP`: 54 | 16.7 KB |
 | `finance` | securities (`PRICE`, `YIELD`, `DURATION`, `MDURATION`, `ACCRINT`, `ACCRINTM`), coupons (`COUPDAYBS` and the other 5), odd periods (`ODDFPRICE`, `ODDFYIELD`, `ODDLPRICE`, `ODDLYIELD`), discounted securities (`DISC`, `INTRATE`, `PRICEDISC`, `PRICEMAT`, `RECEIVED`, `TBILLEQ`, `TBILLPRICE`, `TBILLYIELD`, `YIELDDISC`, `YIELDMAT`), depreciation (`DB`, `DDB`, `SLN`, `SYD`, `VDB`, `AMORDEGRC`, `AMORLINC`): 33 | 9.4 KB |
 | `lambda` | `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, `GROUPBY`, `PIVOTBY`: 8 | 8.5 KB |
-| `statistics` | the distributions and their inverses (`NORM.DIST`, `NORM.S.INV`, `T.DIST`, `BINOM.DIST`, `GAMMA`, `PERMUT` and their kin), the tests (`T.TEST`, `CHISQ.TEST`, `F.TEST`, `Z.TEST`), `LINEST`, `LOGEST`, `TREND`, `GROWTH`, and the old names of all of them (`NORMDIST`, `TDIST`, `CRITBINOM`…): 77 | 19.0 KB |
+| `statistics` | the distributions and their inverses (`NORM.DIST`, `NORM.S.INV`, `T.DIST`, `BINOM.DIST`, `GAMMA`, `PERMUT` and their kin), the tests (`T.TEST`, `CHISQ.TEST`, `F.TEST`, `Z.TEST`), `LINEST`, `LOGEST`, `TREND`, `GROWTH`, `FORECAST.ETS` and its kin, and the old names of all of them (`NORMDIST`, `TDIST`, `CRITBINOM`…): 81 | 30.7 KB |
 | `xml` | `FILTERXML`, with its XML reader and XPath: 1 | 13.2 KB |
-| all five | 173 | 65.4 KB |
+| all five | 177 | 77.1 KB |
 
 The core keeps the functions most workbooks use, the rare ones of their categories aside: `AVERAGE`, `MEDIAN`, `RANK`,
 `STDEV`, `CORREL`, `SLOPE`, `FORECAST` and the rest of the descriptive statistics; `PMT`, `NPV`, `IRR`, `XIRR`, `RATE`
