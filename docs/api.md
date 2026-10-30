@@ -2942,8 +2942,11 @@ interface ExternalCall {
   /** The cell of the formula. */
   sheet: string
   cell: string
-  /** Aborted with the call that asks (its `signal`), not at its deadline: a session takes an answer that arrives later. */
-  signal: AbortSignal
+  /**
+   * Aborted with the call that asks (its `signal`), not at its deadline: a session takes an answer that arrives later.
+   * The platform's `AbortSignal` where the runtime has `AbortController`, which `fetch` takes.
+   */
+  signal: AbortSignalLike
 }
 ```
 

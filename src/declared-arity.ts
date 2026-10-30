@@ -11,9 +11,16 @@ const declared = () => aritiesOf(FUNCTION_ARITY)
 
 /** `f`, by its name and number of parameters, checking a formula's calls by the declared arguments where the engine gave none. */
 export function withDeclaredArities<F extends (...args: never[]) => unknown>(f: F): F {
-  const g = function (this: unknown, ...args: never[]) {
+  const call = function (this: unknown, ...args: never[]) {
     useAritiesUnlessGiven(declared)
     return f.apply(this, args)
   }
+  // an async function stays one, so that `strict` refuses its options by a rejected promise
+  const g =
+    (f as { [Symbol.toStringTag]?: string })[Symbol.toStringTag] === 'AsyncFunction'
+      ? async function (this: unknown, ...args: never[]) {
+          return call.apply(this, args)
+        }
+      : call
   return Object.defineProperties(g, { name: { value: f.name }, length: { value: f.length } }) as unknown as F
 }

@@ -1,0 +1,317 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 14.9,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "siblings#1",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#2",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "siblings#3",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y<c/>z</a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#4",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y<c/>z</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "siblings#5",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b/>y<c/>z</a>\",\"/a/text()\"),3)"
+  },
+  {
+   "id": "siblings#6",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<!--c-->y</a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#7",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<!--c-->y</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "siblings#8",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<![CDATA[y]]></a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#9",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<![CDATA[y]]></a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "siblings#10",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<?p?>y</a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#11",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<?p?>y</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "siblings#12",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b>1</b>y</a>\",\"/a/text()\"),1)"
+  },
+  {
+   "id": "siblings#13",
+   "group": "siblings",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a>x<b>1</b>y</a>\",\"/a/text()\"),2)"
+  },
+  {
+   "id": "single#1",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a><b/>y</a>\",\"/a/text()\")"
+  },
+  {
+   "id": "single#2",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>x<b/></a>\",\"/a/text()\")"
+  },
+  {
+   "id": "single#3",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a><b/>y</a>\",\"/a\")"
+  },
+  {
+   "id": "single#4",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a><!--c-->y</a>\",\"/a/text()\")"
+  },
+  {
+   "id": "single#5",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/text()[2]\")"
+  },
+  {
+   "id": "single#6",
+   "group": "single",
+   "fn": "FILTERXML",
+   "formula": "_xlfn.FILTERXML(\"<a>x<b/>y</a>\",\"/a/b/following-sibling::text()\")"
+  },
+  {
+   "id": "nodes#1",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<r><i>1</i>t<i>2</i></r>\",\"/r/node()\"),1)"
+  },
+  {
+   "id": "nodes#2",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<r><i>1</i>t<i>2</i></r>\",\"/r/node()\"),2)"
+  },
+  {
+   "id": "nodes#3",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<r><i>1</i>t<i>2</i></r>\",\"/r/node()\"),3)"
+  },
+  {
+   "id": "nodes#4",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>one</b><b>two</b><c><d>4</d></c>t</a>\",\"//text()\"),1)"
+  },
+  {
+   "id": "nodes#5",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>one</b><b>two</b><c><d>4</d></c>t</a>\",\"//text()\"),2)"
+  },
+  {
+   "id": "nodes#6",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>one</b><b>two</b><c><d>4</d></c>t</a>\",\"//text()\"),3)"
+  },
+  {
+   "id": "nodes#7",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>one</b><b>two</b><c><d>4</d></c>t</a>\",\"//text()\"),4)"
+  },
+  {
+   "id": "nodes#8",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>1</b><b>2</b></a>\",\"//b/text()\"),2)"
+  },
+  {
+   "id": "nodes#9",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>1</b><b>x<c/>2</b></a>\",\"//b/text()\"),3)"
+  },
+  {
+   "id": "nodes#10",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>1</b>s<b>2</b></a>\",\"/a/text() | //b\"),2)"
+  },
+  {
+   "id": "nodes#11",
+   "group": "nodes",
+   "fn": "FILTERXML",
+   "formula": "INDEX(_xlfn.FILTERXML(\"<a><b>1</b>s<b>2</b></a>\",\"/a/text() | //b\"),3)"
+  }
+ ],
+ "values": {
+  "siblings#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "siblings#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "single#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "single#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "single#3": {
+   "t": "s",
+   "v": "y"
+  },
+  "single#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "single#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "single#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#1": {
+   "t": "n",
+   "v": 1
+  },
+  "nodes#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#3": {
+   "t": "n",
+   "v": 2
+  },
+  "nodes#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "nodes#11": {
+   "t": "n",
+   "v": 2
+  }
+ }
+}

@@ -1,7 +1,7 @@
 /**
- * `src/function-arity.ts`, each function's declared arguments without its implementation, made from the engine's
- * definitions (`DEFS`): `test/function-arity.test.ts` checks that the file is the one this makes; `npx tsx
- * test/function-arity.ts --write` writes it again after a function's arguments change.
+ * `src/function-arity.ts`, each function's declared arguments without its implementation, and `src/function-words.ts`,
+ * the functions' names alone, made from the engine's definitions (`DEFS`): `test/function-arity.test.ts` checks that the
+ * files are the ones this makes; `npx tsx test/function-arity.ts --write` writes them again after the functions change.
  */
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -32,4 +32,29 @@ ${rows.join('\n')}
 `
 }
 
-if (process.argv.includes('--write')) writeFileSync(resolve(import.meta.dirname, '../src/function-arity.ts'), functionArity())
+export function functionWords(): string {
+  const lines: string[] = []
+  let line = ''
+  for (const name of Object.keys(DEFS).sort()) {
+    if (line && line.length + name.length + 1 > 116) {
+      lines.push(line)
+      line = ''
+    }
+    line += (line ? ' ' : '') + name
+  }
+  lines.push(line)
+  return `/**
+ * The whitelisted functions' names, without their arguments: the xlsx writers tell a function's name from a defined name's
+ * by them without the engine (\`syntax/check.ts\`, \`bindCalls\`). Made from the engine's definitions by
+ * \`npx tsx test/function-arity.ts --write\`; \`test/function-arity.test.ts\` keeps it the same as them.
+ */
+export const FUNCTION_WORDS: ReadonlySet<string> = /* @__PURE__ */ new Set(
+  \`${lines.join('\n  ')}\`.split(/\\s+/),
+)
+`
+}
+
+if (process.argv.includes('--write')) {
+  writeFileSync(resolve(import.meta.dirname, '../src/function-arity.ts'), functionArity())
+  writeFileSync(resolve(import.meta.dirname, '../src/function-words.ts'), functionWords())
+}

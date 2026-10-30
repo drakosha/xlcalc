@@ -194,6 +194,7 @@ export const SIGNATURES: Readonly<Record<string, string>> = {
   FALSE: '',
   FDIST: 'x freedom1 freedom2',
   FILTER: 'array include [if_empty]',
+  FILTERXML: 'xml xpath',
   FIND: 'find within [start]',
   FINDB: 'find within [start]',
   FINV: 'probability freedom1 freedom2',

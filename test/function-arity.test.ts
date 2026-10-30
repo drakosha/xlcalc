@@ -7,10 +7,11 @@ import { expect, it } from 'vitest'
 import { arityOf } from '../src/arity.js'
 import { FUNCTION_ARITY } from '../src/function-arity.js'
 import { FUNCTIONS } from '../src/functions.js'
-import { functionArity } from './function-arity.js'
+import { functionArity, functionWords } from './function-arity.js'
 
-it('src/function-arity.ts is made from the definitions (npx tsx test/function-arity.ts --write)', () => {
+it('src/function-arity.ts and src/function-words.ts are made from the definitions (npx tsx test/function-arity.ts --write)', () => {
   expect(readFileSync(new URL('../src/function-arity.ts', import.meta.url), 'utf8')).toBe(functionArity())
+  expect(readFileSync(new URL('../src/function-words.ts', import.meta.url), 'utf8')).toBe(functionWords())
 })
 
 it("each function's arity is the engine's: the counts it takes and the arguments it lets a formula leave out", () => {
