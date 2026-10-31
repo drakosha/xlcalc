@@ -11,6 +11,7 @@ import { formatAddress } from '../model.js'
 import { hasCell, parseRange } from '../structure/area.js'
 import { pivotParts } from './area.js'
 import { pivotFrame, placeParts, savedLines, type LineView } from './frame.js'
+import { formOf } from './layout-lines.js'
 
 /** A workbook or `getLayout()`'s, of which the PivotTables are read. */
 type Sheets = { sheets: readonly Pick<SheetInput, 'name' | 'pivotTables'>[] }
@@ -18,6 +19,21 @@ type Sheets = { sheets: readonly Pick<SheetInput, 'name' | 'pivotTables'>[] }
 /** The path of a line's items up to its field `k`, the value fields left out (`value` names them). */
 const pathOf = (fields: readonly PivotAxisField[], line: LineView | undefined, k = (line?.items.length ?? 0) - 1): PivotItemRef[] =>
   (line?.items ?? []).slice(0, k + 1).flatMap((item, j) => (fields[j] === 'values' ? [] : [{ field: fields[j], item }]))
+
+/**
+ * An item's line over its group of an inner field, which shows no value: its field's subtotal goes below the group, or
+ * it has none or several; not a collapsed item's, nor one over value fields alone, nor one in tabular form.
+ */
+function overGroup(t: PivotTable, fields: readonly PivotAxisField[], a: LineView): boolean {
+  const d = a.items.length - 1
+  const f = fields[d]
+  if (a.kind !== 'data' || d < 0 || f === 'values' || !fields.slice(d + 1).some((x) => x !== 'values')) return false
+  const field = t.fields[f]
+  if (formOf(t, f) === 'tabular' || field?.items?.[a.items[d]]?.collapsed) return false
+  // with several value fields under it the subtotals go below too, and the line is still one of values (the set cells-held)
+  const sums = field?.subtotals === undefined ? 1 : field.subtotals.length
+  return field?.subtotalTop === false || sums !== 1
+}
 
 /** What a PivotTable's every cell is, and its cells with filter buttons. */
 function cellsOf(t: PivotTable): PivotCells {
@@ -36,6 +52,7 @@ function cellsOf(t: PivotTable): PivotCells {
   const frame = { ...pivotFrame(t, rowFields, colFields), height: t.location.firstDataRow, width: t.location.firstDataColumn }
   const { height, width, captionRow, labelCol } = frame
   const [top, left] = [x.r1, x.c1]
+  const compact = (t.layout ?? 'compact') === 'compact'
   const rowLines = laid ? savedLines(t.rowLines, rowFields) : []
   const columnLines = laid ? savedLines(t.columnLines, colFields) : []
   // the Filters area and the headers: a field's name, Σ Values', a value field's (`Total` in the classic layout is the grand total's); Row and Column Labels name no field
@@ -43,6 +60,8 @@ function cellsOf(t: PivotTable): PivotCells {
     if (!laid && at.page === undefined) return
     const axis = at.page !== undefined ? 'pages' : part.kind === 'field' && colFields.includes(part.field) ? 'columns' : 'rows'
     if (part.kind === 'page') put(row, col, { kind: 'pageItem', axis, field: part.field })
+    // in a compact PivotTable the names of fields in columns of their own beside Row Labels name none (the set cells-held)
+    else if (part.kind === 'field' && at.page === undefined && compact && axis === 'rows') put(row, col, { kind: 'blank' })
     else if (part.kind === 'field') put(row, col, part.field === 'values' ? { kind: 'valuesField', axis, field: 'values' } : { kind: 'field', axis, field: part.field })
     else if (part.kind === 'value') put(row, col, part.total ? { kind: 'grand', axis: 'columns' } : { kind: 'valueName', value: part.value })
     // Excel's buttons (`pivotButton`): the fields' names and the headers of the rows and columns, the report filters' names
@@ -69,7 +88,10 @@ function cellsOf(t: PivotTable): PivotCells {
       }
       if (a.kind === 'grand') return { kind: 'grand', axis, ...(values.length ? { value: a.value ?? 0 } : {}) }
       if (a.kind === 'blank') return { kind: 'blank' }
-      if (a.kind === 'subtotal') return { kind: 'subtotal', axis, field: fields[d], item: a.items[d], ...value, ...path(d) }
+      // a subtotal's line is its outer items' left of its label in tabular form (the set cells-held), the subtotal's in the others
+      if (a.kind === 'subtotal' && (k === undefined || k >= d || formOf(t, fields[k]) !== 'tabular')) return { kind: 'subtotal', axis, field: fields[d], item: a.items[d], ...value, ...path(d) }
+      // a value field's line on the rows is its name's, its outer items' cells too
+      if (axis === 'rows' && a.kind === 'data' && fields[d] === 'values' && k !== undefined && k < d) return { kind: 'valueName', axis }
       const at = k === undefined || k > d ? d : k
       if (at < 0) return values.length === 1 ? { kind: 'valueName', value: 0 } : { kind: 'blank' }
       const f = fields[at]
@@ -87,9 +109,10 @@ function cellsOf(t: PivotTable): PivotCells {
     columnLines.forEach((a, j) => {
       for (let r = captionRow; r < height; r++) if (r - captionRow < colFields.length || a.kind === 'grand') put(top + r, left + width + j, label(colFields, a, r - captionRow, 'columns'))
     })
-    // the values, of no value field too: each line against each column's, of the value field of either
+    // the values, of no value field too: each line against each column's, of the value field of either; an item's line
+    // over its group, its subtotal below it or none, shows none
     rowLines.forEach((ra, i) => {
-      if (ra.kind === 'blank' || top + height + i > x.r2) return
+      if (ra.kind === 'blank' || top + height + i > x.r2 || overGroup(t, rowFields, ra)) return
       columnLines.forEach((ca, j) => {
         if (left + width + j > x.c2) return
         const rowItems = pathOf(rowFields, ra)

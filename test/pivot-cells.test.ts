@@ -14,7 +14,7 @@ import { openArchive } from '../src/xlsx/zip/read.js'
 import { predictedCells } from '../bench/coverage/pivot/cells-predict.js'
 import type { PivotAnswer, PivotCase, PivotCellKind, PivotSet } from '../bench/coverage/pivot/cases.js'
 
-const SETS = ['cells']
+const SETS = ['cells', 'cells-held']
 
 /** `PivotCellType` by the library's kind. */
 const TYPE: Record<PivotCell['kind'], number> = { value: 0, item: 1, subtotal: 2, grand: 3, valueName: 4, field: 5, pageItem: 6, valuesField: 8, blank: 9 }
