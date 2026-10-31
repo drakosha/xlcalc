@@ -19,6 +19,8 @@ import { itemText } from '../../../src/pivot/values.js'
 import { clockOptions } from '../../../src/result.js'
 import type { Applied } from '../../../src/structure/geometry.js'
 import { stateValues } from '../../../src/structure/values.js'
+import { placedValues } from '../../../src/structure/pivot-values.js'
+import { patched } from '../../../src/structure/pivots.js'
 import type { PivotCase, PivotOp } from './cases.js'
 import { DATA, sourceBook, sourceRange } from './data.js'
 
@@ -91,7 +93,7 @@ export function drive(c: PivotCase): DrivenPhase[] {
       setTable(pt, (t) => {
         const fs = names.map(fieldOf)
         const other = axis === 'rows' ? 'columns' : 'rows'
-        return { ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] }
+        return placedValues({ ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] })
       })
       return laid(k)
     }
@@ -131,19 +133,29 @@ export function drive(c: PivotCase): DrivenPhase[] {
       if (v.base) d.baseField = fieldOf(v.base)
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
       else if (v.item !== undefined && d.baseField !== undefined && itemAt(tableOf(pt), d.baseField, v.item) >= 0) d.baseItem = itemAt(tableOf(pt), d.baseField, v.item)
-      setTable(pt, (t) => ({ ...t, values: [...(t.values ?? []), d] }))
+      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), d] }))
+      return laid(k)
+    }
+    if ('dropValue' in op) {
+      setTable(pt, (t) => placedValues({ ...t, values: (t.values ?? []).filter((d) => d.name !== op.dropValue) }))
+      return laid(k)
+    }
+    if ('valuesOn' in op) {
+      // Σ Values moved as editPivotTable moves it by valuesOnRows and valuesPosition
+      const set = { valuesOnRows: op.valuesOn === 'row' || null, valuesPosition: op.position === undefined ? undefined : op.position - 1 }
+      setTable(pt, (t) => placedValues(patched(t, set), set))
       return laid(k)
     }
     if ('move' in op) {
       const f = fieldOf(op.move)
       setTable(pt, (t) => {
         const off = { ...t, rows: (t.rows ?? []).filter((x) => x !== f), columns: (t.columns ?? []).filter((x) => x !== f), pages: (t.pages ?? []).filter((p) => p.field !== f) }
-        if (op.to === 'hidden') return off
-        if (op.to === 'page') return { ...off, pages: [...off.pages, { field: f }] }
+        if (op.to === 'hidden') return placedValues(off)
+        if (op.to === 'page') return placedValues({ ...off, pages: [...off.pages, { field: f }] })
         const axis = op.to === 'row' ? 'rows' : 'columns'
         const list = [...off[axis]]
         list.splice(op.position === undefined ? list.length : op.position - 1, 0, f)
-        return { ...off, [axis]: list }
+        return placedValues({ ...off, [axis]: list })
       })
       return laid(k)
     }

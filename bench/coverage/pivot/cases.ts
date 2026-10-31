@@ -117,6 +117,8 @@ export type PivotOp = (
   | { pages: string[] }
   | { move: string; to: Axis; position?: number }
   | { value: ValueField }
+  /** A data field by its caption taken off Values (`DataFields(caption).Orientation` hidden). */
+  | { dropValue: string }
   /** The data fields' own field (Σ Values) on rows or columns, at a position. */
   | { valuesOn: 'row' | 'column'; position?: number }
   | { layout: 'compact' | 'outline' | 'tabular' }
