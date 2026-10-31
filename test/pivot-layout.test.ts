@@ -92,7 +92,7 @@ describe('layoutPivot', () => {
     const l = laid({ rows: [0, 1] })
     expect(l.rowLines).toEqual([{ items: [0] }, { items: [0], repeat: 1 }, { items: [1], repeat: 1 }, { items: [1] }, { items: [0], repeat: 1 }, { type: 'grand', items: [0] }])
     expect(l.columnLines).toEqual([{ items: [] }])
-    expect(l.location).toEqual({ range: 'A3:B9', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 })
+    expect(l.location).toEqual({ range: 'A3:B9', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, areas: { table: 'A3:B9', columnHeaders: 'A3:B3', rowLabels: 'A4:A9', data: 'B4:B9' } })
     expect(grid(l)).toEqual([['Row Labels', 'Sum of Amount'], ['North', 3], ['A', 1], ['B', 2], ['South', 4], ['A', 4], ['Grand Total', 7]])
     expect(l.cells.find((c) => c.row === 4 && c.col === 0)?.indent).toBe(1)
   })
@@ -128,7 +128,7 @@ describe('layoutPivot', () => {
   it('lays the columns out under their caption, subtotals after each group, the grand total at the right', () => {
     const l = laid({ rows: [3], columns: [0, 1] })
     expect(l.columnLines).toEqual([{ items: [0, 0] }, { items: [1], repeat: 1 }, { type: 'subtotal', items: [0] }, { items: [1, 0] }, { type: 'subtotal', items: [1] }, { type: 'grand', items: [0] }])
-    expect(l.location).toEqual({ range: 'A3:G8', firstHeaderRow: 1, firstDataRow: 3, firstDataColumn: 1 })
+    expect(l.location).toEqual({ range: 'A3:G8', firstHeaderRow: 1, firstDataRow: 3, firstDataColumn: 1, areas: { table: 'A3:G8', columnHeaders: 'A3:G5', rowLabels: 'A6:A8', data: 'B6:G8' } })
     expect(grid(l)).toEqual([
       ['Sum of Amount', 'Column Labels', '', '', '', '', ''],
       ['', 'North', '', 'North Total', 'South', 'South Total', 'Grand Total'],
@@ -145,21 +145,21 @@ describe('layoutPivot', () => {
     expect(rows.rowLines).toEqual([{ items: [0] }, { items: [0], repeat: 1 }, { items: [1], repeat: 1, value: 1 }, { items: [1] }, { items: [0], repeat: 1 }, { items: [1], repeat: 1, value: 1 }, { type: 'grand', items: [0] }, { type: 'grand', items: [0], value: 1 }])
     expect(grid(rows)).toEqual([['Row Labels', ''], ['North', ''], ['Sum of Amount', 3], ['Count of Amount', 2], ['South', ''], ['Sum of Amount', 4], ['Count of Amount', 1], ['Total Sum of Amount', 7], ['Total Count of Amount', 3]])
     const cols = laid({ rows: [0], columns: ['values'], values })
-    expect(cols.location).toEqual({ range: 'A3:C6', firstHeaderRow: 0, firstDataRow: 1, firstDataColumn: 1 })
+    expect(cols.location).toEqual({ range: 'A3:C6', firstHeaderRow: 0, firstDataRow: 1, firstDataColumn: 1, areas: { table: 'A3:C6', columnHeaders: 'A3:C3', rowLabels: 'A4:A6', data: 'B4:C6' } })
     expect(grid(cols)).toEqual([['Row Labels', 'Sum of Amount', 'Count of Amount'], ['North', 3, 2], ['South', 4, 1], ['Grand Total', 7, 3]])
     // the Values row shown: a caption row over the value fields' names
     const shown = laid({ rows: [0], columns: ['values'], values, valuesRow: true })
-    expect(shown.location).toEqual({ range: 'A3:C7', firstHeaderRow: 1, firstDataRow: 2, firstDataColumn: 1 })
+    expect(shown.location).toEqual({ range: 'A3:C7', firstHeaderRow: 1, firstDataRow: 2, firstDataColumn: 1, areas: { table: 'A3:C7', columnHeaders: 'A3:C4', rowLabels: 'A5:A7', data: 'B5:C7' } })
     expect(grid(shown).slice(0, 2)).toEqual([['', 'Column Labels', ''], ['Row Labels', 'Sum of Amount', 'Count of Amount']])
   })
 
   it('lays the Filters area out above the table, moving it down when the rows above are too few', () => {
     const l = laid({ rows: [0], pages: [{ field: 1 }, { field: 3, item: 1 }], location: { range: 'A1:B4', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 } })
-    expect(l.location).toEqual({ range: 'A4:B7', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 2, pageColumns: 1 })
+    expect(l.location).toEqual({ range: 'A4:B7', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 2, pageColumns: 1, areas: { page: 'A1:B2', table: 'A4:B7', columnHeaders: 'A4:B4', rowLabels: 'A5:A7', data: 'B5:B7' } })
     expect(l.area).toEqual({ r1: 0, c1: 0, r2: 6, c2: 1 })
     expect(grid(l).slice(0, 3)).toEqual([['Product', '(All)'], ['Note', '(blank)'], ['', '']])
     const across = laid({ rows: [0], pages: [{ field: 1 }, { field: 3 }], pagesAcrossFirst: true, location: { range: 'A5:B8', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 } })
-    expect(across.location).toEqual({ range: 'A5:B8', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 1, pageColumns: 2 })
+    expect(across.location).toEqual({ range: 'A5:B8', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 1, pageColumns: 2, areas: { page: 'A3:E3', table: 'A5:B8', columnHeaders: 'A5:B5', rowLabels: 'A6:A8', data: 'B6:B8' } })
     expect(grid(across)[0]).toEqual(['Product', '(All)', '', 'Note', '(All)'])
   })
 
@@ -173,7 +173,7 @@ describe('layoutPivot', () => {
 
   it('keeps the place of the drop zones for a PivotTable with no field', () => {
     const l = laid({ values: [] })
-    expect(l.location).toEqual({ range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 })
+    expect(l.location).toEqual({ range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0, areas: { table: 'A3:C20', data: 'A4:C20' } })
     expect(l.cells).toEqual([])
   })
 })

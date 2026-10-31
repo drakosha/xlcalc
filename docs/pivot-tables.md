@@ -56,6 +56,18 @@ The caches are the workbook's, `BookInput.pivotCaches`, each by its `id`; the Pi
 - `PivotTable`: its place (`location`: the range without the Filters area, where its headers and values begin), one `PivotField` per cache field (items with what is hidden and collapsed, subtotals, form, sorting, repeated labels, a blank line after each item), the fields on rows, columns and the Filters area, the value fields (`PivotDataField`: the function, Show Values As with its base field and item, the number format, the name), filters by label, value, Top 10 and date, grand totals, the form, captions, what errors and empty cells show, the style, the formats of its areas, and the saved layout: `rowLines` and `columnLines`, each line of the rows and of the columns as Excel laid it out.
 - A PivotTable's conditional format stays among its sheet's rules, with `pivot` naming the PivotTable and the areas it applies to.
 
+A PivotTable's areas come with its place as ranges, so that a host selects them, outlines them or tells which part a cell is in without working them out from `firstDataRow` and the rest (`location.areas`):
+
+| Field | Area |
+| --- | --- |
+| `page` | The Filters area above the table, as wide as its filters, without the blank row under it (Excel's `PageRange`). |
+| `table` | The table without its Filters area, the same as `range` (Excel's `TableRange1`). |
+| `columnHeaders` | The table's rows above its values: the value fields' and the column fields' headers and the columns' labels. |
+| `rowLabels` | The labels of the rows, left of the values, down to the grand total. |
+| `data` | The values with their totals (Excel's `DataBodyRange`). |
+
+For the PivotTable at A3 with Region on rows, Flag on columns and Sum of Qty, under the filter Product in A1:B1, the areas are `{ page: 'A1:B1', table: 'A3:D10', columnHeaders: 'A3:D4', rowLabels: 'A5:A10', data: 'B5:D10' }`. Each is worked out from the rest of the place on every PivotTable the library gives (read from a file, laid out, moved, and in every workbook a session or an operation takes), and ignored on input. `data` is always there, as Excel gives it: without a value field it is the cells under the header rows (the labels themselves with no field on columns, the columns' labels with no field on rows, the drop zones of an empty PivotTable, `A4:C20`). `rowLabels` needs a field on rows; one with no field at all, one not laid out (added without `xlcalc/pivot`) and one shrunk to its top-left cell (`#SPILL!`) have no `columnHeaders` or `rowLabels`.
+
 `rows` and `columns` hold `values` where several value fields lie along that axis (Σ Values). Fields and items are named by index: a field by its place in the cache, an item by its place in its field (`PivotFieldItem.item` into the cache field's items).
 
 A sheet renamed in a session is renamed in the sources of the caches and in the PivotTables that slicers and timelines name.
@@ -272,15 +284,30 @@ session.editStructure({ op: 'movePivotTable', sheet: 'Report', pivot: 'PivotTabl
 
 With `xlcalc/pivot` registered, a new PivotTable is refreshed from its source and laid out, and a changed or moved one is laid out again from its cache, as Excel does without a refresh; Change Data Source refreshes it from the new source. Without it, the cells stay and the cache is marked `stale` ([The PivotTable engine](#the-pivottable-engine)).
 
-The other operations of the structure treat a PivotTable as Excel does: rows and columns inserted or deleted before it, a move of all its cells and a sheet renamed move it; an operation that would cut it (rows inserted into it, part of it deleted or moved, a paste, a fill, a merge or a table over part of it) is refused (`pivot`); all its cells deleted, or its sheet, delete it, and the slicers and timelines over it keep their caches, naming it no longer. A source by range moves with its cells as a reference does, and stays as it was when they or their sheet are deleted.
+The other operations of the structure treat a PivotTable as Excel does: rows and columns inserted or deleted before it, a move of all its cells and a sheet renamed move it; a fill out of it writes the cells beyond it; an operation that would cut it (rows inserted into it, part of it deleted or moved, a paste, a fill, a merge or a table over part of it) is refused (`pivot`, with Excel's alert as `reason`, [Typing into a PivotTable](#typing-into-a-pivottable)); all its cells deleted, or its sheet, delete it, and the slicers and timelines over it keep their caches, naming it no longer. A source by range moves with its cells as a reference does, and stays as it was when they or their sheet are deleted.
 
 ## Typing into a PivotTable
 
-A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells` throws an `InputError`, and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table, and the cells beside the filters, take anything, which a refresh does not clear.
+A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells`, `replaceCells`, `clearCells`, `applyChanges` and `validateEntry` throw a `PivotInputError` (an `InputError`), and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table, and the cells beside the filters, take anything, which a refresh does not clear.
+
+Both name Excel's alert in `reason`, so that a host shows Excel's own words:
+
+| `reason` | Excel's alert | When |
+| --- | --- | --- |
+| `part` | We can't change this part of the PivotTable. | a value or text typed over a value or an empty cell of the area |
+| `formula` | Cannot enter a formula for an item or field name in a PivotTable report. | a formula over its cells, a label or a value |
+| `affect` | We can't make this change for the selected cells because it will affect a PivotTable. | a cell cleared; a paste of text, a copy, a cut, a fill or a merge onto its cells; texts typed into several of its cells at once (`setCellTexts`); rows or columns inserted or deleted through it, the blank row under its filters too; part of it cut away |
+
+The error carries the cell too (`sheet`, `cell`), and so does a refusal of `pasteText`, `setCellTexts` and `fillCellText`. The other refusals over a PivotTable (a name already taken, an item the field does not have, a refresh that cannot be made, a table over it, which Excel refuses with an alert of its own) have no `reason`.
 
 ```js
 const r = session.setCellText('Pivot', 'B4', '100')
-// r.ok === false, r.code === 'pivot'
+// r.ok === false, r.code === 'pivot', r.reason === 'part'
+try {
+  session.clearCells([{ sheet: 'Pivot', range: 'B4:B5' }], 'contents')
+} catch (e) {
+  // e instanceof PivotInputError, e.reason === 'affect', e.cell === 'B4'
+}
 ```
 
 With `xlcalc/pivot` registered, text typed over a label names it, as in Excel, through `editPivotTable`:
@@ -293,6 +320,14 @@ With `xlcalc/pivot` registered, text typed over a label names it, as in Excel, t
 - over a Filters area's item it shows that item (`(All)` shows all of them); a text that names no item is rejected.
 
 A formula, a cleared label, and text over a value or over an empty cell of the area are rejected, with Excel's words.
+
+Entered into several cells, text goes as Excel takes it:
+
+- `setCellTexts` with one text over a label names it as `setCellText` does; with several over the PivotTable it is refused (`affect`), as a paste is;
+- `fillCellText` (Ctrl+Enter over a selection) whose active cell is in the PivotTable is an entry into that cell alone: over a label it names it and leaves the other cells of the range as they are, over a value it is refused (`part`), a formula too (`formula`);
+- `pasteText` over the PivotTable is refused (`affect`), even where it pastes what the cells show.
+
+Contents cleared over every cell of a PivotTable, its table and its Filters area (`clearCells` with `contents` or `all`, the blank row between them needed or not), delete it, as Excel's Delete does: every PivotTable the ranges cover whole goes, and the ranges clear their cells and the others in one step of undo; the blank row keeps what the ranges leave of it. A clear that covers only the table, only the filters or part of either is refused (`affect`) before anything is deleted, and clearing the formats leaves the PivotTable.
 
 ## Grouping
 
@@ -386,5 +421,7 @@ Grouping and calculated fields. Excel for Windows grouped and calculated the Piv
 Slicers and timelines. Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`); each workbook Excel saved holds the choice as the session writes it. Deleting a slicer, a timeline, and the sheet of a PivotTable they filter (the set slicer-delete, 5 cases), and refreshing the workbooks saved after (slicer-file), gave the rules of deletion above. The held-out set slicer-held over other rows (16 cases) held 47 of 50 reads as predicted; its three misses are the rules of disconnecting and of no cross filtering above.
 
 Writing. Excel for Windows opened the files `writeXlsx` wrote of every book of the sets basic, layout, filter, sort and slicer (the books read and written again), and the files `writeKept` wrote after each entry of the set edit made by a session over the book of its first step (234 files): each PivotTable read at once, without a refresh, shows the cells, place and values Excel showed for its own book, and after a refresh the cells Excel's own book shows after one; Excel saved the slicers and timelines read back as written. The held-out sets of layout, filter and sort, predicted before Excel ran them, matched 31 of 37, 57 of 61 and 27 of 27; their misses are rules now.
+
+Areas and alerts. Excel for Windows gave the ranges of 82 PivotTables of the set areas (every form, without column fields, without row fields, value fields alone, none, no field at all, report filters wrapped in columns and across, and every book of the sets layout and corpus-shapes as it saved them) and of 153 of the held-out set areas-held (three row fields in each form, value fields on rows beside column fields, column or row fields alone, four report filters, and every book of basic, filter and sort): `PivotLocation.areas` gives `TableRange1`, `PageRange` and `DataBodyRange`, its row labels `RowRange` without the header row, its header rows those above `DataBodyRange` (`test/pivot-areas.test.ts`). Excel answered 72 changes of a PivotTable's cells (the sets alerts, alerts-clear and the held-out alerts-held): rows and columns through it, copies, cuts, Ctrl+V, fills, merges and a table onto it, entries into a selection, values set and cleared, text pasted, and clears of all of it, part of it, with cells around it and of two PivotTables. Each refusal has the alert Excel showed, each change Excel took gives its cells (`test/pivot-alerts.test.ts`). The alerts of Ctrl+V, Delete, a deletion of rows through it, a number typed over a value and a formula over a label were seen in Excel's own window as well.
 
 [Development](development.md#pivottables) has the details.

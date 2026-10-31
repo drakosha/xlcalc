@@ -70,6 +70,9 @@ export interface TableProps {
   mergeLabels?: boolean
   /** Classic PivotTable layout (fields dragged in the grid, `InGridDropZones`). */
   classic?: boolean
+  /** Report filter fields per column (or per row, across first): `PageFieldWrapCount`; across then down: `PageFieldOrder`. */
+  pagesWrap?: number
+  pagesAcross?: boolean
 }
 
 /** A field's settings. */
@@ -168,6 +171,18 @@ export type PivotOp = (
   | { resize: string; range: string }
   /** Every pivot table of the book refreshed (`RefreshTable` each). */
   | { refreshAll: true }
+  /**
+   * An operation of the structure over `P` (`Struct` of `xl.ps1`): rows or columns inserted or deleted at `range`, the
+   * range copied or cut (`moveRange`) to `to` on the sheet `target`, filled down over `to` (`FillDown`), merged, made a
+   * table named `target`.
+   */
+  | { struct: 'insertRows' | 'deleteRows' | 'insertColumns' | 'deleteColumns' | 'copyRange' | 'moveRange' | 'fillDown' | 'mergeCells' | 'addTable'; range?: string; to?: string; target?: string; sheet?: string }
+  /** Text put on the clipboard and pasted at a cell of `P` (`Set-Clipboard`, `Worksheet.Paste`). */
+  | { paste: string; at: string }
+  /** A range copied (`Range.Copy`, `D!A2`) and pasted at a cell of `P` with it selected (`Worksheet.Paste`), as Ctrl+C and Ctrl+V. */
+  | { copyPaste: string; at: string }
+  /** A range cleared (`P!A1:D10`, areas apart by commas): everything (`Range.Clear`) or its formats (`ClearFormats`). */
+  | { clear: string; what: 'all' | 'formats' }
   /** The end of a phase: each pivot table read, the cells watched, a copy of the book saved. */
   | { read: true }
   /**
@@ -199,7 +214,11 @@ export interface PivotSet {
   buildPivotCases(): PivotCase[]
 }
 
-/** A pivot table's area as Excel showed it: `TableRange1`, `TableRange2` (with the page fields), `DataBodyRange` (empty without one), and each cell of `TableRange2` by rows: its value, its text and its number format. */
+/**
+ * A pivot table's area as Excel showed it: `TableRange1`, `TableRange2` (with the page fields), `DataBodyRange` (empty
+ * without one), and each cell of `TableRange2` by rows: its value, its text and its number format; in answers recorded
+ * since the set `areas`, also `PageRange`, `RowRange` and `ColumnRange` (empty without one).
+ */
 export interface PivotArea {
   table: string
   area: string
@@ -207,6 +226,9 @@ export interface PivotArea {
   values: CellValue[][]
   text: string[][]
   formats: string[][]
+  page?: string
+  rows?: string
+  columns?: string
 }
 
 /** A slicer's items: name, selected, has data. */

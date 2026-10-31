@@ -2,9 +2,9 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, FunctionGroupName, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, FunctionGroupName, PivotRefusalReason, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
-import { InputError } from '../input-error.js'
+import { InputError, PivotInputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
 import type { HistoryData } from '../session/undo.js'
 import type { Sent } from './pack.js'
@@ -82,6 +82,8 @@ export interface ErrorData {
   size?: number
   cell?: CellRef
   cause?: unknown
+  /** A `PivotInputError`'s alert. */
+  reason?: PivotRefusalReason
 }
 
 /** A call outside the workbook as a thread sends it: without its signal. */
@@ -114,6 +116,7 @@ const plain = (v: unknown): unknown => {
 
 export function toData(e: unknown): ErrorData {
   if (e instanceof CalcError) return { name: e.name, message: e.message, code: e.code, limit: e.limit, max: e.max, size: e.size, cell: e.cell, cause: plain(e.cause) }
+  if (e instanceof PivotInputError) return { name: e.name, message: e.message, path: e.path, reason: e.reason, cell: { sheet: e.sheet, cell: e.cell } }
   if (e instanceof InputError) return { name: e.name, message: e.message, path: e.path }
   if (e instanceof Error) return { name: e.name, message: e.message }
   return { name: 'Error', message: String(e) }
@@ -124,6 +127,7 @@ export function fromData(d: ErrorData): Error {
     const { limit, max, size, cell, cause } = d
     return new CalcError(d.code as CalcError['code'], d.message, { limit, max, size, cell, cause })
   }
+  if (d.name === 'PivotInputError' && d.path !== undefined && d.reason && d.cell) return new PivotInputError(d.path, d.message.slice(d.path.length + 2), d.reason, d.cell.sheet, d.cell.cell)
   if (d.name === 'InputError' && d.path !== undefined) return new InputError(d.path, d.message.slice(d.path.length + 2))
   const e = new Error(d.message)
   e.name = d.name

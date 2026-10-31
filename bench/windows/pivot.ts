@@ -62,6 +62,8 @@ function tableProps(t: TableProps): Props {
   if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
   if (t.valuesRow !== undefined) p.push(['ShowValuesRow', t.valuesRow])
   if (t.classic !== undefined) p.push(['InGridDropZones', t.classic])
+  if (t.pagesAcross !== undefined) p.push(['PageFieldOrder', t.pagesAcross ? 2 : 1])
+  if (t.pagesWrap !== undefined) p.push(['PageFieldWrapCount', t.pagesWrap])
   return p
 }
 
@@ -197,6 +199,13 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     else if ('refreshAll' in o) add(role, { do: 'pivot', op: 'refreshAll' })
     else if ('define' in o) add(role, { do: 'table', line: ['name', '', o.define, `=${o.ref}`].join('\t') })
     else if ('resize' in o) add(role, { do: 'pivot', op: 'resize', table: o.resize, range: o.range })
+    else if ('struct' in o) add(role, { do: 'struct', op: o.struct, sheet: o.sheet ?? 'P', range: o.range, target: o.target ?? 'P', to: o.to })
+    else if ('paste' in o) add(role, { do: 'paste', sheet: 'P', at: o.at, text: o.paste })
+    else if ('copyPaste' in o) add(role, { do: 'pivot', op: 'copyPaste', from: o.copyPaste, at: o.at })
+    else if ('clear' in o) {
+      const [sheet, range] = o.clear.split('!')
+      add(role, { do: 'clear', sheet, range, what: o.what })
+    }
     else if ('external' in o) add({ external: Object.keys(o.cells) }, { do: 'pivot', op: 'external', source: Buffer.from(book(o.external)).toString('base64'), cells: o.cells })
   })
   phase(true)
@@ -213,8 +222,9 @@ const errorOf = (x: unknown): string | undefined => (x && typeof x === 'object' 
 
 /** A pivot table's area as `pivot.ps1` reads it. */
 function areaOf(got: unknown): PivotArea {
-  const [table, area, body, values, text, formats] = got as [string, string, string, WinCell[][], string[][], string[][]]
-  return { table, area, body, values: values.map((r) => r.map(cellValue)), text, formats }
+  const [table, area, body, values, text, formats, ...ranges] = got as [string, string, string, WinCell[][], string[][], string[][], ...string[]]
+  const [page, rows, columns] = ranges
+  return { table, area, body, values: values.map((r) => r.map(cellValue)), text, formats, ...(ranges.length ? { page, rows, columns } : {}) }
 }
 
 /** A case's answer from its steps' answers, phase by phase. */

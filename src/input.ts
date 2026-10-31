@@ -24,6 +24,7 @@ import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from '
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
 import { checkPivots } from './input/pivot.js'
+import { placedPivots } from './pivot/area.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
@@ -291,7 +292,8 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   const out = bookTaken(book as unknown as BookInput, taken)
   const sheetsTaken = out.sheets.map((s, i) => (looked && !hasLooks(s) ? s : looksTaken(s, alone[i] ?? [])))
   sheetsTaken.forEach((s, i) => s.cells === (book.sheets as BookInput['sheets'])[i].cells && keys?.set(s.cells, listed[i]))
-  return sheetsTaken.every((s, i) => s === out.sheets[i]) ? out : { ...out, sheets: sheetsTaken }
+  // a PivotTable's areas come from its place, not from the input
+  return placedPivots(sheetsTaken.every((s, i) => s === out.sheets[i]) ? out : { ...out, sheets: sheetsTaken })
 }
 
 /** A sheet's looks: rectangles in A1 style (`B2:D9`, `B:D`, `2:9`, `B2`), each with a style of the book and a number format, both optional. */

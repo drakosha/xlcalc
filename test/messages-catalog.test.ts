@@ -127,7 +127,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   pivotOverPivot: [{ pivot: 'Сводная1', other: 'Сводная2' }],
   pivotOverTable: [{ pivot: 'Сводная1', table: 'Т' }],
   pivotPart: [{ sheet: 'Лист', cell: 'B4', pivot: 'Сводная1' }],
-  pivotClear: [{ sheet: 'Лист', cell: 'A5', pivot: 'Сводная1' }],
+  pivotAffect: [{ sheet: 'Лист', cell: 'A5', pivot: 'Сводная1' }],
   pivotFormula: [{ sheet: 'Лист', cell: 'A5', pivot: 'Сводная1' }],
   pivotNameTaken: [{ name: 'Qty' }],
   pivotNotItem: [{ item: 'Kiwi' }],

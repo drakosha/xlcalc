@@ -368,7 +368,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pivotOverPivot: { pivot: string; other: string }
   pivotOverTable: { pivot: string; table: string }
   pivotPart: { sheet: string; cell: string; pivot: string }
-  pivotClear: { sheet: string; cell: string; pivot: string }
+  pivotAffect: { sheet: string; cell: string; pivot: string }
   pivotFormula: { sheet: string; cell: string; pivot: string }
   pivotNameTaken: { name: string }
   pivotNotItem: { item: string }
@@ -417,7 +417,7 @@ export type EditKey =
 /** The keys of an edit's messages about PivotTables, slicers and timelines, whose English text stays out of the bundles of the xlsx subpaths (`pivot-messages.ts`). */
 export type PivotEditKey =
   | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
-  | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
+  | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotAffect' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
   | 'pivotCantGroup' | 'pivotNotGrouped' | 'pivotGroupedItems' | 'pivotItemsAverage' | 'pivotFormulaRefs' | 'pivotFormulaBad' | 'pivotItemTaken'
   | 'slicerField' | 'slicerNameTaken' | 'timelineField'
   | 'pivotCut' | 'pivotTableNameTaken' | 'pivotNameEmpty' | 'pivotSourceRows'

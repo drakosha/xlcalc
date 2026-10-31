@@ -39,6 +39,7 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { placedPivots } from '../pivot/area.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
@@ -146,8 +147,11 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
     if (refused) return refused
     const both = r.ok ? linesMoved(input, r) : r
     const out = both.ok && carried ? carried.after(both) : both
+    if (!out.ok) return out
+    // the PivotTables it moved or laid out with their areas from their new places
+    const book2 = placedPivots(out.book, input)
     // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
-    return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
+    return { ...out, book: loose.size ? { ...book2, sheets: book2.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } : book2 }
   })
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {
