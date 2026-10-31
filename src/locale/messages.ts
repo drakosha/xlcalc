@@ -2,13 +2,12 @@
  * Messages for people, in the language of a locale: why a formula does not read, why Excel refuses a structure
  * operation, the words of `explain`, what an xlsx file read or written lost. Code makes a message as a key with its
  * parameters (`Message`); the locale's `messages` write it (`Messages`), and a locale without its own text of a message
- * takes the English one: en-US's (`EN_MESSAGES`, `EDIT_MESSAGES`) for the engine's, the subpath's (`src/xlsx/messages.ts`) for the
+ * takes the English one: en-US's (`EN_MESSAGES`, `EDIT_MESSAGES`, `PIVOT_MESSAGES`) for the engine's, the subpath's (`src/xlsx/messages.ts`) for the
  * issues of xlsx. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation,
  * an issue of xlsx.
  */
 import type { CellValue } from '../contract.js'
 import { errorIn } from '../syntax/errors.js'
-import { EDIT_MESSAGES } from './edit-messages.js'
 import { english } from './english.js'
 import { LOCALES, localeOf } from './registry.js'
 import type { Locale, TableItem } from './types.js'
@@ -74,13 +73,12 @@ export interface XlsxMessageParams {
   iterationChange: { change: string }
   workbookProtection: object
   externalLinks: object
-  /** @deprecated Never given: `readXlsx` reads PivotTables (`SheetInput.pivotTables`); what it holds only as stored has its own messages. */
-  pivotTables: object
   pivotCacheMissing: object
   pivotSourceHeld: { source: 'external' | 'dataModel' | 'consolidation' | 'scenario' }
   pivotOlap: object
   pivotChartFormats: object
   pivotNotWritten: object
+  pivotSourceLinked: { sheet: string }
   pivotUnread: { detail: string }
   macros: object
   connections: object
@@ -404,7 +402,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
 
 export type MessageKey = keyof MessageParams
 
-/** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`, and `EDIT_MESSAGES` for `EditKey`). */
+/** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`, and `EDIT_MESSAGES` and `PIVOT_MESSAGES` for `EditKey`). */
 export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams | keyof KeptMessageParams | keyof CsvMessageParams>
 
 /** The keys of the messages only an edit of a book gives (a structure operation, typing into a cell, `explain`), whose English text stays out of `compute`'s bundle. */
@@ -412,13 +410,17 @@ export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
   | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
+  | PivotEditKey
+  | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
+  | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
+
+/** The keys of an edit's messages about PivotTables, slicers and timelines, whose English text stays out of the bundles of the xlsx subpaths (`pivot-messages.ts`). */
+export type PivotEditKey =
   | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
   | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
   | 'pivotCantGroup' | 'pivotNotGrouped' | 'pivotGroupedItems' | 'pivotItemsAverage' | 'pivotFormulaRefs' | 'pivotFormulaBad' | 'pivotItemTaken'
   | 'slicerField' | 'slicerNameTaken' | 'timelineField'
   | 'pivotCut' | 'pivotTableNameTaken' | 'pivotNameEmpty' | 'pivotSourceRows'
-  | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
-  | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 
 /** The keys of the engine's other messages: of formula text, names, input and outlines. */
 export type CoreKey = Exclude<EngineKey, EditKey>
@@ -429,7 +431,7 @@ export type CoreKey = Exclude<EngineKey, EditKey>
  */
 export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, precisionAsDisplayed: 0,
-  iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, pivotCacheMissing: 0, pivotSourceHeld: 0, pivotOlap: 0, pivotChartFormats: 0, pivotNotWritten: 0, pivotUnread: 0, macros: 0, connections: 0, defaultFont: 0,
+  iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotCacheMissing: 0, pivotSourceHeld: 0, pivotOlap: 0, pivotChartFormats: 0, pivotNotWritten: 0, pivotSourceLinked: 0, pivotUnread: 0, macros: 0, connections: 0, defaultFont: 0,
   sheetKind: 0, sheetPartMissing: 0, sheetNameRepaired: 0, stringsOpen: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
   mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, autoFilterRange: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, sheetPassword: 0, protectedRanges: 0, drawings: 0, sparklines: 0,
   printSettings: 0, defaultWidth: 0, errorTyped: 0, sheetDataOpen: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,
@@ -481,8 +483,11 @@ export type Messages = { readonly [K in MessageKey]: (p: MessageParams[K], w: Wo
 /** en-US's messages of the engine, which read nothing of a locale: what every locale falls back to; `EditMessages` the edits'. */
 export type EnglishMessages = { readonly [K in CoreKey]: (p: MessageParams[K]) => string }
 
-/** en-US's messages of an edit of a book (`EditKey`). */
-export type EditMessages = { readonly [K in EditKey]: (p: MessageParams[K]) => string }
+/** en-US's messages of an edit of a book (`EditKey`) but those of PivotTables (`PivotMessages`). */
+export type EditMessages = { readonly [K in Exclude<EditKey, PivotEditKey>]: (p: MessageParams[K]) => string }
+
+/** en-US's messages of an edit of PivotTables, slicers and timelines (`PivotEditKey`). */
+export type PivotMessages = { readonly [K in PivotEditKey]: (p: MessageParams[K]) => string }
 
 function wordsOf(loc: Locale, formula: (text: string) => string): Words {
   // every digit of the double, as JSON has them, with the exponent a formula writes (`1E+21`, not `1e+21`)
@@ -513,8 +518,19 @@ export function ownText<K extends MessageKey>(where: string | Locale | undefined
   return own?.(m, wordsOf(loc, formula))
 }
 
-/** A message of the engine in the language of a locale (`ownText`), else in English. */
-export function say<K extends EngineKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula?: (text: string) => string): string {
-  const edit = Object.hasOwn(EDIT_MESSAGES, m.key) ? (EDIT_MESSAGES[m.key as EditKey] as (p: typeof m) => string) : undefined
-  return ownText(where, m, formula) ?? (edit ? edit(m) : english(m as Message))
+/**
+ * A message of the engine other than an edit's in the language of a locale (`ownText`), else in English; `sayEdit` an
+ * edit's too and `sayPivot` an edit's of PivotTables too, whose English text stays out of the bundles that do not need it.
+ */
+export function say<K extends CoreKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula?: (text: string) => string): string {
+  return ownText(where, m, formula) ?? english(m)
 }
+
+/** A `say` of the messages of keys `K`. */
+export type Say<K extends EngineKey> = <P extends K>(where: string | Locale | undefined, m: { key: P } & MessageParams[P], formula?: (text: string) => string) => string
+
+/** `say` of the messages of `table` too: theirs in the language of a locale (`ownText`), else the table's English; the others by `next`. */
+export const sayBy =
+  <T extends EngineKey, N extends EngineKey>(table: { readonly [P in T]: (p: MessageParams[P]) => string }, next: Say<N>): Say<T | N> =>
+  (where, m, formula) =>
+    Object.hasOwn(table, m.key) ? (ownText(where, m, formula) ?? (table[m.key as T] as (p: typeof m) => string)(m)) : next(where, m as { key: N } & MessageParams[N], formula)

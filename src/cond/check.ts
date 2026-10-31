@@ -5,7 +5,7 @@
  */
 import type { ConditionalFormat, IconSetName } from '../contract.js'
 import { InputError } from '../input-error.js'
-import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, given, object, onlyKeys, type Check } from '../input/basic.js'
 import { checkRange } from '../input/range.js'
 import { checkBorder, checkColor, checkFill, checkFont, checkFormat, type Given } from '../input/styles.js'
 
@@ -33,7 +33,9 @@ export const ICON_SETS: Record<IconSetName, number> = {
   '5Boxes': 5,
 }
 
-export const CELL_IS = ['equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual', 'between', 'notBetween'] as const
+/** The comparisons of a cell's value, which data validation's operators share. */
+export const COMPARISONS = ['equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual'] as const
+export const CELL_IS = [...COMPARISONS, 'between', 'notBetween'] as const
 export const PERIODS = ['today', 'yesterday', 'tomorrow', 'last7Days', 'thisWeek', 'lastWeek', 'nextWeek', 'thisMonth', 'lastMonth', 'nextMonth'] as const
 export const VALUE_TYPES = ['min', 'max', 'num', 'percent', 'percentile', 'formula', 'autoMin', 'autoMax']
 export const WITH_VALUE: ReadonlySet<string> = new Set(['num', 'percent', 'percentile', 'formula'])
@@ -66,15 +68,15 @@ const FIELDS: Record<ConditionalFormat['type'], string[]> = {
 export const STYLED: ReadonlySet<string> = new Set(Object.entries(FIELDS).flatMap(([t, fields]) => (fields.includes('style') ? [t] : [])))
 
 /** A field of a conditional style is given unless undefined, as a cell style's is (`checkStyle` of `input.ts`). */
-const given: Given = (o, k) => o[k] !== undefined
+const isGiven: Given = (o, k) => o[k] !== undefined
 
 /** A rule's style: a cell's style's font, fill and border, without a font's name and size (a dxf has none) and with a number format. */
 function checkStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat'])
-  if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, false)
-  if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC7CE')
-  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
+  if (isGiven(s, 'font')) checkFont(s.font, `${p}.font`, isGiven, false)
+  if (isGiven(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC7CE')
+  if (isGiven(s, 'border')) checkBorder(s.border, `${p}.border`, isGiven)
   if (s.numberFormat !== undefined) checkFormat(s.numberFormat, `${p}.numberFormat`)
 }
 
@@ -135,10 +137,10 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
       break
     case 'top10':
       checkNumber(o.rank, `${p}.rank`, 1, o.percent === true ? 100 : 1000, true)
-      for (const k of ['percent', 'bottom']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
+      given(o, p, { percent: checkBoolean, bottom: checkBoolean })
       break
     case 'aboveAverage':
-      for (const k of ['below', 'equal']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
+      given(o, p, { below: checkBoolean, equal: checkBoolean })
       if (o.stdDev !== undefined) checkNumber(o.stdDev, `${p}.stdDev`, 1, 3, true)
       if (o.stdDev !== undefined && o.equal === true) throw new InputError(`${p}.equal`, 'a rule over standard deviations takes no equal (Excel keeps one or the other)')
       break
@@ -158,11 +160,14 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
       checkValue(o.min, `${p}.min`)
       checkValue(o.max, `${p}.max`)
       checkColor(o.color, `${p}.color`)
-      for (const k of ['showValue', 'gradient', 'excel2007']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
-      for (const k of ['minLength', 'maxLength']) if (o[k] !== undefined) checkNumber(o[k], `${p}.${k}`, 0, 100, true)
+      given(o, p, { showValue: checkBoolean, gradient: checkBoolean, excel2007: checkBoolean })
+      {
+        const length: Check = (v, q) => checkNumber(v, q, 0, 100, true)
+        given(o, p, { minLength: length, maxLength: length })
+      }
       if ((o.minLength as number | undefined) !== undefined && (o.maxLength as number | undefined) !== undefined && (o.minLength as number) > (o.maxLength as number))
         throw new InputError(`${p}.minLength`, `the shortest bar (${o.minLength}) is longer than the longest (${o.maxLength})`)
-      for (const k of ['border', 'negativeColor', 'negativeBorder', 'axisColor']) if (o[k] !== undefined) checkColor(o[k], `${p}.${k}`)
+      given(o, p, { border: checkColor, negativeColor: checkColor, negativeBorder: checkColor, axisColor: checkColor })
       if (o.direction !== undefined) checkOneOf(o.direction, `${p}.direction`, ['leftToRight', 'rightToLeft'])
       if (o.axis !== undefined) checkOneOf(o.axis, `${p}.axis`, ['middle', 'none'])
       break
@@ -179,7 +184,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
         if (pt.gte !== undefined) checkBoolean(pt.gte, `${pp}.gte`)
         if (pt.icon !== undefined) checkIcon(pt.icon, `${pp}.icon`)
       })
-      for (const k of ['reverse', 'showValue']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
+      given(o, p, { reverse: checkBoolean, showValue: checkBoolean })
       break
     }
   }

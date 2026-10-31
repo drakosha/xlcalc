@@ -11,12 +11,14 @@ import { checkSheetOf } from '../input.js'
 import { checkString, object, onlyKeys } from '../input/basic.js'
 import { pivotRefs } from '../input/pivot-refs.js'
 import { checkAddress } from '../input/range.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { pivotRefresh } from '../pivot/hook.js'
 import { valueFieldName } from '../pivot-words.js'
-import { tableKey, tablesOf } from '../tables/model.js'
+import { tablesOf } from '../tables/model.js'
+import { sourcePlace } from '../pivot-source.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { areaText, meets, parseRange, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
@@ -48,7 +50,7 @@ const EMPTY_COLUMNS = 3
 /** A new PivotTable's style and options, as Excel 365 makes one. */
 const NEW_STYLE = { name: 'PivotStyleLight16', rowHeaders: true, columnHeaders: true, lastColumn: true }
 
-const refuse = (book: BookInput, m: EngineMessage): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
+const refuse = (book: BookInput, m: EngineMessage): Applied => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
 
 /** A PivotTable of the book by sheet and name: its sheet's index and its index there. */
 function pivotAt(book: BookInput, sheet: unknown, name: unknown, path: string): { s: number; k: number; p: PivotTable } {
@@ -128,34 +130,22 @@ function uniqueNames(names: string[]): string[] {
   })
 }
 
-/** The cells of a source in the book: its sheet and rectangle, its header row first; null for a source the book does not hold. */
-function sourceCells(book: BookInput, src: PivotSource): { sheet: string; x: Rect } | null {
-  if ('book' in src && src.book !== undefined) return null
-  if (src.type === 'range') return sheetIndex(book, src.sheet) < 0 ? null : (x => x && { sheet: book.sheets[sheetIndex(book, src.sheet)].name, x })(parseRange(src.range))
-  if (src.type === 'table') {
-    const t = tablesOf(book).byName.get(tableKey(src.table))
-    return t ? { sheet: book.sheets[t.s].name, x: { r1: t.r1, r2: t.totals ? t.r2 - 1 : t.r2, c1: t.c1, c2: t.c2 } } : null
-  }
-  if (src.type === 'name') {
-    const n = book.names?.find((x) => x.scope === undefined && caseKey(x.name) === caseKey(src.name))
-    const m = n && /^(?:'((?:[^']|'')+)'|([^'!]+))!\$?([A-Z]+)\$?(\d+):\$?([A-Z]+)\$?(\d+)$/.exec(n.ref.replace(/^=/, ''))
-    if (!m) return null
-    const sheet = m[1] !== undefined ? m[1].replace(/''/g, "'") : m[2]
-    const x = parseRange(`${m[3]}${m[4]}:${m[5]}${m[6]}`)
-    return x && sheetIndex(book, sheet) >= 0 ? { sheet: book.sheets[sheetIndex(book, sheet)].name, x } : null
-  }
-  return null
-}
-
-/** A source's fields by its header row's values; a refusal for an empty header or a source without a row of data. */
+/**
+ * A source's fields by its header row (a table's by its columns' names), found as a refresh finds it (`sourcePlace`); a
+ * refusal for a source the workbook does not have, an empty header or no row of data; none for a source in another
+ * workbook or of a kind not read here.
+ */
 function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn, pivot: string): PivotCacheField[] | Applied | null {
-  const at = sourceCells(book, src)
-  if (!at) return null
-  const label = src.type === 'range' ? `${quoteSheet(at.sheet)}!${rectText(at.x)}` : src.type === 'table' ? src.table : src.type === 'name' ? src.name : ''
-  if (at.x.r2 <= at.x.r1) return refuse(book, { key: 'pivotSourceRows', source: label })
-  const head = new Map(values(at.sheet, { ...at.x, r2: at.x.r1 }).map(([, c, v]) => [c, headerText(v)]))
+  const at = sourcePlace(book, src)
+  if (at === 'not_found') return refuse(book, { key: 'pivotSourceGone', pivot })
+  if (typeof at === 'string') return null
+  const sheet = book.sheets[at.s].name
+  const x = at.rect
+  const label = src.type === 'range' ? `${quoteSheet(sheet)}!${rectText(x)}` : src.type === 'table' ? src.table : src.type === 'name' ? src.name : ''
+  if (x.r2 <= x.r1) return refuse(book, { key: 'pivotSourceRows', source: label })
+  const head = at.headers ? new Map(at.headers.map((h, k) => [x.c1 + k, h])) : new Map(values(sheet, { ...x, r2: x.r1 }).map(([, c, v]) => [c, headerText(v)]))
   const names: string[] = []
-  for (let c = at.x.c1; c <= at.x.c2; c++) {
+  for (let c = x.c1; c <= x.c2; c++) {
     const n = head.get(c) ?? ''
     if (!n) return refuse(book, { key: 'pivotFieldName', pivot })
     names.push(n)

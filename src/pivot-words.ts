@@ -9,10 +9,14 @@ export const EN_FUNCTIONS: Record<PivotFunction, string> = {
   stdDev: 'StdDev', stdDevp: 'StdDevp', var: 'Var', varp: 'Varp',
 }
 
+// the words two functions share once each: a bundle writes each Cyrillic letter in six characters
+const COUNT = 'Количество'
+const DEVIATION = 'Стандартное отклонение'
+const VARIANCE = 'Дисперсия'
+
 export const RU_FUNCTIONS: Record<PivotFunction, string> = {
-  sum: 'Сумма', count: 'Количество', average: 'Среднее', max: 'Максимум', min: 'Минимум', product: 'Произведение',
-  countNums: 'Количество чисел', stdDev: 'Стандартное отклонение', stdDevp: 'Стандартное отклонение (несмещённое)',
-  var: 'Дисперсия', varp: 'Дисперсия (несмещённая)',
+  sum: 'Сумма', count: COUNT, average: 'Среднее', max: 'Максимум', min: 'Минимум', product: 'Произведение',
+  countNums: `${COUNT} чисел`, stdDev: DEVIATION, stdDevp: `${DEVIATION} (несмещённое)`, var: VARIANCE, varp: `${VARIANCE} (несмещённая)`,
 }
 
 /** A value field's name by its function and its source field's name, in the workbook's language (en-US's for a locale without its own). */

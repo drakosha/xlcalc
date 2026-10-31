@@ -6,7 +6,7 @@
 import type { BookInput, NameInput, PivotCache, PivotRef, PivotSource, PivotTable, Slicer, StructureOp, Timeline } from '../contract.js'
 import { parseAddress } from '../model.js'
 import { caseKey } from '../collate.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { areaText, contains, meets, parseRange, type Rect } from './area.js'
@@ -109,7 +109,7 @@ export function carryPivots(book: BookInput): { book: BookInput; after(out: Appl
             gone.push({ sheet: s.name, name: p.name, cache: p.cache })
             continue
           }
-          if (!sameSize(was, n.x)) return { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotCut', sheet: s.name, pivot: p.name }) }
+          if (!sameSize(was, n.x)) return { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotCut', sheet: s.name, pivot: p.name }) }
           const to = sheetIndex(b, n.sheet)
           const list = arrivals.get(to) ?? arrivals.set(to, []).get(to)!
           list.push(movedPivot(p, n.x.r1 - was.r1, n.x.c1 - was.c1))
@@ -192,7 +192,7 @@ export const pivotsOn = (book: BookInput, s: number) => (book.sheets[s]?.pivotTa
 /** The refusal of an area of sheet `s` that meets a PivotTable, but those `but` names; null when none does. */
 export function pivotMet(book: BookInput, s: number, x: Rect | null, but?: (p: PivotTable) => boolean): Exclude<Applied, { ok: true }> | null {
   const hit = x && pivotsOn(book, s).find((t) => meets(t.x, x) && !but?.(t.p))
-  return hit ? { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotCut', sheet: book.sheets[s].name, pivot: hit.p.name }) } : null
+  return hit ? { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotCut', sheet: book.sheets[s].name, pivot: hit.p.name }) } : null
 }
 
 /**

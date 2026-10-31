@@ -13,7 +13,7 @@ import { spend } from '../exec/budget.js'
 import { lookOf } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
 import { entryAt, lines, patchLines } from '../layout/spans.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { cellEdits, edited, LookTable, NONE } from '../looks/layer.js'
 import { expanded, layerOf, lookIn, withField, withLayer } from '../looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
@@ -124,7 +124,7 @@ function turnTransform(from: string, src: Rect, at: { r: number; c: number }): T
 export function turned(book: BookInput, clip: Clipboard, to: string, target: Rect): Clipboard | Refused {
   const { source, from, src } = clip
   const at = { r1: target.r1, c1: target.c1, r2: target.r1 + src.c2 - src.c1, c2: target.c1 + src.r2 - src.r1 }
-  if (at.r2 >= MAX_ROWS || at.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
+  if (at.r2 >= MAX_ROWS || at.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: sayPivot(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   const turn = (r: number, c: number) => formatAddress(at.r1 + c - src.c1, at.c1 + r - src.r1)
   const turnRect = (x: Rect): Rect => ({ r1: at.r1 + x.c1 - src.c1, r2: at.r1 + x.c2 - src.c1, c1: at.c1 + x.r1 - src.r1, c2: at.c1 + x.r2 - src.r1 })
   const t = turnTransform(from, src, { r: at.r1, c: at.c1 })
@@ -201,7 +201,7 @@ export function contentRefusal(book: BookInput, full: BookInput, to: string, are
   const ti = sheetIndex(book, to)
   const brought = new Set(full.sheets[ti].merges ?? [])
   const m = mergesOf(book.sheets[ti]).find((x) => meets(x, area) && !brought.has(cornersText(x)))
-  return m ? { ok: false, code: 'merged', message: say(book.locale, { key: 'contentOnMerge', sheet: to, area: cornersText(m) }) } : null
+  return m ? { ok: false, code: 'merged', message: sayPivot(book.locale, { key: 'contentOnMerge', sheet: to, area: cornersText(m) }) } : null
 }
 
 /** The look fields of an entry, else of the sheet's looks at the cell. */
@@ -412,8 +412,8 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
   // an operation onto a legacy array formula is refused, and onto a spilled array, as Excel refuses it onto a dynamic array formula (the paste sets `array-ops`, `ops-held`, `spill-ops`)
   const legacy = r.ok && area && o.operation && writesContent(o.kind) ? operationRefusal(sheetOf(book, to), area) : null
   const spill = r.ok && area && o.operation && writesContent(o.kind) ? values.spills?.(to, area)[0] : undefined
-  if (legacy) r = { ok: false, code: 'array', message: say(book.locale, legacy) }
-  else if (spill) r = { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
+  if (legacy) r = { ok: false, code: 'array', message: sayPivot(book.locale, legacy) }
+  else if (spill) r = { ok: false, code: 'array', message: sayPivot(book.locale, { key: 'arrayPart', sheet: to, cell: formatAddress(spill.r1, spill.c1), area: cornersText(spill) }) }
   // the looks the copy laid, over the rows a session fits to their fonts
   if (r.ok && area && PARTS[o.kind].style !== 'target') r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }

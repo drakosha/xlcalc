@@ -84,4 +84,21 @@ describe('writeKept over a file with a PivotTable', () => {
     const more = { ...book, sheets: book.sheets.map((x, i) => (i === s ? { ...x, slicers: [...x.slicers!, { ...x.slicers![0], name: 'Another' }] } : x)) }
     await expect(writeKept(data, { book: more })).rejects.toThrow('slicers or timelines were added or deleted')
   })
+
+  it("writes a slicer's changed choice and look on a renamed sheet through the sheet's parts", async () => {
+    const data = new Uint8Array(readFileSync('test/excel/win/pivot/slicer/row-two.xlsx'))
+    const s = createSession((await openKept(data)).book)
+    const sheet = s.getBook().sheets.find((x) => x.slicers)!.name
+    s.editStructure({ op: 'renameSheet', sheet, name: 'Renamed' })
+    const b = s.getBook()
+    const c = b.slicerCaches![0]
+    const book = {
+      ...b,
+      slicerCaches: [{ ...c, items: c.items!.map(({ selected: _, ...x }) => x) }],
+      sheets: b.sheets.map((x) => (x.slicers ? { ...x, slicers: x.slicers.map((y) => ({ ...y, caption: 'Regions' })) } : x)),
+    }
+    const out = await writeKept(data, { book })
+    const back = (await readXlsx(out.data)).book
+    expect([back.slicerCaches, back.sheets.find((x) => x.name === 'Renamed')?.slicers?.[0].caption]).toEqual([book.slicerCaches, 'Regions'])
+  })
 })

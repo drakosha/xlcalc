@@ -9,7 +9,8 @@ import { EPOCH_1904 } from '../dates.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
 import { array, checkNumber, checkOneOf, checkString, integer, object, onlyKeys } from '../input/basic.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import type { Applied } from '../structure/geometry.js'
 import { FormulaError } from '../syntax/ast.js'
 import { parse } from '../syntax/parse.js'
@@ -405,7 +406,7 @@ export const editPivotCache: PivotCacheEdit = (book, op, values, today) => {
   try {
     apply(w, o)
   } catch (e) {
-    if (e instanceof Refused) return { ok: false, code: 'pivot', message: say(book.locale, e.m) }
+    if (e instanceof Refused) return { ok: false, code: 'pivot', message: sayPivot(book.locale, e.m) }
     throw e
   }
   const sheets = book.sheets.map((sh, i) => {

@@ -6,7 +6,7 @@
  */
 import type { BookInput, CellInput, NameInput } from '../contract.js'
 import { caseKey } from '../collate.js'
-import { say } from '../locale/messages.js'
+import { sayEdit } from '../locale/edit-messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { inputNameFor } from '../names.js'
 import { parse, sheetKey, walk } from '../syntax.js'
@@ -140,7 +140,7 @@ export function carryNames(names: NameInput[], formulas: string[], from: string,
 export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): Applied {
   const [dr, dc] = [row - src.r1, col - src.c1]
   const dst = shiftRect(src, dr, dc)
-  if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }
+  if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: sayEdit(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }
   const paste: Paste = { from, src, to, area: dst, offsets: [[dr, dc]], move: true }
   const refusal = pasteRefusal(book, paste)
   if (refusal) return refusal

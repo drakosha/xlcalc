@@ -4,7 +4,7 @@
  * of items and records are read by one scan of their tags, as a cache can hold many.
  */
 import type { NumberFormat, PivotCache, PivotCacheField, PivotFieldFacts, PivotFieldGroup, PivotGroupBy, PivotSource, PivotValue } from '../../contract.js'
-import { attr, attributes, element, elements, flag, has } from '../xml/scan.js'
+import { attr, attributes, attrsAt, element, flag, has, within } from '../xml/scan.js'
 import { decodeEscapes, decodeXml } from '../xml/text.js'
 import { ERRORS } from './cells.js'
 
@@ -91,7 +91,7 @@ function factsOf(a: Record<string, string>, items: PivotValue[]): PivotFieldFact
 const GROUP_BY: Record<string, PivotGroupBy> = { range: 'numbers', seconds: 'seconds', minutes: 'minutes', hours: 'hours', days: 'days', months: 'months', quarters: 'quarters', years: 'years' }
 
 function groupOf(xml: string): PivotFieldGroup {
-  const a = attributes(element(xml, 'fieldGroup')?.attrs ?? '')
+  const a = attrsAt(xml, 'fieldGroup')
   const g: PivotFieldGroup = {}
   take(g, a, 'base:n par=parent:n')
   const r = element(xml, 'rangePr')
@@ -131,7 +131,7 @@ function fieldOf(xml: string, attrs: string, format: (id: string | undefined) =>
 
 /** Where the cache's data come from; `book` names a link's target by a relationship's id, `connection` tells the data model's connection. */
 function sourceOf(xml: string, book: (id: string | undefined) => string | undefined, model: (id: number) => boolean): PivotSource {
-  const s = attributes(element(xml, 'cacheSource')?.attrs ?? '')
+  const s = attrsAt(xml, 'cacheSource')
   const linked = (a: Record<string, string>) => {
     const b = book(attr(a, 'id'))
     return b === undefined ? {} : { book: b }
@@ -142,13 +142,13 @@ function sourceOf(xml: string, book: (id: string | undefined) => string | undefi
   }
   if (s.type === 'scenario') return { type: 'scenario' }
   if (s.type === 'consolidation') {
-    const ranges = elements(element(xml, 'rangeSets')?.body ?? '', 'rangeSet').map((e) => {
+    const ranges = within(xml, 'rangeSets', 'rangeSet').map((e) => {
       const a = attributes(e.attrs)
       return { range: attrText(a.ref), ...(a.sheet === undefined ? {} : { sheet: attrText(a.sheet) }), ...linked(a) }
     })
     return { type: 'consolidation', ranges }
   }
-  const w = attributes(element(xml, 'worksheetSource')?.attrs ?? '')
+  const w = attrsAt(xml, 'worksheetSource')
   if (w.name !== undefined) return { type: 'name', name: attrText(w.name), ...linked(w) }
   return { type: 'range', sheet: attrText(w.sheet), range: attrText(w.ref), ...linked(w) }
 }
@@ -162,11 +162,11 @@ export interface CacheContext {
 
 /** A cache definition's part and its records' as the workbook's cache of `id`. */
 export function readPivotCache(id: number, xml: string, records: string | undefined, ctx: CacheContext): PivotCache {
-  const a = attributes(element(xml, 'pivotCacheDefinition')?.attrs ?? '')
-  const fields = elements(element(xml, 'cacheFields')?.body ?? '', 'cacheField').map((e) => fieldOf(e.body ?? '', e.attrs, ctx.format))
+  const a = attrsAt(xml, 'pivotCacheDefinition')
+  const fields = within(xml, 'cacheFields', 'cacheField').map((e) => fieldOf(e.body ?? '', e.attrs, ctx.format))
   const cache: PivotCache = { id, source: sourceOf(xml, ctx.book, ctx.model), fields }
   if (records !== undefined) cache.records = readRecords(records)
-  const calculated = elements(element(xml, 'calculatedItems')?.body ?? '', 'calculatedItem').flatMap((e) => {
+  const calculated = within(xml, 'calculatedItems', 'calculatedItem').flatMap((e) => {
     const r = element(e.body ?? '', 'reference')
     const item = r && values(r.body ?? '')[0]
     return r && typeof item === 'number' ? [{ field: Number(attributes(r.attrs).field ?? 0), item, formula: attrText(attributes(e.attrs).formula) }] : []

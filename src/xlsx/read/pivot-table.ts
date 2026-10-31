@@ -26,17 +26,18 @@ import type {
 import type { DateSystemOptions } from '../../date-serial.js'
 import { serialToUtcMs } from '../../model.js'
 import type { Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, within, type Element } from '../xml/scan.js'
 import { attrText, take, values } from './pivot-cache.js'
+import { AXIS, inverse, SHOW_NAME, SUBTOTAL_ATTR } from '../pivot-names.js'
 
 /** The functions of subtotals by the names of the file's item types (`countA` counts every value, `count` numbers). */
-export const ITEM_FUNCTIONS: Record<string, PivotFunction> = { sum: 'sum', countA: 'count', avg: 'average', max: 'max', min: 'min', product: 'product', count: 'countNums', stdDev: 'stdDev', stdDevP: 'stdDevp', var: 'var', varP: 'varp' }
+const ITEM_FUNCTIONS = /* @__PURE__ */ inverse(SUBTOTAL_ATTR)
 
 /** Show Values As by the file's names, Excel 2010's in its extension (`pivotShowAs`) among them. */
-const SHOW_AS: Record<string, PivotShowAs> = { percentOfCol: 'percentOfColumn', percentOfParentCol: 'percentOfParentColumn' }
+const SHOW_AS = /* @__PURE__ */ inverse(SHOW_NAME)
 const showAs = (v: string): PivotShowAs => SHOW_AS[v] ?? (v as PivotShowAs)
 
-const AXES: Record<string, PivotArea['axis']> = { axisRow: 'rows', axisCol: 'columns', axisPage: 'pages', axisValues: 'values' }
+const AXES = /* @__PURE__ */ inverse(AXIS)
 
 /** Excel's base items before and after the one shown, `previous` and `next`. */
 const PREVIOUS = 1048828
@@ -60,7 +61,7 @@ export function readArea(e: Element): PivotArea {
   if (a.field !== undefined) area.field = axisField(a.field)
   if (a.axis !== undefined) area.axis = AXES[a.axis]
   take(area, a, 'fieldPosition:n dataOnly:t labelOnly:f grandRow:f grandCol=grandColumn:f outline:t cacheIndex:f collapsedLevelsAreSubtotals:f offset')
-  const refs = elements(element(e.body ?? '', 'references')?.body ?? '', 'reference').map((r): PivotAreaReference => {
+  const refs = within(e.body ?? '', 'references', 'reference').map((r): PivotAreaReference => {
     const ra = attributes(r.attrs)
     const ref: PivotAreaReference = { field: axisField(ra.field) }
     const items = values(r.body ?? '') as number[]
@@ -80,7 +81,7 @@ function fieldOf(e: Element, layout: PivotLayout, format: (id: string | undefine
   const a = attributes(e.attrs)
   const body = e.body ?? ''
   const f = take<PivotField>({}, a, 'name subtotalCaption subtotalTop:t insertBlankRow=blankLine:f insertPageBreak=pageBreak:f includeNewItemsInFilter=includeNewItems:f multipleItemSelectionAllowed=multipleItems:f')
-  const items = elements(element(body, 'items')?.body ?? '', 'item')
+  const items = within(body, 'items', 'item')
     .map((i) => attributes(i.attrs))
     .filter((i) => i.t === undefined || i.t === 'data')
     .map(itemOf)
@@ -92,7 +93,7 @@ function fieldOf(e: Element, layout: PivotLayout, format: (id: string | undefine
   if (own !== layout) f.layout = own
   // Show items with no data: `showAll`, true by default, which Excel writes false
   if (flag(a.showAll, true)) f.showEmpty = true
-  if (flag(attributes(element(body, 'pivotField')?.attrs ?? '').fillDownLabels)) f.repeatLabels = true
+  if (flag(attrsAt(body, 'pivotField').fillDownLabels)) f.repeatLabels = true
   if (a.sortType === 'ascending' || a.sortType === 'descending') {
     f.sort = { order: a.sortType }
     const scope = element(body, 'autoSortScope')
@@ -113,7 +114,7 @@ function dataFieldOf(e: Element, format: (id: string | undefined) => NumberForma
   const a = attributes(e.attrs)
   const d = take<PivotDataField>({ field: Number(a.fld ?? 0) }, a, 'name')
   if (a.subtotal !== undefined && a.subtotal !== 'sum') d.function = a.subtotal as PivotFunction
-  const x14 = attributes(element(e.body ?? '', 'dataField')?.attrs ?? '').pivotShowAs
+  const x14 = attrsAt(e.body ?? '', 'dataField').pivotShowAs
   const show = x14 ?? a.showDataAs
   if (show !== undefined && show !== 'normal') {
     d.showAs = showAs(show)
@@ -197,13 +198,13 @@ export interface TableContext extends DateSystemOptions {
 export function readPivotTable(xml: string, cache: number, ctx: TableContext): { table: PivotTable; charts: boolean } {
   const root = element(xml, 'pivotTableDefinition')
   const a = attributes(root?.attrs ?? '')
-  const la = attributes(element(xml, 'location')?.attrs ?? '')
+  const la = attrsAt(xml, 'location')
   const layout = layoutOf(flag(a.compact, true), flag(a.outline))
   const t: PivotTable = {
     name: attrText(a.name),
     cache,
     location: { range: la.ref ?? 'A1', firstHeaderRow: Number(la.firstHeaderRow ?? 0), firstDataRow: Number(la.firstDataRow ?? 0), firstDataColumn: Number(la.firstDataCol ?? 0) },
-    fields: elements(element(xml, 'pivotFields')?.body ?? '', 'pivotField').map((e) => fieldOf(e, layout, ctx.format)),
+    fields: within(xml, 'pivotFields', 'pivotField').map((e) => fieldOf(e, layout, ctx.format)),
   }
   take(t.location, la, 'rowPageCount=pageRows:p colPageCount=pageColumns:p')
   const rows = axisOf(xml, 'rowFields')
@@ -249,10 +250,10 @@ export function readPivotTable(xml: string, cache: number, ctx: TableContext): {
 
 /** The scopes of a PivotTable's conditional formats by their rules' priorities (`conditionalFormats`). */
 export function pivotRuleScopes(xml: string, out: Map<number, PivotRuleScope>) {
-  const name = attrText(attributes(element(xml, 'pivotTableDefinition')?.attrs ?? '').name)
-  for (const e of elements(element(xml, 'conditionalFormats')?.body ?? '', 'conditionalFormat')) {
+  const name = attrText(attrsAt(xml, 'pivotTableDefinition').name)
+  for (const e of within(xml, 'conditionalFormats', 'conditionalFormat')) {
     const a = attributes(e.attrs)
-    const scope: PivotRuleScope = { pivot: name, areas: elements(element(e.body ?? '', 'pivotAreas')?.body ?? '', 'pivotArea').map(readArea) }
+    const scope: PivotRuleScope = { pivot: name, areas: within(e.body ?? '', 'pivotAreas', 'pivotArea').map(readArea) }
     if (a.scope === 'data' || a.scope === 'field') scope.scope = a.scope
     if (a.type === 'all' || a.type === 'row' || a.type === 'column') scope.type = a.type
     out.set(Number(a.priority ?? 0), scope)

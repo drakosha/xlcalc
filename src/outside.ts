@@ -125,12 +125,15 @@ export class Outside {
     try {
       const out = this.resolve!({ name, key, args, sheet, cell: formatAddress(r, c), signal })
       if (!isThenable(out)) return taken(out as ExternalAnswer)
+      // an answer lands only while its call is still the one kept: refreshConnections may have asked again since;
       // a call aborted while its answer was on its way asks again next time
-      const pending = Promise.resolve(out).then(
-        (x) => void this.answers.set(key, taken(x as ExternalAnswer)),
-        () => void (signal.aborted ? this.answers.delete(key) : this.answers.set(key, { value: undefined })),
+      const asked: Answer = { pending: undefined as unknown as Promise<void> }
+      const kept = () => this.answers.get(key) === asked
+      asked.pending = Promise.resolve(out).then(
+        (x) => void (kept() && this.answers.set(key, taken(x as ExternalAnswer))),
+        () => void (kept() && (signal.aborted ? this.answers.delete(key) : this.answers.set(key, { value: undefined }))),
       )
-      return { pending }
+      return asked
     } catch {
       return { value: undefined }
     }

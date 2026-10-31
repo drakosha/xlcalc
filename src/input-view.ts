@@ -1,13 +1,13 @@
 /** Saved view metadata checked at the book boundary; it does not enter computation. */
 import { InputError } from './input-error.js'
-import { array, checkBoolean, checkNumber, checkOneOf, object, onlyKeys } from './input/basic.js'
+import { array, checkBoolean, checkNumber, checkOneOf, given, object, onlyKeys, type Check } from './input/basic.js'
 import { checkAddress } from './input/range.js'
 
 export function checkSheetView(v: unknown, path: string): void {
   const view = object(v, path, 'a sheet view such as { activeCell: "B2", zoom: 125 }')
   onlyKeys(view, path, ['activeCell', 'selection', 'topLeft', 'zoom', 'gridlines', 'headings', 'split'])
-  for (const field of ['gridlines', 'headings']) if (view[field] !== undefined) checkBoolean(view[field], `${path}.${field}`)
-  for (const field of ['activeCell', 'topLeft']) if (view[field] !== undefined) checkAddress(view[field], `${path}.${field}`)
+  given(view, path, { gridlines: checkBoolean, headings: checkBoolean })
+  given(view, path, { activeCell: checkAddress, topLeft: checkAddress })
   if (view.zoom !== undefined) checkNumber(view.zoom, `${path}.zoom`, 10, 400, true)
   if (view.selection !== undefined) {
     const ranges = array(view.selection, `${path}.selection`, 'an array of A1 cells or ranges')
@@ -28,7 +28,8 @@ const MAX_SPLIT = 100_000
 function checkSplit(v: unknown, path: string): void {
   const split = object(v, path, 'a split window such as { x: 120, y: 60, topLeft: "F20" }')
   onlyKeys(split, path, ['x', 'y', 'topLeft', 'activePane'])
-  for (const axis of ['x', 'y']) if (split[axis] !== undefined) checkNumber(split[axis], `${path}.${axis}`, 0, MAX_SPLIT)
+  const at: Check = (v, q) => checkNumber(v, q, 0, MAX_SPLIT)
+  given(split, path, { x: at, y: at })
   if (!split.x && !split.y) throw new InputError(path, 'expected a line: x or y above 0')
   if (split.topLeft !== undefined) checkAddress(split.topLeft, `${path}.topLeft`)
   if (split.activePane !== undefined) checkOneOf(split.activePane, `${path}.activePane`, ['topLeft', ...(split.x ? ['topRight'] : []), ...(split.y ? ['bottomLeft'] : []), ...(split.x && split.y ? ['bottomRight'] : [])])

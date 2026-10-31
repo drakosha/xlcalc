@@ -7,7 +7,7 @@
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
 import { escapeAttr } from '../xml/text.js'
-import { HEAD, MAIN, rgb } from './xml.js'
+import { counted, HEAD, MAIN, rgb } from './xml.js'
 
 /** The book's default font, as the model assumes it. */
 export const DEFAULT_FONT = { name: 'Calibri', size: 11 }
@@ -169,18 +169,17 @@ export class StyleWriter implements CellFormats {
   }
 
   xml(): string {
-    const list = (tag: string, items: string[]) => `<${tag} count="${items.length}">${items.join('')}</${tag}>`
     const numFmts = [...this.formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code)}"/>`)
     return (
       `${HEAD}<styleSheet xmlns="${MAIN}">` +
-      (numFmts.length ? list('numFmts', numFmts) : '') +
-      list('fonts', this.fonts.items) +
-      list('fills', this.fills.items) +
-      list('borders', this.borders.items) +
+      (numFmts.length ? counted('numFmts', numFmts) : '') +
+      counted('fonts', this.fonts.items) +
+      counted('fills', this.fills.items) +
+      counted('borders', this.borders.items) +
       '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
-      list('cellXfs', this.xfs.items) +
+      counted('cellXfs', this.xfs.items) +
       '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
-      (this.dxfs.items.length ? list('dxfs', this.dxfs.items) : '') +
+      (this.dxfs.items.length ? counted('dxfs', this.dxfs.items) : '') +
       '</styleSheet>'
     )
   }

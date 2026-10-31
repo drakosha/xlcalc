@@ -28,4 +28,4 @@ describe('the bundle of xlcalc/pivot', () => {
 })
 
 /** The kilobytes the subpath may add to the root's bundle. */
-const BUDGET = 120
+const BUDGET = 80

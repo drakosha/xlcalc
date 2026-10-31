@@ -76,6 +76,12 @@ export const elements = (xml: string, local: string): Element[] => placed(xml, l
 /** The first element of a local name, or undefined. */
 export const element = (xml: string, local: string): Element | undefined => placed(xml, local, true)[0]
 
+/** The elements `local` inside the first element `parent` of `xml`: `within(xml, 'cols', 'col')`. */
+export const within = (xml: string, parent: string, local: string): Element[] => elements(element(xml, parent)?.body ?? '', local)
+
+/** The attributes of the first element `local` of `xml`, none without one. */
+export const attrsAt = (xml: string, local: string): Record<string, string> => attributes(element(xml, local)?.attrs ?? '')
+
 /**
  * The element of a local name the text ends with, but for spaces and closing tags after it: the last child of the
  * element the text closes (a worksheet's own `<extLst>`, where its other children may hold an `<extLst>` of their own).

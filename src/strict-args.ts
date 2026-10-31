@@ -9,6 +9,10 @@ import { InputError, what } from './input-error.js'
 
 /** The calls that type text into cells. */
 const TYPING = 'setCellText, setCellTexts, fillCellText and their previews'
+const VIEWPORT = 'getViewport'
+const FIND = 'findCells and replaceInCells'
+const COMPUTE = 'compute and createSession'
+const CSV = 'readCsv and writeCsv'
 
 /** The options of the calls that type text beside `baseRevision` (`CellTextOptions`), and of an entry into a selection (`FillTextOptions`). */
 export const TEXT_OPTIONS = ['widen', 'refuseInvalid', 'inPlace'] as const
@@ -24,12 +28,12 @@ export const REPLACE_OPTIONS = ['caseSensitive', 'wildcards', 'wholeCell', 'skip
 
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
 const TAKEN_BY: Record<string, string> = {
-  formulaLocal: 'getViewport',
-  diagnostics: 'getViewport',
-  maxCells: 'getViewport',
+  formulaLocal: VIEWPORT,
+  diagnostics: VIEWPORT,
+  maxCells: VIEWPORT,
   rows: 'getViewport, readCells, findCells, replaceInCells and summarizeRanges',
-  columns: 'getViewport',
-  editText: 'getViewport',
+  columns: VIEWPORT,
+  editText: VIEWPORT,
   appearance: 'viewportOf',
   depth: 'explain',
   maxNodes: 'explain',
@@ -39,27 +43,27 @@ const TAKEN_BY: Record<string, string> = {
   refuseInvalid: TYPING,
   inPlace: TYPING,
   active: 'fillCellText and previewFillCellText',
-  caseSensitive: 'findCells and replaceInCells',
-  wildcards: 'findCells and replaceInCells',
-  wholeCell: 'findCells and replaceInCells',
+  caseSensitive: FIND,
+  wildcards: FIND,
+  wholeCell: FIND,
   byColumns: 'findCells',
-  skipHidden: 'findCells and replaceInCells',
+  skipHidden: FIND,
   after: 'findCells',
   baseRevision: "a session's calls that change its workbook",
   table: 'toLocal and toInvariant',
-  clock: 'compute and createSession',
-  externals: 'compute and createSession',
-  execution: 'compute and createSession',
-  display: 'compute and createSession',
-  cached: 'compute and createSession',
-  unknownFunctions: 'compute and createSession',
+  clock: COMPUTE,
+  externals: COMPUTE,
+  execution: COMPUTE,
+  display: COMPUTE,
+  cached: COMPUTE,
+  unknownFunctions: COMPUTE,
   limits: 'compute, createSession, the calculators and readXlsx',
   live: 'createSession',
   undo: 'createSession',
   values: 'writeXlsx',
   mode: 'writeXlsx',
-  delimiter: 'readCsv and writeCsv',
-  encoding: 'readCsv and writeCsv',
+  delimiter: CSV,
+  encoding: CSV,
   formulas: 'readCsv',
   codesAsText: 'readCsv',
   bom: 'writeCsv',

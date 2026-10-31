@@ -12,7 +12,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, type FileNames } from './formula.js'
-import { clip } from './xml.js'
+import { clip, countedIf } from './xml.js'
 
 /** Excel's limits on a rule's texts: it does not load a file with longer ones. */
 const LIMITS = { promptTitle: 32, prompt: 255, errorTitle: 32, error: 225 } as const
@@ -53,5 +53,5 @@ export function validationsXml(rules: DataValidation[] | undefined, ctx: Validat
     }
     return [`<dataValidation${attrs} sqref="${sqref(v.range)}">${formulas.join('')}</dataValidation>`]
   })
-  return items.length ? `<dataValidations count="${items.length}">${items.join('')}</dataValidations>` : ''
+  return countedIf('dataValidations', items)
 }

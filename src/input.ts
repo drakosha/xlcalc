@@ -13,11 +13,13 @@ import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { cornersText, LINES, parseRange, rectText, type Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
-import { ERROR_TEXT, sheetKey } from './syntax.js'
+import { sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
-import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
+import { array, checkBoolean, checkCellValue, checkNumber, checkOneOf, checkString, given, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
+
+export { checkCellValue }
 import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
@@ -59,15 +61,14 @@ function checkNote(v: unknown, path: string) {
   const n = object(v, path, 'a note such as { author: "Ann", text: "Checked" }')
   onlyKeys(n, path, ['author', 'text', 'shown'])
   checkString(n.text, `${path}.text`)
-  if (n.author !== undefined) checkString(n.author, `${path}.author`)
-  if (n.shown !== undefined) checkBoolean(n.shown, `${path}.shown`)
+  given(n, path, { author: checkString, shown: checkBoolean })
 }
 
 /** A cell's hyperlink: a url, a location or both, and a tooltip. */
 function checkLink(v: unknown, path: string) {
   const l = object(v, path, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
   onlyKeys(l, path, ['url', 'location', 'tooltip'])
-  for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.${k}`)
+  given(l, path, { url: checkString, location: checkString, tooltip: checkString })
   if (!l.url && !l.location) throw new InputError(path, 'a hyperlink needs a url, a location or both')
 }
 
@@ -80,8 +81,7 @@ export function checkNames(v: unknown, path: string): NameInput[] {
     onlyKeys(o, p, ['name', 'ref', 'scope', 'hidden'])
     checkString(o.name, `${p}.name`)
     checkString(o.ref, `${p}.ref`)
-    if (o.scope !== undefined) checkString(o.scope, `${p}.scope`)
-    if (o.hidden !== undefined) checkBoolean(o.hidden, `${p}.hidden`)
+    given(o, p, { scope: checkString, hidden: checkBoolean })
   })
   return namesTaken(names as NameInput[])
 }
@@ -213,21 +213,22 @@ export const SHEET_STATES = new Map<true | 'very', string>([
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
-  if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
-  if (book.font !== undefined) {
-    const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
-    onlyKeys(f, `${path}.font`, ['name', 'size'])
-    if (checkString(f.name, `${path}.font.name`) === '') throw new InputError(`${path}.font.name`, 'expected the name of a font, got an empty string')
-    checkNumber(f.size, `${path}.font.size`, 1, 409)
-  }
-  if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (book.calculation !== undefined) checkOneOf(book.calculation, `${path}.calculation`, ['manual', 'autoNoTable'])
-  if (book.iteration !== undefined) {
-    const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
-    onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])
-    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, ...ITERATION.maxIterations, true)
-    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, ...ITERATION.maxChange)
-  }
+  given(book, path, {
+    locale: checkBookLocale,
+    font: (x, p) => {
+      const f = object(x, p, "a font such as { name: 'Arial', size: 10 }")
+      onlyKeys(f, p, ['name', 'size'])
+      if (checkString(f.name, `${p}.name`) === '') throw new InputError(`${p}.name`, 'expected the name of a font, got an empty string')
+      checkNumber(f.size, `${p}.size`, 1, 409)
+    },
+    dateSystem: (x, p) => checkOneOf(x, p, DATE_SYSTEMS),
+    calculation: (x, p) => checkOneOf(x, p, ['manual', 'autoNoTable']),
+    iteration: (x, p) => {
+      const it = object(x, p, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
+      onlyKeys(it, p, ['maxIterations', 'maxChange'])
+      given(it, p, { maxIterations: (y, q) => checkNumber(y, q, ...ITERATION.maxIterations, true), maxChange: (y, q) => checkNumber(y, q, ...ITERATION.maxChange) })
+    },
+  })
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a look alone (into the sheet's looks)
@@ -259,19 +260,21 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
       if (lookAlone(cell as CellInput)) (alone[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
-    if (sheet.looks !== undefined) checkLooks(sheet.looks, `${p}.looks`, styles)
-    if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
-    if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
-    if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
-    if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
-    if (sheet.autoFilter !== undefined) checkAutoFilter(sheet.autoFilter, `${p}.autoFilter`)
-    if (sheet.view !== undefined) checkSheetView(sheet.view, `${p}.view`)
-    if (sheet.tabColor !== undefined) checkColor(sheet.tabColor, `${p}.tabColor`)
-    if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
-    if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
-    if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
-    if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
-    if (sheet.protection !== undefined) checkSheetProtection(sheet.protection, `${p}.protection`)
+    given(sheet, p, {
+      looks: (x, q) => checkLooks(x, q, styles),
+      columns: (x, q) => checkLines(x, q, 'c', styles),
+      rows: (x, q) => checkLines(x, q, 'r', styles),
+      merges: checkMerges,
+      filtered: checkBoolean,
+      autoFilter: checkAutoFilter,
+      view: checkSheetView,
+      tabColor: checkColor,
+      frozen: checkFrozen,
+      conditionalFormats: checkConditionalFormats,
+      validations: checkValidations,
+      outline: checkOutline,
+      protection: checkSheetProtection,
+    })
     if (sheet.hidden !== undefined && sheet.hidden !== false && !SHEET_STATES.has(sheet.hidden as true)) throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
   // Excel keeps one visible sheet at least
@@ -282,8 +285,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     const active = (book.sheets as BookInput['sheets']).find((s) => sheetKey(s.name) === sheetKey(name))
     if (!active || active.hidden) throw new InputError(`${path}.activeSheet`, 'expected the name of a visible sheet of the workbook')
   }
-  if (book.names !== undefined) checkNames(book.names, `${path}.names`)
-  if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
+  given(book, path, { names: checkNames, externalBooks: checkExternalBooks })
   checkTables(book as unknown as BookInput, path)
   checkPivots(book, path)
   const out = bookTaken(book as unknown as BookInput, taken)
@@ -304,6 +306,11 @@ function checkLooks(v: unknown, path: string, styles: number) {
   })
 }
 
+/** The examples of a linked workbook and its sheet, and of a sheet of stored values, in refusals. */
+const LINKED = 'such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }'
+const LINKED_SHEET = 'such as { name: "Sheet1", cells: { A1: 5 } }'
+const STORED_SHEET = 'such as { name: "Sheet1", cells: { B1: { value: 2 } } }'
+
 /**
  * Other workbooks a book links to (`BookInput.externalBooks`): each a target, its sheets by name with their stored values
  * by address (a number, text, a boolean, an error, null for a cell stored empty) and the mark of a failed update, its
@@ -312,15 +319,15 @@ function checkLooks(v: unknown, path: string, styles: number) {
  * use the links' targets, sheets and names alone (the package's own calls over a checked book skip the check).
  */
 export function checkExternalBooks(v: unknown, path: string, values = true): ExternalBook[] {
-  return array(v, path, 'an array of linked workbooks such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }').map((b, i) => {
+  return array(v, path, `an array of linked workbooks ${LINKED}`).map((b, i) => {
     const p = `${path}[${i}]`
-    const book = object(b, p, 'a linked workbook such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }')
+    const book = object(b, p, `a linked workbook ${LINKED}`)
     onlyKeys(book, p, ['target', 'sheets', 'names'])
     checkString(book.target, `${p}.target`)
-    const sheets = array(book.sheets, `${p}.sheets`, 'an array of sheets such as { name: "Sheet1", cells: { A1: 5 } }')
+    const sheets = array(book.sheets, `${p}.sheets`, `an array of sheets ${LINKED_SHEET}`)
     sheets.forEach((s, j) => {
       const sp = `${p}.sheets[${j}]`
-      const sheet = object(s, sp, 'a sheet such as { name: "Sheet1", cells: { A1: 5 } }')
+      const sheet = object(s, sp, `a sheet ${LINKED_SHEET}`)
       onlyKeys(sheet, sp, ['name', 'cells', 'refreshError'])
       checkString(sheet.name, `${sp}.name`)
       if (sheet.refreshError !== undefined && sheet.refreshError !== true) throw new InputError(`${sp}.refreshError`, `expected true, got ${what(sheet.refreshError)}`)
@@ -408,9 +415,9 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 /** `cached`: a file's stored values in the shape of a result, each a cell value. */
 function checkCached(v: unknown, path: string): CachedValues {
   const o = object(v, path, "stored values such as readXlsx's cached, { sheets: [{ name, cells: { B1: { value: 2 } } }] }")
-  array(o.sheets, `${path}.sheets`, 'an array of sheets such as { name: "Sheet1", cells: { B1: { value: 2 } } }').forEach((x, i) => {
+  array(o.sheets, `${path}.sheets`, `an array of sheets ${STORED_SHEET}`).forEach((x, i) => {
     const p = `${path}.sheets[${i}]`
-    const sheet = object(x, p, 'a sheet such as { name: "Sheet1", cells: { B1: { value: 2 } } }')
+    const sheet = object(x, p, `a sheet ${STORED_SHEET}`)
     checkString(sheet.name, `${p}.name`)
     const cells = object(sheet.cells, `${p}.cells`, 'stored values by address such as { B1: { value: 2 } }')
     for (const addr in cells) {
@@ -585,13 +592,6 @@ export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   checkValidateContext(rest, path)
   optionalLocale(locale, `${path}.locale`)
   return o as unknown as NamesContext
-}
-
-/** `displayValue`'s value: a number, text, a boolean, null or an error `{ error: code }`. */
-export function checkCellValue(v: unknown, path: string): CellValue {
-  if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return v
-  if (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 1 && Object.hasOwn(ERROR_TEXT, (v as { error?: unknown }).error as string)) return v as CellValue
-  throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
 }
 
 /** `displayValue`'s options. */

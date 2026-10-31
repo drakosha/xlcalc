@@ -159,6 +159,22 @@ describe('a session keeps the answers', () => {
     expect(() => s.refreshConnections('BALANCE' as never)).toThrow('names: expected an array of function names')
     expect(() => s.refreshConnections([1] as never)).toThrow('names[0]')
   })
+
+  it('an answer asked before refreshConnections and arriving after it does not overwrite the one asked again', async () => {
+    const answers: ((v: number) => void)[] = []
+    const externals: Externals = { functions: ['BAL'], resolve: () => new Promise<ExternalAnswer>((done) => answers.push(done)) }
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0 }, B1: { formula: 'BAL(1)+A1' } } }] }, { clock: CLOCK, externals })
+    s.refreshConnections()
+    expect(answers.length).toBe(2)
+    answers[1](2)
+    await s.settleConnections()
+    expect(s.getCell('S', 'B1')?.value).toBe(2)
+    // the first call's answer arrives last: it is the old one, and the cell computed again keeps the new
+    answers[0](1)
+    await new Promise((done) => setTimeout(done, 0))
+    s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 10 } }])
+    expect(s.getCell('S', 'B1')?.value).toBe(12)
+  })
 })
 
 const calcs: Calc[] = []

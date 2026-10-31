@@ -11,7 +11,7 @@
 import type { BookInput, CellInput, LookRange, SheetInput } from '../contract.js'
 import { sheetLines } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { formatAddress } from '../model.js'
 import { internStyle } from '../style-table.js'
 import { tablesOf } from '../tables/model.js'
@@ -27,9 +27,9 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const merges = mergesOf(book.sheets[s])
   const area = grown(x, merges)
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, area))
-  if (table) return { ok: false, code: 'table', message: say(book.locale, { key: 'mergeInTable', range: rectText(area), table: table.name }) }
+  if (table) return { ok: false, code: 'table', message: sayPivot(book.locale, { key: 'mergeInTable', range: rectText(area), table: table.name }) }
   const array = arraysOf(book.sheets[s]).find(([, a]) => meets(a, area))
-  if (array) return { ok: false, code: 'array', message: say(book.locale, { key: 'arrayPart', sheet, cell: array[0], area: rectText(array[1]) }) }
+  if (array) return { ok: false, code: 'array', message: sayPivot(book.locale, { key: 'arrayPart', sheet, cell: array[0], area: rectText(array[1]) }) }
   const areas = across ? Array.from({ length: area.r2 - area.r1 + 1 }, (_, i) => ({ ...area, r1: area.r1 + i, r2: area.r1 + i })) : [area]
   const made = areas.filter((a) => a.r1 < a.r2 || a.c1 < a.c2)
   // the merged areas met are split first, so that a cell of one can move

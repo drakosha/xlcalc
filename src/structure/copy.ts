@@ -10,7 +10,7 @@ import { InputError } from '../input-error.js'
 import { checkString } from '../input/basic.js'
 import { checkSheetOf } from '../input.js'
 import { checkAddress } from '../input/range.js'
-import { say } from '../locale/messages.js'
+import { sayEdit } from '../locale/edit-messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'
 import { tableAt, tablesOf } from '../tables/model.js'
@@ -77,7 +77,7 @@ export interface PasteHow {
 export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book, how: PasteHow = {}): Applied {
   const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
-  if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
+  if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: sayEdit(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
   const refusal = pasteRefusal(book, paste, how.looksOnly)
   if (refusal) return refusal

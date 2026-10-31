@@ -4,7 +4,8 @@ import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { object, onlyOptions } from './input/basic.js'
 import { errorOrigin, errorStep, issueCode, placeText, type Place } from './issues.js'
 import { showFormula } from './locale/index.js'
-import { say, type EngineMessage } from './locale/messages.js'
+import { sayPivot } from './locale/pivot-messages.js'
+import type { EngineMessage } from './locale/messages.js'
 import { localeOf } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
@@ -126,7 +127,7 @@ export function* explainText(root: ExplainNode, tag?: string, externalBooks?: Ex
     return t.ok ? t.formula : f
   }
   // the formula shown before its message takes it: en-US's prints it as given
-  const text = (m: EngineMessage) => say(loc, m)
+  const text = (m: EngineMessage) => sayPivot(loc, m)
   const lines: string[] = []
   const go = function* (n: ExplainNode, indent: string): Steps<void> {
     if (paced(1)) yield

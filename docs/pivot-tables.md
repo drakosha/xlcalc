@@ -1,9 +1,44 @@
 # PivotTables
 
-A workbook read from a file holds its PivotTables: `readXlsx` and `openKept` read each PivotTable with its cache, its
-fields on their axes, its value fields, filters, sorting, totals, layout, formats and the layout Excel last saved, and the
-workbook's slicers and timelines. `GETPIVOTDATA` calculates over that saved layout, so a report that reads its numbers
-out of a PivotTable gets Excel's values without the PivotTable being refreshed.
+xlcalc reads, calculates, changes and writes Excel's PivotTables with their slicers and timelines:
+
+- `readXlsx` and `openKept` read each PivotTable with its pivot cache and the layout Excel last saved ([Reading PivotTables](#reading-pivottables)).
+- `GETPIVOTDATA` returns the values a PivotTable shows, by that saved layout, without the PivotTable engine ([GETPIVOTDATA](#getpivotdata)).
+- The subpath `xlcalc/pivot`, loaded once by `registerPivot`, is the PivotTable engine: it refreshes caches from their sources and lays PivotTables out as Excel does ([The PivotTable engine](#the-pivottable-engine)).
+- A refresh summarizes the source's rows by Excel's functions, filters, sorting and Show Values As ([Refreshing and calculating](#refreshing-and-calculating)).
+- A session creates PivotTables, changes their fields, moves and deletes them, groups their items, adds calculated fields and items, slicers and timelines, and takes text typed over their labels, each step undone in one ([Creating and changing a PivotTable](#creating-and-changing-a-pivottable)).
+- `writeXlsx` and `writeKept` write them as Excel opens them, without a refresh ([Writing PivotTables](#writing-pivottables)).
+
+```js
+import { createSession, registerPivot } from 'xlcalc'
+import { pivotEngine } from 'xlcalc/pivot'
+
+registerPivot(pivotEngine)
+const session = createSession({
+  sheets: [
+    { name: 'Data', cells: { A1: { value: 'Region' }, B1: { value: 'Amount' }, A2: { value: 'North' }, B2: { value: 10 }, A3: { value: 'South' }, B3: { value: 20 }, A4: { value: 'North' }, B4: { value: 5 } } },
+    { name: 'Report', cells: { E1: { formula: 'GETPIVOTDATA("Amount",A3,"Region","North")' } } },
+  ],
+})
+const north = () => session.getResult().sheets[1].cells.E1.value
+console.log(north()) // → { error: 'REF' }
+
+session.editStructure({ op: 'addPivotTable', sheet: 'Report', cell: 'A3', source: { type: 'range', sheet: 'Data', range: 'A1:B4' }, definition: { rows: [0], values: [{ field: 1 }] } })
+const { cells } = session.getBook().sheets[1]
+console.log(['A3', 'B3', 'A4', 'B4', 'A5', 'B5', 'A6', 'B6'].map((a) => cells[a].value).join(' | '))
+// → Row Labels | Sum of Amount | North | 15 | South | 20 | Grand Total | 35
+console.log(north()) // → 15
+
+// the source changes, the PivotTable keeps its values until a refresh, as in Excel
+session.setCells([{ sheet: 'Data', cell: 'B2', input: { value: 100 } }])
+console.log(north()) // → 15
+session.editStructure({ op: 'refreshPivots' })
+console.log(north()) // → 105
+```
+
+## Reading PivotTables
+
+`readXlsx` and `openKept` read each PivotTable with its cache, its fields on their axes, its value fields, filters, sorting, totals, form, formats and the layout Excel last saved, and the workbook's slicers and timelines. Opening a workbook refreshes nothing: its PivotTables' cells hold the values the file saved, also those of a cache saved to refresh on opening (`refreshOnLoad`, which `getBook` returns as the file had it); the host refreshes such a cache with `refreshPivots` after opening.
 
 ```js
 const { book } = await readXlsx(data)
@@ -11,217 +46,56 @@ book.pivotCaches[0].fields.map((f) => f.name)
 // ['Region', 'Product', 'Price', …]
 book.sheets[1].pivotTables[0].values
 // [{ field: 2, name: 'Sum of Price' }]
+```
+
+### The model
+
+The caches are the workbook's, `BookInput.pivotCaches`, each by its `id`; the PivotTables are their sheets', `SheetInput.pivotTables`, each naming its cache by that id. Slicer and timeline caches are the workbook's (`slicerCaches`, `timelineCaches`), slicers and timelines their sheets' (`slicers`, `timelines`); a slicer's or timeline's cache names the PivotTables it filters by sheet and name. Everything is plain data, so a workbook with PivotTables goes to a pool's threads as any other ([API](api.md)).
+
+- `PivotCache`: the source (cells of a sheet, a table, a defined name, in this workbook or another; consolidated ranges, an external connection, the data model and scenarios are held as the file stores them), the fields with their items, the kinds of value each holds, grouping (dates by periods, numbers by intervals, groups made by hand) and calculated fields' formulas, the rows the cache saved (`records`), calculated items, `refreshOnLoad` and `saveData`. A value of a cache is a blank (`null`), a number, text, a boolean, an error or a date (`{ date: '2024-01-01T00:00:00' }`).
+- `PivotTable`: its place (`location`: the range without the Filters area, where its headers and values begin), one `PivotField` per cache field (items with what is hidden and collapsed, subtotals, form, sorting, repeated labels, a blank line after each item), the fields on rows, columns and the Filters area, the value fields (`PivotDataField`: the function, Show Values As with its base field and item, the number format, the name), filters by label, value, Top 10 and date, grand totals, the form, captions, what errors and empty cells show, the style, the formats of its areas, and the saved layout: `rowLines` and `columnLines`, each line of the rows and of the columns as Excel laid it out.
+- A PivotTable's conditional format stays among its sheet's rules, with `pivot` naming the PivotTable and the areas it applies to.
+
+`rows` and `columns` hold `values` where several value fields lie along that axis (Σ Values). Fields and items are named by index: a field by its place in the cache, an item by its place in its field (`PivotFieldItem.item` into the cache field's items).
+
+A sheet renamed in a session is renamed in the sources of the caches and in the PivotTables that slicers and timelines name.
+
+Every check of a workbook checks what the engine reads of its PivotTables (their place, fields, value fields and saved lines, their caches' field names and items) and what refers to what (a PivotTable's cache, a slicer's cache and PivotTables, unique ids and names). The rest of the model's shape is checked by `readXlsx` and `writeXlsx`, and by every check of a workbook once `xlcalc/pivot` is registered.
+
+### What the file holds that the model does not
+
+`readXlsx` reports in `issues` (`pivotTable`):
+
+- a cache over an external connection, the data model, consolidated ranges or scenarios: read as the file stores it, never refreshed;
+- the OLAP part of a cache (hierarchies, measures, dimensions);
+- a PivotTable's chart formats, and its PivotCharts, which are charts of the sheet's drawing;
+- a PivotTable or a timeline whose cache is missing from the file, which is left out;
+- PivotTables, slicers and timelines the model cannot hold together (ids or names that clash): all of them are left out, their cells read as stored.
+
+A PivotTable's conditional format that no PivotTable of its sheet names is left out and reported as a conditional format (`conditionalFormat`). Writing over the original file with `writeKept` keeps whatever the model did not read as the file has it ([Writing over the original file](xlsx-keep.md)).
+
+## GETPIVOTDATA
+
+`GETPIVOTDATA(data_field, pivot_table, [field1, item1], …)` returns the value a PivotTable shows for a value field at the items the pairs name. It reads the PivotTable's saved layout, so it needs no `xlcalc/pivot`: a report that reads its numbers out of a PivotTable gets Excel's values without the PivotTable being refreshed.
+
+```js
 compute({ ...book, sheets: [...book.sheets, { name: 'G', cells: { A1: { formula: 'GETPIVOTDATA("Sum of Price",P!A3,"Region","North")' } } }] })
 // G!A1: North's sum, the value of its cell in the PivotTable
 ```
 
-Without `xlcalc/pivot` registered, the engine does not refresh a PivotTable or lay it out again: its cells hold the
-values the file saved, as values of the sheet. A session creates and changes PivotTables either way
-([Creating and changing a PivotTable](#creating-and-changing-a-pivottable)), and `writeXlsx` and `writeKept` write them
-([Writing PivotTables](#writing-pivottables)).
-
-## The model
-
-The caches are the workbook's, `BookInput.pivotCaches`, each by its `id`; the PivotTables are their sheets',
-`SheetInput.pivotTables`, each naming its cache by that id. Slicer and timeline caches are the workbook's
-(`slicerCaches`, `timelineCaches`), slicers and timelines their sheets' (`slicers`, `timelines`); a cache names the
-PivotTables it filters by sheet and name. Everything is plain data, so a workbook with PivotTables goes to a pool's
-threads as any other ([API](api.md)).
-
-- `PivotCache`: the source (cells of a sheet, a table, a defined name, in this workbook or another; consolidated
-  ranges, an external connection, the data model and scenarios are held as the file stores them), the fields with their
-  items, the kinds of value each holds, grouping (dates by levels, numbers by intervals, groups made by hand) and
-  calculated fields' formulas, the rows the cache saved (`records`), calculated items, `refreshOnLoad` and `saveData`.
-  A value of a cache is a blank (`null`), a number, text, a boolean, an error or a date (`{ date: '2024-01-01T00:00:00' }`).
-- `PivotTable`: its place (`location`: the range without the Filters area, where its headers and values begin), one
-  `PivotField` per cache field (items with what is hidden and collapsed, subtotals, form, sorting, repeated labels, a
-  blank line after each item), the fields on rows, columns and the Filters area, the value fields (`PivotDataField`:
-  the function, Show Values As with its base field and item, the number format, the name), filters by label, value,
-  Top 10 and date, grand totals, the form, captions, what errors and empty cells show, the style, the formats of its
-  areas, and the saved layout: `rowLines` and `columnLines`, each line of the rows and of the columns as Excel laid it out.
-- A PivotTable's conditional format stays among its sheet's rules, with `pivot` naming the PivotTable and the areas
-  it applies to.
-
-`rows` and `columns` hold `values` where several value fields lie along that axis (Σ Values). Fields and items are
-named by index: a field by its place in the cache, an item by its place in its field (`PivotFieldItem.item` into the
-cache field's items).
-
-The engine checks what it reads of a PivotTable (its place, fields, value fields and saved lines, its cache's field
-names and items) and what refers to what (a PivotTable's cache, a slicer's cache and PivotTables, unique ids and names);
-the rest of the model's shape is checked by `readXlsx` and `writeXlsx`.
-
-## What the file holds that the model does not
-
-`readXlsx` reports in `issues` (`pivotTable`):
-
-- a cache over an external connection, the data model, consolidated ranges or scenarios: read as the file stores it,
-  never refreshed;
-- the OLAP part of a cache (hierarchies, measures, dimensions);
-- a PivotTable's chart formats, and its PivotCharts, which are charts of the sheet's drawing;
-- a PivotTable or a timeline whose cache is missing from the file, which is left out;
-- a PivotTable's conditional format that no PivotTable of its sheet names, which is left out.
-
-`writeXlsx` does not write PivotTables, caches, slicers and timelines yet: the file holds the values of their cells, and
-a PivotTable's conditional formats are left out; it reports so (`pivotTable`). Writing over the original file with
-`writeKept` keeps every part of them as the file has it ([Writing over the original file](xlsx-keep.md)).
-
-A sheet renamed in a session renames it in the sources of the caches and in the PivotTables slicers and timelines name.
-
-## GETPIVOTDATA
-
-`GETPIVOTDATA(data_field, pivot_table, [field1, item1], …)` returns the value a PivotTable shows for a value field at
-the items the pairs name:
-
-- `pivot_table` is a reference to any cell of the PivotTable, its Filters area too, or a range whose top left cell is
-  one; without a Filters area, the cell just above its top left cell is the PivotTable's too (`A2` of a PivotTable at
-  `A3`, not `B2` or `A1`). A cell outside every PivotTable is `#REF!`.
-- `data_field` is the value field's name (`Sum of Price`) or its source field's (`Price`), in any case. Given as a
-  reference to a cell holding the name, it is `#REF!`, as in Excel; text a formula makes (`TEXT(A1,"0")`) is taken.
-- A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is
-  not found as `Region`), in any case. An item is matched by its label, in any case:
-  `"North"`, `"(blank)"` for the blank item, a number's or a date's label as the PivotTable shows it (`"10"`, not
-  `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. An item renamed in the
-  PivotTable is named by its new name, and a text item by its value too (`"East"` renamed `Eastern` by either; `FALSE`
-  renamed `No` by `"No"` or `FALSE`, not `"FALSE"`). A number matches a number
-  or a date of that value as `=` compares them (`DATE(2024,1,1)`, `45292`, `DATE(2025,1,2)+TIME(9,33,0)`), a boolean a
-  boolean.
-- The pairs pick the line of the rows and the column that name exactly their fields: naming all of them gives a value
-  cell, naming fewer a subtotal or the grand total where the PivotTable shows one, a collapsed item's total on its own
-  line. An inner field named without a field between finds the one line that names it, where there is one (North and
-  Code 10 when only one Flag of North has Code 10). A field of the Filters area is matched against the item it shows.
-  What the layout does not show (an item filtered out, an inner field under several outer items, a field on no axis, a
-  pair without its item, an item with subtotals of several functions) is `#REF!`.
+- `pivot_table` is a reference to any cell of the PivotTable, its Filters area too, or a range whose top left cell is one; without a Filters area, the cell just above its top left cell is the PivotTable's too (`A2` of a PivotTable at `A3`, not `B2` or `A1`). A cell outside every PivotTable is `#REF!`.
+- `data_field` is the value field's name (`Sum of Price`) or its source field's (`Price`), in any case. Given as a reference to a cell holding the name, it is `#REF!`, as in Excel; text a formula makes (`TEXT(A1,"0")`) is taken.
+- A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is not found as `Region`), in any case. An item is matched by its label, in any case: `"North"`, `"(blank)"` for the blank item, a number's or a date's label as the PivotTable shows it (`"10"`, not `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. An item renamed in the PivotTable is named by its new name, and a text item by its value too (`"East"` renamed `Eastern` by either; `FALSE` renamed `No` by `"No"` or `FALSE`, not `"FALSE"`). A number matches a number or a date of that value as `=` compares them (`DATE(2024,1,1)`, `45292`, `DATE(2025,1,2)+TIME(9,33,0)`), a boolean a boolean.
+- The pairs pick the line of the rows and the column that name exactly their fields: naming all of them gives a value cell, naming fewer a subtotal or the grand total where the PivotTable shows one, a collapsed item's total on its own line. An inner field named without a field between finds the one line that names it, where there is one (North and Code 10 when only one Flag of North has Code 10). A field of the Filters area is matched against the item it shows. What the layout does not show (an item filtered out, an inner field under several outer items, a field on no axis, a pair without its item, an item with subtotals of several functions) is `#REF!`.
 - The answer is the value of that cell, an error as it is, an empty cell 0.
-- A PivotTable whose definition changed without being laid out again (`PivotCache.stale`) is `#REF!`.
-- A PivotTable in another workbook (`[1]P!$A$3`) is `#REF!` when calculated; a file opened keeps the value Excel saved
-  for such a formula, as it keeps one over the functions of connections ([Values a file stores](formulas.md#values-a-file-stores)).
+- A PivotTable whose definition changed without being laid out again (its cache `stale`, [The PivotTable engine](#the-pivottable-engine)) is `#REF!`.
+- A PivotTable in another workbook (`[1]P!$A$3`) is `#REF!` when calculated; a file opened keeps the value Excel saved for such a formula, as it keeps one over the functions of connections ([Values a file stores](formulas.md#values-a-file-stores)).
 
-The formula learns the PivotTable's cells as its references, so an edit of them recalculates it; a change of the
-PivotTable builds the workbook again. Its call takes up to 254 arguments (126 pairs).
+The formula learns the PivotTable's cells as its references, so an edit of them recalculates it; a change of the PivotTable builds the workbook again. Its call takes up to 254 arguments (126 pairs).
 
-## Layout of a PivotTable
+## The PivotTable engine
 
-When `xlcalc/pivot` lays a PivotTable out (on a refresh, or after its definition changed), its cells come out as Excel lays them: the same lines of rows and columns, the same place on the sheet and the same values in the same cells. The workbook keeps the layout with the PivotTable (`rowLines`, `columnLines`, `location`), so that a file written afterwards opens in Excel without a refresh and `GETPIVOTDATA` finds its cells.
-
-The cells of the area hold values, not formulas, and change only when the PivotTable is laid out again: a change of the source data shows after a refresh, as in Excel.
-
-### Forms
-
-- **Compact** (the default): the row fields share the first column, each level indented one step further; the header of that column is `Row Labels`, of the columns `Column Labels`.
-- **Outline**: each row field has a column of its own, headed by the field's name; an item's label stands on a line of its own above the items under it.
-- **Tabular**: as outline, but an item's label stands on the first line of its group, and its subtotal on a line after the group.
-
-A field can have a form of its own (`PivotField.layout`). A compact field shares the column of the field before it only when that field is compact too.
-
-### Labels
-
-An item shows its caption (`PivotFieldItem.caption`), or its value: text as text, a number as a number with its field's number format, a date as a date (the short date format without one of its own), `TRUE` and an error such as `#N/A` as text, an empty value as `(blank)`. With **Repeat Item Labels** (`repeatLabels`) an outline or tabular field repeats its label on every line of its group, the subtotal lines of inner fields included; a compact field never repeats.
-
-### Subtotals and grand totals
-
-- An item over a group shows its subtotal at the top, on its own line (`subtotalTop`, the default, in compact and outline forms), or on a line below the group, labelled `East Total`.
-- Subtotals of several functions (`subtotals: ['sum', 'count']`) always go below, one line each: `East Sum`, `East Count`. A field's one function of its own goes at the top, as the automatic one does.
-- A subtotal caption of the field's own stands `?` for the item's label: `? all` shows `East all`.
-- A field has subtotals only when a field other than the value fields lies under it.
-- The grand total of the rows is a line at the bottom (`grandTotals.rows`), of the columns a column at the right (`grandTotals.columns`); with value fields on the axis, a grand total per value field, `Total Sum of Amount`.
-- **Insert Blank Line after Each Item** (`blankLine`) leaves an empty line after each item's group.
-
-### Value fields
-
-Each value cell shows its value field's value ([Show Values As](#show-values-as) applied) with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. The line of an item over its group, which shows no value, takes the format too. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
-
-Several value fields lie across the columns by default, or across the rows (`valuesOnRows`), at the place `valuesPosition` gives among the axis's fields. With **Show the Values Row** (`valuesRow`) a caption row stands over value fields alone on the columns.
-
-### Filters area
-
-The fields of the Filters area take a row each above the table, a field's name and its item (`(All)`, an item, or `(Multiple Items)`), with a blank row between them and the table; `pagesAcrossFirst` and `pagesWrap` lay them across and in runs, as Excel's options do. The table keeps its top-left cell, and moves down only when the rows above it are too few for the Filters area.
-
-### When the PivotTable does not fit
-
-A PivotTable laid out again over cells that hold something, over a table or over another PivotTable shrinks to its top-left cell, which shows `#SPILL!`, as Excel 365 does: its new layout is kept, its old cells are cleared, and the cells in the way are left as they are. A refresh of a cache lays out all its PivotTables in one step, undone in one step.
-
-### The look of its cells
-
-The cells of the area keep what Excel itself keeps in them: a compact form's row labels are aligned left and indented
-by their level (an item by its level, a subtotal at the bottom by its field's, the grand total not at all). With Merge
-and center cells with labels (`mergeLabels`), the headers are centered, the outline form's row labels centered, and the
-labels of the tabular form's rows and of the columns centered both ways and wrapped, each merged over the lines it
-labels: an item over its items' rows or columns, a subtotal and the grand total across the labels' columns or down the
-labels' rows. A PivotTable's style (`style`: `PivotStyleLight16` and the others, and its options) is kept and written,
-for Excel to draw; the engine does not draw it, as it does not draw a table's style.
-
-## Creating and changing a PivotTable
-
-`editStructure` creates, changes, moves and deletes PivotTables, as Excel's PivotTable commands do, in every kind of
-session, each operation one step of undo:
-
-```js
-session.editStructure({ op: 'addPivotTable', sheet: 'Report', cell: 'A3', source: { type: 'range', sheet: 'Data', range: 'A1:D200' }, definition: { rows: [0], values: [{ field: 3 }] } })
-session.editStructure({ op: 'editPivotTable', sheet: 'Report', pivot: 'PivotTable1', set: { columns: [1], layout: 'tabular' } })
-session.editStructure({ op: 'movePivotTable', sheet: 'Report', pivot: 'PivotTable1', to: { sheet: 'Summary', cell: 'B2' } })
-```
-
-- `addPivotTable` makes a PivotTable at a cell, or at A3 of a new sheet (`newSheet`). A source by range, table or name
-  makes a new pivot cache, its fields named by the source's header row (a repeated name gets `2`, `3`, as Excel names
-  it); `{ cache: id }` shares a cache of the workbook. Its name is the first free `PivotTable1`, `PivotTable2` without
-  `name`; its style `PivotStyleLight16`. An empty PivotTable takes three columns and 18 rows, as Excel draws one. A place
-  over cells that hold something, a table or another PivotTable, an empty header cell, a source without a row of data
-  and a name already on the sheet are refused (`pivot`).
-- `editPivotTable` sets fields of the definition (`set`, in the form `PivotTable` holds them): a value replaces a field,
-  `null` removes it, `fields` edits the PivotTable's fields by their index. A field lies on one axis, and a value field
-  without a name is named as Excel names it (`Sum of Amount`, `Сумма по полю Amount` in ru-RU, `Sum of Amount2` for a
-  second). `source` is Change Data Source: the fields kept by name, a cache of its own when the old one is shared.
-- `renamePivotTable`, `movePivotTable` (its cells move as cut and paste moves them, to another sheet too) and
-  `deletePivotTable` (its cells cleared, its cache gone with its last PivotTable).
-- `refreshPivots` refreshes the caches of the PivotTables named, or every cache that can be (Refresh All).
-
-With `xlcalc/pivot` registered, a new PivotTable is refreshed from its source and laid out, and a changed or moved one
-is laid out again from its cache, as Excel does without a refresh; a new or moved PivotTable laid over cells it cannot
-take is refused. Without it, the definition changes, the cells stay, and the PivotTable's cache is marked `stale`; the
-operation's answer names those PivotTables (`stale`), and a file written then asks Excel to refresh them on opening.
-
-The operations of the structure treat a PivotTable as Excel does: rows and columns inserted or deleted before it, a
-move of all its cells and a sheet renamed move it; an operation that would cut it (rows inserted into it, part of it
-deleted or moved, a paste, a fill, a merge or a table over part of it) is refused (`pivot`); all its cells deleted, or
-its sheet, delete it, and the slicers and timelines over it keep their caches, naming it no longer. A source by range
-moves with its cells as a reference does, and stays as it was when they or their sheet are deleted.
-
-## Writing PivotTables
-
-`writeXlsx` writes the workbook's pivot caches with their rows, PivotTables, slicers and timelines as Excel 365 writes
-them: a cache's fields with the kinds of value they hold and their items, a PivotTable's fields, axes, value fields,
-filters, sorting, totals, form and options, the layout it was last laid out with, the formats of its areas and the
-areas of its conditional formats, its style; slicers and timelines with their caches and frames. Excel opens the file
-and shows each PivotTable as written, without refreshing it, and lays it out the same after a refresh.
-
-`writeKept` keeps a PivotTable, a cache, a slicer or a timeline the session did not change as the file has it, byte for
-byte; one moved with its cells has its place written back. One the session changed or refreshed is written again from
-the workbook, a new one gets parts of its own, a deleted one goes with its parts. Slicers and timelines added or
-deleted are refused (`slicers`).
-
-## Typing into a PivotTable
-
-A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells` throws an `InputError`, and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table takes anything.
-
-```js
-const r = session.setCellText('Pivot', 'B4', '100')
-// r.ok === false, r.code === 'pivot'
-```
-
-With `xlcalc/pivot` loaded, text typed over a label names it, as in Excel, through `editPivotTable`:
-
-- over an item's label it gives the item a caption; the name of another item of the same field moves that item there;
-- over a field's name it names the field; the name of another field on the same axis swaps the two;
-- over a value field's name it names the value field; a name of a field of the source, or of another value field, is rejected;
-- over a subtotal's label it gives the field its subtotal caption, `?` standing for the item's label;
-- over `Grand Total`, `Row Labels` or `Column Labels` it gives the PivotTable's caption;
-- over a Filters area's item it shows that item (`(All)` shows all of them); a text that names no item is rejected.
-
-A formula, a cleared label, and text over a value or over an empty cell of the area are rejected, with Excel's words.
-
-## Refreshing and calculating
-
-A PivotTable summarizes the rows of its pivot cache. With `xlcalc/pivot` loaded, a session refreshes the cache from its source and lays every PivotTable over it out again, as Excel's Refresh does:
+`xlcalc/pivot` is the PivotTable engine: it refreshes caches from their sources, calculates the value fields and lays the PivotTables out on their sheets. It stays out of the root's bundle; `registerPivot` loads it once for every session:
 
 ```js
 import { registerPivot, createSession } from 'xlcalc'
@@ -233,9 +107,25 @@ session.editStructure({ op: 'refreshPivots' }) // Refresh All
 session.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'Report', name: 'PivotTable1' }] })
 ```
 
-The same lines serve Node and a browser bundle, the inline calculator and a pool, whose threads import the engine themselves. Without it, `refreshPivots` is refused (`pivot`) and the cells keep the values the file saved.
+The same lines serve Node and a browser bundle, the inline calculator and a pool, whose threads import the engine themselves.
 
-A PivotTable is not recalculated when the cells of its source change, only by a refresh, as in Excel: the cells of its area keep their values until then. Opening a workbook refreshes nothing, also a cache saved to refresh on opening (`refreshOnLoad`, which `getBook` returns as the file had it): the host refreshes it with `refreshPivots` after opening. One refresh is one step of undo. Refreshing one PivotTable refreshes its cache, and with it every PivotTable over that cache; Refresh All passes over the caches it cannot refresh, while naming a PivotTable of one is refused with the reason:
+Without it, a workbook still reads, writes and calculates its PivotTables' cells as values of the sheet, and `GETPIVOTDATA` works over them. What needs the engine:
+
+| | without `xlcalc/pivot` | with it |
+|---|---|---|
+| `addPivotTable`, `editPivotTable`, `movePivotTable` | the definition changes, the cells stay, the cache is marked `stale` | the PivotTable laid out, a new one refreshed from its source first |
+| a slicer's or a timeline's choice | written, the cells stay, the cache is marked `stale` | its PivotTables laid out again |
+| `renamePivotTable`, `deletePivotTable` | done | done |
+| `refreshPivots`, grouping, calculated fields and items | refused (`pivot`) | done |
+| text typed into a PivotTable's cell | refused | over a label, names it ([Typing into a PivotTable](#typing-into-a-pivottable)) |
+
+An operation that leaves a PivotTable `stale` names it in its answer (`stale`); `GETPIVOTDATA` over it is `#REF!` until a refresh, and a file written meanwhile asks Excel to refresh it on opening. With the engine too, a PivotTable whose cache holds no rows (`records`, which a file saved with `saveData` off lacks) has nothing to be laid out again from: an edit of its definition, a move or a slicer's choice marks it `stale` until `refreshPivots`.
+
+## Refreshing and calculating
+
+A PivotTable summarizes the rows of its pivot cache. `refreshPivots` refreshes the cache from its source and lays every PivotTable over it out again, as Excel's Refresh does. A PivotTable is not recalculated when the cells of its source change, only by a refresh, as in Excel: the cells of its area keep their values until then.
+
+A refresh is one step of undo. Refreshing one PivotTable refreshes its cache, and with it every PivotTable over that cache; Refresh All passes over the caches it cannot refresh, while naming a PivotTable of one is refused with the reason:
 
 - the source is in another workbook, consolidates several ranges, is an external connection, the data model or scenarios;
 - the cache does not allow refreshing (`enableRefresh: false`);
@@ -247,6 +137,8 @@ A PivotTable is not recalculated when the cells of its source change, only by a 
 The source is a range of a sheet, a table (its header row and data rows, without the totals row), or a defined name over a range or a table. A name whose formula gives a reference (`OFFSET(Data!$A$1,0,0,COUNTA(Data!$A:$A),4)`) is calculated for the reference it gives at the moment of the refresh. A range of whole columns stops at the last row that holds something.
 
 Each column is a field, named by its header; a repeated header is numbered (`Amount`, `Amount2`). A field keeps the values of its cells as calculated: formulas give their values, and a number in a cell with a date format is a date. Text in any case is one item: `North` and `north` are both `North`, the first spelling in the source, and after a refresh the item takes the first spelling the source has then.
+
+### What a refresh keeps
 
 A refresh keeps what the PivotTables were set to:
 
@@ -276,7 +168,7 @@ Source formula values and calculated fields keep their binary64 precision during
 
 Records count where every field lets them through:
 
-- hidden items (unchecked in the filter list), on any field, also one on no axis (a slicer keeps its choice this way);
+- hidden items (unchecked in the filter list), on any field, also one on no axis while a slicer or a timeline over the PivotTable names that field ([Slicers and timelines](#slicers-and-timelines));
 - a page field's item, or the items left checked with Select Multiple Items;
 - label filters, by the item's caption: equals, begins with, ends with and contains take `?` and `*` (`~` before one takes it as it is), in any case; greater than and between compare text in Excel's order, a number item against a number by value;
 - date filters on a field of dates, by whole days unless the filter takes the time: before, after, between, a specific date, a quarter or month of any year; the relative ones (today, this week from Sunday, last month, next quarter, year to date…) count from the session's clock, the day `TODAY` returns;
@@ -290,11 +182,11 @@ A label or date filter and a value filter on one field both apply (Allow multipl
 
 A new field lists its items ascending. Numbers and dates precede text, then booleans, errors and the blank. With Use Custom Lists when Sorting enabled, texts belonging to a common custom list use that list's order. Texts belonging to disjoint lists follow Excel's partition sort: comparing them is not a total ordering, so sorting the same field again can change their order. A label sort changes the field's `items`; reading an existing layout keeps the order saved there.
 
-Sorting by a value field puts empty values first going up and last going down, numbers by value, and errors last either way. Equal values are ordered by Excel's middle-pivot partitioning over the field's item order, independently of the last saved row or column layout. A preceding label sort can therefore change the order of equal values on a later value sort.
+Sorting by a value field puts empty values first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names. Equal values are ordered by Excel's middle-pivot partitioning over the field's item order, independently of the last saved row or column layout. A preceding label sort can therefore change the order of equal values on a later value sort.
 
 `registerPivot(pivotEngine, { sortThreads: 2 })` selects the Excel ordering profile. The default is 2, as on the Windows reference machine. Above 512 items Excel sorts partitions and merges them; this can change ties. Set `sortThreads: 1` for one partition. The setting changes the ordering profile for subsequent pivot calculations, including in existing sessions and a pool's threads; it creates no worker threads. Recovery replays each completed operation with the profile that operation used.
 
-The classic layout (fields dragged in the grid) keeps the row of the columns' area with no column field: the value field's name above it, `Total` over its values. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
+A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
 
 ### Show Values As
 
@@ -317,6 +209,92 @@ A value field shows its values as Excel's Show Values As does (`showAs`, with `b
 - An error among the values is the cell's error, or the error of the value it is set against; a running total takes the last error it passes; an error has no rank; a share of a parent is empty where the value or its parent is an error.
 - Hidden and filtered items take no part: shares are of the totals of the items shown, and running totals, ranks and the previous and next items pass over the hidden ones. A Filters area's item or items limit the records as for any value.
 - Sorting by a value field sorts by its values before Show Values As: a field sorted by a rank goes by the sums ranked.
+
+## Layout of a PivotTable
+
+When `xlcalc/pivot` lays a PivotTable out (on a refresh, or after its definition changed), its cells come out as Excel lays them: the same lines of rows and columns, the same place on the sheet and the same values in the same cells. The workbook keeps the layout with the PivotTable (`rowLines`, `columnLines`, `location`), so that a file written afterwards opens in Excel without a refresh and `GETPIVOTDATA` finds its cells.
+
+The cells of the area hold values, not formulas, and change only when the PivotTable is laid out again.
+
+### Forms
+
+- **Compact** (the default): the row fields share the first column, each level indented one step further; the header of that column is `Row Labels`, of the columns `Column Labels`.
+- **Outline**: each row field has a column of its own, headed by the field's name; an item's label stands on a line of its own above the items under it.
+- **Tabular**: as outline, but an item's label stands on the first line of its group, and its subtotal on a line after the group.
+
+A field can have a form of its own (`PivotField.layout`). A compact field shares the column of the field before it only when that field is compact too. The classic layout (fields dragged in the grid, `classicLayout`) keeps the row of the columns' area with no column field: the value field's name above it, `Total` over its values.
+
+### Labels
+
+An item shows its caption (`PivotFieldItem.caption`), or its value: text as text, a number as a number with its field's number format, a date as a date (the short date format without one of its own), `TRUE` and an error such as `#N/A` as text, an empty value as `(blank)`. With **Repeat Item Labels** (`repeatLabels`) an outline or tabular field repeats its label on every line of its group, the subtotal lines of inner fields included; a compact field never repeats.
+
+### Subtotals and grand totals
+
+- An item over a group shows its subtotal at the top, on its own line (`subtotalTop`, the default, in compact and outline forms), or on a line below the group, labelled `East Total`.
+- Subtotals of several functions (`subtotals: ['sum', 'count']`) always go below, one line each: `East Sum`, `East Count`. A field's one function of its own goes at the top, as the automatic one does.
+- A subtotal caption of the field's own stands `?` for the item's label: `? all` shows `East all`.
+- A field has subtotals only when a field other than the value fields lies under it.
+- The grand total of the rows is a line at the bottom (`grandTotals.rows`), of the columns a column at the right (`grandTotals.columns`); with value fields on the axis, a grand total per value field, `Total Sum of Amount`.
+- **Insert Blank Line after Each Item** (`blankLine`) leaves an empty line after each item's group.
+
+### Value fields
+
+Each value cell shows its value field's value ([Show Values As](#show-values-as) applied) with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. The line of an item over its group, which shows no value, takes the format too. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
+
+Several value fields lie across the columns by default, or across the rows (`valuesOnRows`), at the place `valuesPosition` gives among the axis's fields. With **Show the Values Row** (`valuesRow`) a caption row stands over value fields alone on the columns.
+
+### Filters area
+
+The fields of the Filters area take a row each above the table, a field's name and its item (`(All)`, an item, or `(Multiple Items)`), with a blank row between them and the table; `pagesAcrossFirst` and `pagesWrap` lay them across and in runs, as Excel's options do. The table keeps its top-left cell, and moves down only when the rows above it are too few for the Filters area.
+
+### When the PivotTable does not fit
+
+A PivotTable laid out again over cells that hold something, over a table or over another PivotTable shrinks to its top-left cell, which shows `#SPILL!`, as Excel 365 does: its new layout is kept, its old cells are cleared, and the cells in the way are left as they are. A new or moved PivotTable laid over cells it cannot take is refused instead. A refresh of a cache lays out all its PivotTables in one step, undone in one step.
+
+### The look of its cells
+
+The cells of the area keep what Excel itself keeps in them: a compact form's row labels are aligned left and indented by their level (an item by its level, a subtotal at the bottom by its field's, the grand total not at all). With Merge and center cells with labels (`mergeLabels`), the headers are centered, the outline form's row labels centered, and the labels of the tabular form's rows and of the columns centered both ways and wrapped, each merged over the lines it labels: an item over its items' rows or columns, a subtotal and the grand total across the labels' columns or down the labels' rows. A PivotTable's style (`style`: `PivotStyleLight16` and the others, and its options) is kept and written, for Excel to draw; the engine does not draw it, as it does not draw a table's style.
+
+## Creating and changing a PivotTable
+
+`editStructure` creates, changes, moves and deletes PivotTables, as Excel's PivotTable commands do, in every kind of session, each operation one step of undo:
+
+```js
+session.editStructure({ op: 'addPivotTable', sheet: 'Report', cell: 'A3', source: { type: 'range', sheet: 'Data', range: 'A1:D200' }, definition: { rows: [0], values: [{ field: 3 }] } })
+session.editStructure({ op: 'editPivotTable', sheet: 'Report', pivot: 'PivotTable1', set: { columns: [1], layout: 'tabular' } })
+session.editStructure({ op: 'movePivotTable', sheet: 'Report', pivot: 'PivotTable1', to: { sheet: 'Summary', cell: 'B2' } })
+```
+
+- `addPivotTable` makes a PivotTable at a cell, or at A3 of a new sheet (`newSheet`). A source by range, table or name makes a new pivot cache, its fields named by the source's header row (a repeated name gets `2`, `3`, as Excel names it); `{ cache: id }` shares a cache of the workbook. Its name is the first free `PivotTable1`, `PivotTable2` without `name`; its style `PivotStyleLight16`. An empty PivotTable takes three columns and 18 rows, as Excel draws one. A place over cells that hold something, a table or another PivotTable, an empty header cell, a source without a row of data and a name already on the sheet are refused (`pivot`).
+- `editPivotTable` sets fields of the definition (`set`, in the form `PivotTable` holds them): a value replaces a field, `null` removes it, `fields` edits the PivotTable's fields by their index. A field lies on one axis, and a value field without a name is named as Excel names it (`Sum of Amount`, `Сумма по полю Amount` in ru-RU, `Sum of Amount2` for a second). `source` is Change Data Source: the fields kept by name, a cache of its own when the old one is shared with another PivotTable, a slicer or a timeline.
+- `renamePivotTable` renames it in its conditional formats and in the slicers and timelines over it.
+- `movePivotTable` moves its cells as cut and paste moves them, to another sheet too.
+- `deletePivotTable` clears its cells and removes its conditional formats; its cache goes with the last PivotTable, slicer or timeline over it.
+- `refreshPivots` refreshes the caches of the PivotTables named, or every cache that can be (Refresh All).
+
+With `xlcalc/pivot` registered, a new PivotTable is refreshed from its source and laid out, and a changed or moved one is laid out again from its cache, as Excel does without a refresh; Change Data Source refreshes it from the new source. Without it, the cells stay and the cache is marked `stale` ([The PivotTable engine](#the-pivottable-engine)).
+
+The other operations of the structure treat a PivotTable as Excel does: rows and columns inserted or deleted before it, a move of all its cells and a sheet renamed move it; an operation that would cut it (rows inserted into it, part of it deleted or moved, a paste, a fill, a merge or a table over part of it) is refused (`pivot`); all its cells deleted, or its sheet, delete it, and the slicers and timelines over it keep their caches, naming it no longer. A source by range moves with its cells as a reference does, and stays as it was when they or their sheet are deleted.
+
+## Typing into a PivotTable
+
+A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells` throws an `InputError`, and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table, and the cells beside the filters, take anything, which a refresh does not clear.
+
+```js
+const r = session.setCellText('Pivot', 'B4', '100')
+// r.ok === false, r.code === 'pivot'
+```
+
+With `xlcalc/pivot` registered, text typed over a label names it, as in Excel, through `editPivotTable`:
+
+- over an item's label it gives the item a caption; the name of another item of the same field moves that item there;
+- over a field's name it names the field; the name of another field on the same axis swaps the two;
+- over a value field's name it names the value field; a name of a field of the source, or of another value field, is rejected;
+- over a subtotal's label it gives the field its subtotal caption, `?` standing for the item's label;
+- over `Grand Total`, `Row Labels` or `Column Labels` it gives the PivotTable's caption;
+- over a Filters area's item it shows that item (`(All)` shows all of them); a text that names no item is rejected.
+
+A formula, a cleared label, and text over a value or over an empty cell of the area are rejected, with Excel's words.
 
 ## Grouping
 
@@ -349,7 +327,7 @@ session.editStructure({ op: 'setPivotCalculatedItem', sheet: 'Report', pivot: 'P
 session.editStructure({ op: 'setPivotCalculatedField', sheet: 'Report', pivot: 'PivotTable1', name: 'Unit price', formula: null }) // deleted
 ```
 
-A name the cache has changes the formula (Excel's Modify), and a null formula deletes the field or item. Adding a calculated field does not place it on Values; `editPivotTable` does.
+A name the cache has changes the formula (Excel's Modify), and a null formula deletes the field or item. Adding a calculated field does not place it on Values; `editPivotTable` does. Like grouping, each operation lays out every PivotTable of the cache again, and is refused without `xlcalc/pivot`.
 
 - **A calculated field** is calculated in each cell of the PivotTable, totals too, over the sums of the fields it names, not row by row: `Amount/Qty` over two rows of 100 and 100, Qty 1 and 9, is 200/10 = 20. A field is named as it is (`Amount`), in quotes with spaces in its name (`'Unit price'`), and may name another calculated field. The sum of a field with errors is the last of them; of a field with no number at the cell, 0 (`MIN(Price,10*Qty)` there is 0).
 - Every cell of the rows and columns shown gets the formula, one no record reaches too, over sums of 0: `Price/Qty` there is `#DIV/0!`. A subtotal by a function of its own (Field Settings, Custom) is empty.
@@ -375,7 +353,7 @@ session.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection
 - A slicer chooses items of its field (`SlicerCache.items`, an index into the cache field's `items` with `selected: false` for an item not chosen); at least one stays chosen. Its choice is the filter of every PivotTable its cache names: the items not chosen are hidden on that field of each, whether the field lies on an axis or on none. A PivotTable's hidden items are what the calculation reads, so a PivotTable filtered by a slicer is filtered the same once the file is opened again, and a refresh keeps the choice: an item new in the source comes unchosen, as in a manual filter.
 - A slicer over a field the cache lists no items of (numbers on no axis) lists them in the cache, as Excel does.
 - A new slicer over a field whose items a PivotTable already hides, or whose Filters area shows one item, starts with that choice, and the PivotTable stays as it is. A choice on a page field hides the items not chosen and shows the field's items by Select Multiple Items, unless the one item it shows is the one chosen. Connecting another PivotTable (`cache: { pivots }`) gives it the slicer's choice; a PivotTable disconnected shows every item of the field again.
-- A field on no axis filters a PivotTable only while a slicer or timeline over the PivotTable names it. Excel saves the hidden items of a slicer disconnected, and a deleted timeline's filter, and applies neither, also on a refresh; so does the calculation here.
+- A field on no axis filters a PivotTable only while a slicer or timeline over the PivotTable names it. Excel saves the hidden items of a slicer disconnected, and a deleted timeline's filter, and applies neither, also on a refresh; neither does the calculation here.
 - A slicer without cross filtering (Visually indicate items with no data off, `noData.mark: false`) marks no item, and Excel's object model tells none has data.
 - After a choice, the PivotTables are laid out again from their cache, without reading the source, as Excel does. Each slicer then knows which of its items have data: an item has data when a record of it passes the other fields' filters (other slicers, page fields, label and date filters) and has a value for a value field. A region whose only record has no price has no data under Sum of Price. Items with no data come last, marked, unless the cache says otherwise (`noData`); items are ordered by label, ascending by default, the texts of custom lists first (`sort`, `customListSort`).
 - A timeline's dates (`TimelineCache.selection`) filter its field on every PivotTable it names, by whole days: between the two dates, or on the one day when they are the same. The field stays where it is, on no axis as a rule. The level shown (`Timeline.level`) does not change the filter; `selectionLevel` is the widest level whose periods the dates span whole (2025-01-01 to 2025-06-30: quarters). `selection: null` is Clear Filter.
@@ -383,37 +361,32 @@ session.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection
 - A name is unique among the workbook's slicers and timelines; without one, a slicer takes its field's (`Region`, `Region 1`…). A new cache is `Slicer_Region`, a timeline's `NativeTimeline_Date`. A field that is not in the source, a timeline over a field without dates and a name already used are rejected (`pivot`).
 - Each choice is one step of undo. Without `xlcalc/pivot` the choice is written all the same, and the PivotTables keep their cells with their cache marked `stale`.
 
-A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, and its look, place and order change; its choice is the AutoFilter's, which the workbook does not hold (`docs/limitations.md`), so `editSlicer` rejects items for it.
+A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, and its look, place and order change; its choice is the AutoFilter's, which the workbook does not hold ([Limitations](limitations.md)), so `editSlicer` throws an `InputError` for its items or PivotTables.
+
+## Writing PivotTables
+
+`writeXlsx` writes the workbook's pivot caches with their rows, PivotTables, slicers and timelines as Excel 365 writes them: a cache's fields with the kinds of value they hold and their items, a PivotTable's fields, axes, value fields, filters, sorting, totals, form and options, the layout it was last laid out with, the formats of its areas and its conditional formats, its style; slicers and timelines with their caches and frames. Excel opens the file and shows each PivotTable as written, without refreshing it, and lays it out the same after a refresh. A cache marked `stale` is written to be refreshed on opening (`refreshOnLoad`), so Excel lays its PivotTables out as their definition now says. A table's slicer is left out and reported (`pivotTable`). A source whose sheet was deleted is written as Excel writes it after the deletion, a link to a file by its path: Excel's is the workbook's own, which a file written anew does not know, so it is `book.xlsx` and reported (`pivotTable`); Excel opens the file and shows the PivotTable as written, and its refresh, as Excel's own, cannot read the link.
+
+`writeKept` keeps a PivotTable, a cache, a slicer or a timeline the session did not change as the file has it, byte for byte; one moved with its cells has its place written back. One the session changed or refreshed is written again from the workbook, a new one gets parts of its own, a deleted one goes with its parts. It refuses ([Refusals](xlsx-keep.md#refusals)):
+
+- slicers and timelines added or deleted (`slicers`), and so a sheet deleted with slicers or timelines on it;
+- a sheet's conditional formats changed where the file has a PivotTable's rules on it (`rules`);
+- a cache's source whose sheet, table or name was deleted (`deleted`): Excel makes a source on a deleted sheet a link to the file by its path.
 
 ## Checked against Excel
 
-Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit,
-filter, refresh and sort): for every PivotTable after each step, the PivotTable `readXlsx` reads lies where Excel showed
-it, its values begin where Excel's did, and `GETPIVOTDATA` of every value Excel showed, by the items of its line and
-column, returns that value (over 2,000 cells); the fields, value fields, filters and sorting read are those the steps
-made; the slicers and timelines of the set slicer read with the items chosen and with data, and the dates and level,
-Excel showed. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
-PivotTable of another workbook open, closed and reopened, give Excel's values; of the held-out sets gpd-held (55
-formulas), gpd-held-2 (61) and gpd-held-3 (31), predicted before they ran, 51, 57 and 30 held, and the rest were
-fitted. [Development](development.md#pivottables)
-has the details.
+Reading and `GETPIVOTDATA`. Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit, filter, refresh and sort): for every PivotTable after each step, the PivotTable `readXlsx` reads lies where Excel showed it, its values begin where Excel's did, and `GETPIVOTDATA` of every value Excel showed, by the items of its line and column, returns that value (over 2,000 cells); the fields, value fields, filters and sorting read are those the steps made. 101 `GETPIVOTDATA` formulas over these PivotTables (the set gpd-1), and formulas over a PivotTable of another workbook open, closed and reopened, give Excel's values. Of the held-out sets gpd-held (55 formulas), gpd-held-2 (61) and gpd-held-3 (31), predicted before Excel ran them, 51, 57 and 30 held, and the rest were fitted.
 
-Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, calculated-field totals included (`test/pivot-excel.test.ts` and the exact-number checks in `test/pivot-precision.test.ts`), and the operations played over the rows give the same PivotTables.
+Refreshing and calculating. Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with one known difference ([Limitations](limitations.md)). Held-out sets, predicted before Excel ran them, matched 20 of 20 of layout, 20 of 22 of filters and 17 of 18 of sorting; their three misses are rules now. 32 PivotTables in the shapes a corpus of workbooks showed (ties of a sort by value, the classic layout, items under hidden items of other fields) give Excel's cells too.
 
-The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
+Show Values As was compared on 36 PivotTables of the 15 calculations (over two row fields and a column field, the base field inner and outer, on rows and on columns, fixed, previous and next base items, a blank one, values with errors and empty cells, beside a plain value field, tabular, sorted), 22 more of hidden and filtered items, Filters area items, Top 10, items with no data shown, a base item hidden, a base field off the axes, sorting by the values shown, value fields on the rows, an average and a count, and a held-out set of 20 over other rows. Laid out again from the saved cache and refreshed from the source, each gives the cells and number formats Excel showed, shares included, to 15 significant digits.
 
-Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with one known difference (`docs/limitations.md`). Held-out sets, predicted before Excel ran them, matched 20 of 20 of layout, 20 of 22 of filters and 17 of 18 of sorting; their three misses are rules now.
+Layout. Every book of the sets basic, layout, filter, sort, edit, refresh, calc and gpd-1, laid out again from what Excel for Windows 16.0 (en-US) saved, gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`); so do the books of basic and layout that Excel ru-RU made, with its words (`Общий итог`, `Названия строк`, `Сумма по полю X`). Each entry of the set edit gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`). The look of the cells was compared with every book of basic, layout, filter, sort and edit and with Merge and center cells with labels in three forms (the set merge-1).
 
-Show Values As was compared on 36 PivotTables of the 15 calculations (over two row fields and a column field, the base field inner and outer, on rows and on columns, fixed, previous and next base items, a blank one, values with errors and empty cells, beside a plain value field, tabular, sorted), 22 more of hidden and filtered items, Filters area items, Top 10, items with no data shown, a base item hidden, a base field off the axes, sorting by the values shown, value fields on the rows, an average and a count, and a held-out set of 20 over other rows. Laid out again from the saved cache and refreshed from the source, each gives the cells and number formats Excel showed, a share to within one part in 10¹⁴ (`docs/limitations.md`).
+Grouping and calculated fields. Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, calculated-field totals included (`test/pivot-excel.test.ts` and the exact-number checks in `test/pivot-precision.test.ts`), and the operations played over the rows give the same PivotTables.
 
-Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`). Each workbook Excel saved holds the choice as the session writes it. Deleting a slicer, a timeline, and the sheet of a PivotTable they filter (the set slicer-delete, 5 cases), and refreshing the workbooks saved after (slicer-file), gave the rules of deletion above. The held-out set slicer-held over other rows (16 cases: slicers over a page field and fields on no axis, over two PivotTables, crossing, sorted, items without data placed or hidden, connected and disconnected; timelines by levels and over one day) held 47 of 50 reads as predicted; its three misses are the rules of disconnecting and of no cross filtering above.
+Slicers and timelines. Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`); each workbook Excel saved holds the choice as the session writes it. Deleting a slicer, a timeline, and the sheet of a PivotTable they filter (the set slicer-delete, 5 cases), and refreshing the workbooks saved after (slicer-file), gave the rules of deletion above. The held-out set slicer-held over other rows (16 cases) held 47 of 50 reads as predicted; its three misses are the rules of disconnecting and of no cross filtering above.
 
-Excel for Windows opened the files `writeXlsx` wrote of every book of the sets basic, layout, filter, sort and slicer
-(the books read and written again), and the files `writeKept` wrote after each entry of the set edit made by a session
-over the book of its first step (234 files): each PivotTable read at once, without a refresh, shows the cells, place and
-values Excel showed for its own book, and after `RefreshTable`, which answers true, the cells Excel's own book shows
-after one; Excel saved the slicers and timelines read back as written. The held-out sets of layout, filter and sort,
-predicted before Excel ran them, matched 31 of 37, 57 of 61 and 27 of 27; the misses were two bugs of reading and the
-way Excel writes a subtotal's functions, a field's repeated labels and a label filter, rules now. The look of the cells
-was compared with every book of basic, layout, filter, sort and edit and with Merge and center cells with labels in
-three forms (the set merge-1).
+Writing. Excel for Windows opened the files `writeXlsx` wrote of every book of the sets basic, layout, filter, sort and slicer (the books read and written again), and the files `writeKept` wrote after each entry of the set edit made by a session over the book of its first step (234 files): each PivotTable read at once, without a refresh, shows the cells, place and values Excel showed for its own book, and after a refresh the cells Excel's own book shows after one; Excel saved the slicers and timelines read back as written. The held-out sets of layout, filter and sort, predicted before Excel ran them, matched 31 of 37, 57 of 61 and 27 of 27; their misses are rules now.
+
+[Development](development.md#pivottables) has the details.

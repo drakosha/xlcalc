@@ -9,7 +9,8 @@
  */
 import type { BookInput } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
 import { renaming, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
@@ -21,7 +22,7 @@ import { renamePivotSheets } from './pivots.js'
 export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
   const key = sheetKey(sheet)
   const problem = nameProblem(book, name, sheet)
-  if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
+  if (problem) return { ok: false, code: 'sheet_name', message: sayPivot(book.locale, problem) }
   const renamed = (s: string) => (sheetKey(s) === key ? name : s)
   const out = renamePivotSheets(rewriteBook(book, renaming(new Map([[key, name]])), sheetNames(book), renamed), renamed)
   if (out.activeSheet !== undefined) out.activeSheet = renamed(out.activeSheet)
@@ -56,7 +57,7 @@ function nameProblem(book: BookInput, name: string, own?: string): EngineMessage
 /** A new empty sheet before `before`, else at the end; references across sheets take it in between their ends. */
 export function insertSheet(book: BookInput, name: string, before: string | undefined): Applied {
   const problem = nameProblem(book, name)
-  if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
+  if (problem) return { ok: false, code: 'sheet_name', message: sayPivot(book.locale, problem) }
   const at = before === undefined ? book.sheets.length : sheetIndex(book, before)
   const sheets = [...book.sheets]
   sheets.splice(at, 0, { name, cells: {} })
@@ -96,11 +97,11 @@ function movedTo(sheets: BookInput['sheets'], before: string | undefined): numbe
 }
 
 export function deleteSheet(book: BookInput, sheet: string): Applied {
-  if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
+  if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: sayPivot(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
   const s = sheetIndex(book, sheet)
   if (book.sheets[s].hidden === 'very') return veryHidden(book, sheet)
-  if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
+  if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: sayPivot(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((_, i) => i !== s) }
   if (rest.activeSheet !== undefined && sheetKey(rest.activeSheet) === key) rest.activeSheet = rest.sheets.find((s) => !s.hidden)!.name
@@ -109,7 +110,7 @@ export function deleteSheet(book: BookInput, sheet: string): Applied {
 }
 
 /** Excel deletes and moves no very hidden sheet: its object model answers an error, Excel for Mac at times nothing. */
-const veryHidden = (book: BookInput, sheet: string): Applied => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
+const veryHidden = (book: BookInput, sheet: string): Applied => ({ ok: false, code: 'very_hidden', message: sayPivot(book.locale, { key: 'veryHidden', sheet }) })
 
 /** Whether the sheet `key` is the book's only visible sheet. */
 const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)
@@ -120,7 +121,7 @@ const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (
  */
 export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): Applied {
   const key = sheetKey(sheet)
-  if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
+  if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: sayPivot(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const sheets: BookInput['sheets'] = book.sheets.map((s) => {
     if (sheetKey(s.name) !== key) return s
     return withField(s, 'hidden', hidden || undefined, true)

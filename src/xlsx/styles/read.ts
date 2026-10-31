@@ -8,7 +8,7 @@ import type { AlignmentStyle, BorderLine, CellProtection, CellStyle, FontStyle, 
 import { HORIZONTAL, LINES, VERTICAL } from '../../input/styles.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { attributes, element, flag, within, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
@@ -190,17 +190,17 @@ export function numberFormatOf(formats: Map<number, string> | undefined, id: num
 export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   if (!xml) return { styles: [], xfs: [] }
   const formats = new Map<number, string>()
-  for (const e of elements(element(xml, 'numFmts')?.body ?? '', 'numFmt')) {
+  for (const e of within(xml, 'numFmts', 'numFmt')) {
     const a = attributes(e.attrs)
     if (a.numFmtId !== undefined && a.formatCode !== undefined) formats.set(Number(a.numFmtId), decodeXml(a.formatCode))
   }
-  const fonts = elements(element(xml, 'fonts')?.body ?? '', 'font').map((e) => font(e, p))
+  const fonts = within(xml, 'fonts', 'font').map((e) => font(e, p))
   const base = fonts[0]?.style ?? {}
-  const fills = elements(element(xml, 'fills')?.body ?? '', 'fill').map((e) => readFill(e, p))
-  const borders = elements(element(xml, 'borders')?.body ?? '', 'border').map((e) => border(e, p))
+  const fills = within(xml, 'fills', 'fill').map((e) => readFill(e, p))
+  const borders = within(xml, 'borders', 'border').map((e) => border(e, p))
   const styles: CellStyle[] = []
   const byKey = new Map<string, number>()
-  const xfs = elements(element(xml, 'cellXfs')?.body ?? '', 'xf').map((e): Xf => {
+  const xfs = within(xml, 'cellXfs', 'xf').map((e): Xf => {
     const a = attributes(e.attrs)
     const f = fonts[Number(a.fontId ?? 0)]
     const fi = fills[Number(a.fillId ?? 0)]

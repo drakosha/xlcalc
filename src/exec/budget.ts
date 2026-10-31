@@ -6,7 +6,7 @@
  */
 import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../contract.js'
 import { nowMs } from '../env.js'
-import { say } from '../locale/messages.js'
+import { sayEdit } from '../locale/edit-messages.js'
 
 /** A signal and what aborts it. */
 export interface Abort {
@@ -221,7 +221,7 @@ export function allotWrites(n: number | (() => number), locale: string | undefin
   if (active === null || active.writes === Infinity) return
   const size = typeof n === 'number' ? n : n()
   const max = active.writes
-  if (size > max) throw new CalcError('limit', say(locale, { key: 'writesLimit', size, max }), { limit: 'writes', max, size })
+  if (size > max) throw new CalcError('limit', sayEdit(locale, { key: 'writesLimit', size, max }), { limit: 'writes', max, size })
 }
 
 /** A limit error without a cell gets the cell of the formula being computed. */

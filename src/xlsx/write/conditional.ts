@@ -15,9 +15,8 @@ import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, type FileNames } from './formula.js'
 import type { CellFormats } from './styles.js'
-import { rgb } from './xml.js'
+import { rgb, X14 } from './xml.js'
 
-const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 const XM = 'http://schemas.microsoft.com/office/excel/2006/main'
 /** The extension of a 2007 data bar that names its 2010 part. */
 const BAR_ID = '{B025F937-C7B1-47D3-B67F-A62EFF666E3E}'

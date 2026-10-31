@@ -10,7 +10,7 @@
 import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
-import { attributes, element, elements } from '../xml/scan.js'
+import { attributes, attrsAt, elements } from '../xml/scan.js'
 import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
@@ -79,7 +79,7 @@ export class KeptStyles {
     this.twins = this.first.some((f, i) => f !== i)
     // the default font a style's font is relative to: the file's first, its colour and theme scheme as written
     const font = elements(this.listText('fonts'), 'font')[0]?.body ?? ''
-    const val = (local: string) => attributes(element(font, local)?.attrs ?? '').val
+    const val = (local: string) => attrsAt(font, local).val
     this.base = {
       name: decodeXml(val('name') ?? DEFAULT_FONT.name),
       size: Number(val('sz')) || DEFAULT_FONT.size,
