@@ -1,7 +1,7 @@
 /**
  * Operations on PivotTables with `xlcalc/pivot` loaded: a new PivotTable is refreshed from its source and laid out, an
- * edit of its definition lays it out again from the cache, and a formula over it (`GETPIVOTDATA`) follows; a new or
- * moved PivotTable laid over data is refused. In every kind of session and both execution modes, with undo and redo.
+ * edit of its definition lays it out again from the cache, and a formula over it (`GETPIVOTDATA`) follows; a new
+ * PivotTable laid over data spills, a moved one is refused. In every kind of session and both execution modes, with undo and redo.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { editStructure, registerPivot, type BookInput, type StructureOp } from '../src/index.js'
@@ -34,10 +34,12 @@ describe('addPivotTable and editPivotTable with xlcalc/pivot', () => {
     expect(['A3', 'B3', 'A4', 'B4', 'A5', 'B5', 'A6', 'B6'].map((a) => cells[a]?.value)).toEqual(['Row Labels', 'Sum of Amount', 'North', 15, 'South', 20, 'Grand Total', 35])
   })
 
-  it('refuses a new or moved PivotTable laid over data', () => {
+  it('spills a new PivotTable laid over data, as Excel 365 makes it, and refuses a moved one', () => {
     const over = { ...book() }
     over.sheets = [over.sheets[0], { ...over.sheets[1], cells: { ...over.sheets[1].cells, B30: { value: 'x' } } }]
-    expect(editStructure(over, { ...add, cell: 'A29' })).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining("there's already data") })
+    const spilled = editStructure(over, { ...add, cell: 'A29' })
+    if (!spilled.ok) throw new Error(spilled.message)
+    expect([spilled.book.sheets[1].pivotTables![0].location.range, spilled.book.sheets[1].cells.A29, spilled.book.sheets[1].cells.B30]).toEqual(['A29', { formula: '#SPILL!' }, { value: 'x' }])
     const r = editStructure(over, add)
     if (!r.ok) throw new Error(r.message)
     expect(editStructure(r.book, { op: 'movePivotTable', sheet: 'P', pivot: 'PivotTable1', to: { sheet: 'P', cell: 'A28' } })).toMatchObject({ ok: false, code: 'pivot' })

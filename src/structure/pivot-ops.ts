@@ -4,8 +4,7 @@
  * PivotTable shows, `xlcalc/pivot` lays it out again when loaded (`pivot/hook.ts`); without it, the PivotTable keeps its
  * cells and its cache is marked `stale`, which a file asks Excel to refresh on opening.
  */
-import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, SheetInput, StructureOp } from '../contract.js'
-import { withoutContent } from '../array-areas.js'
+import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
@@ -35,7 +34,7 @@ export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTab
 
 /** The fields of each operation, for `editStructure`'s check of its shape. */
 export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {
-  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition', 'replace', 'groupDates'],
+  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition', 'groupDates'],
   editPivotTable: ['sheet', 'pivot', 'set', 'source', 'groupDates'],
   renamePivotTable: ['sheet', 'pivot', 'name'],
   movePivotTable: ['sheet', 'pivot', 'to'],
@@ -158,15 +157,15 @@ function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn, pivot
   return uniqueNames(names).map((name) => ({ name }))
 }
 
-/** A refusal of a PivotTable's place over cells that are not empty (but with `replace`), a table or another PivotTable. */
-function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable, replace = false): Applied | null {
+/** A refusal of a PivotTable's place over another PivotTable, and but for `pivotOnly` over cells that are not empty or a table. */
+function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable, pivotOnly = false): Applied | null {
   const sheet = book.sheets[s]
   const range = areaText(x)
   const other = pivotsOn(book, s).find((t) => t.p !== own && meets(t.x, x))
   if (other) return refuse(book, { key: 'pivotOverPivot', pivot, other: other.p.name })
+  if (pivotOnly) return null
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, x))
   if (table) return refuse(book, { key: 'pivotOverTable', pivot, table: table.name })
-  if (replace) return null
   const ownArea = own && pivotArea(own)
   for (const [a, cell] of Object.entries(sheet.cells)) {
     if (cell.value === undefined && cell.formula === undefined) continue
@@ -174,20 +173,6 @@ function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: 
     if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2 && !(ownArea && row >= ownArea.r1 && row <= ownArea.r2 && col >= ownArea.c1 && col <= ownArea.c2)) return refuse(book, { key: 'pivotOverData', sheet: sheet.name, range, pivot })
   }
   return null
-}
-
-/** The sheet with the contents of the cells of `x` cleared, their formats kept, and its merges there gone, as Excel replaces them. */
-function emptied(sheet: SheetInput, x: Rect): SheetInput {
-  const cells = { ...sheet.cells }
-  for (const [a, cell] of Object.entries(cells)) {
-    const { row, col } = parseAddress(a)
-    if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
-    const rest = withoutContent(cell)
-    if (rest) cells[a] = rest
-    else delete cells[a]
-  }
-  const merges = sheet.merges?.filter((m) => !meets(x, parseRange(m)!))
-  return withField({ ...sheet, cells }, 'merges', merges?.length ? merges : undefined)
 }
 
 /** The first name `prefix1`, `prefix2`… no PivotTable of the book has. */
@@ -231,18 +216,20 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
     cache = { id: caches.reduce((m, c) => Math.max(m, c.id), 0) + 1, source: src, fields: fields ?? [] }
     caches = [...caches, cache]
   }
-  const replace = o.replace === undefined ? false : (checkBoolean(o.replace, 'op.replace'), o.replace as boolean)
   const groupDates = o.groupDates !== undefined && (checkBoolean(o.groupDates, 'op.groupDates'), o.groupDates === true)
   const x = { r1: at.row, c1: at.col, r2: at.row + EMPTY_ROWS - 1, c2: at.col + EMPTY_COLUMNS - 1 }
-  const over = placeRefusal(start, s, x, pivotName, undefined, replace)
+  // with xlcalc/pivot a place over cells that hold something or a table spills, as Excel 365 makes it (the set over-data)
+  const spills = pivotRefresh() !== null
+  const over = placeRefusal(start, s, x, pivotName, undefined, spills)
   if (over) return over
-  let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
+  // laid out from its top-left cell alone, whose value it takes, as Excel does; its empty place without xlcalc/pivot
+  let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(spills ? { ...x, r2: x.r1, c2: x.c1 } : x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
   if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition', start.locale)
   const sheets = [...start.sheets]
-  sheets[s] = withField(replace ? emptied(sheets[s], x) : sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
+  sheets[s] = withField(sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
   const out = checkedPivots({ ...start, sheets, pivotCaches: caches }, 'op')
   const ref = { sheet: sheets[s].name, name: pivotName }
-  const r = relaid(out, [ref], values, true, geometry, replace ? 'replace' : 'refuse')
+  const r = relaid(out, [ref], values, true, geometry, 'spill')
   return groupDates ? groupedDates(r, ref, undefined, values) : r
 }
 

@@ -102,9 +102,9 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       return
     }
     if ('create' in op) {
-      // over the cache of PT1, as addPivotTable makes it; COM with Excel's alerts off answers its question to replace the cells
+      // over the cache of PT1, as addPivotTable makes it
       const [sheet, cell] = op.at.split('!')
-      return take(k, pivotOp(book, { op: 'addPivotTable', sheet, cell, name: op.create, source: { cache: book.pivotCaches![0].id }, replace: true }, valuesOf(book)))
+      return take(k, pivotOp(book, { op: 'addPivotTable', sheet, cell, name: op.create, source: { cache: book.pivotCaches![0].id } }, valuesOf(book)))
     }
     if ('addFields' in op || 'cubeField' in op) {
       // placed as Orientation places them
@@ -126,7 +126,8 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
           if ('merge' in op) return { ...s, merges: [...(s.merges ?? []), range] }
           const x = parseRange(range)!
           const columns = Array.from({ length: x.c2 - x.c1 + 1 }, (_, c) => ({ name: String(s.cells[formatAddress(x.r1, x.c1 + c)]?.value ?? `Column${c + 1}`) }))
-          return { ...s, tables: [...(s.tables ?? []), { name: op.name, range, columns }] }
+          // named as Excel names a new table: the name asked for may be a cell's (T1)
+          return { ...s, tables: [...(s.tables ?? []), { name: `Table${(s.tables?.length ?? 0) + 1}`, range, columns }] }
         }),
       }
       return
