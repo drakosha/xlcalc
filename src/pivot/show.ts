@@ -6,13 +6,14 @@
  * Excel's rules (the set `show`): a cell with no record counts as 0, so it shows 0% of a total, a running total so far,
  * a difference from its base; a share of a base item or a difference in percent shows #NULL! there. A share of an
  * empty cell (a parent, a base item, the running total of empty cells) is empty, of 0 or of an empty total of the row
- * or column #DIV/0!. A base item missing
- * from the line (no line of the base item with the same items under it) is #N/A; the previous or next item is the
- * previous or next that has such a line, the item itself for the first or last; a base item not shown (hidden,
- * filtered out) and a base field on no axis are #N/A in every cell. The cells of the base item itself are empty for a
- * difference, 100% for a share; the lines without the base field (totals above it) are empty. A running total takes
- * the last error it passes; an error has no rank. Hidden and filtered items take no part: totals, running totals,
- * ranks and the previous and next items are those of the items shown (the set show-items).
+ * or column #DIV/0!. A base item missing from the line (no line of the base item with the same items under it) is
+ * #N/A; the previous or next item is the previous or next that has such a line, the item itself for the first or
+ * last; a base item not shown (hidden, filtered out) and a base field on no axis are #N/A in every cell. The cells of
+ * the base item itself are empty for a difference, 100% for a share; the lines without the base field (totals above
+ * it) are empty. A running total takes the last error it passes; an error has no rank, and ties share one, the next
+ * value taking the next rank; a share of a parent is empty where the value or its parent is an error. Hidden and
+ * filtered items take no part: totals, running totals, ranks and the previous and next items are those of the items
+ * shown (the sets show-items and show-held).
  */
 import type { CellValue, ErrorCode, PivotDataField, PivotFunction } from '../contract.js'
 import type { PivotNode, PivotResult } from './result.js'
@@ -33,6 +34,9 @@ function ratio(x: CellValue, y: CellValue): CellValue {
   if (typeof x !== 'number' || typeof y !== 'number') return null
   return y === 0 ? DIV0 : x / y
 }
+
+/** A share of a parent: empty where either is an error (the set show-held). */
+const ofParent = (x: CellValue, parent: CellValue): CellValue => (isError(x) || isError(parent) ? null : ratio(x, parent))
 
 /** The items under a node's path, `values` passed over (its copies under each value field are alike). */
 function under(nodes: readonly PivotNode[]): readonly PivotNode[] {
@@ -94,9 +98,9 @@ export function shownValues(result: PivotResult): PivotValueAt {
       case 'percentOfColumn':
         return ratio(n, at([], columns) ?? 0)
       case 'percentOfParentRow':
-        return ratio(n, rows.length ? at(rows.slice(0, -1), columns) : x)
+        return ofParent(n, rows.length ? at(rows.slice(0, -1), columns) : x)
       case 'percentOfParentColumn':
-        return ratio(n, columns.length ? at(rows, columns.slice(0, -1)) : x)
+        return ofParent(n, columns.length ? at(rows, columns.slice(0, -1)) : x)
       case 'index': {
         // (value × grand total) / (row total × column total), an empty total as 0
         const [r, c, g] = [at(rows, []), at([], columns), at([], [])].map((y) => y ?? 0)
@@ -123,7 +127,7 @@ export function shownValues(result: PivotResult): PivotValueAt {
     const own = path[level]
     switch (show) {
       case 'percentOfParent':
-        return ratio(n, axis ? at(rows, path.slice(0, level + 1)) : at(path.slice(0, level + 1), columns))
+        return ofParent(n, axis ? at(rows, path.slice(0, level + 1)) : at(path.slice(0, level + 1), columns))
       case 'difference':
       case 'percentDiff':
       case 'percent': {
@@ -162,13 +166,14 @@ export function shownValues(result: PivotResult): PivotValueAt {
       }
       case 'rankAscending':
       case 'rankDescending': {
+        // ties share a rank, and the next value takes the next rank (1, 2, 2, 3: the set show-held)
         if (typeof x !== 'number') return null
-        let rank = 1
+        const before = new Set<number>()
         for (const item of items) {
           const y = along(item)
-          if (typeof y === 'number' && (show === 'rankAscending' ? y < x : y > x)) rank++
+          if (typeof y === 'number' && (show === 'rankAscending' ? y < x : y > x)) before.add(y)
         }
-        return rank
+        return before.size + 1
       }
     }
     return x

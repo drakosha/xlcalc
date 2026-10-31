@@ -49,7 +49,8 @@ const KNOWN: Record<string, string[]> = {
   layout: [],
   refresh: [],
   show: [],
-  'show-held': [],
+  // grouped dates, which the engine calculates once grouping is in
+  'show-held': ['months-difference/0/saved', 'months-difference/0/source', 'months-run/0/saved', 'months-run/0/source'],
   'show-items': [],
 }
 
