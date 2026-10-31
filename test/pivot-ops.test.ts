@@ -110,7 +110,7 @@ describe('editPivotTable, renamePivotTable, movePivotTable, deletePivotTable wit
   })
 
   it('refreshPivots without xlcalc/pivot is refused', () => {
-    expect(editStructure(made(), { op: 'refreshPivots' })).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('xlcalc/pivot') })
+    expect(editStructure(made(), { op: 'refreshPivots' })).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('registerPivot(pivotEngine)') })
     expect(editStructure(made(), { op: 'refreshPivots', pivots: [{ sheet: 'P', name: 'Nope' }] })).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('Nope') })
   })
 })
