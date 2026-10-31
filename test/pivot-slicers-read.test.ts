@@ -1,12 +1,13 @@
 /**
  * Slicers and timelines read into the workbook: a book Excel for Mac saved with a PivotTable
  * (`test/excel/keep/made/pivot.xlsx`), its parts of a slicer and a timeline over that PivotTable written by hand as the
- * x14 and x15 schemas give them (no book of Excel's with them is in the tests yet): the caches with their field, the
- * PivotTables they filter by the sheet's id, the items chosen and the dates, the pivot cache by Excel 2010's id; the
- * slicer and the timeline with their places in the sheet's drawing.
+ * x14 and x15 schemas give them, every field of the model; and the books Excel for Windows saved for the set slicer,
+ * against the items and dates Excel showed.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import type { PivotValue } from '../src/index.js'
+import { dateToSerial } from '../src/model.js'
 import { readXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { pack } from './xlsx-fixtures.js'
@@ -55,5 +56,37 @@ describe('slicers and timelines read', () => {
     expect(pivot.slicers).toEqual([{ name: 'Region', cache: 'Slicer_Region', caption: 'Regions', showCaption: false, style: 'SlicerStyleLight2', columns: 2, rowHeight: 241300, place: { from: 'E3', to: 'G13', fromOffset: [9525, 0] } }])
     expect(pivot.timelines).toEqual([{ name: 'Month', cache: 'NativeTimeline_Month', caption: 'Month', showScrollbar: false, scrollPosition: '2024-01-01T00:00:00', level: 'months', selectionLevel: 'quarters', place: { from: 'H3', to: 'M10' } }])
     expect(r.issues.filter((i) => i.code === 'pivotTable')).toEqual([])
+  })
+})
+
+describe('slicers and timelines of the books Excel for Windows saved (the set slicer)', () => {
+  it("each slicer's items chosen and with data, each timeline's dates and level, as Excel showed them", async () => {
+    const dir = new URL('./excel/win/pivot/', import.meta.url)
+    const answers = (JSON.parse(readFileSync(new URL('slicer.json', dir), 'utf8')) as { answers: Record<string, { phases: { slicers?: Record<string, unknown> }[] }> }).answers
+    const LEVELS = ['years', 'quarters', 'months', 'days']
+    const day = (iso: string) => dateToSerial(iso.slice(0, 10))
+    let n = 0
+    for (const [id, a] of Object.entries(answers)) {
+      const shown = a.phases.at(-1)!.slicers ?? {}
+      const r = await readXlsx(readFileSync(new URL(`slicer/${id}.xlsx`, dir)))
+      expect(r.issues.filter((i) => i.code === 'pivotTable'), id).toEqual([])
+      for (const [name, s] of Object.entries(shown)) {
+        n++
+        if (Array.isArray(s)) {
+          const c = r.book.slicerCaches!.find((x) => x.name === name)!
+          const items = r.book.pivotCaches!.find((x) => x.id === c.cache)!.fields.find((f) => f.name === c.field)!.items!
+          const label = (v: PivotValue) => (v === null ? '(blank)' : typeof v === 'boolean' ? String(v).toUpperCase() : String(v))
+          const got = c.items!.map((i) => [label(items[i.item]), i.selected !== false, !i.noData])
+          expect([id, name, [...got].sort()]).toEqual([id, name, [...s].sort()])
+          expect(r.book.sheets.flatMap((x) => x.slicers ?? []).some((x) => x.cache === name), `${id} ${name}`).toBe(true)
+        } else {
+          const [from, to, level] = (s as { timeline: [number, number, number] }).timeline
+          const c = r.book.timelineCaches!.find((x) => x.name === name)!
+          const t = r.book.sheets.flatMap((x) => x.timelines ?? []).find((x) => x.cache === name)!
+          expect([id, day(c.selection!.start), day(c.selection!.end), t.level ?? 'months']).toEqual([id, from, to, LEVELS[level]])
+        }
+      }
+    }
+    expect(n).toBeGreaterThan(15)
   })
 })

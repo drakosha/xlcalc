@@ -1,0 +1,4927 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-31",
+  "seconds": 82.1
+ },
+ "cases": [
+  {
+   "id": "amount-sum",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-average",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-max",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-min",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "min"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-product",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "product"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-countNums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-stdDev",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "stdDev"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-stdDevp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "stdDevp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-var",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "var"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-varp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "varp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-sum",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-average",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-max",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-min",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "min"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-product",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "product"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-countNums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-stdDev",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "stdDev"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-stdDevp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "stdDevp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-var",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "var"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-varp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "varp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "region-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Region",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "region-count-nums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Region",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "note-count",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Note",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns-only",
+   "ops": [
+    {
+     "columns": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "values-only",
+   "ops": [
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "rows-only",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "two-values",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-values-rows",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    },
+    {
+     "valuesOn": "row"
+    }
+   ]
+  },
+  {
+   "id": "two-values-rows-first",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "average"
+     }
+    },
+    {
+     "valuesOn": "row",
+     "position": 1
+    }
+   ]
+  },
+  {
+   "id": "two-values-columns",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-values-alone",
+   "ops": [
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "same-field-twice",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-rows",
+   "ops": [
+    {
+     "rows": [
+      "Code"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "date-rows",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "flag-rows",
+   "ops": [
+    {
+     "rows": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "product-rows",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "note-rows",
+   "ops": [
+    {
+     "rows": [
+      "Note"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-rows",
+   "ops": [
+    {
+     "rows": [
+      "Amount"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "caption-format",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "caption": "Total price",
+      "format": "#,##0.00"
+     }
+    }
+   ]
+  },
+  {
+   "id": "shown-errors",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "errorText": "err",
+      "emptyText": "-"
+     }
+    }
+   ]
+  },
+  {
+   "id": "source-table",
+   "source": "table",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "source-name",
+   "source": "name",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-rows",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "page",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "page-one",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "page": "Product",
+     "items": [
+      "Apple"
+     ]
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "amount-sum": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-count": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-average": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-max": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-min": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-product": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-countNums": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-stdDev": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-stdDevp": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-var": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "amount-varp": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-sum": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-count": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-average": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-max": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-min": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-product": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-countNums": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-stdDev": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-stdDevp": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-var": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "price-varp": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "region-count": "1 P!A3;P!A4",
+  "region-count-nums": "1 P!A3;P!A4",
+  "note-count": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "columns": "1 P!A3;P!B3;P!C3;P!D3;P!E3;P!F3;P!G3;P!A4;P!B4;P!C4;P!D4;P!E4;P!F4;P!G4;P!A5;P!B5;P!C5;P!D5;P!E5;P!F5;P!G5;P!A6;P!B6;P!C6;P!D6;P!E6;P!F6;P!G6;P!A7;P!B7;P!C7;P!D7;P!E7;P!F7;P!G7;P!A8;P!B8;P!C8;P!D8;P!E8;P!F8;P!G8;P!A9;P!B9;P!C9;P!D9;P!E9;P!F9;P!G9;P!A10;P!B10;P!C10;P!D10;P!E10;P!F10;P!G10",
+  "columns-only": "1 P!A3;P!B3;P!C3;P!D3;P!E3;P!F3;P!G3;P!A4;P!B4;P!C4;P!D4;P!E4;P!F4;P!G4;P!A5;P!B5;P!C5;P!D5;P!E5;P!F5;P!G5",
+  "values-only": "1 P!A3;P!A4",
+  "rows-only": "1 P!A3;P!A4;P!A5;P!A6;P!A7;P!A8;P!A9",
+  "two-values": "1 P!A3;P!B3;P!C3;P!A4;P!B4;P!C4;P!A5;P!B5;P!C5;P!A6;P!B6;P!C6;P!A7;P!B7;P!C7;P!A8;P!B8;P!C8;P!A9;P!B9;P!C9",
+  "two-values-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14;P!A15;P!B15;P!A16;P!B16;P!A17;P!B17;P!A18;P!B18;P!A19;P!B19;P!A20;P!B20",
+  "two-values-rows-first": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14;P!A15;P!B15;P!A16;P!B16;P!A17;P!B17",
+  "two-values-columns": "1 P!A3;P!B3;P!C3;P!D3;P!E3;P!F3;P!G3;P!A4;P!B4;P!C4;P!D4;P!E4;P!F4;P!G4;P!A5;P!B5;P!C5;P!D5;P!E5;P!F5;P!G5;P!A6;P!B6;P!C6;P!D6;P!E6;P!F6;P!G6;P!A7;P!B7;P!C7;P!D7;P!E7;P!F7;P!G7;P!A8;P!B8;P!C8;P!D8;P!E8;P!F8;P!G8;P!A9;P!B9;P!C9;P!D9;P!E9;P!F9;P!G9;P!A10;P!B10;P!C10;P!D10;P!E10;P!F10;P!G10;P!A11;P!B11;P!C11;P!D11;P!E11;P!F11;P!G11",
+  "two-values-alone": "1 P!A3;P!B3;P!A4;P!B4",
+  "same-field-twice": "1 P!A3;P!B3;P!C3;P!A4;P!B4;P!C4;P!A5;P!B5;P!C5;P!A6;P!B6;P!C6;P!A7;P!B7;P!C7;P!A8;P!B8;P!C8;P!A9;P!B9;P!C9",
+  "code-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8",
+  "date-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14;P!A15;P!B15;P!A16;P!B16;P!A17;P!B17",
+  "flag-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6",
+  "product-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "note-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14",
+  "amount-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14;P!A15;P!B15;P!A16;P!B16;P!A17;P!B17;P!A18;P!B18;P!A19;P!B19;P!A20;P!B20;P!A21;P!B21;P!A22;P!B22;P!A23;P!B23;P!A24;P!B24;P!A25;P!B25;P!A26;P!B26;P!A27;P!B27;P!A28;P!B28;P!A29;P!B29;P!A30;P!B30;P!A31;P!B31;P!A32;P!B32;P!A33;P!B33;P!A34;P!B34;P!A35;P!B35;P!A36;P!B36;P!A37;P!B37;P!A38;P!B38;P!A39;P!B39;P!A40;P!B40;P!A41;P!B41;P!A42;P!B42;P!A43;P!B43;P!A44;P!B44;P!A45;P!B45;P!A46;P!B46;P!A47;P!B47;P!A48;P!B48",
+  "caption-format": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "shown-errors": "1 P!A3;P!B3;P!C3;P!D3;P!E3;P!F3;P!G3;P!A4;P!B4;P!C4;P!D4;P!E4;P!F4;P!G4;P!A5;P!B5;P!C5;P!D5;P!E5;P!F5;P!G5;P!A6;P!B6;P!C6;P!D6;P!E6;P!F6;P!G6;P!A7;P!B7;P!C7;P!D7;P!E7;P!F7;P!G7;P!A8;P!B8;P!C8;P!D8;P!E8;P!F8;P!G8;P!A9;P!B9;P!C9;P!D9;P!E9;P!F9;P!G9;P!A10;P!B10;P!C10;P!D10;P!E10;P!F10;P!G10",
+  "source-table": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "source-name": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "two-rows": "1 P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9;P!A10;P!B10;P!A11;P!B11;P!A12;P!B12;P!A13;P!B13;P!A14;P!B14;P!A15;P!B15;P!A16;P!B16;P!A17;P!B17;P!A18;P!B18;P!A19;P!B19;P!A20;P!B20;P!A21;P!B21;P!A22;P!B22;P!A23;P!B23;P!A24;P!B24;P!A25;P!B25;P!A26;P!B26;P!A27;P!B27",
+  "page": "1 P!A1;P!B1;P!A2;P!B2;P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9",
+  "page-one": "1 P!A1;P!B1;P!A2;P!B2;P!A3;P!B3;P!A4;P!B4;P!A5;P!B5;P!A6;P!B6;P!A7;P!B7;P!A8;P!B8;P!A9;P!B9"
+ },
+ "answers": {
+  "amount-sum": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Amount",
+     "Sum of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "801",
+     "801,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "2028.27",
+     "2028,27"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-count": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Amount",
+     "Count of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "10",
+     "10,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "12",
+     "12,0"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "10",
+     "10,0"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "10",
+     "10,0"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "1",
+     "1,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "43",
+     "43,0"
+    ]
+   }
+  },
+  "amount-average": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Average of Amount",
+     "Average of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "89",
+     "89,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "225.3633333",
+     "225,363333333333"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-max": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Max of Amount",
+     "Max of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "616.51",
+     "616,51"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "665.77",
+     "665,77"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-min": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Min of Amount",
+     "Min of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "-80.65",
+     "-80,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "13.19",
+     "13,19"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-product": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Product of Amount",
+     "Product of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "-1.82386E+16",
+     "-1,823855269749E+16"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "6.90121E+18",
+     "6,901205177817E+18"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-countNums": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Amount",
+     "Count of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "9",
+     "9,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "11",
+     "11,0"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "8",
+     "8,0"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "9",
+     "9,0"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "1",
+     "1,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "38",
+     "38,0"
+    ]
+   }
+  },
+  "amount-stdDev": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "StdDev of Amount",
+     "StdDev of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "220.9886172",
+     "220,988617184234"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "249.6654513",
+     "249,66545130434"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-stdDevp": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "StdDevp of Amount",
+     "StdDevp of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "208.3500664",
+     "208,350066368013"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "235.3868449",
+     "235,386844860398"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "0",
+     "0,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-var": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Var of Amount",
+     "Var of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "48835.96893",
+     "4,8835968925E+4"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "62332.83758",
+     "6,2332837575E+4"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "amount-varp": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Varp of Amount",
+     "Varp of Amount"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "43409.75016",
+     "4,340975015556E+4"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "#N/A",
+     ""
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "#DIV/0!",
+     ""
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "55406.96673",
+     "5,540696673333E+4"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "0",
+     "0,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "#N/A",
+     ""
+    ]
+   }
+  },
+  "price-sum": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "price-count": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Price",
+     "Count of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "8",
+     "8,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "12",
+     "12,0"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "10",
+     "10,0"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "11",
+     "11,0"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "41",
+     "41,0"
+    ]
+   }
+  },
+  "price-average": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Average of Price",
+     "Average of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "17.33125",
+     "17,33125"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "21.61818182",
+     "21,618181818182"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "34.84",
+     "34,84"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "27.44636364",
+     "27,446363636364"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "25.669",
+     "25,669"
+    ]
+   }
+  },
+  "price-max": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Max of Price",
+     "Max of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "41.46",
+     "41,46"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "45.07",
+     "45,07"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "46.27",
+     "46,27"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "47.51",
+     "47,51"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "47.51",
+     "47,51"
+    ]
+   }
+  },
+  "price-min": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Min of Price",
+     "Min of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "1.03",
+     "1,03"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "2.82",
+     "2,82"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "13.71",
+     "13,71"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "2.67",
+     "2,67"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1.03",
+     "1,03"
+    ]
+   }
+  },
+  "price-product": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Product of Price",
+     "Product of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "142080304.9",
+     "1,42080304864E+8"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "8.97934E+12",
+     "8,979337690835E+12"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "1.58049E+15",
+     "1,580489189196E+15"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "4.34822E+14",
+     "4,348215315569E+14"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "8.7676E+50",
+     "8,767600562964E+50"
+    ]
+   }
+  },
+  "price-countNums": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Price",
+     "Count of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "8",
+     "8,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "11",
+     "11,0"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "10",
+     "10,0"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "11",
+     "11,0"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "40",
+     "40,0"
+    ]
+   }
+  },
+  "price-stdDev": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "StdDev of Price",
+     "StdDev of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "15.58939698",
+     "15,589396980457"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "14.52810712",
+     "14,528107115644"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "10.10094495",
+     "10,100944950295"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "15.40532783",
+     "15,405327826909"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "14.94934503",
+     "14,949345033247"
+    ]
+   }
+  },
+  "price-stdDevp": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "StdDevp of Price",
+     "StdDevp of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "14.58254559",
+     "14,58254559182"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "13.85200663",
+     "13,85200662732"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "9.582597769",
+     "9,582597768873"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "14.68840376",
+     "14,688403758022"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "14.76129547",
+     "14,761295471604"
+    ]
+   }
+  },
+  "price-var": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Var of Price",
+     "Var of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "243.0292982",
+     "243,029298214286"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "211.0658964",
+     "211,065896363636"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "102.0290889",
+     "102,029088888889"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "237.3241255",
+     "237,324125454545"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "223.4829169",
+     "223,482916923077"
+    ]
+   }
+  },
+  "price-varp": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Varp of Price",
+     "Varp of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "212.6506359",
+     "212,6506359375"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "191.8780876",
+     "191,878087603306"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "91.82618",
+     "91,82618"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "215.749205",
+     "215,749204958678"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "217.895844",
+     "217,895844"
+    ]
+   }
+  },
+  "region-count": {
+   "cells": {
+    "P!A3": [
+     "Count of Region",
+     "Count of Region"
+    ],
+    "P!A4": [
+     "47",
+     "47,0"
+    ]
+   }
+  },
+  "region-count-nums": {
+   "cells": {
+    "P!A3": [
+     "Count of Region",
+     "Count of Region"
+    ],
+    "P!A4": [
+     "0",
+     "0,0"
+    ]
+   }
+  },
+  "note-count": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Note",
+     "Count of Note"
+    ],
+    "P!A4": [
+     "100",
+     "100"
+    ],
+    "P!B4": [
+     "1",
+     "1,0"
+    ],
+    "P!A5": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B5": [
+     "10",
+     "10,0"
+    ],
+    "P!A6": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B6": [
+     "11",
+     "11,0"
+    ],
+    "P!A7": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B7": [
+     "10",
+     "10,0"
+    ],
+    "P!A8": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B8": [
+     "4",
+     "4,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "36",
+     "36,0"
+    ]
+   }
+  },
+  "columns": {
+   "cells": {
+    "P!A3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B3": [
+     "Column Labels",
+     "Column Labels"
+    ],
+    "P!C3": [
+     "",
+     ""
+    ],
+    "P!D3": [
+     "",
+     ""
+    ],
+    "P!E3": [
+     "",
+     ""
+    ],
+    "P!F3": [
+     "",
+     ""
+    ],
+    "P!G3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B4": [
+     "100",
+     "100"
+    ],
+    "P!C4": [
+     "Apple",
+     "Apple"
+    ],
+    "P!D4": [
+     "Banana",
+     "Banana"
+    ],
+    "P!E4": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!F4": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!G4": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!A5": [
+     "East",
+     "East"
+    ],
+    "P!B5": [
+     "",
+     ""
+    ],
+    "P!C5": [
+     "42.49",
+     "42,49"
+    ],
+    "P!D5": [
+     "42.25",
+     "42,25"
+    ],
+    "P!E5": [
+     "41.22",
+     "41,22"
+    ],
+    "P!F5": [
+     "12.69",
+     "12,69"
+    ],
+    "P!G5": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A6": [
+     "North",
+     "North"
+    ],
+    "P!B6": [
+     "",
+     ""
+    ],
+    "P!C6": [
+     "112.07",
+     "112,07"
+    ],
+    "P!D6": [
+     "59.39",
+     "59,39"
+    ],
+    "P!E6": [
+     "45.43",
+     "45,43"
+    ],
+    "P!F6": [
+     "20.91",
+     "20,91"
+    ],
+    "P!G6": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A7": [
+     "South",
+     "South"
+    ],
+    "P!B7": [
+     "",
+     ""
+    ],
+    "P!C7": [
+     "127.41",
+     "127,41"
+    ],
+    "P!D7": [
+     "70.96",
+     "70,96"
+    ],
+    "P!E7": [
+     "107.19",
+     "107,19"
+    ],
+    "P!F7": [
+     "42.84",
+     "42,84"
+    ],
+    "P!G7": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A8": [
+     "West",
+     "West"
+    ],
+    "P!B8": [
+     "14.85",
+     "14,85"
+    ],
+    "P!C8": [
+     "73.68",
+     "73,68"
+    ],
+    "P!D8": [
+     "126.81",
+     "126,81"
+    ],
+    "P!E8": [
+     "50.18",
+     "50,18"
+    ],
+    "P!F8": [
+     "36.39",
+     "36,39"
+    ],
+    "P!G8": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A9": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B9": [
+     "",
+     ""
+    ],
+    "P!C9": [
+     "",
+     ""
+    ],
+    "P!D9": [
+     "",
+     ""
+    ],
+    "P!E9": [
+     "",
+     ""
+    ],
+    "P!F9": [
+     "",
+     ""
+    ],
+    "P!G9": [
+     "",
+     ""
+    ],
+    "P!A10": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B10": [
+     "14.85",
+     "14,85"
+    ],
+    "P!C10": [
+     "355.65",
+     "355,65"
+    ],
+    "P!D10": [
+     "299.41",
+     "299,41"
+    ],
+    "P!E10": [
+     "244.02",
+     "244,02"
+    ],
+    "P!F10": [
+     "112.83",
+     "112,83"
+    ],
+    "P!G10": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "columns-only": {
+   "cells": {
+    "P!A3": [
+     "",
+     ""
+    ],
+    "P!B3": [
+     "Column Labels",
+     "Column Labels"
+    ],
+    "P!C3": [
+     "",
+     ""
+    ],
+    "P!D3": [
+     "",
+     ""
+    ],
+    "P!E3": [
+     "",
+     ""
+    ],
+    "P!F3": [
+     "",
+     ""
+    ],
+    "P!G3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "",
+     ""
+    ],
+    "P!B4": [
+     "East",
+     "East"
+    ],
+    "P!C4": [
+     "North",
+     "North"
+    ],
+    "P!D4": [
+     "South",
+     "South"
+    ],
+    "P!E4": [
+     "West",
+     "West"
+    ],
+    "P!F4": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!G4": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!A5": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B5": [
+     "138.65",
+     "138,65"
+    ],
+    "P!C5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!D5": [
+     "348.4",
+     "348,4"
+    ],
+    "P!E5": [
+     "301.91",
+     "301,91"
+    ],
+    "P!F5": [
+     "",
+     ""
+    ],
+    "P!G5": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "values-only": {
+   "cells": {
+    "P!A3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "rows-only": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ]
+   }
+  },
+  "two-values": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!C3": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!C4": [
+     "10",
+     "10,0"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!C5": [
+     "14",
+     "14,0"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!C6": [
+     "11",
+     "11,0"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!C7": [
+     "12",
+     "12,0"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!C8": [
+     "1",
+     "1,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!C9": [
+     "48",
+     "48,0"
+    ]
+   }
+  },
+  "two-values-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "",
+     ""
+    ],
+    "P!A5": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B5": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A6": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!B6": [
+     "10",
+     "10,0"
+    ],
+    "P!A7": [
+     "North",
+     "North"
+    ],
+    "P!B7": [
+     "",
+     ""
+    ],
+    "P!A8": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B8": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A9": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!B9": [
+     "14",
+     "14,0"
+    ],
+    "P!A10": [
+     "South",
+     "South"
+    ],
+    "P!B10": [
+     "",
+     ""
+    ],
+    "P!A11": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B11": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A12": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!B12": [
+     "11",
+     "11,0"
+    ],
+    "P!A13": [
+     "West",
+     "West"
+    ],
+    "P!B13": [
+     "",
+     ""
+    ],
+    "P!A14": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B14": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A15": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!B15": [
+     "12",
+     "12,0"
+    ],
+    "P!A16": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B16": [
+     "",
+     ""
+    ],
+    "P!A17": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B17": [
+     "",
+     ""
+    ],
+    "P!A18": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!B18": [
+     "1",
+     "1,0"
+    ],
+    "P!A19": [
+     "Total Sum of Price",
+     "Total Sum of Price"
+    ],
+    "P!B19": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!A20": [
+     "Total Count of Qty",
+     "Total Count of Qty"
+    ],
+    "P!B20": [
+     "48",
+     "48,0"
+    ]
+   }
+  },
+  "two-values-rows-first": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B4": [
+     "",
+     ""
+    ],
+    "P!A5": [
+     "East",
+     "East"
+    ],
+    "P!B5": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A6": [
+     "North",
+     "North"
+    ],
+    "P!B6": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A7": [
+     "South",
+     "South"
+    ],
+    "P!B7": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A8": [
+     "West",
+     "West"
+    ],
+    "P!B8": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A9": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B9": [
+     "",
+     ""
+    ],
+    "P!A10": [
+     "Average of Qty",
+     "Average of Qty"
+    ],
+    "P!B10": [
+     "",
+     ""
+    ],
+    "P!A11": [
+     "East",
+     "East"
+    ],
+    "P!B11": [
+     "4.3",
+     "4,3"
+    ],
+    "P!A12": [
+     "North",
+     "North"
+    ],
+    "P!B12": [
+     "4",
+     "4,0"
+    ],
+    "P!A13": [
+     "South",
+     "South"
+    ],
+    "P!B13": [
+     "4.727272727",
+     "4,727272727273"
+    ],
+    "P!A14": [
+     "West",
+     "West"
+    ],
+    "P!B14": [
+     "4.333333333",
+     "4,333333333333"
+    ],
+    "P!A15": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B15": [
+     "9",
+     "9,0"
+    ],
+    "P!A16": [
+     "Total Sum of Price",
+     "Total Sum of Price"
+    ],
+    "P!B16": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!A17": [
+     "Total Average of Qty",
+     "Total Average of Qty"
+    ],
+    "P!B17": [
+     "4.416666667",
+     "4,416666666667"
+    ]
+   }
+  },
+  "two-values-columns": {
+   "cells": {
+    "P!A3": [
+     "",
+     ""
+    ],
+    "P!B3": [
+     "Column Labels",
+     "Column Labels"
+    ],
+    "P!C3": [
+     "",
+     ""
+    ],
+    "P!D3": [
+     "",
+     ""
+    ],
+    "P!E3": [
+     "",
+     ""
+    ],
+    "P!F3": [
+     "",
+     ""
+    ],
+    "P!G3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "",
+     ""
+    ],
+    "P!B4": [
+     "FALSE",
+     "FALSE"
+    ],
+    "P!C4": [
+     "",
+     ""
+    ],
+    "P!D4": [
+     "TRUE",
+     "TRUE"
+    ],
+    "P!E4": [
+     "",
+     ""
+    ],
+    "P!F4": [
+     "Total Sum of Price",
+     "Total Sum of Price"
+    ],
+    "P!G4": [
+     "Total Max of Qty",
+     "Total Max of Qty"
+    ],
+    "P!A5": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B5": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!C5": [
+     "Max of Qty",
+     "Max of Qty"
+    ],
+    "P!D5": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!E5": [
+     "Max of Qty",
+     "Max of Qty"
+    ],
+    "P!F5": [
+     "",
+     ""
+    ],
+    "P!G5": [
+     "",
+     ""
+    ],
+    "P!A6": [
+     "East",
+     "East"
+    ],
+    "P!B6": [
+     "38.62",
+     "38,62"
+    ],
+    "P!C6": [
+     "7",
+     "7,0"
+    ],
+    "P!D6": [
+     "100.03",
+     "100,03"
+    ],
+    "P!E6": [
+     "7",
+     "7,0"
+    ],
+    "P!F6": [
+     "138.65",
+     "138,65"
+    ],
+    "P!G6": [
+     "7",
+     "7,0"
+    ],
+    "P!A7": [
+     "North",
+     "North"
+    ],
+    "P!B7": [
+     "97.35",
+     "97,35"
+    ],
+    "P!C7": [
+     "8",
+     "8,0"
+    ],
+    "P!D7": [
+     "140.45",
+     "140,45"
+    ],
+    "P!E7": [
+     "9",
+     "9,0"
+    ],
+    "P!F7": [
+     "237.8",
+     "237,8"
+    ],
+    "P!G7": [
+     "9",
+     "9,0"
+    ],
+    "P!A8": [
+     "South",
+     "South"
+    ],
+    "P!B8": [
+     "111.85",
+     "111,85"
+    ],
+    "P!C8": [
+     "9",
+     "9,0"
+    ],
+    "P!D8": [
+     "236.55",
+     "236,55"
+    ],
+    "P!E8": [
+     "9",
+     "9,0"
+    ],
+    "P!F8": [
+     "348.4",
+     "348,4"
+    ],
+    "P!G8": [
+     "9",
+     "9,0"
+    ],
+    "P!A9": [
+     "West",
+     "West"
+    ],
+    "P!B9": [
+     "88.12",
+     "88,12"
+    ],
+    "P!C9": [
+     "7",
+     "7,0"
+    ],
+    "P!D9": [
+     "213.79",
+     "213,79"
+    ],
+    "P!E9": [
+     "9",
+     "9,0"
+    ],
+    "P!F9": [
+     "301.91",
+     "301,91"
+    ],
+    "P!G9": [
+     "9",
+     "9,0"
+    ],
+    "P!A10": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B10": [
+     "",
+     ""
+    ],
+    "P!C10": [
+     "",
+     ""
+    ],
+    "P!D10": [
+     "",
+     ""
+    ],
+    "P!E10": [
+     "9",
+     "9,0"
+    ],
+    "P!F10": [
+     "",
+     ""
+    ],
+    "P!G10": [
+     "9",
+     "9,0"
+    ],
+    "P!A11": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B11": [
+     "335.94",
+     "335,94"
+    ],
+    "P!C11": [
+     "9",
+     "9,0"
+    ],
+    "P!D11": [
+     "690.82",
+     "690,82"
+    ],
+    "P!E11": [
+     "9",
+     "9,0"
+    ],
+    "P!F11": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!G11": [
+     "9",
+     "9,0"
+    ]
+   }
+  },
+  "two-values-alone": {
+   "cells": {
+    "P!A3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!B3": [
+     "Count of Amount",
+     "Count of Amount"
+    ],
+    "P!A4": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!B4": [
+     "43",
+     "43,0"
+    ]
+   }
+  },
+  "same-field-twice": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!C3": [
+     "Average of Price",
+     "Average of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!C4": [
+     "17.33125",
+     "17,33125"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!C5": [
+     "21.61818182",
+     "21,618181818182"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!C6": [
+     "34.84",
+     "34,84"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!C7": [
+     "27.44636364",
+     "27,446363636364"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!C8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ],
+    "P!C9": [
+     "25.669",
+     "25,669"
+    ]
+   }
+  },
+  "code-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Qty",
+     "Sum of Qty"
+    ],
+    "P!A4": [
+     "10",
+     "10,0"
+    ],
+    "P!B4": [
+     "73",
+     "73,0"
+    ],
+    "P!A5": [
+     "20",
+     "20,0"
+    ],
+    "P!B5": [
+     "67",
+     "67,0"
+    ],
+    "P!A6": [
+     "30",
+     "30,0"
+    ],
+    "P!B6": [
+     "65",
+     "65,0"
+    ],
+    "P!A7": [
+     "20",
+     "20"
+    ],
+    "P!B7": [
+     "7",
+     "7,0"
+    ],
+    "P!A8": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B8": [
+     "212",
+     "212,0"
+    ]
+   }
+  },
+  "date-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Qty",
+     "Sum of Qty"
+    ],
+    "P!A4": [
+     "1/1/24",
+     "понедельник, 1 января 2024 г. в 00:00:00"
+    ],
+    "P!B4": [
+     "19",
+     "19,0"
+    ],
+    "P!A5": [
+     "3/15/24",
+     "пятница, 15 марта 2024 г. в 00:00:00"
+    ],
+    "P!B5": [
+     "15",
+     "15,0"
+    ],
+    "P!A6": [
+     "5/1/24",
+     "среда, 1 мая 2024 г. в 00:00:00"
+    ],
+    "P!B6": [
+     "9",
+     "9,0"
+    ],
+    "P!A7": [
+     "7/15/24",
+     "понедельник, 15 июля 2024 г. в 00:00:00"
+    ],
+    "P!B7": [
+     "14",
+     "14,0"
+    ],
+    "P!A8": [
+     "9/1/24",
+     "воскресенье, 1 сентября 2024 г. в 00:00:00"
+    ],
+    "P!B8": [
+     "21",
+     "21,0"
+    ],
+    "P!A9": [
+     "11/15/24",
+     "пятница, 15 ноября 2024 г. в 00:00:00"
+    ],
+    "P!B9": [
+     "21",
+     "21,0"
+    ],
+    "P!A10": [
+     "2/8/25",
+     "суббота, 8 февраля 2025 г. в 00:00:00"
+    ],
+    "P!B10": [
+     "17",
+     "17,0"
+    ],
+    "P!A11": [
+     "4/22/25",
+     "вторник, 22 апреля 2025 г. в 00:00:00"
+    ],
+    "P!B11": [
+     "20",
+     "20,0"
+    ],
+    "P!A12": [
+     "6/8/25",
+     "воскресенье, 8 июня 2025 г. в 00:00:00"
+    ],
+    "P!B12": [
+     "22",
+     "22,0"
+    ],
+    "P!A13": [
+     "8/22/25",
+     "пятница, 22 августа 2025 г. в 00:00:00"
+    ],
+    "P!B13": [
+     "16",
+     "16,0"
+    ],
+    "P!A14": [
+     "10/8/25",
+     "среда, 8 октября 2025 г. в 00:00:00"
+    ],
+    "P!B14": [
+     "20",
+     "20,0"
+    ],
+    "P!A15": [
+     "12/22/25",
+     "понедельник, 22 декабря 2025 г. в 00:00:00"
+    ],
+    "P!B15": [
+     "16",
+     "16,0"
+    ],
+    "P!A16": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B16": [
+     "2",
+     "2,0"
+    ],
+    "P!A17": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B17": [
+     "212",
+     "212,0"
+    ]
+   },
+   "differs": {
+    "P!A4": [
+     "1/1/24",
+     "1/1/2024"
+    ],
+    "P!A5": [
+     "3/15/24",
+     "3/15/2024"
+    ],
+    "P!A6": [
+     "5/1/24",
+     "5/1/2024"
+    ],
+    "P!A7": [
+     "7/15/24",
+     "7/15/2024"
+    ],
+    "P!A8": [
+     "9/1/24",
+     "9/1/2024"
+    ],
+    "P!A9": [
+     "11/15/24",
+     "11/15/2024"
+    ],
+    "P!A10": [
+     "2/8/25",
+     "2/8/2025"
+    ],
+    "P!A11": [
+     "4/22/25",
+     "4/22/2025"
+    ],
+    "P!A12": [
+     "6/8/25",
+     "6/8/2025"
+    ],
+    "P!A13": [
+     "8/22/25",
+     "8/22/2025"
+    ],
+    "P!A14": [
+     "10/8/25",
+     "10/8/2025"
+    ],
+    "P!A15": [
+     "12/22/25",
+     "12/22/2025"
+    ]
+   }
+  },
+  "flag-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Qty",
+     "Sum of Qty"
+    ],
+    "P!A4": [
+     "FALSE",
+     "FALSE"
+    ],
+    "P!B4": [
+     "74",
+     "74,0"
+    ],
+    "P!A5": [
+     "TRUE",
+     "TRUE"
+    ],
+    "P!B5": [
+     "138",
+     "138,0"
+    ],
+    "P!A6": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B6": [
+     "212",
+     "212,0"
+    ]
+   }
+  },
+  "product-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Qty",
+     "Sum of Qty"
+    ],
+    "P!A4": [
+     "100",
+     "100"
+    ],
+    "P!B4": [
+     "3",
+     "3,0"
+    ],
+    "P!A5": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B5": [
+     "69",
+     "69,0"
+    ],
+    "P!A6": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B6": [
+     "62",
+     "62,0"
+    ],
+    "P!A7": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B7": [
+     "55",
+     "55,0"
+    ],
+    "P!A8": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B8": [
+     "23",
+     "23,0"
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "212",
+     "212,0"
+    ]
+   }
+  },
+  "note-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Qty",
+     "Sum of Qty"
+    ],
+    "P!A4": [
+     "check",
+     "check"
+    ],
+    "P!B4": [
+     "39",
+     "39,0"
+    ],
+    "P!A5": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 1",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 1"
+    ],
+    "P!B5": [
+     "4",
+     "4,0"
+    ],
+    "P!A6": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 17",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 17"
+    ],
+    "P!B6": [
+     "8",
+     "8,0"
+    ],
+    "P!A7": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 25",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 25"
+    ],
+    "P!B7": [
+     "4",
+     "4,0"
+    ],
+    "P!A8": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 33",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 33"
+    ],
+    "P!B8": [
+     "2",
+     "2,0"
+    ],
+    "P!A9": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 41",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 41"
+    ],
+    "P!B9": [
+     "5",
+     "5,0"
+    ],
+    "P!A10": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 9",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 9"
+    ],
+    "P!B10": [
+     "4",
+     "4,0"
+    ],
+    "P!A11": [
+     "late",
+     "late"
+    ],
+    "P!B11": [
+     "38",
+     "38,0"
+    ],
+    "P!A12": [
+     "OK",
+     "OK"
+    ],
+    "P!B12": [
+     "47",
+     "47,0"
+    ],
+    "P!A13": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B13": [
+     "61",
+     "61,0"
+    ],
+    "P!A14": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B14": [
+     "212",
+     "212,0"
+    ]
+   }
+  },
+  "amount-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Count of Qty",
+     "Count of Qty"
+    ],
+    "P!A4": [
+     "-80.65",
+     "-80,65"
+    ],
+    "P!B4": [
+     "1",
+     "1,0"
+    ],
+    "P!A5": [
+     "-80.26",
+     "-80,26"
+    ],
+    "P!B5": [
+     "1",
+     "1,0"
+    ],
+    "P!A6": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!B6": [
+     "1",
+     "1,0"
+    ],
+    "P!A7": [
+     "-57.61",
+     "-57,61"
+    ],
+    "P!B7": [
+     "1",
+     "1,0"
+    ],
+    "P!A8": [
+     "-50.39",
+     "-50,39"
+    ],
+    "P!B8": [
+     "1",
+     "1,0"
+    ],
+    "P!A9": [
+     "-30.95",
+     "-30,95"
+    ],
+    "P!B9": [
+     "1",
+     "1,0"
+    ],
+    "P!A10": [
+     "-11.58",
+     "-11,58"
+    ],
+    "P!B10": [
+     "1",
+     "1,0"
+    ],
+    "P!A11": [
+     "-9.48",
+     "-9,48"
+    ],
+    "P!B11": [
+     "1",
+     "1,0"
+    ],
+    "P!A12": [
+     "-3.02",
+     "-3,02"
+    ],
+    "P!B12": [
+     "1",
+     "1,0"
+    ],
+    "P!A13": [
+     "13.19",
+     "13,19"
+    ],
+    "P!B13": [
+     "1",
+     "1,0"
+    ],
+    "P!A14": [
+     "44.32",
+     "44,32"
+    ],
+    "P!B14": [
+     "1",
+     "1,0"
+    ],
+    "P!A15": [
+     "53.64",
+     "53,64"
+    ],
+    "P!B15": [
+     "1",
+     "1,0"
+    ],
+    "P!A16": [
+     "98.19",
+     "98,19"
+    ],
+    "P!B16": [
+     "1",
+     "1,0"
+    ],
+    "P!A17": [
+     "98.93",
+     "98,93"
+    ],
+    "P!B17": [
+     "1",
+     "1,0"
+    ],
+    "P!A18": [
+     "104.6",
+     "104,6"
+    ],
+    "P!B18": [
+     "1",
+     "1,0"
+    ],
+    "P!A19": [
+     "109.75",
+     "109,75"
+    ],
+    "P!B19": [
+     "1",
+     "1,0"
+    ],
+    "P!A20": [
+     "120.22",
+     "120,22"
+    ],
+    "P!B20": [
+     "1",
+     "1,0"
+    ],
+    "P!A21": [
+     "144.6",
+     "144,6"
+    ],
+    "P!B21": [
+     "1",
+     "1,0"
+    ],
+    "P!A22": [
+     "151.32",
+     "151,32"
+    ],
+    "P!B22": [
+     "1",
+     "1,0"
+    ],
+    "P!A23": [
+     "156.76",
+     "156,76"
+    ],
+    "P!B23": [
+     "1",
+     "1,0"
+    ],
+    "P!A24": [
+     "178.47",
+     "178,47"
+    ],
+    "P!B24": [
+     "1",
+     "1,0"
+    ],
+    "P!A25": [
+     "180.37",
+     "180,37"
+    ],
+    "P!B25": [
+     "1",
+     "1,0"
+    ],
+    "P!A26": [
+     "208.93",
+     "208,93"
+    ],
+    "P!B26": [
+     "1",
+     "1,0"
+    ],
+    "P!A27": [
+     "248.1",
+     "248,1"
+    ],
+    "P!B27": [
+     "1",
+     "1,0"
+    ],
+    "P!A28": [
+     "301.99",
+     "301,99"
+    ],
+    "P!B28": [
+     "1",
+     "1,0"
+    ],
+    "P!A29": [
+     "305.39",
+     "305,39"
+    ],
+    "P!B29": [
+     "1",
+     "1,0"
+    ],
+    "P!A30": [
+     "421.32",
+     "421,32"
+    ],
+    "P!B30": [
+     "1",
+     "1,0"
+    ],
+    "P!A31": [
+     "459.98",
+     "459,98"
+    ],
+    "P!B31": [
+     "1",
+     "1,0"
+    ],
+    "P!A32": [
+     "616.51",
+     "616,51"
+    ],
+    "P!B32": [
+     "1",
+     "1,0"
+    ],
+    "P!A33": [
+     "623.11",
+     "623,11"
+    ],
+    "P!B33": [
+     "1",
+     "1,0"
+    ],
+    "P!A34": [
+     "637.35",
+     "637,35"
+    ],
+    "P!B34": [
+     "1",
+     "1,0"
+    ],
+    "P!A35": [
+     "642.68",
+     "642,68"
+    ],
+    "P!B35": [
+     "1",
+     "1,0"
+    ],
+    "P!A36": [
+     "665.77",
+     "665,77"
+    ],
+    "P!B36": [
+     "1",
+     "1,0"
+    ],
+    "P!A37": [
+     "674.23",
+     "674,23"
+    ],
+    "P!B37": [
+     "1",
+     "1,0"
+    ],
+    "P!A38": [
+     "730.74",
+     "730,74"
+    ],
+    "P!B38": [
+     "1",
+     "1,0"
+    ],
+    "P!A39": [
+     "738.05",
+     "738,05"
+    ],
+    "P!B39": [
+     "1",
+     "1,0"
+    ],
+    "P!A40": [
+     "740.55",
+     "740,55"
+    ],
+    "P!B40": [
+     "1",
+     "1,0"
+    ],
+    "P!A41": [
+     "787.09",
+     "787,09"
+    ],
+    "P!B41": [
+     "1",
+     "1,0"
+    ],
+    "P!A42": [
+     "12",
+     "12"
+    ],
+    "P!B42": [
+     "1",
+     "1,0"
+    ],
+    "P!A43": [
+     "n/a",
+     "n/a"
+    ],
+    "P!B43": [
+     "1",
+     "1,0"
+    ],
+    "P!A44": [
+     "TRUE",
+     "TRUE"
+    ],
+    "P!B44": [
+     "1",
+     "1,0"
+    ],
+    "P!A45": [
+     "#N/A",
+     "#N/A"
+    ],
+    "P!B45": [
+     "1",
+     "1,0"
+    ],
+    "P!A46": [
+     "#DIV/0!",
+     "#DIV/0!"
+    ],
+    "P!B46": [
+     "1",
+     "1,0"
+    ],
+    "P!A47": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B47": [
+     "5",
+     "5,0"
+    ],
+    "P!A48": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B48": [
+     "48",
+     "48,0"
+    ]
+   }
+  },
+  "caption-format": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Total price",
+     "Total price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.80",
+     "237,8"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.40",
+     "348,4"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1,026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "shown-errors": {
+   "cells": {
+    "P!A3": [
+     "Sum of Amount",
+     "Sum of Amount"
+    ],
+    "P!B3": [
+     "Column Labels",
+     "Column Labels"
+    ],
+    "P!C3": [
+     "",
+     ""
+    ],
+    "P!D3": [
+     "",
+     ""
+    ],
+    "P!E3": [
+     "",
+     ""
+    ],
+    "P!F3": [
+     "",
+     ""
+    ],
+    "P!G3": [
+     "",
+     ""
+    ],
+    "P!A4": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B4": [
+     "100",
+     "100"
+    ],
+    "P!C4": [
+     "Apple",
+     "Apple"
+    ],
+    "P!D4": [
+     "Banana",
+     "Banana"
+    ],
+    "P!E4": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!F4": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!G4": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!A5": [
+     "East",
+     "East"
+    ],
+    "P!B5": [
+     "0",
+     "0,0"
+    ],
+    "P!C5": [
+     "935.19",
+     "935,19"
+    ],
+    "P!D5": [
+     "-69.19",
+     "-69,19"
+    ],
+    "P!E5": [
+     "-61.98",
+     "-61,98"
+    ],
+    "P!F5": [
+     "-3.02",
+     "-3,02"
+    ],
+    "P!G5": [
+     "801",
+     "801,0"
+    ],
+    "P!A6": [
+     "North",
+     "North"
+    ],
+    "P!B6": [
+     "0",
+     "0,0"
+    ],
+    "P!C6": [
+     "err",
+     "err"
+    ],
+    "P!D6": [
+     "1451.84",
+     "1451,84"
+    ],
+    "P!E6": [
+     "920.42",
+     "920,42"
+    ],
+    "P!F6": [
+     "1045.94",
+     "1045,94"
+    ],
+    "P!G6": [
+     "err",
+     "err"
+    ],
+    "P!A7": [
+     "South",
+     "South"
+    ],
+    "P!B7": [
+     "0",
+     "0,0"
+    ],
+    "P!C7": [
+     "1928.77",
+     "1928,77"
+    ],
+    "P!D7": [
+     "47.8",
+     "47,8"
+    ],
+    "P!E7": [
+     "err",
+     "err"
+    ],
+    "P!F7": [
+     "623.11",
+     "623,11"
+    ],
+    "P!G7": [
+     "err",
+     "err"
+    ],
+    "P!A8": [
+     "West",
+     "West"
+    ],
+    "P!B8": [
+     "44.32",
+     "44,32"
+    ],
+    "P!C8": [
+     "120.22",
+     "120,22"
+    ],
+    "P!D8": [
+     "1375.28",
+     "1375,28"
+    ],
+    "P!E8": [
+     "337.13",
+     "337,13"
+    ],
+    "P!F8": [
+     "151.32",
+     "151,32"
+    ],
+    "P!G8": [
+     "2028.27",
+     "2028,27"
+    ],
+    "P!A9": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B9": [
+     "0",
+     "0,0"
+    ],
+    "P!C9": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!D9": [
+     "0",
+     "0,0"
+    ],
+    "P!E9": [
+     "0",
+     "0,0"
+    ],
+    "P!F9": [
+     "0",
+     "0,0"
+    ],
+    "P!G9": [
+     "-76.03",
+     "-76,03"
+    ],
+    "P!A10": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B10": [
+     "44.32",
+     "44,32"
+    ],
+    "P!C10": [
+     "err",
+     "err"
+    ],
+    "P!D10": [
+     "2805.73",
+     "2805,73"
+    ],
+    "P!E10": [
+     "err",
+     "err"
+    ],
+    "P!F10": [
+     "1817.35",
+     "1817,35"
+    ],
+    "P!G10": [
+     "err",
+     "err"
+    ]
+   }
+  },
+  "source-table": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "source-name": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "two-rows": {
+   "cells": {
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B5": [
+     "42.49",
+     "42,49"
+    ],
+    "P!A6": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B6": [
+     "42.25",
+     "42,25"
+    ],
+    "P!A7": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B7": [
+     "41.22",
+     "41,22"
+    ],
+    "P!A8": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B8": [
+     "12.69",
+     "12,69"
+    ],
+    "P!A9": [
+     "North",
+     "North"
+    ],
+    "P!B9": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A10": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B10": [
+     "112.07",
+     "112,07"
+    ],
+    "P!A11": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B11": [
+     "59.39",
+     "59,39"
+    ],
+    "P!A12": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B12": [
+     "45.43",
+     "45,43"
+    ],
+    "P!A13": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B13": [
+     "20.91",
+     "20,91"
+    ],
+    "P!A14": [
+     "South",
+     "South"
+    ],
+    "P!B14": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A15": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B15": [
+     "127.41",
+     "127,41"
+    ],
+    "P!A16": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B16": [
+     "70.96",
+     "70,96"
+    ],
+    "P!A17": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B17": [
+     "107.19",
+     "107,19"
+    ],
+    "P!A18": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B18": [
+     "42.84",
+     "42,84"
+    ],
+    "P!A19": [
+     "West",
+     "West"
+    ],
+    "P!B19": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A20": [
+     "100",
+     "100"
+    ],
+    "P!B20": [
+     "14.85",
+     "14,85"
+    ],
+    "P!A21": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B21": [
+     "73.68",
+     "73,68"
+    ],
+    "P!A22": [
+     "Banana",
+     "Banana"
+    ],
+    "P!B22": [
+     "126.81",
+     "126,81"
+    ],
+    "P!A23": [
+     "Cherry",
+     "Cherry"
+    ],
+    "P!B23": [
+     "50.18",
+     "50,18"
+    ],
+    "P!A24": [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea"
+    ],
+    "P!B24": [
+     "36.39",
+     "36,39"
+    ],
+    "P!A25": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B25": [
+     "",
+     ""
+    ],
+    "P!A26": [
+     "Apple",
+     "Apple"
+    ],
+    "P!B26": [
+     "",
+     ""
+    ],
+    "P!A27": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B27": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "page": {
+   "cells": {
+    "P!A1": [
+     "Product",
+     "Product"
+    ],
+    "P!B1": [
+     "(All)",
+     "(All)"
+    ],
+    "P!A2": [
+     "",
+     ""
+    ],
+    "P!B2": [
+     "",
+     ""
+    ],
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "138.65",
+     "138,65"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "237.8",
+     "237,8"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "348.4",
+     "348,4"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "301.91",
+     "301,91"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "1026.76",
+     "1026,76"
+    ]
+   }
+  },
+  "page-one": {
+   "cells": {
+    "P!A1": [
+     "Product",
+     "Product"
+    ],
+    "P!B1": [
+     "Apple",
+     "Apple"
+    ],
+    "P!A2": [
+     "",
+     ""
+    ],
+    "P!B2": [
+     "",
+     ""
+    ],
+    "P!A3": [
+     "Row Labels",
+     "Row Labels"
+    ],
+    "P!B3": [
+     "Sum of Price",
+     "Sum of Price"
+    ],
+    "P!A4": [
+     "East",
+     "East"
+    ],
+    "P!B4": [
+     "42.49",
+     "42,49"
+    ],
+    "P!A5": [
+     "North",
+     "North"
+    ],
+    "P!B5": [
+     "112.07",
+     "112,07"
+    ],
+    "P!A6": [
+     "South",
+     "South"
+    ],
+    "P!B6": [
+     "127.41",
+     "127,41"
+    ],
+    "P!A7": [
+     "West",
+     "West"
+    ],
+    "P!B7": [
+     "73.68",
+     "73,68"
+    ],
+    "P!A8": [
+     "(blank)",
+     "(blank)"
+    ],
+    "P!B8": [
+     "",
+     ""
+    ],
+    "P!A9": [
+     "Grand Total",
+     "Grand Total"
+    ],
+    "P!B9": [
+     "355.65",
+     "355,65"
+    ]
+   }
+  }
+ }
+}
