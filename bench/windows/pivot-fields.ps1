@@ -85,6 +85,9 @@ function ToArea($box, $area) {
   $pane = [System.Windows.Automation.ControlType]::Pane
   $zone = @(Named @($area) | Where-Object { $_.Current.ControlType -eq $pane }) | Select-Object -First 1
   if (-not $zone) { throw "no $area area in the field list" }
+  # the field's box scrolled into the list's view, which shows a few fields at a time
+  $box.GetCurrentPattern([System.Windows.Automation.ScrollItemPattern]::Pattern).ScrollIntoView()
+  Start-Sleep -Milliseconds 500
   $a = $box.Current.BoundingRectangle
   $b = $zone.Current.BoundingRectangle
   $x0 = [int]($a.X + $a.Width + 30); $y0 = [int]($a.Y + $a.Height / 2)
