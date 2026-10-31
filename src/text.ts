@@ -11,8 +11,8 @@
  */
 import { checkCellValue } from './input.js'
 import { InputError, what } from './input-error.js'
-import { array, checkBoolean, checkNumber, checkString, object, onlyOptions } from './input/basic.js'
-import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat } from './contract.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyOptions } from './input/basic.js'
+import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat, PivotFunction } from './contract.js'
 import { checkFormat } from './input/styles.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
@@ -26,6 +26,7 @@ import * as decimals from './numfmt/decimals.js'
 import * as point from './point.js'
 import * as pivotView from './pivot/cells.js'
 import * as pivotSuggest from './pivot-suggest.js'
+import * as words from './pivot-words.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
@@ -43,6 +44,19 @@ export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatC
 export const suggestPivotField = /* @__PURE__ */ strict(pivotSuggest.suggestPivotField)
 export const pivotCells = /* @__PURE__ */ strict(pivotView.pivotCells)
 export const pivotCellAt = /* @__PURE__ */ strict(pivotView.pivotCellAt)
+
+/**
+ * The name Excel gives a value field named `name` when its function changes from `from` to `to`, its source field being
+ * `field`, in the workbook's language `locale`: what Value Field Settings shows as soon as a function is chosen, and what
+ * `editPivotTable` names the field (made unique there among the others when it is the default name).
+ */
+export const renamedValueField = /* @__PURE__ */ strict(function renamedValueField(name: string | null | undefined, from: PivotFunction, to: PivotFunction, field: string, locale?: string): string {
+  if (name !== undefined && name !== null) checkString(name, 'name')
+  checkOneOf(from, 'from', words.PIVOT_FUNCTIONS)
+  checkOneOf(to, 'to', words.PIVOT_FUNCTIONS)
+  if (locale !== undefined) checkString(locale, 'locale')
+  return words.renamedValueField(name ?? undefined, from, to, checkString(field, 'field'), locale)
+})
 
 /**
  * The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
