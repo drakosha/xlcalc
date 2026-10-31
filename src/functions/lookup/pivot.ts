@@ -76,6 +76,8 @@ const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.
  * number or date; a boolean by an equal boolean.
  */
 function names(cx: Cx, arg: V, item: V, label: string | undefined, format: NumberFormat | undefined): boolean {
+  // a number by the comparison of `=`, to 15 significant digits: a date and time typed or calculated equals the item's
+  if (typeof arg === 'number') return typeof item === 'number' && cx.rules.compareOp(arg, item) === 0
   if (typeof arg !== 'string') return typeof arg === typeof item && arg === item
   const key = caseKey(arg)
   if (label !== undefined) return caseKey(label) === key
@@ -98,11 +100,10 @@ function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Se
   return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
 }
 
-/** A field by its name in the PivotTable or the source, in any case. */
+/** A field by its name in the PivotTable, the source's where it has none of its own, in any case (the set gpd-held). */
 function fieldNamed(t: PivotTable, c: PivotCache, name: string): number {
   const key = caseKey(name)
-  const k = t.fields.findIndex((f) => f.name !== undefined && caseKey(f.name) === key)
-  return k >= 0 ? k : c.fields.findIndex((f) => caseKey(f.name) === key)
+  return c.fields.findIndex((f, k) => caseKey(t.fields[k]?.name ?? f.name) === key)
 }
 
 /** A value field by its caption, else by its source field's name, in any case. */
@@ -113,16 +114,27 @@ function valueNamed(t: PivotTable, c: PivotCache, name: string): number {
   return k >= 0 ? k : values.findIndex((d) => c.fields[d.field] !== undefined && caseKey(c.fields[d.field].name) === key)
 }
 
-/** A slot whose fields are exactly those of `wanted` on its axis, each with one of its items, and of the value field `value` where it tells one. */
+/**
+ * The slot of the pairs on an axis, of the value field `value` where the axis tells one: the line whose fields are
+ * exactly those of `wanted` on the axis, each with one of its items, a line of an item's own subtotal before the item's
+ * line above it; several such lines (subtotals of several functions) name none. Without one, a line that names more
+ * fields, the fewest, where only one does: an inner field named without the one between (the set gpd-held).
+ */
 function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f: number) => boolean, value: number, tells: boolean): number {
-  const fits = (x: Slot | null): x is Slot => {
+  const fits = (x: Slot | null, exact: boolean): x is Slot => {
     if (!x || (tells && x.value !== value)) return false
     for (const [f, items] of wanted) if (own(f) && !(x.items.has(f) && items.has(x.items.get(f)!))) return false
-    for (const f of x.items.keys()) if (!wanted.has(f)) return false
+    if (exact) for (const f of x.items.keys()) if (!wanted.has(f)) return false
     return true
   }
-  const k = list.findIndex((x) => fits(x) && !x.header)
-  return k >= 0 ? k : list.findIndex(fits)
+  const at = (keep: (x: Slot) => boolean) => list.flatMap((x, k) => (x && keep(x) ? [k] : []))
+  const exact = at((x) => fits(x, true))
+  const lines = exact.filter((k) => !list[k]!.header)
+  if (exact.length) return lines.length > 1 ? -1 : (lines[0] ?? exact[0])
+  const more = at((x) => fits(x, false))
+  const fewest = Math.min(...more.map((k) => list[k]!.items.size))
+  const least = more.filter((k) => list[k]!.items.size === fewest)
+  return least.length === 1 ? least[0] : -1
 }
 
 function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {
