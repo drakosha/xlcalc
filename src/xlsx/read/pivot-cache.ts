@@ -7,6 +7,7 @@ import type { NumberFormat, PivotCache, PivotCacheField, PivotFieldFacts, PivotF
 import { attr, attributes, attrsAt, element, flag, has, within } from '../xml/scan.js'
 import { decodeEscapes, decodeXml } from '../xml/text.js'
 import { ERRORS } from './cells.js'
+import { modelDate } from '../pivot-dates.js'
 
 /** The tags of values (`<s v="North"/>`, `<x v="2"/>`, `<m/>`), and with `r` a record's. */
 const VALUES = /<(?:[\w.-]+:)?(r|[xnsbedm])((?:\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?)(\/?)>/g
@@ -40,7 +41,7 @@ function valueOf(k: string, a: string): PivotValue {
   if (k === 'n' || k === 'x') return Number(v ?? 0)
   if (k === 'b') return flag(v)
   if (k === 'e') return { error: ERRORS[v ?? ''] ?? 'NA' }
-  if (k === 'd') return { date: v ?? '' }
+  if (k === 'd') return { date: modelDate(v ?? '') }
   return attrText(v)
 }
 
@@ -68,7 +69,7 @@ export function readRecords(xml: string): PivotValue[][] {
   return out
 }
 
-const numberOrDate = (n: string | undefined, d: string | undefined): number | { date: string } | undefined => (d !== undefined ? { date: d } : n !== undefined ? Number(n) : undefined)
+const numberOrDate = (n: string | undefined, d: string | undefined): number | { date: string } | undefined => (d !== undefined ? { date: modelDate(d) } : n !== undefined ? Number(n) : undefined)
 
 /** A field's facts from its `sharedItems` flags (`containsString` and the two others true by default) and its items. */
 function factsOf(a: Record<string, string>, items: PivotValue[]): PivotFieldFacts | undefined {

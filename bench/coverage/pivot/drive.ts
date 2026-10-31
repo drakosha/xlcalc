@@ -17,6 +17,7 @@ import { refreshCache } from '../../../src/pivot/refresh.js'
 import { sourceGrid } from '../../../src/pivot/source.js'
 import { itemText } from '../../../src/pivot/values.js'
 import { clockOptions } from '../../../src/result.js'
+import { epochOf } from '../../../src/dates.js'
 import type { Applied } from '../../../src/structure/geometry.js'
 import { stateValues } from '../../../src/structure/values.js'
 import type { PivotCase, PivotOp } from './cases.js'
@@ -44,7 +45,7 @@ export function drive(c: PivotCase): DrivenPhase[] {
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
-  const made = refreshCache({ id: 1, source, fields: [] }, [], grid)
+  const made = refreshCache({ id: 1, source, fields: [] }, [], grid, epochOf(book.dateSystem))
   if (typeof made === 'string') throw new Error(made)
   const cache: PivotCache = made.cache
   const empty = (name: string, at: string): PivotTable => ({ name, cache: 1, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: (book.pivotCaches?.[0] ?? cache).fields.map(() => ({})) })

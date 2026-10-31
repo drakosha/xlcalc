@@ -3,7 +3,11 @@
  * same book in en-US and ru-RU, a label for an item a refresh brings, in a session of each execution, the inline
  * calculator and a pool's threads; and the labels Excel for Windows showed on the slicers of the set slicer-labels.
  */
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { buildPivotCases } from '../bench/coverage/pivot/slicer-labels.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { openArchive } from '../src/xlsx/zip/read.js'
 import { createInlineCalc, createSession, editStructure, registerLocale, registerPivot, type BookInput, type StructureOp } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { pivotEngine } from '../src/pivot/index.js'
@@ -85,4 +89,40 @@ describe("a slicer's items labelled in getLayout", () => {
       expect(labels(await s.getLayout())).toEqual(REFRESHED)
       await s.close()
     })
+})
+
+describe('the labels of the slicers Excel for Windows made (the set slicer-labels)', () => {
+  for (const tag of ['', 'ru-RU'])
+    it(`are the captions Excel showed (${tag || 'en-US'}): in its own number format, a PivotTable's, the short date and time, a number written out`, async () => {
+      const dir = new URL(`./excel/win/pivot/${tag ? `${tag}/` : ''}`, import.meta.url)
+      const answers = (JSON.parse(readFileSync(new URL('slicer-labels.json', dir), 'utf8')) as { answers: Record<string, { phases: { results?: Record<string, unknown> }[] }> }).answers
+      let n = 0
+      for (const c of buildPivotCases()) {
+        const results = answers[c.id].phases.at(-1)!.results ?? {}
+        const layout = createSession({ ...(await readXlsx(readFileSync(new URL(`slicer-labels/${c.id}.xlsx`, dir)))).book, locale: tag || 'en-US' }).getLayout()
+        c.ops.forEach((o, k) => {
+          // a slicer Excel's object model did not make (the grouped fields' names of ru-RU) has no answer
+          if (!('slicerGet' in o) || !results[`op ${k}`]) return
+          const shown = (results[`op ${k}`] as [unknown, string[][]])[1].map((x) => x[1])
+          const own = layout.sheets.flatMap((s) => s.slicers ?? []).find((s) => s.name === o.slicerGet)!
+          expect([c.id, layout.slicerCaches!.find((x) => x.name === own.cache)!.items!.map((x) => x.label)]).toEqual([c.id, shown])
+          n++
+        })
+      }
+      expect(n).toBeGreaterThan(19)
+    })
+})
+
+describe('a field of times of day without a date', () => {
+  it("is read from Excel's 1899-12-30, laid out, labelled and written back as Excel writes it", async () => {
+    const r = await readXlsx(readFileSync(new URL('./excel/win/pivot/slicer-labels/time.xlsx', import.meta.url)))
+    expect(r.book.pivotCaches![0].fields.find((f) => f.name === 'Time')!.items![0]).toEqual({ date: '1900-01-00T06:00:00' })
+    const s = createSession(r.book)
+    expect(s.editStructure({ op: 'refreshPivots' }).ok).toBe(true)
+    expect(s.getValues('P', 'A4:A5')).toEqual([[0.0625], [0.25]])
+    expect(s.getLayout().slicerCaches![0].items!.map((x) => x.label)).toEqual(['1:30', '6:00', '12:00', '13:30', '18:00', '23:58'])
+    const xml = (await openArchive((await writeXlsx({ book: s.getBook() })).data).text('xl/pivotCache/pivotCacheDefinition1.xml'))!
+    expect(/<cacheField name="Time".*?<\/cacheField>/.exec(xml)![0]).toContain('minDate="1899-12-30T01:30:00" maxDate="1899-12-30T23:58:34" count="6"><d v="1899-12-30T06:00:00"/>')
+    s.close()
+  })
 })
