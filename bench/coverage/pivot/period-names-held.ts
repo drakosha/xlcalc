@@ -16,6 +16,8 @@ export function buildPivotCases(): PivotCase[] {
     c('minutes-hours', rows('When', ['minutes', 'hours'])),
     c('days-14', rows('Date', ['days'], { by: 14 })),
     c('years-end', rows('Date', ['years'], { end: { d: serial(2025, 3, 1) } })),
+    // Excel's object model takes Qty off the rows as it becomes a value field: nothing is grouped (the next case groups it)
     c('qty-fraction-start', [{ rows: ['Qty'] }, { value: { field: 'Qty', fn: 'count' } }, { group: 'Qty', start: 2, end: 9, by: 1.5 }]),
+    c('qty-fraction-price', [{ rows: ['Qty'] }, { value: { field: 'Price', fn: 'count' } }, { group: 'Qty', start: 2, end: 9, by: 1.5 }]),
   ]
 }
