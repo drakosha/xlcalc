@@ -1,0 +1,410 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 17.5
+ },
+ "cases": [
+  {
+   "id": "xlsx",
+   "file": "bench/windows/out/pivot-ours/locks/xlsx.xlsx",
+   "ops": [
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Products",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_When",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kept",
+   "file": "bench/windows/out/pivot-ours/locks/kept.xlsx",
+   "ops": [
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Products",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_When",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "space",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region",
+     "slicerName": " "
+    },
+    {
+     "slicerGet": " ",
+     "get": [
+      "Name",
+      "Locked",
+      "DisableMoveResizeUI"
+     ]
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "xlsx": "aba1368fb4d0eb1f495f96118fc7ed9ee410c5df8e90294a3cc63a6d2e695d0d 792ca6723360bb08",
+  "kept": "0b6709b1f54c27e00831d2f6d8cdd9eec08977452d7ae018ec67ca30153b010a 792ca6723360bb08",
+  "space": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0cb9e958d0d194ec"
+ },
+ "answers": {
+  "kept": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       [
+        "Slicer_Region",
+        false,
+        true
+       ],
+       []
+      ],
+      "op 1": [
+       [
+        "Products",
+        true,
+        false
+       ],
+       []
+      ],
+      "op 2": [
+       [
+        "Timeline_Date",
+        false,
+        null
+       ],
+       []
+      ],
+      "op 3": [
+       [
+        "Timeline_When",
+        true,
+        null
+       ],
+       []
+      ]
+     }
+    }
+   ]
+  },
+  "space": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": [
+       [
+        " ",
+        true,
+        false
+       ],
+       []
+      ]
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ]
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "xlsx": "-2146827284 Unable to get the Open property of the Workbooks class"
+ }
+}
