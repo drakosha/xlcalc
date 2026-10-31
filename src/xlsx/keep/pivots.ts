@@ -178,7 +178,7 @@ export class KeptPivots {
 
   /** The PivotTables of the file's sheet `k` (the book's `j`): each the book changed written again, a new one added, one gone removed. */
   sheet(ss: SourceSheet, k: number, j: number, rels: Rels): void {
-    const { book0, book, parts, types } = this.h
+    const { book0, book } = this.h
     const before = book0.sheets[k].pivotTables ?? []
     const left = [...(book.sheets[j].pivotTables ?? [])]
     for (const r of ss.rels) {
@@ -204,11 +204,16 @@ export class KeptPivots {
     }
     for (const p of left) {
       this.h.change()
-      const part = parts.fresh('xl/pivotTables/pivotTable', '.xml')
-      types.override(part, `${TYPE}.pivotTable+xml`)
-      this.table(p, j, part)
-      rels.add(relType('pivotTable'), this.h.relative(ss.part, part))
+      this.added(p, j, ss.part, rels)
     }
+  }
+
+  /** A PivotTable the file does not have, with parts of its own named in the sheet's relationships. */
+  private added(p: PivotTable, j: number, sheetPart: string, rels: Rels): void {
+    const part = this.h.parts.fresh('xl/pivotTables/pivotTable', '.xml')
+    this.h.types.override(part, `${TYPE}.pivotTable+xml`)
+    this.table(p, j, part)
+    rels.add(relType('pivotTable'), this.h.relative(sheetPart, part))
   }
 
   /** A PivotTable written over `part`, its relationship pointing at its cache's part. */
@@ -224,12 +229,7 @@ export class KeptPivots {
 
   /** The PivotTables of a sheet the file does not have: each with parts of its own. */
   newSheet(sheetPart: string, j: number, rels: Rels): void {
-    for (const p of this.h.book.sheets[j].pivotTables ?? []) {
-      const part = this.h.parts.fresh('xl/pivotTables/pivotTable', '.xml')
-      this.h.types.override(part, `${TYPE}.pivotTable+xml`)
-      this.table(p, j, part)
-      rels.add(relType('pivotTable'), this.h.relative(sheetPart, part))
-    }
+    for (const p of this.h.book.sheets[j].pivotTables ?? []) this.added(p, j, sheetPart, rels)
   }
 
   /** The workbook's `<pivotCaches>`: the entries of the caches the model did not read as the file has them, then the book's caches; as it was while the book has the file's caches. */
