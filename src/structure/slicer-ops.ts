@@ -56,6 +56,18 @@ function withCaches(book: BookInput, kind: Kind, caches: Cache[]): BookInput {
 /** Every slicer's and timeline's name, unique together in the workbook. */
 const names = (book: BookInput) => new Set(book.sheets.flatMap((s) => [...(s.slicers ?? []), ...(s.timelines ?? [])].map((x) => caseKey(x.name))))
 
+/**
+ * A name given to a slicer or timeline (`path`), checked as Excel takes `Slicer.Name`: any text but the empty one (a space,
+ * `A1`, a cache's name, 256 characters); null when another slicer or timeline has it, in any case (`own` is the one renamed).
+ */
+function givenName(book: BookInput, kind: Kind, v: unknown, path: string, own?: string): string | null {
+  const name = checkString(v, path)
+  if (!name) throw new InputError(path, `expected a ${KEY[kind]}'s name, got an empty string`)
+  const taken = names(book)
+  if (own !== undefined) taken.delete(caseKey(own))
+  return taken.has(caseKey(name)) ? null : name
+}
+
 /** The first of `base`, `base 1`, `base 2`… (`sep` between) not in `taken`. */
 function free(taken: Set<string>, base: string, sep: string): string {
   let name = base
@@ -163,10 +175,8 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
     ;({ book: out, cache } = made)
     fresh = true
   }
-  const taken = names(out)
-  const name = given.name === undefined ? free(taken, cache.field, ' ') : checkString(given.name, `op.${key}.name`)
-  if (!name.trim()) throw new InputError(`op.${key}.name`, `expected a ${key}'s name, got an empty string`)
-  if (taken.has(caseKey(name))) return refused(out, { key: 'slicerNameTaken', name })
+  const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, kind, given.name, `op.${key}.name`)
+  if (name === null) return refused(out, { key: 'slicerNameTaken', name: String(given.name) })
   const place = given.place === undefined && cache.pivots.length ? placeBeside(out, cache.pivots[0]) : undefined
   // Excel captions it by its field
   const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
@@ -185,9 +195,12 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
   let out = book
   if (o.set !== undefined) {
     const set = object(o.set, 'op.set', `a patch of a ${key} such as { caption: "Region" }`)
-    if ('name' in set || 'cache' in set) throw new InputError('op.set', `a ${key}'s name and cache are not edited`)
+    if ('cache' in set) throw new InputError('op.set.cache', `a ${key}'s cache is not edited`)
+    // Slicer Settings' Name: unique among the workbook's slicers and timelines, its caption as it was
+    if (set.name !== undefined && givenName(book, kind, set.name, 'op.set.name', x.name) === null) return refused(book, { key: 'slicerNameTaken', name: String(set.name) })
     const list = [...((book.sheets[s][kind] ?? []) as (Slicer | Timeline)[])]
-    list[k] = patched(list[k], set)
+    // a rename keeps the caption, which a slicer without one took from its name
+    list[k] = patched(set.name !== undefined && list[k].caption === undefined ? { ...list[k], caption: list[k].name } : list[k], set)
     const sheets = [...book.sheets]
     sheets[s] = withField(sheets[s], kind, list as never)
     out = { ...out, sheets }
