@@ -169,7 +169,7 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
   const name = given.name === undefined ? free(taken, cache.field, ' ') : checkString(given.name, `op.${key}.name`)
   if (!name.trim()) throw new InputError(`op.${key}.name`, `expected a ${key}'s name, got an empty string`)
   if (taken.has(caseKey(name))) return refused(out, { key: 'slicerNameTaken', name })
-  const place = given.place === undefined ? placeBeside(out, cache.pivots[0]) : undefined
+  const place = given.place === undefined && cache.pivots.length ? placeBeside(out, cache.pivots[0]) : undefined
   // Excel captions it by its field
   const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
   const sheets = [...out.sheets]
@@ -198,7 +198,11 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
   onlyKeys(patch, 'op.cache', CACHE_FIELDS[kind])
   const caches = cachesOf(out, kind)
   const c = caches.find((y) => caseKey(y.name) === caseKey(x.cache))!
-  if (c.cache === undefined) return { ok: true, book: checkedPivots(withCaches(out, kind, caches.map((y) => (y === c ? patched(c, patch) : y)))), geometry: [] }
+  // a table's slicer chooses by its table's AutoFilter, which the file keeps; its look and order change alone
+  if (c.cache === undefined) {
+    if (patch.items != null || patch.pivots != null) throw new InputError('op.cache', "a table's slicer chooses by the table's AutoFilter, not by its items or PivotTables")
+    return { ok: true, book: checkedPivots(withCaches(out, kind, caches.map((y) => (y === c ? patched(c, patch) : y)))), geometry: [] }
+  }
   if (patch.pivots === null) throw new InputError('op.cache.pivots', `a ${key} cache filters at least one PivotTable`)
   if (patch.pivots !== undefined) {
     const { refs, cache } = pivotsOf(out, patch.pivots, 'op.cache.pivots')
