@@ -77,7 +77,7 @@ export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId =
 const styleOf = (style: string | undefined) => (style ? ` style="${escapeAttr(style)}"` : '')
 
 export function slicerXml(s: Slicer): string {
-  return `<slicer${give({ ...s, caption: s.caption ?? s.name }, 'name cache caption startItem:p columnCount=columns:p showCaption:t')}${styleOf(s.style)}${give(s, 'lockedPosition=locked:f')} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
+  return `<slicer${give({ ...s, caption: s.caption ?? s.name }, 'name cache caption startItem:p columnCount=columns:p showCaption:t')}${styleOf(s.style)}${give(s, 'lockedPosition=positionLocked:f')} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
 }
 
 export function timelineXml(t: Timeline): string {
@@ -103,15 +103,16 @@ const DRAWING = `${MS}/drawing`
 const SLICER = `${DRAWING}/2010/slicer`
 const TIMESLICER = `${DRAWING}/2012/timeslicer`
 
-/** A slicer's or timeline's frame in a drawing, at its place, with the shape older readers show. */
-function frameXml(name: string, place: DrawingPlace, id: number, timeline: boolean): string {
+/** A slicer's or timeline's frame in a drawing, at its place, its locks as Excel writes them, with the shape older readers show. */
+export function frameXml(x: (Slicer | Timeline) & { place: DrawingPlace }, id: number, timeline: boolean): string {
+  const { name, place } = x
   const [requires, ns, uri, el] = timeline
     ? ['tsle', TIMESLICER, TIMESLICER, 'tsle:timeslicer']
     : ['a14', `${DRAWING}/2010/main`, SLICER, 'sle:slicer']
   const sle = timeline ? '' : ` xmlns:sle="${SLICER}"`
-  const frame = `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="${escapeAttr(name)}"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${uri}"><${el}${sle} name="${escapeAttr(name)}"/></a:graphicData></a:graphic></xdr:graphicFrame>`
+  const frame = `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="${escapeAttr(name)}"/>${'positionLocked' in x && x.positionLocked ? '<xdr:cNvGraphicFramePr><a:graphicFrameLocks noMove="1" noResize="1"/></xdr:cNvGraphicFramePr>' : '<xdr:cNvGraphicFramePr/>'}</xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${uri}"><${el}${sle} name="${escapeAttr(name)}"/></a:graphicData></a:graphic></xdr:graphicFrame>`
   const fallback = `<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="0" name=""/><xdr:cNvSpPr><a:spLocks noTextEdit="1"/></xdr:cNvSpPr></xdr:nvSpPr><xdr:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:sp>`
-  return `<xdr:twoCellAnchor editAs="oneCell">${marker('from', place.from, place.fromOffset)}${marker('to', place.to, place.toOffset)}<mc:AlternateContent xmlns:mc="${MC}"><mc:Choice xmlns:${requires}="${ns}" Requires="${requires}">${frame}</mc:Choice><mc:Fallback>${fallback}</mc:Fallback></mc:AlternateContent><xdr:clientData/></xdr:twoCellAnchor>`
+  return `<xdr:twoCellAnchor editAs="oneCell">${marker('from', place.from, place.fromOffset)}${marker('to', place.to, place.toOffset)}<mc:AlternateContent xmlns:mc="${MC}"><mc:Choice xmlns:${requires}="${ns}" Requires="${requires}">${frame}</mc:Choice><mc:Fallback>${fallback}</mc:Fallback></mc:AlternateContent><xdr:clientData${x.locked === false ? ' fLocksWithSheet="0"' : ''}/></xdr:twoCellAnchor>`
 }
 
 /** The parts of the book's slicers and timelines over PivotTables; `issues` takes the slicers of tables, left out. */
@@ -145,7 +146,7 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     if (!slicers.length && !timelines.length) return
     const sheet = out.sheets[i]
     let id = 1
-    const frames = [...timelines.map((t) => (t.place ? frameXml(t.name, t.place, ++id, true) : '')), ...slicers.map((x) => (x.place ? frameXml(x.name, x.place, ++id, false) : ''))].join('')
+    const frames = [...timelines.map((t) => (t.place ? frameXml({ ...t, place: t.place }, ++id, true) : '')), ...slicers.map((x) => (x.place ? frameXml({ ...x, place: x.place }, ++id, false) : ''))].join('')
     if (frames) sheet.drawing = add('drawings/drawing', ++drawings, `${HEAD}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">${frames}</xdr:wsDr>`, DRAWING_TYPE)
     if (slicers.length) sheet.slicers = add('slicers/slicer', ++slicerParts, slicersPartXml(slicers), TYPES.slicer)
     if (timelines.length) sheet.timelines = add('timelines/timeline', ++timelineParts, timelinesPartXml(timelines), TYPES.timeline)

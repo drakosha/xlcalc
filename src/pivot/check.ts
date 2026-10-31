@@ -238,7 +238,7 @@ const slicerCache = shape(
 )
 
 const slicer = shape(
-  { name: text, cache: text, caption: text, showCaption: bool, place, style: text, columns: count, rowHeight: count, startItem: index, locked: bool },
+  { name: text, cache: text, caption: text, showCaption: bool, place, style: text, columns: count, rowHeight: count, startItem: index, locked: bool, positionLocked: bool },
   ['name', 'cache'],
   'a slicer',
 )
@@ -246,7 +246,7 @@ const slicer = shape(
 const timelineCache = shape({ name: text, field: text, pivots: list(pivotRef), cache: index, selection: span, bounds: span }, ['name', 'field', 'pivots', 'cache'], 'a timeline cache')
 
 const timeline = shape(
-  { name: text, cache: text, caption: text, place, level: oneOf(LEVELS), selectionLevel: oneOf(LEVELS), showHeader: bool, showSelectionLabel: bool, showLevel: bool, showScrollbar: bool, scrollPosition: isoDate, style: text },
+  { name: text, cache: text, caption: text, place, level: oneOf(LEVELS), selectionLevel: oneOf(LEVELS), showHeader: bool, showSelectionLabel: bool, showLevel: bool, showScrollbar: bool, scrollPosition: isoDate, style: text, locked: bool },
   ['name', 'cache'],
   'a timeline',
 )
