@@ -11,6 +11,7 @@ import { compute, type BookInput, type CellValue } from '../src/index.js'
 import { buildPivotCases } from '../bench/coverage/pivot/gpd-1.js'
 import { buildPivotCases as heldCases } from '../bench/coverage/pivot/gpd-held.js'
 import { buildPivotCases as held2Cases } from '../bench/coverage/pivot/gpd-held-2.js'
+import { buildPivotCases as held3Cases } from '../bench/coverage/pivot/gpd-held-3.js'
 import { predictCase } from '../bench/coverage/pivot/gpd-predict.js'
 import type { PivotAnswer, PivotCase } from '../bench/coverage/pivot/cases.js'
 
@@ -44,6 +45,10 @@ describe('GETPIVOTDATA against Excel for Windows: the set gpd-1', () => {
 
   it('the held-out set gpd-held, fitted after its run (51 of 55 predicted: an inner field without the one between, subtotals of several functions, a field by its own name alone)', async () => {
     expect(await compared('gpd-held', heldCases())).toEqual([[], 54])
+  }, 60_000)
+
+  it('the held-out set gpd-held-3 of renamed items, fitted after its run (30 of 31 predicted: a renamed boolean is not named by its text)', async () => {
+    expect(await compared('gpd-held-3', held3Cases())).toEqual([[], 31])
   }, 60_000)
 
   it('the held-out set gpd-held-2 over the PivotTables its cases built, fitted after its run (57 of 61 predicted: the cell above the top left of a PivotTable without a Filters area)', async () => {
