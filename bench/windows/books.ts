@@ -87,8 +87,13 @@ function rectsOf(read: RangeRef[], raw: unknown[], f2 = false): RectsAnswer & { 
 }
 
 /** A value typed into a cell as `xl.ps1` takes it: `editOf`'s kind, a formula by `Formula2` (f2), and its text but for a cell cleared. */
-export function comEdit(v: Parameters<typeof editOf>[0]): { kind: string; value?: string } {
+export function comEdit(v: Parameters<typeof editOf>[0]): { kind: string; value?: string; bits?: string } {
   const [kind, value] = editOf(v)
+  if (typeof v === 'number') {
+    const data = Buffer.alloc(8)
+    data.writeDoubleBE(v)
+    return { kind, value, bits: data.toString('hex') }
+  }
   return kind === 'x' ? { kind } : { kind: kind === 'f' ? 'f2' : kind, value }
 }
 
