@@ -40,6 +40,7 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -69,6 +70,7 @@ const FIELDS: Record<string, string[]> = {
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
   refreshPivots: ['pivots'],
+  ...SLICER_FIELDS,
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
@@ -275,7 +277,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'addTimeline':
     case 'editTimeline':
     case 'deleteTimeline':
-      throw new InputError('op.op', `${o.op} is not supported yet`)
+      r = slicerOp(book, o, values)
+      break
   }
   return r
 }
