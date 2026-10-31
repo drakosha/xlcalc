@@ -7,6 +7,8 @@
 import { describe, expect, it } from 'vitest'
 import { createInlineCalc, createSession, editStructure, InputError, registerPivot, type BookInput, type CellValue } from '../src/index.js'
 import { pivotEngine } from '../src/pivot/index.js'
+// ru-RU loaded, as a host of Russian workbooks loads it: its month names sort by its list
+import './locales.js'
 import { closedAfter } from './fixtures/pool.js'
 
 const SOURCE: (string | number | null)[][] = [
@@ -113,6 +115,18 @@ describe('refreshPivots', () => {
     if (!r.ok) throw new Error(r.message)
     const p = r.book.sheets[1].cells
     expect([p.A3?.value, p.B3?.value, p.B3?.numberFormat, p.D3, p.E2]).toEqual(['Day', 45658, 14, { value: 'kept' }, { value: 7 }])
+  })
+
+  it('sorts the month names of a locale the host loaded by its list, in a workbook of any locale', () => {
+    const months = ['март', 'январь', 'февраль', 'апрель']
+    const cells = { A1: { value: 'Month' }, B1: { value: 'N' }, ...Object.fromEntries(months.flatMap((m, i) => [[`A${i + 2}`, { value: m }], [`B${i + 2}`, { value: i + 1 }]])) }
+    const book: BookInput = {
+      sheets: [{ name: 'D', cells }, { name: 'P', cells: {}, pivotTables: [{ name: 'PT1', cache: 1, location: { range: 'A3:B4', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: [{ sort: { order: 'ascending' } }, {}], rows: [0], values: [{ field: 1 }] }] }],
+      pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'D', range: 'A1:B5' }, fields: [{ name: 'Month' }, { name: 'N' }] }],
+    }
+    const r = editStructure(book, REFRESH)
+    if (!r.ok) throw new Error(r.message)
+    expect([4, 5, 6, 7].map((n) => r.book.sheets[1].cells[`A${n}`]?.value)).toEqual(['январь', 'февраль', 'март', 'апрель'])
   })
 
   it('refuses a PivotTable not there, and leaves the book', () => {

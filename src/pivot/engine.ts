@@ -6,7 +6,7 @@
 import type { BookInput, PivotCache, PivotRef, PivotTable } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { EPOCH_1904 } from '../dates.js'
-import { listsOf } from '../locale/lists.js'
+import { sortListsOf } from '../locale/lists.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
@@ -47,7 +47,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     }
   } else wanted = new Set(caches.keys())
   const epoch = book.dateSystem === 1904 ? EPOCH_1904 : 0
-  const options = { today, date1904: epoch > 0, lists: listsOf(book) }
+  const options = { today, date1904: epoch > 0, lists: sortListsOf(book) }
   const placed: Placement[] = []
   const newCaches = new Map<number, PivotCache>()
   const results: Calculated[] = []
