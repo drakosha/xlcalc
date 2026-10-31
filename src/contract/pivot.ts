@@ -411,6 +411,15 @@ export interface PivotCalculatedItem {
   formula: string
 }
 
+/**
+ * Which of Excel's alerts refuses a change of a PivotTable's cells, on a refusal with the code `pivot` (absent on its
+ * other refusals: a name taken, an item not of the field, a refresh that cannot be made): `part` "We can't change this
+ * part of the PivotTable." (a value or text written over its cells, a paste onto them); `formula` "Cannot enter a formula
+ * for an item or field name in a PivotTable report."; `affect` "We can't make this change for the selected cells because
+ * it will affect a PivotTable…" (a cell cleared, rows or columns inserted or deleted through it, part of it moved).
+ */
+export type PivotRefusalReason = 'part' | 'formula' | 'affect'
+
 /** A PivotTable by its sheet and name, as a slicer or a timeline names it. */
 export interface PivotRef {
   sheet: string

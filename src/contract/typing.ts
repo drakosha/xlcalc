@@ -2,6 +2,7 @@
 import type { CellRef, CellValue, Refusal } from './values.js'
 import type { CellInput } from './book.js'
 import type { DataValidation } from './looks.js'
+import type { PivotRefusalReason } from './pivot.js'
 import type { EditOptions, EditResult } from './edits.js'
 
 /** Options of `Session.setCellText` and `Session.setCellTexts`. */
@@ -44,8 +45,8 @@ export type ValidationRefusal = Refusal<'validation'> & { rule: DataValidation; 
 /** Typed text rejected because a cell's data validation rule does not allow its value (`CellTextOptions.refuseInvalid`): the cell, the rule, and its alert's style and message. */
 export type CellValidationRefusal = ValidationRefusal & CellRef
 
-/** Text that `Session.setCellText` rejected, and the correction Excel offers for the formula, as in `parseEntry`'s `correction`. */
-export type CellTextRefused = Refusal<CellTextRefusal> & { correction?: string }
+/** Text that `Session.setCellText` rejected, and the correction Excel offers for the formula, as in `parseEntry`'s `correction`; over a PivotTable's cells, Excel's alert (`reason`). */
+export type CellTextRefused = Refusal<CellTextRefusal> & { correction?: string; reason?: PivotRefusalReason }
 
 /**
  * Text typed into a cell (`Session.setCellText`): the edit's result, with the width the column was widened to (`width`)
@@ -97,10 +98,10 @@ export type CellTextsPreview = { ok: true; cells: PreviewCell[]; widths?: Column
 
 /**
  * Why `Session.pasteText` pasted nothing, with the cell: part of an array formula, a formula into a table's header cell,
- * a cell of a PivotTable's area (as `setCellText` rejects them), or a rectangle that runs beyond the sheet's last row or
+ * a cell of a PivotTable's area (as `setCellText` rejects them, with Excel's alert as `reason`), or a rectangle that runs beyond the sheet's last row or
  * column (`off_sheet`).
  */
-export type PasteTextRefusal = Refusal<'array' | 'header' | 'pivot' | 'off_sheet'> & CellRef
+export type PasteTextRefusal = Refusal<'array' | 'header' | 'pivot' | 'off_sheet'> & CellRef & { reason?: PivotRefusalReason }
 
 /** Text pasted from the clipboard (`Session.pasteText`): the edit's result with the range the clipboard's rectangle filled (`B1:D2`); or why nothing was pasted. */
 export type PasteTextResult = (EditResult & { ok: true; range: string }) | PasteTextRefusal
