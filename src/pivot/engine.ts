@@ -25,7 +25,7 @@ interface Spot {
 
 const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
 
-export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource) => {
+export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource, blocked) => {
   const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table) => ({ s, table })))
   const caches = new Map((book.pivotCaches ?? []).map((c) => [c.id, c]))
   let wanted: Set<number>
@@ -72,5 +72,5 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     newCaches.set(id, next)
   }
   if (!newCaches.size) return { ok: true, book, geometry: [] }
-  return placePivots({ ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }, placed)
+  return placePivots({ ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }, placed, blocked)
 }
