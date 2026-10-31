@@ -1,0 +1,2757 @@
+{
+ "ctrl-v-onto-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "ctrl-v-onto-label": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "ctrl-v-onto-filter": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "ctrl-v-beside": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": "Central",
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "ctrl-v-out-of-it": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": "Central",
+   "P!F7": 5,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": 15,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "typed-first-outside": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A4 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "typed-partly-outside": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     "7",
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     "7",
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     "7",
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     "7",
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": "7",
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": "7",
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "typed-field-names": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Area",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Area",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "typed-subtotal": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "All Central",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "All east",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "All North",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "All South",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "All West",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "All (blank)",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "All Central",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "typed-filters": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "TRUE",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     12
+    ],
+    [
+     null,
+     15,
+     5
+    ],
+    [
+     null,
+     25,
+     8
+    ],
+    [
+     null,
+     35,
+     7
+    ],
+    [
+     "Central Total",
+     null,
+     32
+    ],
+    [
+     "east",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     6
+    ],
+    [
+     null,
+     35,
+     17
+    ],
+    [
+     "east Total",
+     null,
+     47
+    ],
+    [
+     "North",
+     15,
+     9
+    ],
+    [
+     null,
+     35,
+     7
+    ],
+    [
+     "North Total",
+     null,
+     16
+    ],
+    [
+     "South",
+     5,
+     8
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     7
+    ],
+    [
+     null,
+     35,
+     3
+    ],
+    [
+     "South Total",
+     null,
+     26
+    ],
+    [
+     "West",
+     5,
+     15
+    ],
+    [
+     null,
+     15,
+     17
+    ],
+    [
+     null,
+     25,
+     27
+    ],
+    [
+     null,
+     35,
+     14
+    ],
+    [
+     "West Total",
+     null,
+     73
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     198
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "TRUE",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 12,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 5,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 8,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 7,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 32,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 16,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 8,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 6,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "formula-on-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!C5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "formula-on-field": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "formula",
+   "message": "edits: P!A4 is part of the PivotTable PT1: cannot enter a formula for an item or field name in a PivotTable report"
+  }
+ },
+ "cleared-label": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "affect",
+   "message": "edits: P!A5 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "cleared-filter": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "affect",
+   "message": "edits: P!B1 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "fill-down-out-of-it": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "fill-down-into-it": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "cut-onto-filter": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "cut-filters": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "insert-columns-right": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "delete-blank-row": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "delete-table-rows": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "delete-all-rows": {
+  "pivots": {},
+  "cells": {
+   "P!A1": null,
+   "P!B1": null,
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": null,
+   "P!B2": null,
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": null,
+   "P!B4": null,
+   "P!C4": null,
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": null,
+   "P!B5": null,
+   "P!C5": null,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": null,
+   "P!C6": null,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": null,
+   "P!C7": null,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": null,
+   "P!C8": null,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": null,
+   "P!B9": null,
+   "P!C9": null,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": null,
+   "P!B10": null,
+   "P!C10": null,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": null,
+   "P!C11": null,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": null,
+   "P!C12": null,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "merge-beside": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "table-beside": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": "Column1",
+   "P!F5": "Column2",
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "paste-blank-row": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     "q",
+     null,
+     null
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": "q",
+   "P!B3": null,
+   "P!C3": null,
+   "P!D3": null,
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ },
+ "paste-from-blank-row": {
+  "pivots": {
+   "PT1": [
+    [
+     "Flag",
+     "(All)",
+     null
+    ],
+    [
+     "Product",
+     "(All)",
+     null
+    ],
+    [
+     null,
+     null,
+     "a"
+    ],
+    [
+     "Region",
+     "Code",
+     "Sum of Qty"
+    ],
+    [
+     "Central",
+     5,
+     13
+    ],
+    [
+     null,
+     15,
+     9
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     8
+    ],
+    [
+     "Central Total",
+     null,
+     42
+    ],
+    [
+     "east",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     10
+    ],
+    [
+     null,
+     25,
+     12
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "east Total",
+     null,
+     65
+    ],
+    [
+     "North",
+     15,
+     11
+    ],
+    [
+     null,
+     35,
+     16
+    ],
+    [
+     "North Total",
+     null,
+     27
+    ],
+    [
+     "South",
+     5,
+     16
+    ],
+    [
+     null,
+     15,
+     8
+    ],
+    [
+     null,
+     25,
+     11
+    ],
+    [
+     null,
+     35,
+     10
+    ],
+    [
+     null,
+     "15",
+     9
+    ],
+    [
+     "South Total",
+     null,
+     54
+    ],
+    [
+     "West",
+     5,
+     21
+    ],
+    [
+     null,
+     15,
+     19
+    ],
+    [
+     null,
+     25,
+     36
+    ],
+    [
+     null,
+     35,
+     22
+    ],
+    [
+     "West Total",
+     null,
+     98
+    ],
+    [
+     "(blank)",
+     35,
+     4
+    ],
+    [
+     "(blank) Total",
+     null,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     290
+    ]
+   ]
+  },
+  "cells": {
+   "P!A1": "Flag",
+   "P!B1": "(All)",
+   "P!C1": null,
+   "P!D1": null,
+   "P!E1": null,
+   "P!F1": null,
+   "P!A2": "Product",
+   "P!B2": "(All)",
+   "P!C2": null,
+   "P!D2": null,
+   "P!E2": null,
+   "P!F2": null,
+   "P!A3": null,
+   "P!B3": null,
+   "P!C3": "a",
+   "P!D3": "b",
+   "P!E3": null,
+   "P!F3": null,
+   "P!A4": "Region",
+   "P!B4": "Code",
+   "P!C4": "Sum of Qty",
+   "P!D4": null,
+   "P!E4": null,
+   "P!F4": null,
+   "P!A5": "Central",
+   "P!B5": 5,
+   "P!C5": 13,
+   "P!D5": null,
+   "P!E5": null,
+   "P!F5": null,
+   "P!A6": null,
+   "P!B6": 15,
+   "P!C6": 9,
+   "P!D6": null,
+   "P!E6": null,
+   "P!F6": null,
+   "P!A7": null,
+   "P!B7": 25,
+   "P!C7": 12,
+   "P!D7": null,
+   "P!E7": null,
+   "P!F7": null,
+   "P!A8": null,
+   "P!B8": 35,
+   "P!C8": 8,
+   "P!D8": null,
+   "P!E8": null,
+   "P!F8": null,
+   "P!A9": "Central Total",
+   "P!B9": null,
+   "P!C9": 42,
+   "P!D9": null,
+   "P!E9": null,
+   "P!F9": null,
+   "P!A10": "east",
+   "P!B10": 5,
+   "P!C10": 21,
+   "P!D10": null,
+   "P!E10": null,
+   "P!F10": null,
+   "P!A11": null,
+   "P!B11": 15,
+   "P!C11": 10,
+   "P!D11": null,
+   "P!E11": null,
+   "P!F11": null,
+   "P!A12": null,
+   "P!B12": 25,
+   "P!C12": 12,
+   "P!D12": null,
+   "P!E12": null,
+   "P!F12": null
+  }
+ }
+}
