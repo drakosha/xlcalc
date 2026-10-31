@@ -187,7 +187,12 @@ export function drive(c: PivotCase, saved?: BookInput, locale?: string): DrivenP
         return
       }
       const v = op.value
-      const d: PivotDataField = { field: f, name: v.caption ?? wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }
+      // a second field of the same default name gets 2 after it, as Excel names it
+      const base = wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name)
+      const taken = new Set((tableOf(pt).values ?? []).map((x) => x.name?.toLowerCase()))
+      let name = v.caption ?? base
+      for (let n = 2; v.caption === undefined && taken.has(name.toLowerCase()); n++) name = `${base}${n}`
+      const d: PivotDataField = { field: f, name, ...(fn !== 'sum' ? { function: fn } : {}) }
       if (v.show && v.show !== 'normal') d.showAs = (SHOW[v.show] ?? v.show) as PivotShowAs
       if (v.base) d.baseField = fieldOf(v.base)
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
