@@ -132,8 +132,8 @@ function conditionXml(f: PivotFilter, w: PivotWriting): string {
   const one = (op: string, v: string) => `<customFilter${op ? ` operator="${op}"` : ''} val="${v}"/>`
   if (/NotBetween$/.test(t)) return `<customFilters>${one('lessThan', arg(0))}${one('greaterThan', arg(1))}</customFilters>`
   if (/Between$/.test(t)) return `<customFilters and="1">${one('greaterThanOrEqual', arg(0))}${one('lessThanOrEqual', arg(1))}</customFilters>`
-  // a label equal to the text is a value of the column's list, as Excel writes it
-  if (t === 'captionEqual') return `<filters><filter val="${arg(0)}"/></filters>`
+  // a label equal to plain text is a value of the column's list, as Excel writes it; with a wildcard, a condition
+  if (t === 'captionEqual' && !/[*?]/.test(String(f.args?.[0] ?? ''))) return `<filters><filter val="${arg(0)}"/></filters>`
   const not = /^caption(Not)/.test(t)
   const pattern = /BeginsWith$/.test(t) ? `${arg(0)}*` : /EndsWith$/.test(t) ? `*${arg(0)}` : /Contains$/.test(t) ? `*${arg(0)}*` : arg(0)
   const op = not && pattern !== arg(0) ? 'notEqual' : (OPERATOR.find(([re]) => re.test(t))?.[1] ?? '')
