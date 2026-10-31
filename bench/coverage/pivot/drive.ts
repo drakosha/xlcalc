@@ -128,6 +128,21 @@ export function drive(c: PivotCase): DrivenPhase[] {
       setTable(pt, (t) => ({ ...t, layout: op.layout }))
       return laid(k)
     }
+    if ('sort' in op && op.order !== 'manual') {
+      const f = fieldOf(op.sort)
+      setTable(pt, (t) => {
+        const v = op.by === undefined ? undefined : (t.values ?? []).findIndex((x) => x.name === op.by)
+        if (v === -1) throw new Error(`Unknown value field ${op.by}`)
+        const fields = t.fields.slice()
+        fields[f] = { ...fields[f], sort: { order: op.order as 'ascending' | 'descending', ...(v === undefined ? {} : { by: { value: v } }) } }
+        return { ...t, fields }
+      })
+      return laid(k)
+    }
+    if ('table' in op && Object.keys(op.table).every((k) => k === 'customLists')) {
+      setTable(pt, (t) => ({ ...t, customListSort: op.table.customLists }))
+      return laid(k)
+    }
     if ('group' in op) {
       const field = fieldOf(op.group)
       const date = (v: unknown) => (typeof v === 'object' && v !== null && 'd' in v ? isoOf((v as { d: number }).d) : undefined)
@@ -163,6 +178,11 @@ export function drive(c: PivotCase): DrivenPhase[] {
         return to === null ? kept : typeof to === 'object' ? { ...kept, ...('formula' in to ? { formula: to.formula } : { value: to.typed }) } : { ...kept, value: to }
       }
       book = { ...book, sheets: book.sheets.map((s) => (s.name === sheet ? { ...s, cells: { ...s.cells, [cell]: edited(s.cells[cell]) } } : s)) }
+      return
+    }
+    if ('cache' in op && Object.keys(op.cache).every((k) => k === 'missingItems')) {
+      const retainItems = op.cache.missingItems === 'none' ? 0 : op.cache.missingItems === 'max' ? 32500 : undefined
+      book = { ...book, pivotCaches: book.pivotCaches!.map((c) => ({ ...c, retainItems })) }
       return
     }
     if ('refresh' in op || 'refreshAll' in op) return laid(k, true)
