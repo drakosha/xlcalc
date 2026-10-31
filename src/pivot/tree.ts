@@ -93,10 +93,11 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
       const v = sort.by.value
       const desc = sort.order === 'descending'
       const val = new Map(b.order.map((p) => [p, rows ? value([...path, p], at, v) : value(at, [...path, p], v)]))
+      const compare = (x: number, y: number) => valueOrder(val.get(x)!, val.get(y)!, desc)
       sortPivotItems(b.order, (x, y) => {
-        const c = valueOrder(val.get(x)!, val.get(y)!, desc)
+        const c = compare(x, y)
         return c > 0 || (desc && c === 0)
-      }, s.sortThreads)
+      }, s.sortThreads, compare)
     }
     for (const p of b.order) walk(b.next.get(p)!, level + 1, [...path, p])
   }

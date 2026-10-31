@@ -1,12 +1,46 @@
 /** A PivotTable's middle-pivot partition sort; equal values cross the partition on descending sorts alone. */
-export function sortPivotItems(items: number[], before: (pivot: number, item: number) => boolean, threads = 1): void {
+import { spend } from '../exec/budget.js'
+
+type Bounds = { min: number; max: number; low: number; high: number }
+
+export function sortPivotItems(items: number[], before: (pivot: number, item: number) => boolean, threads = 1, compare?: (a: number, b: number) => number): void {
   const swap = (a: number, b: number) => { const t = items[a]; items[a] = items[b]; items[b] = t }
+  const bounds = (lo: number, hi: number): Bounds => {
+    const b = { min: items[lo], max: items[lo], low: 1, high: 1 }
+    for (let i = lo + 1; i <= hi; i++) {
+      spend(1)
+      const low = compare!(items[i], b.min), high = compare!(items[i], b.max)
+      if (low < 0) { b.min = items[i]; b.low = 1 } else if (low === 0) b.low++
+      if (high > 0) { b.max = items[i]; b.high = 1 } else if (high === 0) b.high++
+    }
+    return b
+  }
   const sort = (lo: number, hi: number): void => {
+    let span: Bounds | undefined
     while (lo < hi) {
+      spend(1)
+      if (compare && !span && hi - lo >= 64) span = bounds(lo, hi)
       swap(lo, Math.floor((lo + hi) / 2))
       const pivot = items[lo]
+      // An extreme pivot puts every item on one side. Skip those comparisons without changing the swaps.
+      if (span) {
+        const low = compare!(pivot, span.min) === 0, high = compare!(pivot, span.max) === 0
+        const equalBefore = before(pivot, pivot)
+        if ((low && !equalBefore) || (high && equalBefore)) {
+          if (equalBefore) swap(lo, hi--)
+          else lo++
+          if (low) span.low--
+          if (high) span.high--
+          if (!span.low || !span.high) span = undefined
+          continue
+        }
+      }
       let last = lo
-      for (let i = lo + 1; i <= hi; i++) if (before(pivot, items[i])) swap(++last, i)
+      for (let i = lo + 1; i <= hi; i++) {
+        spend(1)
+        if (before(pivot, items[i])) swap(++last, i)
+      }
+      span = undefined
       swap(lo, last)
       // Recurse into the smaller side, keeping the stack logarithmic even when every value is equal.
       if (last - lo <= hi - last) {
