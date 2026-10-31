@@ -218,6 +218,32 @@ A label or date filter and a value filter on one field both apply (Allow multipl
 
 A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep their order. A field sorted by hand keeps its order, new items after it; with "Sort automatically every time the report is updated" off, a sort is not applied again.
 
+## Slicers and timelines
+
+A slicer filters PivotTables by the items of one field, a timeline by a range of dates. A session adds, changes and deletes them through `editStructure`, as Insert Slicer, Insert Timeline, Report Connections and the slicer's buttons do in Excel:
+
+```js
+session.editStructure({ op: 'addSlicer', sheet: 'Report', slicer: {}, cache: { field: 'Region', pivots: [{ sheet: 'Report', name: 'PivotTable1' }] } })
+// the slicer Region over the new cache Slicer_Region, captioned Region, placed right of the PivotTable
+const items = session.getBook().slicerCaches[0].items // [{ item: 2 }, { item: 0 }, …] in the slicer's order
+session.editStructure({ op: 'editSlicer', slicer: 'Region', cache: { items: items.map((x) => ({ item: x.item, selected: x.item === 0 })) } })
+// PivotTable1 shows North alone
+session.editStructure({ op: 'addTimeline', sheet: 'Report', timeline: {}, cache: { field: 'Date', pivots: [{ sheet: 'Report', name: 'PivotTable1' }] } })
+session.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection: { start: '2025-01-01T00:00:00', end: '2025-06-30T00:00:00' } } })
+// the first half of 2025
+```
+
+- A slicer chooses items of its field (`SlicerCache.items`, an index into the cache field's `items` with `selected: false` for an item not chosen); at least one stays chosen. Its choice is the filter of every PivotTable its cache names: the items not chosen are hidden on that field of each, whether the field lies on an axis or on none. A PivotTable's hidden items are what the calculation reads, so a PivotTable filtered by a slicer is filtered the same once the file is opened again, and a refresh keeps the choice: an item new in the source comes unchosen, as in a manual filter.
+- A slicer over a field the cache lists no items of (numbers on no axis) lists them in the cache, as Excel does.
+- A new slicer over a field whose items a PivotTable already hides starts with them unchosen. Connecting another PivotTable (`cache: { pivots }`) gives it the slicer's choice; a PivotTable no longer connected keeps the filter it has.
+- After a choice, the PivotTables are laid out again from their cache, without reading the source, as Excel does. Each slicer then knows which of its items have data: an item has data when a record of it passes the other fields' filters (other slicers, page fields, label and date filters) and has a value for a value field. A region whose only record has no price has no data under Sum of Price. Items with no data come last, marked, unless the cache says otherwise (`noData`); items are ordered by label, ascending by default, the texts of custom lists first (`sort`, `customListSort`).
+- A timeline's dates (`TimelineCache.selection`) filter its field on every PivotTable it names, by whole days: between the two dates, or on the one day when they are the same. The field stays where it is, on no axis as a rule. The level shown (`Timeline.level`) does not change the filter; `selectionLevel` is the widest level whose periods the dates span whole (2025-01-01 to 2025-06-30: quarters). `selection: null` is Clear Filter.
+- Deleting a slicer or a timeline deletes its cache with the last one over it; the PivotTables keep the filter it made.
+- A name is unique among the workbook's slicers and timelines; without one, a slicer takes its field's (`Region`, `Region 1`…). A new cache is `Slicer_Region`, a timeline's `NativeTimeline_Date`. A field that is not in the source, a timeline over a field without dates and a name already used are rejected (`pivot`).
+- Each choice is one step of undo. Without `xlcalc/pivot` the choice is written all the same, and the PivotTables keep their cells with their cache marked `stale`.
+
+A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, and its look, place and order change; its choice is the AutoFilter's, which the workbook does not hold (`docs/limitations.md`), so `editSlicer` rejects items for it.
+
 ## Checked against Excel
 
 Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit,
@@ -231,3 +257,5 @@ has the details.
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 
 Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with three known differences (`docs/limitations.md`).
+
+Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`). Each workbook Excel saved holds the choice as the session writes it.
