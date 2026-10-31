@@ -22,7 +22,7 @@ function positions(lists: readonly (readonly string[])[]): Map<string, Map<numbe
 }
 
 /** Sorts indexes in place; texts belonging to disjoint custom lists compare as less in both directions. */
-export function sortLabels(order: number[], value: (i: number) => PivotValue, descending: boolean, lists: readonly (readonly string[])[] | null, epoch: number, threads: number): void {
+export function sortLabels(order: number[], value: (i: number) => PivotValue, descending: boolean, lists: readonly (readonly string[])[] | null, epoch: number): void {
   const at = lists && positions(lists)
   const values = new Map(order.map(i => [i, value(i)]))
   const initial = new Map(order.map((i, k) => [i, k]))
@@ -38,7 +38,7 @@ export function sortLabels(order: number[], value: (i: number) => PivotValue, de
     }
     return sortOrder(plainOf(a, epoch), plainOf(b, epoch), false)
   }
-  sortPivotItems(order, (pivot, item) => ((compare(item, pivot) || initial.get(item)! - initial.get(pivot)!) < 0) !== descending, threads)
+  sortPivotItems(order, (pivot, item) => ((compare(item, pivot) || initial.get(item)! - initial.get(pivot)!) < 0) !== descending)
 }
 
 /** For each field, each old item index's new index. */
@@ -54,14 +54,14 @@ export function orderedArea(area: PivotArea, maps: ItemOrder): PivotArea {
 }
 
 /** Applies requested label sorts to field items and every table-local reference to their indexes. */
-export function orderedLabels(table: PivotTable, cache: PivotCache, requested: boolean | readonly number[], lists: readonly (readonly string[])[], epoch: number, threads: number): { table: PivotTable; maps: ItemOrder } {
+export function orderedLabels(table: PivotTable, cache: PivotCache, requested: boolean | readonly number[], lists: readonly (readonly string[])[], epoch: number): { table: PivotTable; maps: ItemOrder } {
   const maps: ItemOrder = new Map()
   if (requested === false) return { table, maps }
   const fields = table.fields.map((f, i) => {
     if (!f.sort || f.sort.by || !f.items || (requested !== true && !requested.includes(i))) return f
     const values = groupedItems(cache.fields[i]) ?? []
     const order = f.items.map((_, j) => j)
-    sortLabels(order, p => values[f.items![p].item!] ?? null, f.sort.order === 'descending', table.customListSort !== false ? lists : null, epoch, threads)
+    sortLabels(order, p => values[f.items![p].item!] ?? null, f.sort.order === 'descending', table.customListSort !== false ? lists : null, epoch)
     if (order.every((p, j) => p === j)) return f
     const map: number[] = []
     order.forEach((p, j) => (map[p] = j))

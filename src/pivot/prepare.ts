@@ -23,7 +23,7 @@ function groupingFields(table: PivotTable): Set<number> {
  * an item for each of their cache field's items: those the PivotTable does not list yet come last, shown, in the
  * cache's order, or, for a field it lists none of, sorted as Excel lists a field it places (ascending by label).
  */
-export function prepared(table: PivotTable, cache: PivotCache, epoch: number, lists: readonly (readonly string[])[], threads = 2): { table: PivotTable; cache: PivotCache } {
+export function prepared(table: PivotTable, cache: PivotCache, epoch: number, lists: readonly (readonly string[])[]): { table: PivotTable; cache: PivotCache } {
   const need = groupingFields(table)
   // a grouped field takes its groups' items; groups by hand name the items of their base field, which is listed
   const out = withListed(cache, [...need].map((f) => (cache.fields[f]?.group?.discrete ? (cache.fields[f].group!.base ?? f) : f)))
@@ -34,7 +34,7 @@ export function prepared(table: PivotTable, cache: PivotCache, epoch: number, li
     const added = items.map((_, k) => k).filter((k) => !known.has(k))
     if (!added.length) return pf
     // groups of a range keep their order, from the first to the last
-    if (!pf.items?.length && !out.fields[i].group?.range) sortLabels(added, p => items[p], false, table.customListSort !== false ? lists : null, epoch, threads)
+    if (!pf.items?.length && !out.fields[i].group?.range) sortLabels(added, p => items[p], false, table.customListSort !== false ? lists : null, epoch)
     const calculated = new Set((out.calculatedItems ?? []).flatMap((c) => (c.field === i ? [c.item] : [])))
     return { ...pf, items: [...(pf.items ?? []), ...added.map((item) => (calculated.has(item) ? { item, calculated: true } : { item }))] }
   })

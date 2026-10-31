@@ -65,8 +65,6 @@ export interface PivotResult {
 export interface PivotComputeOptions {
   /** Label sorts requested now; false preserves the order saved in field items. */
   sortLabels?: boolean | readonly number[]
-  /** Excel's sorting-thread profile, 2 by default; 1 keeps a sort in one partition. */
-  sortThreads?: number
   /** Today as a serial number, the session's clock (as `TODAY`), for the date filters relative to it. */
   today?: number
   /** The workbook counts dates from 1904. */

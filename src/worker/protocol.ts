@@ -2,7 +2,7 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, FunctionGroupName, PivotOptions, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, ExternalAnswer, ExternalCall, FunctionGroupName, RegexLevel, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
@@ -20,8 +20,6 @@ export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChan
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
-  /** The pivot ordering profile actually used by this call. */
-  pivotSortThreads?: number
   seq: number
   op: Op
   args: unknown[]
@@ -53,13 +51,13 @@ export type ToThread =
    * thread loads (`groups/state.ts`, `groupsWanted`); `cancelled`: shared memory where the pool writes the task it
    * cancels, which the thread reads inside a formula.
    */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; pivot?: PivotOptions; functions: FunctionGroupName[]; cancelled?: Int32Array }
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[]; regex?: RegexLevel['kind']; pivot?: true; functions: FunctionGroupName[]; cancelled?: Int32Array }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
   /** A level of match mode 3 registered since: the thread imports it from `xlcalc/regex` itself (`worker/thread.ts`). */
   | { t: 'regex'; kind: RegexLevel['kind'] }
   /** The PivotTable engine registered since: the thread imports it from `xlcalc/pivot` itself. */
-  | { t: 'pivot'; options: PivotOptions }
+  | { t: 'pivot' }
   /** Groups of functions registered since: the thread imports their modules itself (`groups/modules.ts`). */
   | { t: 'functions'; functions: FunctionGroupName[] }
   /** `asks`: the host's `Externals.resolve`, which stays with the pool, answers the calls outside the workbook (`ask`). */
@@ -97,7 +95,6 @@ export type FromThread = { task: number; ok: true; value: unknown } | { task: nu
 
 /** A call's value and the session's clock, history and revision after it. */
 export interface Answer {
-  pivotSortThreads?: number
   value: unknown
   clock: Clock
   history: SessionHistory

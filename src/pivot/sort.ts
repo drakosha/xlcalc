@@ -3,7 +3,10 @@ import { spend } from '../exec/budget.js'
 
 type Bounds = { min: number; max: number; low: number; high: number }
 
-export function sortPivotItems(items: number[], before: (pivot: number, item: number) => boolean, threads = 1, compare?: (a: number, b: number) => number): void {
+/** The parts Excel sorts more than 512 items in, then merges: measured on Excel 16.0.20430 for Windows (sets `order-held`, `order-check`). */
+const EXCEL_SORT_PARTS = 2
+
+export function sortPivotItems(items: number[], before: (pivot: number, item: number) => boolean, compare?: (a: number, b: number) => number): void {
   const swap = (a: number, b: number) => { const t = items[a]; items[a] = items[b]; items[b] = t }
   const bounds = (lo: number, hi: number): Bounds => {
     const b = { min: items[lo], max: items[lo], low: 1, high: 1 }
@@ -52,7 +55,7 @@ export function sortPivotItems(items: number[], before: (pivot: number, item: nu
       }
     }
   }
-  const parts = items.length > 512 ? Math.min(threads, Math.floor(items.length / 256)) : 1
+  const parts = items.length > 512 ? EXCEL_SORT_PARTS : 1
   if (parts <= 1) return sort(0, items.length - 1)
   const size = Math.ceil(items.length / parts)
   for (let lo = 0; lo < items.length; lo += size) sort(lo, Math.min(items.length - 1, lo + size - 1))

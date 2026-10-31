@@ -11,7 +11,7 @@ import { abortSource, CalcError, type Abort } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { addedLocales, onLocale } from '../locale/registry.js'
 import { onRegexLevel, regexLevel } from '../regex-level.js'
-import { onPivotLoaded, pivotLoaded, pivotOptions } from '../pivot-level.js'
+import { onPivotLoaded, pivotLoaded } from '../pivot-level.js'
 import { groupsWanted, onFunctions } from '../groups/state.js'
 import { splitCall, checkCall, checkEditCall, withCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
@@ -153,7 +153,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     const locales = addedLocales().map(sentLocale)
     slot.cancelled ??= sharedWord()
     const cancelled = slot.cancelled
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}), ...(regexLevel() ? { regex: regexLevel()!.kind } : {}), ...(pivotLoaded() ? { pivot: pivotOptions() } : {}), functions: groupsWanted(), ...(cancelled ? { cancelled } : {}) })
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}), ...(regexLevel() ? { regex: regexLevel()!.kind } : {}), ...(pivotLoaded() ? { pivot: true as const } : {}), functions: groupsWanted(), ...(cancelled ? { cancelled } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
@@ -168,7 +168,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     for (const s of slots) s.thread?.post({ t: 'regex', kind: regexLevel()!.kind })
   })
   const unlistenPivot = onPivotLoaded(() => {
-    for (const s of slots) s.thread?.post({ t: 'pivot', options: pivotOptions() })
+    for (const s of slots) s.thread?.post({ t: 'pivot' })
   })
   const unlistenFunctions = onFunctions(() => {
     for (const s of slots) s.thread?.post({ t: 'functions', functions: groupsWanted() })
@@ -363,7 +363,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         r.revision = a.revision
         if (msg.seq !== undefined && msg.seq > r.seq) {
           r.seq = msg.seq
-          r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock, ...(a.pivotSortThreads === undefined ? {} : { pivotSortThreads: a.pivotSortThreads }) })
+          r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock })
           if (r.journal.length >= snapshotEvery && !r.snapshotting) {
             r.snapshotting = true
             // next on the thread, ahead of calls already waiting, so that pipelined calls do not grow the journal past it

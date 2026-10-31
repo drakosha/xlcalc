@@ -93,9 +93,9 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const epoch = options.date1904 ? EPOCH_1904 : 0
   const today = options.today ?? 0
   const lists = options.lists ?? listsOf({})
-  const ready = prepared(given, givenCache, epoch, lists, options.sortThreads ?? 2)
+  const ready = prepared(given, givenCache, epoch, lists)
   const cache = ready.cache
-  const ordered = orderedLabels(ready.table, cache, options.sortLabels ?? true, lists, epoch, options.sortThreads ?? 2)
+  const ordered = orderedLabels(ready.table, cache, options.sortLabels ?? true, lists, epoch)
   const table = ordered.table
   const axes = axesOf(table)
   const rowFields = axes.rows.filter((f): f is number => f !== 'values')
@@ -170,7 +170,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     if (!cell) leaves.set(k, (cell = measures.map((_, m) => new Tally(m >= values.length))))
     for (let m = 0; m < measures.length; m++) addRecord(cell[m], m, r)
   }
-  const sorting = { table, cache, shown, epoch, lists, sortThreads: options.sortThreads ?? 2 }
+  const sorting = { table, cache, shown, epoch, lists }
   const rowRoot = branches(sorting, at, shownBy.rows, rowFields)
   const colRoot = branches(sorting, at, shownBy.columns, colFields)
   const calcItems = itemFormulas(table, cache, epoch)

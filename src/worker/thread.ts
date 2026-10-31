@@ -1,4 +1,3 @@
-import type { PivotOptions } from '../contract.js'
 /**
  * A thread of the pool (`docs/async.md`): it holds sessions as the same thread does and runs one task at a time in
  * portions, so a `cancel` gets through between them, and inside a formula through memory shared with the pool. A
@@ -22,7 +21,6 @@ import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThrea
 import { LOCALE_MODULES } from '../locale/modules.js'
 import { setRegexLevel } from '../regex-level.js'
 import { registerPivot } from '../pivot-level.js'
-import { pivotSortThreads, withPivotSortThreads } from '../pivot/hook.js'
 import type { FunctionGroupName } from '../contract.js'
 import { GROUP_ARITY } from '../groups/manifest.js'
 import { GROUP_MODULES } from '../groups/modules.js'
@@ -97,9 +95,9 @@ function loadRegex(kind: RegexLevel['kind']) {
 }
 
 /** Loads the PivotTable engine the pool has registered, its module imported by the thread, before the next task. */
-function loadPivot(options: PivotOptions) {
+function loadPivot() {
   loading = loading
-    .then(async () => registerPivot((await import('../pivot/index.js')).pivotEngine, options))
+    .then(async () => registerPivot((await import('../pivot/index.js')).pivotEngine))
     .catch(() => {})
 }
 
@@ -115,11 +113,6 @@ function loadFunctions(names: FunctionGroupName[]) {
 
 /** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
 async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise<Answer> {
-  const profile = pivotSortThreads()
-  return withPivotSortThreads(profile, () => invokeInProfile(h, op, args, o, profile))
-}
-
-async function invokeInProfile(h: Held, op: Op, args: unknown[], o: CalcOptions, profile: number): Promise<Answer> {
   const s = h.s
   const n = EDITS[op]
   const eo = n === undefined ? o : { ...o, ...(args[n] as object | undefined) }
@@ -202,7 +195,7 @@ async function invokeInProfile(h: Held, op: Op, args: unknown[], o: CalcOptions,
     default:
       value = await (s[op] as (...a: unknown[]) => Promise<unknown>)(...args.slice(0, n), eo)
   }
-  return { value, clock: s.clock, history: s.history, revision: s.revision, pivotSortThreads: profile }
+  return { value, clock: s.clock, history: s.history, revision: s.revision }
 }
 
 function heldOf(sid: number): Held {
@@ -294,7 +287,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
       try {
         for (const e of journal as Entry[]) {
           h.planned = e.clock
-          const a = await withPivotSortThreads(e.pivotSortThreads ?? 2, () => invoke(h, e.op, e.args, { signal }))
+          const a = await invoke(h, e.op, e.args, { signal })
           if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} used a different clock`)
           h.seq = e.seq
           h.last = a
@@ -350,7 +343,7 @@ function receive(m: ToThread) {
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
     if (m.locales) load(m.locales)
     if (m.regex) loadRegex(m.regex)
-    if (m.pivot) loadPivot(m.pivot)
+    if (m.pivot) loadPivot()
     loadFunctions(m.functions)
     cancelled = m.cancelled
   } else if (m.t === 'locales') {
@@ -358,7 +351,7 @@ function receive(m: ToThread) {
   } else if (m.t === 'regex') {
     loadRegex(m.kind)
   } else if (m.t === 'pivot') {
-    loadPivot(m.options)
+    loadPivot()
   } else if (m.t === 'functions') {
     loadFunctions(m.functions)
   } else if (m.t === 'cancel') {

@@ -8,7 +8,7 @@ for (const descending of [false, true])
       const key = (i: number) => outlier && i === 0 ? 1 : 0
       let comparisons = 0
       const compare = (a: number, b: number) => { comparisons++; return (key(a) - key(b)) * (descending ? -1 : 1) }
-      sortPivotItems(items, (a, b) => { const c = compare(a, b); return c > 0 || (descending && c === 0) }, 1, compare)
+      sortPivotItems(items, (a, b) => { const c = compare(a, b); return c > 0 || (descending && c === 0) }, compare)
       expect(comparisons).toBeLessThan(items.length * 20)
       if (outlier) expect(items[descending ? 0 : items.length - 1]).toBe(0)
     })

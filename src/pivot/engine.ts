@@ -11,7 +11,7 @@ import { sayPivot } from '../locale/pivot-messages.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 import { computePivot } from './compute.js'
-import { pivotSortThreads, type PivotRefresh } from './hook.js'
+import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
 import { orderedArea, type ItemOrder } from './label-sort.js'
 import { layoutPivot } from './layout.js'
@@ -49,7 +49,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     }
   } else wanted = new Set(caches.keys())
   const epoch = book.dateSystem === 1904 ? EPOCH_1904 : 0
-  const options = { sortThreads: pivotSortThreads(), today, date1904: epoch > 0, lists: listsOf(book) }
+  const options = { today, date1904: epoch > 0, lists: listsOf(book) }
   const placed: Placement[] = []
   const newCaches = new Map<number, PivotCache>()
   const results: Calculated[] = []

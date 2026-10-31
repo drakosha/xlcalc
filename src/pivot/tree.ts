@@ -19,7 +19,6 @@ const branch = (data: boolean): Branch => ({ data, next: new Map(), order: [] })
 
 /** What sorting reads: the prepared PivotTable and cache, the items let through, the epoch and custom lists. */
 export interface Sorting {
-  sortThreads: number
   table: PivotTable
   cache: PivotCache
   shown: (boolean[] | undefined)[]
@@ -97,7 +96,7 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
       sortPivotItems(b.order, (x, y) => {
         const c = compare(x, y)
         return c > 0 || (desc && c === 0)
-      }, s.sortThreads, compare)
+      }, compare)
     }
     for (const p of b.order) walk(b.next.get(p)!, level + 1, [...path, p])
   }
