@@ -20,7 +20,7 @@ import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
 import { checkedPivots, patched, relaid } from './pivots.js'
 import { sheetIndex } from './rewrite.js'
-import { fieldIndex, itemsShown, slicerField, withSlicerChoice, withTimelineChoice } from './slicer-choice.js'
+import { fieldIndex, itemsShown, selectionLevel, slicerField, timelineBounds, withSlicerChoice, withTimelineChoice } from './slicer-choice.js'
 import type { ValuesIn } from './values.js'
 
 type Kind = 'slicers' | 'timelines'
@@ -138,7 +138,8 @@ function newCache(book: BookInput, kind: Kind, v: unknown): { book: BookInput; c
   const name = free(taken, `${kind === 'slicers' ? 'Slicer' : 'NativeTimeline'}_${fieldName.replace(/[^\p{L}\p{N}_]/gu, '_')}`, '')
   if (kind === 'timelines') {
     if (!pc.fields[f].facts?.types?.includes('date') && !pc.fields[f].items?.some((x) => x !== null && typeof x === 'object' && 'date' in x)) return refused(book, { key: 'timelineField', field: fieldName })
-    return { book, cache: { name, field: fieldName, pivots: refs, cache: id } }
+    const bounds = timelineBounds(pc, f)
+    return { book, cache: { name, field: fieldName, pivots: refs, cache: id, ...(bounds ? { bounds } : {}) } }
   }
   const at = slicerField(book, { field: fieldName, cache: id })!
   const items = itemsShown(at.book, refs[0], at.field, at.cache.fields[at.field].items?.length ?? 0)
@@ -169,7 +170,8 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
   if (!name.trim()) throw new InputError(`op.${key}.name`, `expected a ${key}'s name, got an empty string`)
   if (taken.has(caseKey(name))) return refused(out, { key: 'slicerNameTaken', name })
   const place = given.place === undefined ? placeBeside(out, cache.pivots[0]) : undefined
-  const item = { ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
+  // Excel captions it by its field
+  const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
   const sheets = [...out.sheets]
   sheets[s] = withField(sheets[s], kind, [...((sheets[s][kind] ?? []) as (Slicer | Timeline)[]), item] as never)
   out = { ...out, sheets }
@@ -220,9 +222,19 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
   const choice = patch.items !== undefined || patch.selection !== undefined
   const added = next.pivots.filter((r) => !c.pivots.some((q) => sameRef(q, r)))
   out = withCaches(out, kind, caches.map((y) => (y === c ? next : y)))
+  if (kind === 'timelines' && patch.selection !== undefined) out = withLevels(out, next as TimelineCache)
   if (choice || added.length) out = chosen(out, kind, next, choice ? next.pivots : added)
   const refs = [...c.pivots, ...added]
   return laidOut(checkedPivots(out), refs, values, choice || added.length > 0)
+}
+
+/** The book with the timelines of `tc` at the level its dates are chosen at, none without a selection. */
+function withLevels(book: BookInput, tc: TimelineCache): BookInput {
+  const level = tc.selection && selectionLevel(tc.selection)
+  const sheets = book.sheets.map((sh) =>
+    sh.timelines?.some((t) => caseKey(t.cache) === caseKey(tc.name)) ? { ...sh, timelines: sh.timelines.map((t) => (caseKey(t.cache) !== caseKey(tc.name) ? t : patched(t, { selectionLevel: level ?? null }))) } : sh,
+  )
+  return { ...book, sheets }
 }
 
 function remove(book: BookInput, kind: Kind, o: Record<string, unknown>): Applied {

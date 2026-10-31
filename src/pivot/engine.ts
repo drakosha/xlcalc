@@ -15,6 +15,7 @@ import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
 import { layoutPivot } from './layout.js'
 import { placePivots, type Placement } from './place.js'
+import { fieldIndex, timelineBounds } from '../structure/slicer-choice.js'
 import { slicerItems } from './slicers.js'
 import { sourceGrid } from './source.js'
 
@@ -88,5 +89,11 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
   // the slicers over the caches laid out learn their items' data and choice
   if (book.slicerCaches?.some((sc) => sc.cache !== undefined && newCaches.has(sc.cache)))
     out.slicerCaches = book.slicerCaches.map((sc) => (sc.cache !== undefined && newCaches.has(sc.cache) ? slicerItems(sc, sc.pivots.flatMap((r) => results.filter((x) => sameRef(x.ref, r))), options) : sc))
+  if (book.timelineCaches?.some((tc) => newCaches.has(tc.cache)))
+    out.timelineCaches = book.timelineCaches.map((tc) => {
+      const pc = newCaches.get(tc.cache)
+      const bounds = pc && timelineBounds(pc, fieldIndex(pc, tc.field))
+      return bounds ? { ...tc, bounds } : tc
+    })
   return placePivots(out, placed)
 }

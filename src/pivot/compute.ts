@@ -62,16 +62,19 @@ const key = (path: readonly number[]) => path.join(',')
 
 /**
  * The cache items of field `field` that some record has under the filters of the other fields (hidden items, a page
- * field's item, label and date filters), as a slicer of the field tells its items with data. `table` and `cache` are a
+ * field's item, label and date filters) with a value for a value field, as a slicer of the field tells its items with
+ * data (the set slicer: a region whose only record has no price has none under Sum of Price). `table` and `cache` are a
  * calculation's (`PivotResult`), the field listed.
  */
 export function itemsWithData(table: PivotTable, cache: PivotCache, field: number, options: PivotComputeOptions = {}): Set<number> {
   const epoch = options.date1904 ? EPOCH_1904 : 0
   const at = itemIndexes(table, cache)
   const shown = shownItems(table, cache, options.today ?? 0, epoch)
+  const readers = (table.values ?? []).map((v) => valueReader(cache, v.field, epoch))
   const out = new Set<number>()
   ;(cache.records ?? []).forEach((rec, r) => {
-    if (shown.every((s, f) => f === field || !s || (at[f][r] >= 0 && s[at[f][r]])) && typeof rec[field] === 'number') out.add(rec[field] as number)
+    if (typeof rec[field] !== 'number' || out.has(rec[field] as number)) return
+    if (shown.every((s, f) => f === field || !s || (at[f][r] >= 0 && s[at[f][r]])) && (!readers.length || readers.some((read) => read(r)[1]))) out.add(rec[field] as number)
   })
   return out
 }

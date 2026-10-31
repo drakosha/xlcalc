@@ -4,7 +4,9 @@
  * hidden items put in its model, then the slicers and timelines added and chosen through a session's `editStructure`
  * with `xlcalc/pivot` loaded. Each phase gives the cells of every PivotTable's area and each slicer's items as the
  * harness reads them (name, selected, has data, in the slicer's order) or a timeline's dates and level. Run:
- * `npx tsx bench/coverage/pivot/slicer-predict.ts`; the comparison with Excel: `test/pivot-slicers-excel.test.ts`.
+ * `npx tsx bench/coverage/pivot/slicer-predict.ts <out.json>`. `slicer.predicted.json` is the prediction made before the
+ * answers were read: 31 of 38 held, the 7 others a blank region whose one record has no price, which Excel tells has no
+ * data. The comparison with Excel: `test/pivot-slicers-excel.test.ts`.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { createSession, registerPivot, type BookInput, type CellValue, type PivotRef, type StructureOp } from '../../../src/index.js'
@@ -144,6 +146,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   registerPivot(pivotEngine)
   const out: Record<string, PredictedPhase[]> = {}
   for (const c of buildPivotCases()) out[c.id] = await predict(c)
-  writeFileSync(new URL('bench/coverage/pivot/slicer.predicted.json', ROOT), JSON.stringify(out, null, 1) + '\n')
+  writeFileSync(process.argv[2], JSON.stringify(out, null, 1) + '\n')
   console.log(Object.keys(out).length, 'cases predicted')
 }
