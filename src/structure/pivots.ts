@@ -9,7 +9,7 @@ import { caseKey } from '../collate.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
-import { areaText, contains, meets, parseRange, type Rect } from './area.js'
+import { areaText, contains, intersect, meets, parseRange, type Rect } from './area.js'
 import { pivotArea as areaOf } from '../pivot/area.js'
 import type { Applied, Geometry } from './geometry.js'
 import type { ValuesIn } from './values.js'
@@ -206,9 +206,17 @@ export function pivotRefusal(book: BookInput, op: StructureOp): Exclude<Applied,
     // a paste, a fill or a merge onto one affects it, as Excel's alert says (the set alerts); a table over one has an alert of its own
     case 'copyRange':
       return pivotMet(book, at(op.to.sheet), parseRange(op.to.range), 'affect')
-    case 'fillRange':
+    case 'fillRange': {
+      // a fill out of one writes the cells beyond it alone (the set alerts-held): one it fills into is affected
+      const from = parseRange(op.range)
+      const to = parseRange(op.to)
+      return pivotMet(book, at(op.sheet), to, 'affect', (p) => {
+        const met = to && intersect(pivotArea(p), to)
+        return !!from && !!met && contains(from, met)
+      })
+    }
     case 'mergeCells':
-      return pivotMet(book, at(op.sheet), parseRange(op.op === 'fillRange' ? op.to : op.range), 'affect')
+      return pivotMet(book, at(op.sheet), parseRange(op.range), 'affect')
     case 'addTable':
       return pivotMet(book, at(op.sheet), typeof op.table?.range === 'string' ? parseRange(op.table.range) : null, undefined)
     case 'moveRange': {

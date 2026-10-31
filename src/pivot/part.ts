@@ -33,16 +33,13 @@ export function pivotPart(state: EngineState, edits: CellReplace[], same = false
 
 /**
  * Edits of a session that change a cell of a PivotTable's area throw `PivotInputError` (`pivotPart`) with Excel's alert:
- * a cell cleared affects the PivotTable, a formula over a label is one for an item or field name, the rest change its part.
+ * a cell cleared affects the PivotTable, a formula is one for an item or field name, the rest change its part.
  */
 export function checkPivotEdits(state: EngineState, edits: CellReplace[]) {
   const p = pivotPart(state, edits)
   if (!p) return
   const { input } = p
-  const { row, col } = parseAddress(p.cell)
-  const data = p.table.location.areas?.data
-  const value = data !== undefined && hasCell(parseRange(data)!, row, col)
-  const reason = input?.value === undefined && input?.formula === undefined ? 'affect' : input.formula !== undefined && !value ? 'formula' : 'part'
+  const reason = input?.value === undefined && input?.formula === undefined ? 'affect' : input.formula !== undefined ? 'formula' : 'part'
   throw new PivotInputError('edits', `${p.sheet}!${p.cell} is part of the PivotTable ${p.pivot}: Excel does not let an entry change a PivotTable's cells`, reason, p.sheet, p.cell)
 }
 

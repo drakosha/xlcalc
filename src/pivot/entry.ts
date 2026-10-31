@@ -36,8 +36,9 @@ export function pivotEntry(book: BookInput, sheet: string, cell: string, input: 
     return { ok: false, code: 'pivot', message: sayPivot(book.locale, m), ...(reason ? { reason } : {}) }
   }
   const part = layoutPivot(savedResult(table, cache), book).cells.find((c) => formatAddress(c.row, c.col) === cell)?.part
-  if (!part) return refuse({ key: 'pivotPart', ...where })
+  // a formula is refused over a value too, with the alert of an item or field name (the set alerts-held)
   if (input?.formula !== undefined) return refuse({ key: 'pivotFormula', ...where })
+  if (!part) return refuse({ key: 'pivotPart', ...where })
   const v = input?.value
   if (v === undefined || v === null || v === '') return refuse({ key: 'pivotAffect', ...where })
   const { words, rules, fieldName, valueName, labelText } = labeler(table, cache, book)

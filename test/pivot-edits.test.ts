@@ -56,7 +56,7 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     await thrown(s.setCells([{ sheet: 'P', cell: 'B4', input: { value: 3 } }]), 'part', 'B4')
     await expect(s.setCells([{ sheet: 'P', cell: 'B1', input: null }])).rejects.toThrow(/part of the PivotTable PT/)
     await thrown(s.setCells([{ sheet: 'P', cell: 'B1', input: null }]), 'affect', 'B1')
-    await thrown(s.setCells([{ sheet: 'p', cell: 'C4', input: { value: 1 } }, { sheet: 'p', cell: 'B4', input: { formula: '1' } }]), 'part', 'B4')
+    await thrown(s.setCells([{ sheet: 'p', cell: 'C4', input: { value: 1 } }, { sheet: 'p', cell: 'B4', input: { formula: '1' } }]), 'formula', 'B4')
     await thrown(s.replaceCells([{ sheet: 'P', cell: 'A5', input: { value: 'All' } }]), 'part', 'A5')
     await thrown(s.clearCells([{ sheet: 'P', range: 'A4:C4' }], 'contents'), 'affect', 'A4')
     await thrown(s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'P', cell: 'A4', input: { formula: '1+1' } }] }]), 'formula', 'A4')
