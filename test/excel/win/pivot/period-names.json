@@ -1,0 +1,8562 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 50.5
+ },
+ "cases": [
+  {
+   "id": "years",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "years"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "quarters",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "quarters"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "months",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "months"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "days",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "days"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hours",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "When",
+     "periods": [
+      "hours"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "minutes",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "When",
+     "periods": [
+      "minutes"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "seconds",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "When",
+     "periods": [
+      "seconds"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dates-all",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "days",
+      "months",
+      "quarters",
+      "years"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "times-all",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "When",
+     "periods": [
+      "seconds",
+      "minutes",
+      "hours",
+      "days",
+      "months",
+      "quarters",
+      "years"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "days-7",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "days"
+     ],
+     "by": 7
+    }
+   ]
+  },
+  {
+   "id": "start-end",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "months",
+      "years"
+     ],
+     "start": {
+      "d": 45352
+     },
+     "end": {
+      "d": 45838
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-half",
+   "ops": [
+    {
+     "edit": "D!E14",
+     "to": 3
+    },
+    {
+     "refresh": true
+    },
+    {
+     "rows": [
+      "Price"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Price",
+     "by": 2.5
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "years": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 dfc0a1e568f448e6",
+  "quarters": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9cd870f72e77e2b2",
+  "months": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d549a484e257b419",
+  "days": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c2e05381663f5dda",
+  "hours": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4fb3f78804c2e079",
+  "minutes": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 724adb8452e521df",
+  "seconds": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6290666c438b079a",
+  "dates-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 02169035cae505ea",
+  "times-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8f7a21df26a67d84",
+  "days-7": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 aecc1f66468d4184",
+  "start-end": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0fe0d677533abe37",
+  "price-half": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b3737fc542ea6ef3"
+ },
+ "answers": {
+  "years": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Years (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         2
+        ],
+        [
+         "2024",
+         99
+        ],
+        [
+         "2025",
+         111
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "2024",
+         "99"
+        ],
+        [
+         "2025",
+         "111"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "quarters": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Quarters (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         2
+        ],
+        [
+         "Qtr1",
+         51
+        ],
+        [
+         "Qtr2",
+         51
+        ],
+        [
+         "Qtr3",
+         51
+        ],
+        [
+         "Qtr4",
+         57
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Quarters (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "Qtr1",
+         "51"
+        ],
+        [
+         "Qtr2",
+         "51"
+        ],
+        [
+         "Qtr3",
+         "51"
+        ],
+        [
+         "Qtr4",
+         "57"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "months": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         2
+        ],
+        [
+         "Jan",
+         19
+        ],
+        [
+         "Feb",
+         17
+        ],
+        [
+         "Mar",
+         15
+        ],
+        [
+         "Apr",
+         20
+        ],
+        [
+         "May",
+         9
+        ],
+        [
+         "Jun",
+         22
+        ],
+        [
+         "Jul",
+         14
+        ],
+        [
+         "Aug",
+         16
+        ],
+        [
+         "Sep",
+         21
+        ],
+        [
+         "Oct",
+         20
+        ],
+        [
+         "Nov",
+         21
+        ],
+        [
+         "Dec",
+         16
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "Jan",
+         "19"
+        ],
+        [
+         "Feb",
+         "17"
+        ],
+        [
+         "Mar",
+         "15"
+        ],
+        [
+         "Apr",
+         "20"
+        ],
+        [
+         "May",
+         "9"
+        ],
+        [
+         "Jun",
+         "22"
+        ],
+        [
+         "Jul",
+         "14"
+        ],
+        [
+         "Aug",
+         "16"
+        ],
+        [
+         "Sep",
+         "21"
+        ],
+        [
+         "Oct",
+         "20"
+        ],
+        [
+         "Nov",
+         "21"
+        ],
+        [
+         "Dec",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "days": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         2
+        ],
+        [
+         "1-Jan",
+         19
+        ],
+        [
+         "8-Feb",
+         17
+        ],
+        [
+         "15-Mar",
+         15
+        ],
+        [
+         "22-Apr",
+         20
+        ],
+        [
+         "1-May",
+         9
+        ],
+        [
+         "8-Jun",
+         22
+        ],
+        [
+         "15-Jul",
+         14
+        ],
+        [
+         "22-Aug",
+         16
+        ],
+        [
+         "1-Sep",
+         21
+        ],
+        [
+         "8-Oct",
+         20
+        ],
+        [
+         "15-Nov",
+         21
+        ],
+        [
+         "22-Dec",
+         16
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "1-Jan",
+         "19"
+        ],
+        [
+         "8-Feb",
+         "17"
+        ],
+        [
+         "15-Mar",
+         "15"
+        ],
+        [
+         "22-Apr",
+         "20"
+        ],
+        [
+         "1-May",
+         "9"
+        ],
+        [
+         "8-Jun",
+         "22"
+        ],
+        [
+         "15-Jul",
+         "14"
+        ],
+        [
+         "22-Aug",
+         "16"
+        ],
+        [
+         "1-Sep",
+         "21"
+        ],
+        [
+         "8-Oct",
+         "20"
+        ],
+        [
+         "15-Nov",
+         "21"
+        ],
+        [
+         "22-Dec",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "hours": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B28",
+       "area": "A3:B28",
+       "body": "B4:B28",
+       "values": [
+        [
+         "Hours (When)",
+         "Sum of Qty"
+        ],
+        [
+         "12 AM",
+         8
+        ],
+        [
+         "1 AM",
+         16
+        ],
+        [
+         "2 AM",
+         7
+        ],
+        [
+         "3 AM",
+         6
+        ],
+        [
+         "4 AM",
+         3
+        ],
+        [
+         "5 AM",
+         9
+        ],
+        [
+         "6 AM",
+         3
+        ],
+        [
+         "7 AM",
+         13
+        ],
+        [
+         "8 AM",
+         13
+        ],
+        [
+         "9 AM",
+         8
+        ],
+        [
+         "10 AM",
+         14
+        ],
+        [
+         "11 AM",
+         4
+        ],
+        [
+         "12 PM",
+         11
+        ],
+        [
+         "1 PM",
+         3
+        ],
+        [
+         "2 PM",
+         8
+        ],
+        [
+         "3 PM",
+         14
+        ],
+        [
+         "4 PM",
+         6
+        ],
+        [
+         "5 PM",
+         13
+        ],
+        [
+         "6 PM",
+         11
+        ],
+        [
+         "7 PM",
+         3
+        ],
+        [
+         "8 PM",
+         8
+        ],
+        [
+         "9 PM",
+         12
+        ],
+        [
+         "10 PM",
+         7
+        ],
+        [
+         "11 PM",
+         12
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Hours (When)",
+         "Sum of Qty"
+        ],
+        [
+         "12 AM",
+         "8"
+        ],
+        [
+         "1 AM",
+         "16"
+        ],
+        [
+         "2 AM",
+         "7"
+        ],
+        [
+         "3 AM",
+         "6"
+        ],
+        [
+         "4 AM",
+         "3"
+        ],
+        [
+         "5 AM",
+         "9"
+        ],
+        [
+         "6 AM",
+         "3"
+        ],
+        [
+         "7 AM",
+         "13"
+        ],
+        [
+         "8 AM",
+         "13"
+        ],
+        [
+         "9 AM",
+         "8"
+        ],
+        [
+         "10 AM",
+         "14"
+        ],
+        [
+         "11 AM",
+         "4"
+        ],
+        [
+         "12 PM",
+         "11"
+        ],
+        [
+         "1 PM",
+         "3"
+        ],
+        [
+         "2 PM",
+         "8"
+        ],
+        [
+         "3 PM",
+         "14"
+        ],
+        [
+         "4 PM",
+         "6"
+        ],
+        [
+         "5 PM",
+         "13"
+        ],
+        [
+         "6 PM",
+         "11"
+        ],
+        [
+         "7 PM",
+         "3"
+        ],
+        [
+         "8 PM",
+         "8"
+        ],
+        [
+         "9 PM",
+         "12"
+        ],
+        [
+         "10 PM",
+         "7"
+        ],
+        [
+         "11 PM",
+         "12"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A28",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "minutes": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B52",
+       "area": "A3:B52",
+       "body": "B4:B52",
+       "values": [
+        [
+         "Minutes (When)",
+         "Sum of Qty"
+        ],
+        [
+         ":00",
+         4
+        ],
+        [
+         ":01",
+         9
+        ],
+        [
+         ":02",
+         4
+        ],
+        [
+         ":04",
+         2
+        ],
+        [
+         ":05",
+         9
+        ],
+        [
+         ":06",
+         4
+        ],
+        [
+         ":07",
+         5
+        ],
+        [
+         ":09",
+         3
+        ],
+        [
+         ":10",
+         4
+        ],
+        [
+         ":11",
+         2
+        ],
+        [
+         ":12",
+         4
+        ],
+        [
+         ":13",
+         3
+        ],
+        [
+         ":14",
+         3
+        ],
+        [
+         ":15",
+         3
+        ],
+        [
+         ":17",
+         7
+        ],
+        [
+         ":18",
+         2
+        ],
+        [
+         ":19",
+         7
+        ],
+        [
+         ":20",
+         2
+        ],
+        [
+         ":22",
+         3
+        ],
+        [
+         ":23",
+         4
+        ],
+        [
+         ":25",
+         6
+        ],
+        [
+         ":26",
+         7
+        ],
+        [
+         ":27",
+         3
+        ],
+        [
+         ":28",
+         8
+        ],
+        [
+         ":30",
+         1
+        ],
+        [
+         ":31",
+         1
+        ],
+        [
+         ":32",
+         1
+        ],
+        [
+         ":33",
+         3
+        ],
+        [
+         ":35",
+         9
+        ],
+        [
+         ":36",
+         9
+        ],
+        [
+         ":38",
+         7
+        ],
+        [
+         ":39",
+         8
+        ],
+        [
+         ":40",
+         5
+        ],
+        [
+         ":41",
+         2
+        ],
+        [
+         ":43",
+         3
+        ],
+        [
+         ":44",
+         4
+        ],
+        [
+         ":45",
+         5
+        ],
+        [
+         ":46",
+         7
+        ],
+        [
+         ":48",
+         2
+        ],
+        [
+         ":49",
+         4
+        ],
+        [
+         ":51",
+         6
+        ],
+        [
+         ":52",
+         6
+        ],
+        [
+         ":53",
+         1
+        ],
+        [
+         ":54",
+         7
+        ],
+        [
+         ":56",
+         2
+        ],
+        [
+         ":57",
+         9
+        ],
+        [
+         ":58",
+         1
+        ],
+        [
+         ":59",
+         1
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Minutes (When)",
+         "Sum of Qty"
+        ],
+        [
+         ":00",
+         "4"
+        ],
+        [
+         ":01",
+         "9"
+        ],
+        [
+         ":02",
+         "4"
+        ],
+        [
+         ":04",
+         "2"
+        ],
+        [
+         ":05",
+         "9"
+        ],
+        [
+         ":06",
+         "4"
+        ],
+        [
+         ":07",
+         "5"
+        ],
+        [
+         ":09",
+         "3"
+        ],
+        [
+         ":10",
+         "4"
+        ],
+        [
+         ":11",
+         "2"
+        ],
+        [
+         ":12",
+         "4"
+        ],
+        [
+         ":13",
+         "3"
+        ],
+        [
+         ":14",
+         "3"
+        ],
+        [
+         ":15",
+         "3"
+        ],
+        [
+         ":17",
+         "7"
+        ],
+        [
+         ":18",
+         "2"
+        ],
+        [
+         ":19",
+         "7"
+        ],
+        [
+         ":20",
+         "2"
+        ],
+        [
+         ":22",
+         "3"
+        ],
+        [
+         ":23",
+         "4"
+        ],
+        [
+         ":25",
+         "6"
+        ],
+        [
+         ":26",
+         "7"
+        ],
+        [
+         ":27",
+         "3"
+        ],
+        [
+         ":28",
+         "8"
+        ],
+        [
+         ":30",
+         "1"
+        ],
+        [
+         ":31",
+         "1"
+        ],
+        [
+         ":32",
+         "1"
+        ],
+        [
+         ":33",
+         "3"
+        ],
+        [
+         ":35",
+         "9"
+        ],
+        [
+         ":36",
+         "9"
+        ],
+        [
+         ":38",
+         "7"
+        ],
+        [
+         ":39",
+         "8"
+        ],
+        [
+         ":40",
+         "5"
+        ],
+        [
+         ":41",
+         "2"
+        ],
+        [
+         ":43",
+         "3"
+        ],
+        [
+         ":44",
+         "4"
+        ],
+        [
+         ":45",
+         "5"
+        ],
+        [
+         ":46",
+         "7"
+        ],
+        [
+         ":48",
+         "2"
+        ],
+        [
+         ":49",
+         "4"
+        ],
+        [
+         ":51",
+         "6"
+        ],
+        [
+         ":52",
+         "6"
+        ],
+        [
+         ":53",
+         "1"
+        ],
+        [
+         ":54",
+         "7"
+        ],
+        [
+         ":56",
+         "2"
+        ],
+        [
+         ":57",
+         "9"
+        ],
+        [
+         ":58",
+         "1"
+        ],
+        [
+         ":59",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A52",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "seconds": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Seconds (When)",
+         "Sum of Qty"
+        ],
+        [
+         ":00",
+         212
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Seconds (When)",
+         "Sum of Qty"
+        ],
+        [
+         ":00",
+         "212"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "dates-all": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:E42",
+       "area": "A3:E42",
+       "body": "E4:E42",
+       "values": [
+        [
+         "Years (Date)",
+         "Quarters (Date)",
+         "Months (Date)",
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         "<1/1/2024",
+         "<1/1/2024",
+         2
+        ],
+        [
+         null,
+         null,
+         "<1/1/2024 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         "<1/1/2024 Total",
+         null,
+         null,
+         2
+        ],
+        [
+         "<1/1/2024 Total",
+         null,
+         null,
+         null,
+         2
+        ],
+        [
+         "2024",
+         "Qtr1",
+         "Jan",
+         "1-Jan",
+         19
+        ],
+        [
+         null,
+         null,
+         "Jan Total",
+         null,
+         19
+        ],
+        [
+         null,
+         null,
+         "Mar",
+         "15-Mar",
+         15
+        ],
+        [
+         null,
+         null,
+         "Mar Total",
+         null,
+         15
+        ],
+        [
+         null,
+         "Qtr1 Total",
+         null,
+         null,
+         34
+        ],
+        [
+         null,
+         "Qtr2",
+         "May",
+         "1-May",
+         9
+        ],
+        [
+         null,
+         null,
+         "May Total",
+         null,
+         9
+        ],
+        [
+         null,
+         "Qtr2 Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         "Qtr3",
+         "Jul",
+         "15-Jul",
+         14
+        ],
+        [
+         null,
+         null,
+         "Jul Total",
+         null,
+         14
+        ],
+        [
+         null,
+         null,
+         "Sep",
+         "1-Sep",
+         21
+        ],
+        [
+         null,
+         null,
+         "Sep Total",
+         null,
+         21
+        ],
+        [
+         null,
+         "Qtr3 Total",
+         null,
+         null,
+         35
+        ],
+        [
+         null,
+         "Qtr4",
+         "Nov",
+         "15-Nov",
+         21
+        ],
+        [
+         null,
+         null,
+         "Nov Total",
+         null,
+         21
+        ],
+        [
+         null,
+         "Qtr4 Total",
+         null,
+         null,
+         21
+        ],
+        [
+         "2024 Total",
+         null,
+         null,
+         null,
+         99
+        ],
+        [
+         "2025",
+         "Qtr1",
+         "Feb",
+         "8-Feb",
+         17
+        ],
+        [
+         null,
+         null,
+         "Feb Total",
+         null,
+         17
+        ],
+        [
+         null,
+         "Qtr1 Total",
+         null,
+         null,
+         17
+        ],
+        [
+         null,
+         "Qtr2",
+         "Apr",
+         "22-Apr",
+         20
+        ],
+        [
+         null,
+         null,
+         "Apr Total",
+         null,
+         20
+        ],
+        [
+         null,
+         null,
+         "Jun",
+         "8-Jun",
+         22
+        ],
+        [
+         null,
+         null,
+         "Jun Total",
+         null,
+         22
+        ],
+        [
+         null,
+         "Qtr2 Total",
+         null,
+         null,
+         42
+        ],
+        [
+         null,
+         "Qtr3",
+         "Aug",
+         "22-Aug",
+         16
+        ],
+        [
+         null,
+         null,
+         "Aug Total",
+         null,
+         16
+        ],
+        [
+         null,
+         "Qtr3 Total",
+         null,
+         null,
+         16
+        ],
+        [
+         null,
+         "Qtr4",
+         "Oct",
+         "8-Oct",
+         20
+        ],
+        [
+         null,
+         null,
+         "Oct Total",
+         null,
+         20
+        ],
+        [
+         null,
+         null,
+         "Dec",
+         "22-Dec",
+         16
+        ],
+        [
+         null,
+         null,
+         "Dec Total",
+         null,
+         16
+        ],
+        [
+         null,
+         "Qtr4 Total",
+         null,
+         null,
+         36
+        ],
+        [
+         "2025 Total",
+         null,
+         null,
+         null,
+         111
+        ],
+        [
+         "Grand Total",
+         null,
+         null,
+         null,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (Date)",
+         "Quarters (Date)",
+         "Months (Date)",
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         "<1/1/2024",
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "<1/1/2024 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "<1/1/2024 Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "<1/1/2024 Total",
+         "",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "2024",
+         "Qtr1",
+         "Jan",
+         "1-Jan",
+         "19"
+        ],
+        [
+         "",
+         "",
+         "Jan Total",
+         "",
+         "19"
+        ],
+        [
+         "",
+         "",
+         "Mar",
+         "15-Mar",
+         "15"
+        ],
+        [
+         "",
+         "",
+         "Mar Total",
+         "",
+         "15"
+        ],
+        [
+         "",
+         "Qtr1 Total",
+         "",
+         "",
+         "34"
+        ],
+        [
+         "",
+         "Qtr2",
+         "May",
+         "1-May",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "May Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "Qtr2 Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "Qtr3",
+         "Jul",
+         "15-Jul",
+         "14"
+        ],
+        [
+         "",
+         "",
+         "Jul Total",
+         "",
+         "14"
+        ],
+        [
+         "",
+         "",
+         "Sep",
+         "1-Sep",
+         "21"
+        ],
+        [
+         "",
+         "",
+         "Sep Total",
+         "",
+         "21"
+        ],
+        [
+         "",
+         "Qtr3 Total",
+         "",
+         "",
+         "35"
+        ],
+        [
+         "",
+         "Qtr4",
+         "Nov",
+         "15-Nov",
+         "21"
+        ],
+        [
+         "",
+         "",
+         "Nov Total",
+         "",
+         "21"
+        ],
+        [
+         "",
+         "Qtr4 Total",
+         "",
+         "",
+         "21"
+        ],
+        [
+         "2024 Total",
+         "",
+         "",
+         "",
+         "99"
+        ],
+        [
+         "2025",
+         "Qtr1",
+         "Feb",
+         "8-Feb",
+         "17"
+        ],
+        [
+         "",
+         "",
+         "Feb Total",
+         "",
+         "17"
+        ],
+        [
+         "",
+         "Qtr1 Total",
+         "",
+         "",
+         "17"
+        ],
+        [
+         "",
+         "Qtr2",
+         "Apr",
+         "22-Apr",
+         "20"
+        ],
+        [
+         "",
+         "",
+         "Apr Total",
+         "",
+         "20"
+        ],
+        [
+         "",
+         "",
+         "Jun",
+         "8-Jun",
+         "22"
+        ],
+        [
+         "",
+         "",
+         "Jun Total",
+         "",
+         "22"
+        ],
+        [
+         "",
+         "Qtr2 Total",
+         "",
+         "",
+         "42"
+        ],
+        [
+         "",
+         "Qtr3",
+         "Aug",
+         "22-Aug",
+         "16"
+        ],
+        [
+         "",
+         "",
+         "Aug Total",
+         "",
+         "16"
+        ],
+        [
+         "",
+         "Qtr3 Total",
+         "",
+         "",
+         "16"
+        ],
+        [
+         "",
+         "Qtr4",
+         "Oct",
+         "8-Oct",
+         "20"
+        ],
+        [
+         "",
+         "",
+         "Oct Total",
+         "",
+         "20"
+        ],
+        [
+         "",
+         "",
+         "Dec",
+         "22-Dec",
+         "16"
+        ],
+        [
+         "",
+         "",
+         "Dec Total",
+         "",
+         "16"
+        ],
+        [
+         "",
+         "Qtr4 Total",
+         "",
+         "",
+         "36"
+        ],
+        [
+         "2025 Total",
+         "",
+         "",
+         "",
+         "111"
+        ],
+        [
+         "Grand Total",
+         "",
+         "",
+         "",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:D42",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "times-all": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:H168",
+       "area": "A3:H168",
+       "body": "H4:H168",
+       "values": [
+        [
+         "Years (When)",
+         "Quarters (When)",
+         "Months (When)",
+         "Days (When)",
+         "Hours (When)",
+         "Minutes (When)",
+         "Seconds (When)",
+         "Sum of Qty"
+        ],
+        [
+         "2025",
+         "Qtr1",
+         "Jan",
+         "1-Jan",
+         "12 AM",
+         ":00",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":00 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "12 AM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 AM",
+         ":15",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":15 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 AM",
+         ":30",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":30 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 AM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 AM",
+         ":45",
+         ":00",
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":45 Total",
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 AM Total",
+         null,
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         "1-Jan Total",
+         null,
+         null,
+         null,
+         13
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Jan",
+         "6 AM",
+         ":18",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":18 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 AM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 AM",
+         ":33",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":33 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "12 PM",
+         ":48",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":48 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "12 PM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Jan Total",
+         null,
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Jan",
+         "12 PM",
+         ":36",
+         ":00",
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":36 Total",
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "12 PM Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 PM",
+         ":51",
+         ":00",
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":51 Total",
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 PM Total",
+         null,
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 PM",
+         ":06",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":06 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 PM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Jan Total",
+         null,
+         null,
+         null,
+         19
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Jan",
+         "3 PM",
+         ":39",
+         ":00",
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":39 Total",
+         null,
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 PM Total",
+         null,
+         null,
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 PM",
+         ":54",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":54 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "6 PM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 PM",
+         ":09",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":09 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 PM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Jan Total",
+         null,
+         null,
+         null,
+         18
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Jan",
+         "12 AM",
+         ":12",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":12 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "12 AM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 AM",
+         ":27",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":27 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "3 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 PM",
+         ":57",
+         ":00",
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":57 Total",
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "9 PM Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Jan Total",
+         null,
+         null,
+         null,
+         16
+        ],
+        [
+         null,
+         null,
+         "Jan Total",
+         null,
+         null,
+         null,
+         null,
+         73
+        ],
+        [
+         null,
+         null,
+         "Feb",
+         "1-Feb",
+         "2 AM",
+         ":10",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":10 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 AM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 AM",
+         ":25",
+         ":00",
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":25 Total",
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 AM Total",
+         null,
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 AM",
+         ":40",
+         ":00",
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":40 Total",
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 AM Total",
+         null,
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         "1-Feb Total",
+         null,
+         null,
+         null,
+         15
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Feb",
+         "5 AM",
+         ":13",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":13 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 AM",
+         ":28",
+         ":00",
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":28 Total",
+         null,
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 AM Total",
+         null,
+         null,
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 AM",
+         ":43",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":43 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 PM",
+         ":58",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":58 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 PM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Feb Total",
+         null,
+         null,
+         null,
+         15
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Feb",
+         "11 AM",
+         ":31",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":31 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 AM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 PM",
+         ":46",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":46 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 PM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 PM",
+         ":01",
+         ":00",
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":01 Total",
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 PM Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Feb Total",
+         null,
+         null,
+         null,
+         17
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Feb",
+         "5 PM",
+         ":49",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":49 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "5 PM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 PM",
+         ":04",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":04 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 PM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 PM",
+         ":19",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":19 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 PM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Feb Total",
+         null,
+         null,
+         null,
+         13
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Feb",
+         "2 AM",
+         ":22",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":22 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "2 AM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 PM",
+         ":52",
+         ":00",
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":52 Total",
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "8 PM Total",
+         null,
+         null,
+         6
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 PM",
+         ":07",
+         ":00",
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":07 Total",
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "11 PM Total",
+         null,
+         null,
+         5
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Feb Total",
+         null,
+         null,
+         null,
+         14
+        ],
+        [
+         null,
+         null,
+         "Feb Total",
+         null,
+         null,
+         null,
+         null,
+         74
+        ],
+        [
+         null,
+         null,
+         "Mar",
+         "1-Mar",
+         "1 AM",
+         ":05",
+         ":00",
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":05 Total",
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 AM Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 AM",
+         ":20",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":20 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 AM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 AM",
+         ":35",
+         ":00",
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":35 Total",
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 AM Total",
+         null,
+         null,
+         9
+        ],
+        [
+         null,
+         null,
+         null,
+         "1-Mar Total",
+         null,
+         null,
+         null,
+         20
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Mar",
+         "7 AM",
+         ":23",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":23 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 AM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 AM",
+         ":38",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":38 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 AM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 PM",
+         ":53",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":53 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 PM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         "2-Mar Total",
+         null,
+         null,
+         null,
+         12
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Mar",
+         "10 AM",
+         ":26",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":26 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 AM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 PM",
+         ":41",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":41 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 PM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 PM",
+         ":56",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":56 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 PM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 PM",
+         ":11",
+         ":00",
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":11 Total",
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 PM Total",
+         null,
+         null,
+         2
+        ],
+        [
+         null,
+         null,
+         null,
+         "3-Mar Total",
+         null,
+         null,
+         null,
+         13
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Mar",
+         "4 PM",
+         ":44",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":44 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 PM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 PM",
+         ":59",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":59 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "7 PM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 PM",
+         ":14",
+         ":00",
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":14 Total",
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 PM Total",
+         null,
+         null,
+         3
+        ],
+        [
+         null,
+         null,
+         null,
+         "4-Mar Total",
+         null,
+         null,
+         null,
+         8
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Mar",
+         "1 AM",
+         ":17",
+         ":00",
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":17 Total",
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "1 AM Total",
+         null,
+         null,
+         7
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 AM",
+         ":32",
+         ":00",
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":32 Total",
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "4 AM Total",
+         null,
+         null,
+         1
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 PM",
+         ":02",
+         ":00",
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         null,
+         ":02 Total",
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         null,
+         "10 PM Total",
+         null,
+         null,
+         4
+        ],
+        [
+         null,
+         null,
+         null,
+         "5-Mar Total",
+         null,
+         null,
+         null,
+         12
+        ],
+        [
+         null,
+         null,
+         "Mar Total",
+         null,
+         null,
+         null,
+         null,
+         65
+        ],
+        [
+         null,
+         "Qtr1 Total",
+         null,
+         null,
+         null,
+         null,
+         null,
+         212
+        ],
+        [
+         "2025 Total",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         212
+        ],
+        [
+         "Grand Total",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (When)",
+         "Quarters (When)",
+         "Months (When)",
+         "Days (When)",
+         "Hours (When)",
+         "Minutes (When)",
+         "Seconds (When)",
+         "Sum of Qty"
+        ],
+        [
+         "2025",
+         "Qtr1",
+         "Jan",
+         "1-Jan",
+         "12 AM",
+         ":00",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":00 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "12 AM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 AM",
+         ":15",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":15 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 AM",
+         ":30",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":30 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 AM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 AM",
+         ":45",
+         ":00",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":45 Total",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 AM Total",
+         "",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "1-Jan Total",
+         "",
+         "",
+         "",
+         "13"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Jan",
+         "6 AM",
+         ":18",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":18 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 AM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 AM",
+         ":33",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":33 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "12 PM",
+         ":48",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":48 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "12 PM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Jan Total",
+         "",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Jan",
+         "12 PM",
+         ":36",
+         ":00",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":36 Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "12 PM Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 PM",
+         ":51",
+         ":00",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":51 Total",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 PM Total",
+         "",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 PM",
+         ":06",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":06 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 PM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Jan Total",
+         "",
+         "",
+         "",
+         "19"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Jan",
+         "3 PM",
+         ":39",
+         ":00",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":39 Total",
+         "",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 PM Total",
+         "",
+         "",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 PM",
+         ":54",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":54 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "6 PM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 PM",
+         ":09",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":09 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 PM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Jan Total",
+         "",
+         "",
+         "",
+         "18"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Jan",
+         "12 AM",
+         ":12",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":12 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "12 AM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 AM",
+         ":27",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":27 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "3 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 PM",
+         ":57",
+         ":00",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":57 Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "9 PM Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Jan Total",
+         "",
+         "",
+         "",
+         "16"
+        ],
+        [
+         "",
+         "",
+         "Jan Total",
+         "",
+         "",
+         "",
+         "",
+         "73"
+        ],
+        [
+         "",
+         "",
+         "Feb",
+         "1-Feb",
+         "2 AM",
+         ":10",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":10 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 AM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 AM",
+         ":25",
+         ":00",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":25 Total",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 AM Total",
+         "",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 AM",
+         ":40",
+         ":00",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":40 Total",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 AM Total",
+         "",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "1-Feb Total",
+         "",
+         "",
+         "",
+         "15"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Feb",
+         "5 AM",
+         ":13",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":13 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 AM",
+         ":28",
+         ":00",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":28 Total",
+         "",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 AM Total",
+         "",
+         "",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 AM",
+         ":43",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":43 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 PM",
+         ":58",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":58 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 PM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Feb Total",
+         "",
+         "",
+         "",
+         "15"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Feb",
+         "11 AM",
+         ":31",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":31 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 AM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 PM",
+         ":46",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":46 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 PM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 PM",
+         ":01",
+         ":00",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":01 Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 PM Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Feb Total",
+         "",
+         "",
+         "",
+         "17"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Feb",
+         "5 PM",
+         ":49",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":49 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "5 PM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 PM",
+         ":04",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":04 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 PM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 PM",
+         ":19",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":19 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 PM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Feb Total",
+         "",
+         "",
+         "",
+         "13"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Feb",
+         "2 AM",
+         ":22",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":22 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "2 AM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 PM",
+         ":52",
+         ":00",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":52 Total",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "8 PM Total",
+         "",
+         "",
+         "6"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 PM",
+         ":07",
+         ":00",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":07 Total",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "11 PM Total",
+         "",
+         "",
+         "5"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Feb Total",
+         "",
+         "",
+         "",
+         "14"
+        ],
+        [
+         "",
+         "",
+         "Feb Total",
+         "",
+         "",
+         "",
+         "",
+         "74"
+        ],
+        [
+         "",
+         "",
+         "Mar",
+         "1-Mar",
+         "1 AM",
+         ":05",
+         ":00",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":05 Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 AM Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 AM",
+         ":20",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":20 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 AM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 AM",
+         ":35",
+         ":00",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":35 Total",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 AM Total",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "",
+         "",
+         "",
+         "1-Mar Total",
+         "",
+         "",
+         "",
+         "20"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Mar",
+         "7 AM",
+         ":23",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":23 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 AM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 AM",
+         ":38",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":38 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 AM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 PM",
+         ":53",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":53 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 PM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "2-Mar Total",
+         "",
+         "",
+         "",
+         "12"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Mar",
+         "10 AM",
+         ":26",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":26 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 AM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 PM",
+         ":41",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":41 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 PM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 PM",
+         ":56",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":56 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 PM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 PM",
+         ":11",
+         ":00",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":11 Total",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 PM Total",
+         "",
+         "",
+         "2"
+        ],
+        [
+         "",
+         "",
+         "",
+         "3-Mar Total",
+         "",
+         "",
+         "",
+         "13"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Mar",
+         "4 PM",
+         ":44",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":44 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 PM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 PM",
+         ":59",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":59 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "7 PM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 PM",
+         ":14",
+         ":00",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":14 Total",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 PM Total",
+         "",
+         "",
+         "3"
+        ],
+        [
+         "",
+         "",
+         "",
+         "4-Mar Total",
+         "",
+         "",
+         "",
+         "8"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Mar",
+         "1 AM",
+         ":17",
+         ":00",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":17 Total",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "1 AM Total",
+         "",
+         "",
+         "7"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 AM",
+         ":32",
+         ":00",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":32 Total",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "4 AM Total",
+         "",
+         "",
+         "1"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 PM",
+         ":02",
+         ":00",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "",
+         ":02 Total",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "",
+         "10 PM Total",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "",
+         "",
+         "",
+         "5-Mar Total",
+         "",
+         "",
+         "",
+         "12"
+        ],
+        [
+         "",
+         "",
+         "Mar Total",
+         "",
+         "",
+         "",
+         "",
+         "65"
+        ],
+        [
+         "",
+         "Qtr1 Total",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "212"
+        ],
+        [
+         "2025 Total",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "212"
+        ],
+        [
+         "Grand Total",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:G168",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "days-7": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         2
+        ],
+        [
+         "1/1/2024 - 1/7/2024",
+         19
+        ],
+        [
+         "3/11/2024 - 3/17/2024",
+         15
+        ],
+        [
+         "4/29/2024 - 5/5/2024",
+         9
+        ],
+        [
+         "7/15/2024 - 7/21/2024",
+         14
+        ],
+        [
+         "8/26/2024 - 9/1/2024",
+         21
+        ],
+        [
+         "11/11/2024 - 11/17/2024",
+         21
+        ],
+        [
+         "2/3/2025 - 2/9/2025",
+         17
+        ],
+        [
+         "4/21/2025 - 4/27/2025",
+         20
+        ],
+        [
+         "6/2/2025 - 6/8/2025",
+         22
+        ],
+        [
+         "8/18/2025 - 8/24/2025",
+         16
+        ],
+        [
+         "10/6/2025 - 10/12/2025",
+         20
+        ],
+        [
+         "12/22/2025 - 12/23/2025",
+         16
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Days (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "1/1/2024 - 1/7/2024",
+         "19"
+        ],
+        [
+         "3/11/2024 - 3/17/2024",
+         "15"
+        ],
+        [
+         "4/29/2024 - 5/5/2024",
+         "9"
+        ],
+        [
+         "7/15/2024 - 7/21/2024",
+         "14"
+        ],
+        [
+         "8/26/2024 - 9/1/2024",
+         "21"
+        ],
+        [
+         "11/11/2024 - 11/17/2024",
+         "21"
+        ],
+        [
+         "2/3/2025 - 2/9/2025",
+         "17"
+        ],
+        [
+         "4/21/2025 - 4/27/2025",
+         "20"
+        ],
+        [
+         "6/2/2025 - 6/8/2025",
+         "22"
+        ],
+        [
+         "8/18/2025 - 8/24/2025",
+         "16"
+        ],
+        [
+         "10/6/2025 - 10/12/2025",
+         "20"
+        ],
+        [
+         "12/22/2025 - 12/23/2025",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "start-end": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C18",
+       "area": "A3:C18",
+       "body": "C4:C18",
+       "values": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<3/1/2024",
+         "<3/1/2024",
+         21
+        ],
+        [
+         "<3/1/2024 Total",
+         null,
+         21
+        ],
+        [
+         "2024",
+         "Mar",
+         15
+        ],
+        [
+         null,
+         "May",
+         9
+        ],
+        [
+         null,
+         "Jul",
+         14
+        ],
+        [
+         null,
+         "Sep",
+         21
+        ],
+        [
+         null,
+         "Nov",
+         21
+        ],
+        [
+         "2024 Total",
+         null,
+         80
+        ],
+        [
+         "2025",
+         "Feb",
+         17
+        ],
+        [
+         null,
+         "Apr",
+         20
+        ],
+        [
+         null,
+         "Jun",
+         22
+        ],
+        [
+         "2025 Total",
+         null,
+         59
+        ],
+        [
+         ">6/30/2025",
+         ">6/30/2025",
+         52
+        ],
+        [
+         ">6/30/2025 Total",
+         null,
+         52
+        ],
+        [
+         "Grand Total",
+         null,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<3/1/2024",
+         "<3/1/2024",
+         "21"
+        ],
+        [
+         "<3/1/2024 Total",
+         "",
+         "21"
+        ],
+        [
+         "2024",
+         "Mar",
+         "15"
+        ],
+        [
+         "",
+         "May",
+         "9"
+        ],
+        [
+         "",
+         "Jul",
+         "14"
+        ],
+        [
+         "",
+         "Sep",
+         "21"
+        ],
+        [
+         "",
+         "Nov",
+         "21"
+        ],
+        [
+         "2024 Total",
+         "",
+         "80"
+        ],
+        [
+         "2025",
+         "Feb",
+         "17"
+        ],
+        [
+         "",
+         "Apr",
+         "20"
+        ],
+        [
+         "",
+         "Jun",
+         "22"
+        ],
+        [
+         "2025 Total",
+         "",
+         "59"
+        ],
+        [
+         ">6/30/2025",
+         ">6/30/2025",
+         "52"
+        ],
+        [
+         ">6/30/2025 Total",
+         "",
+         "52"
+        ],
+        [
+         "Grand Total",
+         "",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:B18",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "price-half": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B21",
+       "area": "A3:B21",
+       "body": "B4:B21",
+       "values": [
+        [
+         "Price",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         36
+        ],
+        [
+         "1.03-3.53",
+         16
+        ],
+        [
+         "3.53-6.03",
+         9
+        ],
+        [
+         "6.03-8.53",
+         7
+        ],
+        [
+         "8.53-11.03",
+         6
+        ],
+        [
+         "11.03-13.53",
+         7
+        ],
+        [
+         "13.53-16.03",
+         10
+        ],
+        [
+         "18.53-21.03",
+         4
+        ],
+        [
+         "21.03-23.53",
+         4
+        ],
+        [
+         "23.53-26.03",
+         12
+        ],
+        [
+         "28.53-31.03",
+         16
+        ],
+        [
+         "31.03-33.53",
+         4
+        ],
+        [
+         "33.53-36.03",
+         16
+        ],
+        [
+         "36.03-38.53",
+         29
+        ],
+        [
+         "41.03-43.53",
+         8
+        ],
+        [
+         "43.53-46.03",
+         15
+        ],
+        [
+         "46.03-48.53",
+         13
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Price",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "36"
+        ],
+        [
+         "1.03-3.53",
+         "16"
+        ],
+        [
+         "3.53-6.03",
+         "9"
+        ],
+        [
+         "6.03-8.53",
+         "7"
+        ],
+        [
+         "8.53-11.03",
+         "6"
+        ],
+        [
+         "11.03-13.53",
+         "7"
+        ],
+        [
+         "13.53-16.03",
+         "10"
+        ],
+        [
+         "18.53-21.03",
+         "4"
+        ],
+        [
+         "21.03-23.53",
+         "4"
+        ],
+        [
+         "23.53-26.03",
+         "12"
+        ],
+        [
+         "28.53-31.03",
+         "16"
+        ],
+        [
+         "31.03-33.53",
+         "4"
+        ],
+        [
+         "33.53-36.03",
+         "16"
+        ],
+        [
+         "36.03-38.53",
+         "29"
+        ],
+        [
+         "41.03-43.53",
+         "8"
+        ],
+        [
+         "43.53-46.03",
+         "15"
+        ],
+        [
+         "46.03-48.53",
+         "13"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A21",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": true,
+      "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  }
+ }
+}

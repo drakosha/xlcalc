@@ -3,7 +3,7 @@
  * (`Years (Date)`) and the labels of their items (quarters, months, days, hours, minutes, seconds, the `<` and `>`
  * groups of a start and an end), in the language of Excel's interface. Each period alone and all of them at once, in
  * the tabular layout, whose headers show the fields' names; a number of days; a start and an end of its own; numbers by
- * an interval with a fraction.
+ * an interval with a fraction, and with a start of its own over a blank; the labels a refresh makes again.
  */
 import { serial } from './data.js'
 import type { Period, PivotCase, PivotOp } from './cases.js'
@@ -26,5 +26,9 @@ export function buildPivotCases(): PivotCase[] {
     by('start-end', 'Date', ['months', 'years'], { start: { d: serial(2024, 3, 1) }, end: { d: serial(2025, 6, 30) } }),
     // Price's one text made a number first, as the set group does
     { id: 'price-half', ops: [{ edit: 'D!E14', to: 3 }, { refresh: true }, ...of('Price'), { group: 'Price', by: 2.5 }] },
+    // a start of its own among numbers with a blank: the first group's label names both
+    { id: 'price-start-blank', ops: [{ edit: 'D!E14', to: 3 }, { refresh: true }, ...of('Price'), { group: 'Price', start: 10, end: 40, by: 5 }] },
+    // the labels made again by a refresh with a date new to the source
+    { id: 'refresh-new-date', ops: [...of('Date'), { group: 'Date', periods: ['months', 'years'] }, { read: true }, { edit: 'D!C2', to: serial(2026, 2, 3) }, { refresh: true }] },
   ]
 }
