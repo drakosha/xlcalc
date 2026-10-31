@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.72.1 (2026-10-31)
+
+Fixed:
+
+- A PivotTable cache's time of day without a date in the form 0.71 kept it (`{ date: '1899-12-30T08:30:00' }`, in a book a host saved from a session) is taken on input as the model holds it, at day 0 (`1900-01-00T08:30:00`): a slicer's labels, the layout, a refresh and grouping by hours read it as the time it is, as in a book read now. A cache's date before the workbook's day 0 is an `InputError` on input with its path; before, only the layout refused it, once it read the cache.
+
 ## 0.72.0 (2026-10-31)
 
 Added:
