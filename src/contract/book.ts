@@ -555,6 +555,15 @@ export interface PivotEngine {
   readonly kind: 'xlcalc-pivot'
 }
 
+/** The Excel execution profile used by `registerPivot(pivotEngine, options)`. */
+export interface PivotOptions {
+  /**
+   * Excel's sorting-thread count, 2 by default as on the Windows reference machine. Above 512 items Excel sorts
+   * partitions and merges them, changing the order of ties. 1 uses one partition; this setting creates no threads.
+   */
+  sortThreads?: number
+}
+
 /** The groups of `xlcalc/functions`, by name (`docs/function-groups.md`). */
 export type FunctionGroupName = 'engineering' | 'finance' | 'lambda' | 'statistics' | 'xml'
 
