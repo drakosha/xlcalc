@@ -214,8 +214,12 @@ async function check(kinds: readonly string[]): Promise<{ written: number; refus
       for (const r of await relsOf(src.archive, part)) if (!r.external) await under(r.target)
     }
     for (const i of concerned(read, snap)) await under(src.sheets[i].part)
+    // the caches of PivotTables, slicers and timelines the operation changed (a PivotTable deleted with its sheet) are the workbook's to write
+    const caches = (b: typeof read.book) => JSON.stringify([b.pivotCaches?.map((c) => c.id), b.slicerCaches, b.timelineCaches])
+    const cachesChanged = caches(read.book) !== caches(snap.book)
     for (const name of o.names) {
       if (PARTS_OF_BOOK.test(name) || mine.has(name.toLowerCase())) continue
+      if (cachesChanged && /^xl\/(pivotCache|slicerCaches|timelineCaches)\//i.test(name)) continue
       const [p, q] = [await o.bytes(name), await x.bytes(name)]
       if (q && Buffer.compare(Buffer.from(p!), Buffer.from(q)) === 0) continue
       // a part whose references an operation moved: it changed in them alone

@@ -210,17 +210,6 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const pivots = pivotPackage(book, styles, slicers.pivotCacheIds)
   let vml = false
   sheets.forEach((s, i) => {
-    contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
-    wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
-    for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i]) })
-      contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
-    }
-    if (s.notes) {
-      files.push({ name: `xl/comments${i + 1}.xml`, text: s.notes.comments }, { name: `xl/drawings/vmlDrawing${i + 1}.vml`, text: s.notes.vml })
-      contentTypes.push([`/xl/comments${i + 1}.xml`, `${TYPE}.comments+xml`])
-      vml = true
-    }
     const sheetRels: [string, string, boolean?][] = [
       ...parts[i].map(({ id }): [string, string] => [`${REL}/table`, `../tables/table${id}.xml`]),
       ...s.rels.map((r): [string, string, boolean] => [`${REL}/${r.type}`, r.target, r.type === 'hyperlink']),
@@ -232,6 +221,17 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     const drawing = add(`${REL}/drawing`, sl.drawing)
     const ext = sheetSlicerExt(add(SLICER_RELS.slicer, sl.slicers), add(SLICER_RELS.timeline, sl.timelines))
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(drawing || ext ? { ...s, legacyDrawing: `${drawing ? `<drawing r:id="${drawing}"/>` : ''}${s.legacyDrawing}`, ext: s.ext + ext } : s) })
+    contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
+    wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
+    for (const { t, id } of parts[i]) {
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i]) })
+      contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
+    }
+    if (s.notes) {
+      files.push({ name: `xl/comments${i + 1}.xml`, text: s.notes.comments }, { name: `xl/drawings/vmlDrawing${i + 1}.vml`, text: s.notes.vml })
+      contentTypes.push([`/xl/comments${i + 1}.xml`, `${TYPE}.comments+xml`])
+      vml = true
+    }
     if (sheetRels.length) files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(sheetRels) })
   })
   files.push(...pivots.files)
