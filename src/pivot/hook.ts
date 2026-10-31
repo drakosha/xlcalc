@@ -16,6 +16,14 @@ import type { ValuesIn } from '../structure/values.js'
  */
 export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse') => Applied
 
+let sortThreads = 2
+
+/** Excel's sorting-thread profile for the registered engine. */
+export const pivotSortThreads = (): number => sortThreads
+
+/** Sets the sorting-thread profile, already checked by registerPivot. */
+export function setPivotSortThreads(n: number): void { sortThreads = n }
+
 let refresh: PivotRefresh | null = null
 
 /** The refresh registered, or null. */

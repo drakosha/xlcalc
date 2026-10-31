@@ -641,11 +641,12 @@ threads load it too.
 ### <a id="xlcalc-registerpivot"></a>`registerPivot`
 
 ```ts
-function registerPivot(engine: PivotEngine): void
+function registerPivot(engine: PivotEngine, options?: PivotOptions): void
 ```
 
 Loads the PivotTable engine of `xlcalc/pivot` for every session from now on, a pool's threads too: `import {
-pivotEngine } from 'xlcalc/pivot'`, then `registerPivot(pivotEngine)`.
+pivotEngine } from 'xlcalc/pivot'`, then `registerPivot(pivotEngine)`. `sortThreads` selects the Excel sorting profile (2 by default),
+including for already open sessions on their next refresh; it creates no threads.
 
 ### <a id="xlcalc-registerregex"></a>`registerRegex`
 
@@ -4416,6 +4417,20 @@ interface PivotLocation {
   firstDataColumn: number
   pageRows?: number
   pageColumns?: number
+}
+```
+
+### `PivotOptions`
+
+The Excel execution profile used by `registerPivot(pivotEngine, options)`.
+
+```ts
+interface PivotOptions {
+  /**
+   * Excel's sorting-thread count, 2 by default as on the Windows reference machine. Above 512 items Excel sorts
+   * partitions and merges them, changing the order of ties. 1 uses one partition; this setting creates no threads.
+   */
+  sortThreads?: number
 }
 ```
 

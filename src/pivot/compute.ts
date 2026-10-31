@@ -154,7 +154,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     if (!cell) leaves.set(k, (cell = measures.map((_, m) => new Tally(m >= values.length))))
     for (let m = 0; m < measures.length; m++) cell[m].add(...readers[m](r))
   }
-  const sorting = { table, cache, shown, epoch, lists }
+  const sorting = { table, cache, shown, epoch, lists, sortThreads: options.sortThreads ?? 2 }
   const rowRoot = branches(sorting, at, shownBy.rows, rowFields)
   const colRoot = branches(sorting, at, shownBy.columns, colFields)
   const calcItems = itemFormulas(table, cache, epoch)

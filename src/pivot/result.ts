@@ -60,6 +60,8 @@ export interface PivotResult {
 
 /** What a calculation takes besides the PivotTable and its cache. */
 export interface PivotComputeOptions {
+  /** Excel's sorting-thread profile, 2 by default; 1 keeps a sort in one partition. */
+  sortThreads?: number
   /** Today as a serial number, the session's clock (as `TODAY`), for the date filters relative to it. */
   today?: number
   /** The workbook counts dates from 1904. */

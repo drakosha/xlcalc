@@ -1,3 +1,4 @@
+import type { PivotOptions } from '../contract.js'
 /**
  * A thread of the pool (`docs/async.md`): it holds sessions as the same thread does and runs one task at a time in
  * portions, so a `cancel` gets through between them, and inside a formula through memory shared with the pool. A
@@ -95,9 +96,9 @@ function loadRegex(kind: RegexLevel['kind']) {
 }
 
 /** Loads the PivotTable engine the pool has registered, its module imported by the thread, before the next task. */
-function loadPivot() {
+function loadPivot(options: PivotOptions) {
   loading = loading
-    .then(async () => registerPivot((await import('../pivot/index.js')).pivotEngine))
+    .then(async () => registerPivot((await import('../pivot/index.js')).pivotEngine, options))
     .catch(() => {})
 }
 
@@ -343,7 +344,7 @@ function receive(m: ToThread) {
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
     if (m.locales) load(m.locales)
     if (m.regex) loadRegex(m.regex)
-    if (m.pivot) loadPivot()
+    if (m.pivot) loadPivot(m.pivot)
     loadFunctions(m.functions)
     cancelled = m.cancelled
   } else if (m.t === 'locales') {
@@ -351,7 +352,7 @@ function receive(m: ToThread) {
   } else if (m.t === 'regex') {
     loadRegex(m.kind)
   } else if (m.t === 'pivot') {
-    loadPivot()
+    loadPivot(m.options)
   } else if (m.t === 'functions') {
     loadFunctions(m.functions)
   } else if (m.t === 'cancel') {
