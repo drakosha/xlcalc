@@ -1,0 +1,68 @@
+{
+ "dates-columns": {
+  "rows": [],
+  "columns": [
+   "Years (Years)",
+   "Quarters (Years)",
+   "Months (Years)",
+   "Years"
+  ],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (Years)",
+    "base": "Years",
+    "by": "years"
+   }
+  ]
+ },
+ "text-then-dates-columns": {
+  "rows": [
+   "Text"
+  ],
+  "columns": [
+   "Months (OneYear)",
+   "Days (OneYear)",
+   "OneYear"
+  ],
+  "values": [],
+  "groups": [
+   {
+    "field": "Days (OneYear)",
+    "base": "OneYear",
+    "by": "days"
+   },
+   {
+    "field": "Months (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ },
+ "month-columns": {
+  "rows": [],
+  "columns": [
+   "OneMonth"
+  ],
+  "values": [],
+  "groups": []
+ },
+ "number-columns": {
+  "rows": [],
+  "columns": [
+   "Num"
+  ],
+  "values": [],
+  "groups": []
+ }
+}

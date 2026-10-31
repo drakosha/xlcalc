@@ -1,6 +1,6 @@
 /**
  * Fields placed from Excel's PivotTable Fields list, for Excel for Windows on a screen (`bench/windows/run.ts
- * pivot-fields <set>`): a case's fields, each checked in the list (or sent to the columns by its menu) on an empty
+ * pivot-fields <set>`): a case's fields, each checked in the list (or dragged to the columns) on an empty
  * `PT1` at `P!A3` over the rows of `data.ts`, in turn; the answer is the PivotTable as the book Excel saved holds it:
  * the fields of its rows and columns, its value fields with their functions, and the fields grouping added. The
  * engine's prediction places each field as `suggestPivotField` says, through `editPivotTable` with `groupDates`
@@ -18,7 +18,7 @@ import { pivotOp } from '../../../src/structure/pivot-ops.js'
 import { stateValues } from '../../../src/structure/values.js'
 import { startBook } from './drive.js'
 
-/** A field placed: checked in the list, or sent to the columns by its menu. */
+/** A field placed: checked in the list, or dragged to its Columns area. */
 export interface Placed {
   name: string
   to?: 'columns'
