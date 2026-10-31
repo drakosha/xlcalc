@@ -11,6 +11,7 @@ import { formatAddress, parseAddress } from '../model.js'
 import { cornersText, type Rect } from '../structure/area.js'
 import { pivotArea } from './area.js'
 import { wordsOf } from './captions.js'
+import { itemFormat } from './item-format.js'
 import { axisLines, formOf, hasItems, type AxisLine } from './layout-lines.js'
 import type { PivotResult } from './result.js'
 
@@ -68,19 +69,19 @@ export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInp
     const d = values[v]
     return d?.name ?? (d ? words.valueName(d.function ?? 'sum', cache.fields[d.field]?.name ?? '') : '')
   }
-  const formatOf = (f: number, date: boolean): NumberFormat | undefined => table.fields[f]?.numberFormat ?? cache.fields[f]?.numberFormat ?? (date ? 14 : undefined)
   // an item's label: its caption, else its value in the cache (`(blank)` for none), a date with its field's format
   const itemLabel = (f: PivotAxisField, item: number): Label => {
     if (f === 'values') return { value: valueName(item) }
     const fi = table.fields[f]?.items?.[item]
-    if (fi?.caption !== undefined) return { value: fi.caption }
     const cf = cache.fields[f]
     const v = fi?.item === undefined ? undefined : (cf?.group?.items ?? cf?.items)?.[fi.item]
+    const numberFormat = typeof v === 'number' || (typeof v === 'object' && v !== null && 'date' in v) ? (table.fields[f]?.numberFormat ?? itemFormat(cache, f, v)) : undefined
+    // a caption keeps the item's format (the set edit-held: a date item named `first`)
+    if (fi?.caption !== undefined) return numberFormat === undefined ? { value: fi.caption } : { value: fi.caption, numberFormat }
     if (v === null || v === undefined) return { value: words.blank }
     // an error and a boolean are the locale's words for them, as text
     if (typeof v === 'boolean' || (typeof v === 'object' && 'error' in v)) return { value: rules.display(v, undefined, Infinity).text }
-    if (typeof v === 'object') return { value: v, numberFormat: formatOf(f, true) }
-    const numberFormat = typeof v === 'number' ? formatOf(f, false) : undefined
+    if (typeof v === 'object') return { value: v, numberFormat }
     return numberFormat === undefined ? { value: v } : { value: v, numberFormat }
   }
   const labelText = (f: PivotAxisField, item: number): string => {
@@ -112,7 +113,14 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const under = fields.indexOf('values') > d && a.value !== undefined
     return `${item} ${under ? valueName(a.value!) : a.fn ? words.functions[a.fn] : words.total}`
   }
-  const grandLabel = (a: AxisLine) => (a.value !== undefined ? `${words.total} ${valueName(a.value)}` : (table.captions?.grandTotal ?? words.grandTotal))
+  // the grand total's label takes the format of its axis's first field where the field has one of its own (the sets
+  // filter-held and sort-held: `Grand Total` under items of `yyyy-mm-dd hh:mm`)
+  const ownFormat = (f: PivotAxisField | undefined) => (f === undefined || f === 'values' ? undefined : (table.fields[f]?.numberFormat ?? cache.fields[f]?.numberFormat))
+  const grandLabel = (a: AxisLine, rows: boolean): Label => {
+    const value = a.value !== undefined ? `${words.total} ${valueName(a.value)}` : (table.captions?.grandTotal ?? words.grandTotal)
+    const numberFormat = ownFormat((rows ? rowFields : colFields)[0])
+    return numberFormat === undefined ? { value } : { value, numberFormat }
+  }
 
   // the columns of the rows' labels: a compact field shares the column of a compact field before it
   const labelCol: number[] = []
@@ -196,7 +204,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   columnLines.forEach((a, j) => {
     const col = left + width + j
     const d = a.items.length - 1
-    if (a.kind === 'grand') put(top + captionRow, col, grandLabel(a), { kind: 'grand' })
+    if (a.kind === 'grand') put(top + captionRow, col, grandLabel(a, false), { kind: 'grand' })
     else if (a.kind === 'subtotal') put(top + captionRow + d, col, subtotalLabel(colFields, a), { kind: 'subtotal', field: colFields[d], item: a.items[d] })
     else for (let k = a.from; k <= d; k++) put(top + captionRow + k, col, itemLabel(colFields[k], a.items[k]), { kind: 'item', field: colFields[k], item: a.items[k] })
   })
@@ -208,7 +216,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     const row = top + height + i
     const d = a.items.length - 1
     if (a.kind === 'grand' || a.kind === 'blank') {
-      if (a.kind === 'grand') put(row, left, grandLabel(a), { kind: 'grand' })
+      if (a.kind === 'grand') put(row, left, grandLabel(a, true), { kind: 'grand' })
       return
     }
     const subtotal = a.kind === 'subtotal'
