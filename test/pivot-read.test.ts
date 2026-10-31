@@ -54,7 +54,7 @@ function lines(t: PivotTable, c: PivotCache, axis: 'rows' | 'columns') {
 const near = (a: unknown, b: unknown) => (typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b)) : a === b || JSON.stringify(a) === JSON.stringify(b))
 
 /** The sets of PivotTables Excel for Windows saved. */
-const SETS = ['basic', 'layout', 'calc', 'edit', 'filter', 'refresh', 'sort']
+const SETS = ['basic', 'layout', 'calc', 'edit', 'filter', 'refresh', 'sort', 'layout-held', 'filter-held', 'sort-held', 'edit-held']
 
 /**
  * One PivotTable against what Excel showed of it: its range, the top left of its values, with `labels` each row's label

@@ -124,8 +124,8 @@ export type PivotOp = (
   | { page: string; items: string[] | '(All)' }
   /** A filter on a field; `by` names the data field (its caption) a value filter or top 10 looks at. */
   | { filter: string; type: FilterType; value1?: FilterValue; value2?: FilterValue; by?: string; wholeDays?: boolean }
-  /** AutoSort of a field by its labels, or by a data field (its caption). */
-  | { sort: string; order: 'ascending' | 'descending'; by?: string }
+  /** AutoSort of a field by its labels, or by a data field (its caption); `manual` turns sorting on each update off and keeps the order shown. */
+  | { sort: string; order: 'ascending' | 'descending' | 'manual'; by?: string }
   /** An item moved by hand to a position. */
   | { item: string; of: string; position: number }
   | { calcField: string; formula: string }

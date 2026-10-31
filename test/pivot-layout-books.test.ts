@@ -15,7 +15,7 @@ import { readXlsx } from '../src/xlsx.js'
 import { savedResult } from './pivot-saved.js'
 
 const ROOT = new URL('./excel/win/pivot/', import.meta.url).pathname
-const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc'].filter((s) => existsSync(`${ROOT}${s}.json`))
+const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc', 'layout-held', 'filter-held', 'sort-held', 'edit-held'].filter((s) => existsSync(`${ROOT}${s}.json`))
 
 interface Shown {
   area: string
