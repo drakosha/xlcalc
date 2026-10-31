@@ -18,6 +18,7 @@ import { tokenize } from '../syntax/tokens.js'
 import { refreshPivots } from './engine.js'
 import { placeOf, placed, withFields, withoutFields, type CacheTables } from './fields.js'
 import { template } from './formulas.js'
+import { groupWordsOf } from './captions.js'
 import { rangeLabels } from './group.js'
 import { groupedItems } from './items.js'
 import type { PivotCacheEdit, PivotCacheOp } from './hook.js'
@@ -44,7 +45,6 @@ interface Work extends CacheTables {
 }
 
 const DATE_PERIODS = ['seconds', 'minutes', 'hours', 'days', 'months', 'quarters', 'years'] as const
-const PERIOD_NAMES: Record<string, string> = { seconds: 'Seconds', minutes: 'Minutes', hours: 'Hours', days: 'Days', months: 'Months', quarters: 'Quarters', years: 'Years' }
 
 /** A field's values, record by record (its items without records). */
 function valuesOf(x: CacheTables, f: number): PivotValue[] {
@@ -119,7 +119,7 @@ function groupDates(w: Work, f: number, g: Record<string, unknown>): void {
     if (g.start !== undefined) range.autoStart = false
     if (g.end !== undefined) range.autoEnd = false
     if (days > 1) range.interval = days
-    return { name: `${PERIOD_NAMES[by]} (${name})`, group: { base: f, range, items: rangeLabels(range, blank, false, w.epoch) } }
+    return { name: `${groupWordsOf(w.locale).periods[by]} (${name})`, group: { base: f, range, items: rangeLabels(range, blank, false, w.epoch, w.locale) } }
   })
   const at = withFields(w, made)
   const coarseFirst = made.map((_, i) => at + i).reverse()
@@ -152,7 +152,7 @@ function groupNumbers(w: Work, f: number, g: Record<string, unknown>): void {
   if (g.end !== undefined) range.autoEnd = false
   if (interval !== 1) range.interval = interval
   const { parent } = w.cache.fields[f].group ?? {}
-  setGroup(w, f, { ...(parent !== undefined ? { parent } : {}), base: f, range, items: rangeLabels(range, values.includes(null), numbers.every(Number.isInteger), w.epoch) })
+  setGroup(w, f, { ...(parent !== undefined ? { parent } : {}), base: f, range, items: rangeLabels(range, values.includes(null), numbers.every(Number.isInteger), w.epoch, w.locale) })
   relisted(w, f)
 }
 

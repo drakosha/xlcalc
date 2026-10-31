@@ -184,12 +184,14 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     const r = editStructure(b, REGION)
     if (!r.ok) throw new Error(r.message)
     expect(editStructure(r.book, { op: 'addSlicer', sheet: 'P', slicer: { name: 'region' }, cache: 'Slicer_Region' })).toMatchObject({ ok: false, code: 'pivot', message: 'the name "region" is already used by a slicer or a timeline' })
+    // an empty name is refused as a name used is, as renameSheet refuses an empty sheet name
+    for (const op of [{ op: 'editSlicer', slicer: 'Region', set: { name: '' } }, { op: 'addSlicer', sheet: 'P', slicer: { name: '' }, cache: 'Slicer_Region' }])
+      expect(editStructure(r.book, op as StructureOp)).toMatchObject({ ok: false, code: 'pivot', message: 'a slicer or a timeline needs a name' })
     const throws = (op: unknown, m: string) => expect(() => editStructure(r.book, op as StructureOp)).toThrow(new InputError(...(m.split(': ') as [string, string])))
     throws(choose(), 'op.cache.items: expected at least one item chosen')
     throws({ op: 'editSlicer', slicer: 'Region', cache: { items: [{ item: 9 }] } }, 'op.cache.items[0].item: expected an integer from 0 to 3, got 9')
     throws({ op: 'editSlicer', slicer: 'Nope' }, 'op.slicer: unknown slicer "Nope"')
     throws({ op: 'editSlicer', slicer: 'Region', set: { cache: 'X' } }, "op.set.cache: a slicer's cache is not edited")
-    throws({ op: 'editSlicer', slicer: 'Region', set: { name: '' } }, "op.set.name: expected a slicer's name, got an empty string")
     throws({ op: 'addSlicer', sheet: 'P', slicer: {}, cache: 'Slicer_Nope' }, 'op.cache: unknown slicer cache "Slicer_Nope"')
     throws({ op: 'editTimeline', timeline: 'Region' }, 'op.timeline: unknown timeline "Region"')
     // the new slicer named after its field again: Region 1
@@ -229,6 +231,7 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     for (const name of [' ', 'A1', 'Slicer_Region', 'L'.repeat(256), "A/B [x]*?:'"]) expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name } })).toEqual([[name, 'Region', 'Slicer_Region'], ['Date', 'Date', 'NativeTimeline_Date']])
     expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name: 'DATE' } })).toBe('the name "DATE" is already used by a slicer or a timeline')
     expect(renamed({ op: 'editTimeline', timeline: 'Date', set: { name: 'region' } })).toBe('the name "region" is already used by a slicer or a timeline')
+    expect(renamed({ op: 'editTimeline', timeline: 'Date', set: { name: '' } })).toBe('a slicer or a timeline needs a name')
     expect(renamed({ op: 'editTimeline', timeline: 'Date', set: { name: 'Dates', caption: 'When' } })).toEqual([['Region', 'Region', 'Slicer_Region'], ['Dates', 'When', 'NativeTimeline_Date']])
     // its own name in another case
     expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name: 'REGION' } })).toEqual([['REGION', 'Region', 'Slicer_Region'], ['Date', 'Date', 'NativeTimeline_Date']])

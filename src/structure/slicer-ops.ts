@@ -15,6 +15,7 @@ import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
+import { DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE } from '../drawing-size.js'
 import { entryAt, lines } from '../layout/spans.js'
 import { pivotArea } from '../pivot/area.js'
 import { pivotRefresh } from '../pivot/hook.js'
@@ -60,14 +61,15 @@ const names = (book: BookInput) => new Set(book.sheets.flatMap((s) => [...(s.sli
 
 /**
  * A name given to a slicer or timeline (`path`), checked as Excel takes `Slicer.Name`: any text but the empty one (a space,
- * `A1`, a cache's name, 256 characters); null when another slicer or timeline has it, in any case (`own` is the one renamed).
+ * `A1`, a cache's name, 256 characters); the refusal when it is empty or another slicer or timeline has it, in any case
+ * (`own` is the one renamed), as a sheet's name is refused.
  */
-function givenName(book: BookInput, kind: Kind, v: unknown, path: string, own?: string): string | null {
+function givenName(book: BookInput, v: unknown, path: string, own?: string): string | Parameters<typeof sayPivot>[1] {
   const name = checkString(v, path)
-  if (!name) throw new InputError(path, `expected a ${KEY[kind]}'s name, got an empty string`)
+  if (!name) return { key: 'slicerNameEmpty' }
   const taken = names(book)
   if (own !== undefined) taken.delete(caseKey(own))
-  return taken.has(caseKey(name)) ? null : name
+  return taken.has(caseKey(name)) ? { key: 'slicerNameTaken', name } : name
 }
 
 /** The first of `base`, `base 1`, `base 2`… (`sep` between) not in `taken`. */
@@ -122,9 +124,6 @@ function checkItems(v: unknown, path: string, n: number): NonNullable<SlicerCach
   return items
 }
 
-/** The size Excel gives a new slicer and a new timeline, in EMU: 2 by 2.76 inches, 3.65 by 1.5 inches (the set slicer-objects). */
-const SIZE: Record<Kind, [width: number, height: number]> = { slicers: [1_828_800, 2_524_125], timelines: [3_333_750, 1_371_600] }
-
 /** EMU in a pixel and in a point; a column's pixels are 7 to a stored width's digit, 64 for the default width, as Excel for Windows draws Calibri 11. */
 const [PIXEL, POINT, COLUMN] = [9525, 12_700, 64]
 
@@ -137,7 +136,7 @@ function reach(at: number, length: number, size: (k: number) => number, last: nu
 
 /**
  * A new slicer's or timeline's place: from two columns right of the first PivotTable it filters, at its top row, and
- * Excel's size for it (`SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
+ * Excel's size for it (`DEFAULT_SLICER_SIZE`, `DEFAULT_TIMELINE_SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
  * window, and its Insert Slicer one after another there; the workbook has no window, so the place is the library's.
  */
 function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): DrawingPlace | undefined {
@@ -154,8 +153,9 @@ function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): Drawi
     const e = entryAt(rows, k)
     return e?.hidden ? 0 : (e?.height ?? DEFAULT_ROW_HEIGHT) * POINT
   }
-  const [c2, dx] = reach(x.c2 + 2, SIZE[kind][0], col, MAX_COLS - 1)
-  const [r2, dy] = reach(x.r1, SIZE[kind][1], row, MAX_ROWS - 1)
+  const size = kind === 'slicers' ? DEFAULT_SLICER_SIZE : DEFAULT_TIMELINE_SIZE
+  const [c2, dx] = reach(x.c2 + 2, size.width, col, MAX_COLS - 1)
+  const [r2, dy] = reach(x.r1, size.height, row, MAX_ROWS - 1)
   return { from: formatAddress(x.r1, x.c2 + 2), to: formatAddress(r2, c2), ...(dx || dy ? { toOffset: [dx, dy] as [number, number] } : {}) }
 }
 
@@ -207,8 +207,8 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
     ;({ book: out, cache } = made)
     fresh = true
   }
-  const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, kind, given.name, `op.${key}.name`)
-  if (name === null) return refused(out, { key: 'slicerNameTaken', name: String(given.name) })
+  const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, given.name, `op.${key}.name`)
+  if (typeof name !== 'string') return refused(out, name)
   const place = given.place === undefined && cache.pivots.length ? placeBeside(out, kind, s, cache.pivots[0]) : undefined
   // Excel captions it by its field
   const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
@@ -229,7 +229,8 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
     const set = object(o.set, 'op.set', `a patch of a ${key} such as { caption: "Region" }`)
     if ('cache' in set) throw new InputError('op.set.cache', `a ${key}'s cache is not edited`)
     // Slicer Settings' Name: unique among the workbook's slicers and timelines, its caption as it was
-    if (set.name !== undefined && givenName(book, kind, set.name, 'op.set.name', x.name) === null) return refused(book, { key: 'slicerNameTaken', name: String(set.name) })
+    const name = set.name === undefined ? undefined : givenName(book, set.name, 'op.set.name', x.name)
+    if (typeof name === 'object') return refused(book, name)
     const list = [...((book.sheets[s][kind] ?? []) as (Slicer | Timeline)[])]
     // a rename keeps the caption, which a slicer without one took from its name
     list[k] = patched(set.name !== undefined && list[k].caption === undefined ? { ...list[k], caption: list[k].name } : list[k], set)

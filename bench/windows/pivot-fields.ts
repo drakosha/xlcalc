@@ -2,7 +2,7 @@
  * Fields placed from the PivotTable Fields list of Excel for Windows (`bench/coverage/pivot/checked.ts`): the list is
  * there only in a session on a screen, so `pivot-fields.ps1` runs as a task there (`screen.ts`), each case's book with
  * its fields checked by UI Automation, and saves it. The answer is the PivotTable the saved book holds (`checkedOf`),
- * or the step's error; the answers go to `test/excel/win/pivot-fields/<set>.json`, the books beside them
+ * or the step's error; the answers go to `test/excel/win/pivot-fields/[<tag>/]<set>.json` (another locale's in a directory of its tag), the books beside them
  * (`<set>/<id>.xlsx`). Without a session on the screen the step stops.
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { checkedOf, type CheckedAnswer, type CheckedSet } from '../coverage/pivot/checked.js'
 import { DATA, sourceBook, sourceText } from '../coverage/pivot/data.js'
+import { localeDir } from '../coverage/locales.js'
 import { setModule, writeAnswers } from '../coverage/stored.js'
 import { winFile } from './functions.js'
 import { metaOf, type Tag, type WinEnv } from './remote.js'
@@ -25,7 +26,7 @@ export async function stepPivotFields(set: string, tag: Tag, e: WinEnv): Promise
     const c = byId.get(id)!
     return { source: sourceText('range', DATA[c.data ?? 'kinds']()), fields: c.fields, ...c.under, ...(c.answer ? { answer: c.answer } : {}) }
   }, 120 + 40 * cases.length)
-  const file = winFile(`pivot-fields/${set}.json`)
+  const file = winFile(`pivot-fields/${localeDir(tag)}${set}.json`)
   const dir = file.slice(0, -'.json'.length)
   mkdirSync(dir, { recursive: true })
   const answers: Record<string, CheckedAnswer | { error: string }> = {}

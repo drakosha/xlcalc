@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { BookInput, PivotCell, PivotItemRef } from '../src/contract.js'
+import { pivotButtonsMarked, pivotCells } from '../src/pivot/cells.js'
 import { labeler } from '../src/pivot/layout.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
@@ -115,15 +116,15 @@ describe.each(SETS)('what the cells of the pivot tables of the set %s are', (set
     expect(compared).toBeGreaterThan(1000)
   }, 120_000)
 
-  it("gives the filter buttons Excel's file marks (pivotButton)", async () => {
+  it("marks the filter buttons as Excel's file does (pivotButton)", async () => {
     const { buildPivotCases } = (await import(`../bench/coverage/pivot/${set}.ts`)) as PivotSet
     const misses: string[] = []
     for (const c of buildPivotCases() as PivotCase[]) {
       const bytes = new Uint8Array(readFileSync(new URL(`../${c.file}`, import.meta.url)))
       const file = await fileButtons(bytes)
-      const ours = await predictedCells(c)
+      const book = (await readXlsx(bytes)).book
       const bySheet: Record<string, string[]> = {}
-      for (const [key, cells] of Object.entries(ours)) (bySheet[key.split('!')[0]] ??= []).push(...cells.buttons)
+      for (const s of book.sheets) for (const t of s.pivotTables ?? []) (bySheet[s.name] ??= []).push(...pivotButtonsMarked(t))
       for (const [sheet, want] of Object.entries(file)) {
         const got = (bySheet[sheet] ?? []).slice().sort()
         if (JSON.stringify(got) !== JSON.stringify(want.slice().sort())) misses.push(`${c.id} ${sheet}: ours ${got.join(' ')}, file ${want.slice().sort().join(' ')}`)
@@ -151,4 +152,38 @@ describe.each(SETS)('what the cells of the pivot tables of the set %s are', (set
     }
     expect(misses).toEqual([])
   }, 240_000)
+})
+
+/**
+ * Where Excel for Windows draws the filter buttons (screens of Excel on the screen, each button opened with Alt+Down, as
+ * Excel for Mac draws them too): a report filter's on its item right of its name, which the file marks; Row Labels and
+ * Column Labels on themselves, filtering the rows' and the columns' fields; a field's name in the outline and tabular
+ * forms on itself; a single value field's name at the corner on none, though the file marks it.
+ */
+describe('the filter buttons Excel draws', () => {
+  const DRAWN: Record<string, string[]> = {
+    page: ['A3', 'B1'],
+    'pages-across': ['A5', 'B3', 'E3', 'H3'],
+    'pages-wrap': ['A5', 'B2', 'B3', 'E2'],
+    'compact-columns': ['A4', 'B3'],
+    'outline-columns': ['A4', 'B4', 'C3'],
+    classic: ['A4'],
+    'columns-alone': ['A3'],
+    'no-rows': ['B3'],
+    'rows-alone': ['A3'],
+  }
+  /** The axis Row Labels and Column Labels filter, by book and cell: the menu each opens names its field. */
+  const AXES: Record<string, Record<string, 'rows' | 'columns'>> = {
+    page: { A3: 'rows' },
+    'compact-columns': { A4: 'rows', B3: 'columns' },
+    'columns-alone': { A3: 'columns' },
+    'no-rows': { B3: 'columns' },
+  }
+  it.each(Object.keys(DRAWN))('in the book areas/%s', async (id) => {
+    const book = (await readXlsx(readFileSync(new URL(`excel/win/pivot/areas/${id}.xlsx`, import.meta.url)))).book
+    const got = pivotCells(book, 'P', 'PT1')!
+    expect(got.buttons.slice().sort()).toEqual(DRAWN[id])
+    expect(Object.keys(got.cells).filter((a) => got.cells[a].button).sort()).toEqual(DRAWN[id])
+    for (const [a, axis] of Object.entries(AXES[id] ?? {})) expect(got.cells[a]).toEqual({ pivot: 'PT1', kind: 'blank', axis, button: true })
+  })
 })

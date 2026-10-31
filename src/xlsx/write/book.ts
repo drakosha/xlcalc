@@ -10,7 +10,7 @@ import type { BookInput } from '../../contract.js'
 import { activeSheetIndex } from '../view.js'
 import { epochOf } from '../../dates.js'
 import { MAX_COLS, readAddress } from '../../model.js'
-import { pivotCells } from '../../pivot/cells.js'
+import { pivotButtonsMarked } from '../../pivot/cells.js'
 import { SHEET_STATES } from '../../input.js'
 import { nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
@@ -135,7 +135,7 @@ export interface BookWriting {
   filterTables: (string | undefined)[]
   active: number
   epoch: number
-  /** The cells of a sheet with a PivotTable's filter button (`pivotCells`), by row and column (`row * MAX_COLS + col`). */
+  /** The cells of a sheet its file marks with a PivotTable's filter button (`pivotButtonsMarked`), by row and column (`row * MAX_COLS + col`). */
   buttons(sheet: number): ReadonlySet<number> | undefined
 }
 
@@ -156,14 +156,14 @@ export function bookWriting(book: BookInput): BookWriting {
   }
 }
 
-/** The cells of a sheet's PivotTables that Excel gives a filter button, none without a PivotTable laid out. */
+/** The cells of a sheet's PivotTables that Excel's file marks with a filter button, none without a PivotTable laid out. */
 function pivotButtons(book: BookInput, i: number): ReadonlySet<number> | undefined {
   const s = book.sheets[i]
   if (!s.pivotTables?.length) return undefined
   const out = new Set<number>()
   const at = { r: 0, c: 0 }
   for (const t of s.pivotTables)
-    for (const a of pivotCells(book, s.name, t.name)?.buttons ?? []) {
+    for (const a of pivotButtonsMarked(t)) {
       readAddress(a, at)
       out.add(at.r * MAX_COLS + at.c)
     }

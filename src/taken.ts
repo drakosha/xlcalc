@@ -5,11 +5,13 @@
  * formula (`==1`). Protection, a style's and a sheet's, holds only what differs from Excel's defaults
  * (`input/protection.ts`): `{ protection: { locked: true } }` is the style `{}`. What needs none is given back as it is, what needs one as a copy: the caller's input is not changed,
  * and input without one costs no copy. A pivot cache's time of day on Excel's 1899-12-30, as 0.71 read it, is at the model's
- * day 0 (`pivot-time.ts`).
+ * day 0 (`pivot-time.ts`). With `xlcalc/pivot` loaded, a PivotTable of two value fields or more has Σ Values on its
+ * axes (`pivot/hook.ts`).
  */
 import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, CellStyle, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, PivotCache, PivotCacheField, SheetInput, StructureOp, TableInput } from './contract.js'
 import { modelValue } from './pivot-time.js'
 import { protectionTaken, styleTaken } from './input/protection.js'
+import { pivotTaken } from './pivot/hook.js'
 
 /** A formula with a leading `=`. */
 export const leadingEquals = (f: unknown): f is string => typeof f === 'string' && f.charCodeAt(0) === 61
@@ -76,6 +78,10 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
   if (rules !== s.validations) out.validations = rules
   const protection = s.protection && protectionTaken(s.protection)
   if (protection !== s.protection) out.protection = protection
+  // Σ Values of a PivotTable put on its axes by `xlcalc/pivot`
+  const pivot = pivotTaken()
+  const pivots = pivot && s.pivotTables && each(s.pivotTables, pivot)
+  if (pivots && pivots !== s.pivotTables) out.pivotTables = pivots
   return Object.keys(out).length ? { ...s, ...out } : s
 }
 

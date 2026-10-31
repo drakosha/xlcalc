@@ -28,6 +28,7 @@ export const PIVOT_MESSAGES: PivotMessages = {
   pivotItemTaken: (p) => `PivotTable item name already exists: ${JSON.stringify(p.item)}`,
   slicerField: (p) => `there is no field ${JSON.stringify(p.field)} in the PivotTables' source`,
   slicerNameTaken: (p) => `the name ${JSON.stringify(p.name)} is already used by a slicer or a timeline`,
+  slicerNameEmpty: () => 'a slicer or a timeline needs a name',
   timelineField: (p) => `a timeline needs a field of dates, and ${JSON.stringify(p.field)} holds none`,
   pivotCut: (p) => `the operation would change part of the PivotTable ${p.pivot} on '${p.sheet}' (Excel moves or deletes a PivotTable whole)`,
   pivotTableNameTaken: (p) => `a PivotTable named ${JSON.stringify(p.name)} already exists on '${p.sheet}' (names are case-insensitive)`,

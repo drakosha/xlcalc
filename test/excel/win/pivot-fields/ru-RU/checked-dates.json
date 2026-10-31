@@ -1,0 +1,167 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 62
+ },
+ "cases": [
+  {
+   "id": "Years",
+   "fields": [
+    {
+     "name": "Years"
+    }
+   ]
+  },
+  {
+   "id": "OneYear",
+   "fields": [
+    {
+     "name": "OneYear"
+    }
+   ]
+  },
+  {
+   "id": "DateBlank",
+   "fields": [
+    {
+     "name": "DateBlank"
+    }
+   ]
+  },
+  {
+   "id": "two-dates",
+   "fields": [
+    {
+     "name": "Years"
+    },
+    {
+     "name": "OneYear"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "Years": {
+   "rows": [
+    "Годы (Years)",
+    "Кварталы (Years)",
+    "Месяцы (Years)",
+    "Years"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Месяцы (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Кварталы (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Годы (Years)",
+     "base": "Years",
+     "by": "years"
+    }
+   ]
+  },
+  "OneYear": {
+   "rows": [
+    "Месяцы (OneYear)",
+    "Дни (OneYear)",
+    "OneYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Дни (OneYear)",
+     "base": "OneYear",
+     "by": "days"
+    },
+    {
+     "field": "Месяцы (OneYear)",
+     "base": "OneYear",
+     "by": "months"
+    }
+   ]
+  },
+  "DateBlank": {
+   "rows": [
+    "Годы (DateBlank)",
+    "Кварталы (DateBlank)",
+    "Месяцы (DateBlank)",
+    "DateBlank"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Месяцы (DateBlank)",
+     "base": "DateBlank",
+     "by": "months"
+    },
+    {
+     "field": "Кварталы (DateBlank)",
+     "base": "DateBlank",
+     "by": "quarters"
+    },
+    {
+     "field": "Годы (DateBlank)",
+     "base": "DateBlank",
+     "by": "years"
+    }
+   ]
+  },
+  "two-dates": {
+   "rows": [
+    "Годы (Years)",
+    "Кварталы (Years)",
+    "Месяцы (Years)",
+    "Years",
+    "Месяцы (OneYear)",
+    "Дни (OneYear)",
+    "OneYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Месяцы (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Кварталы (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Годы (Years)",
+     "base": "Years",
+     "by": "years"
+    },
+    {
+     "field": "Дни (OneYear)",
+     "base": "OneYear",
+     "by": "days"
+    },
+    {
+     "field": "Месяцы (OneYear)",
+     "base": "OneYear",
+     "by": "months"
+    }
+   ]
+  }
+ }
+}

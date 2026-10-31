@@ -4,14 +4,15 @@
  * `PT1` at `P!A3` over the rows of `data.ts`, in turn; the answer is the PivotTable as the book Excel saved holds it:
  * the fields of its rows and columns, its value fields with their functions, and the fields grouping added. The
  * engine's prediction places each field as `suggestPivotField` says, through `editPivotTable` with `groupDates`
- * (`npx tsx bench/coverage/pivot/checked.ts <set>` writes `<set>.predicted.json` beside the set).
+ * (`npx tsx bench/coverage/pivot/checked.ts <set> [locale]` writes `<set>[.<locale>].predicted.json` beside the set).
  */
 import { writeFileSync } from 'node:fs'
 import type { BookInput, PivotTable, SheetInput } from '../../../src/contract.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { createState } from '../../../src/engine.js'
-import { registerPivot, suggestPivotField } from '../../../src/index.js'
+import { registerLocale, registerPivot, suggestPivotField } from '../../../src/index.js'
+import { ruRU } from '../../../src/locales/ru-RU.js'
 import { pivotEngine } from '../../../src/pivot/index.js'
 import { clockOptions } from '../../../src/result.js'
 import { pivotOp } from '../../../src/structure/pivot-ops.js'
@@ -94,16 +95,17 @@ function watched(sheet: SheetInput, range: string): Record<string, string> {
 
 const CLOCK = clockOptions({ now: '2026-10-31', seed: 0 })
 
-/** The engine's placing of a case's fields, or its refusal. */
-export function predictChecked(c: CheckedCase): CheckedAnswer | { refused: string } {
-  const book = predictBook(c)
+/** The engine's placing of a case's fields in a workbook of `locale`, or its refusal. */
+export function predictChecked(c: CheckedCase, locale?: string): CheckedAnswer | { refused: string } {
+  const book = predictBook(c, locale)
   return typeof book === 'string' ? { refused: book } : checkedOf(book, c.watch)
 }
 
-/** The book with a case's fields placed by the engine, or its refusal's message. */
-export function predictBook(c: CheckedCase): BookInput | string {
+/** The book with a case's fields placed by the engine in a workbook of `locale`, or its refusal's message. */
+export function predictBook(c: CheckedCase, locale?: string): BookInput | string {
   registerPivot(pivotEngine)
-  let book = withUnder(startBook({ id: c.id, data: c.data ?? 'kinds', ops: [] }), c.under)
+  registerLocale(ruRU)
+  let book = withUnder(startBook({ id: c.id, data: c.data ?? 'kinds', ops: [] }, locale), c.under)
   for (const p of c.fields) {
     const cache = book.pivotCaches![0]
     const t = book.sheets.find((s) => s.name === 'P')!.pivotTables![0]
@@ -134,9 +136,9 @@ function withUnder(book: BookInput, under: CheckedCase['under']): BookInput {
 }
 
 if (process.argv[1]?.endsWith('checked.ts')) {
-  const set = process.argv[2]
+  const [set, locale] = process.argv.slice(2)
   const { buildCheckedCases } = (await import(`./${set}.ts`)) as CheckedSet
-  const out = Object.fromEntries(buildCheckedCases().map((c) => [c.id, predictChecked(c)]))
-  writeFileSync(new URL(`${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
+  const out = Object.fromEntries(buildCheckedCases().map((c) => [c.id, predictChecked(c, locale)]))
+  writeFileSync(new URL(`${set}${locale ? `.${locale}` : ''}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
   console.log(`${Object.keys(out).length} cases`)
 }
