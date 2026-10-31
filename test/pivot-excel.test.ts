@@ -12,9 +12,12 @@ import { describe, expect, it } from 'vitest'
 import * as basic from '../bench/coverage/pivot/basic.js'
 import type { PivotCase, PivotOp, PivotPhase, PivotSet } from '../bench/coverage/pivot/cases.js'
 import * as filter from '../bench/coverage/pivot/filter.js'
+import * as filterHeld from '../bench/coverage/pivot/filter-held.js'
 import * as layout from '../bench/coverage/pivot/layout.js'
+import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
+import * as sortHeld from '../bench/coverage/pivot/sort-held.js'
 import type { BookInput, CellValue, PivotRef } from '../src/contract.js'
 import { createState } from '../src/engine.js'
 import { dateToSerial, formatAddress } from '../src/model.js'
@@ -37,6 +40,9 @@ const CLOCK = { now: '2026-10-30', seed: 0 }
  * several functions, which the reading of the file does not take yet.
  */
 const KNOWN: Record<string, string[]> = {
+  'layout-held': [],
+  'filter-held': [],
+  'sort-held': [],
   basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
   filter: [],
   sort: ['months-down/0/saved', 'months-down/0/source'],
@@ -44,7 +50,7 @@ const KNOWN: Record<string, string[]> = {
   refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld }
 
 /** The values of `range` on `sheet` as its cells hold them. */
 function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
