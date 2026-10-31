@@ -13,6 +13,7 @@ import { linksIn, markedLinks } from '../syntax/links.js'
 import { editsTaken } from '../taken.js'
 import { hiddenRows } from '../layout/hidden.js'
 import { checkArrayEdits } from '../spill/fixed.js'
+import { checkPivotEdits } from '../pivot/part.js'
 import { headerEdits } from '../tables/headers.js'
 import { checkTables } from '../tables/check.js'
 import { checkStylesUsed, applyLayout, inputAt } from './book.js'
@@ -187,6 +188,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
     }
   }
   checkArrayEdits(s, final)
+  checkPivotEdits(s, final)
   const layout = new Map<number, SheetInput>()
   book.sheets.forEach((sh, i) => {
     const old = s.input.sheets[i]

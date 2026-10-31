@@ -200,7 +200,7 @@ export interface PivotPhase {
   results?: Record<string, unknown>
   pivots: Record<string, PivotArea | { error: string }>
   cells?: Record<string, CellValue>
-  slicers?: Record<string, SlicerItem[] | { error: string }>
+  slicers?: Record<string, SlicerItem[] | { timeline: [start: number | null, end: number | null, level: number] } | { error: string }>
   /** What an `external` operation read: each read's cells, in the order the operation names them. */
   external?: { reads: Record<string, Record<string, CellValue>>; errors?: string[] }
 }

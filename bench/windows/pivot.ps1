@@ -67,9 +67,15 @@ function PRead($wb, $s) {
   List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), (List $texts), (List $formats))
 }
 
-# a slicer cache's items as Excel shows them: [name, selected, has data]
+# a slicer cache's items as Excel shows them, [name, selected, has data]; a timeline's state, { timeline: [start, end
+# (serials, null without a filter), level] }
 function PSlicerRead($wb, $s) {
   $sc = $wb.SlicerCaches.Item([string]$s.field)
+  if ($sc.SlicerCacheType -eq 2) {
+    $t = $sc.TimelineState
+    $range = if ($t.SingleRangeFilterState) { @((Cell ([double]$t.StartDate.ToOADate())), (Cell ([double]$t.EndDate.ToOADate()))) } else { @('null', 'null') }
+    return '{"timeline":' + (List ($range + @(Cell ([double]$sc.Slicers.Item(1).TimelineViewState.Level)))) + '}'
+  }
   List ($sc.SlicerItems | ForEach-Object { List @((Str ([string]$_.Name)), (Cell ([bool]$_.Selected)), (Cell ([bool]$_.HasData))) })
 }
 
@@ -170,12 +176,13 @@ function Pivot($xl, $wb, $s) {
         [void]$f.DataRange.Cells.Item(1).Group((PArg $s.start), (PArg $s.end), (PArg $s.by), $periods)
         'null'
       }
-      # a group of the items named: their label cells united and grouped; the new group's name set when given
+      # a group of the items named: their label cells as one range (its areas parted by the locale's list separator, as
+      # Application.Union takes no two ranges from PowerShell) and grouped
       'groupItems' {
-        $f = (PTable $wb $s).PivotFields([string]$s.field)
-        $rg = $null
-        foreach ($n in $s.items) { $c = $f.PivotItems([string]$n).LabelRange; $rg = if ($rg) { $xl.Union($rg, $c) } else { $c } }
-        [void]$rg.Group()
+        $pt = PTable $wb $s
+        $f = $pt.PivotFields([string]$s.field)
+        $addr = @($s.items | ForEach-Object { $f.PivotItems([string]$_).LabelRange.Address($false, $false) }) -join $xl.International(5)
+        [void]$pt.TableRange1.Worksheet.Range($addr).Group()
         'null'
       }
       # only the items named shown (a field's PivotItems, Visible) or selected (a slicer's SlicerItems, Selected), compared
@@ -189,7 +196,23 @@ function Pivot($xl, $wb, $s) {
         foreach ($it in $all) { if ($keep -cnotcontains [string]$it.Name -and $it.$prop) { $it.$prop = $false } }
         'null'
       }
-      'ungroup' { [void](PTable $wb $s).PivotFields([string]$s.field).DataRange.Cells.Item(1).Ungroup(); 'null' }
+      # Ungroup on the first item cell of the field on the rows or columns: Excel 365 names a date field grouped into
+      # several `Months (Date)` and `Years (Date)`, so a cell of a field named so is taken too
+      'ungroup' {
+        $pt = PTable $wb $s
+        $name = [string]$s.field
+        $c = $null
+        foreach ($axis in @($pt.RowRange, $pt.ColumnRange)) {
+          if ($null -eq $axis) { continue }
+          foreach ($x in $axis.Cells) {
+            $pc = try { $x.PivotCell } catch { $null }
+            if ($pc -and $pc.PivotCellType -eq 1 -and ($pc.PivotField.Name -eq $name -or $pc.PivotField.Name.EndsWith(" ($name)"))) { $c = $x; break }
+          }
+          if ($c) { break }
+        }
+        [void]$c.Ungroup()
+        'null'
+      }
       # a slicer cache (SlicerCaches.Add2, xlTimeline 2 for a timeline) on a field, a slicer of it on a sheet, the other
       # pivot tables it filters
       'slicer' {
