@@ -5,6 +5,7 @@
  */
 import { attributes } from '../xml/scan.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
+import { PKG_REL, REL as DOC_REL, TYPE } from '../write/xml.js'
 
 /** An element where it lies in the text: its qualified and local names, its opening tag's end, and its end. */
 export interface Placed {
@@ -117,9 +118,11 @@ export function setAttrs(tag: string, changes: Record<string, string | null>): s
 /** The attributes of an element's opening tag, as `attributes` reads them. */
 export const attrsOf = (xml: string, e: Placed): Record<string, string> => attributes(xml.slice(e.start + 1 + e.qname.length, e.open - (xml[e.open - 2] === '/' ? 2 : 1)))
 
-/** The namespaces of the package's relationships and content types. */
-export const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
-export const DOC_REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+/** The namespaces of the package's relationships and of a part's, and what the content types of SpreadsheetML parts begin with. */
+export { PKG_REL, DOC_REL, TYPE }
+
+/** A relationship's type of `kind` (`worksheet`, `pivotTable`). */
+export const relType = (kind: string) => `${DOC_REL}/${kind}`
 
 /** A part's relationships edited: those kept as the file has them, those removed, new ones with ids the part does not use. */
 export class Rels {

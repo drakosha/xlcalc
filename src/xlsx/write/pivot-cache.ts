@@ -6,11 +6,8 @@
 import type { PivotCache, PivotCacheField, PivotFieldGroup, PivotValue } from '../../contract.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
-import { give, HEAD, MAIN } from './xml.js'
+import { give, HEAD, MAIN, REL, X14 } from './xml.js'
 import { pivotAreaXml } from './pivot-area.js'
-
-export const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-export const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 
 /** A cache value as an item or a record holds it: `m` missing, `n` number, `s` text, `b` boolean, `e` error, `d` date. */
 export function valueXml(v: PivotValue, more = ''): string {

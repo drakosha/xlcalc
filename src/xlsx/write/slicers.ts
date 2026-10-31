@@ -10,13 +10,14 @@ import { sheetKey } from '../../syntax/print.js'
 import { parseAddress } from '../../model.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr } from '../xml/text.js'
-import { give, HEAD, MAIN } from './xml.js'
-import { X14 } from './pivot-cache.js'
+import { give, HEAD, MAIN, X14, X15 } from './xml.js'
 
-const X15 = 'http://schemas.microsoft.com/office/spreadsheetml/2010/11/main'
 const MS = 'http://schemas.microsoft.com/office'
 export const SLICER_RELS = { slicerCache: `${MS}/2007/relationships/slicerCache`, slicer: `${MS}/2007/relationships/slicer`, timelineCache: `${MS}/2011/relationships/timelineCache`, timeline: `${MS}/2011/relationships/timeline` }
 const TYPES = { slicerCache: 'application/vnd.ms-excel.slicerCache+xml', slicer: 'application/vnd.ms-excel.slicer+xml', timelineCache: 'application/vnd.ms-excel.timelineCache+xml', timeline: 'application/vnd.ms-excel.timeline+xml' }
+const MC = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+/** What a part of Excel 2010's or 2013's namespace declares beside it: SpreadsheetML as `x`, which older readers may ignore. */
+const IGNORABLE = ` xmlns:mc="${MC}" mc:Ignorable="x" xmlns:x="${MAIN}"`
 const DRAWING_TYPE = 'application/vnd.openxmlformats-officedocument.drawing+xml'
 const LEVEL: Record<TimelineLevel, number> = { years: 0, quarters: 1, months: 2, days: 3 }
 /** A slicer's buttons' height as Excel makes one, in EMU. */
@@ -51,7 +52,7 @@ export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tab
   const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
   const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, 'customListSort:t showMissing:t')}${cross}`
   const hide = nd.hide ? `<extLst><x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext></extLst>` : ''
-  return `${HEAD}<slicerCacheDefinition xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
+  return `${HEAD}<slicerCacheDefinition xmlns="${X14}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
 }
 
 /** A date of a timeline, ISO 8601 as the file writes it: with its time. */
@@ -69,7 +70,7 @@ export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId =
   const sel = c.selection
   const type = !sel ? '' : ` filterType="${isoTime(sel.start) === isoTime(sel.end) ? 'dateEqual' : 'dateBetween'}"`
   const state = `<state minimalRefreshVersion="6" lastRefreshVersion="6" pivotCacheId="${cacheId}"${type}>${sel ? `<selection startDate="${isoTime(sel.start)}" endDate="${isoTime(sel.end)}"/>` : ''}${bounds ? `<bounds startDate="${isoTime(bounds.start)}" endDate="${isoTime(bounds.end)}"/>` : ''}</state>`
-  return `${HEAD}<timelineCacheDefinition xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}${state}</timelineCacheDefinition>`
+  return `${HEAD}<timelineCacheDefinition xmlns="${X15}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}${state}</timelineCacheDefinition>`
 }
 
 /** A slicer's or a timeline's style where it has one: none for an empty name. */
@@ -89,8 +90,8 @@ export function timelineXml(t: Timeline): string {
 }
 
 /** A sheet's slicers' part, and its timelines'. */
-export const slicersPartXml = (list: Slicer[]) => `${HEAD}<slicers xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${list.map(slicerXml).join('')}</slicers>`
-export const timelinesPartXml = (list: Timeline[]) => `${HEAD}<timelines xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${list.map(timelineXml).join('')}</timelines>`
+export const slicersPartXml = (list: Slicer[]) => `${HEAD}<slicers xmlns="${X14}"${IGNORABLE}>${list.map(slicerXml).join('')}</slicers>`
+export const timelinesPartXml = (list: Timeline[]) => `${HEAD}<timelines xmlns="${X15}"${IGNORABLE}>${list.map(timelineXml).join('')}</timelines>`
 
 /** A cell of an anchor with its offset. */
 const marker = (tag: string, cell: string, off: [number, number] | undefined) => {
@@ -98,15 +99,19 @@ const marker = (tag: string, cell: string, off: [number, number] | undefined) =>
   return `<xdr:${tag}><xdr:col>${col}</xdr:col><xdr:colOff>${off?.[0] ?? 0}</xdr:colOff><xdr:row>${row}</xdr:row><xdr:rowOff>${off?.[1] ?? 0}</xdr:rowOff></xdr:${tag}>`
 }
 
+const DRAWING = `${MS}/drawing`
+const SLICER = `${DRAWING}/2010/slicer`
+const TIMESLICER = `${DRAWING}/2012/timeslicer`
+
 /** A slicer's or timeline's frame in a drawing, at its place, with the shape older readers show. */
 function frameXml(name: string, place: DrawingPlace, id: number, timeline: boolean): string {
   const [requires, ns, uri, el] = timeline
-    ? ['tsle', 'http://schemas.microsoft.com/office/drawing/2012/timeslicer', 'http://schemas.microsoft.com/office/drawing/2012/timeslicer', 'tsle:timeslicer']
-    : ['a14', 'http://schemas.microsoft.com/office/drawing/2010/main', 'http://schemas.microsoft.com/office/drawing/2010/slicer', 'sle:slicer']
-  const sle = timeline ? '' : ' xmlns:sle="http://schemas.microsoft.com/office/drawing/2010/slicer"'
+    ? ['tsle', TIMESLICER, TIMESLICER, 'tsle:timeslicer']
+    : ['a14', `${DRAWING}/2010/main`, SLICER, 'sle:slicer']
+  const sle = timeline ? '' : ` xmlns:sle="${SLICER}"`
   const frame = `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="${escapeAttr(name)}"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${uri}"><${el}${sle} name="${escapeAttr(name)}"/></a:graphicData></a:graphic></xdr:graphicFrame>`
   const fallback = `<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="0" name=""/><xdr:cNvSpPr><a:spLocks noTextEdit="1"/></xdr:cNvSpPr></xdr:nvSpPr><xdr:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:sp>`
-  return `<xdr:twoCellAnchor editAs="oneCell">${marker('from', place.from, place.fromOffset)}${marker('to', place.to, place.toOffset)}<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"><mc:Choice xmlns:${requires}="${ns}" Requires="${requires}">${frame}</mc:Choice><mc:Fallback>${fallback}</mc:Fallback></mc:AlternateContent><xdr:clientData/></xdr:twoCellAnchor>`
+  return `<xdr:twoCellAnchor editAs="oneCell">${marker('from', place.from, place.fromOffset)}${marker('to', place.to, place.toOffset)}<mc:AlternateContent xmlns:mc="${MC}"><mc:Choice xmlns:${requires}="${ns}" Requires="${requires}">${frame}</mc:Choice><mc:Fallback>${fallback}</mc:Fallback></mc:AlternateContent><xdr:clientData/></xdr:twoCellAnchor>`
 }
 
 /** The parts of the book's slicers and timelines over PivotTables; `issues` takes the slicers of tables, left out. */

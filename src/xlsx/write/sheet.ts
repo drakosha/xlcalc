@@ -34,7 +34,7 @@ import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
 import type { ResultCell } from './snapshot.js'
-import { clip, HEAD, MAIN, MAX_TEXT, rgb } from './xml.js'
+import { clip, HEAD, MAIN, MAX_TEXT, REL, rgb } from './xml.js'
 import { protectionXml } from '../protection.js'
 
 /**
@@ -129,7 +129,7 @@ export interface SheetPieces {
 export function sheetXml(p: SheetPieces): string {
   const data = p.rows.map((r) => (r.cells ? `<row r="${r.row + 1}"${r.attrs}>${r.cells}</row>` : `<row r="${r.row + 1}"${r.attrs}/>`)).join('')
   return (
-    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
+    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="${REL}">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
     p.protection + p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +

@@ -18,11 +18,9 @@ import type { CellFormats } from '../write/styles.js'
 import { attr, attributes, element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { relsPath, type Source, type SourceSheet } from './source.js'
-import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, type ContentTypes, type Placed } from './xml.js'
+import { attrsOf, childrenOf, Rels, relType, rootOf, TYPE, type ContentTypes, type Placed } from './xml.js'
 import type { Edit } from './carriers.js'
 
-const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
-const REL = (kind: string) => `${DOC_REL}/${kind}`
 
 /** A cache of the file: its id, its workbook relationship and part, and the part of its rows. */
 interface FileCache {
@@ -160,12 +158,12 @@ export class KeptPivots {
       const rp = old?.target ?? parts.fresh('xl/pivotCache/pivotCacheRecords', '.xml')
       parts.set(rp, pivotRecordsXml(c))
       if (!old) types.override(rp, `${TYPE}.pivotCacheRecords+xml`)
-      records = old?.id ?? rels.add(REL('pivotCacheRecords'), this.h.relative(part, rp))
+      records = old?.id ?? rels.add(relType('pivotCacheRecords'), this.h.relative(part, rp))
     } else if (old) {
       this.drop(old.target)
       rels.remove(old.id)
     }
-    const link = 'book' in c.source && c.source.book !== undefined ? (f?.rels.find((r) => r.kind === 'externalLinkPath')?.id ?? rels.add(REL('externalLinkPath'), c.source.book, true)) : undefined
+    const link = 'book' in c.source && c.source.book !== undefined ? (f?.rels.find((r) => r.kind === 'externalLinkPath')?.id ?? rels.add(relType('externalLinkPath'), c.source.book, true)) : undefined
     parts.set(part, pivotCacheXml(c, (x) => this.h.styles.numFmt(x.numberFormat), records, link, this.sourceId(c.id)))
     if (rels.size) parts.set(relsPath(part), rels.xml())
     else parts.remove(relsPath(part))
@@ -209,7 +207,7 @@ export class KeptPivots {
       const part = parts.fresh('xl/pivotTables/pivotTable', '.xml')
       types.override(part, `${TYPE}.pivotTable+xml`)
       this.table(p, j, part)
-      rels.add(REL('pivotTable'), this.h.relative(ss.part, part))
+      rels.add(relType('pivotTable'), this.h.relative(ss.part, part))
     }
   }
 
@@ -220,7 +218,7 @@ export class KeptPivots {
     for (const m of xml.matchAll(/ dxfId="(\d+)"/g)) this.h.useDxf(Number(m[1]))
     this.h.parts.set(part, xml)
     const rels = new Rels(undefined)
-    rels.add(REL('pivotCacheDefinition'), this.h.relative(part, this.part.get(p.cache)!))
+    rels.add(relType('pivotCacheDefinition'), this.h.relative(part, this.part.get(p.cache)!))
     this.h.parts.set(relsPath(part), rels.xml())
   }
 
@@ -230,7 +228,7 @@ export class KeptPivots {
       const part = this.h.parts.fresh('xl/pivotTables/pivotTable', '.xml')
       this.h.types.override(part, `${TYPE}.pivotTable+xml`)
       this.table(p, j, part)
-      rels.add(REL('pivotTable'), this.h.relative(sheetPart, part))
+      rels.add(relType('pivotTable'), this.h.relative(sheetPart, part))
     }
   }
 
@@ -244,7 +242,7 @@ export class KeptPivots {
     const own = list ? childrenOf(wb, list).filter((c) => c.local === 'pivotCache' && !read.has(Number(attrsOf(wb, c).cacheId))).map((c) => wb.slice(c.start, c.end)) : []
     const items = (book.pivotCaches ?? []).map((c) => {
       const f = this.files.caches.find((x) => x.id === c.id)
-      return `<pivotCache cacheId="${c.id}" r:id="${f?.rel ?? this.h.wbRels.add(REL('pivotCacheDefinition'), this.h.relative(src.wbPath, this.part.get(c.id)!))}"/>`
+      return `<pivotCache cacheId="${c.id}" r:id="${f?.rel ?? this.h.wbRels.add(relType('pivotCacheDefinition'), this.h.relative(src.wbPath, this.part.get(c.id)!))}"/>`
     })
     const all = [...own, ...items]
     const text = all.length ? `<pivotCaches>${all.join('')}</pivotCaches>` : ''

@@ -4,6 +4,15 @@ import { escapeAttr } from '../xml/text.js'
 
 export const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 export const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+/** The namespace of a part's relationships (`r:id`), which their types begin with. */
+export const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+/** The namespace of a package's relationships parts. */
+export const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
+/** Excel 2010's namespace (`x14`) and Excel 2013's (`x15`). */
+export const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
+export const X15 = 'http://schemas.microsoft.com/office/spreadsheetml/2010/11/main'
+/** What the content types of SpreadsheetML parts begin with. */
+export const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 
 /** A colour (`#RRGGBB`) as a file's opaque ARGB. */
 export const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
@@ -38,8 +47,6 @@ export function clip(text: string, max: number, issues: Issues, message: XlsxMes
   const high = (text.charCodeAt(max - 1) & 0xfc00) === 0xd800 && (text.charCodeAt(max) & 0xfc00) === 0xdc00
   return text.slice(0, high ? max - 1 : max)
 }
-
-const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 
 /** A part's relationships, `rId1` on; an external one (a hyperlink's address, another workbook's path) keeps its target as written. */
 export const relsXml = (items: [type: string, target: string, external?: boolean][]) =>

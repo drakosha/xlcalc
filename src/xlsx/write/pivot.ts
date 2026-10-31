@@ -8,8 +8,7 @@ import type { ConditionalStyle, NumberFormat, PivotArea, PivotCache, PivotDataFi
 import { valueFieldName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
-import { give, HEAD, MAIN } from './xml.js'
-import { X14 } from './pivot-cache.js'
+import { give, HEAD, MAIN, X14, X15 } from './xml.js'
 import { fieldIndex, pivotAreaXml, SUBTOTAL_ATTR } from './pivot-area.js'
 
 /** What the part takes from the workbook's writing: a number format's id, a style's differential format, the rules of the PivotTable's conditional formats by priority. */
@@ -141,7 +140,7 @@ function filterXml(f: PivotFilter, id: number, w: PivotWriting): string {
   const s = (k: number) => (f.args?.[k] === undefined || !label ? '' : ` stringValue${k + 1}="${escapeAttr(String(f.args[k]))}"`)
   const a = give(f, 'fld=field:n iMeasureFld=value:n type') + ` evalOrder="${f.order ?? -1}" id="${id}"` + give(f, 'name description') + s(0) + s(1)
   // a date filter of whole days, as a timeline sets it (Excel 2013's)
-  const whole = f.wholeDays ? '<extLst><ext uri="{0605FD5F-26C8-4aeb-8148-2DB25E43C511}" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main"><x15:pivotFilter useWholeDay="1"/></ext></extLst>' : ''
+  const whole = f.wholeDays ? '<extLst><ext uri="{0605FD5F-26C8-4aeb-8148-2DB25E43C511}" xmlns:x15="${X15}"><x15:pivotFilter useWholeDay="1"/></ext></extLst>' : ''
   return `<filter${a}><autoFilter ref="A1"><filterColumn colId="0">${conditionXml(f, w)}</filterColumn></autoFilter>${whole}</filter>`
 }
 
