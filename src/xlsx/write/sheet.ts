@@ -34,7 +34,7 @@ import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
 import type { ResultCell } from './snapshot.js'
-import { clip, HEAD, MAIN, MAX_TEXT, rgb } from './xml.js'
+import { clip, countedIf, HEAD, MAIN, MAX_TEXT, REL, rgb } from './xml.js'
 import { protectionXml } from '../protection.js'
 
 /**
@@ -48,6 +48,9 @@ const DEFAULT_WIDTH = '8.83203125'
  * meets. Excel takes the sheet as filtered by them and leaves its rows as the file has them; its Reapply shows every row.
  */
 export const KEEP_ALL = '<filterColumn colId="0"><customFilters><customFilter val=""/><customFilter operator="notEqual" val=""/></customFilters></filterColumn>'
+
+/** A sheet's `tableParts`: its tables' relationships, nothing without one. */
+export const tablePartsXml = (ids: string[]) => countedIf('tableParts', ids.map((id) => `<tablePart r:id="${id}"/>`))
 
 export interface SheetContext extends FileNames {
   styles: CellFormats
@@ -129,7 +132,7 @@ export interface SheetPieces {
 export function sheetXml(p: SheetPieces): string {
   const data = p.rows.map((r) => (r.cells ? `<row r="${r.row + 1}"${r.attrs}>${r.cells}</row>` : `<row r="${r.row + 1}"${r.attrs}/>`)).join('')
   return (
-    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
+    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="${REL}">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
     p.protection + p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
@@ -352,12 +355,12 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     rows: data,
     protection: protectionXml(sheet.protection),
     autoFilter: filter ? (sheet.filtered ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filter}"/>`) : '',
-    merges: merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '',
+    merges: countedIf('mergeCells', merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`)),
     conditional: cond.main,
     validations: validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }),
     hyperlinks,
     legacyDrawing: drawing ? `<legacyDrawing r:id="${drawing}"/>` : '',
-    tableParts: ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '',
+    tableParts: tablePartsXml(ctx.tableParts),
     ext: cond.ext,
     formulas,
     rels,

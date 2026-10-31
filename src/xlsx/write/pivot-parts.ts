@@ -5,12 +5,10 @@
  */
 import type { BookInput, ConditionalFormat, SheetInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
-import { pivotCacheXml, pivotRecordsXml, REL } from './pivot-cache.js'
+import { pivotCacheXml, pivotRecordsXml } from './pivot-cache.js'
 import { pivotTableXml, type PivotWriting } from './pivot.js'
 import type { CellFormats } from './styles.js'
-import { relsXml as rels } from './xml.js'
-
-const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
+import { REL, relsXml as rels, TYPE } from './xml.js'
 
 export interface PivotFile {
   name: string

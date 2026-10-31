@@ -12,7 +12,7 @@ import { COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
 import type { Issues, XlsxMessage } from '../issues.js'
-import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
+import { attributes, element, flag, ownEntry, within, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
@@ -35,7 +35,7 @@ const text = (e: Element | undefined) => (e?.body == null ? undefined : readText
  * is no separator) is the fallback of an `x12ac:list`, which splits it at the comma: reported.
  */
 function plain(xml: string, sheet: string, issues: Issues): RawRule[] {
-  return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
+  return within(xml, 'dataValidations', 'dataValidation').map((e) => {
     const a = attributes(e.attrs)
     const body = e.body ?? ''
     if (element(body, 'list')) issues.add('dataValidation', { key: 'ruleListCommas' }, { sheet, cell: a.sqref ?? '' })
@@ -45,7 +45,7 @@ function plain(xml: string, sheet: string, issues: Issues): RawRule[] {
 
 /** The rules of Excel 2010's extension: formulas in `<xm:f>`, the range in `<xm:sqref>`. */
 function extended(xml: string): RawRule[] {
-  return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
+  return within(xml, 'dataValidations', 'dataValidation').map((e) => {
     const body = e.body ?? ''
     const f = (k: string) => text(element(element(body, k)?.body ?? '', 'f'))
     return { a: attributes(e.attrs), formula1: f('formula1'), formula2: f('formula2'), sqref: text(element(body, 'sqref')) ?? '' }

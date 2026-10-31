@@ -11,7 +11,8 @@ import { spend } from '../exec/budget.js'
 import { lookOf, type Look } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayEdit } from '../locale/edit-messages.js'
+import type { Message } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { bands } from '../sorted.js'
 import { cellCount, contains, cornersText, hasCell, hi, intersect, lo, meets, shiftRect, type Axis, type Rect } from './area.js'
@@ -40,13 +41,13 @@ export interface Paste {
  */
 export function pasteRefusal(book: BookInput, p: Paste, looksOnly = false): Exclude<Applied, { ok: true }> | null {
   const refused = mergeRefusal(book, p)
-  if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
+  if (refused) return { ok: false, code: 'merged', message: sayEdit(book.locale, refused) }
   const part = looksOnly ? null : arrayRefusal(book, p)
-  return part && { ok: false, code: 'array', message: say(book.locale, part) }
+  return part && { ok: false, code: 'array', message: sayEdit(book.locale, part) }
 }
 
 /** Why Excel refuses the paste, or null: a move cutting a merged area at its source, a copy landing on part of one. */
-function mergeRefusal(book: BookInput, p: Paste): EngineMessage | null {
+function mergeRefusal(book: BookInput, p: Paste): Message<'moveCutsMerge' | 'pasteOnMerge'> | null {
   const [sheet, rect] = p.move ? [p.from, p.src] : [p.to, p.area]
   const m = mergesOf(sheetOf(book, sheet)).find((x) => meets(x, rect) && !contains(rect, x))
   if (!m) return null

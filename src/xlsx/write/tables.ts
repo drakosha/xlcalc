@@ -16,7 +16,7 @@ import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, type FileNames } from './formula.js'
 import { KEEP_ALL } from './sheet.js'
-import { HEAD, MAIN } from './xml.js'
+import { counted, HEAD, MAIN } from './xml.js'
 
 /** A table's `tableStyleInfo`: Excel's default style for a table without `style`, every option written. */
 function styleInfo(s: TableStyle = DEFAULT_TABLE_STYLE): string {
@@ -57,7 +57,7 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: Fi
   const ref = cornersText(x)
   return (
     `${HEAD}<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
-    `${filter}<tableColumns count="${cols.length}">${cols.join('')}</tableColumns>` +
+    `${filter}${counted('tableColumns', cols)}` +
     `${styleInfo(t.style)}</table>`
   )
 }

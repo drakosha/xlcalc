@@ -169,8 +169,9 @@ function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {
     wanted.set(f, items)
   }
   const onRows = rows.includes('values') || (t.valuesOnRows === true && !columns.includes('values'))
-  const r = slotOf(slots(t, rows, t.rowLines), wanted, (f) => rows.includes(f), value, onRows && (t.values?.length ?? 0) > 1)
-  const col = slotOf(slots(t, columns, t.columnLines), wanted, (f) => columns.includes(f), value, !onRows && (t.values?.length ?? 0) > 1)
+  const many = (t.values?.length ?? 0) > 1
+  const r = slotOf(slots(t, rows, t.rowLines), wanted, (f) => rows.includes(f), value, onRows && many)
+  const col = slotOf(slots(t, columns, t.columnLines), wanted, (f) => columns.includes(f), value, !onRows && many)
   if (r < 0 || col < 0) return E.REF
   const x = parseRange(t.location.range)!
   const row = x.r1 + t.location.firstDataRow + r

@@ -3,7 +3,7 @@ import type { BookInput, FrozenPanes, SheetInput, SheetView, SplitPanes } from '
 import { checkSheetView } from '../input-view.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { attributes, element, elements, flag, type Element } from './xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, type Element } from './xml/scan.js'
 import { escapeAttr } from './xml/text.js'
 
 export function readSheetView(first: Element | undefined): SheetView | undefined {
@@ -107,7 +107,7 @@ export function sheetViewXml(view: SheetView | undefined, pane: string, active: 
   const attrs = ` workbookViewId="0"${active ? ' tabSelected="1"' : ''}${view?.topLeft ? ` topLeftCell="${escapeAttr(view.topLeft)}"` : ''}${view?.zoom !== undefined ? ` zoomScale="${view.zoom}"` : ''}${VIEW_FLAGS.map(([key, attr]) => (view?.[key] === false ? ` ${attr}="0"` : '')).join('')}`
   let body = pane
   if (view?.activeCell !== undefined || view?.selection !== undefined) {
-    const paneName = attributes(element(pane, 'pane')?.attrs ?? '').activePane
+    const paneName = attrsAt(pane, 'pane').activePane
     const selection = `<selection${paneName ? ` pane="${paneName}"` : ''}${view.activeCell ? ` activeCell="${escapeAttr(view.activeCell)}"` : ''}${view.selection ? ` sqref="${escapeAttr(view.selection.join(' '))}"` : ''}/>`
     body = pane.replace(/<selection[^>]*\/>/g, '') + selection
   }

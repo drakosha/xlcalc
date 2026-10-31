@@ -6,7 +6,7 @@
  */
 import type { EngineState, Formula } from '../engine.js'
 import { placeOf } from '../model.js'
-import type { Area } from '../spill/state.js'
+import { equalAreas, type Area } from '../spill/state.js'
 import { meets } from '../structure/area.js'
 import type { Rng } from '../values.js'
 
@@ -31,15 +31,13 @@ export const refsOf = (f: Formula): readonly Rng[] => (f.reads?.length ? [...f.r
 
 export const newDynamic = (): Dynamic => ({ entries: new Map(), succ: new Map(), moved: [], seen: new Set() })
 
-const sameRng = (a: Rng, b: Rng) => a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2
-
 /** The reads without repeats, in the order first made. */
 function distinct(list: readonly Rng[]): Rng[] {
   const seen = new Set<string>()
   return list.filter((g) => !seen.has(g.key) && !!seen.add(g.key))
 }
 
-const sameReads = (a: readonly Rng[] | undefined, b: readonly Rng[]) => !!a && a.length === b.length && a.every((g, i) => sameRng(g, b[i]))
+const sameReads = (a: readonly Rng[] | undefined, b: readonly Rng[]) => !!a && a.length === b.length && a.every((g, i) => equalAreas(g, b[i]))
 
 /** The formulas whose cells or spills meet the reads, found cell by cell; undefined where they hold too many cells. */
 function targets(state: EngineState, reads: readonly Rng[]): number[] | undefined {

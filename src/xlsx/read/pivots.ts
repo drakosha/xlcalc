@@ -13,7 +13,7 @@ import { checkPivotShapes } from '../../pivot/check.js'
 import type { Issues } from '../issues.js'
 import { numberFormatOf, type StyleTable } from '../styles/read.js'
 import type { Dxf } from '../styles/dxf.js'
-import { attr, attributes, element, elements, has } from '../xml/scan.js'
+import { attr, attributes, attrsAt, elements, has, within } from '../xml/scan.js'
 import type { Archive } from '../zip/read.js'
 import { relsOf, type Rel } from './package.js'
 import { readPivotCache } from './pivot-cache.js'
@@ -47,7 +47,7 @@ export async function readPivotCaches(archive: Archive, wb: string, rels: Rel[],
   const byId = new Map(rels.map((r) => [r.id, r]))
   const format = (id: string | undefined) => (id === undefined ? undefined : numberFormatOf(styles.formats, Number(id)))
   const out: PivotBook = { caches: [], x14: new Map(), format, dxfs, dateSystem }
-  const listed = elements(element(wb, 'pivotCaches')?.body ?? '', 'pivotCache')
+  const listed = within(wb, 'pivotCaches', 'pivotCache')
   if (!listed.length) return out
   const model = await modelConnections(archive, rels)
   for (const e of listed) {
@@ -80,7 +80,7 @@ export const pivotTableParts = (archive: Archive, sheetRels: Rel[]): Promise<(st
 export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheetRels: Rel[], parts: (string | undefined)[], book: PivotBook, issues: Issues) {
   const where = { sheet: sheet.name }
   for (const xml of parts) {
-    const id = Number(attributes(element(xml ?? '', 'pivotTableDefinition')?.attrs ?? '').cacheId)
+    const id = Number(attrsAt(xml ?? '', 'pivotTableDefinition').cacheId)
     if (xml === undefined || !book.caches.some((c) => c.id === id)) {
       issues.add('pivotTable', { key: 'pivotCacheMissing' }, where)
       continue
@@ -102,7 +102,7 @@ export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheet
 
 /** The workbook's caches of slicers and timelines, by its relationships; their PivotTables by the sheets' ids. */
 export async function readSlicerCaches(archive: Archive, wb: string, rels: Rel[], pivots: PivotBook, book: BookInput, tables: Map<string, string>, issues: Issues) {
-  const ids = new Map(elements(element(wb, 'sheets')?.body ?? '', 'sheet').map((e) => [attributes(e.attrs).sheetId, attributes(e.attrs).name]))
+  const ids = new Map(within(wb, 'sheets', 'sheet').map((e) => [attributes(e.attrs).sheetId, attributes(e.attrs).name]))
   const named = new Map(book.sheets.map((s) => [caseKey(s.name), s.name]))
   const ctx = {
     sheetOf: (id: string | undefined) => named.get(caseKey(ids.get(id ?? '') ?? '')),

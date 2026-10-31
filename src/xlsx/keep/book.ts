@@ -16,10 +16,10 @@ import { partText, relsOf, type Rel } from '../read/package.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
 import { bookWriting, filterDatabase, calcAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
 import { nextBlock } from '../write/parts.js'
-import { sheetPieces, sheetXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
+import { sheetPieces, sheetXml, tablePartsXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
 import { tableXml } from '../write/tables.js'
-import { attr, attributes, element } from '../xml/scan.js'
+import { attr, attributes, attrsAt } from '../xml/scan.js'
 import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
@@ -41,12 +41,10 @@ import { Formats } from './formats.js'
 import { KeptStyles } from './styles.js'
 import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
 import type { WriteKeptOptions } from './types.js'
-import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes, type Placed } from './xml.js'
+import { attrsOf, childrenOf, DOC_REL, Rels, relType, rootOf, setAttrs, TYPE, type ContentTypes, type Placed } from './xml.js'
 
-const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const VML = 'application/vnd.openxmlformats-officedocument.vmlDrawing'
 const STRICT = 'http://purl.oclc.org/ooxml/spreadsheetml/main'
-const REL = (kind: string) => `${DOC_REL}/${kind}`
 /** The children of a workbook the schema puts before its names, and before its calculation settings. */
 const BEFORE_NAMES = ['fileVersion', 'fileSharing', 'workbookPr', 'workbookProtection', 'bookViews', 'sheets', 'functionGroups', 'externalReferences']
 const BEFORE_CALC = [...BEFORE_NAMES, 'definedNames']
@@ -126,7 +124,7 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
         const xml = await src.archive.text(r.target)
         if (xml === undefined) continue
         tables.set(r.target, xml)
-        tableId = Math.max(tableId, Number(attributes(element(xml, 'table')?.attrs ?? '').id) || 0)
+        tableId = Math.max(tableId, Number(attrsAt(xml, 'table').id) || 0)
       }
   const rels = new Map<string, string[]>()
   for (const name of src.archive.names) {
@@ -460,7 +458,7 @@ class Kept {
     return p1.hyperlinks.replace(/r:id="rId(\d+)"/g, (_, n) => {
       const url = p1.rels[Number(n) - 1].target
       let id = ids.get(url)
-      if (id === undefined) ids.set(url, (id = rels.add(REL('hyperlink'), url, true)))
+      if (id === undefined) ids.set(url, (id = rels.add(relType('hyperlink'), url, true)))
       return `r:id="${id}"`
     })
   }
@@ -491,13 +489,13 @@ class Kept {
     this.parts.set(cPart, p1.notes.comments)
     if (!comments) {
       this.types.override(cPart, `${TYPE}.comments+xml`)
-      rels.add(REL('comments'), relative(ss.part, cPart))
+      rels.add(relType('comments'), relative(ss.part, cPart))
     }
     const vPart = vml?.target ?? this.parts.fresh('xl/drawings/vmlDrawing', '.vml')
     this.parts.set(vPart, p1.notes.vml)
     if (vml) return undefined
     this.types.default('vml', VML)
-    return `<legacyDrawing r:id="${rels.add(REL('vmlDrawing'), relative(ss.part, vPart))}"/>`
+    return `<legacyDrawing r:id="${rels.add(relType('vmlDrawing'), relative(ss.part, vPart))}"/>`
   }
 
   /** The sheet's tables: a part written again where its table changed, added for a new one, removed with its table; the `<tableParts>` when their list changed. */
@@ -516,7 +514,7 @@ class Kept {
     for (const r of ss.rels) {
       if (r.kind !== 'table' || r.external) continue
       const xml = this.setup.tables.get(r.target)
-      const a = attributes(element(xml ?? '', 'table')?.attrs ?? '')
+      const a = attrsAt(xml ?? '', 'table')
       const t0 = xml === undefined ? undefined : before.find((t) => caseKey(t.name) === caseKey(readText(a.displayName ?? a.name ?? '')))
       // a table the model left out stays as the file has it
       const t1 = t0 && take(t0)
@@ -541,10 +539,10 @@ class Kept {
       const part = this.parts.fresh('xl/tables/table', '.xml')
       this.parts.set(part, tableXml(t, s1, ++this.tableId, this.w1.names, this.issues, t.name === this.w1.filterTables[j]))
       this.types.override(part, `${TYPE}.table+xml`)
-      list.push(rels.add(REL('table'), relative(ss.part, part)))
+      list.push(rels.add(relType('table'), relative(ss.part, part)))
     }
     if (!listChanged) return undefined
-    return list.length ? `<tableParts count="${list.length}">${list.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : ''
+    return tablePartsXml(list)
   }
 
   /** A sheet the file does not have, written as `writeXlsx` writes one, with its tables, notes and hyperlinks. */
@@ -557,7 +555,7 @@ class Kept {
       const tp = this.parts.fresh('xl/tables/table', '.xml')
       this.parts.set(tp, tableXml(t, s, ++this.tableId, this.w1.names, issues, t.name === this.w1.filterTables[j]))
       this.types.override(tp, `${TYPE}.table+xml`)
-      tableParts.push(rels.add(REL('table'), relative(part, tp)))
+      tableParts.push(rels.add(relType('table'), relative(part, tp)))
     }
     const p = sheetPieces(s, j, { ...this.context(this.book, this.w1, j, this.cells?.[j], issues), tableParts })
     for (const r of p.rows) for (const m of `${r.attrs}${r.cells}`.matchAll(/ s="(\d+)"/g)) this.styles.use('cellXfs', Number(m[1]))
@@ -565,17 +563,17 @@ class Kept {
     for (const m of p.conditional.matchAll(/ dxfId="(\d+)"/g)) this.styles.use('dxfs', Number(m[1]))
     // the sheet's relationships after its tables', in the order its elements number them
     for (const r of p.rels) {
-      if (r.type === 'hyperlink') rels.add(REL('hyperlink'), r.target, true)
+      if (r.type === 'hyperlink') rels.add(relType('hyperlink'), r.target, true)
       else if (r.type === 'comments') {
         const cp = this.parts.fresh('xl/comments', '.xml')
         this.parts.set(cp, p.notes!.comments)
         this.types.override(cp, `${TYPE}.comments+xml`)
-        rels.add(REL('comments'), relative(part, cp))
+        rels.add(relType('comments'), relative(part, cp))
       } else {
         const vp = this.parts.fresh('xl/drawings/vmlDrawing', '.vml')
         this.parts.set(vp, p.notes!.vml)
         this.types.default('vml', VML)
-        rels.add(REL('vmlDrawing'), relative(part, vp))
+        rels.add(relType('vmlDrawing'), relative(part, vp))
       }
     }
     if (p.notes) this.block = nextBlock(this.block, p.notes.count)
@@ -583,7 +581,7 @@ class Kept {
     this.parts.set(part, sheetXml(p))
     if (rels.size) this.parts.set(relsPath(part), rels.xml())
     this.types.override(part, `${TYPE}.worksheet+xml`)
-    this.sheetRels[j] = this.wbRels.add(REL('worksheet'), relative(this.src.wbPath, part))
+    this.sheetRels[j] = this.wbRels.add(relType('worksheet'), relative(this.src.wbPath, part))
     this.formulas ||= p.formulas
     adopt(issues, this.issues)
   }
@@ -709,10 +707,10 @@ class Kept {
       const part = this.parts.fresh('xl/externalLinks/externalLink', '.xml')
       this.parts.set(part, externalLinkXml(l1[i], i + 1, this.issues))
       const rels = new Rels(undefined)
-      rels.add(REL('externalLinkPath'), l1[i].target, true)
+      rels.add(relType('externalLinkPath'), l1[i].target, true)
       this.parts.set(relsPath(part), rels.xml())
       this.types.override(part, `${TYPE}.externalLink+xml`)
-      added.push(`<externalReference r:id="${this.wbRels.add(REL('externalLink'), relative(this.src.wbPath, part))}"/>`)
+      added.push(`<externalReference r:id="${this.wbRels.add(relType('externalLink'), relative(this.src.wbPath, part))}"/>`)
     }
     if (!added.length) return
     this.changed = true
@@ -825,7 +823,7 @@ class Kept {
       const part = r?.target ?? 'xl/styles.xml'
       this.parts.set(part, styles)
       if (!r) {
-        this.wbRels.add(REL('styles'), relative(src.wbPath, part))
+        this.wbRels.add(relType('styles'), relative(src.wbPath, part))
         this.types.override(part, `${TYPE}.styles+xml`)
       }
     }
@@ -860,7 +858,7 @@ class Kept {
       this.wbRels.add(rel, relative(this.src.wbPath, part))
       this.types.override(part, type)
     }
-    put('sheetMetadata', added.metadata, 'xl/metadata', `${TYPE}.sheetMetadata+xml`, REL('sheetMetadata'))
+    put('sheetMetadata', added.metadata, 'xl/metadata', `${TYPE}.sheetMetadata+xml`, relType('sheetMetadata'))
     put('rdRichValue', added.values, 'xl/richData/rdrichvalue', 'application/vnd.ms-excel.rdrichvalue+xml', `${RICH_REL}/rdRichValue`)
     put('rdRichValueStructure', added.structures, 'xl/richData/rdrichvaluestructure', 'application/vnd.ms-excel.rdrichvaluestructure+xml', `${RICH_REL}/rdRichValueStructure`)
   }

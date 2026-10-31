@@ -19,7 +19,7 @@ import { palette } from '../styles/color.js'
 import { readStyles, type StyleTable } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
 import type { ReadXlsxOptions, XlsxLimits, XlsxRead } from '../types.js'
-import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml/scan.js'
+import { attr, attributes, attrsAt, element, elements, flag, has, ownEntry, within } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
 import { legacyConverter } from '../../legacy/convert.js'
@@ -66,7 +66,7 @@ const STATES = new Map<string | undefined, true | 'very'>([...SHEET_STATES].map(
 
 function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues, opts: FormulaOptions): NameInput[] {
   const out: NameInput[] = []
-  for (const e of elements(element(xml, 'definedNames')?.body ?? '', 'definedName')) {
+  for (const e of within(xml, 'definedNames', 'definedName')) {
     const a = attributes(e.attrs)
     const name = readText(a.name ?? '')
     // Excel's placeholders for functions newer than the file's readers: not names of the book
@@ -89,13 +89,13 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
 
 /** The calculation option the book keeps (`calcMode`), automatic without one. */
 function calcMode(xml: string): BookInput['calculation'] {
-  const mode = attributes(element(xml, 'calcPr')?.attrs ?? '').calcMode
+  const mode = attrsAt(xml, 'calcPr').calcMode
   return mode === 'manual' || mode === 'autoNoTable' ? mode : undefined
 }
 
 /** The calculation settings the book keeps (iterative calculation), and the others reported. */
 function calculation(xml: string, issues: Issues): BookInput['iteration'] {
-  const calc = attributes(element(xml, 'calcPr')?.attrs ?? '')
+  const calc = attrsAt(xml, 'calcPr')
   if (!flag(calc.fullPrecision, true)) issues.add('calculation', { key: 'precisionAsDisplayed' })
   if (!flag(calc.iterate)) return undefined
   const out: NonNullable<BookInput['iteration']> = {}
@@ -175,9 +175,9 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   if (font) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
-  const dateSystem = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904) ? 1904 : 1900
+  const dateSystem = flag(attrsAt(wb, 'workbookPr').date1904) ? 1904 : 1900
   const byId = new Map(rels.map((r) => [r.id, r]))
-  const decls: SheetDecl[] = elements(element(wb, 'sheets')?.body ?? '', 'sheet').map((e) => {
+  const decls: SheetDecl[] = within(wb, 'sheets', 'sheet').map((e) => {
     const a = attributes(e.attrs)
     const r = byId.get(attr(a, 'id') ?? '')
     return { name: readText(a.name ?? ''), kind: r?.kind, part: r?.external ? undefined : r?.target, ...(STATES.has(a.state) ? { hidden: STATES.get(a.state) } : {}) }
@@ -229,7 +229,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {
-      const a = attributes(element(t ?? '', 'table')?.attrs ?? '')
+      const a = attrsAt(t ?? '', 'table')
       if (a.id !== undefined) tableIds.set(a.id, readText(a.displayName ?? a.name ?? ''))
     }
     await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, pivots, issues)

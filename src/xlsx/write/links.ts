@@ -11,7 +11,7 @@ import { parseAddress, sortAddresses } from '../../model.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { errorXml } from './sheet.js'
-import { HEAD, MAIN } from './xml.js'
+import { HEAD, MAIN, REL } from './xml.js'
 
 function cellXml(addr: string, v: ExternalValue | null, error: (code: ErrorCode) => { t: string; v: string }): string {
   if (v === null) return `<cell r="${addr}"/>`
@@ -39,6 +39,6 @@ export function externalLinkXml(b: ExternalBook, n: number, issues: Issues): str
   const names = (b.names ?? []).map((x) => `<definedName name="${escapeAttr(x.name)}" refersTo="=${escapeAttr(x.ref)}"${x.sheet === undefined ? '' : ` sheetId="${x.sheet}"`}/>`).join('')
   const data = b.sheets.map((s, i) => sheetData(s, i, `[${n}]${s.name}!`, issues)).join('')
   const body = (sheets ? `<sheetNames>${sheets}</sheetNames>` : '') + (names ? `<definedNames>${names}</definedNames>` : '') + (data ? `<sheetDataSet>${data}</sheetDataSet>` : '')
-  const book = `<externalBook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"${body ? `>${body}</externalBook>` : '/>'}`
+  const book = `<externalBook xmlns:r="${REL}" r:id="rId1"${body ? `>${body}</externalBook>` : '/>'}`
   return `${HEAD}<externalLink xmlns="${MAIN}">${book}</externalLink>`
 }

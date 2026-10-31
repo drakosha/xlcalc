@@ -4,7 +4,7 @@
  * and a rich value of the `_error` structure gives the error's type.
  */
 import { ERROR_TEXT, TYPED_ERRORS } from '../../syntax/errors.js'
-import { attributes, element, elements, flag } from '../xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, within } from '../xml/scan.js'
 
 /** The errors of rich values by their `errorType`, in ERROR.TYPE's order: the typed ones first. */
 export const RICH_ERRORS = [...TYPED_ERRORS, '#GETTING_DATA', ERROR_TEXT.SPILL, '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', ERROR_TEXT.CALC]
@@ -26,7 +26,7 @@ export interface CellMetadata {
 }
 
 /** The metadata blocks of a kind: each block's first `rc` as type (1-based, into the metadata types) and value index. */
-const blocks = (xml: string, local: string) => elements(element(xml, local)?.body ?? '', 'bk').map((bk) => attributes(element(bk.body ?? '', 'rc')?.attrs ?? ''))
+const blocks = (xml: string, local: string) => within(xml, local, 'bk').map((bk) => attrsAt(bk.body ?? '', 'rc'))
 
 /** The future metadata blocks of a type by name. */
 const future = (xml: string, name: string) => elements(elements(xml, 'futureMetadata').find((e) => attributes(e.attrs).name === name)?.body ?? '', 'bk')
@@ -46,12 +46,12 @@ function richValueErrors(values: string | undefined, structures: string | undefi
 
 export function cellMetadata(xml: string | undefined, richValues?: string, richStructures?: string): CellMetadata {
   if (!xml) return { dynamic: () => false, error: () => undefined }
-  const types = elements(element(xml, 'metadataTypes')?.body ?? '', 'metadataType').map((e) => attributes(e.attrs).name)
+  const types = within(xml, 'metadataTypes', 'metadataType').map((e) => attributes(e.attrs).name)
   const dynamicFlags = future(xml, 'XLDAPR').map((bk) => {
     const p = element(bk.body ?? '', 'dynamicArrayProperties')
     return p !== undefined && flag(attributes(p.attrs).fDynamic)
   })
-  const richIndex = future(xml, 'XLRICHVALUE').map((bk) => Number(attributes(element(bk.body ?? '', 'rvb')?.attrs ?? '').i))
+  const richIndex = future(xml, 'XLRICHVALUE').map((bk) => Number(attrsAt(bk.body ?? '', 'rvb').i))
   const errors = richValueErrors(richValues, richStructures)
   const cells = blocks(xml, 'cellMetadata')
   const values = blocks(xml, 'valueMetadata')

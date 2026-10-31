@@ -10,8 +10,7 @@ import { caseKey } from '../collate.js'
 import { InputError, what } from '../input-error.js'
 import { dateToSerial } from '../model.js'
 import { pivotCheck } from '../pivot/hook.js'
-import { ERROR_TEXT } from '../syntax.js'
-import { array, checkBoolean, checkNumber, checkString, isObject, object } from './basic.js'
+import { array, checkBoolean, checkCellValue, checkNumber, checkString, given, isObject, object, type Check } from './basic.js'
 import { checkRange } from './range.js'
 
 /** An ISO date, as a cache stores it (`2025-01-31T00:00:00`). */
@@ -24,30 +23,27 @@ export function checkIsoDate(v: unknown, p: string) {
   }
 }
 
-/** A value of a cache: blank, number, text, boolean, `{ error }` or `{ date }`. */
+/** A value of a cache: a cell's (blank, number, text, boolean, `{ error }`) or `{ date }`. */
 export function checkPivotValue(v: unknown, p: string) {
-  if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return
-  if (isObject(v) && Object.keys(v).length === 1) {
-    if (typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`)
-    if (Object.hasOwn(ERROR_TEXT, v.error as string)) return
+  if (isObject(v) && Object.keys(v).length === 1 && typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`)
+  try {
+    checkCellValue(v, p)
+  } catch {
+    throw new InputError(p, `expected a number, text, a boolean, null, { error: code } or { date: "2025-01-31T00:00:00" }, got ${what(v)}`)
   }
-  throw new InputError(p, `expected a number, text, a boolean, null, { error: code } or { date: "2025-01-31T00:00:00" }, got ${what(v)}`)
 }
+
+type Fields = Record<string, unknown>
 
 const MAX = 2 ** 31
+const index: Check = (v, p) => checkNumber(v, p, 0, MAX - 1, true)
+const text: Check = checkString
 
-/** `o[k]` when given, checked by `check`. */
-function given(o: Record<string, unknown>, k: string, p: string, check: (v: unknown, p: string) => void) {
-  if (o[k] !== undefined) check(o[k], `${p}.${k}`)
-}
+/** An array, each of its elements checked by `each`. */
+const list = (each: Check, expected: string): Check => (v, p) => array(v, p, expected).forEach((x, i) => each(x, `${p}[${i}]`))
 
-/** The objects of an array, each given to `each` with its path. */
-function objects(v: unknown, p: string, each: (o: Record<string, unknown>, p: string, i: number) => void) {
-  array(v, p, 'an array').forEach((x, i) => each(object(x, `${p}[${i}]`, 'an object'), `${p}[${i}]`, i))
-}
-
-const index = (v: unknown, p: string, n = MAX) => checkNumber(v, p, 0, n - 1, true)
-const text = (v: unknown, p: string) => void checkString(v, p)
+/** An array of objects, each checked by `each`. */
+const objects = (each: (o: Fields, p: string) => void): Check => list((x, p) => each(object(x, p, 'an object'), p), 'an array')
 
 /** A field of a PivotTable whose cache has `n`: its index, or `values` where `values` may be. */
 function field(v: unknown, p: string, n: number, values = false) {
@@ -65,33 +61,25 @@ function unique(items: unknown, path: string, kind: string) {
   })
 }
 
-const line = (o: Record<string, unknown>, p: string) => {
-  array(o.items, `${p}.items`, 'an array of indexes').forEach((x, i) => index(x, `${p}.items[${i}]`))
-  given(o, 'repeat', p, index)
-  given(o, 'value', p, index)
-  given(o, 'type', p, text)
-}
+const line = objects((o, p) => {
+  list(index, 'an array of indexes')(o.items, `${p}.items`)
+  given(o, p, { repeat: index, value: index, type: text })
+})
 
 /** A PivotTable over a cache of `n` fields: what the core reads of it. */
-function pivotTable(t: Record<string, unknown>, p: string, n: number) {
+function pivotTable(t: Fields, p: string, n: number) {
   text(t.name, `${p}.name`)
   const at = object(t.location, `${p}.location`, 'a place such as { range: "A3:B8", firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }')
   checkRange(at.range, `${p}.location.range`)
   for (const k of ['firstHeaderRow', 'firstDataRow', 'firstDataColumn']) index(at[k], `${p}.location.${k}`)
-  for (const k of ['pageRows', 'pageColumns']) given(at, k, `${p}.location`, index)
+  given(at, `${p}.location`, { pageRows: index, pageColumns: index })
   const fields = array(t.fields, `${p}.fields`, 'an array of fields')
   if (fields.length !== n) throw new InputError(`${p}.fields`, `expected a field for each of the cache's ${n} fields, got ${fields.length}`)
-  objects(fields, `${p}.fields`, (f, fp) => {
-    given(f, 'name', fp, text)
-    if (f.items !== undefined) objects(f.items, `${fp}.items`, (x, xp) => (given(x, 'item', xp, index), given(x, 'caption', xp, text)))
-  })
-  for (const k of ['rows', 'columns']) if (t[k] !== undefined) array(t[k], `${p}.${k}`, 'an array of fields').forEach((x, i) => field(x, `${p}.${k}[${i}]`, n, true))
-  if (t.pages !== undefined) objects(t.pages, `${p}.pages`, (x, xp) => (field(x.field, `${xp}.field`, n), given(x, 'item', xp, index)))
-  if (t.values !== undefined) objects(t.values, `${p}.values`, (x, xp) => (field(x.field, `${xp}.field`, n), given(x, 'name', xp, text), given(x, 'function', xp, text)))
-  if (t.filters !== undefined) objects(t.filters, `${p}.filters`, (x, xp) => field(x.field, `${xp}.field`, n))
-  given(t, 'valuesOnRows', p, checkBoolean)
-  given(t, 'valuesPosition', p, index)
-  for (const k of ['rowLines', 'columnLines']) if (t[k] !== undefined) objects(t[k], `${p}.${k}`, line)
+  objects((f, fp) => given(f, fp, { name: text, items: objects((x, xp) => given(x, xp, { item: index, caption: text })) }))(fields, `${p}.fields`)
+  const axis = list((v, q) => field(v, q, n, true), 'an array of fields')
+  // an object of the PivotTable's areas: its field's index, then `more`
+  const of = (more: Record<string, Check>) => objects((x, xp) => (field(x.field, `${xp}.field`, n), given(x, xp, more)))
+  given(t, p, { rows: axis, columns: axis, pages: of({ item: index }), values: of({ name: text, function: text }), filters: of({}), valuesOnRows: checkBoolean, valuesPosition: index, rowLines: line, columnLines: line })
 }
 
 /**
@@ -99,54 +87,58 @@ function pivotTable(t: Record<string, unknown>, p: string, n: number) {
  * by id with a field for each of its fields, a slicer's and a timeline's cache by name, a cache's PivotTables by sheet and
  * name; then the full check `xlcalc/pivot` registered.
  */
-export function checkPivots(book: Record<string, unknown>, path: string) {
+export function checkPivots(book: Fields, path: string) {
   const fields = new Map<number, number>()
-  if (book.pivotCaches !== undefined)
-    objects(book.pivotCaches, `${path}.pivotCaches`, (c, p) => {
+  const cache: Check = (v, p) => {
+    if (!fields.has(v as number)) throw new InputError(p, `expected the id of a pivot cache of the workbook, got ${what(v)}`)
+  }
+  const values = list(checkPivotValue, 'an array of values')
+  given(book, path, {
+    pivotCaches: objects((c, p) => {
       index(c.id, `${p}.id`)
       if (fields.has(c.id as number)) throw new InputError(`${p}.id`, `duplicate pivot cache id ${c.id}`)
-      const list = array(c.fields, `${p}.fields`, 'an array of fields')
-      fields.set(c.id as number, list.length)
-      objects(list, `${p}.fields`, (f, fp) => {
+      const each = array(c.fields, `${p}.fields`, 'an array of fields')
+      fields.set(c.id as number, each.length)
+      objects((f, fp) => {
         text(f.name, `${fp}.name`)
-        const values = (v: unknown, vp: string) => array(v, vp, 'an array of values').forEach((x, i) => checkPivotValue(x, `${vp}[${i}]`))
-        given(f, 'items', fp, values)
-        if (f.group !== undefined) given(object(f.group, `${fp}.group`, 'a grouping'), 'items', `${fp}.group`, values)
-      })
-    })
+        given(f, fp, { items: values })
+        if (f.group !== undefined) given(object(f.group, `${fp}.group`, 'a grouping'), `${fp}.group`, { items: values })
+      })(each, `${p}.fields`)
+    }),
+  })
   const pivots = new Set<string>()
   const b = book as unknown as BookInput
   b.sheets.forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
-    if (s.pivotTables === undefined) return
-    objects(s.pivotTables, `${p}.pivotTables`, (t, tp) => {
-      const n = fields.get(t.cache as number)
-      if (n === undefined) throw new InputError(`${tp}.cache`, `expected the id of a pivot cache of the workbook, got ${what(t.cache)}`)
-      pivotTable(t, tp, n)
-      pivots.add(caseKey(s.name) + '\0' + caseKey(t.name as string))
+    given(s as unknown as Fields, p, {
+      pivotTables: objects((t, tp) => {
+        cache(t.cache, `${tp}.cache`)
+        pivotTable(t, tp, fields.get(t.cache as number)!)
+        pivots.add(caseKey(s.name) + '\0' + caseKey(t.name as string))
+      }),
     })
     unique(s.pivotTables, `${p}.pivotTables`, 'PivotTable')
   })
   for (const k of ['slicerCaches', 'timelineCaches'] as const) {
-    if (book[k] === undefined) continue
-    objects(book[k], `${path}.${k}`, (c, p) => {
-      text(c.name, `${p}.name`)
-      given(c, 'cache', p, (v, vp) => {
-        if (!fields.has(v as number)) throw new InputError(vp, `expected the id of a pivot cache of the workbook, got ${what(v)}`)
-      })
-      objects(c.pivots, `${p}.pivots`, (r, rp) => {
-        if (!pivots.has(caseKey(String(r.sheet)) + '\0' + caseKey(String(r.name)))) throw new InputError(rp, `expected a PivotTable of the workbook, got ${JSON.stringify(r)}`)
-      })
+    given(book, path, {
+      [k]: objects((c, p) => {
+        text(c.name, `${p}.name`)
+        given(c, p, { cache })
+        objects((r, rp) => {
+          if (!pivots.has(caseKey(String(r.sheet)) + '\0' + caseKey(String(r.name)))) throw new InputError(rp, `expected a PivotTable of the workbook, got ${JSON.stringify(r)}`)
+        })(c.pivots, `${p}.pivots`)
+      }),
     })
     unique(book[k], `${path}.${k}`, 'cache')
   }
   b.sheets.forEach((s, i) => {
     for (const [k, of] of [['slicers', b.slicerCaches], ['timelines', b.timelineCaches]] as const)
-      if (s[k] !== undefined)
-        objects(s[k], `${path}.sheets[${i}].${k}`, (x, p) => {
+      given(s as unknown as Fields, `${path}.sheets[${i}]`, {
+        [k]: objects((x, p) => {
           text(x.name, `${p}.name`)
           if (!of?.some((c) => caseKey(c.name) === caseKey(String(x.cache)))) throw new InputError(`${p}.cache`, `expected the name of a cache of the workbook, got ${JSON.stringify(x.cache)}`)
-        })
+        }),
+      })
   })
   pivotCheck()?.(b, path)
 }

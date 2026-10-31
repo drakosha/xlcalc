@@ -1,8 +1,8 @@
 /**
  * en-US: formula text is the invariant syntax itself, as Excel with the English interface shows formulas. Its rules of
  * computation are the engine's own code (`src/locale/rules.ts`), so the file has no regional data. Its messages, with
- * those of an edit (`src/locale/edit-messages.ts`), are every message the engine gives, the text a locale without its own
- * falls back to.
+ * those of an edit (`src/locale/edit-messages.ts`, `src/locale/pivot-messages.ts`), are every message the engine gives,
+ * the text a locale without its own falls back to.
  */
 import type { Counts, EnglishMessages, Found, NameRule } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'

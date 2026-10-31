@@ -29,7 +29,7 @@ import { expandLinkNames, linkedSheet, linkSheets, strictCells, strictLinks, typ
 import { linksIn, markedLinks } from './syntax/links.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { endSpill, spillRef } from './spill/place.js'
-import { newSpills, type Area, type Spills } from './spill/state.js'
+import { equalAreas, newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
@@ -272,10 +272,7 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 /** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
 function sameDependencies(a: Formula, b: Formula): boolean {
   return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
-    && a.refs.length === b.refs.length && a.refs.every((g, i) => {
-      const h = b.refs[i]
-      return g.s === h.s && g.r1 === h.r1 && g.c1 === h.c1 && g.r2 === h.r2 && g.c2 === h.c2
-    })
+    && a.refs.length === b.refs.length && a.refs.every((g, i) => equalAreas(g, b.refs[i]))
 }
 
 // ---------- assembly ----------

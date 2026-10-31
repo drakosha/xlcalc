@@ -7,7 +7,8 @@
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { clockOptions } from '../result.js'
 import { ERROR_TEXT } from '../syntax.js'
@@ -144,7 +145,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       const name = numbered(t.name, [...taken, ...(book.names ?? []).map((x) => x.name)], taken.length + 2)
       // a numbered name Excel would not take (`Tab3` is a cell) is refused, as renameTable refuses it
       const why = nameRefusal(book, name)
-      if (why) return { after: () => ({ ok: false, code: 'table_name', message: say(book.locale, why) }) }
+      if (why) return { after: () => ({ ok: false, code: 'table_name', message: sayPivot(book.locale, why) }) }
       taken.push(name)
       copies.push({ t, x, name })
     }

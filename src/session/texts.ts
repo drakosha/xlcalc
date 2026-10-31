@@ -16,7 +16,7 @@ import { checkSheet } from '../input.js'
 import { InputError } from '../input-error.js'
 import { array, checkString, object, onlyKeys } from '../input/basic.js'
 import { checkAddress } from '../input/range.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { cellCount, hasCell, rectText, type Rect } from '../structure/area.js'
 import { formulaCopier } from '../structure/copy.js'
@@ -111,7 +111,7 @@ export function pastedText(s: EngineState, i: number, r: number, c: number, text
   const x = { r1: r, c1: c, r2: r + rows.length - 1, c2: c + rows[0].length - 1 }
   const sheet = s.sheetNames[i]
   const cell = formatAddress(r, c)
-  if (x.r2 >= MAX_ROWS || x.c2 >= MAX_COLS) return { ok: false, refusal: { ok: false, code: 'off_sheet', message: say(s.input.locale, { key: 'copyOffSheet', sheet, cell }), sheet, cell } }
+  if (x.r2 >= MAX_ROWS || x.c2 >= MAX_COLS) return { ok: false, refusal: { ok: false, code: 'off_sheet', message: sayPivot(s.input.locale, { key: 'copyOffSheet', sheet, cell }), sheet, cell } }
   const typed = typedTexts(s, rows.flatMap((row, dr) => row.map((field, dc) => ({ i, r: r + dr, c: c + dc, text: field }))), now, 'pasted')
   // read as pasted, a text Excel does not take as a formula is text: what refuses a paste is its cells together
   return typed.ok ? { ...typed, range: rectText(x) } : { ok: false, refusal: { ...typed.refusal, ...typed.ref } as PasteTextRefusal }

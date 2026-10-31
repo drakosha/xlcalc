@@ -9,7 +9,7 @@ import { checkOneOf, checkString, integer, isObject, onlyKeys } from '../input/b
 import { checkAddress, checkRange } from '../input/range.js'
 import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockOptions } from '../result.js'
@@ -205,7 +205,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
-        if (tables.refuse) pasted = r = { ok: false, code: 'table', message: say(book.locale, tables.refuse) }
+        if (tables.refuse) pasted = r = { ok: false, code: 'table', message: sayPivot(book.locale, tables.refuse) }
         else {
           pasted = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
           r = pasted.ok ? { ...pasted, book: tables.after(pasted.book) } : pasted
@@ -215,7 +215,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
         // an array of several cells over a table, its header too, against the tables where the operation leaves them
         const ti = sheetIndex(book, toSheet)
         const refused = arrayInTable({ ...pasted.book.sheets[ti], tables: r.book.sheets[ti].tables })
-        if (refused) r = { ok: false, code: 'table', message: say(book.locale, refused) }
+        if (refused) r = { ok: false, code: 'table', message: sayPivot(book.locale, refused) }
       }
       break
     }
@@ -296,7 +296,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'setPivotCalculatedField':
     case 'setPivotCalculatedItem': {
       const edit = pivotCacheEdit()
-      r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
+      r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotNotLoaded' }) }
       break
     }
   }

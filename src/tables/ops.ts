@@ -6,7 +6,8 @@ import type { BookInput, StructureOp, TableInput } from '../contract.js'
 import { checkTables } from './check.js'
 import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameRule } from '../syntax.js'
 import { contains, meets, parseRange, rectCells } from '../structure/area.js'
@@ -51,7 +52,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
   if (op.op === 'renameTable') {
     if (typeof op.name !== 'string') throw new InputError('op.name', 'expected a table name')
     const why = nameRefusal(book, op.name, t.name)
-    if (why) return { ok: false, code: 'table_name', message: say(book.locale, why) }
+    if (why) return { ok: false, code: 'table_name', message: sayPivot(book.locale, why) }
     // Excel keeps the name when only its case changes (the set `tables/ops`, rename-case)
     if (tableKey(op.name) === key) return { ok: true, book, geometry: [] }
     const renamed = rewriteBookTables(book, (x) => (tableKey(x.name) === key ? { table: op.name } : undefined))
@@ -78,16 +79,16 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
   if (typeof table !== 'object' || table === null || typeof table.name !== 'string') throw new InputError('op.table', 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   const why = nameRefusal(book, table.name)
-  if (why) return { ok: false, code: 'table_name', message: say(book.locale, why) }
+  if (why) return { ok: false, code: 'table_name', message: sayPivot(book.locale, why) }
   const x = typeof table.range === 'string' ? parseRange(table.range) : null
   const over = x && tablesOf(book).list.find((t) => t.s === s && meets(t, x))
-  if (over) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
+  if (over) return { ok: false, code: 'table', message: sayPivot(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
   const merge = x && (book.sheets[s].merges ?? []).find((m) => meets(parseMerge(m)!, x))
-  if (merge) return { ok: false, code: 'merged', message: say(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
+  if (merge) return { ok: false, code: 'merged', message: sayPivot(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
   // a table over all of the sheet's AutoFilter takes its place, one over part of it is refused, as in Excel (the keep probes `filter-table*`)
   const filter = book.sheets[s].autoFilter
   const f = filter && parseRange(filter.range)!
-  if (x && f && meets(f, x) && !contains(x, f)) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverFilter', range: table.range, filter: filter!.range }) }
+  if (x && f && meets(f, x) && !contains(x, f)) return { ok: false, code: 'table', message: sayPivot(book.locale, { key: 'tableOverFilter', range: table.range, filter: filter!.range }) }
   const own = x && f && meets(f, x) ? withField(book.sheets[s], 'autoFilter', undefined) : book.sheets[s]
   const cells = { ...own.cells }
   if (x && table.headers !== false && Array.isArray(table.columns))

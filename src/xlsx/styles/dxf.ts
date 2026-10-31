@@ -7,7 +7,7 @@
 import type { CellStyle, ConditionalStyle } from '../../contract.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { attributes, element, flag, within, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
@@ -96,4 +96,4 @@ export function readDxf(e: Element, p: Palette): Dxf {
 }
 
 /** The dxfs of styles.xml in order. */
-export const readDxfs = (xml: string | undefined, p: Palette): Dxf[] => (xml ? elements(element(xml, 'dxfs')?.body ?? '', 'dxf').map((e) => readDxf(e, p)) : [])
+export const readDxfs = (xml: string | undefined, p: Palette): Dxf[] => (xml ? within(xml, 'dxfs', 'dxf').map((e) => readDxf(e, p)) : [])

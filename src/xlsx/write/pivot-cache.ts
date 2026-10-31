@@ -6,11 +6,8 @@
 import type { PivotCache, PivotCacheField, PivotFieldGroup, PivotValue } from '../../contract.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
-import { HEAD, MAIN } from './xml.js'
+import { counted, countedIf, give, HEAD, MAIN, REL, X14 } from './xml.js'
 import { pivotAreaXml } from './pivot-area.js'
-
-export const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-export const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 
 /** A cache value as an item or a record holds it: `m` missing, `n` number, `s` text, `b` boolean, `e` error, `d` date. */
 export function valueXml(v: PivotValue, more = ''): string {
@@ -74,12 +71,11 @@ function fieldGroupXml(g: PivotFieldGroup): string {
   let x = ''
   if (g.range) {
     const r = g.range
-    const auto = (k: 'autoStart' | 'autoEnd') => (r[k] === false ? ` ${k}="0"` : '')
-    x += `<rangePr${auto('autoStart')}${auto('autoEnd')}${r.by === 'numbers' ? '' : ` groupBy="${r.by}"`}${rangeValue('start', r.start)}${rangeValue('end', r.end)}${r.interval === undefined ? '' : ` groupInterval="${r.interval}"`}/>`
+    x += `<rangePr${give(r, 'autoStart:t autoEnd:t')}${r.by === 'numbers' ? '' : ` groupBy="${r.by}"`}${rangeValue('start', r.start)}${rangeValue('end', r.end)}${give(r, 'groupInterval=interval:n')}/>`
   }
-  if (g.discrete) x += `<discretePr count="${g.discrete.length}">${g.discrete.map((i) => `<x v="${i}"/>`).join('')}</discretePr>`
-  if (g.items) x += `<groupItems count="${g.items.length}">${g.items.map((v) => valueXml(v)).join('')}</groupItems>`
-  return `<fieldGroup${g.parent === undefined ? '' : ` par="${g.parent}"`}${g.base === undefined ? '' : ` base="${g.base}"`}>${x}</fieldGroup>`
+  if (g.discrete) x += counted('discretePr', g.discrete.map((i) => `<x v="${i}"/>`))
+  if (g.items) x += counted('groupItems', g.items.map((v) => valueXml(v)))
+  return `<fieldGroup${give(g, 'par=parent:n base:n')}>${x}</fieldGroup>`
 }
 
 /** The source as `cacheSource`; `link` is the relationship id of another workbook's path, or of the workbook itself for a source whose sheet is gone. */
@@ -90,7 +86,7 @@ function sourceXml(c: PivotCache, link: string | undefined): string {
   if (s.type === 'table' || s.type === 'name') return `<cacheSource type="worksheet"><worksheetSource name="${escapeAttr(s.type === 'table' ? s.table : s.name)}"${r}/></cacheSource>`
   if (s.type === 'consolidation') {
     const sets = s.ranges.map((x) => `<rangeSet ref="${x.range}"${x.sheet === undefined ? '' : ` sheet="${escapeAttr(x.sheet)}"`}/>`)
-    return `<cacheSource type="consolidation"><consolidation><rangeSets count="${sets.length}">${sets.join('')}</rangeSets></consolidation></cacheSource>`
+    return `<cacheSource type="consolidation"><consolidation>${counted('rangeSets', sets)}</consolidation></cacheSource>`
   }
   if (s.type === 'scenario') return '<cacheSource type="scenario"/>'
   return `<cacheSource type="external"${s.connection === undefined ? '' : ` connectionId="${s.connection}"`}/>`
@@ -110,20 +106,16 @@ export function pivotCacheXml(c: PivotCache, numFmt: (f: PivotCacheField) => num
     const attrs = ` name="${escapeAttr(f.name)}" numFmtId="${numFmt(f)}"${f.formula === undefined ? '' : ` formula="${escapeAttr(f.formula)}"`}${added ? ' databaseField="0"' : ''}`
     return `<cacheField${attrs}>${f.formula === undefined ? sharedItems(f, cols[i]) : ''}${f.group ? fieldGroupXml(f.group) : ''}</cacheField>`
   })
-  const items = c.calculatedItems ?? []
-  const calculated = items.length
-    ? `<calculatedItems count="${items.length}">${items.map((k) => `<calculatedItem formula="${escapeAttr(k.formula)}">${pivotAreaXml({ cacheIndex: true, outline: false, fieldPosition: 0, references: [{ field: k.field, items: [k.item] }] })}</calculatedItem>`).join('')}</calculatedItems>`
-    : ''
+  const calculated = countedIf('calculatedItems', c.calculatedItems?.map((k) => `<calculatedItem formula="${escapeAttr(k.formula)}">${pivotAreaXml({ cacheIndex: true, outline: false, fieldPosition: 0, references: [{ field: k.field, items: [k.item] }] })}</calculatedItem>`))
   const saved = records !== undefined
   const attrs =
     (saved ? ` r:id="${records}"` : ' saveData="0"') +
     (c.refreshOnLoad || c.stale ? ' refreshOnLoad="1"' : '') +
-    (c.enableRefresh === false ? ' enableRefresh="0"' : '') +
-    ' createdVersion="8" refreshedVersion="8" minRefreshableVersion="3"' +
+    give(c, 'enableRefresh:t createdVersion="8" refreshedVersion="8" minRefreshableVersion="3"') +
     (saved ? ` recordCount="${c.records!.length}"` : '') +
-    (c.retainItems === undefined ? '' : ` missingItemsLimit="${c.retainItems}"`)
+    give(c, 'missingItemsLimit=retainItems:n')
   const ext = `<extLst><ext uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}" xmlns:x14="${X14}"><x14:pivotCacheDefinition${x14 === undefined ? '' : ` pivotCacheId="${x14}"`}/></ext></extLst>`
-  return `${HEAD}<pivotCacheDefinition xmlns="${MAIN}" xmlns:r="${REL}"${attrs}>${sourceXml(c, link)}<cacheFields count="${fields.length}">${fields.join('')}</cacheFields>${calculated}${ext}</pivotCacheDefinition>`
+  return `${HEAD}<pivotCacheDefinition xmlns="${MAIN}" xmlns:r="${REL}"${attrs}>${sourceXml(c, link)}${counted('cacheFields', fields)}${calculated}${ext}</pivotCacheDefinition>`
 }
 
 /** The rows' part: each row's value per field of the source, an item's index for a field that lists its items. */
