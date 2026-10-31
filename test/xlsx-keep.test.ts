@@ -348,7 +348,8 @@ describe('writeKept moves the references of the parts the model does not have', 
     // the source's sheet deleted: Excel makes the source a link to the file by its path, refused; its cells deleted: the source as it was, as Excel keeps it
     expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' }))).toBe('deleted: xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path')
     expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 })))).toEqual(['D3:E5', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
-    expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("moved: xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
+    // a change that would cut it is refused by the session itself, as Excel refuses it, and the file is written as it was
+    expect(pivots(await plain(pivot, (s) => expect(s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 })).toMatchObject({ ok: false, code: 'pivot' })))).toEqual(['D3:E5', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     const table: BookInput = { sheets: [{ name: 'Data', cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 'x' }, B2: { value: 1 } }, tables: [{ name: 'Sales', range: 'A1:B2', columns: [{ name: 'k' }, { name: 'v' }] }] }, { name: 'Other', cells: {} }] }
     const data = await withParts(table, { pivot: { sheet: 1, location: 'A3:B5', source: { name: 'Sales' } } })
     const r = await openKept(data)

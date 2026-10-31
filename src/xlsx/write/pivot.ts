@@ -5,7 +5,7 @@
  * and its filters. Its cells are the sheet's.
  */
 import type { ConditionalStyle, NumberFormat, PivotArea, PivotCache, PivotDataField, PivotField, PivotFilter, PivotLayout, PivotLine, PivotTable } from '../../contract.js'
-import { valueFieldName } from '../../pivot/names.js'
+import { valueFieldName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
 import { HEAD, MAIN } from './xml.js'
@@ -19,6 +19,8 @@ export interface PivotWriting {
   date1904: boolean
   /** The PivotTable's conditional formats: each rule's priority on its sheet and its areas. */
   rules: { priority: number; scope?: 'selection' | 'data' | 'field'; type?: 'none' | 'all' | 'row' | 'column'; areas: PivotArea[] }[]
+  /** The workbook's language, which names a value field without a name. */
+  locale?: string
 }
 
 const AXIS = { rows: 'axisRow', columns: 'axisCol', pages: 'axisPage' } as const
@@ -98,7 +100,7 @@ function dataFieldXml(d: PivotDataField, c: PivotCache, w: PivotWriting): string
   const show = d.showAs ?? 'normal'
   const x14 = SHOW_X14.has(show)
   const base = d.baseItem === undefined ? 0 : typeof d.baseItem === 'number' ? d.baseItem : BASE_ITEM[d.baseItem]
-  const name = d.name ?? valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '')
+  const name = d.name ?? valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', w.locale)
   const a =
     ` name="${escapeAttr(name)}" fld="${d.field}"` +
     (d.function && d.function !== 'sum' ? ` subtotal="${d.function}"` : '') +
@@ -123,7 +125,8 @@ function conditionXml(f: PivotFilter, w: PivotWriting): string {
   const date = t.startsWith('date')
   const arg = (k: number) => {
     const v = f.args?.[k]
-    if (date && typeof v === 'string') return String(dateToSerial(v, { dateSystem: w.date1904 ? 1904 : 1900 }))
+    // a date as ISO text is its serial number in the file; a serial number stays
+    if (date && typeof v === 'string' && /^\d{4}-\d\d-\d\d/.test(v)) return String(dateToSerial(v, { dateSystem: w.date1904 ? 1904 : 1900 }))
     return escapeAttr(String(v ?? ''))
   }
   const one = (op: string, v: string) => `<customFilter${op ? ` operator="${op}"` : ''} val="${v}"/>`

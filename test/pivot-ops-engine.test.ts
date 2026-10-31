@@ -4,7 +4,7 @@
  * moved PivotTable laid over data is refused. In every kind of session and both execution modes, with undo and redo.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { editStructure, registerPivot, type BookInput } from '../src/index.js'
+import { editStructure, registerPivot, type BookInput, type StructureOp } from '../src/index.js'
 import { pivotEngine } from '../src/pivot/index.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
@@ -20,7 +20,7 @@ const book = (): BookInput => ({
   ],
 })
 
-const add = { op: 'addPivotTable', sheet: 'P', cell: 'A3', source: { type: 'range', sheet: 'Data', range: 'A1:C4' }, definition: { rows: [0], values: [{ field: 2 }] } } as const
+const add: Extract<StructureOp, { op: 'addPivotTable' }> = { op: 'addPivotTable', sheet: 'P', cell: 'A3', source: { type: 'range', sheet: 'Data', range: 'A1:C4' }, definition: { rows: [0], values: [{ field: 2 }] } }
 
 describe('addPivotTable and editPivotTable with xlcalc/pivot', () => {
   it('lays the new PivotTable out from its source, not stale', () => {

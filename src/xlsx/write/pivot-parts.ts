@@ -67,7 +67,7 @@ export function pivotPackage(book: BookInput, styles: CellFormats): PivotPackage
     for (const p of s.pivotTables ?? []) {
       const n = ++t
       const cache = caches.find((c) => c.id === p.cache)!
-      const w: PivotWriting = { numFmt: (f) => styles.numFmt(f), dxf: (x) => styles.dxf(x), date1904, rules: pivotRules(s, p.name) }
+      const w: PivotWriting = { numFmt: (f) => styles.numFmt(f), dxf: (x) => styles.dxf(x), date1904, rules: pivotRules(s, p.name), locale: book.locale }
       out.files.push({ name: `xl/pivotTables/pivotTable${n}.xml`, text: pivotTableXml(p, cache, w) })
       out.files.push({ name: `xl/pivotTables/_rels/pivotTable${n}.xml.rels`, text: rels([[`${REL}/pivotCacheDefinition`, `../pivotCache/pivotCacheDefinition${part.get(p.cache)}.xml`]]) })
       out.contentTypes.push([`/xl/pivotTables/pivotTable${n}.xml`, `${TYPE}.pivotTable+xml`])

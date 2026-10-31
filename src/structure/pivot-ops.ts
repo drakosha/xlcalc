@@ -15,7 +15,7 @@ import { say, type EngineMessage } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { pivotRefresh } from '../pivot/hook.js'
-import { valueFieldName } from '../pivot/names.js'
+import { valueFieldName } from '../pivot-words.js'
 import { tableKey, tablesOf } from '../tables/model.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { areaText, meets, parseRange, rectText, type Rect } from './area.js'
@@ -80,7 +80,7 @@ function withPivot(book: BookInput, s: number, k: number, next: PivotTable | nul
  * A PivotTable with a patch of its definition, checked: one axis a field, the value fields named as Excel names them
  * (`Sum of Amount`, a second `Sum of Amount2`).
  */
-function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string): PivotTable {
+function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string, locale: string | undefined): PivotTable {
   const patch = object(set, path, 'a patch of a PivotTable such as { rows: [0], values: [{ field: 1 }] }')
   onlyKeys(patch, path, PATCHED)
   const { fields, ...rest } = patch as PivotTablePatch
@@ -109,8 +109,9 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     out = {
       ...out,
       values: out.values.map((d) => {
-        let name = d.name ?? valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '')
-        if (d.name === undefined) for (let n = 2; names.has(caseKey(name)); n++) name = `${valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '')}${n}`
+        const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
+        let name = d.name ?? base
+        if (d.name === undefined) for (let n = 2; names.has(caseKey(name)); n++) name = `${base}${n}`
         names.add(caseKey(name))
         return d.name === undefined ? { ...d, name } : d
       }),
@@ -230,7 +231,7 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
   const over = placeRefusal(start, s, x, pivotName)
   if (over) return over
   let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
-  if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition')
+  if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition', start.locale)
   const sheets = [...start.sheets]
   sheets[s] = withField(sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
   const out = checkedPivots({ ...start, sheets, pivotCaches: caches }, 'op')
@@ -267,7 +268,7 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
     for (const f of next.fields) if (f.items === undefined) delete f.items
     c = fresh
   }
-  if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set')
+  if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set', book.locale)
   const out = checkedPivots({ ...withPivot(book, s, k, next), pivotCaches: caches }, 'op')
   return relaid(out, [{ sheet: book.sheets[s].name, name: p.name }], values, o.source !== undefined)
 }
