@@ -299,7 +299,7 @@ export interface PivotLocation {
 /**
  * A PivotTable's areas on its sheet, in A1 (`A3:D10`, a cell alone `A4`): what a host selects, outlines or tests a cell
  * against without working them out from the place. One not laid out (added without `xlcalc/pivot`), shrunk to its
- * top-left cell (`#SPILL!`) or with no field at all has its table (and Filters area) alone.
+ * top-left cell (`#SPILL!`) or with no field at all has its table, Filters area and values alone.
  */
 export interface PivotAreas {
   /** The Filters area above the table, as wide as its filters, without the blank row under it (Excel's `PageRange`). */
@@ -310,8 +310,12 @@ export interface PivotAreas {
   columnHeaders?: string
   /** The labels of the rows left of the values, down to the grand total. */
   rowLabels?: string
-  /** The values with their totals (Excel's `DataBodyRange`); none without a value field. */
-  data?: string
+  /**
+   * The values with their totals (Excel's `DataBodyRange`). Without a value field, as Excel gives it: the cells under the
+   * header rows right of the labels, which are the labels themselves with no field on columns and the columns' labels
+   * with no field on rows.
+   */
+  data: string
 }
 
 /** A PivotTable's look, as Excel's PivotTable Style Options. */
