@@ -126,7 +126,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   for (const r of alive) {
     const k = `${key(rowFields.map((f) => at[f][r]))}|${key(colFields.map((f) => at[f][r]))}`
     let cell = leaves.get(k)
-    if (!cell) leaves.set(k, (cell = measures.map(() => new Tally())))
+    if (!cell) leaves.set(k, (cell = measures.map((_, m) => new Tally(m >= values.length))))
     for (let m = 0; m < measures.length; m++) cell[m].add(...readers[m](r))
   }
   const sorting = { table, cache, shown, epoch, lists }
@@ -159,13 +159,13 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
         if (calculated(f, p)) {
           // a calculated item counts in the totals over it as one value more
           const got = measures.map((_, m) => measure(r, c, m, m < values.length ? fns[m] : 'sum'))
-          out ??= measures.map(() => new Tally())
+          out ??= measures.map((_, m) => new Tally(m >= values.length))
           out.forEach((x, m) => x.add(...asRecord(got[m])))
           continue
         }
         const t = down ? cell(r, n, c, cb) : cell(r, rb, c, n)
         if (!t) continue
-        out ??= measures.map(() => new Tally())
+        out ??= measures.map((_, m) => new Tally(m >= values.length))
         out.forEach((x, m) => x.merge(t[m]))
       }
     }
@@ -200,10 +200,13 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const fieldValue = (rows: readonly number[], columns: readonly number[], field: number): CellValue => {
     const t = formulas.get(field)
     if (!t) return measure(rows, columns, sumAt.get(field)!, 'sum')
-    if (!reached(rows, columns) || (!calcAt(rows, columns) && !reach(rows, columns))) return null
-    return batch.get(t.text, t.args.map((f) => fieldValue(rows, columns, f) ?? null))
+    // every cell of the rows and columns shown, one no record reaches too (its sums blank)
+    if (!reached(rows, columns)) return null
+    return batch.get(t.text, t.args.map((f) => fieldValue(rows, columns, f)))
   }
-  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue => settled(batch, () => measure(rows, columns, v, fn ?? fns[v]))
+  // a calculated field's subtotals by functions of their own are empty (the set calc)
+  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue =>
+    fn !== undefined && formulas.has(measures[v]) ? null : settled(batch, () => measure(rows, columns, v, fn ?? fns[v]))
   const hasData = (rows: readonly number[], columns: readonly number[]) => (calcAt(rows, columns) ? reached(rows, columns) : reach(rows, columns) !== null)
   // sorting by values reads them in the order before; the cells are made again in the order shown
   sortBranches(sorting, rowRoot, rowFields, colFields, true, value)
