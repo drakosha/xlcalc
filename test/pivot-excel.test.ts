@@ -11,11 +11,13 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import * as basic from '../bench/coverage/pivot/basic.js'
 import * as calc from '../bench/coverage/pivot/calc.js'
+import * as calcHeld from '../bench/coverage/pivot/calc-held.js'
 import type { PivotPhase, PivotSet } from '../bench/coverage/pivot/cases.js'
 import type { CellValue } from '../src/contract.js'
 import * as filter from '../bench/coverage/pivot/filter.js'
 import * as filterHeld from '../bench/coverage/pivot/filter-held.js'
 import * as group from '../bench/coverage/pivot/group.js'
+import * as groupHeld from '../bench/coverage/pivot/group-held.js'
 import * as layout from '../bench/coverage/pivot/layout.js'
 import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import { replays, rounded, shown } from '../bench/coverage/pivot/phases.js'
@@ -45,17 +47,19 @@ const KNOWN: Record<string, string[]> = {
   refresh: [],
   show: [],
   'show-held': [],
+  'group-held': [],
+  'calc-held': [],
   'show-items': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld }
 
 /**
  * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums,
  * and a calculated field's formula takes them, whose last bit Excel's order of adding sets (`docs/limitations.md`),
  * which a share or a ratio carries into its 15th digit.
  */
-const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14, 'show-held': 1e-14, calc: 1e-14 }
+const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14, 'show-held': 1e-14, calc: 1e-14, 'calc-held': 1e-14 }
 
 /** The cells alike: the same values, numbers to 15 significant digits or within `tolerance` of each other. */
 const alike = (got: CellValue[][], want: CellValue[][], tolerance: number) =>
