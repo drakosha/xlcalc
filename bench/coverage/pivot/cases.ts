@@ -66,6 +66,8 @@ export interface TableProps {
   valuesRow?: boolean
   /** Items sorted by Excel's custom lists (the month and day names), as by default. */
   customLists?: boolean
+  /** Merge and center cells with labels. */
+  mergeLabels?: boolean
 }
 
 /** A field's settings. */

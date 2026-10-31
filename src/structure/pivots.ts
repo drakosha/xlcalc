@@ -155,42 +155,34 @@ export function carryPivots(book: BookInput): { book: BookInput; after(out: Appl
 const isRef = (r: PivotRef) => (x: PivotRef) => sheetKey(x.sheet) === sheetKey(r.sheet) && caseKey(x.name) === caseKey(r.name)
 
 /**
- * The book without the PivotTable `r` (its cells are the caller's): its rules go, the slicers' and timelines' caches no
- * longer filter it and go with the last PivotTable they filter, with their slicers and timelines, and its pivot cache
- * goes with the last PivotTable and cache over it.
+ * The book without the PivotTable `r` (its cells are the caller's): its rules go, and the slicers' and timelines' caches
+ * no longer name it, each kept with its slicers, its choice and its pivot cache even when it names no PivotTable, as
+ * Excel keeps them (the set `slicer-delete`); its pivot cache goes with the last PivotTable and cache over it.
  */
 export function withoutPivot(book: BookInput, r: PivotRef, of?: number): BookInput {
   const is = isRef(r)
-  const left = <C extends { name: string; pivots: PivotRef[] }>(list: C[] | undefined) => list?.map((c) => ({ ...c, pivots: c.pivots.filter((x) => !is(x)) }))
-  const slicerCaches = left(book.slicerCaches)?.filter((c) => c.pivots.length || c.table)
-  const timelineCaches = left(book.timelineCaches)?.filter((c) => c.pivots.length)
-  const keep = (names: { name: string }[] | undefined) => new Set((names ?? []).map((c) => caseKey(c.name)))
-  const [sk, tk] = [keep(slicerCaches), keep(timelineCaches)]
+  const left = <C extends { pivots: PivotRef[] }>(list: C[] | undefined) => list?.map((c) => (c.pivots.some(is) ? { ...c, pivots: c.pivots.filter((x) => !is(x)) } : c))
+  const slicerCaches = left(book.slicerCaches)
+  const timelineCaches = left(book.timelineCaches)
   let cache = of
   const sheets = book.sheets.map((s) => {
-    let out = s
-    if (sheetKey(s.name) === sheetKey(r.sheet)) {
-      cache ??= s.pivotTables?.find((p) => caseKey(p.name) === caseKey(r.name))?.cache
-      const list = s.pivotTables?.filter((p) => caseKey(p.name) !== caseKey(r.name))
-      out = withField(out, 'pivotTables', list?.length ? list : undefined)
-      const rules = s.conditionalFormats?.filter((f) => !(f.pivot && caseKey(f.pivot.pivot) === caseKey(r.name)))
-      if (rules && rules.length !== s.conditionalFormats!.length) out = withField(out, 'conditionalFormats', rules.length ? rules : undefined)
-    }
-    const slicers = s.slicers?.filter((x) => sk.has(caseKey(x.cache)))
-    if (s.slicers && slicers!.length !== s.slicers.length) out = withField(out, 'slicers', slicers!.length ? slicers : undefined)
-    const timelines = s.timelines?.filter((x) => tk.has(caseKey(x.cache)))
-    if (s.timelines && timelines!.length !== s.timelines.length) out = withField(out, 'timelines', timelines!.length ? timelines : undefined)
+    if (sheetKey(s.name) !== sheetKey(r.sheet)) return s
+    cache ??= s.pivotTables?.find((p) => caseKey(p.name) === caseKey(r.name))?.cache
+    const list = s.pivotTables?.filter((p) => caseKey(p.name) !== caseKey(r.name))
+    let out = withField(s, 'pivotTables', list?.length ? list : undefined)
+    const rules = s.conditionalFormats?.filter((f) => !(f.pivot && caseKey(f.pivot.pivot) === caseKey(r.name)))
+    if (rules && rules.length !== s.conditionalFormats!.length) out = withField(out, 'conditionalFormats', rules.length ? rules : undefined)
     return out
   })
   const out: BookInput = { ...book, sheets }
-  const set = <K extends 'slicerCaches' | 'timelineCaches' | 'pivotCaches'>(k: K, v: BookInput[K]) => {
-    if (v?.length) out[k] = v
-    else delete out[k]
-  }
-  if (book.slicerCaches) set('slicerCaches', slicerCaches)
-  if (book.timelineCaches) set('timelineCaches', timelineCaches)
+  if (slicerCaches) out.slicerCaches = slicerCaches
+  if (timelineCaches) out.timelineCaches = timelineCaches
   const used = cache !== undefined && (sheets.some((s) => s.pivotTables?.some((p) => p.cache === cache)) || slicerCaches?.some((c) => c.cache === cache) || timelineCaches?.some((c) => c.cache === cache))
-  if (cache !== undefined && !used) set('pivotCaches', book.pivotCaches?.filter((c) => c.id !== cache))
+  if (cache !== undefined && !used) {
+    const caches = book.pivotCaches?.filter((c) => c.id !== cache)
+    if (caches?.length) out.pivotCaches = caches
+    else delete out.pivotCaches
+  }
   return out
 }
 

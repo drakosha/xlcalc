@@ -55,4 +55,18 @@ describe('writeKept over a file with a PivotTable', () => {
     const again = await readXlsx(gone.data)
     expect([pivotsOf(again.book), again.book.pivotCaches?.map((c) => c.id)]).toEqual([pivotsOf(s.getBook()), [105]])
   })
+
+  it('deletes the sheet of a PivotTable with its parts and cache; refuses to delete its source sheet, which Excel makes a link to the file', async () => {
+    const s = createSession((await openKept(file)).book)
+    s.editStructure({ op: 'deleteSheet', sheet: 'P' })
+    const out = await writeKept(file, s.getSnapshot())
+    const parts = await partsOf(out.data)
+    expect([...parts.keys()].filter((k) => /pivot/i.test(k))).toEqual([])
+    expect(parts.get('xl/workbook.xml')).not.toContain('pivotCache')
+    const back = await readXlsx(out.data)
+    expect([back.book.pivotCaches, back.issues.filter((i) => i.code === 'pivotTable')]).toEqual([undefined, []])
+    const d = createSession((await openKept(file)).book)
+    d.editStructure({ op: 'deleteSheet', sheet: 'D' })
+    await expect(writeKept(file, d.getSnapshot())).rejects.toThrow('which Excel makes a link to the file by its path')
+  })
 })

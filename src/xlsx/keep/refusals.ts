@@ -119,7 +119,8 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       out.edits.push({ part: p.part, start: p.at[0], end: p.at[1], text: escapeText(`${plain(name) ? p.prefix + name : quoteSheet(p.prefix + name)}!${p.rest}`) })
     }
     if (j === undefined) {
-      const own = src.sheets[k].rels.find((r) => !DELETABLE.has(r.kind))
+      // a PivotTable the model read goes with its sheet, written as the book has it (`pivots.ts`)
+      const own = src.sheets[k].rels.find((r) => !DELETABLE.has(r.kind) && !(r.kind === 'pivotTable' && book0.sheets[k].pivotTables?.length))
       if (own) throw new KeptRefusal({ key: 'keptSheetParts', sheet: was, kind: own.kind, path: own.target }, 'deleted')
     }
   }

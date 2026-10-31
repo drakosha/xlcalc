@@ -135,6 +135,17 @@ describe('operations of the structure over a PivotTable', () => {
   })
 })
 
+describe('a slicer over a PivotTable whose sheet is deleted', () => {
+  it('keeps its cache, its choice and the pivot cache, naming no PivotTable, as Excel does', () => {
+    const b = made()
+    const sheets = [b.sheets[0], b.sheets[1], { name: 'S', cells: {}, slicers: [{ name: 'Region', cache: 'Slicer_Region' }] }]
+    const book: BookInput = { ...b, sheets, slicerCaches: [{ name: 'Slicer_Region', field: 'Region', pivots: [{ sheet: 'P', name: 'PivotTable1' }], cache: 1, items: [{ item: 0 }, { item: 1, selected: false }] }] }
+    const r = editStructure(book, { op: 'deleteSheet', sheet: 'P' })
+    if (!r.ok) throw new Error(r.message)
+    expect([r.book.slicerCaches, r.book.sheets[1].slicers?.length, r.book.pivotCaches?.map((c) => c.id)]).toEqual([[{ name: 'Slicer_Region', field: 'Region', pivots: [], cache: 1, items: [{ item: 0 }, { item: 1, selected: false }] }], 1, [1]])
+  })
+})
+
 describe('a stale cache in a file', () => {
   it('is written to be refreshed on opening, and read back as such', async () => {
     const w = await writeXlsx({ book: made() }, { values: 'omit' })
