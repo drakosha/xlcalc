@@ -35,13 +35,18 @@ function overGroup(t: PivotTable, fields: readonly PivotAxisField[], a: LineView
   return field?.subtotalTop === false || sums !== 1
 }
 
-/** What a PivotTable's every cell is, and its cells with filter buttons. */
-function cellsOf(t: PivotTable): PivotCells {
+/**
+ * What a PivotTable's every cell is, the cells where Excel draws a filter button (`buttons`), and the cells its file
+ * marks with one (`pivotButton`, `marked`): a report filter's on its name, drawn on its item; a single value field's
+ * name at the corner, drawn on none (Excel for Windows and for Mac on the screen).
+ */
+function cellsOf(t: PivotTable): PivotCells & { marked: string[] } {
   const cells: Record<string, PivotCell> = {}
-  const buttons: string[] = []
+  const marked: string[] = []
+  const drawn: string[] = []
   const put = (row: number, col: number, c: Omit<PivotCell, 'pivot'>) => (cells[formatAddress(row, col)] = { pivot: t.name, ...c })
   const x = parseRange(t.location.range)
-  if (!x) return { cells, buttons }
+  if (!x) return { cells, buttons: drawn, marked }
   // the table's cells; of the Filters area only its fields' names and items, the cells between them none of its own
   for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) put(r, c, { kind: 'blank' })
   const rowFields = t.rows ?? []
@@ -55,25 +60,29 @@ function cellsOf(t: PivotTable): PivotCells {
   const compact = (t.layout ?? 'compact') === 'compact'
   const rowLines = laid ? savedLines(t.rowLines, rowFields) : []
   const columnLines = laid ? savedLines(t.columnLines, colFields) : []
-  // the Filters area and the headers: a field's name, Σ Values', a value field's (`Total` in the classic layout is the grand total's); Row and Column Labels name no field
+  // the Filters area and the headers: a field's name, Σ Values', a value field's (`Total` in the classic layout is the grand total's); Row and Column Labels name no field, their button filters the rows' or the columns' fields
   placeParts(t, frame, top, left, rowFields, colFields, [], [], (row, col, part, at) => {
     if (!laid && at.page === undefined) return
     const axis = at.page !== undefined ? 'pages' : part.kind === 'field' && colFields.includes(part.field) ? 'columns' : 'rows'
     if (part.kind === 'page') put(row, col, { kind: 'pageItem', axis, field: part.field })
+    else if (part.kind === 'rowHeader' || part.kind === 'columnHeader') put(row, col, { kind: 'blank', axis: part.kind === 'rowHeader' ? 'rows' : 'columns' })
     // in a compact PivotTable the names of fields in columns of their own beside Row Labels name none (the set cells-held)
     else if (part.kind === 'field' && at.page === undefined && compact && axis === 'rows') put(row, col, { kind: 'blank' })
     else if (part.kind === 'field') put(row, col, part.field === 'values' ? { kind: 'valuesField', axis, field: 'values' } : { kind: 'field', axis, field: part.field })
     else if (part.kind === 'value') put(row, col, part.total ? { kind: 'grand', axis: 'columns' } : { kind: 'valueName', value: part.value })
-    // Excel's buttons (`pivotButton`): the fields' names and the headers of the rows and columns, the report filters' names
-    if (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'field') buttons.push(formatAddress(row, col))
+    // Excel's buttons: the fields' names and the headers of the rows and columns; a report filter's drawn on its item, right of its name
+    if (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'field') {
+      marked.push(formatAddress(row, col))
+      drawn.push(formatAddress(row, col + (at.page === undefined ? 0 : 1)))
+    }
   })
   if (laid) {
-    // a single value field's name at the corner over column labels, whether a row field shows it there or not, with a
-    // button beside row fields; with no field on columns and the value fields on the rows, the head of their column is the
-    // grand total's
+    // a single value field's name at the corner over column labels, whether a row field shows it there or not, marked
+    // with a button beside row fields that Excel draws not; with no field on columns and the value fields on the rows,
+    // the head of their column is the grand total's
     if (captionRow && values.length === 1) {
       put(top, left, { kind: 'valueName', value: 0 })
-      if (rowFields.length) buttons.push(formatAddress(top, left))
+      if (rowFields.length) marked.push(formatAddress(top, left))
     }
     if (!colFields.length && rowFields.includes('values')) put(top + height - 1, left + width, { kind: 'grand', axis: 'columns' })
     const one = values.length ? (rowFields.includes('values') || colFields.includes('values') ? undefined : 0) : undefined
@@ -122,9 +131,9 @@ function cellsOf(t: PivotTable): PivotCells {
       })
     })
   }
-  const unique = [...new Set(buttons)]
-  for (const a of unique) cells[a] = { ...cells[a], button: true }
-  return { cells, buttons: unique }
+  const buttons = [...new Set(drawn)]
+  for (const a of buttons) cells[a] = { ...cells[a], button: true }
+  return { cells, buttons, marked: [...new Set(marked)] }
 }
 
 /** The sheet of `book` by its name, compared as Excel compares names. */
@@ -143,8 +152,13 @@ export function pivotCells(book: BookInput | BookLayout, sheet: string, pivot: s
   const s = sheetOf(book, sheet)
   const key = caseKey(checkString(pivot, 'pivot'))
   const t = s?.pivotTables?.find((p) => caseKey(p.name) === key)
-  return t ? cellsOf(t) : null
+  if (!t) return null
+  const { cells, buttons } = cellsOf(t)
+  return { cells, buttons }
 }
+
+/** The cells of a PivotTable's file marked with Excel's filter button (`pivotButton`), which Excel opening the file draws from. */
+export const pivotButtonsMarked = (t: PivotTable): string[] => cellsOf(t).marked
 
 /** What the cell `cell` of `sheet` is in the PivotTable whose cells hold it (`pivotCells`); null in no PivotTable. */
 export function pivotCellAt(book: BookInput | BookLayout, sheet: string, cell: string): PivotCell | null {
