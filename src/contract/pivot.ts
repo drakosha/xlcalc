@@ -292,6 +292,26 @@ export interface PivotLocation {
   firstDataColumn: number
   pageRows?: number
   pageColumns?: number
+  /** Its areas as ranges, worked out from the fields above on every PivotTable the library gives; ignored on input. */
+  areas?: PivotAreas
+}
+
+/**
+ * A PivotTable's areas on its sheet, in A1 (`A3:D10`, a cell alone `A4`): what a host selects, outlines or tests a cell
+ * against without working them out from the place. One not laid out (added without `xlcalc/pivot`), shrunk to its
+ * top-left cell (`#SPILL!`) or with no field at all has its table (and Filters area) alone.
+ */
+export interface PivotAreas {
+  /** The Filters area above the table, as wide as its filters, without the blank row under it (Excel's `PageRange`). */
+  page?: string
+  /** The table without its Filters area, `range` (Excel's `TableRange1`). */
+  table: string
+  /** The table's rows above its values: the value fields' and the column fields' headers and the columns' labels. */
+  columnHeaders?: string
+  /** The labels of the rows left of the values, down to the grand total. */
+  rowLabels?: string
+  /** The values with their totals (Excel's `DataBodyRange`); none without a value field. */
+  data?: string
 }
 
 /** A PivotTable's look, as Excel's PivotTable Style Options. */
