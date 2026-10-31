@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.73.1 (2026-10-31)
+
+Fixed:
+
+- `writeXlsx` and `writeKept` mark a PivotTable's filter buttons in the file (`pivotButton` on the cell format of the cells `pivotCells` gives a button), as Excel saves them: Excel opening a file without the mark draws no button on the fields' names, `Row Labels`, `Column Labels` and the report filters until the PivotTable is refreshed. `writeKept` kept the original file's marks before; a PivotTable added in a session, or a button cell the file did not mark, had none.
+
+Changed:
+
+- `xlcalc/xlsx` is 307 KB minified (it was 301), `xlcalc/xlsx/keep` 389 KB (383).
+
 ## 0.73.0 (2026-10-31)
 
 Added:
