@@ -9,10 +9,10 @@ import { readXlsx } from '../src/xlsx.js'
 import { rounded, shown } from '../bench/coverage/pivot/phases.js'
 
 const root = new URL('./excel/win/pivot/', import.meta.url)
-for (const set of ['corpus-shapes', 'order-probe', 'order-held']) {
+for (const set of ['corpus-shapes', 'order-probe', 'order-held', 'order-check']) {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, root), 'utf8')).answers
   for (const [id, answer] of Object.entries(answers) as [string, { phases: PivotPhase[] }][])
-    if (id.startsWith('ties-') || set === 'order-held')
+    if (id.startsWith('ties-') || set === 'order-held' || id.startsWith('mixed-'))
       it(`sorts ${set}/${id} without reading Excel's resulting layout`, async () => {
         for (let k = 0; k < answer.phases.length; k++) {
           const suffix = k < answer.phases.length - 1 ? `-${k + 1}` : ''

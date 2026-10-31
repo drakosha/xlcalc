@@ -95,6 +95,25 @@ export function drive(c: PivotCase): DrivenPhase[] {
       })
       return laid(k)
     }
+    if ('pages' in op) {
+      const fs = op.pages.map(fieldOf)
+      setTable(pt, t => ({ ...t, rows: t.rows?.filter(f => !fs.includes(f as number)), columns: t.columns?.filter(f => !fs.includes(f as number)), pages: [...(t.pages ?? []).filter(p => !fs.includes(p.field)), ...fs.map(field => ({ field }))] }))
+      return laid(k)
+    }
+    if ('page' in op || 'hide' in op) {
+      const f = fieldOf('page' in op ? op.page : op.hide)
+      const all = 'page' in op && op.items === '(All)'
+      const selected = all ? [] : (op.items as string[]).map(label => itemAt(tableOf(pt), f, label))
+      if (selected.some(p => p < 0)) { errors.push(`op ${k}: unknown item`); return }
+      setTable(pt, t => {
+        const fields = t.fields.slice()
+        if ('hide' in op || all || selected.length > 1)
+          fields[f] = { ...fields[f], items: fields[f].items?.map((x, p) => ({ ...x, hidden: 'hide' in op ? x.hidden || selected.includes(p) : !all && !selected.includes(p) })) }
+        const pages = 'page' in op ? t.pages?.map(p => p.field === f ? { field: f, ...(selected.length === 1 ? { item: selected[0] } : {}) } : p) : t.pages
+        return { ...t, fields, ...(pages ? { pages } : {}) }
+      })
+      return laid(k)
+    }
     if ('value' in op) {
       const f = fieldOf(op.value.field)
       const fn = (op.value.fn ?? 'sum') as PivotFunction
