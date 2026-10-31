@@ -1,0 +1,5262 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 37.5
+ },
+ "cases": [
+  {
+   "id": "if-errors",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=IF(Amount>0,Amount,0)"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "iferror-ratio",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=IFERROR(Price/Qty,0)"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "power",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=Price^2/100"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "abs",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=ABS(Amount)"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "min",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=MIN(Price,10*Qty)"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "div-some",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Code"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=Price/(Qty-Qty+Code-15)"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "boolean",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=TRUE+Qty"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns-subtotals",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Flag"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=Price/Qty"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "layout": "outline"
+    }
+   ]
+  },
+  {
+   "id": "ratio-tabular",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "calcField": "Calc field",
+     "formula": "=Amount/Qty"
+    },
+    {
+     "value": {
+      "field": "Calc field"
+     }
+    },
+    {
+     "layout": "tabular"
+    }
+   ]
+  },
+  {
+   "id": "item-subtotals",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "calcItem": "Two fruits",
+     "field": "Product",
+     "formula": "=Plum+Pear"
+    }
+   ]
+  },
+  {
+   "id": "item-grand",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "calcItem": "Middle less West",
+     "field": "Region",
+     "formula": "=Central-West"
+    }
+   ]
+  },
+  {
+   "id": "item-number",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Code"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "calcItem": "Five twice",
+     "field": "Code",
+     "formula": "='5'*2"
+    }
+   ]
+  },
+  {
+   "id": "item-lower",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "calcItem": "East and west",
+     "field": "Region",
+     "formula": "=east+West"
+    }
+   ]
+  },
+  {
+   "id": "item-two-fields",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "calcItem": "Both",
+     "field": "Region",
+     "formula": "=North+South"
+    },
+    {
+     "calcItem": "Pair",
+     "field": "Product",
+     "formula": "=Fig+Apple"
+    }
+   ]
+  },
+  {
+   "id": "field-and-item",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "calcField": "Unit",
+     "formula": "=Price/Qty"
+    },
+    {
+     "value": {
+      "field": "Unit"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "calcItem": "Plum and fig",
+     "field": "Product",
+     "formula": "=Plum+Fig"
+    }
+   ]
+  },
+  {
+   "id": "item-then-field",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "calcItem": "Twice",
+     "field": "Region",
+     "formula": "=South*2"
+    },
+    {
+     "calcField": "Half",
+     "formula": "=Price/2"
+    },
+    {
+     "value": {
+      "field": "Half"
+     }
+    }
+   ]
+  },
+  {
+   "id": "shared-field",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "calcField": "Unit",
+     "formula": "=Price/Qty"
+    },
+    {
+     "value": {
+      "field": "Unit"
+     }
+    },
+    {
+     "value": {
+      "field": "Unit"
+     },
+     "pt": "PT2"
+    }
+   ]
+  },
+  {
+   "id": "shared-item",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Region"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "calcItem": "North and south",
+     "field": "Region",
+     "formula": "=North+South",
+     "pt": "PT2"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "if-errors": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 2588a3bad5d77901",
+  "iferror-ratio": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 80852af8d68468e2",
+  "power": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e1ce6103f9cc5e61",
+  "abs": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 f8d6f30d6b0936fe",
+  "min": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 dfbfd0fe508aebc5",
+  "div-some": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fe623035a636630a",
+  "boolean": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 d8a8bcda99f5a98d",
+  "columns-subtotals": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8cb9d72665b36545",
+  "ratio-tabular": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdf834a0a16e2426",
+  "item-subtotals": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 245a6bafaee73ece",
+  "item-grand": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 1ce97189f3c8650f",
+  "item-number": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 0f810083cf688bdb",
+  "item-lower": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 da7934c6f602b35f",
+  "item-two-fields": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 de0cca5c5337fcdf",
+  "field-and-item": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 6ab630b1f5e0508e",
+  "item-then-field": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 5f30c259fe2713e8",
+  "shared-field": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 a99f9a3a9e2fb0aa",
+  "shared-item": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 f7a4ac007d5cae80"
+ },
+ "answers": {
+  "if-errors": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "east",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "North",
+         2490.68
+        ],
+        [
+         "South",
+         4260.9
+        ],
+        [
+         "West",
+         3920.2599999999998
+        ],
+        [
+         "(blank)",
+         645.9
+        ],
+        [
+         "Grand Total",
+         {
+          "error": "DIV0"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         "#N/A"
+        ],
+        [
+         "east",
+         "#DIV/0!"
+        ],
+        [
+         "North",
+         "2490.68"
+        ],
+        [
+         "South",
+         "4260.9"
+        ],
+        [
+         "West",
+         "3920.26"
+        ],
+        [
+         "(blank)",
+         "645.9"
+        ],
+        [
+         "Grand Total",
+         "#DIV/0!"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "iferror-ratio": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B36",
+       "area": "A3:B36",
+       "body": "B4:B36",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         5.130238095238095
+        ],
+        [
+         "Apple",
+         4.956
+        ],
+        [
+         "Fig",
+         6.976153846153845
+        ],
+        [
+         "Pear",
+         4.3925
+        ],
+        [
+         "Plum",
+         5.160000000000001
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         1.6983333333333333
+        ],
+        [
+         "east",
+         2.7327692307692306
+        ],
+        [
+         "Apple",
+         2.626
+        ],
+        [
+         "Fig",
+         2.1133333333333333
+        ],
+        [
+         "Pear",
+         5.55
+        ],
+        [
+         "Plum",
+         1.6059999999999999
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         0.8714285714285713
+        ],
+        [
+         "North",
+         3.505555555555556
+        ],
+        [
+         "Apple",
+         4.246666666666667
+        ],
+        [
+         "Fig",
+         18.035
+        ],
+        [
+         "Pear",
+         1.7976190476190477
+        ],
+        [
+         "Plum",
+         8.09
+        ],
+        [
+         "South",
+         3.677407407407407
+        ],
+        [
+         "Apple",
+         2.376111111111111
+        ],
+        [
+         "Fig",
+         0.36000000000000004
+        ],
+        [
+         "Pear",
+         15.616666666666667
+        ],
+        [
+         "Plum",
+         4.180909090909091
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         5.865
+        ],
+        [
+         "West",
+         2.8894897959183683
+        ],
+        [
+         "7",
+         0
+        ],
+        [
+         "Apple",
+         2.9027777777777777
+        ],
+        [
+         "Fig",
+         3.4515000000000002
+        ],
+        [
+         "Pear",
+         2.1986363636363637
+        ],
+        [
+         "Plum",
+         4.083703703703703
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         0.5433333333333333
+        ],
+        [
+         "(blank)",
+         0
+        ],
+        [
+         "Plum",
+         0
+        ],
+        [
+         "Grand Total",
+         3.3431034482758615
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         "5.130238095"
+        ],
+        [
+         "Apple",
+         "4.956"
+        ],
+        [
+         "Fig",
+         "6.976153846"
+        ],
+        [
+         "Pear",
+         "4.3925"
+        ],
+        [
+         "Plum",
+         "5.16"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "1.698333333"
+        ],
+        [
+         "east",
+         "2.732769231"
+        ],
+        [
+         "Apple",
+         "2.626"
+        ],
+        [
+         "Fig",
+         "2.113333333"
+        ],
+        [
+         "Pear",
+         "5.55"
+        ],
+        [
+         "Plum",
+         "1.606"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "0.871428571"
+        ],
+        [
+         "North",
+         "3.505555556"
+        ],
+        [
+         "Apple",
+         "4.246666667"
+        ],
+        [
+         "Fig",
+         "18.035"
+        ],
+        [
+         "Pear",
+         "1.797619048"
+        ],
+        [
+         "Plum",
+         "8.09"
+        ],
+        [
+         "South",
+         "3.677407407"
+        ],
+        [
+         "Apple",
+         "2.376111111"
+        ],
+        [
+         "Fig",
+         "0.36"
+        ],
+        [
+         "Pear",
+         "15.61666667"
+        ],
+        [
+         "Plum",
+         "4.180909091"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "5.865"
+        ],
+        [
+         "West",
+         "2.889489796"
+        ],
+        [
+         "7",
+         "0"
+        ],
+        [
+         "Apple",
+         "2.902777778"
+        ],
+        [
+         "Fig",
+         "3.4515"
+        ],
+        [
+         "Pear",
+         "2.198636364"
+        ],
+        [
+         "Plum",
+         "4.083703704"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "0.543333333"
+        ],
+        [
+         "(blank)",
+         "0"
+        ],
+        [
+         "Plum",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "3.343103448"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "power": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         464.273209
+        ],
+        [
+         "east",
+         315.52416900000003
+        ],
+        [
+         "North",
+         89.58622499999997
+        ],
+        [
+         "South",
+         394.34016400000013
+        ],
+        [
+         "West",
+         801.8524890000001
+        ],
+        [
+         "(blank)",
+         0
+        ],
+        [
+         "Grand Total",
+         9399.302499999998
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         "464.273209"
+        ],
+        [
+         "east",
+         "315.524169"
+        ],
+        [
+         "North",
+         "89.586225"
+        ],
+        [
+         "South",
+         "394.340164"
+        ],
+        [
+         "West",
+         "801.852489"
+        ],
+        [
+         "(blank)",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "9399.3025"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "abs": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "east",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "North",
+         2490.68
+        ],
+        [
+         "South",
+         4260.9
+        ],
+        [
+         "West",
+         3920.2599999999998
+        ],
+        [
+         "(blank)",
+         645.9
+        ],
+        [
+         "Grand Total",
+         {
+          "error": "DIV0"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         "#N/A"
+        ],
+        [
+         "east",
+         "#DIV/0!"
+        ],
+        [
+         "North",
+         "2490.68"
+        ],
+        [
+         "South",
+         "4260.9"
+        ],
+        [
+         "West",
+         "3920.26"
+        ],
+        [
+         "(blank)",
+         "645.9"
+        ],
+        [
+         "Grand Total",
+         "#DIV/0!"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "min": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "7",
+         0
+        ],
+        [
+         "Apple",
+         185.06
+        ],
+        [
+         "Fig",
+         244.48999999999998
+        ],
+        [
+         "Pear",
+         217.14000000000001
+        ],
+        [
+         "Plum",
+         244.61
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         78.19999999999999
+        ],
+        [
+         "Grand Total",
+         969.5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "7",
+         "0"
+        ],
+        [
+         "Apple",
+         "185.06"
+        ],
+        [
+         "Fig",
+         "244.49"
+        ],
+        [
+         "Pear",
+         "217.14"
+        ],
+        [
+         "Plum",
+         "244.61"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "78.2"
+        ],
+        [
+         "Grand Total",
+         "969.5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "div-some": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         5,
+         2.795166666666667
+        ],
+        [
+         15,
+         1.2504615384615385
+        ],
+        [
+         25,
+         0.7446111111111111
+        ],
+        [
+         35,
+         0.5643333333333334
+        ],
+        [
+         "15",
+         -0.13866666666666666
+        ],
+        [
+         "Grand Total",
+         0.8286324786324787
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "5",
+         "2.795166667"
+        ],
+        [
+         "15",
+         "1.250461538"
+        ],
+        [
+         "25",
+         "0.744611111"
+        ],
+        [
+         "35",
+         "0.564333333"
+        ],
+        [
+         "15",
+         "-0.138666667"
+        ],
+        [
+         "Grand Total",
+         "0.828632479"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "boolean": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         43
+        ],
+        [
+         "east",
+         66
+        ],
+        [
+         "North",
+         28
+        ],
+        [
+         "South",
+         55
+        ],
+        [
+         "West",
+         99
+        ],
+        [
+         "(blank)",
+         5
+        ],
+        [
+         "Grand Total",
+         291
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Calc field"
+        ],
+        [
+         "Central",
+         "43"
+        ],
+        [
+         "east",
+         "66"
+        ],
+        [
+         "North",
+         "28"
+        ],
+        [
+         "South",
+         "55"
+        ],
+        [
+         "West",
+         "99"
+        ],
+        [
+         "(blank)",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "291"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "columns-subtotals": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:I22",
+       "area": "A3:I22",
+       "body": "C5:I22",
+       "values": [
+        [
+         "Sum of Calc field",
+         null,
+         "Product",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Region",
+         "Flag",
+         "7",
+         "Apple",
+         "Fig",
+         "Pear",
+         "Plum",
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Grand Total"
+        ],
+        [
+         "Central",
+         null,
+         {
+          "error": "DIV0"
+         },
+         4.956,
+         6.976153846153846,
+         4.3925,
+         5.160000000000001,
+         1.6983333333333333,
+         5.130238095238095
+        ],
+        [
+         null,
+         "FALSE",
+         {
+          "error": "DIV0"
+         },
+         1.41,
+         13.52,
+         {
+          "error": "DIV0"
+         },
+         6.942,
+         {
+          "error": "DIV0"
+         },
+         5.387
+        ],
+        [
+         null,
+         "TRUE",
+         {
+          "error": "DIV0"
+         },
+         19.14,
+         6.430833333333332,
+         4.3925,
+         4.17,
+         1.6983333333333333,
+         5.05
+        ],
+        [
+         "east",
+         null,
+         {
+          "error": "DIV0"
+         },
+         2.626,
+         2.1133333333333333,
+         5.55,
+         1.6059999999999999,
+         0.8714285714285713,
+         2.7327692307692306
+        ],
+        [
+         null,
+         "FALSE",
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         6.595999999999999,
+         5.370909090909091,
+         0,
+         {
+          "error": "DIV0"
+         },
+         5.114444444444445
+        ],
+        [
+         null,
+         "TRUE",
+         {
+          "error": "DIV0"
+         },
+         2.626,
+         0.7125,
+         7.52,
+         2.6766666666666663,
+         0.8714285714285713,
+         1.8206382978723403
+        ],
+        [
+         "North",
+         null,
+         {
+          "error": "DIV0"
+         },
+         4.246666666666667,
+         18.035,
+         1.7976190476190477,
+         8.09,
+         {
+          "error": "DIV0"
+         },
+         3.505555555555556
+        ],
+        [
+         null,
+         "FALSE",
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         18.035,
+         2.9166666666666665,
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         5.665454545454545
+        ],
+        [
+         null,
+         "TRUE",
+         {
+          "error": "DIV0"
+         },
+         4.246666666666667,
+         {
+          "error": "DIV0"
+         },
+         0.9583333333333334,
+         8.09,
+         {
+          "error": "DIV0"
+         },
+         2.020625
+        ],
+        [
+         "South",
+         null,
+         {
+          "error": "DIV0"
+         },
+         2.376111111111111,
+         0.36000000000000004,
+         15.616666666666667,
+         4.180909090909091,
+         5.865,
+         3.6774074074074075
+        ],
+        [
+         null,
+         "FALSE",
+         {
+          "error": "DIV0"
+         },
+         0.306875,
+         0.36000000000000004,
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         0.3296428571428572
+        ],
+        [
+         null,
+         "TRUE",
+         {
+          "error": "DIV0"
+         },
+         18.93,
+         {
+          "error": "DIV0"
+         },
+         15.616666666666667,
+         4.180909090909091,
+         5.865,
+         7.282692307692309
+        ],
+        [
+         "West",
+         null,
+         0,
+         2.9027777777777777,
+         3.4515000000000002,
+         2.1986363636363637,
+         4.083703703703703,
+         0.5433333333333333,
+         2.889489795918367
+        ],
+        [
+         null,
+         "FALSE",
+         {
+          "error": "DIV0"
+         },
+         17.74,
+         0.42,
+         3.7391666666666663,
+         4.419,
+         {
+          "error": "DIV0"
+         },
+         4.305599999999999
+        ],
+        [
+         null,
+         "TRUE",
+         0,
+         2.03,
+         3.788333333333333,
+         0.35,
+         3.886470588235294,
+         0.5433333333333333,
+         2.4045205479452054
+        ],
+        [
+         "(blank)",
+         null,
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         0,
+         {
+          "error": "DIV0"
+         },
+         0
+        ],
+        [
+         null,
+         "TRUE",
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         {
+          "error": "DIV0"
+         },
+         0,
+         {
+          "error": "DIV0"
+         },
+         0
+        ],
+        [
+         "Grand Total",
+         null,
+         0,
+         2.8915625,
+         3.595441176470588,
+         3.502258064516129,
+         3.945322580645162,
+         2.6965517241379313,
+         3.3431034482758615
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Calc field",
+         "",
+         "Product",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Region",
+         "Flag",
+         "7",
+         "Apple",
+         "Fig",
+         "Pear",
+         "Plum",
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Grand Total"
+        ],
+        [
+         "Central",
+         "",
+         "#DIV/0!",
+         "4.956",
+         "6.976153846",
+         "4.3925",
+         "5.16",
+         "1.698333333",
+         "5.130238095"
+        ],
+        [
+         "",
+         "FALSE",
+         "#DIV/0!",
+         "1.41",
+         "13.52",
+         "#DIV/0!",
+         "6.942",
+         "#DIV/0!",
+         "5.387"
+        ],
+        [
+         "",
+         "TRUE",
+         "#DIV/0!",
+         "19.14",
+         "6.430833333",
+         "4.3925",
+         "4.17",
+         "1.698333333",
+         "5.05"
+        ],
+        [
+         "east",
+         "",
+         "#DIV/0!",
+         "2.626",
+         "2.113333333",
+         "5.55",
+         "1.606",
+         "0.871428571",
+         "2.732769231"
+        ],
+        [
+         "",
+         "FALSE",
+         "#DIV/0!",
+         "#DIV/0!",
+         "6.596",
+         "5.370909091",
+         "0",
+         "#DIV/0!",
+         "5.114444444"
+        ],
+        [
+         "",
+         "TRUE",
+         "#DIV/0!",
+         "2.626",
+         "0.7125",
+         "7.52",
+         "2.676666667",
+         "0.871428571",
+         "1.820638298"
+        ],
+        [
+         "North",
+         "",
+         "#DIV/0!",
+         "4.246666667",
+         "18.035",
+         "1.797619048",
+         "8.09",
+         "#DIV/0!",
+         "3.505555556"
+        ],
+        [
+         "",
+         "FALSE",
+         "#DIV/0!",
+         "#DIV/0!",
+         "18.035",
+         "2.916666667",
+         "#DIV/0!",
+         "#DIV/0!",
+         "5.665454545"
+        ],
+        [
+         "",
+         "TRUE",
+         "#DIV/0!",
+         "4.246666667",
+         "#DIV/0!",
+         "0.958333333",
+         "8.09",
+         "#DIV/0!",
+         "2.020625"
+        ],
+        [
+         "South",
+         "",
+         "#DIV/0!",
+         "2.376111111",
+         "0.36",
+         "15.61666667",
+         "4.180909091",
+         "5.865",
+         "3.677407407"
+        ],
+        [
+         "",
+         "FALSE",
+         "#DIV/0!",
+         "0.306875",
+         "0.36",
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!",
+         "0.329642857"
+        ],
+        [
+         "",
+         "TRUE",
+         "#DIV/0!",
+         "18.93",
+         "#DIV/0!",
+         "15.61666667",
+         "4.180909091",
+         "5.865",
+         "7.282692308"
+        ],
+        [
+         "West",
+         "",
+         "0",
+         "2.902777778",
+         "3.4515",
+         "2.198636364",
+         "4.083703704",
+         "0.543333333",
+         "2.889489796"
+        ],
+        [
+         "",
+         "FALSE",
+         "#DIV/0!",
+         "17.74",
+         "0.42",
+         "3.739166667",
+         "4.419",
+         "#DIV/0!",
+         "4.3056"
+        ],
+        [
+         "",
+         "TRUE",
+         "0",
+         "2.03",
+         "3.788333333",
+         "0.35",
+         "3.886470588",
+         "0.543333333",
+         "2.404520548"
+        ],
+        [
+         "(blank)",
+         "",
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!",
+         "0",
+         "#DIV/0!",
+         "0"
+        ],
+        [
+         "",
+         "TRUE",
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!",
+         "0",
+         "#DIV/0!",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "",
+         "0",
+         "2.8915625",
+         "3.595441176",
+         "3.502258065",
+         "3.945322581",
+         "2.696551724",
+         "3.343103448"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "ratio-tabular": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C36",
+       "area": "A3:C36",
+       "body": "C4:C36",
+       "values": [
+        [
+         "Product",
+         "Region",
+         "Sum of Calc field"
+        ],
+        [
+         "7",
+         "West",
+         33.92
+        ],
+        [
+         "7 Total",
+         null,
+         33.92
+        ],
+        [
+         "Apple",
+         "Central",
+         89.452
+        ],
+        [
+         null,
+         "east",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         null,
+         "North",
+         212.94333333333336
+        ],
+        [
+         null,
+         "South",
+         76.80777777777777
+        ],
+        [
+         null,
+         "West",
+         58.650555555555556
+        ],
+        [
+         "Apple Total",
+         null,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "Fig",
+         "Central",
+         122.30846153846154
+        ],
+        [
+         null,
+         "east",
+         44.12238095238095
+        ],
+        [
+         null,
+         "North",
+         324
+        ],
+        [
+         null,
+         "South",
+         60.1175
+        ],
+        [
+         null,
+         "West",
+         60.595000000000006
+        ],
+        [
+         "Fig Total",
+         null,
+         74.96897058823528
+        ],
+        [
+         "Pear",
+         "Central",
+         -7.82
+        ],
+        [
+         null,
+         "east",
+         97.52749999999999
+        ],
+        [
+         null,
+         "North",
+         42.381904761904764
+        ],
+        [
+         null,
+         "South",
+         0
+        ],
+        [
+         null,
+         "West",
+         33.311818181818175
+        ],
+        [
+         "Pear Total",
+         null,
+         44.547258064516136
+        ],
+        [
+         "Plum",
+         "Central",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         null,
+         "east",
+         88.816
+        ],
+        [
+         null,
+         "North",
+         313.83
+        ],
+        [
+         null,
+         "South",
+         141.63272727272727
+        ],
+        [
+         null,
+         "West",
+         27.980740740740742
+        ],
+        [
+         null,
+         "(blank)",
+         161.475
+        ],
+        [
+         "Plum Total",
+         null,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Central",
+         130.615
+        ],
+        [
+         null,
+         "east",
+         45.98571428571428
+        ],
+        [
+         null,
+         "South",
+         59.899
+        ],
+        [
+         null,
+         "West",
+         -0.8816666666666667
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays Total",
+         null,
+         58.59620689655173
+        ],
+        [
+         "Grand Total",
+         null,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "Region",
+         "Sum of Calc field"
+        ],
+        [
+         "7",
+         "West",
+         "33.92"
+        ],
+        [
+         "7 Total",
+         "",
+         "33.92"
+        ],
+        [
+         "Apple",
+         "Central",
+         "89.452"
+        ],
+        [
+         "",
+         "east",
+         "#DIV/0!"
+        ],
+        [
+         "",
+         "North",
+         "212.9433333"
+        ],
+        [
+         "",
+         "South",
+         "76.80777778"
+        ],
+        [
+         "",
+         "West",
+         "58.65055556"
+        ],
+        [
+         "Apple Total",
+         "",
+         "#DIV/0!"
+        ],
+        [
+         "Fig",
+         "Central",
+         "122.3084615"
+        ],
+        [
+         "",
+         "east",
+         "44.12238095"
+        ],
+        [
+         "",
+         "North",
+         "324"
+        ],
+        [
+         "",
+         "South",
+         "60.1175"
+        ],
+        [
+         "",
+         "West",
+         "60.595"
+        ],
+        [
+         "Fig Total",
+         "",
+         "74.96897059"
+        ],
+        [
+         "Pear",
+         "Central",
+         "-7.82"
+        ],
+        [
+         "",
+         "east",
+         "97.5275"
+        ],
+        [
+         "",
+         "North",
+         "42.38190476"
+        ],
+        [
+         "",
+         "South",
+         "0"
+        ],
+        [
+         "",
+         "West",
+         "33.31181818"
+        ],
+        [
+         "Pear Total",
+         "",
+         "44.54725806"
+        ],
+        [
+         "Plum",
+         "Central",
+         "#N/A"
+        ],
+        [
+         "",
+         "east",
+         "88.816"
+        ],
+        [
+         "",
+         "North",
+         "313.83"
+        ],
+        [
+         "",
+         "South",
+         "141.6327273"
+        ],
+        [
+         "",
+         "West",
+         "27.98074074"
+        ],
+        [
+         "",
+         "(blank)",
+         "161.475"
+        ],
+        [
+         "Plum Total",
+         "",
+         "#N/A"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Central",
+         "130.615"
+        ],
+        [
+         "",
+         "east",
+         "45.98571429"
+        ],
+        [
+         "",
+         "South",
+         "59.899"
+        ],
+        [
+         "",
+         "West",
+         "-0.881666667"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays Total",
+         "",
+         "58.5962069"
+        ],
+        [
+         "Grand Total",
+         "",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Calc field"
+     }
+    }
+   ]
+  },
+  "item-subtotals": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B42",
+       "area": "A3:B42",
+       "body": "B4:B42",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         60
+        ],
+        [
+         "Apple",
+         5
+        ],
+        [
+         "Fig",
+         13
+        ],
+        [
+         "Pear",
+         4
+        ],
+        [
+         "Plum",
+         14
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         6
+        ],
+        [
+         "Two fruits",
+         18
+        ],
+        [
+         "east",
+         82
+        ],
+        [
+         "Apple",
+         20
+        ],
+        [
+         "Fig",
+         21
+        ],
+        [
+         "Pear",
+         12
+        ],
+        [
+         "Plum",
+         5
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         7
+        ],
+        [
+         "Two fruits",
+         17
+        ],
+        [
+         "North",
+         49
+        ],
+        [
+         "Apple",
+         3
+        ],
+        [
+         "Fig",
+         2
+        ],
+        [
+         "Pear",
+         21
+        ],
+        [
+         "Plum",
+         1
+        ],
+        [
+         "Two fruits",
+         22
+        ],
+        [
+         "South",
+         68
+        ],
+        [
+         "Apple",
+         18
+        ],
+        [
+         "Fig",
+         12
+        ],
+        [
+         "Pear",
+         3
+        ],
+        [
+         "Plum",
+         11
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         10
+        ],
+        [
+         "Two fruits",
+         14
+        ],
+        [
+         "West",
+         147
+        ],
+        [
+         "7",
+         5
+        ],
+        [
+         "Apple",
+         18
+        ],
+        [
+         "Fig",
+         20
+        ],
+        [
+         "Pear",
+         22
+        ],
+        [
+         "Plum",
+         27
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         6
+        ],
+        [
+         "Two fruits",
+         49
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Plum",
+         4
+        ],
+        [
+         "Two fruits",
+         4
+        ],
+        [
+         "Grand Total",
+         414
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "60"
+        ],
+        [
+         "Apple",
+         "5"
+        ],
+        [
+         "Fig",
+         "13"
+        ],
+        [
+         "Pear",
+         "4"
+        ],
+        [
+         "Plum",
+         "14"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "6"
+        ],
+        [
+         "Two fruits",
+         "18"
+        ],
+        [
+         "east",
+         "82"
+        ],
+        [
+         "Apple",
+         "20"
+        ],
+        [
+         "Fig",
+         "21"
+        ],
+        [
+         "Pear",
+         "12"
+        ],
+        [
+         "Plum",
+         "5"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "7"
+        ],
+        [
+         "Two fruits",
+         "17"
+        ],
+        [
+         "North",
+         "49"
+        ],
+        [
+         "Apple",
+         "3"
+        ],
+        [
+         "Fig",
+         "2"
+        ],
+        [
+         "Pear",
+         "21"
+        ],
+        [
+         "Plum",
+         "1"
+        ],
+        [
+         "Two fruits",
+         "22"
+        ],
+        [
+         "South",
+         "68"
+        ],
+        [
+         "Apple",
+         "18"
+        ],
+        [
+         "Fig",
+         "12"
+        ],
+        [
+         "Pear",
+         "3"
+        ],
+        [
+         "Plum",
+         "11"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "10"
+        ],
+        [
+         "Two fruits",
+         "14"
+        ],
+        [
+         "West",
+         "147"
+        ],
+        [
+         "7",
+         "5"
+        ],
+        [
+         "Apple",
+         "18"
+        ],
+        [
+         "Fig",
+         "20"
+        ],
+        [
+         "Pear",
+         "22"
+        ],
+        [
+         "Plum",
+         "27"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "6"
+        ],
+        [
+         "Two fruits",
+         "49"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Plum",
+         "4"
+        ],
+        [
+         "Two fruits",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "414"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "item-grand": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:D12",
+       "area": "A3:D12",
+       "body": "B5:D12",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "FALSE",
+         "TRUE",
+         "Grand Total"
+        ],
+        [
+         "Central",
+         10,
+         32,
+         42
+        ],
+        [
+         "east",
+         18,
+         47,
+         65
+        ],
+        [
+         "North",
+         11,
+         16,
+         27
+        ],
+        [
+         "South",
+         28,
+         26,
+         54
+        ],
+        [
+         "West",
+         25,
+         73,
+         98
+        ],
+        [
+         "(blank)",
+         null,
+         4,
+         4
+        ],
+        [
+         "Middle less West",
+         -15,
+         -41,
+         -56
+        ],
+        [
+         "Grand Total",
+         77,
+         157,
+         234
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "FALSE",
+         "TRUE",
+         "Grand Total"
+        ],
+        [
+         "Central",
+         "10",
+         "32",
+         "42"
+        ],
+        [
+         "east",
+         "18",
+         "47",
+         "65"
+        ],
+        [
+         "North",
+         "11",
+         "16",
+         "27"
+        ],
+        [
+         "South",
+         "28",
+         "26",
+         "54"
+        ],
+        [
+         "West",
+         "25",
+         "73",
+         "98"
+        ],
+        [
+         "(blank)",
+         "",
+         "4",
+         "4"
+        ],
+        [
+         "Middle less West",
+         "-15",
+         "-41",
+         "-56"
+        ],
+        [
+         "Grand Total",
+         "77",
+         "157",
+         "234"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "item-number": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         5,
+         167.71
+        ],
+        [
+         15,
+         243.84
+        ],
+        [
+         25,
+         268.06
+        ],
+        [
+         35,
+         287.81
+        ],
+        [
+         "15",
+         2.08
+        ],
+        [
+         "Five twice",
+         335.42
+        ],
+        [
+         "Grand Total",
+         1304.92
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "5",
+         "167.71"
+        ],
+        [
+         "15",
+         "243.84"
+        ],
+        [
+         "25",
+         "268.06"
+        ],
+        [
+         "35",
+         "287.81"
+        ],
+        [
+         "15",
+         "2.08"
+        ],
+        [
+         "Five twice",
+         "335.42"
+        ],
+        [
+         "Grand Total",
+         "1304.92"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "item-lower": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "East and west",
+         163
+        ],
+        [
+         "Grand Total",
+         453
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "East and west",
+         "163"
+        ],
+        [
+         "Grand Total",
+         "453"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "item-two-fields": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B50",
+       "area": "A3:B50",
+       "body": "B4:B50",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         60
+        ],
+        [
+         "Apple",
+         5
+        ],
+        [
+         "Fig",
+         13
+        ],
+        [
+         "Pear",
+         4
+        ],
+        [
+         "Plum",
+         14
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         6
+        ],
+        [
+         "Pair",
+         18
+        ],
+        [
+         "east",
+         106
+        ],
+        [
+         "Apple",
+         20
+        ],
+        [
+         "Fig",
+         21
+        ],
+        [
+         "Pear",
+         12
+        ],
+        [
+         "Plum",
+         5
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         7
+        ],
+        [
+         "Pair",
+         41
+        ],
+        [
+         "North",
+         32
+        ],
+        [
+         "Apple",
+         3
+        ],
+        [
+         "Fig",
+         2
+        ],
+        [
+         "Pear",
+         21
+        ],
+        [
+         "Plum",
+         1
+        ],
+        [
+         "Pair",
+         5
+        ],
+        [
+         "South",
+         84
+        ],
+        [
+         "Apple",
+         18
+        ],
+        [
+         "Fig",
+         12
+        ],
+        [
+         "Pear",
+         3
+        ],
+        [
+         "Plum",
+         11
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         10
+        ],
+        [
+         "Pair",
+         30
+        ],
+        [
+         "West",
+         136
+        ],
+        [
+         "7",
+         5
+        ],
+        [
+         "Apple",
+         18
+        ],
+        [
+         "Fig",
+         20
+        ],
+        [
+         "Pear",
+         22
+        ],
+        [
+         "Plum",
+         27
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         6
+        ],
+        [
+         "Pair",
+         38
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Plum",
+         4
+        ],
+        [
+         "Pair",
+         0
+        ],
+        [
+         "Both",
+         116
+        ],
+        [
+         "7",
+         0
+        ],
+        [
+         "Apple",
+         21
+        ],
+        [
+         "Fig",
+         14
+        ],
+        [
+         "Pear",
+         24
+        ],
+        [
+         "Plum",
+         12
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         10
+        ],
+        [
+         "Pair",
+         35
+        ],
+        [
+         "Grand Total",
+         538
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "60"
+        ],
+        [
+         "Apple",
+         "5"
+        ],
+        [
+         "Fig",
+         "13"
+        ],
+        [
+         "Pear",
+         "4"
+        ],
+        [
+         "Plum",
+         "14"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "6"
+        ],
+        [
+         "Pair",
+         "18"
+        ],
+        [
+         "east",
+         "106"
+        ],
+        [
+         "Apple",
+         "20"
+        ],
+        [
+         "Fig",
+         "21"
+        ],
+        [
+         "Pear",
+         "12"
+        ],
+        [
+         "Plum",
+         "5"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "7"
+        ],
+        [
+         "Pair",
+         "41"
+        ],
+        [
+         "North",
+         "32"
+        ],
+        [
+         "Apple",
+         "3"
+        ],
+        [
+         "Fig",
+         "2"
+        ],
+        [
+         "Pear",
+         "21"
+        ],
+        [
+         "Plum",
+         "1"
+        ],
+        [
+         "Pair",
+         "5"
+        ],
+        [
+         "South",
+         "84"
+        ],
+        [
+         "Apple",
+         "18"
+        ],
+        [
+         "Fig",
+         "12"
+        ],
+        [
+         "Pear",
+         "3"
+        ],
+        [
+         "Plum",
+         "11"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "10"
+        ],
+        [
+         "Pair",
+         "30"
+        ],
+        [
+         "West",
+         "136"
+        ],
+        [
+         "7",
+         "5"
+        ],
+        [
+         "Apple",
+         "18"
+        ],
+        [
+         "Fig",
+         "20"
+        ],
+        [
+         "Pear",
+         "22"
+        ],
+        [
+         "Plum",
+         "27"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "6"
+        ],
+        [
+         "Pair",
+         "38"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Plum",
+         "4"
+        ],
+        [
+         "Pair",
+         "0"
+        ],
+        [
+         "Both",
+         "116"
+        ],
+        [
+         "7",
+         "0"
+        ],
+        [
+         "Apple",
+         "21"
+        ],
+        [
+         "Fig",
+         "14"
+        ],
+        [
+         "Pear",
+         "24"
+        ],
+        [
+         "Plum",
+         "12"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "10"
+        ],
+        [
+         "Pair",
+         "35"
+        ],
+        [
+         "Grand Total",
+         "538"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "field-and-item": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C11",
+       "area": "A3:C11",
+       "body": "B4:C11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Unit",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         0,
+         5
+        ],
+        [
+         "Apple",
+         2.8915625,
+         64
+        ],
+        [
+         "Fig",
+         3.595441176470588,
+         68
+        ],
+        [
+         "Pear",
+         3.502258064516129,
+         62
+        ],
+        [
+         "Plum",
+         3.9453225806451617,
+         62
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         2.6965517241379304,
+         29
+        ],
+        [
+         "Plum and fig",
+         3.7623076923076924,
+         130
+        ],
+        [
+         "Grand Total",
+         3.4728571428571424,
+         420
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Unit",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         "0",
+         "5"
+        ],
+        [
+         "Apple",
+         "2.8915625",
+         "64"
+        ],
+        [
+         "Fig",
+         "3.595441176",
+         "68"
+        ],
+        [
+         "Pear",
+         "3.502258065",
+         "62"
+        ],
+        [
+         "Plum",
+         "3.945322581",
+         "62"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "2.696551724",
+         "29"
+        ],
+        [
+         "Plum and fig",
+         "3.762307692",
+         "130"
+        ],
+        [
+         "Grand Total",
+         "3.472857143",
+         "420"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Unit",
+      "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "item-then-field": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C11",
+       "area": "A3:C11",
+       "body": "B4:C11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price",
+         "Sum of Half"
+        ],
+        [
+         "Central",
+         215.47,
+         107.735
+        ],
+        [
+         "east",
+         177.63,
+         88.815
+        ],
+        [
+         "North",
+         94.64999999999999,
+         47.324999999999996
+        ],
+        [
+         "South",
+         198.58000000000004,
+         99.29000000000002
+        ],
+        [
+         "West",
+         283.17,
+         141.585
+        ],
+        [
+         "(blank)",
+         null,
+         0
+        ],
+        [
+         "Twice",
+         397.1600000000001,
+         198.58000000000004
+        ],
+        [
+         "Grand Total",
+         1366.66,
+         683.3299999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price",
+         "Sum of Half"
+        ],
+        [
+         "Central",
+         "215.47",
+         "107.735"
+        ],
+        [
+         "east",
+         "177.63",
+         "88.815"
+        ],
+        [
+         "North",
+         "94.65",
+         "47.325"
+        ],
+        [
+         "South",
+         "198.58",
+         "99.29"
+        ],
+        [
+         "West",
+         "283.17",
+         "141.585"
+        ],
+        [
+         "(blank)",
+         "",
+         "0"
+        ],
+        [
+         "Twice",
+         "397.16",
+         "198.58"
+        ],
+        [
+         "Grand Total",
+         "1366.66",
+         "683.33"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 4": "Sum of Half"
+     }
+    }
+   ]
+  },
+  "shared-field": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Unit"
+        ],
+        [
+         "Central",
+         5.130238095238095
+        ],
+        [
+         "east",
+         2.7327692307692306
+        ],
+        [
+         "North",
+         3.505555555555555
+        ],
+        [
+         "South",
+         3.6774074074074083
+        ],
+        [
+         "West",
+         2.8894897959183674
+        ],
+        [
+         "(blank)",
+         0
+        ],
+        [
+         "Grand Total",
+         3.3431034482758615
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Unit"
+        ],
+        [
+         "Central",
+         "5.130238095"
+        ],
+        [
+         "east",
+         "2.732769231"
+        ],
+        [
+         "North",
+         "3.505555556"
+        ],
+        [
+         "South",
+         "3.677407407"
+        ],
+        [
+         "West",
+         "2.889489796"
+        ],
+        [
+         "(blank)",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "3.343103448"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F10",
+       "area": "E3:F10",
+       "body": "F4:F10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Unit"
+        ],
+        [
+         "7",
+         0
+        ],
+        [
+         "Apple",
+         2.8915625
+        ],
+        [
+         "Fig",
+         3.595441176470588
+        ],
+        [
+         "Pear",
+         3.502258064516129
+        ],
+        [
+         "Plum",
+         3.9453225806451617
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         2.6965517241379304
+        ],
+        [
+         "Grand Total",
+         3.343103448275862
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Unit"
+        ],
+        [
+         "7",
+         "0"
+        ],
+        [
+         "Apple",
+         "2.8915625"
+        ],
+        [
+         "Fig",
+         "3.595441176"
+        ],
+        [
+         "Pear",
+         "3.502258065"
+        ],
+        [
+         "Plum",
+         "3.945322581"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "2.696551724"
+        ],
+        [
+         "Grand Total",
+         "3.343103448"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 4": "Sum of Unit",
+      "op 5": "Sum of Unit"
+     }
+    }
+   ]
+  },
+  "shared-item": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "North and south",
+         81
+        ],
+        [
+         "Grand Total",
+         371
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "North and south",
+         "81"
+        ],
+        [
+         "Grand Total",
+         "371"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F11",
+       "area": "E3:F11",
+       "body": "F4:F11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Central",
+         215.47
+        ],
+        [
+         "east",
+         177.63
+        ],
+        [
+         "North",
+         94.64999999999999
+        ],
+        [
+         "South",
+         198.58000000000004
+        ],
+        [
+         "West",
+         283.17
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "North and south",
+         293.23
+        ],
+        [
+         "Grand Total",
+         1262.73
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Central",
+         "215.47"
+        ],
+        [
+         "east",
+         "177.63"
+        ],
+        [
+         "North",
+         "94.65"
+        ],
+        [
+         "South",
+         "198.58"
+        ],
+        [
+         "West",
+         "283.17"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "North and south",
+         "293.23"
+        ],
+        [
+         "Grand Total",
+         "1262.73"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price"
+     }
+    }
+   ]
+  }
+ }
+}
