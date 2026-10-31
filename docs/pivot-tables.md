@@ -274,7 +274,7 @@ The other operations of the structure treat a PivotTable as Excel does: rows and
 
 ## Typing into a PivotTable
 
-A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells` throws an `InputError`, and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table takes anything.
+A session does not let an entry change a value of a PivotTable, as Excel does not: `setCells` throws an `InputError`, and `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` return the refusal `pivot`. A cell's style and number format may change, and the blank row between the Filters area and the table, and the cells beside the filters, take anything, which a refresh does not clear.
 
 ```js
 const r = session.setCellText('Pivot', 'B4', '100')
@@ -365,7 +365,7 @@ A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilt
 
 `writeKept` keeps a PivotTable, a cache, a slicer or a timeline the session did not change as the file has it, byte for byte; one moved with its cells has its place written back. One the session changed or refreshed is written again from the workbook, a new one gets parts of its own, a deleted one goes with its parts. It refuses ([Refusals](xlsx-keep.md#refusals)):
 
-- slicers and timelines added or deleted (`slicers`);
+- slicers and timelines added or deleted (`slicers`), and so a sheet deleted with slicers or timelines on it;
 - a sheet's conditional formats changed where the file has a PivotTable's rules on it (`rules`);
 - a cache's source whose sheet, table or name was deleted (`deleted`): Excel makes a source on a deleted sheet a link to the file by its path.
 
