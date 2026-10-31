@@ -1,0 +1,421 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 145
+ },
+ "cases": [
+  {
+   "id": "TurnOfYear",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "TurnOfYear"
+    }
+   ]
+  },
+  {
+   "id": "TwoMonths",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "TwoMonths"
+    }
+   ]
+  },
+  {
+   "id": "SameDay",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "SameDay"
+    }
+   ]
+  },
+  {
+   "id": "YearsTimes",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "YearsTimes"
+    }
+   ]
+  },
+  {
+   "id": "NewYear",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "NewYear"
+    }
+   ]
+  },
+  {
+   "id": "WholeYear",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "WholeYear"
+    }
+   ]
+  },
+  {
+   "id": "SameDayBlank",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "SameDayBlank"
+    }
+   ]
+  },
+  {
+   "id": "Fractions",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "Fractions"
+    }
+   ]
+  },
+  {
+   "id": "Money",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "Money"
+    }
+   ]
+  },
+  {
+   "id": "Percent",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "Percent"
+    }
+   ]
+  },
+  {
+   "id": "HalfBlank",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "HalfBlank"
+    }
+   ]
+  },
+  {
+   "id": "BoolBlank",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "BoolBlank"
+    }
+   ]
+  },
+  {
+   "id": "three",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "Money"
+    },
+    {
+     "name": "TurnOfYear"
+    },
+    {
+     "name": "HalfBlank"
+    }
+   ]
+  },
+  {
+   "id": "two-dates",
+   "data": "kinds2",
+   "fields": [
+    {
+     "name": "TwoMonths"
+    },
+    {
+     "name": "YearsTimes"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "TurnOfYear": {
+   "rows": [
+    "Years (TurnOfYear)",
+    "Quarters (TurnOfYear)",
+    "Months (TurnOfYear)",
+    "TurnOfYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "years"
+    }
+   ]
+  },
+  "TwoMonths": {
+   "rows": [
+    "Months (TwoMonths)",
+    "Days (TwoMonths)",
+    "TwoMonths"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Days (TwoMonths)",
+     "base": "TwoMonths",
+     "by": "days"
+    },
+    {
+     "field": "Months (TwoMonths)",
+     "base": "TwoMonths",
+     "by": "months"
+    }
+   ]
+  },
+  "SameDay": {
+   "rows": [
+    "SameDay"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "YearsTimes": {
+   "rows": [
+    "Years (YearsTimes)",
+    "Quarters (YearsTimes)",
+    "Months (YearsTimes)",
+    "YearsTimes"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "years"
+    }
+   ]
+  },
+  "NewYear": {
+   "rows": [
+    "Years (NewYear)",
+    "Quarters (NewYear)",
+    "Months (NewYear)",
+    "NewYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (NewYear)",
+     "base": "NewYear",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (NewYear)",
+     "base": "NewYear",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (NewYear)",
+     "base": "NewYear",
+     "by": "years"
+    }
+   ]
+  },
+  "WholeYear": {
+   "rows": [
+    "Months (WholeYear)",
+    "Days (WholeYear)",
+    "WholeYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Days (WholeYear)",
+     "base": "WholeYear",
+     "by": "days"
+    },
+    {
+     "field": "Months (WholeYear)",
+     "base": "WholeYear",
+     "by": "months"
+    }
+   ]
+  },
+  "SameDayBlank": {
+   "rows": [
+    "SameDayBlank"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Fractions": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Fractions",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "Money": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Money",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "Percent": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Percent",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "HalfBlank": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "HalfBlank",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "BoolBlank": {
+   "rows": [
+    "BoolBlank"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "three": {
+   "rows": [
+    "Years (TurnOfYear)",
+    "Quarters (TurnOfYear)",
+    "Months (TurnOfYear)",
+    "TurnOfYear"
+   ],
+   "columns": [
+    "Σ"
+   ],
+   "values": [
+    {
+     "field": "Money",
+     "function": "sum"
+    },
+    {
+     "field": "HalfBlank",
+     "function": "sum"
+    }
+   ],
+   "groups": [
+    {
+     "field": "Months (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (TurnOfYear)",
+     "base": "TurnOfYear",
+     "by": "years"
+    }
+   ]
+  },
+  "two-dates": {
+   "rows": [
+    "Months (TwoMonths)",
+    "Days (TwoMonths)",
+    "TwoMonths",
+    "Years (YearsTimes)",
+    "Quarters (YearsTimes)",
+    "Months (YearsTimes)",
+    "YearsTimes"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Days (TwoMonths)",
+     "base": "TwoMonths",
+     "by": "days"
+    },
+    {
+     "field": "Months (TwoMonths)",
+     "base": "TwoMonths",
+     "by": "months"
+    },
+    {
+     "field": "Months (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (YearsTimes)",
+     "base": "YearsTimes",
+     "by": "years"
+    }
+   ]
+  }
+ }
+}
