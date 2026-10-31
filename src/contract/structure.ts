@@ -147,17 +147,22 @@ export type StructureOp =
    * Excel's Insert PivotTable: a PivotTable named `name` (the first free `PivotTable1`, `PivotTable2`… without it) at
    * `cell` of `sheet`, or on a new sheet named `sheet` inserted as `insertSheet` inserts it (`newSheet`, at A3 without
    * `cell`). A source by range, table or name makes a new pivot cache of its fields, its header row's; `{ cache }` shares
-   * a cache of the workbook by its `id`. `definition` lays out its fields as `editPivotTable` does. Refused (`pivot`)
-   * over cells that are not empty, over a table or another PivotTable, or with a name already used on the sheet.
+   * a cache of the workbook by its `id`. `definition` lays out its fields as `editPivotTable` does, `groupDates` too.
+   * Refused (`pivot`) over cells that are not empty, unless `replace` (Excel's Replace the contents of the destination
+   * cells): their contents are cleared and the PivotTable takes their place; over a table or another PivotTable, or
+   * with a name already used on the sheet, always.
    */
-  | { op: 'addPivotTable'; sheet: string; cell?: string; newSheet?: { before?: string }; name?: string; source: PivotSource | { cache: number }; definition?: PivotTablePatch }
+  | { op: 'addPivotTable'; sheet: string; cell?: string; newSheet?: { before?: string }; name?: string; source: PivotSource | { cache: number }; definition?: PivotTablePatch; replace?: boolean; groupDates?: boolean }
   /**
    * Changes a PivotTable's definition (`PivotTablePatch`): fields on its axes and their order, value fields, items hidden
    * or collapsed, filters, sorting, totals, layout, captions, style, options; `source` is Excel's Change Data Source, a
    * new cache for this PivotTable alone when its cache is shared. With `xlcalc/pivot` loaded the PivotTable is
-   * refreshed; without it, its cells stay and its cache is marked `stale` (`StructureResult.stale`).
+   * refreshed; without it, its cells stay and its cache is marked `stale` (`StructureResult.stale`). `groupDates`: a
+   * field of dates the edit puts on the rows or the columns is grouped as Excel 365 groups it when it is checked in the
+   * PivotTable Fields list (time grouping), as `groupPivotField` groups it; Excel does not group it when a macro places
+   * it, nor without the flag here. It needs `xlcalc/pivot`.
    */
-  | { op: 'editPivotTable'; sheet: string; pivot: string; set: PivotTablePatch; source?: PivotSource }
+  | { op: 'editPivotTable'; sheet: string; pivot: string; set: PivotTablePatch; source?: PivotSource; groupDates?: boolean }
   /** A new name for the PivotTable, unique among its sheet's; slicers and timelines that name it follow. */
   | { op: 'renamePivotTable'; sheet: string; pivot: string; name: string }
   /** Excel's Move PivotTable: the PivotTable's cells move so that its top-left cell (its filters' when it has them) lands on `to`, on its sheet or another. */
