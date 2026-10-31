@@ -253,8 +253,10 @@ Excel for Windows built PivotTables through its object model and saved them (the
 filter, refresh and sort): for every PivotTable after each step, the PivotTable `readXlsx` reads lies where Excel showed
 it, its values begin where Excel's did, and `GETPIVOTDATA` of every value Excel showed, by the items of its line and
 column, returns that value (over 2,000 cells); the fields, value fields, filters and sorting read are those the steps
-made. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
-PivotTable of another workbook open, closed and reopened, give Excel's values. [Development](development.md#pivottables)
+made; the slicers and timelines of the set slicer read with the items chosen and with data, and the dates and level,
+Excel showed. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
+PivotTable of another workbook open, closed and reopened, give Excel's values; of the held-out sets gpd-held (55
+formulas) and gpd-held-2 (61), predicted before they ran, 51 and 57 held, and the rest were fitted. [Development](development.md#pivottables)
 has the details.
 
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).

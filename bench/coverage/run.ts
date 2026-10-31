@@ -65,6 +65,7 @@ import { stepSpill } from './spill.js'
 import { stepDisplay } from './display.js'
 import { stepXlsx } from './xlsx.js'
 import { stepKeep } from './keep.js'
+import { stepPivotMac } from './pivot-mac.js'
 import { stepWorkbook } from './workbook.js'
 import { stepTables } from './tables.js'
 import { stepParts } from './parts.js'
@@ -338,6 +339,7 @@ else if (step === 'fit') await withExcelLock(() => stepFit(process.argv[3], loca
 else if (step === 'ui') await withExcelLock(() => stepUi(process.argv[3], locale))
 else if (step === 'rows') await withExcelLock(() => stepRows(process.argv[3], locale))
 else if (step === 'filter') await withExcelLock(() => stepFilter(process.argv[3]))
+else if (step === 'pivot') await withExcelLock(() => stepPivotMac(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -348,7 +350,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | pivot set | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
