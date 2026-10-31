@@ -3,7 +3,7 @@
  * the PivotTable an add, edit or move changed), and without it they leave the cells and mark the cache `stale`. Its
  * registration (`registerPivot`) is the subpath's.
  */
-import type { BookInput, CellInput, PivotRef, Refusal, StructureOp } from '../contract.js'
+import type { BookInput, CellInput, PivotRef, PivotTable, Refusal, StructureOp } from '../contract.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 
@@ -69,4 +69,20 @@ export const pivotCacheEdit = (): PivotCacheEdit | null => cacheEdit
 /** Registers the cache's operations of `xlcalc/pivot`, the last one registered used. */
 export function setPivotCacheEdit(f: PivotCacheEdit): void {
   cacheEdit = f
+}
+
+/**
+ * A PivotTable of a workbook as `xlcalc/pivot` takes it in (`valuesTaken`): Σ Values put on the axes of one with two
+ * value fields or more and none there; itself otherwise. Without the subpath a workbook's PivotTables stay as given.
+ */
+export type PivotTaken = (t: PivotTable) => PivotTable
+
+let taken: PivotTaken | null = null
+
+/** The intake registered, or null. */
+export const pivotTaken = (): PivotTaken | null => taken
+
+/** Registers the intake of PivotTables of `xlcalc/pivot`, the last one registered used. */
+export function setPivotTaken(f: PivotTaken): void {
+  taken = f
 }

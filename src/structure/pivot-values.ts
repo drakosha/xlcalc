@@ -50,3 +50,10 @@ export function placedValues(t: PivotTable, set: ValuesPlacing = {}): PivotTable
   else out.valuesPosition = position
   return out
 }
+
+/**
+ * A PivotTable as a workbook gives it (`xlcalc/pivot`'s intake, `pivot/hook.ts`): one of two value fields or more with
+ * Σ Values on no axis, a host's workbook or one saved before 0.72, with it where adding the second value field puts it
+ * (`placedValues`); itself otherwise.
+ */
+export const valuesTaken = (t: PivotTable): PivotTable => ((t.values?.length ?? 0) < 2 || t.rows?.includes('values') || t.columns?.includes('values') ? t : placedValues(t))

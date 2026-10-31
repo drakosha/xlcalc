@@ -1,11 +1,11 @@
 /**
  * The PivotTable engine of `xlcalc/pivot` that `registerPivot` loaded: the refresh a session's PivotTable operations
- * take, the full check of the workbook's PivotTables, an entry into their cells and the operations on their caches (`pivot/hook.ts`). A pool's threads
+ * take, the full check of the workbook's PivotTables, an entry into their cells, the operations on their caches and the intake of PivotTables (`pivot/hook.ts`). A pool's threads
  * load the same engine (`worker/thread.ts`).
  */
 import type { PivotEngine } from './contract.js'
 import { InputError } from './input-error.js'
-import { pivotRefresh, setPivotCacheEdit, setPivotCheck, setPivotEntry, setPivotRefresh, type PivotCacheEdit, type PivotCheck, type PivotEntryHook, type PivotRefresh } from './pivot/hook.js'
+import { pivotRefresh, setPivotCacheEdit, setPivotCheck, setPivotEntry, setPivotRefresh, setPivotTaken, type PivotCacheEdit, type PivotCheck, type PivotEntryHook, type PivotRefresh, type PivotTaken } from './pivot/hook.js'
 
 /** The engine's parts besides its kind, which the subpath gives and the contract does not show. */
 export interface PivotEngineParts extends PivotEngine {
@@ -13,6 +13,7 @@ export interface PivotEngineParts extends PivotEngine {
   check: PivotCheck
   entry: PivotEntryHook
   edit: PivotCacheEdit
+  taken: PivotTaken
 }
 
 const listeners = new Set<() => void>()
@@ -26,12 +27,13 @@ export const pivotLoaded = (): boolean => pivotRefresh() !== null
  */
 export function registerPivot(engine: PivotEngine): void {
   const parts = engine as PivotEngineParts
-  if (typeof engine !== 'object' || engine === null || engine.kind !== 'xlcalc-pivot' || typeof parts.refresh !== 'function' || typeof parts.check !== 'function' || typeof parts.entry !== 'function' || typeof parts.edit !== 'function') throw new InputError('engine', "expected pivotEngine of 'xlcalc/pivot'")
+  if (typeof engine !== 'object' || engine === null || engine.kind !== 'xlcalc-pivot' || typeof parts.refresh !== 'function' || typeof parts.check !== 'function' || typeof parts.entry !== 'function' || typeof parts.edit !== 'function' || typeof parts.taken !== 'function') throw new InputError('engine', "expected pivotEngine of 'xlcalc/pivot'")
   if (pivotRefresh() === parts.refresh) return
   setPivotRefresh(parts.refresh)
   setPivotCheck(parts.check)
   setPivotEntry(parts.entry)
   setPivotCacheEdit(parts.edit)
+  setPivotTaken(parts.taken)
   for (const f of listeners) f()
 }
 
