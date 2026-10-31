@@ -15,7 +15,7 @@ async function minified(contents: string): Promise<{ bytes: number; used: string
 
 const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 /** The engine's modules: the calculation, its layout and refresh; not the hooks the root calls through, nor the area of a PivotTable an edit is refused on, nor the format of an item GETPIVOTDATA matches. */
-const engine = (used: string[]) => used.filter((f) => /\/pivot\/(?!(hook|area|part|item-format)\.)[^/]+\.(ts|js)$/.test(f))
+const engine = (used: string[]) => used.filter((f) => /\/pivot\/(?!(hook|area|part)\.)[^/]+\.(ts|js)$/.test(f))
 
 describe('the bundle of xlcalc/pivot', () => {
   it('the root takes none of the engine, the subpath adds under its budget to the root', async () => {
