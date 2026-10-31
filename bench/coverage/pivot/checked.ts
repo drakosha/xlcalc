@@ -109,9 +109,7 @@ export function predictBook(c: CheckedCase): BookInput | string {
     const t = book.sheets.find((s) => s.name === 'P')!.pivotTables![0]
     const f = cache.fields.findIndex((x) => x.name === p.name)
     const s = suggestPivotField(cache, f)
-    // dragged to Values: Sum where the box would put it there, Count otherwise
-    const fn = s.axis === 'values' ? s.function : 'count'
-    const set = p.to === 'columns' ? { columns: [...(t.columns ?? []), f] } : s.axis === 'values' || p.to === 'values' ? { values: [...(t.values ?? []), { field: f, function: fn }] } : { rows: [...(t.rows ?? []), f] }
+    const set = p.to === 'columns' ? { columns: [...(t.columns ?? []), f] } : s.axis === 'values' || p.to === 'values' ? { values: [...(t.values ?? []), { field: f, function: s.function }] } : { rows: [...(t.rows ?? []), f] }
     const r = pivotOp(book, { op: 'editPivotTable', sheet: 'P', pivot: 'PT1', set, groupDates: true }, stateValues(createState(book, CLOCK)))
     if (!r.ok) return r.message
     book = r.book

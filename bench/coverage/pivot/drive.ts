@@ -182,10 +182,9 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       return laid(k)
     }
     if ('valueDefault' in op) {
-      // Sum where the field list's box would put the field on Values, Count otherwise
+      // the function the field list gives the field on Values
       const f = fieldOf(op.valueDefault)
-      const s = suggestPivotField(book.pivotCaches![0], f)
-      const fn = s.axis === 'values' ? s.function : 'count'
+      const fn = suggestPivotField(book.pivotCaches![0], f).function
       setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), { field: f, name: wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn === 'sum' ? {} : { function: fn }) }] }))
       return laid(k)
     }
