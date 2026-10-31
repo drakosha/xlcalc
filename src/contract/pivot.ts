@@ -445,7 +445,10 @@ export interface Slicer {
   rowHeight?: number
   /** The first item shown, by its index. */
   startItem?: number
+  /** Locked (Format Slicer, Properties): a protected sheet moves and sizes it only with Edit objects allowed; true by default. */
   locked?: boolean
+  /** Disable resizing and moving (Format Slicer, Position and Layout): false by default. */
+  positionLocked?: boolean
 }
 
 /** A timeline's level: years, quarters, months, days. */
@@ -483,6 +486,8 @@ export interface Timeline {
   scrollPosition?: string
   /** `TimeSlicerStyleLight1` and the others. */
   style?: string
+  /** Locked, as a slicer's: true by default. */
+  locked?: boolean
 }
 
 /**
