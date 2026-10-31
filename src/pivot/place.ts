@@ -4,6 +4,7 @@
  */
 import type { BookInput, AlignmentStyle, CellInput, PivotTable, SheetInput } from '../contract.js'
 import { CONTENT, holds } from '../array-areas.js'
+import { dateToSerial } from '../date-serial.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { contains, cornersText, hasCell, meets, parseRange, type Rect } from '../structure/area.js'
@@ -13,7 +14,7 @@ import { ERROR_TEXT } from '../syntax/errors.js'
 import { internStyle } from '../style-table.js'
 import { withField } from '../looks/sheet.js'
 import { cellAlignment, labelMerges } from './looks.js'
-import { pivotArea } from './area.js'
+import { pivotArea, pivotParts } from './area.js'
 import type { PivotLaidOut } from './layout.js'
 
 /** A PivotTable to write: its sheet, its definition as refreshed (its `name` the one on the sheet), and its layout. */
@@ -47,7 +48,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const pivots = book.sheets[s]?.pivotTables ?? []
     const at = pivots.findIndex((t) => t.name === p.table.name)
     if (at < 0) throw new Error(`no PivotTable ${p.table.name} on ${p.sheet}`)
-    return { ...p, s, at, old: pivotArea(pivots[at]), spill: false }
+    return { ...p, s, at, old: pivotArea(pivots[at]), parts: pivotParts(pivots[at]), spill: false }
   })
   // each new area against the cells it takes: cells holding something outside its own old area, tables, the other
   // PivotTables where they are, and those laid before it where they go
@@ -64,7 +65,8 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
       const r = parseRange(t.range)
       return r && meets(x, r)
     })
-    const data = filled(sheet, x, p.old ? [p.old] : [])
+    // the cells its new parts take, not the blank row under its filters nor beside them, which hold anything
+    const data = pivotParts({ location: p.laid.location }).some((part) => filled(sheet, part, p.parts))
     if (!others.length && !table && !data) continue
     if (blocked === 'spill') {
       p.spill = true
@@ -85,18 +87,21 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
   for (const p of steps) {
     const sheet = sheets[p.s]
     const cells: SheetInput['cells'] = { ...sheet.cells }
-    if (p.old) for (const [addr, c] of cellsIn(cells, p.old)) {
-      const rest = cleared(c)
-      if (rest) cells[addr] = rest
-      else delete cells[addr]
-    }
+    // its old cells cleared, not those beside its filters (the corpus: a value right of a page field kept)
+    for (const part of p.parts)
+      for (const [addr, c] of cellsIn(cells, part)) {
+        const rest = cleared(c)
+        if (rest) cells[addr] = rest
+        else delete cells[addr]
+      }
     const old = sheet.pivotTables![p.at].location.range.split(':')[0]
     const laid: PivotLaidOut = p.spill ? { ...p.laid, location: { range: old, firstHeaderRow: 0, firstDataRow: 0, firstDataColumn: 0 }, cells: [{ ...parseAddress(old), error: 'SPILL' }] } : p.laid
     for (const c of laid.cells) {
       const addr = formatAddress(c.row, c.col)
       let out: CellInput = { ...cells[addr] }
       if (c.error) out.formula = ERROR_TEXT[c.error]
-      else if (c.value !== undefined) out.value = c.value
+      // a date as Excel keeps it in the cell, its serial number in the date format (the corpus: a page field's date item)
+      else if (c.value !== undefined) out.value = typeof c.value === 'object' ? dateToSerial(c.value.date, { dateSystem: book.dateSystem }) : c.value
       if (c.numberFormat !== undefined) out.numberFormat = c.numberFormat
       const alignment = p.spill ? undefined : cellAlignment(p.table, laid, c)
       if (alignment) out = aligned(out, alignment)

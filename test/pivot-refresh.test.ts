@@ -96,6 +96,25 @@ describe('refreshPivots', () => {
     s.close()
   })
 
+  it("keeps the cells beside its filters, and shows a page field's date item by its serial number", () => {
+    // Region across the columns, wider than the Filters area; a date page field (Day) of two dates, the first alone shown
+    const cells = { ...BOOK.sheets[0].cells, E1: { value: 'Day' }, ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8].map((r) => [`E${r}`, { value: r < 5 ? 45658 : 45659, numberFormat: 14 }])) }
+    const pivot = { ...BOOK.sheets[1].pivotTables![0], location: { range: 'A5:B6', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 2, pageColumns: 1 }, fields: [{}, {}, {}, {}, { multipleItems: true }], rows: undefined, columns: [0], pages: [{ field: 1 }, { field: 4 }] }
+    const book: BookInput = {
+      sheets: [{ name: 'D', cells }, { name: 'P', cells: { D1: { value: 'kept' }, D3: { value: 'kept' }, E2: { value: 7 } }, pivotTables: [pivot] }],
+      pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'D', range: 'A1:E8' }, fields: ['Region', 'Product', 'Amount', 'Qty', 'Day'].map((name) => ({ name })) }],
+    }
+    const first = editStructure(book, REFRESH)
+    if (!first.ok) throw new Error(first.message)
+    // the second date hidden, as a page field of several items with one left shown
+    const laid = first.book.sheets[1].pivotTables![0]
+    const day = { ...laid.fields[4], items: laid.fields[4].items!.map((x, i) => (i === 1 ? { ...x, hidden: true } : x)) }
+    const r = editStructure({ ...first.book, sheets: [first.book.sheets[0], { ...first.book.sheets[1], pivotTables: [{ ...laid, fields: laid.fields.map((f, i) => (i === 4 ? day : f)) }] }] }, REFRESH)
+    if (!r.ok) throw new Error(r.message)
+    const p = r.book.sheets[1].cells
+    expect([p.A3?.value, p.B3?.value, p.B3?.numberFormat, p.D3, p.E2]).toEqual(['Day', 45658, 14, { value: 'kept' }, { value: 7 }])
+  })
+
   it('refuses a PivotTable not there, and leaves the book', () => {
     const s = createSession(BOOK)
     const r = s.editStructure({ op: 'refreshPivots', pivots: [{ sheet: 'P', name: 'PT9' }] })
