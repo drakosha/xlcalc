@@ -1,0 +1,167 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 133
+ },
+ "cases": [
+  {
+   "id": "Num",
+   "fields": [
+    {
+     "name": "Num",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "NumBlank",
+   "fields": [
+    {
+     "name": "NumBlank",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "NumText",
+   "fields": [
+    {
+     "name": "NumText",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Text",
+   "fields": [
+    {
+     "name": "Text",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Years",
+   "fields": [
+    {
+     "name": "Years",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Bool",
+   "fields": [
+    {
+     "name": "Bool",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Blank",
+   "fields": [
+    {
+     "name": "Blank",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "dates-columns",
+   "fields": [
+    {
+     "name": "Years",
+     "to": "columns"
+    }
+   ]
+  },
+  {
+   "id": "month-columns",
+   "fields": [
+    {
+     "name": "OneMonth",
+     "to": "columns"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "Num": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Num",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "NumBlank": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "NumBlank",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "NumText": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "NumText",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "Text": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Years": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Bool": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Blank": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "dates-columns": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "month-columns": {
+   "rows": [],
+   "columns": [],
+   "values": [],
+   "groups": []
+  }
+ }
+}

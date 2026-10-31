@@ -253,13 +253,20 @@ Each value cell shows its value field's value ([Show Values As](#show-values-as)
 
 Several value fields lie across the columns by default, or across the rows (`valuesOnRows`), at the place `valuesPosition` gives among the axis's fields. With **Show the Values Row** (`valuesRow`) a caption row stands over value fields alone on the columns.
 
+Their place on the axis is Σ Values, `'values'` in `rows` or `columns`, which `editPivotTable` and `addPivotTable` put there and take away as Excel does, so a host does not have to:
+
+- A second value field puts Σ Values at the end of the columns, after the column fields.
+- Where the host puts it (`rows: [0, 'values', 1]`, or `valuesOnRows` and `valuesPosition`) it stays while value fields are added and taken away, as long as there are two or more.
+- With one value field left it leaves the axes, and its place stays in `valuesOnRows` and `valuesPosition`: with a second value field again it comes back there (the start of the rows, the middle of the columns), with the fields that came meanwhile around it.
+- A field taken off or added beside it leaves `valuesPosition` as it was, as Excel does: with the field after it on `rows: [0, 'values', 1]` taken off it is last and keeps `valuesPosition: 1`, and a field added to the rows comes after it again.
+
 ### Filters area
 
 The fields of the Filters area take a row each above the table, a field's name and its item (`(All)`, an item, or `(Multiple Items)`), with a blank row between them and the table; `pagesAcrossFirst` and `pagesWrap` lay them across and in runs, as Excel's options do. The table keeps its top-left cell, and moves down only when the rows above it are too few for the Filters area.
 
 ### When the PivotTable does not fit
 
-A PivotTable laid out again over cells that hold something, over a table or over another PivotTable shrinks to its top-left cell, which shows `#SPILL!`, as Excel 365 does: its new layout is kept, its old cells are cleared, and the cells in the way are left as they are. A new or moved PivotTable laid over cells it cannot take is refused instead. A refresh of a cache lays out all its PivotTables in one step, undone in one step.
+A PivotTable laid out again over cells that hold something, over a table or over another PivotTable shrinks to its top-left cell, which shows `#SPILL!`, as Excel 365 does: its new layout is kept, its old cells are cleared, and the cells in the way are left as they are. A new PivotTable over cells that hold something or over a table is made the same way, as Excel 365 makes it without asking: it shows `#SPILL!` until a refresh finds its place free, and a value in its own top-left cell it simply takes over. A number format alone is no obstacle. A moved PivotTable laid over cells it cannot take, and a new one over another PivotTable, are refused instead. A refresh of a cache lays out all its PivotTables in one step, undone in one step.
 
 ### The look of its cells
 
@@ -275,7 +282,7 @@ session.editStructure({ op: 'editPivotTable', sheet: 'Report', pivot: 'PivotTabl
 session.editStructure({ op: 'movePivotTable', sheet: 'Report', pivot: 'PivotTable1', to: { sheet: 'Summary', cell: 'B2' } })
 ```
 
-- `addPivotTable` makes a PivotTable at a cell, or at A3 of a new sheet (`newSheet`). A source by range, table or name makes a new pivot cache, its fields named by the source's header row (a repeated name gets `2`, `3`, as Excel names it); `{ cache: id }` shares a cache of the workbook. Its name is the first free `PivotTable1`, `PivotTable2` without `name`; its style `PivotStyleLight16`. An empty PivotTable takes three columns and 18 rows, as Excel draws one. A place over cells that hold something, a table or another PivotTable, an empty header cell, a source without a row of data and a name already on the sheet are refused (`pivot`).
+- `addPivotTable` makes a PivotTable at a cell, or at A3 of a new sheet (`newSheet`). A source by range, table or name makes a new pivot cache, its fields named by the source's header row (a repeated name gets `2`, `3`, as Excel names it); `{ cache: id }` shares a cache of the workbook. Its name is the first free `PivotTable1`, `PivotTable2` without `name`; its style `PivotStyleLight16`. An empty PivotTable takes three columns and 18 rows, as Excel draws one. Over cells that hold something or a table it shows `#SPILL!` ([When the PivotTable does not fit](#when-the-pivottable-does-not-fit)); without `xlcalc/pivot`, which would lay it out, that place is refused. A place over another PivotTable, an empty header cell, a source without a row of data and a name already on the sheet are refused (`pivot`).
 - `editPivotTable` sets fields of the definition (`set`, in the form `PivotTable` holds them): a value replaces a field, `null` removes it, `fields` edits the PivotTable's fields by their index. A field lies on one axis, and a value field without a name is named as Excel names it (`Sum of Amount`, `Сумма по полю Amount` in ru-RU, `Sum of Amount2` for a second). `source` is Change Data Source: the fields kept by name, a cache of its own when the old one is shared with another PivotTable, a slicer or a timeline.
 - `renamePivotTable` renames it in its conditional formats and in the slicers and timelines over it.
 - `movePivotTable` moves its cells as cut and paste moves them, to another sheet too.
@@ -285,6 +292,30 @@ session.editStructure({ op: 'movePivotTable', sheet: 'Report', pivot: 'PivotTabl
 With `xlcalc/pivot` registered, a new PivotTable is refreshed from its source and laid out, and a changed or moved one is laid out again from its cache, as Excel does without a refresh; Change Data Source refreshes it from the new source. Without it, the cells stay and the cache is marked `stale` ([The PivotTable engine](#the-pivottable-engine)).
 
 The other operations of the structure treat a PivotTable as Excel does: rows and columns inserted or deleted before it, a move of all its cells and a sheet renamed move it; a fill out of it writes the cells beyond it; an operation that would cut it (rows inserted into it, part of it deleted or moved, a paste, a fill, a merge or a table over part of it) is refused (`pivot`, with Excel's alert as `reason`, [Typing into a PivotTable](#typing-into-a-pivottable)); all its cells deleted, or its sheet, delete it, and the slicers and timelines over it keep their caches, naming it no longer. A source by range moves with its cells as a reference does, and stays as it was when they or their sheet are deleted.
+
+### The PivotTable Fields list
+
+A host that shows Excel's PivotTable Fields list does what the list does with two calls. `suggestPivotField(cache, field)` (in the root and in `xlcalc/text`, with no engine) says where checking a field's box puts it (`axis`) and which function the field takes on Values (`function`), checked there or dragged there, by the kinds of value the cache holds of it (`facts.types`, else its items or its rows):
+
+```js
+import { suggestPivotField } from 'xlcalc/text'
+suggestPivotField(book.pivotCaches[0], 3) // { axis: 'values', function: 'sum' } for a field of numbers
+suggestPivotField(book.pivotCaches[0], 0) // { axis: 'rows', function: 'count' } for text, dates, booleans
+```
+
+- A field of numbers goes to Values with Sum, empty cells among the numbers too; a calculated field too.
+- Any other field goes to the rows: text, dates, booleans, errors, numbers kept as text, empty cells alone, and numbers with text, a boolean, an error or a date among them. Dragged to Values, it takes Count.
+
+`groupDates: true` on `editPivotTable` or `addPivotTable` groups a field of dates the operation puts on the rows or the columns as Excel 365 groups it when its box is checked or it is dragged to the Columns area (time grouping), through the same grouping as `groupPivotField`, in the same step of undo. Excel does this from its field list alone: a macro that places the field (`Orientation`, `AddFields`) leaves the dates as they are, and so does an operation without the flag.
+
+```js
+session.editStructure({ op: 'editPivotTable', sheet: 'Report', pivot: 'PivotTable1', set: { rows: [2] }, groupDates: true })
+// rows: Years (Date), Quarters (Date), Months (Date), Date; the PivotTable shows the years
+```
+
+- Dates over several calendar years are grouped by years, quarters and months; dates within one year by months and days; dates within one month, or a single day with its times, not at all.
+- The field of each period comes on the axis where the dates were, the coarsest first, and the dates themselves after them; the periods' items are collapsed, so the PivotTable shows the coarsest period.
+- A field with text among its dates, a field grouped already and a field that was on the axis before are left alone. It needs `xlcalc/pivot`: without it a field of dates to group is refused (`pivot`).
 
 ## Typing into a PivotTable
 
@@ -421,6 +452,8 @@ Grouping and calculated fields. Excel for Windows grouped and calculated the Piv
 Slicers and timelines. Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`); each workbook Excel saved holds the choice as the session writes it. Deleting a slicer, a timeline, and the sheet of a PivotTable they filter (the set slicer-delete, 5 cases), and refreshing the workbooks saved after (slicer-file), gave the rules of deletion above. The held-out set slicer-held over other rows (16 cases) held 47 of 50 reads as predicted; its three misses are the rules of disconnecting and of no cross filtering above.
 
 Writing. Excel for Windows opened the files `writeXlsx` wrote of every book of the sets basic, layout, filter, sort and slicer (the books read and written again), and the files `writeKept` wrote after each entry of the set edit made by a session over the book of its first step (234 files): each PivotTable read at once, without a refresh, shows the cells, place and values Excel showed for its own book, and after a refresh the cells Excel's own book shows after one; Excel saved the slicers and timelines read back as written. The held-out sets of layout, filter and sort, predicted before Excel ran them, matched 31 of 37, 57 of 61 and 27 of 27; their misses are rules now.
+
+Σ Values and the field list. Excel for Windows added and took off value fields and moved Σ Values through its object model (the set values-field, 10 cases, and a held-out set of 8 over other rows and over books saved with one value field): each step's cells, and the place Excel saved (`rows`, `columns`, `dataOnRows`, `dataPosition`), are those `editPivotTable` gives; the held-out set held 20 of 20 steps as predicted. Fields were checked in Excel's PivotTable Fields list on its screen through UI Automation (35 fields of every kind of value, alone and in turn, 14 of them held out and predicted): where each went, its function, the fields of time grouping and the cells are those of `suggestPivotField` and `groupDates`. `AddDataField` without a function and a drag to the Values area give the function `suggestPivotField` names. A new PivotTable over cells in the way, made through the object model and grown from the field list over values, formulas, formats, merged cells and tables, spills as `addPivotTable` and `editPivotTable` make it.
 
 Areas and alerts. Excel for Windows gave the ranges of 82 PivotTables of the set areas (every form, without column fields, without row fields, value fields alone, none, no field at all, report filters wrapped in columns and across, and every book of the sets layout and corpus-shapes as it saved them) and of 153 of the held-out set areas-held (three row fields in each form, value fields on rows beside column fields, column or row fields alone, four report filters, and every book of basic, filter and sort): `PivotLocation.areas` gives `TableRange1`, `PageRange` and `DataBodyRange`, its row labels `RowRange` without the header row, its header rows those above `DataBodyRange` (`test/pivot-areas.test.ts`). Excel answered 72 changes of a PivotTable's cells (the sets alerts, alerts-clear and the held-out alerts-held): rows and columns through it, copies, cuts, Ctrl+V, fills, merges and a table onto it, entries into a selection, values set and cleared, text pasted, and clears of all of it, part of it, with cells around it and of two PivotTables. Each refusal has the alert Excel showed, each change Excel took gives its cells (`test/pivot-alerts.test.ts`). The alerts of Ctrl+V, Delete, a deletion of rows through it, a number typed over a value and a formula over a label were seen in Excel's own window as well.
 

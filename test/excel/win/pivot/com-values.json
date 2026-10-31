@@ -1,0 +1,549 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 20.5
+ },
+ "cases": [
+  {
+   "id": "Num",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Num"
+    }
+   ]
+  },
+  {
+   "id": "NumBlank",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "NumBlank"
+    }
+   ]
+  },
+  {
+   "id": "NumText",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "NumText"
+    }
+   ]
+  },
+  {
+   "id": "NumDate",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "NumDate"
+    }
+   ]
+  },
+  {
+   "id": "Text",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Text"
+    }
+   ]
+  },
+  {
+   "id": "Years",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Years"
+    }
+   ]
+  },
+  {
+   "id": "Bool",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Bool"
+    }
+   ]
+  },
+  {
+   "id": "Err",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Err"
+    }
+   ]
+  },
+  {
+   "id": "Blank",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "Blank"
+    }
+   ]
+  },
+  {
+   "id": "NumAsText",
+   "data": "kinds",
+   "ops": [
+    {
+     "valueDefault": "NumAsText"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "Num": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 75ab494c08dee363",
+  "NumBlank": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 80ab1fbca38b2406",
+  "NumText": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c c0355f9dd92c8ebd",
+  "NumDate": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 480445705e6414ef",
+  "Text": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c e92957cf64dcf342",
+  "Years": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 1dafbb4de9eda237",
+  "Bool": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 0b2905bb460420e9",
+  "Err": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c ec3d128edfffe999",
+  "Blank": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 532f9d4ddc44aa83",
+  "NumAsText": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 390f08f6471ddcd7"
+ },
+ "answers": {
+  "Num": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Sum of Num"
+        ],
+        [
+         210
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Num"
+        ],
+        [
+         "210"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Sum of Num",
+       -4157
+      ]
+     }
+    }
+   ]
+  },
+  "NumBlank": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Sum of NumBlank"
+        ],
+        [
+         67
+        ]
+       ],
+       "text": [
+        [
+         "Sum of NumBlank"
+        ],
+        [
+         "67"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Sum of NumBlank",
+       -4157
+      ]
+     }
+    }
+   ]
+  },
+  "NumText": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of NumText"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of NumText"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of NumText",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "NumDate": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of NumDate"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of NumDate"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of NumDate",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "Text": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of Text"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of Text"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of Text",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "Years": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of Years"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of Years"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of Years",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "Bool": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of Bool"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of Bool"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of Bool",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "Err": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of Err"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of Err"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of Err",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "Blank": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of Blank"
+        ],
+        [
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Count of Blank"
+        ],
+        [
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of Blank",
+       -4112
+      ]
+     }
+    }
+   ]
+  },
+  "NumAsText": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Count of NumAsText"
+        ],
+        [
+         12
+        ]
+       ],
+       "text": [
+        [
+         "Count of NumAsText"
+        ],
+        [
+         "12"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": [
+       "Count of NumAsText",
+       -4112
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

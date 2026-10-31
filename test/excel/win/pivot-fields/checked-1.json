@@ -1,0 +1,523 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 228
+ },
+ "cases": [
+  {
+   "id": "Num",
+   "fields": [
+    {
+     "name": "Num"
+    }
+   ]
+  },
+  {
+   "id": "NumBlank",
+   "fields": [
+    {
+     "name": "NumBlank"
+    }
+   ]
+  },
+  {
+   "id": "NumText",
+   "fields": [
+    {
+     "name": "NumText"
+    }
+   ]
+  },
+  {
+   "id": "NumBool",
+   "fields": [
+    {
+     "name": "NumBool"
+    }
+   ]
+  },
+  {
+   "id": "NumErr",
+   "fields": [
+    {
+     "name": "NumErr"
+    }
+   ]
+  },
+  {
+   "id": "NumDate",
+   "fields": [
+    {
+     "name": "NumDate"
+    }
+   ]
+  },
+  {
+   "id": "Blank",
+   "fields": [
+    {
+     "name": "Blank"
+    }
+   ]
+  },
+  {
+   "id": "Text",
+   "fields": [
+    {
+     "name": "Text"
+    }
+   ]
+  },
+  {
+   "id": "Bool",
+   "fields": [
+    {
+     "name": "Bool"
+    }
+   ]
+  },
+  {
+   "id": "Err",
+   "fields": [
+    {
+     "name": "Err"
+    }
+   ]
+  },
+  {
+   "id": "NumAsText",
+   "fields": [
+    {
+     "name": "NumAsText"
+    }
+   ]
+  },
+  {
+   "id": "Times",
+   "fields": [
+    {
+     "name": "Times"
+    }
+   ]
+  },
+  {
+   "id": "Years",
+   "fields": [
+    {
+     "name": "Years"
+    }
+   ]
+  },
+  {
+   "id": "OneYear",
+   "fields": [
+    {
+     "name": "OneYear"
+    }
+   ]
+  },
+  {
+   "id": "OneMonth",
+   "fields": [
+    {
+     "name": "OneMonth"
+    }
+   ]
+  },
+  {
+   "id": "OneDay",
+   "fields": [
+    {
+     "name": "OneDay"
+    }
+   ]
+  },
+  {
+   "id": "DateBlank",
+   "fields": [
+    {
+     "name": "DateBlank"
+    }
+   ]
+  },
+  {
+   "id": "DateText",
+   "fields": [
+    {
+     "name": "DateText"
+    }
+   ]
+  },
+  {
+   "id": "two-numbers",
+   "fields": [
+    {
+     "name": "Num"
+    },
+    {
+     "name": "NumBlank"
+    }
+   ]
+  },
+  {
+   "id": "two-dates",
+   "fields": [
+    {
+     "name": "Years"
+    },
+    {
+     "name": "OneYear"
+    }
+   ]
+  },
+  {
+   "id": "number-then-dates",
+   "fields": [
+    {
+     "name": "Num"
+    },
+    {
+     "name": "Years"
+    }
+   ]
+  },
+  {
+   "id": "dates-columns",
+   "fields": [
+    {
+     "name": "Years",
+     "to": "columns"
+    }
+   ]
+  },
+  {
+   "id": "text-then-dates-columns",
+   "fields": [
+    {
+     "name": "Text"
+    },
+    {
+     "name": "OneYear",
+     "to": "columns"
+    }
+   ]
+  },
+  {
+   "id": "number-columns",
+   "fields": [
+    {
+     "name": "Num",
+     "to": "columns"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "Num": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Num",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "NumBlank": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "NumBlank",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "NumText": {
+   "rows": [
+    "NumText"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "NumBool": {
+   "rows": [
+    "NumBool"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "NumErr": {
+   "rows": [
+    "NumErr"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "NumDate": {
+   "rows": [
+    "NumDate"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Blank": {
+   "rows": [
+    "Blank"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Text": {
+   "rows": [
+    "Text"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Bool": {
+   "rows": [
+    "Bool"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Err": {
+   "rows": [
+    "Err"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "NumAsText": {
+   "rows": [
+    "NumAsText"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Times": {
+   "rows": [
+    "Times"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "Years": {
+   "rows": [
+    "Years (Years)",
+    "Quarters (Years)",
+    "Months (Years)",
+    "Years"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (Years)",
+     "base": "Years",
+     "by": "years"
+    }
+   ]
+  },
+  "OneYear": {
+   "rows": [
+    "Months (OneYear)",
+    "Days (OneYear)",
+    "OneYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Days (OneYear)",
+     "base": "OneYear",
+     "by": "days"
+    },
+    {
+     "field": "Months (OneYear)",
+     "base": "OneYear",
+     "by": "months"
+    }
+   ]
+  },
+  "OneMonth": {
+   "rows": [
+    "OneMonth"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "OneDay": {
+   "rows": [
+    "OneDay"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "DateBlank": {
+   "rows": [
+    "Years (DateBlank)",
+    "Quarters (DateBlank)",
+    "Months (DateBlank)",
+    "DateBlank"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (DateBlank)",
+     "base": "DateBlank",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (DateBlank)",
+     "base": "DateBlank",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (DateBlank)",
+     "base": "DateBlank",
+     "by": "years"
+    }
+   ]
+  },
+  "DateText": {
+   "rows": [
+    "DateText"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": []
+  },
+  "two-numbers": {
+   "rows": [],
+   "columns": [
+    "Σ"
+   ],
+   "values": [
+    {
+     "field": "Num",
+     "function": "sum"
+    },
+    {
+     "field": "NumBlank",
+     "function": "sum"
+    }
+   ],
+   "groups": []
+  },
+  "two-dates": {
+   "rows": [
+    "Years (Years)",
+    "Quarters (Years)",
+    "Months (Years)",
+    "Years",
+    "Months (OneYear)",
+    "Days (OneYear)",
+    "OneYear"
+   ],
+   "columns": [],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (Years)",
+     "base": "Years",
+     "by": "years"
+    },
+    {
+     "field": "Days (OneYear)",
+     "base": "OneYear",
+     "by": "days"
+    },
+    {
+     "field": "Months (OneYear)",
+     "base": "OneYear",
+     "by": "months"
+    }
+   ]
+  },
+  "number-then-dates": {
+   "rows": [
+    "Years (Years)",
+    "Quarters (Years)",
+    "Months (Years)",
+    "Years"
+   ],
+   "columns": [],
+   "values": [
+    {
+     "field": "Num",
+     "function": "sum"
+    }
+   ],
+   "groups": [
+    {
+     "field": "Months (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (Years)",
+     "base": "Years",
+     "by": "years"
+    }
+   ]
+  },
+  "dates-columns": {
+   "error": "not placed (its error above)"
+  },
+  "text-then-dates-columns": {
+   "error": "not placed (its error above)"
+  },
+  "number-columns": {
+   "error": "not placed (its error above)"
+  }
+ }
+}

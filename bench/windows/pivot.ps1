@@ -14,8 +14,9 @@ function PArg($x) {
 
 function PTable($wb, $s) { $wb.Worksheets.Item([string]$s.sheet).PivotTables([string]$s.pt) }
 
-# what a step works on: the pivot table, one of its fields, a data field by its caption or its place, the values field (Σ Values),
-# an item, the cache, a slicer cache by name or one of its items, a slicer; the comma keeps a collection whole
+# what a step works on: the pivot table, one of its fields, a data field by its caption or its place, the values field
+# (Σ Values), a field's cube field, a range of a sheet, an item, the cache, a slicer cache by name or one of its items, a
+# slicer; the comma keeps a collection whole
 function POn($wb, $s) {
   switch ($s.on) {
     'table' { return , (PTable $wb $s) }
@@ -23,6 +24,8 @@ function POn($wb, $s) {
     'data' { return , (PTable $wb $s).DataFields([string]$s.field) }
     'dataAt' { return , (PTable $wb $s).DataFields([int]$s.index) }
     'values' { return , (PTable $wb $s).DataPivotField }
+    'cubeField' { return , (PTable $wb $s).PivotFields([string]$s.field).CubeField }
+    'range' { return , $wb.Worksheets.Item([string]$s.rangeSheet).Range([string]$s.range) }
     'item' { return , (PTable $wb $s).PivotFields([string]$s.field).PivotItems([string]$s.item) }
     'cache' { return , (PTable $wb $s).PivotCache() }
     'calcFields' { return , (PTable $wb $s).CalculatedFields() }
@@ -169,6 +172,12 @@ function Pivot($xl, $wb, $s) {
         $df = $pt.AddDataField($pt.PivotFields([string]$s.field), (PArg $s.caption), [int]$s.fn)
         foreach ($p in $s.props) { $df.([string]$p[0]) = PArg $p[1] }
         Str ([string]$df.Caption)
+      }
+      # a data field with the field alone, the function Excel gives it: its caption and XlConsolidationFunction
+      'dataDefault' {
+        $pt = PTable $wb $s
+        $df = $pt.AddDataField($pt.PivotFields([string]$s.field))
+        List @((Str ([string]$df.Caption)), (Cell ([double]$df.Function)))
       }
       # properties set in order on the step's target
       'set' {

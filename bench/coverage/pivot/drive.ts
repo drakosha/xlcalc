@@ -6,7 +6,7 @@
  * the cells of every PivotTable's area and the operations the engine refused. The prediction of a held-out set before
  * Excel runs it (`predict.ts --drive`); operations it does not take are refused as `unsupported`.
  */
-import type { BookInput, CellInput, PivotAxisField, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
+import type { BookInput, CellInput, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
 import { editStructure } from '../../../src/structure/index.js'
@@ -20,6 +20,13 @@ import { itemText } from '../../../src/pivot/values.js'
 import { clockOptions } from '../../../src/result.js'
 import type { Applied } from '../../../src/structure/geometry.js'
 import { stateValues } from '../../../src/structure/values.js'
+import { placedValues } from '../../../src/structure/pivot-values.js'
+import { pivotOp } from '../../../src/structure/pivot-ops.js'
+import { parseRange } from '../../../src/structure/area.js'
+import { pivotArea } from '../../../src/pivot/area.js'
+import { formatAddress, parseAddress } from '../../../src/model.js'
+import { suggestPivotField } from '../../../src/pivot-suggest.js'
+import { patched } from '../../../src/structure/pivots.js'
 import type { PivotCase, PivotOp } from './cases.js'
 import { DATA, sourceBook, sourceRange } from './data.js'
 
@@ -47,20 +54,27 @@ export interface DrivenPhase {
 
 const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toISOString().slice(0, 19)
 
-/** Plays a case in the workbook's language `locale` (en-US without it): its phases, each with the book at its end. */
-export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
-  if (c.from || c.file) throw new Error('a case from a saved book is not driven')
+/** The book a case starts from, in the workbook's language `locale` (ru-RU names value fields `Сумма по полю Qty`): the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
+export function startBook(c: PivotCase, locale?: string): BookInput {
   const cols = DATA[c.data ?? 'sales']()
-  // the workbook in Excel's language (ru-RU names value fields `Сумма по полю Qty`)
-  let book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(locale ? { locale } : {}) }
+  const book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(locale ? { locale } : {}) }
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
   const made = refreshCache({ id: 1, source, fields: [] }, [], grid)
   if (typeof made === 'string') throw new Error(made)
-  const cache: PivotCache = made.cache
-  const empty = (name: string, at: string): PivotTable => ({ name, cache: 1, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: (book.pivotCaches?.[0] ?? cache).fields.map(() => ({})) })
-  book = { ...book, pivotCaches: [cache], sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [empty('PT1', 'A3')] } : s)) }
+  return { ...book, pivotCaches: [made.cache], sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [emptyTable(made.cache, 'PT1', 'A3')] } : s)) }
+}
+
+const emptyTable = (cache: PivotCache, name: string, at: string): PivotTable => ({ name, cache: cache.id, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})) })
+
+/**
+ * Plays a case in the workbook's language `locale` (en-US without it): its phases, each with the book at its end; a case
+ * from a saved book (`from`) starts from `saved`, that book as Excel saved it.
+ */
+export function drive(c: PivotCase, saved?: BookInput, locale?: string): DrivenPhase[] {
+  if (c.file || (c.from && !saved)) throw new Error('a case from a file, or from a saved book without it, is not driven')
+  let book = c.from ? saved! : startBook(c, locale)
   const out: DrivenPhase[] = []
   let errors: string[] = []
   const tableOf = (name = 'PT1') => book.sheets.find((s) => s.name === 'P')!.pivotTables!.find((t) => t.name === name)!
@@ -80,6 +94,15 @@ export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
       errors.push(`op ${k}: ${(e as Error).message}`)
     }
   }
+  /** A cell of a PivotTable's area (`P!A5`), which an edit there is an entry into. */
+  const onPivot = (cell: string) => {
+    const [sheet, at] = cell.split('!')
+    const { row, col } = parseAddress(at)
+    return (book.sheets.find((s) => s.name === sheet)?.pivotTables ?? []).some((t) => {
+      const x = pivotArea(t)
+      return x !== null && row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2
+    })
+  }
   /** The place of an item on a PivotTable's field by its label. */
   const itemAt = (t: PivotTable, f: number, label: string) => {
     const values = groupedItems(book.pivotCaches![0].fields[f]) ?? []
@@ -93,9 +116,35 @@ export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
       return
     }
     if ('create' in op) {
-      const at = op.at.split('!')[1]
-      book = { ...book, sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [...s.pivotTables!, empty(op.create, at)] } : s)) }
+      // over the cache of PT1, as addPivotTable makes it
+      const [sheet, cell] = op.at.split('!')
+      return take(k, pivotOp(book, { op: 'addPivotTable', sheet, cell, name: op.create, source: { cache: book.pivotCaches![0].id } }, valuesOf(book)))
+    }
+    if ('addFields' in op || 'cubeField' in op) {
+      // placed as Orientation places them
+      const add = 'addFields' in op ? op.addFields : { [op.to === 'row' ? 'rows' : 'columns']: [op.cubeField] }
+      for (const axis of ['rows', 'columns'] as const) {
+        const fs = (add[axis] ?? []).map(fieldOf)
+        const other = axis === 'rows' ? 'columns' : 'rows'
+        setTable(pt, (t) => placedValues({ ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] }))
+      }
       return laid(k)
+    }
+    if ('cellFormat' in op || 'merge' in op || 'addTable' in op) {
+      const [sheet, range] = ('cellFormat' in op ? op.cellFormat : 'merge' in op ? op.merge : op.addTable).split('!')
+      book = {
+        ...book,
+        sheets: book.sheets.map((s) => {
+          if (s.name !== sheet) return s
+          if ('cellFormat' in op) return { ...s, cells: { ...s.cells, [range]: { ...s.cells[range], numberFormat: op.numberFormat } } }
+          if ('merge' in op) return { ...s, merges: [...(s.merges ?? []), range] }
+          const x = parseRange(range)!
+          const columns = Array.from({ length: x.c2 - x.c1 + 1 }, (_, c) => ({ name: String(s.cells[formatAddress(x.r1, x.c1 + c)]?.value ?? `Column${c + 1}`) }))
+          // named as Excel names a new table: the name asked for may be a cell's (T1)
+          return { ...s, tables: [...(s.tables ?? []), { name: `Table${(s.tables?.length ?? 0) + 1}`, range, columns }] }
+        }),
+      }
+      return
     }
     if ('rows' in op || 'columns' in op) {
       const axis = 'rows' in op ? 'rows' : 'columns'
@@ -103,7 +152,7 @@ export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
       setTable(pt, (t) => {
         const fs = names.map(fieldOf)
         const other = axis === 'rows' ? 'columns' : 'rows'
-        return { ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] }
+        return placedValues({ ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] })
       })
       return laid(k)
     }
@@ -143,31 +192,36 @@ export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
       if (v.base) d.baseField = fieldOf(v.base)
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
       else if (v.item !== undefined && d.baseField !== undefined && itemAt(tableOf(pt), d.baseField, v.item) >= 0) d.baseItem = itemAt(tableOf(pt), d.baseField, v.item)
-      setTable(pt, (t) => ({ ...t, values: [...(t.values ?? []), d] }))
+      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), d] }))
+      return laid(k)
+    }
+    if ('valueDefault' in op) {
+      // the function the field list gives the field on Values
+      const f = fieldOf(op.valueDefault)
+      const fn = suggestPivotField(book.pivotCaches![0], f).function
+      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), { field: f, name: wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn === 'sum' ? {} : { function: fn }) }] }))
+      return laid(k)
+    }
+    if ('dropValue' in op) {
+      setTable(pt, (t) => placedValues({ ...t, values: (t.values ?? []).filter((d) => d.name !== op.dropValue) }))
+      return laid(k)
+    }
+    if ('valuesOn' in op) {
+      // Σ Values moved as editPivotTable moves it by valuesOnRows and valuesPosition
+      const set = { valuesOnRows: op.valuesOn === 'row' || null, valuesPosition: op.position === undefined ? undefined : op.position - 1 }
+      setTable(pt, (t) => placedValues(patched(t, set), set))
       return laid(k)
     }
     if ('move' in op) {
       const f = fieldOf(op.move)
       setTable(pt, (t) => {
         const off = { ...t, rows: (t.rows ?? []).filter((x) => x !== f), columns: (t.columns ?? []).filter((x) => x !== f), pages: (t.pages ?? []).filter((p) => p.field !== f) }
-        if (op.to === 'hidden') return off
-        if (op.to === 'page') return { ...off, pages: [...off.pages, { field: f }] }
+        if (op.to === 'hidden') return placedValues(off)
+        if (op.to === 'page') return placedValues({ ...off, pages: [...off.pages, { field: f }] })
         const axis = op.to === 'row' ? 'rows' : 'columns'
         const list = [...off[axis]]
         list.splice(op.position === undefined ? list.length : op.position - 1, 0, f)
-        return { ...off, [axis]: list }
-      })
-      return laid(k)
-    }
-    if ('valuesOn' in op) {
-      // the value fields' own field (Σ Values) on rows or columns, at its place among the axis's fields
-      setTable(pt, (t) => {
-        const rows: PivotAxisField[] = (t.rows ?? []).filter((f) => f !== 'values')
-        const columns: PivotAxisField[] = (t.columns ?? []).filter((f) => f !== 'values')
-        const axis = op.valuesOn === 'row' ? rows : columns
-        const at = op.position === undefined ? axis.length : op.position - 1
-        if ((t.values?.length ?? 0) > 1) axis.splice(at, 0, 'values')
-        return { ...t, rows, columns, valuesOnRows: op.valuesOn === 'row', ...(op.position === undefined ? {} : { valuesPosition: at }) }
+        return placedValues({ ...off, [axis]: list })
       })
       return laid(k)
     }
@@ -225,7 +279,7 @@ export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
       })
       return laid(k)
     }
-    if ('edit' in op && !op.edit.startsWith('P!')) {
+    if ('edit' in op && !onPivot(op.edit)) {
       const [sheet, cell] = op.edit.split('!')
       const to = op.to
       // the cell keeps its format, as Value2 leaves it
