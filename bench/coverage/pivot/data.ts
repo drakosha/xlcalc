@@ -117,8 +117,25 @@ export function shapeColumns(): SourceColumn[] {
   return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number })) }))
 }
 
+/**
+ * The rows of `blanks`, made by hand: Product of text, a number and empty cells, B and D with an empty Product alone, B
+ * with Flag FALSE alone; for an item whose records all lie in a hidden item of another field.
+ */
+export function blankColumns(): SourceColumn[] {
+  const rows: [string, string | number | undefined, number, number, boolean][] = [
+    ['A', 'X', 1, 2, true],
+    ['A', undefined, 2, 3, true],
+    ['B', undefined, 2, 4, false],
+    ['C', 10, 1, 5, true],
+    ['C', 'X', 3, 1, false],
+    ['D', undefined, 4, 6, true],
+  ]
+  const names = ['Region', 'Product', 'Code', 'Qty', 'Flag']
+  return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number | boolean })) }))
+}
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns }
+export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`
