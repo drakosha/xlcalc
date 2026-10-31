@@ -238,7 +238,7 @@ function withLevels(book: BookInput, tc: TimelineCache): BookInput {
   return { ...book, sheets }
 }
 
-function remove(book: BookInput, kind: Kind, o: Record<string, unknown>): Applied {
+function remove(book: BookInput, kind: Kind, o: Record<string, unknown>, values: ValuesIn): Applied {
   const { s, k, x } = find(book, kind, o[KEY[kind]], `op.${KEY[kind]}`)
   const list = ((book.sheets[s][kind] ?? []) as (Slicer | Timeline)[]).filter((_, i) => i !== k)
   const sheets = [...book.sheets]
@@ -246,12 +246,15 @@ function remove(book: BookInput, kind: Kind, o: Record<string, unknown>): Applie
   const out: BookInput = { ...book, sheets }
   const last = !sheets.some((sh) => (sh[kind] as (Slicer | Timeline)[] | undefined)?.some((y) => caseKey(y.cache) === caseKey(x.cache)))
   if (!last) return { ok: true, book: out, geometry: [] }
-  // its cache goes with it; the PivotTables keep the filter it made, as in Excel
-  return { ok: true, book: withCaches(out, kind, cachesOf(book, kind).filter((c) => caseKey(c.name) !== caseKey(x.cache))), geometry: [] }
+  // its cache goes with it: the PivotTables keep a slicer's hidden items, and lose a timeline's dates (the set slicer-delete)
+  const gone = cachesOf(book, kind).find((c) => caseKey(c.name) === caseKey(x.cache))!
+  const left = withCaches(out, kind, cachesOf(book, kind).filter((c) => c !== gone))
+  if (kind === 'slicers' || !gone.pivots.length) return { ok: true, book: left, geometry: [] }
+  return laidOut(checkedPivots(withTimelineChoice(left, { ...(gone as TimelineCache), selection: undefined })), gone.pivots, values, true)
 }
 
 export function slicerOp(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
   const op = String(o.op)
   const kind: Kind = op.endsWith('Slicer') ? 'slicers' : 'timelines'
-  return op.startsWith('add') ? add(book, kind, o, values) : op.startsWith('edit') ? edit(book, kind, o, values) : remove(book, kind, o)
+  return op.startsWith('add') ? add(book, kind, o, values) : op.startsWith('edit') ? edit(book, kind, o, values) : remove(book, kind, o, values)
 }

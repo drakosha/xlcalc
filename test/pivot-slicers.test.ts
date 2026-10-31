@@ -148,8 +148,11 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     // Clear Filter: every date again
     s.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection: null } })
     expect(s.getValues('P', 'A3:B8')).toEqual(ALL)
+    // deleted, its dates no longer filter, as in Excel (where a slicer's choice stays)
+    s.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection: { start: '2025-01-01T00:00:00', end: '2025-03-31T00:00:00' } } })
     s.editStructure({ op: 'deleteTimeline', timeline: 'Date' })
-    expect(s.getBook().timelineCaches).toBeUndefined()
+    expect([s.getBook().timelineCaches, s.getBook().sheets[1].pivotTables![1].filters]).toEqual([undefined, undefined])
+    expect(s.getValues('P', 'A3:B8')).toEqual(ALL)
     s.close()
   })
 

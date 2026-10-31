@@ -9,8 +9,9 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { PivotPhase } from '../bench/coverage/pivot/cases.js'
-import { predict } from '../bench/coverage/pivot/slicer-predict.js'
-import { buildPivotCases } from '../bench/coverage/pivot/slicer.js'
+import { predict, predicted } from '../bench/coverage/pivot/slicer-predict.js'
+import * as slicer from '../bench/coverage/pivot/slicer.js'
+import * as slicerDelete from '../bench/coverage/pivot/slicer-delete.js'
 import { registerPivot, type BookInput } from '../src/index.js'
 import { refreshPivots } from '../src/pivot/engine.js'
 import { pivotEngine } from '../src/pivot/index.js'
@@ -18,29 +19,34 @@ import { fieldIndex, selectionLevel, timelineBounds, withSlicerChoice, withTimel
 import { readXlsx } from '../src/xlsx.js'
 
 const DIR = new URL('./excel/win/pivot/', import.meta.url)
-const answers = (JSON.parse(readFileSync(new URL('slicer.json', DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }).answers
+const answersOf = (set: string) => (JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }).answers
+const SETS = { slicer, 'slicer-delete': slicerDelete }
 
 const rounded = (v: unknown): unknown => (typeof v === 'number' ? Number(v.toPrecision(15)) : Array.isArray(v) ? v.map(rounded) : v)
 
-const books = async () => Promise.all(readdirSync(new URL('slicer/', DIR)).map(async (f) => [f, (await readXlsx(readFileSync(new URL(`slicer/${f}`, DIR)))).book] as const))
+const books = async () => Promise.all(['slicer', 'slicer-delete'].flatMap((set) => readdirSync(new URL(`${set}/`, DIR)).map(async (f) => [`${set}/${f}`, (await readXlsx(readFileSync(new URL(`${set}/${f}`, DIR)))).book] as const)))
 
 beforeAll(() => registerPivot(pivotEngine))
 
 describe('slicers and timelines against Excel for Windows', () => {
-  for (const c of buildPivotCases())
-    it(c.id, async () => {
-      const got = await predict(c)
-      const want = answers[c.id].phases
-      expect(got.length).toBe(want.length)
-      got.forEach((phase, k) => {
-        for (const [name, area] of Object.entries(want[k].pivots)) {
-          if ('error' in area) throw new Error(`${c.id}: Excel's error ${area.error}`)
-          expect(phase.pivots[name].area).toBe(area.area.replace(/\$/g, ''))
-          expect(rounded(phase.pivots[name].values)).toEqual(rounded(area.values))
-        }
-        expect(phase.slicers).toEqual(want[k].slicers ?? {})
+  for (const [set, cases] of Object.entries(SETS)) {
+    const answers = answersOf(set)
+    for (const c of predicted(cases.buildPivotCases()))
+      it(`${set}/${c.id}`, async () => {
+        const got = await predict(c)
+        const want = answers[c.id].phases
+        expect(got.length).toBe(want.length)
+        got.forEach((phase, k) => {
+          for (const [name, area] of Object.entries(want[k].pivots)) {
+            if ('error' in area) throw new Error(`${c.id}: Excel's error ${area.error}`)
+            expect(phase.pivots[name].area).toBe(area.area.replace(/\$/g, ''))
+            expect(rounded(phase.pivots[name].values)).toEqual(rounded(area.values))
+          }
+          // a slicer Excel could not read is one deleted
+          expect(phase.slicers).toEqual(Object.fromEntries(Object.entries(want[k].slicers ?? {}).filter(([, x]) => !('error' in x))))
+        })
       })
-    })
+  }
 
   it("each book holds the choice as the session writes it, and its slicers' items as laid out again", async () => {
     for (const [file, book] of await books()) {
@@ -54,6 +60,9 @@ describe('slicers and timelines against Excel for Windows', () => {
         expect(timelineBounds(pc, fieldIndex(pc, tc.field)), file).toEqual(tc.bounds)
         for (const t of book.sheets.flatMap((s) => s.timelines ?? []).filter((x) => x.cache === tc.name)) expect(selectionLevel(tc.selection!), file).toBe(t.selectionLevel)
       }
+      // a sheet deleted lays out no PivotTable: Excel saves the items as they were before (sheet-two: the blank region
+      // has data no more without PT2's quantities, and is saved with it)
+      if (/^slicer-delete\/sheet-[a-z]+\.xlsx$/.test(file)) continue
       const r = refreshPivots(book, undefined, () => [], 0, false)
       if (!r.ok) throw new Error(`${file}: ${r.message}`)
       expect(r.book.slicerCaches, file).toEqual(book.slicerCaches)
