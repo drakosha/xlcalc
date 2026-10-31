@@ -97,7 +97,11 @@ export function drive(c: PivotCase): DrivenPhase[] {
     }
     if ('pages' in op) {
       const fs = op.pages.map(fieldOf)
-      setTable(pt, t => ({ ...t, rows: t.rows?.filter(f => !fs.includes(f as number)), columns: t.columns?.filter(f => !fs.includes(f as number)), pages: [...(t.pages ?? []).filter(p => !fs.includes(p.field)), ...fs.map(field => ({ field }))] }))
+      setTable(pt, t => {
+        const pages = [...(t.pages ?? [])]
+        for (const field of fs) if (!pages.some(p => p.field === field)) pages.unshift({ field })
+        return { ...t, rows: t.rows?.filter(f => !fs.includes(f as number)), columns: t.columns?.filter(f => !fs.includes(f as number)), pages }
+      })
       return laid(k)
     }
     if ('page' in op || 'hide' in op) {

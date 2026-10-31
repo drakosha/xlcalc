@@ -7,6 +7,7 @@ import { buildPivotCases as showCases } from '../bench/coverage/pivot/show.js'
 import { buildPivotCases as calcCases } from '../bench/coverage/pivot/calc.js'
 import { buildPivotCases as calcHeld } from '../bench/coverage/pivot/calc-held.js'
 import { buildPivotCases as filtered } from '../bench/coverage/pivot/filter.js'
+import { buildPivotCases as partitionHeld } from '../bench/coverage/pivot/filter-order-held.js'
 import { buildPivotCases as filteredHeld } from '../bench/coverage/pivot/filter-held.js'
 import { buildPivotCases as showItems } from '../bench/coverage/pivot/show-items.js'
 import { buildPivotCases as numericHeld } from '../bench/coverage/pivot/numeric-held.js'
@@ -24,6 +25,7 @@ for (const [set, cases] of [
   ['basic', basicCases()],
   ['filter', filtered()],
   ['filter-held', filteredHeld()],
+  ['filter-order-held', partitionHeld()],
   ['show-items', showItems()],
   ['numeric-held', numericHeld()],
   ['numeric-held-exact', numericHeldExact()],
