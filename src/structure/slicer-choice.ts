@@ -46,7 +46,11 @@ function itemized(p: PivotTable, f: number, n: number): PivotTable['fields'][num
 /** The items a new slicer cache of field `f` starts with: chosen unless hidden on the first PivotTable it filters, as Excel takes a filter already there. */
 export function itemsShown(book: BookInput, ref: PivotRef, f: number, n: number): NonNullable<SlicerCache['items']> {
   const p = book.sheets.find((s) => sheetKey(s.name) === sheetKey(ref.sheet))?.pivotTables?.find((q) => caseKey(q.name) === caseKey(ref.name))
-  const hidden = new Set((p?.fields[f]?.items ?? []).flatMap((x) => (x.hidden && x.item !== undefined ? [x.item] : [])))
+  const items = p?.fields[f]?.items ?? []
+  // a page field's one item shown is the one chosen
+  const page = p?.pages?.find((x) => x.field === f)?.item
+  const shown = page !== undefined ? items[page]?.item : undefined
+  const hidden = new Set(items.flatMap((x) => (x.item !== undefined && (shown !== undefined ? x.item !== shown : x.hidden) ? [x.item] : [])))
   return Array.from({ length: n }, (_, item) => (hidden.has(item) ? { item, selected: false } : { item }))
 }
 
@@ -68,8 +72,10 @@ export function withSlicerChoice(book: BookInput, sc: SlicerCache, refs: readonl
         return hide ? { ...rest, hidden: true } : rest
       })
       const fields = p.fields.slice()
-      fields[at.field] = { ...pf, ...(items ? { items } : {}) }
-      return { ...p, fields }
+      // a page field shows the items chosen, Select Multiple Items, in place of its one item
+      const page = p.pages?.some((x) => x.field === at.field && x.item !== undefined)
+      fields[at.field] = { ...pf, ...(items ? { items } : {}), ...(page ? { multipleItems: true } : {}) }
+      return { ...p, fields, ...(page ? { pages: p.pages!.map((x) => (x.field === at.field ? { field: x.field } : x)) } : {}) }
     },
   )
 }
