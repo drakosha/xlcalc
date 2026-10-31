@@ -14,13 +14,14 @@ function PArg($x) {
 
 function PTable($wb, $s) { $wb.Worksheets.Item([string]$s.sheet).PivotTables([string]$s.pt) }
 
-# what a step works on: the pivot table, one of its fields, a data field by its caption, the values field (Σ Values),
+# what a step works on: the pivot table, one of its fields, a data field by its caption or its place, the values field (Σ Values),
 # an item, the cache, a slicer cache by name or one of its items, a slicer; the comma keeps a collection whole
 function POn($wb, $s) {
   switch ($s.on) {
     'table' { return , (PTable $wb $s) }
     'field' { return , (PTable $wb $s).PivotFields([string]$s.field) }
     'data' { return , (PTable $wb $s).DataFields([string]$s.field) }
+    'dataAt' { return , (PTable $wb $s).DataFields([int]$s.index) }
     'values' { return , (PTable $wb $s).DataPivotField }
     'item' { return , (PTable $wb $s).PivotFields([string]$s.field).PivotItems([string]$s.item) }
     'cache' { return , (PTable $wb $s).PivotCache() }
@@ -68,6 +69,29 @@ function PRead($wb, $s) {
     List $row
   }
   List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), (List $texts), (List $formats), (Str (PRange $pt 'PageRange')), (Str (PRange $pt 'RowRange')), (Str (PRange $pt 'ColumnRange')))
+}
+
+# a pivot item as a pair [its field's SourceName, its Name]
+function PItemPair($it) { List @((Str ([string]$it.Parent.SourceName)), (Str ([string]$it.Name))) }
+
+# what each cell of the pivot table's TableRange2 is, by rows, as Range.PivotCell tells: [address, PivotCellType, its
+# PivotField's SourceName, its PivotItem's Name, its DataField's Name, RowItems, ColumnItems] (null where Excel gives
+# none), [address] for a cell that is no pivot cell
+function PCellKinds($wb, $s) {
+  $pt = PTable $wb $s
+  $out = foreach ($c in $pt.TableRange2.Cells) {
+    $addr = Str $c.Address($false, $false)
+    $pc = try { $c.PivotCell } catch { $null }
+    if ($null -eq $pc) { List @($addr); continue }
+    $type = Cell ([double][int]$pc.PivotCellType)
+    $field = try { Str ([string]$pc.PivotField.SourceName) } catch { 'null' }
+    $item = try { Str ([string]$pc.PivotItem.Name) } catch { 'null' }
+    $data = try { Str ([string]$pc.DataField.Name) } catch { 'null' }
+    $rows = try { List @($pc.RowItems | ForEach-Object { PItemPair $_ }) } catch { 'null' }
+    $cols = try { List @($pc.ColumnItems | ForEach-Object { PItemPair $_ }) } catch { 'null' }
+    List @($addr, $type, $field, $item, $data, $rows, $cols)
+  }
+  List $out
 }
 
 # a slicer cache's items as Excel shows them, [name, selected, has data]; a timeline's state, { timeline: [start, end
@@ -266,6 +290,8 @@ function Pivot($xl, $wb, $s) {
           })
       }
       'read' { PRead $wb $s }
+      # each pivot table of the book, [sheet, name, what each of its cells is]
+      'cellsAll' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1]), (PCellKinds $wb @{ sheet = $_[0]; pt = $_[1] })) }) }
       'external' { PExternal $xl $wb $s }
       'slicerRead' { PSlicerRead $wb $s }
       # a copy of the book as it is now, beside its answer: out\<n>.copy<k>.xlsx

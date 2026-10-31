@@ -9,6 +9,7 @@
 import type { BookInput, CellInput, PivotAxisField, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
+import { editStructure } from '../../../src/structure/index.js'
 import { wordsOf } from '../../../src/pivot/captions.js'
 import { refreshPivots } from '../../../src/pivot/engine.js'
 import { groupedItems } from '../../../src/pivot/items.js'
@@ -46,11 +47,12 @@ export interface DrivenPhase {
 
 const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toISOString().slice(0, 19)
 
-/** Plays a case: its phases, each with the book at its end. */
-export function drive(c: PivotCase): DrivenPhase[] {
+/** Plays a case in the workbook's language `locale` (en-US without it): its phases, each with the book at its end. */
+export function drive(c: PivotCase, locale?: string): DrivenPhase[] {
   if (c.from || c.file) throw new Error('a case from a saved book is not driven')
   const cols = DATA[c.data ?? 'sales']()
-  let book = sourceBook(cols, c.source ?? 'range')
+  // the workbook in Excel's language (ru-RU names value fields `Сумма по полю Qty`)
+  let book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(locale ? { locale } : {}) }
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
@@ -136,7 +138,7 @@ export function drive(c: PivotCase): DrivenPhase[] {
         return
       }
       const v = op.value
-      const d: PivotDataField = { field: f, name: v.caption ?? wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }
+      const d: PivotDataField = { field: f, name: v.caption ?? wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }
       if (v.show && v.show !== 'normal') d.showAs = (SHOW[v.show] ?? v.show) as PivotShowAs
       if (v.base) d.baseField = fieldOf(v.base)
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
@@ -203,6 +205,15 @@ export function drive(c: PivotCase): DrivenPhase[] {
     }
     if ('ungroup' in op) return cacheOp(k, { op: 'ungroupPivotField', sheet: 'P', pivot: pt, field: fieldOf(op.ungroup) })
     if ('calcField' in op) return cacheOp(k, { op: 'setPivotCalculatedField', sheet: 'P', pivot: pt, name: op.calcField, formula: op.formula })
+    if ('calcFormula' in op) return cacheOp(k, { op: 'setPivotCalculatedField', sheet: 'P', pivot: pt, name: op.calcFormula, formula: op.formula })
+    if ('setValue' in op) {
+      // through editPivotTable, which names a value field given another function as Excel does
+      const values = (tableOf(pt).values ?? []).map((d, j) => (j === op.setValue - 1 ? { ...d, ...(op.fn ? { function: op.fn as PivotFunction } : {}), ...(op.caption !== undefined ? { name: op.caption } : {}) } : d))
+      const r = editStructure(book, { op: 'editPivotTable', sheet: 'P', pivot: pt, set: { values } })
+      if (!r.ok) errors.push(`op ${k}: ${r.message}`)
+      else book = r.book
+      return laid(k)
+    }
     if ('calcItem' in op) return cacheOp(k, { op: 'setPivotCalculatedItem', sheet: 'P', pivot: pt, field: fieldOf(op.field), name: op.calcItem, formula: op.formula })
     if ('subtotals' in op) {
       const f = fieldOf(op.subtotals)

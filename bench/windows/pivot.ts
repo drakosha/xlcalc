@@ -11,7 +11,7 @@ import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CellValue } from '../../src/contract.js'
 import { writeXlsx } from '../../src/xlsx.js'
-import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type TableProps } from '../coverage/pivot/cases.js'
+import { FILTER_TYPES, type Agg, type Axis, type FieldProps, type PivotAnswer, type PivotArea, type PivotCase, type PivotCellKind, type PivotOp, type PivotPhase, type PivotSet, type Period, type ShowAs, type TableProps } from '../coverage/pivot/cases.js'
 import { cellsOf } from '../coverage/case-book.js'
 import { DATA, sourceBook, sourceText } from '../coverage/pivot/data.js'
 import { localeDir } from '../coverage/locales.js'
@@ -81,7 +81,7 @@ function fieldProps(f: FieldProps): Props {
 }
 
 /** What each step of a case is for, to read its answer: an operation (by index, -1 the first pivot table), a read of a pivot table, a watched range, a slicer, the copy or the save. */
-type Role = { op: number } | { read: string } | { readAll: true } | { watch: string } | { slicer: string } | { external: string[] } | { end: true }
+type Role = { op: number } | { read: string } | { readAll: true } | { kinds: true } | { watch: string } | { slicer: string } | { external: string[] } | { end: true }
 
 /** A case's steps and what each is for. */
 export interface Planned {
@@ -106,6 +106,7 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     add({ op: -2 }, { do: 'full' })
     if (c.file) add({ readAll: true }, { do: 'pivot', op: 'readAll' })
     else for (const [pt, sheet] of sheets) add({ read: pt }, { do: 'pivot', op: 'read', sheet, pt })
+    if (c.kinds) add({ kinds: true }, { do: 'pivot', op: 'cellsAll' })
     for (const w of c.watch ?? []) {
       const [sheet, range] = w.split('!')
       add({ watch: w }, { do: 'values', sheet, range })
@@ -158,6 +159,8 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     else if ('sort' in o) add(role, call('field', 'AutoSort', [SORT_ORDER[o.order], o.by ?? o.sort], { field: o.sort }))
     else if ('item' in o) add(role, set('item', [['Position', o.position]], { field: o.of, item: o.item }))
     else if ('calcField' in o) add(role, call('calcFields', 'Add', [o.calcField, o.formula, true]))
+    else if ('calcFormula' in o) add(role, set('field', [['Formula', o.formula]], { field: o.calcFormula }))
+    else if ('setValue' in o) add(role, set('dataAt', [...(o.fn ? [['Function', FN[o.fn]] as [string, unknown]] : []), ...(o.caption !== undefined ? [['Caption', o.caption] as [string, unknown]] : [])], { index: o.setValue }))
     else if ('calcItem' in o) add(role, call('calcItems', 'Add', [o.calcItem, o.formula, true], { field: o.field }))
     else if ('group' in o) add(role, { ...at, op: 'group', field: o.group, start: o.start ?? null, end: o.end ?? null, by: o.by ?? null, periods: o.periods ? PERIODS.map((p) => o.periods!.includes(p)) : null })
     else if ('groupItems' in o) add(role, { ...at, op: 'groupItems', field: o.groupItems, items: o.items })
@@ -241,6 +244,9 @@ export function pivotAnswer(plan: Planned, answers: unknown[]): PivotAnswer {
     else if ('readAll' in role) {
       if (error) cur.pivots['*'] = { error }
       else for (const [sheet, name, area] of got as [string, string, unknown][]) cur.pivots[`${sheet}!${name}`] = errorOf(area) ? { error: errorOf(area)! } : areaOf(area)
+    } else if ('kinds' in role) {
+      if (error) cur.kinds = { '*': { error } }
+      else for (const [sheet, name, cells] of got as [string, string, unknown][]) (cur.kinds ??= {})[`${sheet}!${name}`] = errorOf(cells) ? { error: errorOf(cells)! } : (cells as PivotCellKind[])
     } else if ('watch' in role) {
       const [sheet, range] = role.watch.split('!')
       const vals = (got as WinCell[][]).flat()
