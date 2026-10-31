@@ -3,7 +3,8 @@
  * is typed, for colouring them, what an arrow does in it (Point mode, `point.ts`), a sheet's name and a table column's name as a reference writes them, the clipboard's
  * text as the rectangle Excel pastes, and the category of a number format as the ribbon's Number Format box shows it,
  * with the items of its list (`numfmt/category.ts`, by the engine's reader of format codes), and where Excel's PivotTable
- * Fields list puts a field checked there (`pivot-suggest.ts`, by the kinds of value its cache holds). The tokenizer, the parser
+ * Fields list puts a field checked there (`pivot-suggest.ts`, by the kinds of value its cache holds), and what each cell of a
+ * PivotTable is (`pivot/cells.ts`, by its place and saved lines). The tokenizer, the parser
  * and the translation of a locale's formula text are the engine's own (`scan.ts`, `locale/translate.ts`); they compute nothing,
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
@@ -23,6 +24,7 @@ import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as decimals from './numfmt/decimals.js'
 import * as point from './point.js'
+import * as pivotView from './pivot/cells.js'
 import * as pivotSuggest from './pivot-suggest.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
@@ -39,6 +41,8 @@ export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 export const suggestPivotField = /* @__PURE__ */ strict(pivotSuggest.suggestPivotField)
+export const pivotCells = /* @__PURE__ */ strict(pivotView.pivotCells)
+export const pivotCellAt = /* @__PURE__ */ strict(pivotView.pivotCellAt)
 
 /**
  * The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
