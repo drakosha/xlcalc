@@ -39,6 +39,7 @@ import { contentTypes, openSource, relsPath, type Source, type SourceSheet } fro
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
 import { KeptStyles } from './styles.js'
+import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes, type Placed } from './xml.js'
 
@@ -104,6 +105,7 @@ interface Setup {
   block: number
   tables: Map<string, string>
   tableId: number
+  pivots: PivotFiles
 }
 
 /** The relationship kinds of the cell metadata and the rich values of errors. */
@@ -136,6 +138,7 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
   for (const part of new Set(edits.map((e) => e.part)))
     if (!own.has(part.toLowerCase())) texts.set(part, { text: (await src.archive.text(part))!, rels: await relsOf(src.archive, part), relsXml: await src.archive.text(relsPath(part)) })
   return {
+    pivots: await pivotFiles(src),
     rels,
     texts,
     styles,
@@ -228,6 +231,7 @@ class Kept {
   private tableId: number
   /** The file's parts removed, by name in lower case. */
   private readonly gone = new Set<string>()
+  private readonly pivots: KeptPivots
 
   constructor(
     readonly src: Source,
@@ -249,6 +253,23 @@ class Kept {
     this.w1 = bookWriting(book)
     this.block = setup.block
     this.tableId = setup.tableId
+    const styles = this.styles.of(book.styles)
+    this.pivots = new KeptPivots(
+      {
+        src,
+        book0,
+        book,
+        parts: this.parts,
+        types: this.types,
+        wbRels: this.wbRels,
+        styles,
+        useDxf: (i) => this.styles.use('dxfs', i),
+        edited: (part, text) => this.edited(part, text),
+        relative,
+        change: () => (this.changed = true),
+      },
+      setup.pivots,
+    )
   }
 
   get styles(): KeptStyles {
@@ -282,6 +303,7 @@ class Kept {
     // the file's first font is the default its styles are written against: another one would change every cell's look
     if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal({ key: 'keptFont' }, 'font')
     const emptied = this.others()
+    this.pivots.caches()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
       const issues = new KeptIssues()
@@ -302,6 +324,7 @@ class Kept {
         throw new KeptRefusal({ key: 'keptValidation', sheet: name }, 'rules')
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
+      this.pivots.sheet(ss, k, j, rels)
       // the references of the sheet's own parts (an AutoFilter, page breaks, sparklines) written back first
       let xml = this.edited(ss.part, ss.xml)
       const drawing = ss.rels.find((r) => r.kind === 'drawing' && !r.external && emptied.has(r.target.toLowerCase()))
@@ -554,6 +577,7 @@ class Kept {
       }
     }
     if (p.notes) this.block = nextBlock(this.block, p.notes.count)
+    this.pivots.newSheet(part, j, rels)
     this.parts.set(part, sheetXml(p))
     if (rels.size) this.parts.set(relsPath(part), rels.xml())
     this.types.override(part, `${TYPE}.worksheet+xml`)
@@ -627,6 +651,7 @@ class Kept {
     }
     this.names(wb, kids, place, placeOf, edits, insertAt)
     this.links(wb, kids, edits, insertAt)
+    this.pivots.workbook(wb, kids, edits, insertAt)
     // the active sheet, by its place now
     const views = kids.find((c) => c.local === 'bookViews')
     const view = views && childrenOf(wb, views).find((c) => c.local === 'workbookView')

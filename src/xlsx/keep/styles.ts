@@ -47,6 +47,8 @@ export class KeptStyles {
   private readonly base: BaseFont
   /** How many of the added cell formats and dxfs a written part uses: those up to the last one used are written. */
   private used = { cellXfs: 0, dxfs: 0 }
+  /** Whether a written part (a pivot cache's field, a value field) uses a number format added by its id alone. */
+  private usedFormats = false
   /** Whether the file has a styles part: without one the writer adds it. */
   readonly present: boolean
   /** Whether a cell format of the file looks as an earlier one (`twin`). */
@@ -126,7 +128,11 @@ export class KeptStyles {
       },
       dxf: (s: ConditionalStyle) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c))),
       dxfBody: (i) => this.added.dxfs[i - this.counts.dxfs].slice(5, -6),
-      numFmt: (code) => this.numFmt(code),
+      numFmt: (code) => {
+        const id = this.numFmt(code)
+        if (id >= 164 && this.added.numFmts.some((x) => x.startsWith(`<numFmt numFmtId="${id}"`))) this.usedFormats = true
+        return id
+      },
     }
   }
 
@@ -149,7 +155,7 @@ export class KeptStyles {
 
   /** styles.xml with what written parts use added; undefined when they use nothing new. */
   text(): string | undefined {
-    if (!this.used.cellXfs && !this.used.dxfs) return this.present ? undefined : this.xml
+    if (!this.used.cellXfs && !this.used.dxfs && !this.usedFormats) return this.present ? undefined : this.xml
     const take: Record<List, string[]> = { ...this.added, cellXfs: this.added.cellXfs.slice(0, this.used.cellXfs), dxfs: this.added.dxfs.slice(0, this.used.dxfs) }
     const edits: { at: number; end: number; text: string }[] = []
     for (const l of LISTS) {
