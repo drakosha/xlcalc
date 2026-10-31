@@ -66,8 +66,8 @@ function cellOf(v: PivotValue, epoch: number): V {
 const itemsOf = (c: PivotCache, f: number): PivotValue[] => groupedItems(c.fields[f]) ?? []
 
 /**
- * Whether an argument names an item: text by the item's label alone (in any case; its caption or its value where it is
- * renamed; `(blank)` a blank item, a number or a date by its text in the field's format: `"1/1/2024"`, not `"2024-01-01"`, `"10"`, not `"10.0"`); a number by an equal
+ * Whether an argument names an item: text by the item's label alone (in any case; a renamed item by its caption, a
+ * renamed text item by its value too; `(blank)` a blank item, a number or a date by its text in the field's format: `"1/1/2024"`, not `"2024-01-01"`, `"10"`, not `"10.0"`); a number by an equal
  * number or date; a boolean by an equal boolean.
  */
 function names(cx: Cx, arg: V, item: V, label: string | undefined, format: NumberFormat | undefined): boolean {
@@ -75,8 +75,9 @@ function names(cx: Cx, arg: V, item: V, label: string | undefined, format: Numbe
   if (typeof arg === 'number') return typeof item === 'number' && cx.rules.compareOp(arg, item) === 0
   if (typeof arg !== 'string') return typeof arg === typeof item && arg === item
   const key = caseKey(arg)
-  // a renamed item by its caption or by its value (the corpus: a pair of an item's value, its caption another)
-  if (label !== undefined && caseKey(label) === key) return true
+  // a renamed item by its caption, or a text item by its value too (the set gpd-held-3: "East" renamed Eastern is
+  // named by both; FALSE renamed No is not named by "FALSE")
+  if (label !== undefined && (caseKey(label) === key || typeof item !== 'string')) return caseKey(label) === key
   if (item === null) return key === caseKey('(blank)')
   if (typeof item === 'number') return caseKey(cx.rules.display(item, format, Infinity).text) === key
   if (typeof item === 'boolean') return caseKey(cx.rules.toText(item) as string) === key

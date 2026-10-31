@@ -78,7 +78,9 @@ the items the pairs name:
 - A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is
   not found as `Region`), in any case. An item is matched by its label, in any case:
   `"North"`, `"(blank)"` for the blank item, a number's or a date's label as the PivotTable shows it (`"10"`, not
-  `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. A number matches a number
+  `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. An item renamed in the
+  PivotTable is named by its new name, and a text item by its value too (`"East"` renamed `Eastern` by either; `FALSE`
+  renamed `No` by `"No"` or `FALSE`, not `"FALSE"`). A number matches a number
   or a date of that value as `=` compares them (`DATE(2024,1,1)`, `45292`, `DATE(2025,1,2)+TIME(9,33,0)`), a boolean a
   boolean.
 - The pairs pick the line of the rows and the column that name exactly their fields: naming all of them gives a value
@@ -323,7 +325,8 @@ column, returns that value (over 2,000 cells); the fields, value fields, filters
 made; the slicers and timelines of the set slicer read with the items chosen and with data, and the dates and level,
 Excel showed. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
 PivotTable of another workbook open, closed and reopened, give Excel's values; of the held-out sets gpd-held (55
-formulas) and gpd-held-2 (61), predicted before they ran, 51 and 57 held, and the rest were fitted. [Development](development.md#pivottables)
+formulas), gpd-held-2 (61) and gpd-held-3 (31), predicted before they ran, 51, 57 and 30 held, and the rest were
+fitted. [Development](development.md#pivottables)
 has the details.
 
 Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, a calculated field's total within one part in 10¹⁴ (`test/pivot-excel.test.ts`), and the operations played over the rows give the same PivotTables.
