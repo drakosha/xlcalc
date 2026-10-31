@@ -72,9 +72,10 @@ import { buildResult, cellAt, cellsIn, clockOptions, clockSerial, spillFields, s
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
+import { withoutPivot } from './structure/pivots.js'
 import { mergedPlan } from './session/merged.js'
 import { OUTLINE_FIELDS } from './structure/outline-command.js'
-import { chain, inverse, movesOf, type Geometry } from './structure/geometry.js'
+import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { cellValidation, hasRule, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken, stylesTaken } from './taken.js'
@@ -725,10 +726,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (gone.length) {
         // a PivotTable cleared in part is refused before any is deleted
         checkPivotEdits(s, outsidePivots(s, plan.edits, gone))
-        const r = chain(s.input, gone.map((p) => (b: BookInput) => applyOp(b, { op: 'deletePivotTable', sheet: p.sheet, pivot: p.table.name }, stateValues(s))))
-        if (!r.ok) throw new InputError('ranges', r.message)
-        const [built, out, diff] = yield* rebuild(s, r.book, r.geometry, true, history.on)
-        steps.push(() => (diff ? bookStep('clearCells', diff, r.book) : null))
+        // the PivotTables go from the workbook, their cells cleared with the others as the ranges clear them
+        const book = gone.reduce((b, p) => withoutPivot(b, { sheet: p.sheet, name: p.table.name }), s.input)
+        const [built, out, diff] = yield* rebuild(s, book, [], true, history.on)
+        steps.push(() => (diff ? bookStep('clearCells', diff, book) : null))
         ;[base, first] = [built, out]
         plan = clearPlan(built, ranges, what)
       }

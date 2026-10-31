@@ -78,10 +78,10 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     // the blank row between the Filters area and the table takes anything, as in Excel
     await s.setCellText('P', 'A2', 'x')
     expect(await s.getValues('P', 'A2')).toEqual([['x']])
-    // its table and Filters area cleared whole delete it, its cells with it as deletePivotTable clears them
+    // its table and Filters area cleared whole delete it, the blank row between keeping what it holds, as in Excel
     expect(await s.clearCells([{ sheet: 'P', range: 'A1:B1' }, { sheet: 'P', range: 'A3:B5' }], 'contents')).toMatchObject({ layout: ['P'] })
     expect((await s.getBook()).sheets[1].pivotTables).toBeUndefined()
-    expect(await s.getValues('P', 'A1:B5')).toEqual(Array.from({ length: 5 }, () => [null, null]))
+    expect(await s.getValues('P', 'A1:B5')).toEqual([[null, null], ['x', null], [null, null], [null, null], [null, null]])
     await s.close()
   })
 })
@@ -122,7 +122,7 @@ describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot i
       // its contents cleared whole, with other cells, delete it in one step, as Excel does; part of it is refused first
       await s.setCells([{ sheet: 'P', cell: 'D9', input: { value: 1 } }])
       await thrown(s.clearCells([{ sheet: 'P', range: 'A3:B5' }, { sheet: 'P', range: 'D9' }], 'contents'), 'affect', 'A3')
-      expect(await s.clearCells([{ sheet: 'P', range: 'A1:B1' }, { sheet: 'P', range: 'A3:D9' }], 'contents')).toMatchObject({ layout: ['P'], changes: [{ sheet: 'P', cell: 'D9', value: null }] })
+      expect(await s.clearCells([{ sheet: 'P', range: 'A1:B1' }, { sheet: 'P', range: 'A3:D9' }], 'contents')).toMatchObject({ layout: ['P'], changes: expect.arrayContaining([{ sheet: 'P', cell: 'A4', text: '', value: null }, { sheet: 'P', cell: 'D9', text: '', value: null }]) })
       expect((await s.getBook()).sheets[1].pivotTables).toBeUndefined()
       expect(await s.getValues('P', 'A1:D9')).toEqual(Array.from({ length: 9 }, () => [null, null, null, null]))
       await s.undo()
