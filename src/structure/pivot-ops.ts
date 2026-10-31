@@ -4,11 +4,12 @@
  * PivotTable shows, `xlcalc/pivot` lays it out again when loaded (`pivot/hook.ts`); without it, the PivotTable keeps its
  * cells and its cache is marked `stale`, which a file asks Excel to refresh on opening.
  */
-import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
+import type { BookInput, CellInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, SheetInput, StructureOp } from '../contract.js'
+import { CONTENT } from '../array-areas.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
-import { checkString, object, onlyKeys } from '../input/basic.js'
+import { checkBoolean, checkString, object, onlyKeys } from '../input/basic.js'
 import { pivotRefs } from '../input/pivot-refs.js'
 import { checkAddress } from '../input/range.js'
 import { sayPivot } from '../locale/pivot-messages.js'
@@ -24,6 +25,7 @@ import { areaText, meets, parseRange, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
 import { checkedPivots, movedPivot, patched, pivotArea, pivotsOn, relaid, withoutPivot } from './pivots.js'
+import { groupedDates } from './pivot-dates.js'
 import { placedValues } from './pivot-values.js'
 import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
@@ -33,8 +35,8 @@ export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTab
 
 /** The fields of each operation, for `editStructure`'s check of its shape. */
 export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {
-  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition'],
-  editPivotTable: ['sheet', 'pivot', 'set', 'source'],
+  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition', 'replace', 'groupDates'],
+  editPivotTable: ['sheet', 'pivot', 'set', 'source', 'groupDates'],
   renamePivotTable: ['sheet', 'pivot', 'name'],
   movePivotTable: ['sheet', 'pivot', 'to'],
   deletePivotTable: ['sheet', 'pivot'],
@@ -156,14 +158,15 @@ function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn, pivot
   return uniqueNames(names).map((name) => ({ name }))
 }
 
-/** A refusal of a PivotTable's place over cells that are not empty, a table or another PivotTable. */
-function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable): Applied | null {
+/** A refusal of a PivotTable's place over cells that are not empty (but with `replace`), a table or another PivotTable. */
+function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable, replace = false): Applied | null {
   const sheet = book.sheets[s]
   const range = areaText(x)
   const other = pivotsOn(book, s).find((t) => t.p !== own && meets(t.x, x))
   if (other) return refuse(book, { key: 'pivotOverPivot', pivot, other: other.p.name })
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, x))
   if (table) return refuse(book, { key: 'pivotOverTable', pivot, table: table.name })
+  if (replace) return null
   const ownArea = own && pivotArea(own)
   for (const [a, cell] of Object.entries(sheet.cells)) {
     if (cell.value === undefined && cell.formula === undefined) continue
@@ -171,6 +174,21 @@ function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: 
     if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2 && !(ownArea && row >= ownArea.r1 && row <= ownArea.r2 && col >= ownArea.c1 && col <= ownArea.c2)) return refuse(book, { key: 'pivotOverData', sheet: sheet.name, range, pivot })
   }
   return null
+}
+
+/** The sheet with the contents of the cells of `x` cleared, their formats kept, and its merges there gone, as Excel replaces them. */
+function emptied(sheet: SheetInput, x: Rect): SheetInput {
+  const cells = { ...sheet.cells }
+  for (const [a, cell] of Object.entries(cells)) {
+    const { row, col } = parseAddress(a)
+    if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
+    const rest: CellInput = { ...cell }
+    for (const k of CONTENT) delete rest[k]
+    if (Object.keys(rest).length) cells[a] = rest
+    else delete cells[a]
+  }
+  const merges = sheet.merges?.filter((m) => !meets(x, parseRange(m)!))
+  return withField({ ...sheet, cells }, 'merges', merges?.length ? merges : undefined)
 }
 
 /** The first name `prefix1`, `prefix2`… no PivotTable of the book has. */
@@ -214,15 +232,19 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
     cache = { id: caches.reduce((m, c) => Math.max(m, c.id), 0) + 1, source: src, fields: fields ?? [] }
     caches = [...caches, cache]
   }
+  const replace = o.replace === undefined ? false : (checkBoolean(o.replace, 'op.replace'), o.replace as boolean)
+  const groupDates = o.groupDates !== undefined && (checkBoolean(o.groupDates, 'op.groupDates'), o.groupDates === true)
   const x = { r1: at.row, c1: at.col, r2: at.row + EMPTY_ROWS - 1, c2: at.col + EMPTY_COLUMNS - 1 }
-  const over = placeRefusal(start, s, x, pivotName)
+  const over = placeRefusal(start, s, x, pivotName, undefined, replace)
   if (over) return over
   let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
   if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition', start.locale)
   const sheets = [...start.sheets]
-  sheets[s] = withField(sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
+  sheets[s] = withField(replace ? emptied(sheets[s], x) : sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
   const out = checkedPivots({ ...start, sheets, pivotCaches: caches }, 'op')
-  return relaid(out, [{ sheet: sheets[s].name, name: pivotName }], values, true, geometry, 'refuse')
+  const ref = { sheet: sheets[s].name, name: pivotName }
+  const r = relaid(out, [ref], values, true, geometry, replace ? 'replace' : 'refuse')
+  return groupDates ? groupedDates(r, ref, undefined, values) : r
 }
 
 function editPivotTable(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
@@ -256,10 +278,13 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
     next = placedValues(next)
     c = fresh
   }
+  if (o.groupDates !== undefined) checkBoolean(o.groupDates, 'op.groupDates')
   if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set', book.locale)
   const out = checkedPivots({ ...withPivot(book, s, k, next), pivotCaches: caches }, 'op')
   const labelSort = ((o.set as PivotTablePatch | undefined)?.fields ?? []).filter(f => f.sort && !f.sort.by).map(f => f.field)
-  return relaid(out, [{ sheet: book.sheets[s].name, name: p.name }], values, o.source !== undefined, [], 'spill', labelSort)
+  const ref = { sheet: book.sheets[s].name, name: p.name }
+  const r = relaid(out, [ref], values, o.source !== undefined, [], 'spill', labelSort)
+  return o.groupDates === true ? groupedDates(r, ref, p, values) : r
 }
 
 /** The slicers' and timelines' caches naming the PivotTable `from` by `to`. */
