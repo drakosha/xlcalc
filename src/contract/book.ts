@@ -529,8 +529,22 @@ export type Cell = CellInput
 /** A sheet without its cells and their formatting (`Session.getLayout`). */
 export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
-/** A workbook without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
-export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
+/**
+ * A workbook without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's
+ * layout; its slicers' caches with each item's label.
+ */
+export type BookLayout = Omit<Book, 'sheets' | 'slicerCaches'> & { sheets: SheetLayout[]; slicerCaches?: SlicerCacheLayout[] }
+
+/** A slicer's cache as `Session.getLayout` gives it: its items with their labels. */
+export type SlicerCacheLayout = Omit<SlicerCache, 'items'> & { items?: SlicerItemLayout[] }
+
+/**
+ * A slicer's item with its label, the text of its button as Excel shows it in the workbook's locale: the item's value
+ * in its field's number format, a date in the short date (and time), `(blank)` (`(пусто)` in ru-RU), the locale's words
+ * for a boolean and an error, a group's name. It is worked out from the pivot cache on each call and is not part of the
+ * workbook: empty when the pivot cache does not hold the item.
+ */
+export type SlicerItemLayout = NonNullable<SlicerCache['items']>[number] & { label: string }
 
 /**
  * A level of regular expressions (match mode 3 of `XLOOKUP` and `XMATCH`, `REGEXTEST`, `REGEXEXTRACT`, `REGEXREPLACE`)
