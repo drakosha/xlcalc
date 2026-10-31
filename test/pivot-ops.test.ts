@@ -5,7 +5,8 @@
  * opening. In every kind of session and both execution modes, with undo and redo.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { editStructure, InputError, type BookInput, type PivotTable, type StructureOp } from '../src/index.js'
+import { editStructure, InputError, registerLocale, type BookInput, type PivotTable, type StructureOp } from '../src/index.js'
+import { ruRU } from '../src/locales/ru-RU.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
@@ -87,6 +88,24 @@ describe('editPivotTable, renamePivotTable, movePivotTable, deletePivotTable wit
     const s = editStructure(r.book, { op: 'editPivotTable', sheet: 'P', pivot: 'PivotTable1', set: {}, source: { type: 'range', sheet: 'Data', range: 'B1:B4' } })
     if (!s.ok) throw new Error(s.message)
     expect([pivots(s.book)[0].columns, pivots(s.book)[0].values, s.book.pivotCaches![0].fields]).toEqual([[], [{ field: 0, name: 'Sum of Amount' }], [{ name: 'Amount' }]])
+  })
+
+  it("names a value field given another function anew, as Excel's object model does: the old function's words before the rest, any other name the new default", () => {
+    const one = editStructure(made(), { op: 'editPivotTable', sheet: 'P', pivot: 'PivotTable1', set: { values: [{ field: 1 }, { field: 1 }, { field: 1, name: 'Quantity' }, { field: 1, name: 'Сумма по полю Amount' }] } })
+    if (!one.ok) throw new Error(one.message)
+    expect(pivots(one.book)[0].values!.map((d) => d.name)).toEqual(['Sum of Amount', 'Sum of Amount2', 'Quantity', 'Сумма по полю Amount'])
+    const counted = (b: BookInput, name?: string) => pivots(b)[0].values!.map((d) => ({ ...d, function: 'count' as const, ...(name ? { name } : {}) }))
+    const two = editStructure(one.book, { op: 'editPivotTable', sheet: 'P', pivot: 'PivotTable1', set: { values: counted(one.book) } })
+    if (!two.ok) throw new Error(two.message)
+    // a book in en-US: the ru-RU default name is a name of its own
+    expect(pivots(two.book)[0].values!.map((d) => d.name)).toEqual(['Count of Amount', 'Count of Amount2', 'Count of Amount3', 'Count of Amount4'])
+    // a name given with the function stays
+    const three = editStructure(one.book, { op: 'editPivotTable', sheet: 'P', pivot: 'PivotTable1', set: { values: [{ field: 1, name: 'N', function: 'average' }] } })
+    expect(three.ok && pivots(three.book)[0].values).toEqual([{ field: 1, name: 'N', function: 'average' }])
+    // in ru-RU, its words
+    registerLocale(ruRU)
+    const ru = editStructure({ ...one.book, locale: 'ru-RU' }, { op: 'editPivotTable', sheet: 'P', pivot: 'PivotTable1', set: { values: counted(one.book) } })
+    expect(ru.ok && pivots(ru.book)[0].values!.map((d) => d.name).slice(0, 3)).toEqual(['Количество по полю Amount', 'Количество по полю Amount2', 'Количество по полю Amount3'])
   })
 
   it('renames, keeping the names of rules and slicers; refuses a name taken on its sheet', () => {

@@ -109,7 +109,7 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     out = {
       ...out,
       values: out.values.map((given, k) => {
-        const d = renamedForFunction(p.values?.[k], given, c, locale)
+        const d = renamedForFunction(p.values?.[k], given, locale)
         const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
         let name = d.name ?? base
         if (d.name === undefined) for (let n = 2; names.has(caseKey(name)); n++) name = `${base}${n}`
@@ -121,22 +121,18 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
   return out
 }
 
-/** A value field's default name, Excel's for its function and field, with the number Excel adds to a second (`Sum of Qty2`). */
-const isDefaultName = (name: string | undefined, d: PivotDataField, c: PivotCache, locale: string | undefined) => {
-  if (name === undefined) return true
-  const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
-  return caseKey(name) === caseKey(base) || (caseKey(name).startsWith(caseKey(base)) && /^\d+$/.test(name.slice(base.length)))
-}
-
 /**
- * A value field given another function and no name of its own (the name it had, or none) takes the new function's
- * default name where it had the old one's, as Excel renames it; a name of its own stays.
+ * A value field given another function and no name of its own in the patch (the name it had, or none) is named anew,
+ * as Excel names it (the set value-names): a name beginning with the old function's words in the workbook's language
+ * (`Sum of`, `Сумма по полю`, in any case) takes the new function's words before the rest (`Sum of Qty2` is `Count of
+ * Qty2`); any other name, its own too, the new function's default name.
  */
-function renamedForFunction(was: PivotDataField | undefined, d: PivotDataField, c: PivotCache, locale: string | undefined): PivotDataField {
+function renamedForFunction(was: PivotDataField | undefined, d: PivotDataField, locale: string | undefined): PivotDataField {
   if (!was || was.field !== d.field || (was.function ?? 'sum') === (d.function ?? 'sum') || (d.name !== undefined && d.name !== was.name)) return d
-  if (!isDefaultName(was.name, was, c, locale)) return d
   const { name: _, ...rest } = d
-  return rest
+  const old = valueFieldName(was.function ?? 'sum', '', locale)
+  if (!was.name || caseKey(was.name.slice(0, old.length)) !== caseKey(old)) return rest
+  return { ...rest, name: valueFieldName(d.function ?? 'sum', '', locale) + was.name.slice(old.length) }
 }
 
 /** The text of a header cell as a field's name: a number or a boolean as Excel shows it plainly; empty without a value. */

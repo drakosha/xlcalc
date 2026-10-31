@@ -27,7 +27,9 @@ function area(book: BookInput): CellValue[][] {
 export async function predictedNames(c: PivotCase, locale?: string): Promise<CellValue[][][]> {
   registerPivot(pivotEngine)
   registerLocale(ruRU)
-  const saved = c.from ? (await readXlsx(readFileSync(new URL(`test/excel/win/pivot/${locale ? `${locale}/` : ''}${c.from}.xlsx`, ROOT)))).book : undefined
+  // a saved book in the language Excel saved it in, which the file does not name
+  const read = c.from ? (await readXlsx(readFileSync(new URL(`test/excel/win/pivot/${locale ? `${locale}/` : ''}${c.from}.xlsx`, ROOT)))).book : undefined
+  const saved = read && locale ? { ...read, locale } : read
   return drive(c, saved, locale).map((p) => area(p.book))
 }
 
