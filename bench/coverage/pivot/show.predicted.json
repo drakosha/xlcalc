@@ -1,0 +1,5900 @@
+{
+ "normal": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     38.62,
+     100.03,
+     138.65
+    ],
+    [
+     "Apple",
+     null,
+     42.49,
+     42.49
+    ],
+    [
+     "Banana",
+     4.43,
+     37.82,
+     42.25
+    ],
+    [
+     "Cherry",
+     34.19,
+     7.03,
+     41.22
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     12.69,
+     12.69
+    ],
+    [
+     "North",
+     97.35,
+     140.45,
+     237.8
+    ],
+    [
+     "Apple",
+     59.77,
+     52.3,
+     112.07
+    ],
+    [
+     "Banana",
+     2.98,
+     56.41,
+     59.39
+    ],
+    [
+     "Cherry",
+     34.6,
+     10.83,
+     45.43
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     20.91,
+     20.91
+    ],
+    [
+     "South",
+     111.85,
+     236.55,
+     348.4
+    ],
+    [
+     "Apple",
+     29.29,
+     98.12,
+     127.41
+    ],
+    [
+     "Banana",
+     null,
+     70.96,
+     70.96
+    ],
+    [
+     "Cherry",
+     82.56,
+     24.63,
+     107.19
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     42.84,
+     42.84
+    ],
+    [
+     "West",
+     88.12,
+     213.79,
+     301.91
+    ],
+    [
+     "100",
+     14.85,
+     null,
+     14.85
+    ],
+    [
+     "Apple",
+     44.81,
+     28.87,
+     73.68
+    ],
+    [
+     "Banana",
+     25.79,
+     101.02,
+     126.81
+    ],
+    [
+     "Cherry",
+     2.67,
+     47.51,
+     50.18
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     36.39,
+     36.39
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     335.94,
+     690.82,
+     1026.76
+    ]
+   ]
+  }
+ },
+ "total": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.0376134637110912,
+     0.0974229615489501,
+     0.135036425260041
+    ],
+    [
+     "Apple",
+     null,
+     0.0413826015816744,
+     0.0413826015816744
+    ],
+    [
+     "Banana",
+     0.00431454283376836,
+     0.0368343137636838,
+     0.0411488565974522
+    ],
+    [
+     "Cherry",
+     0.0332989208773228,
+     0.00684678016284234,
+     0.0401457010401652
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0123592660407495,
+     0.0123592660407495
+    ],
+    [
+     "North",
+     0.0948128092251354,
+     0.136789512641708,
+     0.231602321866843
+    ],
+    [
+     "Apple",
+     0.0582122404456738,
+     0.0509369278117574,
+     0.109149168257431
+    ],
+    [
+     "Banana",
+     0.00290233355409248,
+     0.0549398106665628,
+     0.0578421442206553
+    ],
+    [
+     "Cherry",
+     0.0336982352253691,
+     0.0105477424130274,
+     0.0442459776383965
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0203650317503604,
+     0.0203650317503604
+    ],
+    [
+     "South",
+     0.108934902021894,
+     0.230384900074019,
+     0.339319802095913
+    ],
+    [
+     "Apple",
+     0.0285266274494526,
+     0.095562741049515,
+     0.124089368498968
+    ],
+    [
+     "Banana",
+     null,
+     0.0691106003350345,
+     0.0691106003350345
+    ],
+    [
+     "Cherry",
+     0.0804082745724415,
+     0.0239880790058047,
+     0.104396353578246
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0417234796836651,
+     0.0417234796836651
+    ],
+    [
+     "West",
+     0.0858233667069227,
+     0.208218084070279,
+     0.294041450777202
+    ],
+    [
+     "100",
+     0.0144629708987495,
+     null,
+     0.0144629708987495
+    ],
+    [
+     "Apple",
+     0.0436421364291558,
+     0.0281175737270638,
+     0.0717597101562196
+    ],
+    [
+     "Banana",
+     0.0251178464295454,
+     0.0983871596088667,
+     0.123505006038412
+    ],
+    [
+     "Cherry",
+     0.00260041294947213,
+     0.0462717675016557,
+     0.0488721804511278
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0354415832326931,
+     0.0354415832326931
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     0.327184541665043,
+     0.672815458334956,
+     1
+    ]
+   ]
+  }
+ },
+ "row": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.27854309412189,
+     0.72145690587811,
+     1
+    ],
+    [
+     "Apple",
+     null,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     0.104852071005917,
+     0.895147928994083,
+     1
+    ],
+    [
+     "Cherry",
+     0.829451722464823,
+     0.170548277535177,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "North",
+     0.409377628259041,
+     0.590622371740959,
+     1
+    ],
+    [
+     "Apple",
+     0.533327384670295,
+     0.466672615329705,
+     1
+    ],
+    [
+     "Banana",
+     0.0501767974406466,
+     0.949823202559353,
+     1
+    ],
+    [
+     "Cherry",
+     0.761611270085846,
+     0.238388729914154,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "South",
+     0.321039035591274,
+     0.678960964408726,
+     1
+    ],
+    [
+     "Apple",
+     0.229887763911781,
+     0.770112236088219,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     0.770221102714805,
+     0.229778897285195,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "West",
+     0.291875062104601,
+     0.708124937895399,
+     1
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     0.608170466883822,
+     0.391829533116178,
+     1
+    ],
+    [
+     "Banana",
+     0.203375128144468,
+     0.796624871855532,
+     1
+    ],
+    [
+     "Cherry",
+     0.0532084495815066,
+     0.946791550418493,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     0.327184541665043,
+     0.672815458334956,
+     1
+    ]
+   ]
+  }
+ },
+ "column": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.114961004941359,
+     0.144798934599462,
+     0.135036425260041
+    ],
+    [
+     "Apple",
+     null,
+     0.0615066153267132,
+     0.0413826015816744
+    ],
+    [
+     "Banana",
+     0.0131868786092755,
+     0.0547465331055847,
+     0.0411488565974522
+    ],
+    [
+     "Cherry",
+     0.101774126332083,
+     0.0101763122086795,
+     0.0401457010401652
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0183694739584841,
+     0.0123592660407495
+    ],
+    [
+     "North",
+     0.289783889980354,
+     0.20330911091167,
+     0.231602321866843
+    ],
+    [
+     "Apple",
+     0.177918675954039,
+     0.0757071306563215,
+     0.109149168257431
+    ],
+    [
+     "Banana",
+     0.00887063166041555,
+     0.0816565820329464,
+     0.0578421442206553
+    ],
+    [
+     "Cherry",
+     0.102994582365899,
+     0.0156770215106685,
+     0.0442459776383965
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0302683767117339,
+     0.0203650317503604
+    ],
+    [
+     "South",
+     0.332946359468953,
+     0.342419154048812,
+     0.339319802095913
+    ],
+    [
+     "Apple",
+     0.0871881883669703,
+     0.142034104397672,
+     0.124089368498968
+    ],
+    [
+     "Banana",
+     null,
+     0.102718508439246,
+     0.0691106003350345
+    ],
+    [
+     "Cherry",
+     0.245758171101983,
+     0.0356532816073652,
+     0.104396353578246
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.062013259604528,
+     0.0417234796836651
+    ],
+    [
+     "West",
+     0.262308745609335,
+     0.309472800440057,
+     0.294041450777202
+    ],
+    [
+     "100",
+     0.0442043222003929,
+     null,
+     0.0144629708987495
+    ],
+    [
+     "Apple",
+     0.13338691432994,
+     0.0417909151443212,
+     0.0717597101562196
+    ],
+    [
+     "Banana",
+     0.0767696612490326,
+     0.146232014128138,
+     0.123505006038412
+    ],
+    [
+     "Cherry",
+     0.00794784782996964,
+     0.0687733418256565,
+     0.0488721804511278
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0526765293419415,
+     0.0354415832326931
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     1,
+     1,
+     1
+    ]
+   ]
+  }
+ },
+ "index": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.851333295590258,
+     1.07229537749256,
+     1
+    ],
+    [
+     "Apple",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "Banana",
+     0.320467680020347,
+     1.33045089541988,
+     1
+    ],
+    [
+     "Cherry",
+     2.5351189217062,
+     0.253484481401839,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "North",
+     1.25121323328944,
+     0.87783710142837,
+     1
+    ],
+    [
+     "Apple",
+     1.63005068013357,
+     0.693611613033681,
+     1
+    ],
+    [
+     "Banana",
+     0.153359315771144,
+     1.41171429816717,
+     1
+    ],
+    [
+     "Cherry",
+     2.32777277988136,
+     0.354315179535416,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "South",
+     0.981217003583071,
+     1.00913401438335,
+     1
+    ],
+    [
+     "Apple",
+     0.702624160487171,
+     1.14461138867714,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "Cherry",
+     2.35408769251489,
+     0.341518457161846,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "West",
+     0.892080844098707,
+     1.05248018475649,
+     1
+    ],
+    [
+     "100",
+     3.05637911531821,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     1.85879951353704,
+     0.58237296462518,
+     1
+    ],
+    [
+     "Banana",
+     0.621591494235917,
+     1.18401689792766,
+     1
+    ],
+    [
+     "Cherry",
+     0.162625194059379,
+     1.4072083788942,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.48629165339741,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     1,
+     1,
+     1
+    ]
+   ]
+  }
+ },
+ "parent-row": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.114961004941359,
+     0.144798934599462,
+     0.135036425260041
+    ],
+    [
+     "Apple",
+     null,
+     0.424772568229531,
+     0.306455102776776
+    ],
+    [
+     "Banana",
+     0.114707405489384,
+     0.378086574027792,
+     0.304724125495853
+    ],
+    [
+     "Cherry",
+     0.885292594510616,
+     0.0702789163251025,
+     0.297295347998558
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.126861941417575,
+     0.0915254237288135
+    ],
+    [
+     "North",
+     0.289783889980354,
+     0.20330911091167,
+     0.231602321866843
+    ],
+    [
+     "Apple",
+     0.61397021058038,
+     0.372374510501958,
+     0.471278385197645
+    ],
+    [
+     "Banana",
+     0.0306111967128916,
+     0.401637593449626,
+     0.249747687132044
+    ],
+    [
+     "Cherry",
+     0.355418592706728,
+     0.0771092915628338,
+     0.191042893187553
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.148878604485582,
+     0.0879310344827586
+    ],
+    [
+     "South",
+     0.332946359468953,
+     0.342419154048812,
+     0.339319802095913
+    ],
+    [
+     "Apple",
+     0.261868573983013,
+     0.414796026210104,
+     0.365700344431688
+    ],
+    [
+     "Banana",
+     null,
+     0.2999788628197,
+     0.203673938002296
+    ],
+    [
+     "Cherry",
+     0.738131426016987,
+     0.104121750158529,
+     0.307663605051665
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.181103360811668,
+     0.122962112514351
+    ],
+    [
+     "West",
+     0.262308745609335,
+     0.309472800440057,
+     0.294041450777202
+    ],
+    [
+     "100",
+     0.168520199727644,
+     null,
+     0.0491868437613858
+    ],
+    [
+     "Apple",
+     0.508511121198366,
+     0.13503905701857,
+     0.244046238945381
+    ],
+    [
+     "Banana",
+     0.292669087607808,
+     0.472519762383648,
+     0.420025835513895
+    ],
+    [
+     "Cherry",
+     0.0302995914661825,
+     0.222227419430282,
+     0.166208472723659
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.170213761167501,
+     0.120532609055679
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     1,
+     1,
+     1
+    ]
+   ]
+  }
+ },
+ "parent-column": {
+  "PT1": {
+   "area": "A3:H11",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     "FALSE",
+     null,
+     "FALSE Total",
+     "TRUE",
+     null,
+     "TRUE Total",
+     "Grand Total"
+    ],
+    [
+     "Row Labels",
+     20,
+     "20",
+     null,
+     10,
+     30,
+     null,
+     null
+    ],
+    [
+     "East",
+     0.885292594510616,
+     0.114707405489384,
+     0.27854309412189,
+     0.458662401279616,
+     0.541337598720384,
+     0.72145690587811,
+     1
+    ],
+    [
+     "North",
+     1,
+     null,
+     0.409377628259041,
+     0.589604841580634,
+     0.410395158419366,
+     0.590622371740959,
+     1
+    ],
+    [
+     "South",
+     1,
+     null,
+     0.321039035591274,
+     0.357937011202706,
+     0.642062988797294,
+     0.678960964408726,
+     1
+    ],
+    [
+     "West",
+     1,
+     null,
+     0.291875062104601,
+     0.628747836662145,
+     0.371252163337855,
+     0.708124937895399,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     0.986813121390725,
+     0.0131868786092755,
+     0.327184541665043,
+     0.503430705538346,
+     0.496569294461654,
+     0.672815458334956,
+     1
+    ]
+   ]
+  }
+ },
+ "parent-region": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     1,
+     1,
+     1
+    ],
+    [
+     "Apple",
+     null,
+     0.424772568229531,
+     0.306455102776776
+    ],
+    [
+     "Banana",
+     0.114707405489384,
+     0.378086574027792,
+     0.304724125495853
+    ],
+    [
+     "Cherry",
+     0.885292594510616,
+     0.0702789163251025,
+     0.297295347998558
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.126861941417575,
+     0.0915254237288135
+    ],
+    [
+     "North",
+     1,
+     1,
+     1
+    ],
+    [
+     "Apple",
+     0.61397021058038,
+     0.372374510501958,
+     0.471278385197645
+    ],
+    [
+     "Banana",
+     0.0306111967128916,
+     0.401637593449626,
+     0.249747687132044
+    ],
+    [
+     "Cherry",
+     0.355418592706728,
+     0.0771092915628338,
+     0.191042893187553
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.148878604485582,
+     0.0879310344827586
+    ],
+    [
+     "South",
+     1,
+     1,
+     1
+    ],
+    [
+     "Apple",
+     0.261868573983013,
+     0.414796026210104,
+     0.365700344431688
+    ],
+    [
+     "Banana",
+     null,
+     0.2999788628197,
+     0.203673938002296
+    ],
+    [
+     "Cherry",
+     0.738131426016987,
+     0.104121750158529,
+     0.307663605051665
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.181103360811668,
+     0.122962112514351
+    ],
+    [
+     "West",
+     1,
+     1,
+     1
+    ],
+    [
+     "100",
+     0.168520199727644,
+     null,
+     0.0491868437613858
+    ],
+    [
+     "Apple",
+     0.508511121198366,
+     0.13503905701857,
+     0.244046238945381
+    ],
+    [
+     "Banana",
+     0.292669087607808,
+     0.472519762383648,
+     0.420025835513895
+    ],
+    [
+     "Cherry",
+     0.0302995914661825,
+     0.222227419430282,
+     0.166208472723659
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.170213761167501,
+     0.120532609055679
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "parent-product": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "run-region": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     38.62,
+     100.03,
+     138.65
+    ],
+    [
+     "Apple",
+     null,
+     42.49,
+     42.49
+    ],
+    [
+     "Banana",
+     4.43,
+     37.82,
+     42.25
+    ],
+    [
+     "Cherry",
+     34.19,
+     7.03,
+     41.22
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     12.69,
+     12.69
+    ],
+    [
+     "North",
+     135.97,
+     240.48,
+     376.45
+    ],
+    [
+     "Apple",
+     59.77,
+     94.79,
+     154.56
+    ],
+    [
+     "Banana",
+     7.41,
+     94.23,
+     101.64
+    ],
+    [
+     "Cherry",
+     68.79,
+     17.86,
+     86.65
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     33.6,
+     33.6
+    ],
+    [
+     "South",
+     247.82,
+     477.03,
+     724.85
+    ],
+    [
+     "Apple",
+     89.06,
+     192.91,
+     281.97
+    ],
+    [
+     "Banana",
+     null,
+     165.19,
+     172.6
+    ],
+    [
+     "Cherry",
+     151.35,
+     42.49,
+     193.84
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     76.44,
+     76.44
+    ],
+    [
+     "West",
+     335.94,
+     690.82,
+     1026.76
+    ],
+    [
+     "100",
+     14.85,
+     null,
+     14.85
+    ],
+    [
+     "Apple",
+     133.87,
+     221.78,
+     355.65
+    ],
+    [
+     "Banana",
+     33.2,
+     266.21,
+     299.41
+    ],
+    [
+     "Cherry",
+     154.02,
+     90,
+     244.02
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     112.83,
+     112.83
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "run-product": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     42.49,
+     42.49
+    ],
+    [
+     "Banana",
+     4.43,
+     80.31,
+     84.74
+    ],
+    [
+     "Cherry",
+     38.62,
+     87.34,
+     125.96
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     100.03,
+     138.65
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     59.77,
+     52.3,
+     112.07
+    ],
+    [
+     "Banana",
+     62.75,
+     108.71,
+     171.46
+    ],
+    [
+     "Cherry",
+     97.35,
+     119.54,
+     216.89
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     140.45,
+     237.8
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     29.29,
+     98.12,
+     127.41
+    ],
+    [
+     "Banana",
+     null,
+     169.08,
+     198.37
+    ],
+    [
+     "Cherry",
+     111.85,
+     193.71,
+     305.56
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     236.55,
+     348.4
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     14.85,
+     null,
+     14.85
+    ],
+    [
+     "Apple",
+     59.66,
+     28.87,
+     88.53
+    ],
+    [
+     "Banana",
+     85.45,
+     129.89,
+     215.34
+    ],
+    [
+     "Cherry",
+     88.12,
+     177.4,
+     265.52
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     213.79,
+     301.91
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "run-flag": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     38.62,
+     138.65,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     42.49,
+     null
+    ],
+    [
+     "Banana",
+     4.43,
+     42.25,
+     null
+    ],
+    [
+     "Cherry",
+     34.19,
+     41.22,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     12.69,
+     null
+    ],
+    [
+     "North",
+     97.35,
+     237.8,
+     null
+    ],
+    [
+     "Apple",
+     59.77,
+     112.07,
+     null
+    ],
+    [
+     "Banana",
+     2.98,
+     59.39,
+     null
+    ],
+    [
+     "Cherry",
+     34.6,
+     45.43,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     20.91,
+     null
+    ],
+    [
+     "South",
+     111.85,
+     348.4,
+     null
+    ],
+    [
+     "Apple",
+     29.29,
+     127.41,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     70.96,
+     null
+    ],
+    [
+     "Cherry",
+     82.56,
+     107.19,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     42.84,
+     null
+    ],
+    [
+     "West",
+     88.12,
+     301.91,
+     null
+    ],
+    [
+     "100",
+     14.85,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     44.81,
+     73.68,
+     null
+    ],
+    [
+     "Banana",
+     25.79,
+     126.81,
+     null
+    ],
+    [
+     "Cherry",
+     2.67,
+     50.18,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     36.39,
+     null
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     335.94,
+     1026.76,
+     null
+    ]
+   ]
+  }
+ },
+ "run-percent-region": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.114961004941359,
+     0.144798934599462,
+     0.135036425260041
+    ],
+    [
+     "Apple",
+     null,
+     0.191586256650735,
+     0.119471390411922
+    ],
+    [
+     "Banana",
+     0.133433734939759,
+     0.142068291949964,
+     0.141110851340971
+    ],
+    [
+     "Cherry",
+     0.221984157901571,
+     0.0781111111111111,
+     0.168920580280305
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.112470087742622,
+     0.112470087742622
+    ],
+    [
+     "North",
+     0.404744894921712,
+     0.348108045511132,
+     0.366638747126885
+    ],
+    [
+     "Apple",
+     0.446477926346455,
+     0.427405537018667,
+     0.434584563475327
+    ],
+    [
+     "Banana",
+     0.223192771084337,
+     0.353968671349686,
+     0.339467619651982
+    ],
+    [
+     "Cherry",
+     0.44663030775224,
+     0.198444444444444,
+     0.355093844766822
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.297793140122308,
+     0.297793140122308
+    ],
+    [
+     "South",
+     0.737691254390665,
+     0.690527199559943,
+     0.705958549222798
+    ],
+    [
+     "Apple",
+     0.665272279076716,
+     0.869825953647759,
+     0.792830029523408
+    ],
+    [
+     "Banana",
+     null,
+     0.620525149318207,
+     0.576467051868675
+    ],
+    [
+     "Cherry",
+     0.982664589014414,
+     0.472111111111111,
+     0.794361117941152
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.677479393778251,
+     0.677479393778251
+    ],
+    [
+     "West",
+     1,
+     1,
+     1
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "run-percent-product": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     0.424772568229531,
+     0.306455102776776
+    ],
+    [
+     "Banana",
+     0.114707405489384,
+     0.802859142257323,
+     0.611179228272629
+    ],
+    [
+     "Cherry",
+     1,
+     0.873138058582425,
+     0.908474576271186
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     0.61397021058038,
+     0.372374510501958,
+     0.471278385197645
+    ],
+    [
+     "Banana",
+     0.644581407293272,
+     0.774012103951584,
+     0.721026072329689
+    ],
+    [
+     "Cherry",
+     1,
+     0.851121395514418,
+     0.912068965517241
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     0.261868573983013,
+     0.414796026210104,
+     0.365700344431688
+    ],
+    [
+     "Banana",
+     null,
+     0.714774889029803,
+     0.569374282433984
+    ],
+    [
+     "Cherry",
+     1,
+     0.818896639188332,
+     0.877037887485649
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     0.168520199727644,
+     null,
+     0.0491868437613858
+    ],
+    [
+     "Apple",
+     0.67703132092601,
+     0.13503905701857,
+     0.293233082706767
+    ],
+    [
+     "Banana",
+     0.969700408533817,
+     0.607558819402217,
+     0.713258918220662
+    ],
+    [
+     "Cherry",
+     1,
+     0.829786238832499,
+     0.879467390944321
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "rank-up-product": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     4,
+     4
+    ],
+    [
+     "Banana",
+     1,
+     3,
+     3
+    ],
+    [
+     "Cherry",
+     2,
+     1,
+     2
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     1
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     3,
+     3,
+     4
+    ],
+    [
+     "Banana",
+     1,
+     4,
+     3
+    ],
+    [
+     "Cherry",
+     2,
+     1,
+     2
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     1
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     1,
+     4,
+     4
+    ],
+    [
+     "Banana",
+     null,
+     3,
+     2
+    ],
+    [
+     "Cherry",
+     2,
+     1,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     1
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     2,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     4,
+     1,
+     4
+    ],
+    [
+     "Banana",
+     3,
+     4,
+     5
+    ],
+    [
+     "Cherry",
+     1,
+     3,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     2
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "rank-down-product": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     2,
+     2,
+     2
+    ],
+    [
+     "Cherry",
+     1,
+     4,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     4
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     1,
+     2,
+     1
+    ],
+    [
+     "Banana",
+     3,
+     1,
+     2
+    ],
+    [
+     "Cherry",
+     2,
+     4,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     4
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     2,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     2,
+     3
+    ],
+    [
+     "Cherry",
+     1,
+     4,
+     2
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     4
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     3,
+     null,
+     5
+    ],
+    [
+     "Apple",
+     1,
+     4,
+     2
+    ],
+    [
+     "Banana",
+     2,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     4,
+     2,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     4
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "rank-down-region": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     4,
+     4,
+     4
+    ],
+    [
+     "Apple",
+     null,
+     3,
+     4
+    ],
+    [
+     "Banana",
+     2,
+     4,
+     4
+    ],
+    [
+     "Cherry",
+     3,
+     4,
+     4
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     4,
+     4
+    ],
+    [
+     "North",
+     2,
+     3,
+     3
+    ],
+    [
+     "Apple",
+     1,
+     2,
+     2
+    ],
+    [
+     "Banana",
+     3,
+     3,
+     3
+    ],
+    [
+     "Cherry",
+     2,
+     3,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     3
+    ],
+    [
+     "South",
+     1,
+     1,
+     1
+    ],
+    [
+     "Apple",
+     3,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     2,
+     2
+    ],
+    [
+     "Cherry",
+     1,
+     2,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "West",
+     3,
+     2,
+     2
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     2,
+     4,
+     3
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     4,
+     1,
+     2
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     2
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "difference-item": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     null,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "North",
+     58.73,
+     40.42,
+     99.15
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     9.81,
+     69.58
+    ],
+    [
+     "Banana",
+     -1.45,
+     18.59,
+     17.14
+    ],
+    [
+     "Cherry",
+     0.410000000000004,
+     3.8,
+     4.21
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     8.22,
+     8.22
+    ],
+    [
+     "South",
+     73.23,
+     136.52,
+     209.75
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     55.63,
+     84.92
+    ],
+    [
+     "Banana",
+     null,
+     33.14,
+     28.71
+    ],
+    [
+     "Cherry",
+     48.37,
+     17.6,
+     65.97
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     30.15,
+     30.15
+    ],
+    [
+     "West",
+     49.5,
+     113.76,
+     163.26
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     -13.62,
+     31.19
+    ],
+    [
+     "Banana",
+     21.36,
+     63.2,
+     84.56
+    ],
+    [
+     "Cherry",
+     -31.52,
+     40.48,
+     8.96
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     23.7,
+     23.7
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "difference-previous": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     null,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "North",
+     58.73,
+     40.42,
+     99.15
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     9.81,
+     69.58
+    ],
+    [
+     "Banana",
+     -1.45,
+     18.59,
+     17.14
+    ],
+    [
+     "Cherry",
+     0.410000000000004,
+     3.8,
+     4.21
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     8.22,
+     8.22
+    ],
+    [
+     "South",
+     14.5,
+     96.1,
+     110.6
+    ],
+    [
+     "Apple",
+     -30.48,
+     45.82,
+     15.34
+    ],
+    [
+     "Banana",
+     null,
+     14.55,
+     11.57
+    ],
+    [
+     "Cherry",
+     47.96,
+     13.8,
+     61.76
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     21.93,
+     21.93
+    ],
+    [
+     "West",
+     -23.73,
+     -22.76,
+     -46.49
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     15.52,
+     -69.25,
+     -53.73
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     30.06,
+     55.85
+    ],
+    [
+     "Cherry",
+     -79.89,
+     22.88,
+     -57.01
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -6.45,
+     -6.45
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "difference-next": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     4.67,
+     0.240000000000002
+    ],
+    [
+     "Banana",
+     -29.76,
+     30.79,
+     1.03
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     -5.66,
+     28.53
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     56.79,
+     -4.11,
+     52.68
+    ],
+    [
+     "Banana",
+     -31.62,
+     45.58,
+     13.96
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     -10.08,
+     24.52
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     27.16,
+     56.45
+    ],
+    [
+     "Banana",
+     null,
+     46.33,
+     -36.23
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     -18.21,
+     64.35
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     -29.96,
+     null,
+     -58.83
+    ],
+    [
+     "Apple",
+     19.02,
+     -72.15,
+     -53.13
+    ],
+    [
+     "Banana",
+     23.12,
+     53.51,
+     76.63
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     11.12,
+     13.79
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "difference-flag": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     61.41,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "Banana",
+     null,
+     33.39,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     -27.16,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "North",
+     null,
+     43.1,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     -7.47,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     53.43,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     -23.77,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "South",
+     null,
+     124.7,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     68.83,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     -57.93,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "West",
+     null,
+     125.67,
+     null
+    ],
+    [
+     "100",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     -15.94,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     75.23,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     44.84,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     null
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     354.88,
+     null
+    ]
+   ]
+  }
+ },
+ "percent-diff-item": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     -0.603287108371854,
+     -0.287789248843005,
+     -0.416947014297729
+    ],
+    [
+     "Apple",
+     null,
+     -0.187571701720841,
+     -0.620861961274204
+    ],
+    [
+     "Banana",
+     0.486577181208054,
+     -0.329551497961354,
+     -0.288600774541168
+    ],
+    [
+     "Cherry",
+     -0.0118497109826591,
+     -0.350877192982456,
+     -0.0926700418225842
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -0.393113342898135,
+     -0.393113342898135
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     null,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "South",
+     0.14894709809964,
+     0.684229263082948,
+     0.465096719932717
+    ],
+    [
+     "Apple",
+     -0.509954826836205,
+     0.876099426386234,
+     0.136878736503971
+    ],
+    [
+     "Banana",
+     null,
+     0.257932990604503,
+     0.194813941741034
+    ],
+    [
+     "Cherry",
+     1.38612716763006,
+     1.27423822714681,
+     1.35945410521682
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.04878048780488,
+     1.04878048780488
+    ],
+    [
+     "West",
+     -0.0948125321006677,
+     0.522178711285155,
+     0.26959629941127
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     -0.250292789024594,
+     -0.447992351816444,
+     -0.342553761042206
+    ],
+    [
+     "Banana",
+     7.65436241610738,
+     0.790817230987414,
+     1.1352079474659
+    ],
+    [
+     "Cherry",
+     -0.922832369942197,
+     3.38688827331487,
+     0.104556460488664
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.740315638450502,
+     0.740315638450502
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "percent-diff-previous": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     -0.109908213697341,
+     -0.00564838785596616
+    ],
+    [
+     "Cherry",
+     6.71783295711061,
+     -0.814119513484929,
+     -0.0243786982248521
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.805120910384068,
+     -0.692139737991266
+    ],
+    [
+     "North",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     -0.950142211811946,
+     0.078585086042065,
+     -0.470063353261355
+    ],
+    [
+     "Cherry",
+     10.6107382550336,
+     -0.80801276369438,
+     -0.235056406802492
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.930747922437673,
+     -0.539731454985692
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     -0.276803913575214,
+     -0.443057844753159
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     -0.652903043968433,
+     0.510569334836527
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.739342265529842,
+     -0.600335852225021
+    ],
+    [
+     "West",
+     null,
+     null,
+     null
+    ],
+    [
+     "100",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     2.01750841750842,
+     {
+      "error": "NA"
+     },
+     3.96161616161616
+    ],
+    [
+     "Banana",
+     -0.424458826154876,
+     2.49913404918601,
+     0.721091205211726
+    ],
+    [
+     "Cherry",
+     -0.896471500581621,
+     -0.529697089685211,
+     -0.60428988250138
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -0.234055988213008,
+     -0.274810681546433
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "percent-item": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.438266000907853,
+     0.467889050002339,
+     0.459242820708158
+    ],
+    [
+     "Apple",
+     null,
+     1.4717700034638,
+     0.576682953311618
+    ],
+    [
+     "Banana",
+     0.171772004652966,
+     0.374381310631558,
+     0.3331756170649
+    ],
+    [
+     "Cherry",
+     12.8052434456929,
+     0.147968848663439,
+     0.821442805898764
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.348722176422094,
+     0.348722176422094
+    ],
+    [
+     "North",
+     1.10474353154789,
+     0.656953084802844,
+     0.787651949256401
+    ],
+    [
+     "Apple",
+     1.33385405043517,
+     1.81156910287496,
+     1.52103691639522
+    ],
+    [
+     "Banana",
+     0.115548662272199,
+     0.558404276380915,
+     0.468338459112057
+    ],
+    [
+     "Cherry",
+     12.9588014981273,
+     0.227952010103136,
+     0.905340773216421
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.574608408903545,
+     0.574608408903545
+    ],
+    [
+     "South",
+     1.2692918747163,
+     1.10645960989756,
+     1.15398628730416
+    ],
+    [
+     "Apple",
+     0.653648739120732,
+     3.39868375476273,
+     1.7292345276873
+    ],
+    [
+     "Banana",
+     null,
+     0.702435161354187,
+     0.559577320400599
+    ],
+    [
+     "Cherry",
+     30.9213483146067,
+     0.518417175331509,
+     2.13611000398565
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.17724649629019,
+     1.17724649629019
+    ],
+    [
+     "West",
+     1,
+     1,
+     1
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     1,
+     1,
+     1
+    ],
+    [
+     "Cherry",
+     1,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "percent-next": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.396712891628146,
+     0.712210751156995,
+     0.583052985702271
+    ],
+    [
+     "Apple",
+     null,
+     0.812428298279159,
+     0.379138038725796
+    ],
+    [
+     "Banana",
+     1.48657718120805,
+     0.670448502038646,
+     0.711399225458831
+    ],
+    [
+     "Cherry",
+     0.988150289017341,
+     0.649122807017544,
+     0.907329958177416
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.606886657101865,
+     0.606886657101865
+    ],
+    [
+     "North",
+     0.870362092087617,
+     0.593743394631156,
+     0.682548794489093
+    ],
+    [
+     "Apple",
+     2.04062820075111,
+     0.533020790868324,
+     0.87960128718311
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     0.794954904171364,
+     0.8369503945885
+    ],
+    [
+     "Cherry",
+     0.419089147286822,
+     0.439707673568819,
+     0.423826849519545
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.488095238095238,
+     0.488095238095238
+    ],
+    [
+     "South",
+     1.2692918747163,
+     1.10645960989756,
+     1.15398628730416
+    ],
+    [
+     "Apple",
+     0.653648739120732,
+     3.39868375476273,
+     1.7292345276873
+    ],
+    [
+     "Banana",
+     null,
+     0.702435161354187,
+     0.559577320400599
+    ],
+    [
+     "Cherry",
+     30.9213483146067,
+     0.518417175331509,
+     2.13611000398565
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1.17724649629019,
+     1.17724649629019
+    ],
+    [
+     "West",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "percent-blank": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Price",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "North",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "South",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "West",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     null,
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "errors-total": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Amount",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "North",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "South",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "West",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Cherry",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "(blank)",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Grand Total",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ]
+   ]
+  }
+ },
+ "errors-run": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Amount",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     6.7,
+     794.3,
+     801
+    ],
+    [
+     "Apple",
+     null,
+     935.19,
+     935.19
+    ],
+    [
+     "Banana",
+     -11.58,
+     -57.61,
+     -69.19
+    ],
+    [
+     "Cherry",
+     18.28,
+     -80.26,
+     -61.98
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -3.02,
+     -3.02
+    ],
+    [
+     "North",
+     963.57,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     113.65,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     653.17,
+     729.48,
+     1382.65
+    ],
+    [
+     "Cherry",
+     196.75,
+     661.69,
+     858.44
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1042.92,
+     1042.92
+    ],
+    [
+     "South",
+     2371.04,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Apple",
+     851.7,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     null,
+     777.28,
+     1430.45
+    ],
+    [
+     "Cherry",
+     866.17,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1666.03,
+     1666.03
+    ],
+    [
+     "West",
+     2589.22,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "100",
+     44.32,
+     null,
+     44.32
+    ],
+    [
+     "Apple",
+     971.92,
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     706.81,
+     2098.92,
+     2805.73
+    ],
+    [
+     "Cherry",
+     866.17,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1817.35,
+     1817.35
+    ],
+    [
+     "(blank)",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Grand Total",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ]
+   ]
+  }
+ },
+ "errors-rank": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Amount",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     4,
+     2,
+     2
+    ],
+    [
+     "Apple",
+     null,
+     2,
+     2
+    ],
+    [
+     "Banana",
+     3,
+     4,
+     4
+    ],
+    [
+     "Cherry",
+     3,
+     3,
+     3
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     4,
+     4
+    ],
+    [
+     "North",
+     2,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     3,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     1,
+     2,
+     1
+    ],
+    [
+     "Cherry",
+     2,
+     1,
+     1
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1,
+     1
+    ],
+    [
+     "South",
+     1,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Apple",
+     1,
+     1,
+     1
+    ],
+    [
+     "Banana",
+     null,
+     3,
+     3
+    ],
+    [
+     "Cherry",
+     1,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     2,
+     2
+    ],
+    [
+     "West",
+     3,
+     1,
+     1
+    ],
+    [
+     "100",
+     1,
+     null,
+     1
+    ],
+    [
+     "Apple",
+     2,
+     null,
+     3
+    ],
+    [
+     "Banana",
+     2,
+     1,
+     2
+    ],
+    [
+     "Cherry",
+     4,
+     2,
+     2
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     3,
+     3
+    ],
+    [
+     "(blank)",
+     null,
+     3,
+     3
+    ],
+    [
+     "Apple",
+     null,
+     3,
+     4
+    ],
+    [
+     "Grand Total",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ]
+   ]
+  }
+ },
+ "errors-difference": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Sum of Amount",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     null,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "North",
+     950.17,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     676.33,
+     844.7,
+     1521.03
+    ],
+    [
+     "Cherry",
+     160.19,
+     822.21,
+     982.4
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     1048.96,
+     1048.96
+    ],
+    [
+     "South",
+     450.6,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Apple",
+     624.4,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Banana",
+     null,
+     -739.29,
+     -1404.04
+    ],
+    [
+     "Cherry",
+     490.95,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -422.83,
+     -422.83
+    ],
+    [
+     "West",
+     -1189.29,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "100",
+     {
+      "error": "NA"
+     },
+     null,
+     {
+      "error": "NA"
+     }
+    ],
+    [
+     "Apple",
+     -617.83,
+     null,
+     -1808.55
+    ],
+    [
+     "Banana",
+     {
+      "error": "NA"
+     },
+     1273.84,
+     1327.48
+    ],
+    [
+     "Cherry",
+     -669.42,
+     {
+      "error": "DIV0"
+     },
+     {
+      "error": "DIV0"
+     }
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     -471.79,
+     -471.79
+    ],
+    [
+     "(blank)",
+     null,
+     -1886.12,
+     -2104.3
+    ],
+    [
+     "Apple",
+     null,
+     {
+      "error": "NA"
+     },
+     -196.25
+    ],
+    [
+     "Grand Total",
+     null,
+     {
+      "error": "NA"
+     },
+     {
+      "error": "NA"
+     }
+    ]
+   ]
+  }
+ },
+ "count-total": {
+  "PT1": {
+   "area": "A3:D28",
+   "values": [
+    [
+     "Count of Note",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     0.0833333333333333,
+     0.194444444444444,
+     0.277777777777778
+    ],
+    [
+     "Apple",
+     null,
+     0.0833333333333333,
+     0.0833333333333333
+    ],
+    [
+     "Banana",
+     0.0277777777777778,
+     0.0277777777777778,
+     0.0555555555555556
+    ],
+    [
+     "Cherry",
+     0.0555555555555556,
+     0.0555555555555556,
+     0.111111111111111
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0277777777777778,
+     0.0277777777777778
+    ],
+    [
+     "North",
+     0.138888888888889,
+     0.25,
+     0.388888888888889
+    ],
+    [
+     "Apple",
+     0.0555555555555556,
+     0.0833333333333333,
+     0.138888888888889
+    ],
+    [
+     "Banana",
+     0.0555555555555556,
+     0.0555555555555556,
+     0.111111111111111
+    ],
+    [
+     "Cherry",
+     0.0277777777777778,
+     0.0555555555555556,
+     0.0833333333333333
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0555555555555556,
+     0.0555555555555556
+    ],
+    [
+     "South",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     null
+    ],
+    [
+     "Cherry",
+     null,
+     null,
+     null
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     null
+    ],
+    [
+     "West",
+     0.111111111111111,
+     0.222222222222222,
+     0.333333333333333
+    ],
+    [
+     "100",
+     0.0277777777777778,
+     null,
+     0.0277777777777778
+    ],
+    [
+     "Apple",
+     0.0277777777777778,
+     0.0277777777777778,
+     0.0555555555555556
+    ],
+    [
+     "Banana",
+     0.0277777777777778,
+     0.111111111111111,
+     0.138888888888889
+    ],
+    [
+     "Cherry",
+     0.0277777777777778,
+     0.0555555555555556,
+     0.0833333333333333
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     0.0277777777777778,
+     0.0277777777777778
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     0.333333333333333,
+     0.666666666666667,
+     1
+    ]
+   ]
+  }
+ },
+ "rows-only-index": {
+  "PT1": {
+   "area": "A3:B9",
+   "values": [
+    [
+     "Row Labels",
+     "Sum of Price"
+    ],
+    [
+     "East",
+     1
+    ],
+    [
+     "North",
+     1
+    ],
+    [
+     "South",
+     1
+    ],
+    [
+     "West",
+     1
+    ],
+    [
+     "(blank)",
+     null
+    ],
+    [
+     "Grand Total",
+     1
+    ]
+   ]
+  }
+ },
+ "rows-only-column": {
+  "PT1": {
+   "area": "A3:B9",
+   "values": [
+    [
+     "Row Labels",
+     "Sum of Price"
+    ],
+    [
+     "East",
+     0.135036425260041
+    ],
+    [
+     "North",
+     0.231602321866843
+    ],
+    [
+     "South",
+     0.339319802095913
+    ],
+    [
+     "West",
+     0.294041450777202
+    ],
+    [
+     "(blank)",
+     null
+    ],
+    [
+     "Grand Total",
+     1
+    ]
+   ]
+  }
+ },
+ "beside-plain": {
+  "PT1": {
+   "area": "A3:G29",
+   "values": [
+    [
+     null,
+     "Column Labels",
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     "FALSE",
+     null,
+     "TRUE",
+     null,
+     "Total Sum of Price",
+     "Total Share"
+    ],
+    [
+     "Row Labels",
+     "Sum of Price",
+     "Share",
+     "Sum of Price",
+     "Share",
+     null,
+     null
+    ],
+    [
+     "East",
+     38.62,
+     0.114961004941359,
+     100.03,
+     0.144798934599462,
+     138.65,
+     0.135036425260041
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     42.49,
+     0.424772568229531,
+     42.49,
+     0.306455102776776
+    ],
+    [
+     "Banana",
+     4.43,
+     0.114707405489384,
+     37.82,
+     0.378086574027792,
+     42.25,
+     0.304724125495853
+    ],
+    [
+     "Cherry",
+     34.19,
+     0.885292594510616,
+     7.03,
+     0.0702789163251025,
+     41.22,
+     0.297295347998558
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     12.69,
+     0.126861941417575,
+     12.69,
+     0.0915254237288135
+    ],
+    [
+     "North",
+     97.35,
+     0.289783889980354,
+     140.45,
+     0.20330911091167,
+     237.8,
+     0.231602321866843
+    ],
+    [
+     "Apple",
+     59.77,
+     0.61397021058038,
+     52.3,
+     0.372374510501958,
+     112.07,
+     0.471278385197645
+    ],
+    [
+     "Banana",
+     2.98,
+     0.0306111967128916,
+     56.41,
+     0.401637593449626,
+     59.39,
+     0.249747687132044
+    ],
+    [
+     "Cherry",
+     34.6,
+     0.355418592706728,
+     10.83,
+     0.0771092915628338,
+     45.43,
+     0.191042893187553
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     20.91,
+     0.148878604485582,
+     20.91,
+     0.0879310344827586
+    ],
+    [
+     "South",
+     111.85,
+     0.332946359468953,
+     236.55,
+     0.342419154048812,
+     348.4,
+     0.339319802095913
+    ],
+    [
+     "Apple",
+     29.29,
+     0.261868573983013,
+     98.12,
+     0.414796026210104,
+     127.41,
+     0.365700344431688
+    ],
+    [
+     "Banana",
+     null,
+     null,
+     70.96,
+     0.2999788628197,
+     70.96,
+     0.203673938002296
+    ],
+    [
+     "Cherry",
+     82.56,
+     0.738131426016987,
+     24.63,
+     0.104121750158529,
+     107.19,
+     0.307663605051665
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     42.84,
+     0.181103360811668,
+     42.84,
+     0.122962112514351
+    ],
+    [
+     "West",
+     88.12,
+     0.262308745609335,
+     213.79,
+     0.309472800440057,
+     301.91,
+     0.294041450777202
+    ],
+    [
+     "100",
+     14.85,
+     0.168520199727644,
+     null,
+     null,
+     14.85,
+     0.0491868437613858
+    ],
+    [
+     "Apple",
+     44.81,
+     0.508511121198366,
+     28.87,
+     0.13503905701857,
+     73.68,
+     0.244046238945381
+    ],
+    [
+     "Banana",
+     25.79,
+     0.292669087607808,
+     101.02,
+     0.472519762383648,
+     126.81,
+     0.420025835513895
+    ],
+    [
+     "Cherry",
+     2.67,
+     0.0302995914661825,
+     47.51,
+     0.222227419430282,
+     50.18,
+     0.166208472723659
+    ],
+    [
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     null,
+     null,
+     36.39,
+     0.170213761167501,
+     36.39,
+     0.120532609055679
+    ],
+    [
+     "(blank)",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Apple",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Grand Total",
+     335.94,
+     1,
+     690.82,
+     1,
+     1026.76,
+     1
+    ]
+   ]
+  }
+ },
+ "tabular-parent": {
+  "PT1": {
+   "area": "A3:C27",
+   "values": [
+    [
+     "Region",
+     "Product",
+     "Sum of Qty"
+    ],
+    [
+     "East",
+     "Apple",
+     0.27906976744186
+    ],
+    [
+     null,
+     "Banana",
+     0.255813953488372
+    ],
+    [
+     null,
+     "Cherry",
+     0.302325581395349
+    ],
+    [
+     null,
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     0.162790697674419
+    ],
+    [
+     "East Total",
+     null,
+     1
+    ],
+    [
+     "North",
+     "Apple",
+     0.339285714285714
+    ],
+    [
+     null,
+     "Banana",
+     0.321428571428571
+    ],
+    [
+     null,
+     "Cherry",
+     0.25
+    ],
+    [
+     null,
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     0.0892857142857143
+    ],
+    [
+     "North Total",
+     null,
+     1
+    ],
+    [
+     "South",
+     "Apple",
+     0.423076923076923
+    ],
+    [
+     null,
+     "Banana",
+     0.153846153846154
+    ],
+    [
+     null,
+     "Cherry",
+     0.384615384615385
+    ],
+    [
+     null,
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     0.0384615384615385
+    ],
+    [
+     "South Total",
+     null,
+     1
+    ],
+    [
+     "West",
+     "100",
+     0.0576923076923077
+    ],
+    [
+     null,
+     "Apple",
+     0.134615384615385
+    ],
+    [
+     null,
+     "Banana",
+     0.480769230769231
+    ],
+    [
+     null,
+     "Cherry",
+     0.153846153846154
+    ],
+    [
+     null,
+     "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+     0.173076923076923
+    ],
+    [
+     "West Total",
+     null,
+     1
+    ],
+    [
+     "(blank)",
+     "Apple",
+     1
+    ],
+    [
+     "(blank) Total",
+     null,
+     1
+    ],
+    [
+     "Grand Total",
+     null,
+     null
+    ]
+   ]
+  }
+ },
+ "sorted-run": {
+  "PT1": {
+   "area": "A3:B9",
+   "values": [
+    [
+     "Row Labels",
+     "Sum of Price"
+    ],
+    [
+     "(blank)",
+     null
+    ],
+    [
+     "West",
+     301.91
+    ],
+    [
+     "South",
+     650.31
+    ],
+    [
+     "North",
+     888.11
+    ],
+    [
+     "East",
+     1026.76
+    ],
+    [
+     "Grand Total",
+     null
+    ]
+   ]
+  }
+ }
+}
