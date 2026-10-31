@@ -66,12 +66,21 @@ export function readTimelineCache(xml: string, ctx: SlicerContext): TimelineCach
   return c
 }
 
+/** A frame of a slicer (`sle:slicer`) or a timeline (`tsle:timeslicer`) in an anchor's body, as Excel puts each in `mc:AlternateContent`. */
+const frameOf = (body: string) => element(body, 'slicer') ?? element(body, 'timeslicer')
+
+/** A drawing that shows only slicers and timelines: every anchor a frame of one, which the model holds; false without the drawing. */
+export function framesOnly(xml: string | undefined): boolean {
+  if (xml === undefined) return false
+  return ['twoCellAnchor', 'oneCellAnchor', 'absoluteAnchor'].every((local) => elements(xml, local).every((a) => frameOf(a.body ?? '') !== undefined))
+}
+
 /** The places of a drawing's frames by the name of the slicer or timeline each shows. */
 export function drawingPlaces(xml: string | undefined): Map<string, DrawingPlace> {
   const out = new Map<string, DrawingPlace>()
   for (const anchor of elements(xml ?? '', 'twoCellAnchor')) {
     const body = anchor.body ?? ''
-    const shown = element(body, 'slicer') ?? element(body, 'timeslicer')
+    const shown = frameOf(body)
     if (!shown) continue
     const corner = (local: string): [string, [number, number]] => {
       const b = element(body, local)?.body ?? ''

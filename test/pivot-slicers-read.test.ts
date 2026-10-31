@@ -69,7 +69,7 @@ describe('slicers and timelines of the books Excel for Windows saved (the set sl
     for (const [id, a] of Object.entries(answers)) {
       const shown = a.phases.at(-1)!.slicers ?? {}
       const r = await readXlsx(readFileSync(new URL(`slicer/${id}.xlsx`, dir)))
-      expect(r.issues.filter((i) => i.code === 'pivotTable'), id).toEqual([])
+      expect(r.issues.filter((i) => i.code === 'pivotTable' || i.code === 'drawing'), id).toEqual([])
       for (const [name, s] of Object.entries(shown)) {
         n++
         if (Array.isArray(s)) {
@@ -88,5 +88,31 @@ describe('slicers and timelines of the books Excel for Windows saved (the set sl
       }
     }
     expect(n).toBeGreaterThan(15)
+  })
+})
+
+describe('a drawing of slicers and timelines', () => {
+  const file = new URL('./excel/win/pivot/slicer/timeline-and-slicer.xlsx', import.meta.url)
+  /** The book Excel saved with a slicer and a timeline, its drawing given `more` anchors after theirs. */
+  async function withDrawn(more: string): Promise<Uint8Array> {
+    const a = openArchive(readFileSync(file))
+    const parts: Record<string, string | undefined> = {}
+    for (const n of a.names) parts[n] = await a.text(n)
+    parts['xl/drawings/drawing1.xml'] = parts['xl/drawings/drawing1.xml']!.replace('</xdr:wsDr>', `${more}</xdr:wsDr>`)
+    return pack(parts)
+  }
+  const picture =
+    '<xdr:oneCellAnchor><xdr:from><xdr:col>1</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>20</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:ext cx="914400" cy="914400"/><xdr:pic><xdr:nvPicPr><xdr:cNvPr id="9" name="Picture 1"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill/><xdr:spPr/></xdr:pic><xdr:clientData/></xdr:oneCellAnchor>'
+
+  it('is not reported as pictures, charts and shapes: its frames are the slicers and timelines read', async () => {
+    const r = await readXlsx(await withDrawn(''))
+    expect(r.issues.filter((i) => i.code === 'drawing')).toEqual([])
+    expect(r.book.sheets.find((s) => s.name === 'P')!.slicers?.map((s) => s.name)).toEqual(['Slicer_Product'])
+  })
+
+  it('a picture beside them is reported still', async () => {
+    const r = await readXlsx(await withDrawn(picture))
+    expect(r.issues.filter((i) => i.code === 'drawing').map((i) => i.sheet)).toEqual(['P'])
+    expect(r.book.sheets.find((s) => s.name === 'P')!.timelines?.map((s) => s.name)).toEqual(['Timeline_Date'])
   })
 })
