@@ -35,12 +35,15 @@ import * as showHeld from '../bench/coverage/pivot/show-held.js'
 import * as showItems from '../bench/coverage/pivot/show-items.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
 import * as sortHeld from '../bench/coverage/pivot/sort-held.js'
+import * as valuesField from '../bench/coverage/pivot/values-field.js'
+import * as valuesFieldHeld from '../bench/coverage/pivot/values-field-held.js'
 
 const DIR = new URL('./excel/win/pivot/', import.meta.url)
 
 /**
  * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
- * custom lists at once are checked against the recorded refresh as well as the saved layout.
+ * custom lists at once are checked against the recorded refresh as well as the saved layout. values-field: a count of a
+ * field with errors over value fields on the rows shows the error in Excel's subtotals and grand total.
  */
 const KNOWN: Record<string, string[]> = {
   'layout-held': [],
@@ -65,10 +68,12 @@ const KNOWN: Record<string, string[]> = {
   'corpus-shapes-2': [],
   'corpus-shapes-3': [],
   'ru-RU/layout': [],
+  'values-field': ['third-rows-middle/1/saved', 'rows-drop-back/2/saved'],
+  'values-field-held': [],
   'error-order': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout, 'error-order': errorOrder }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout, 'values-field': valuesField, 'values-field-held': valuesFieldHeld, 'error-order': errorOrder }
 
 async function differences(set: string): Promise<string[]> {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }

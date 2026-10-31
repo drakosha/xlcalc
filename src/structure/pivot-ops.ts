@@ -8,7 +8,7 @@ import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, Piv
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
-import { checkString, object, onlyKeys } from '../input/basic.js'
+import { checkBoolean, checkString, object, onlyKeys } from '../input/basic.js'
 import { pivotRefs } from '../input/pivot-refs.js'
 import { checkAddress } from '../input/range.js'
 import { sayPivot } from '../locale/pivot-messages.js'
@@ -24,6 +24,8 @@ import { areaText, meets, parseRange, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
 import { checkedPivots, movedPivot, patched, pivotArea, pivotsOn, relaid, withoutPivot } from './pivots.js'
+import { groupedDates } from './pivot-dates.js'
+import { placedValues } from './pivot-values.js'
 import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
 import type { ValuesIn } from './values.js'
@@ -32,8 +34,8 @@ export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTab
 
 /** The fields of each operation, for `editStructure`'s check of its shape. */
 export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {
-  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition'],
-  editPivotTable: ['sheet', 'pivot', 'set', 'source'],
+  addPivotTable: ['sheet', 'cell', 'newSheet', 'name', 'source', 'definition', 'groupDates'],
+  editPivotTable: ['sheet', 'pivot', 'set', 'source', 'groupDates'],
   renamePivotTable: ['sheet', 'pivot', 'name'],
   movePivotTable: ['sheet', 'pivot', 'to'],
   deletePivotTable: ['sheet', 'pivot'],
@@ -100,6 +102,8 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
       if (seen.has(f)) throw new InputError(`${path}.${axis}[${i}]`, `the field ${JSON.stringify(f)} is on ${seen.get(f)} already: a field lies on one axis`)
       seen.set(f, axis)
     })
+  // Σ Values on an axis while there are two value fields or more, where Excel keeps it
+  out = placedValues(out, patch)
   if (out.values) {
     const names = new Set<string>()
     out = {
@@ -153,12 +157,13 @@ function sourceFields(book: BookInput, src: PivotSource, values: ValuesIn, pivot
   return uniqueNames(names).map((name) => ({ name }))
 }
 
-/** A refusal of a PivotTable's place over cells that are not empty, a table or another PivotTable. */
-function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable): Applied | null {
+/** A refusal of a PivotTable's place over another PivotTable, and but for `pivotOnly` over cells that are not empty or a table. */
+function placeRefusal(book: BookInput, s: number, x: Rect, pivot: string, own?: PivotTable, pivotOnly = false): Applied | null {
   const sheet = book.sheets[s]
   const range = areaText(x)
   const other = pivotsOn(book, s).find((t) => t.p !== own && meets(t.x, x))
   if (other) return refuse(book, { key: 'pivotOverPivot', pivot, other: other.p.name })
+  if (pivotOnly) return null
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, x))
   if (table) return refuse(book, { key: 'pivotOverTable', pivot, table: table.name })
   const ownArea = own && pivotArea(own)
@@ -211,15 +216,21 @@ function addPivotTable(book: BookInput, o: Record<string, unknown>, values: Valu
     cache = { id: caches.reduce((m, c) => Math.max(m, c.id), 0) + 1, source: src, fields: fields ?? [] }
     caches = [...caches, cache]
   }
+  const groupDates = o.groupDates !== undefined && (checkBoolean(o.groupDates, 'op.groupDates'), o.groupDates === true)
   const x = { r1: at.row, c1: at.col, r2: at.row + EMPTY_ROWS - 1, c2: at.col + EMPTY_COLUMNS - 1 }
-  const over = placeRefusal(start, s, x, pivotName)
+  // with xlcalc/pivot a place over cells that hold something or a table spills, as Excel 365 makes it (the set over-data)
+  const spills = pivotRefresh() !== null
+  const over = placeRefusal(start, s, x, pivotName, undefined, spills)
   if (over) return over
-  let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
+  // laid out from its top-left cell alone, whose value it takes, as Excel does; its empty place without xlcalc/pivot
+  let p: PivotTable = { name: pivotName, cache: cache.id, location: { range: areaText(spills ? { ...x, r2: x.r1, c2: x.c1 } : x), firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})), indent: 0, multipleFieldFilters: false, style: NEW_STYLE }
   if (o.definition !== undefined) p = withDefinition(p, cache, o.definition, 'op.definition', start.locale)
   const sheets = [...start.sheets]
   sheets[s] = withField(sheets[s], 'pivotTables', [...(sheets[s].pivotTables ?? []), p])
   const out = checkedPivots({ ...start, sheets, pivotCaches: caches }, 'op')
-  return relaid(out, [{ sheet: sheets[s].name, name: pivotName }], values, true, geometry, 'refuse')
+  const ref = { sheet: sheets[s].name, name: pivotName }
+  const r = relaid(out, [ref], values, true, geometry, 'spill')
+  return groupDates ? groupedDates(r, ref, undefined, values) : r
 }
 
 function editPivotTable(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
@@ -250,12 +261,16 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
       ...(p.values ? { values: p.values.flatMap((d) => (map(d.field) < 0 ? [] : [{ ...d, field: map(d.field) }])) } : {}),
     }
     for (const f of next.fields) if (f.items === undefined) delete f.items
+    next = placedValues(next)
     c = fresh
   }
+  if (o.groupDates !== undefined) checkBoolean(o.groupDates, 'op.groupDates')
   if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set', book.locale)
   const out = checkedPivots({ ...withPivot(book, s, k, next), pivotCaches: caches }, 'op')
   const labelSort = ((o.set as PivotTablePatch | undefined)?.fields ?? []).filter(f => f.sort && !f.sort.by).map(f => f.field)
-  return relaid(out, [{ sheet: book.sheets[s].name, name: p.name }], values, o.source !== undefined, [], 'spill', labelSort)
+  const ref = { sheet: book.sheets[s].name, name: p.name }
+  const r = relaid(out, [ref], values, o.source !== undefined, [], 'spill', labelSort)
+  return o.groupDates === true ? groupedDates(r, ref, p, values) : r
 }
 
 /** The slicers' and timelines' caches naming the PivotTable `from` by `to`. */
