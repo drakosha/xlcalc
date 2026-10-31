@@ -38,19 +38,25 @@ export interface DrivenPhase {
 
 const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toISOString().slice(0, 19)
 
-/** Plays a case: its phases, each with the book at its end. */
-export function drive(c: PivotCase): DrivenPhase[] {
-  if (c.from || c.file) throw new Error('a case from a saved book is not driven')
+/** The book a case starts from: the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
+function startBook(c: PivotCase): BookInput {
   const cols = DATA[c.data ?? 'sales']()
-  let book = sourceBook(cols, c.source ?? 'range')
+  const book = sourceBook(cols, c.source ?? 'range')
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
   const made = refreshCache({ id: 1, source, fields: [] }, [], grid)
   if (typeof made === 'string') throw new Error(made)
-  const cache: PivotCache = made.cache
-  const empty = (name: string, at: string): PivotTable => ({ name, cache: 1, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: (book.pivotCaches?.[0] ?? cache).fields.map(() => ({})) })
-  book = { ...book, pivotCaches: [cache], sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [empty('PT1', 'A3')] } : s)) }
+  return { ...book, pivotCaches: [made.cache], sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [emptyTable(made.cache, 'PT1', 'A3')] } : s)) }
+}
+
+const emptyTable = (cache: PivotCache, name: string, at: string): PivotTable => ({ name, cache: cache.id, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})) })
+
+/** Plays a case: its phases, each with the book at its end; a case from a saved book (`from`) starts from `saved`, that book as Excel saved it. */
+export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
+  if (c.file || (c.from && !saved)) throw new Error('a case from a file, or from a saved book without it, is not driven')
+  let book = c.from ? saved! : startBook(c)
+  const empty = (name: string, at: string) => emptyTable(book.pivotCaches![0], name, at)
   const out: DrivenPhase[] = []
   let errors: string[] = []
   const tableOf = (name = 'PT1') => book.sheets.find((s) => s.name === 'P')!.pivotTables!.find((t) => t.name === name)!
