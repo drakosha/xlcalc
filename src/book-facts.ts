@@ -104,7 +104,9 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
     pivotAt: (s, r, c) => {
       for (const table of state.input.sheets[s]?.pivotTables ?? []) {
         const area = pivotArea(table)
-        if (area && r >= area.r1 && r <= area.r2 && c >= area.c1 && c <= area.c2) return { table, cache: state.input.pivotCaches?.find((x) => x.id === table.cache), area }
+        // the cell above the top left of a PivotTable without a Filters area is the PivotTable's (the set gpd-held-2)
+        const above = area && !table.location.pageRows && r === area.r1 - 1 && c === area.c1
+        if (area && (above || (r >= area.r1 && r <= area.r2 && c >= area.c1 && c <= area.c2))) return { table, cache: state.input.pivotCaches?.find((x) => x.id === table.cache), area }
       }
       return undefined
     },
