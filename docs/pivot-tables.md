@@ -247,6 +247,45 @@ A value field shows its values as Excel's Show Values As does (`showAs`, with `b
 - Hidden and filtered items take no part: shares are of the totals of the items shown, and running totals, ranks and the previous and next items pass over the hidden ones. A Filters area's item or items limit the records as for any value.
 - Sorting by a value field sorts by its values before Show Values As: a field sorted by a rank goes by the sums ranked.
 
+## Grouping
+
+A field of dates can show them by periods, a field of numbers by intervals, and any field its items gathered by hand into groups, as Excel's Group dialog does. A grouping belongs to the cache: every PivotTable over it sees the groups, and a refresh makes them again over the new values.
+
+```js
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 2, group: { by: 'dates', periods: ['months', 'years'] } })
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 5, group: { by: 'numbers', interval: 10 } })
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 0, group: { by: 'items', items: [0, 3] } })
+session.editStructure({ op: 'renamePivotGroup', sheet: 'Report', pivot: 'PivotTable1', field: 10, item: 0, name: 'Coast' })
+session.editStructure({ op: 'ungroupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 10 })
+```
+
+Fields are named by their index in the cache and items by their place in the PivotTable's field, as elsewhere. Each operation lays out every PivotTable of the cache again and is one step of undo; without `xlcalc/pivot` it is refused (`pivot`).
+
+- **Dates by periods.** Each period makes a field of its own after the source's, `Months (Date)`, `Years (Date)`, as Excel 365 does: the PivotTable grouped shows them, coarsest first, in place of the dates; another PivotTable of the cache that shows the dates shows the periods before them. The labels are Excel's: `:00`…`:59` for seconds and minutes, `12 AM`…`11 PM`, `1-Jan`…`31-Dec` (29 February among them), `Jan`…`Dec`, `Qtr1`…`Qtr4`, the years. Days by a number of days (`days: 7`) make groups from the start, labelled `1/1/2024 - 1/7/2024`, the last one ending at the end.
+- **Numbers by an interval.** The field itself shows the groups: `1-2`, `3-4` over whole numbers, `1.03-11.03` over others; the last group of whole numbers takes the end in (`7-9` of 1 to 9 by 2).
+- **Start and end.** Without them they are the least and greatest value, and a date field of whole days ends a day after its last date (12/22/2025 ends at 12/23/2025), as Excel takes it. A value before the start goes to the first group, `<1/1/2024`, one after the end to the last, `>12/23/2025`. A blank date goes to the first group; among numbers, the first group is `(blank)`.
+- **Items by hand.** The items chosen make a group of a new field, `Region2` over `Region`, which every PivotTable showing `Region` shows before it; each item not chosen is a group of its own, and further groups are `Group2`, `Group3`. The groups follow the order of their first items. Renaming a group changes its label for every PivotTable of the cache; text typed over the label changes it on that PivotTable alone, as a caption ([Typing into a PivotTable](#typing-into-a-pivottable)). Ungrouping takes away the groups given (`items`) or all of them, the field with the last.
+- **A refresh** takes an automatic start and end from the new values again and makes the labels again: a new year comes as a group where it falls, a new item of a field grouped by hand as a group of its own.
+- **Refused, as in Excel:** grouping text among dates or numbers ("Cannot group that selection"), grouping a field with calculated items, and ungrouping a field that is not grouped.
+
+## Calculated fields and items
+
+A calculated field is a formula over other fields by name; a calculated item a formula over other items of its field. Both belong to the cache, and every PivotTable over it can show them.
+
+```js
+session.editStructure({ op: 'setPivotCalculatedField', sheet: 'Report', pivot: 'PivotTable1', name: 'Unit price', formula: '=Amount/Qty' })
+session.editStructure({ op: 'setPivotCalculatedItem', sheet: 'Report', pivot: 'PivotTable1', field: 0, name: 'Coast', formula: '=East+West' })
+session.editStructure({ op: 'setPivotCalculatedField', sheet: 'Report', pivot: 'PivotTable1', name: 'Unit price', formula: null }) // deleted
+```
+
+A name the cache has changes the formula (Excel's Modify), and a null formula deletes the field or item. Adding a calculated field does not place it on Values; `editPivotTable` does.
+
+- **A calculated field** is calculated in each cell of the PivotTable, totals too, over the sums of the fields it names, not row by row: `Amount/Qty` over two rows of 100 and 100, Qty 1 and 9, is 200/10 = 20. A field is named as it is (`Amount`), in quotes with spaces in its name (`'Unit price'`), and may name another calculated field. The sum of a field with errors is the last of them.
+- Every cell of the rows and columns shown gets the formula, one no record reaches too, over sums of 0: `Price/Qty` there is `#DIV/0!`. A subtotal by a function of its own (Field Settings, Custom) is empty.
+- **A calculated item** is calculated in each cell over the values of the items it names at the same place, by the value field's function, and is counted in the totals over it: `=East+West` shows East and West added, and the grand total takes them once more, as Excel does. It shows under every item of the field before it. An item is named as it is (`East`), in quotes when it is not a plain name (`'Dragonfruit from the far south'`, `'10'`); the cache keeps the formula as Excel's file does, `Region[East]+Region[West]`.
+- The formulas are calculated by the engine: any function of the sheet Excel allows there (`IF`, `ROUND`, `MAX`, `IFERROR`, `AND`), constants, booleans, errors and division by zero as in a cell. A reference to a cell or a range is refused ("References, names, and arrays are not supported in PivotTable formulas"), so is a formula that does not read or names itself.
+- **Refused, as in Excel:** a calculated item in a grouped field, and in a PivotTable whose value fields average or take a deviation or variance ("Averages, standard deviations, and variances are not supported when a PivotTable report has calculated items").
+
 ## Checked against Excel
 
 Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit,
@@ -258,6 +297,8 @@ Excel showed. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Wi
 PivotTable of another workbook open, closed and reopened, give Excel's values; of the held-out sets gpd-held (55
 formulas) and gpd-held-2 (61), predicted before they ran, 51 and 57 held, and the rest were fitted. [Development](development.md#pivottables)
 has the details.
+
+Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, a calculated field's total within one part in 10¹⁴ (`test/pivot-excel.test.ts`), and the operations played over the rows give the same PivotTables.
 
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 
