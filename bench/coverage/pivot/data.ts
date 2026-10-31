@@ -96,8 +96,29 @@ function variantColumns(v: Variant): SourceColumn[] {
 
 export const salesColumns = (): SourceColumn[] => variantColumns(SALES)
 
+/**
+ * The rows of `shapes`, few and made by hand for the shapes of the PivotTables a corpus showed: Region first comes as B,
+ * D, A, C (its order sorted A, B, C, D, E, F), and A, B and D sum 10 of Qty each, 4 of it with X and 6 with Y, so a sort
+ * by a value has ties over the products and within one; E holds no Qty, F only the product Z; Code numbers.
+ */
+export function shapeColumns(): SourceColumn[] {
+  const rows: [string, string, number, number | undefined, number][] = [
+    ['B', 'X', 5, 4, 1.5],
+    ['D', 'X', 15, 4, 2.25],
+    ['A', 'Y', 5, 6, 3],
+    ['C', 'X', 25, 5, 4.75],
+    ['E', 'Z', 35, undefined, 5],
+    ['B', 'Y', 5, 6, 6.5],
+    ['D', 'Y', 15, 6, 7],
+    ['A', 'X', 25, 4, 8.25],
+    ['F', 'Z', 25, 3, 9],
+  ]
+  const names = ['Region', 'Product', 'Code', 'Qty', 'Price']
+  return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number })) }))
+}
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK) }
+export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`

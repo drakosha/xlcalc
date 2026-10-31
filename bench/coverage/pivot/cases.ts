@@ -68,6 +68,8 @@ export interface TableProps {
   customLists?: boolean
   /** Merge and center cells with labels. */
   mergeLabels?: boolean
+  /** Classic PivotTable layout (fields dragged in the grid, `InGridDropZones`). */
+  classic?: boolean
 }
 
 /** A field's settings. */

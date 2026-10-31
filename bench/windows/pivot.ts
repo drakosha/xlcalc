@@ -61,6 +61,7 @@ function tableProps(t: TableProps): Props {
   if (t.mergeLabels !== undefined) p.push(['MergeLabels', t.mergeLabels])
   if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
   if (t.valuesRow !== undefined) p.push(['ShowValuesRow', t.valuesRow])
+  if (t.classic !== undefined) p.push(['InGridDropZones', t.classic])
   return p
 }
 
