@@ -267,6 +267,7 @@ class Kept {
         edited: (part, text) => this.edited(part, text),
         relative,
         change: () => (this.changed = true),
+        fileSheet: (name) => this.id.source[book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))],
       },
       setup.pivots,
     )
@@ -304,6 +305,7 @@ class Kept {
     if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal({ key: 'keptFont' }, 'font')
     const emptied = this.others()
     this.pivots.caches()
+    this.pivots.slicers()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
       const issues = new KeptIssues()

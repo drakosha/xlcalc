@@ -69,4 +69,19 @@ describe('writeKept over a file with a PivotTable', () => {
     d.editStructure({ op: 'deleteSheet', sheet: 'D' })
     await expect(writeKept(file, d.getSnapshot())).rejects.toThrow('which Excel makes a link to the file by its path')
   })
+
+  it("writes a slicer's cache whose choice changed through its part, and refuses a slicer added", async () => {
+    const data = new Uint8Array(readFileSync('test/excel/win/pivot/slicer/row-two.xlsx'))
+    const { book } = await openKept(data)
+    const c = book.slicerCaches![0]
+    const chosen = { ...book, slicerCaches: [{ ...c, items: c.items!.map(({ selected: _, ...x }) => x) }] }
+    const out = await writeKept(data, { book: chosen })
+    expect((await readXlsx(out.data)).book.slicerCaches).toEqual(chosen.slicerCaches)
+    const [before, after] = [await partsOf(data), await partsOf(out.data)]
+    // the cache's part, and the calculation chain gone as with any change
+    expect([...after.keys()].filter((k) => after.get(k) !== before.get(k)).sort()).toEqual(['[Content_Types].xml', 'xl/_rels/workbook.xml.rels', 'xl/slicerCaches/slicerCache1.xml', 'xl/workbook.xml'])
+    const s = book.sheets.findIndex((x) => x.slicers)
+    const more = { ...book, sheets: book.sheets.map((x, i) => (i === s ? { ...x, slicers: [...x.slicers!, { ...x.slicers![0], name: 'Another' }] } : x)) }
+    await expect(writeKept(data, { book: more })).rejects.toThrow('slicers or timelines were added or deleted')
+  })
 })

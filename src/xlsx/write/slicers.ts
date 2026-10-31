@@ -34,19 +34,24 @@ export interface SlicerPackage {
   pivotCacheIds: Set<number>
 }
 
-/** The tab of a PivotTable's sheet (`tabId`, its `sheetId` as `writeXlsx` numbers them) and its name. */
-function pivotTables(book: BookInput, c: { pivots: { sheet: string; name: string }[] }): string {
-  const tabs = c.pivots.map((r) => `<pivotTable tabId="${book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(r.sheet)) + 1}" name="${escapeAttr(r.name)}"/>`)
+/** A sheet's `sheetId` by its name: as `writeXlsx` numbers them, by place, or the file's. */
+export type TabId = (sheet: string) => number
+
+const tabOf = (book: BookInput): TabId => (sheet) => book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(sheet)) + 1
+
+/** The PivotTables a cache filters, by their sheet's tab (`tabId`) and name. */
+function pivotTables(tab: TabId, c: { pivots: { sheet: string; name: string }[] }): string {
+  const tabs = c.pivots.map((r) => `<pivotTable tabId="${tab(r.sheet)}" name="${escapeAttr(r.name)}"/>`)
   return tabs.length ? `<pivotTables>${tabs.join('')}</pivotTables>` : '<pivotTables/>'
 }
 
-function slicerCacheXml(book: BookInput, c: SlicerCache): string {
+export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tabOf(book), cacheId = c.cache!): string {
   const items = (c.items ?? []).map((x) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
   const nd = c.noData ?? {}
   const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
-  const a = `pivotCacheId="${c.cache}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${c.customListSort === false ? ' customListSort="0"' : ''}${c.showMissing === false ? ' showMissing="0"' : ''}${cross}`
+  const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${c.customListSort === false ? ' customListSort="0"' : ''}${c.showMissing === false ? ' showMissing="0"' : ''}${cross}`
   const hide = nd.hide ? `<extLst><x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext></extLst>` : ''
-  return `${HEAD}<slicerCacheDefinition xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(book, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
+  return `${HEAD}<slicerCacheDefinition xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
 }
 
 /** A date of a timeline, ISO 8601 as the file writes it: with its time. */
@@ -55,7 +60,7 @@ const isoTime = (d: string) => (d.length === 10 ? `${d}T00:00:00` : d)
 /** January 1 of a date's year, or of the next year's. */
 const yearOf = (d: string, next: boolean) => `${Number(d.slice(0, 4)) + (next ? 1 : 0)}-01-01T00:00:00`
 
-function timelineCacheXml(book: BookInput, c: TimelineCache): string {
+export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId = tabOf(book), cacheId = c.cache): string {
   const field = book.pivotCaches?.find((x) => x.id === c.cache)?.fields.find((f) => caseKey(f.name) === caseKey(c.field))
   const min = typeof field?.facts?.min === 'object' ? field.facts.min.date : undefined
   const max = typeof field?.facts?.max === 'object' ? field.facts.max.date : undefined
@@ -63,17 +68,17 @@ function timelineCacheXml(book: BookInput, c: TimelineCache): string {
   const bounds = c.bounds ?? (min && max ? { start: yearOf(min, false), end: yearOf(max, true) } : undefined)
   const sel = c.selection
   const type = !sel ? '' : ` filterType="${isoTime(sel.start) === isoTime(sel.end) ? 'dateEqual' : 'dateBetween'}"`
-  const state = `<state minimalRefreshVersion="6" lastRefreshVersion="6" pivotCacheId="${c.cache}"${type}>${sel ? `<selection startDate="${isoTime(sel.start)}" endDate="${isoTime(sel.end)}"/>` : ''}${bounds ? `<bounds startDate="${isoTime(bounds.start)}" endDate="${isoTime(bounds.end)}"/>` : ''}</state>`
-  return `${HEAD}<timelineCacheDefinition xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(book, c)}${state}</timelineCacheDefinition>`
+  const state = `<state minimalRefreshVersion="6" lastRefreshVersion="6" pivotCacheId="${cacheId}"${type}>${sel ? `<selection startDate="${isoTime(sel.start)}" endDate="${isoTime(sel.end)}"/>` : ''}${bounds ? `<bounds startDate="${isoTime(bounds.start)}" endDate="${isoTime(bounds.end)}"/>` : ''}</state>`
+  return `${HEAD}<timelineCacheDefinition xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}${state}</timelineCacheDefinition>`
 }
 
 const bool = (name: string, v: boolean | undefined, dflt: boolean) => (v === undefined || v === dflt ? '' : ` ${name}="${v ? 1 : 0}"`)
 
-function slicerXml(s: Slicer): string {
+export function slicerXml(s: Slicer): string {
   return `<slicer name="${escapeAttr(s.name)}" cache="${escapeAttr(s.cache)}" caption="${escapeAttr(s.caption ?? s.name)}"${s.startItem ? ` startItem="${s.startItem}"` : ''}${s.columns ? ` columnCount="${s.columns}"` : ''}${bool('showCaption', s.showCaption, true)}${s.style ? ` style="${escapeAttr(s.style)}"` : ''}${bool('lockedPosition', s.locked, false)} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
 }
 
-function timelineXml(t: Timeline): string {
+export function timelineXml(t: Timeline): string {
   const a =
     ` name="${escapeAttr(t.name)}" cache="${escapeAttr(t.cache)}" caption="${escapeAttr(t.caption ?? t.name)}"` +
     bool('showHeader', t.showHeader, true) +
@@ -85,6 +90,10 @@ function timelineXml(t: Timeline): string {
     (t.style ? ` style="${escapeAttr(t.style)}"` : '')
   return `<timeline${a}/>`
 }
+
+/** A sheet's slicers' part, and its timelines'. */
+export const slicersPartXml = (list: Slicer[]) => `${HEAD}<slicers xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${list.map(slicerXml).join('')}</slicers>`
+export const timelinesPartXml = (list: Timeline[]) => `${HEAD}<timelines xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${list.map(timelineXml).join('')}</timelines>`
 
 /** A cell of an anchor with its offset. */
 const marker = (tag: string, cell: string, off: [number, number] | undefined) => {
@@ -143,13 +152,13 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     }
     if (slicers.length) {
       const name = `xl/slicers/slicer${++slicerParts}.xml`
-      out.files.push({ name, text: `${HEAD}<slicers xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${slicers.map(slicerXml).join('')}</slicers>` })
+      out.files.push({ name, text: slicersPartXml(slicers) })
       out.contentTypes.push([`/${name}`, TYPES.slicer])
       sheet.slicers = `../slicers/slicer${slicerParts}.xml`
     }
     if (timelines.length) {
       const name = `xl/timelines/timeline${++timelineParts}.xml`
-      out.files.push({ name, text: `${HEAD}<timelines xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}">${timelines.map(timelineXml).join('')}</timelines>` })
+      out.files.push({ name, text: timelinesPartXml(timelines) })
       out.contentTypes.push([`/${name}`, TYPES.timeline])
       sheet.timelines = `../timelines/timeline${timelineParts}.xml`
     }

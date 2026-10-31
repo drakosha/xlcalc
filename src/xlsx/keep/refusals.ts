@@ -33,9 +33,10 @@ import type { Source } from './source.js'
  * `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
  * it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
  * would need making for a new first cell); `layout`, the workbook's carriers were laid out by another version of
- * openKept or for another file, or their layout's name is gone while carriers stay.
+ * openKept or for another file, or their layout's name is gone while carriers stay; `slicers`, slicers or timelines were
+ * added or deleted.
  */
-export type KeptRefusalCode = 'file' | 'carriers' | 'layout' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules'
+export type KeptRefusalCode = 'file' | 'carriers' | 'layout' | 'unread' | 'deleted' | 'moved' | 'links' | 'font' | 'threads' | 'rules' | 'slicers'
 
 /** The message of each refusal, which `writeKept` gives in the language of its `locale`. */
 const MESSAGES = new WeakMap<KeptRefusal, KeptMessage>()

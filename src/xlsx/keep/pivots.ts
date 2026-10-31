@@ -4,13 +4,16 @@
  * changed or refreshed is written again from the model as `writeXlsx` writes it, through the file's relationships; a
  * new one gets parts of its own, and one the book deleted goes with its parts and its entry in the workbook.
  */
-import type { BookInput, PivotCache, PivotTable } from '../../contract.js'
+import type { BookInput, PivotCache, PivotTable, SlicerCache, TimelineCache } from '../../contract.js'
 import { caseKey } from '../../collate.js'
 import type { Rel } from '../read/package.js'
 import { relsOf } from '../read/package.js'
 import { pivotRules } from '../write/pivot-parts.js'
 import { pivotCacheXml, pivotRecordsXml } from '../write/pivot-cache.js'
 import { pivotTableXml, type PivotWriting } from '../write/pivot.js'
+import { slicerCacheXml, slicersPartXml, timelineCacheXml, timelinesPartXml } from '../write/slicers.js'
+import { KeptRefusal } from './refusals.js'
+import { sheetKey } from '../../syntax/print.js'
 import type { CellFormats } from '../write/styles.js'
 import { attr, attributes, element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -31,10 +34,11 @@ interface FileCache {
   relsXml?: string
 }
 
-/** The file's PivotTables' parts by name, and its caches by id. */
+/** The file's PivotTables' parts by name, its caches by id, its slicers' and timelines' caches by name with their parts. */
 export interface PivotFiles {
   tables: Map<string, string>
   caches: FileCache[]
+  slicerCaches: Map<string, string>
 }
 
 export async function pivotFiles(src: Source): Promise<PivotFiles> {
@@ -48,7 +52,14 @@ export async function pivotFiles(src: Source): Promise<PivotFiles> {
     const r = src.wbRels.find((x) => x.id === rel && !x.external)
     if (r) caches.push({ id: Number(a.cacheId), rel, part: r.target, xml: (await src.archive.text(r.target)) ?? '', rels: await relsOf(src.archive, r.target), relsXml: await src.archive.text(relsPath(r.target)) })
   }
-  return { tables, caches }
+  const slicerCaches = new Map<string, string>()
+  for (const r of src.wbRels)
+    if ((r.kind === 'slicerCache' || r.kind === 'timelineCache') && !r.external) {
+      const xml = (await src.archive.text(r.target)) ?? ''
+      const name = /<(?:[\w.-]+:)?(?:slicer|timeline)CacheDefinition\b[^>]*?\sname="([^"]*)"/.exec(xml)?.[1]
+      if (name !== undefined) slicerCaches.set(caseKey(readText(name)), r.target)
+    }
+  return { tables, caches, slicerCaches }
 }
 
 /** What the writing of the book over the file gives the PivotTables. */
@@ -66,6 +77,8 @@ export interface PivotHost {
   edited(part: string, text: string): string
   relative(from: string, to: string): string
   change(): void
+  /** The file's sheet of a sheet of the book, by its name. */
+  fileSheet(name: string): number | undefined
 }
 
 /** A PivotTable without its place, which moves with its cells (written back by its carrier). */
@@ -85,11 +98,24 @@ const modelSource = (c: PivotCache) => (c.source.type === 'range' ? `r${c.source
 export class KeptPivots {
   /** The part of each cache of the book written, by id. */
   private readonly part = new Map<number, string>()
+  /** The file's id of each cache among its slicers' sources (x14 `pivotCacheId`), by id. */
+  private readonly x14 = new Map<number, number>()
 
   constructor(
     private readonly h: PivotHost,
     private readonly files: PivotFiles,
-  ) {}
+  ) {
+    for (const f of files.caches) {
+      const id = /<(?:[\w.-]+:)?pivotCacheDefinition\b[^>]*?\spivotCacheId="(\d+)"/.exec(f.xml.slice(f.xml.indexOf('<extLst')))?.[1]
+      if (id !== undefined && f.xml.includes('<extLst')) this.x14.set(f.id, Number(id))
+    }
+  }
+
+  /** A cache's id among the slicers' sources: the file's, else its own where a slicer or a timeline filters it. */
+  private sourceId(id: number): number | undefined {
+    const { book } = this.h
+    return this.x14.get(id) ?? ([...(book.slicerCaches ?? []), ...(book.timelineCaches ?? [])].some((c) => c.cache === id) ? id : undefined)
+  }
 
   private writing(s: number, p: PivotTable): PivotWriting {
     const { book } = this.h
@@ -140,7 +166,7 @@ export class KeptPivots {
       rels.remove(old.id)
     }
     const link = 'book' in c.source && c.source.book !== undefined ? (f?.rels.find((r) => r.kind === 'externalLinkPath')?.id ?? rels.add(REL('externalLinkPath'), c.source.book, true)) : undefined
-    parts.set(part, pivotCacheXml(c, (x) => this.h.styles.numFmt(x.numberFormat), records, link))
+    parts.set(part, pivotCacheXml(c, (x) => this.h.styles.numFmt(x.numberFormat), records, link, this.sourceId(c.id)))
     if (rels.size) parts.set(relsPath(part), rels.xml())
     else parts.remove(relsPath(part))
   }
@@ -227,6 +253,45 @@ export class KeptPivots {
     else {
       const at = insertAt(['sheets', 'functionGroups', 'externalReferences', 'definedNames', 'calcPr', 'oleSize', 'customWorkbookViews'])
       edits.push({ part: src.wbPath, start: at, end: at, text })
+    }
+  }
+
+  /**
+   * The slicers and timelines: a cache the book changed (the items or dates chosen, the PivotTables it filters) written
+   * again through its part, a sheet's slicers or timelines whose fields changed their part written again; one added or
+   * deleted is refused (`keptSlicers`). Their frames move with their cells by their carriers.
+   */
+  slicers(): void {
+    const { book0, book, src } = this.h
+    const names = (b: BookInput) => JSON.stringify([...(b.slicerCaches ?? []), ...(b.timelineCaches ?? [])].map((c) => caseKey(c.name)).sort())
+    const own = (b: BookInput) => JSON.stringify(b.sheets.flatMap((s) => [...(s.slicers ?? []), ...(s.timelines ?? [])].map((x) => caseKey(x.name))).sort())
+    if (names(book0) !== names(book) || own(book0) !== own(book)) throw new KeptRefusal({ key: 'keptSlicers' }, 'slicers')
+    // a PivotTable's sheet by its `sheetId` in the file, which a renamed sheet keeps
+    const tabOf = (k: number | undefined) => (k === undefined ? 0 : Number(src.decls[src.sheets[k].decl].attrs.sheetId ?? 0))
+    const tab = (sheet: string) => tabOf(this.h.fileSheet(sheet))
+    const tab0 = (sheet: string) => tabOf(book0.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet)))
+    const key = (c: { pivots: { sheet: string; name: string }[] } | undefined, t: (sheet: string) => number) => JSON.stringify(c && { ...c, pivots: c.pivots.map((r) => [t(r.sheet), caseKey(r.name)]) })
+    for (const kind of ['slicerCaches', 'timelineCaches'] as const)
+      for (const c of book[kind] ?? []) {
+        const c0 = (book0[kind] ?? []).find((x) => caseKey(x.name) === caseKey(c.name))
+        const part = this.files.slicerCaches.get(caseKey(c.name))
+        if (!part || key(c0, tab0) === key(c, tab)) continue
+        this.h.change()
+        const id = this.sourceId(c.cache!) ?? c.cache!
+        this.h.parts.set(part, kind === 'slicerCaches' ? slicerCacheXml(book, c as SlicerCache, tab, id) : timelineCacheXml(book, c as TimelineCache, tab, id))
+      }
+    // a sheet's part where a slicer or timeline changed but for its place, which its frame's carrier writes back
+    const unplaced = (list: { place?: unknown }[] | undefined) => JSON.stringify((list ?? []).map((x) => ({ ...x, place: undefined })))
+    for (const [k, ss] of src.sheets.entries()) {
+      const [s0, s1] = [book0.sheets[k], book.sheets.find((x) => sheetKey(x.name) === sheetKey(book0.sheets[k].name))]
+      if (!s1) continue
+      for (const [kind, rel, xml] of [['slicers', 'slicer', slicersPartXml], ['timelines', 'timeline', timelinesPartXml]] as const) {
+        if (unplaced(s0[kind]) === unplaced(s1[kind])) continue
+        const r = ss.rels.find((x) => x.kind === rel && !x.external)
+        if (!r) continue
+        this.h.change()
+        this.h.parts.set(r.target, xml(s1[kind] as never))
+      }
     }
   }
 }
