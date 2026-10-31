@@ -139,8 +139,9 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
-    const carried = PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
+    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names; a fill's own copies
+    // carry none of their own, as the fill's names would go with theirs
+    const carried = whole || PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
     const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
     const refused = r.ok ? pivotRefusal(input, op) : null
     if (refused) return refused
