@@ -13,15 +13,20 @@ import { layoutPivot, type PivotCell } from '../src/pivot/layout.js'
 import { placePivots } from '../src/pivot/place.js'
 import { readXlsx } from '../src/xlsx.js'
 import { savedResult } from './pivot-saved.js'
+// the sets of Excel ru-RU lay out in ru-RU
+import './locales.js'
 
 const ROOT = new URL('./excel/win/pivot/', import.meta.url).pathname
-const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc', 'layout-held', 'filter-held', 'sort-held', 'edit-held', 'show', 'show-items', 'show-held', 'group', 'group-held', 'calc-held', 'slicer', 'slicer-delete', 'slicer-held'].filter((s) => existsSync(`${ROOT}${s}.json`))
+const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc', 'layout-held', 'filter-held', 'sort-held', 'edit-held', 'show', 'show-items', 'show-held', 'group', 'group-held', 'calc-held', 'slicer', 'slicer-delete', 'slicer-held'].flatMap((s) => [s, `ru-RU/${s}`]).filter((s) => existsSync(`${ROOT}${s}.json`))
 
 interface Shown {
   area: string
   values: unknown[][]
   formats: string[][]
 }
+
+/** The codes Excel ru-RU gives for General and the short date, as en-US's. */
+const RU_CODES: Record<string, string> = { Основной: 'General', 'ДД.ММ.ГГГГ': 'm/d/yyyy' }
 
 /** A built-in number format as Excel's cell shows its code. */
 const BUILTIN: Record<number, string> = { 4: '#,##0.00', 10: '0.00%', 14: 'm/d/yyyy' }
@@ -46,7 +51,9 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
   const { answers } = JSON.parse(readFileSync(`${ROOT}${set}.json`, 'utf8'))
   const books = readdirSync(`${ROOT}${set}`).filter((f) => f.endsWith('.xlsx'))
   it.each(books)('%s', async (file) => {
-    const { book } = await readXlsx(readFileSync(`${ROOT}${set}/${file}`))
+    const read = (await readXlsx(readFileSync(`${ROOT}${set}/${file}`))).book
+    // a set of Excel ru-RU: its workbooks in ru-RU, whose words the layout shows
+    const book = set.startsWith('ru-RU/') ? { ...read, locale: 'ru-RU' } : read
     const phase = answerOf(answers, file.replace(/\.xlsx$/, ''))
     let seen = 0
     for (const sheet of book.sheets)
@@ -90,7 +97,9 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
         expect(got).toEqual(want)
         // a format as the file stores it escapes its literal characters (`yyyy\-mm\-dd`), as COM gives it not
         const unescaped = (g: string[][]) => g.map((r) => r.map((f) => f.replace(/\\(.)/g, '$1')))
-        expect(unescaped(formats)).toEqual(unescaped(shown.formats))
+        // Excel ru-RU gives General and the short date by their ru-RU codes
+        const en = (g: string[][]) => (set.startsWith('ru-RU/') ? g.map((r) => r.map((f) => RU_CODES[f] ?? f)) : g)
+        expect(unescaped(formats)).toEqual(unescaped(en(shown.formats)))
         expect(laid.cells.every((c) => c.row >= a.row && c.row <= (b ?? a).row && c.col >= a.col && c.col <= (b ?? a).col)).toBe(true)
       }
     expect(seen).toBeGreaterThan(0)

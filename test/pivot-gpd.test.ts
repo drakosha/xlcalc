@@ -8,6 +8,8 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type CellValue } from '../src/index.js'
+// the set of Excel ru-RU computes in ru-RU
+import './locales.js'
 import { buildPivotCases } from '../bench/coverage/pivot/gpd-1.js'
 import { buildPivotCases as heldCases } from '../bench/coverage/pivot/gpd-held.js'
 import { buildPivotCases as held2Cases } from '../bench/coverage/pivot/gpd-held-2.js'
@@ -22,13 +24,14 @@ const near = (a: CellValue, b: CellValue) => (typeof a === 'number' && typeof b 
 const REFUSED = new Set(['subtotals-functions G!A2'])
 
 /** Each formula of a set over a PivotTable of its book against Excel's value: the cells that differ, and the count. */
-async function compared(set: string, cases: PivotCase[]): Promise<[string[], number]> {
-  const all = (JSON.parse(readFileSync(new URL(`./excel/win/pivot/${set}.json`, import.meta.url), 'utf8')) as { answers: Record<string, PivotAnswer> }).answers
+async function compared(set: string, cases: PivotCase[], locale?: string): Promise<[string[], number]> {
+  const all = (JSON.parse(readFileSync(new URL(`./excel/win/pivot/${locale ? `${locale}/` : ''}${set}.json`, import.meta.url), 'utf8')) as { answers: Record<string, PivotAnswer> }).answers
   const bad: string[] = []
   let n = 0
   for (const c of cases) {
     if (c.ops.some((o) => 'external' in o)) continue
-    const got = await predictCase(c, set)
+    if (!all[c.id]) continue
+    const got = await predictCase(c, set, locale)
     for (const [cell, v] of Object.entries(all[c.id].phases[0].cells ?? {})) {
       if (REFUSED.has(`${c.id} ${cell}`)) continue
       n++
@@ -41,6 +44,10 @@ async function compared(set: string, cases: PivotCase[]): Promise<[string[], num
 describe('GETPIVOTDATA against Excel for Windows: the set gpd-1', () => {
   it('every formula over a PivotTable of the book', async () => {
     expect(await compared('gpd-1', buildPivotCases())).toEqual([[], 101])
+  }, 60_000)
+
+  it('the set in Excel ru-RU: a value field by its ru-RU name, an English one #REF!', async () => {
+    expect(await compared('gpd-1', buildPivotCases(), 'ru-RU')).toEqual([[], 101])
   }, 60_000)
 
   it('the held-out set gpd-held, fitted after its run (51 of 55 predicted: an inner field without the one between, subtotals of several functions, a field by its own name alone)', async () => {
