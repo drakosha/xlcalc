@@ -50,12 +50,15 @@ function PAll($wb) {
 $PInvoke = [Reflection.BindingFlags]::InvokeMethod
 $PPut = [Reflection.BindingFlags]::SetProperty
 
-# the pivot table's area: TableRange1, TableRange2, DataBodyRange (empty when there is none), and each cell of
-# TableRange2 by rows: Value2, Text and NumberFormat
+# a range of the pivot table by its property's name (DataBodyRange, PageRange…), its address; empty when there is none
+function PRange($pt, $name) { try { $r = $pt.$name; if ($null -eq $r) { '' } else { [string]$r.Address($false, $false) } } catch { '' } }
+
+# the pivot table's area: TableRange1, TableRange2, DataBodyRange (empty when there is none), each cell of TableRange2
+# by rows (Value2, Text and NumberFormat), then PageRange, RowRange and ColumnRange (empty when there is none)
 function PRead($wb, $s) {
   $pt = PTable $wb $s
   $r2 = $pt.TableRange2
-  $body = try { $pt.DataBodyRange.Address($false, $false) } catch { '' }
+  $body = PRange $pt 'DataBodyRange'
   $texts = for ($r = 1; $r -le $r2.Rows.Count; $r++) {
     $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).Text) }
     List $row
@@ -64,7 +67,7 @@ function PRead($wb, $s) {
     $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).NumberFormat) }
     List $row
   }
-  List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), (List $texts), (List $formats))
+  List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), (List $texts), (List $formats), (Str (PRange $pt 'PageRange')), (Str (PRange $pt 'RowRange')), (Str (PRange $pt 'ColumnRange')))
 }
 
 # a slicer cache's items as Excel shows them, [name, selected, has data]; a timeline's state, { timeline: [start, end
