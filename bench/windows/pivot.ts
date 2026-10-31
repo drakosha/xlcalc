@@ -37,6 +37,8 @@ const PERIODS: readonly Period[] = ['seconds', 'minutes', 'hours', 'days', 'mont
 const LEVEL = { years: 0, quarters: 1, months: 2, days: 3 } as const
 const MISSING = { default: -1, none: 0, max: 32500 } as const
 const ROW_LAYOUT = { compact: 0, tabular: 1, outline: 2 } as const
+/** `XlSortOrder`, and `xlManual` for no sorting on update. */
+const SORT_ORDER = { ascending: 1, descending: 2, manual: -4135 } as const
 /** The pivot table's and the cache's version, 8 as Excel 365 makes them (COM refuses `xlPivotTableVersionCurrent`, -1). */
 const VERSION = 8
 
@@ -145,7 +147,7 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       else if (o.items.length === 1) add(role, set('field', [['EnableMultiplePageItems', false], ['CurrentPage', o.items[0]]], { field: o.page }))
       else add(role, set('field', [['EnableMultiplePageItems', true]], { field: o.page }), { ...at, op: 'only', on: 'field', field: o.page, items: o.items })
     } else if ('filter' in o) add(role, { ...at, op: 'filter', field: o.filter, type: FILTER_TYPES[o.type], dataField: o.by ?? null, value1: o.value1 ?? null, value2: o.value2 ?? null, wholeDays: o.wholeDays ?? null })
-    else if ('sort' in o) add(role, call('field', 'AutoSort', [o.order === 'ascending' ? 1 : 2, o.by ?? o.sort], { field: o.sort }))
+    else if ('sort' in o) add(role, call('field', 'AutoSort', [SORT_ORDER[o.order], o.by ?? o.sort], { field: o.sort }))
     else if ('item' in o) add(role, set('item', [['Position', o.position]], { field: o.of, item: o.item }))
     else if ('calcField' in o) add(role, call('calcFields', 'Add', [o.calcField, o.formula, true]))
     else if ('calcItem' in o) add(role, call('calcItems', 'Add', [o.calcItem, o.formula, true], { field: o.field }))
