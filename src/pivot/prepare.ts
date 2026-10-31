@@ -3,6 +3,7 @@
  * in the cache and on the PivotTable, the records index them, and the value fields' places on the axes are set.
  */
 import type { PivotAxisField, PivotCache, PivotCacheField, PivotField, PivotTable, PivotValue } from '../contract.js'
+import { groupedItems } from './group.js'
 import { itemKey, labelOrder } from './values.js'
 
 /** The fields that group the records: on rows, columns or Filters, or filtered by hidden items (a slicer's field). */
@@ -39,7 +40,9 @@ function listed(field: PivotCacheField, records: PivotValue[][], at: number): Pi
  */
 export function prepared(table: PivotTable, cache: PivotCache, epoch: number, lists: readonly (readonly string[])[]): { table: PivotTable; cache: PivotCache } {
   const need = groupingFields(table)
-  const unlisted = [...need].filter((f) => cache.fields[f] && !cache.fields[f].items)
+  // a grouped field takes its groups' items; groups by hand name the items of their base field, which is listed
+  const toList = new Set([...need].map((f) => (cache.fields[f]?.group?.discrete ? (cache.fields[f].group!.base ?? f) : f)))
+  const unlisted = [...toList].filter((f) => cache.fields[f] && !groupedItems(cache.fields[f]))
   let out = cache
   if (unlisted.length) {
     const records = (cache.records ?? []).map((r) => r.slice())
@@ -48,12 +51,13 @@ export function prepared(table: PivotTable, cache: PivotCache, epoch: number, li
     out = { ...cache, fields, records }
   }
   const fields = table.fields.map((pf, i): PivotField => {
-    const items = out.fields[i]?.items
+    const items = groupedItems(out.fields[i])
     if (!need.has(i) || !items) return pf
     const known = new Set((pf.items ?? []).flatMap((x) => (x.item === undefined ? [] : [x.item])))
     const added = items.map((_, k) => k).filter((k) => !known.has(k))
     if (!added.length) return pf
-    if (!pf.items?.length) added.sort((a, b) => labelOrder(items[a], items[b], false, table.customListSort !== false ? lists : null, epoch) || a - b)
+    // groups of a range keep their order, from the first to the last
+    if (!pf.items?.length && !out.fields[i].group?.range) added.sort((a, b) => labelOrder(items[a], items[b], false, table.customListSort !== false ? lists : null, epoch) || a - b)
     return { ...pf, items: [...(pf.items ?? []), ...added.map((item) => ({ item }))] }
   })
   return { table: { ...table, fields }, cache: out }

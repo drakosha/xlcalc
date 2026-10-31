@@ -6,6 +6,7 @@ import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
 import type { CellValue, ErrorCode, PivotCache, PivotFunction, PivotTable, PivotValue } from '../contract.js'
 import { Tally } from './aggregate.js'
+import { groupedItems, recordItems } from './group.js'
 import { byValue, itemPasses, valuesKept } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
 import type { PivotComputeOptions, PivotPageResult, PivotResult } from './result.js'
@@ -14,16 +15,17 @@ import { numberOf } from './values.js'
 
 /**
  * Each record's item on each grouping field (an index into the PivotTable field's `items`), −1 for a field not grouping.
- * A field a grouping made (`PivotCacheField.group`) has no value in the records: its item is to come from its base field's.
+ * A grouped field's item is its group's, by its base field's value (`group.ts`).
  */
-function itemIndexes(table: PivotTable, cache: PivotCache): Int32Array[] {
+function itemIndexes(table: PivotTable, cache: PivotCache, epoch: number): Int32Array[] {
   const records = cache.records ?? []
   return table.fields.map((pf, f) => {
     const at = new Int32Array(records.length).fill(-1)
-    if (!pf.items || !cache.fields[f]?.items) return at
+    if (!pf.items || !groupedItems(cache.fields[f])) return at
     const of = new Map<number, number>()
     pf.items.forEach((x, p) => x.item !== undefined && !of.has(x.item) && of.set(x.item, p))
-    records.forEach((r, i) => (at[i] = of.get(r[f] as number) ?? -1))
+    const item = recordItems(cache, f, epoch)
+    records.forEach((r, i) => (at[i] = of.get(item(r)) ?? -1))
     return at
   })
 }
@@ -32,7 +34,7 @@ function itemIndexes(table: PivotTable, cache: PivotCache): Int32Array[] {
 function shownItems(table: PivotTable, cache: PivotCache, today: number, epoch: number): (boolean[] | undefined)[] {
   const pages = new Map((table.pages ?? []).map((p) => [p.field, p.item]))
   return table.fields.map((pf, f) => {
-    const values = cache.fields[f]?.items
+    const values = groupedItems(cache.fields[f])
     if (!pf.items || !values) return undefined
     const page = pages.get(f)
     const filters = (table.filters ?? []).filter((x) => x.field === f && !byValue(x))
@@ -73,7 +75,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const fns = values.map((v) => v.function ?? 'sum')
   // a calculated field is no record's value: its formula is to be calculated over the sums of the fields it names at each cell
   const readers = values.map((v) => valueReader(cache, v.field, epoch))
-  const at = itemIndexes(table, cache)
+  const at = itemIndexes(table, cache, epoch)
   const shown = shownItems(table, cache, today, epoch)
   const count = cache.records?.length ?? 0
 
