@@ -165,7 +165,8 @@ describe('layoutPivot', () => {
 
   it('shows its text for errors and for empty cells, its captions, and the words of ru-RU', () => {
     const l = laid({ rows: [3], columns: [0], empty: { show: true, text: '-' }, captions: { grandTotal: 'All', rowHeader: 'Notes' } })
-    expect(grid(l).slice(1)).toEqual([['Notes', 'North', 'South', 'All'], ['x', 3, '-', 3], ['(blank)', '-', 4, 4], ['All', 3, 4, 7]])
+    // a dash alone is the accounting zero, which Excel shows as 0
+    expect(grid(l).slice(1)).toEqual([['Notes', 'North', 'South', 'All'], ['x', 3, 0, 3], ['(blank)', 0, 4, 4], ['All', 3, 4, 7]])
     expect(grid(laid({ rows: [3], columns: [0], empty: { show: true, text: '0' } })).slice(2, 4)).toEqual([['x', 3, 0, 3], ['(blank)', 0, 4, 4]])
     expect(grid(laid({ rows: [3] }, 'ru-RU'))).toEqual([['Названия строк', 'Sum of Amount'], ['x', 3], ['(пусто)', 4], ['Общий итог', 7]])
   })

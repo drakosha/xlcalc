@@ -33,21 +33,18 @@ const DIR = new URL('./excel/win/pivot/', import.meta.url)
 const CLOCK = { now: '2026-10-30', seed: 0 }
 
 /**
- * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. basic: empty cells with
- * "For empty cells show", which Excel shows as 0 (not measured further). sort: items of several custom lists at once,
- * which Excel orders by no order we found (`docs/development.md`). refresh: a refresh growing over cells or another
- * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it. layout: a field's subtotals by
- * several functions, which the reading of the file does not take yet.
+ * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
+ * custom lists at once, which Excel orders by no order we found (`docs/development.md`).
  */
 const KNOWN: Record<string, string[]> = {
   'layout-held': [],
   'filter-held': [],
   'sort-held': [],
-  basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
+  basic: [],
   filter: [],
   sort: ['months-down/0/saved', 'months-down/0/source'],
-  layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
-  refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
+  layout: [],
+  refresh: [],
 }
 
 const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld }
@@ -129,8 +126,12 @@ async function differences(set: string): Promise<string[]> {
       const refs = k > 0 ? refreshed(ops[k]) : null
       const prev = refs && (await book(set, c.id, k - 1, last))
       if (!prev) continue
-      // the PivotTables and caches of the phase before, over the source as this phase's book holds it
-      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? prev.sheets.find((x) => x.name === 'P')! : s)), pivotCaches: prev.pivotCaches }
+      // the PivotTables and caches of the phase before, over the source as this phase's book holds it, with the phase's
+      // edits of the PivotTables' sheet (a cell in the way cleared)
+      const pivots = prev.sheets.find((x) => x.name === 'P')!
+      const cells = { ...pivots.cells }
+      for (const op of ops[k]) if ('edit' in op && op.edit.startsWith('P!')) op.to === null ? delete cells[op.edit.slice(2)] : (cells[op.edit.slice(2)] = typeof op.to === 'object' ? ('formula' in op.to ? { formula: op.to.formula } : { value: op.to.typed }) : { value: op.to })
+      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? { ...pivots, cells } : s)), pivotCaches: prev.pivotCaches }
       out.push(...compared(`${c.id}/${k}/refresh`, source, refs === 'all' ? undefined : refs!, true, want))
     }
   }
