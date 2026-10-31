@@ -7,8 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "date": "2026-10-30",
-  "seconds": 141.7
+  "date": "2026-10-31",
+  "seconds": 40.8
  },
  "cases": [
   {
@@ -463,10 +463,10 @@
   "three-compact": "25fc3e43e788d2974361548bf485d2fdced80fea725c6983ccc3150c5e845dd7 581bb1faa69789f2",
   "three-outline": "0ea6e4b520a7cdec25fdaa8f6905d25c6ad16aebe576f7cd7bd4ae6455a10a83 581bb1faa69789f2",
   "three-tabular": "28d16a884a5a2b9d8e66b596e849fedbd39f1972263e0cb07f75c2f710b4f211 581bb1faa69789f2",
-  "repeat-outline": "356afba6bbe782684f682fa427b9f23e445a2000d39cbd617c2c8c21c5650809 581bb1faa69789f2",
-  "repeat-tabular": "51a3cc4c3c192278c7f47669e1ee6725490098e632825b9314b2c6606e476da6 581bb1faa69789f2",
+  "repeat-outline": "76bd13000daf2d38d960b3260aeda3250923bf567d6a131e23345cc131b0eefa 581bb1faa69789f2",
+  "repeat-tabular": "53e5710a75734fb7e80cd7352f5478413abbbf01ef74ebb6841879efb7f242c3 581bb1faa69789f2",
   "repeat-field": "cdd74f6502598e2ef260c9ad1708d4fd25f739ff572133e4eaa65a0acc13c8ac 581bb1faa69789f2",
-  "repeat-compact": "571bd3867594ee2aab9259b11f431bb61485d5e40dbfdeed1eac61b59f2574f4 581bb1faa69789f2",
+  "repeat-compact": "439ca64d4bda7ea7601e274adcde45773edcb665e8b6b01ad7ae1ca32745a30e 581bb1faa69789f2",
   "bottom-compact": "04f606e6c5380b309ace0fccf271d3fa3481ac1328081887353971f1e12d883f 581bb1faa69789f2",
   "bottom-outline": "64c307177e90d70b8a964ffa78d44813823468343539e33aea4ceca8bbfbb17a 581bb1faa69789f2",
   "bottom-tabular": "9c12fe62eafb2ff5abc2e1290437e3134cc6f7d5547032f85dbc458894ce3f30 581bb1faa69789f2",
@@ -474,10 +474,10 @@
   "no-subtotals-compact": "0168fce0d7cc4aeda8a597d7aa3aae55185f07f63544d01bf23bd4f7c6521920 581bb1faa69789f2",
   "no-subtotals-outline": "8ce5ec30553910a7daea4af06bc23e3af9ef817503f833675bc538545376b9df 581bb1faa69789f2",
   "no-subtotals-tabular": "3638fda007f5b46240004a93ff3beac63ae15ce0daaac5e259dc710105f18fea 581bb1faa69789f2",
-  "subtotals-three": "3f5122d6be06826e800845c6c31dca9376a75f53f46100420eee71d032467edf 581bb1faa69789f2",
-  "subtotals-three-compact": "59fe9b47c94b01206a891cd478b7d96b97db362ad777fc0d9db0d634f2a776f9 581bb1faa69789f2",
-  "subtotals-inner": "3ae5f33ce68cf17568b9dedbc38060c3d949cba714630c7606a42c3a3eee2a32 581bb1faa69789f2",
-  "subtotals-columns": "e70ff4b6b486a55c99afbcc67fa9e36619cae4f2ada96e2a5e0d3c0c80c262fb 581bb1faa69789f2",
+  "subtotals-three": "250d4113d417530808de6df9b27290af8d613dae095ce61337784303f1be2f01 581bb1faa69789f2",
+  "subtotals-three-compact": "17a3cb6daca2b6a04ade9a6a5911f17e4eacb5c076c0b4d14a026c0e6b472192 581bb1faa69789f2",
+  "subtotals-inner": "55ac087cc147358bdc93ceb5eb70001774fe15e7dd1b98ba962aefbf4a544bb6 581bb1faa69789f2",
+  "subtotals-columns": "fefe88b1e749a781a256760d812a628327eb98393338cfb3ee45362d9421a906 581bb1faa69789f2",
   "no-row-grand": "81c2c71aa3ee8fa8da7c94fd5bab34f92a4a81d6179ff656454ec158937495ba 581bb1faa69789f2",
   "no-column-grand": "6268533389f248ec19c21b8c445a8e912a842b7a77a44bba64612d5e30cb1a51 581bb1faa69789f2",
   "no-grand": "67c96863e32371e76217760d1f16aaaca1c3e2dfd79f87d647fd3f5be2336b0a 581bb1faa69789f2",
@@ -6275,38 +6275,38 @@
          43
         ],
         [
-         null,
+         "East",
          "FALSE",
          null,
          12
         ],
         [
-         null,
-         null,
+         "East",
+         "FALSE",
          20,
          5
         ],
         [
-         null,
-         null,
+         "East",
+         "FALSE",
          "20",
          7
         ],
         [
-         null,
+         "East",
          "TRUE",
          null,
          31
         ],
         [
-         null,
-         null,
+         "East",
+         "TRUE",
          10,
          14
         ],
         [
-         null,
-         null,
+         "East",
+         "TRUE",
          30,
          17
         ],
@@ -6317,32 +6317,32 @@
          56
         ],
         [
-         null,
+         "North",
          "FALSE",
          null,
          24
         ],
         [
-         null,
-         null,
+         "North",
+         "FALSE",
          20,
          24
         ],
         [
-         null,
+         "North",
          "TRUE",
          null,
          32
         ],
         [
-         null,
-         null,
+         "North",
+         "TRUE",
          10,
          19
         ],
         [
-         null,
-         null,
+         "North",
+         "TRUE",
          30,
          13
         ],
@@ -6353,32 +6353,32 @@
          52
         ],
         [
-         null,
+         "South",
          "FALSE",
          null,
          22
         ],
         [
-         null,
-         null,
+         "South",
+         "FALSE",
          20,
          22
         ],
         [
-         null,
+         "South",
          "TRUE",
          null,
          30
         ],
         [
-         null,
-         null,
+         "South",
+         "TRUE",
          10,
          11
         ],
         [
-         null,
-         null,
+         "South",
+         "TRUE",
          30,
          19
         ],
@@ -6389,32 +6389,32 @@
          52
         ],
         [
-         null,
+         "West",
          "FALSE",
          null,
          16
         ],
         [
-         null,
-         null,
+         "West",
+         "FALSE",
          20,
          16
         ],
         [
-         null,
+         "West",
          "TRUE",
          null,
          36
         ],
         [
-         null,
-         null,
+         "West",
+         "TRUE",
          10,
          20
         ],
         [
-         null,
-         null,
+         "West",
+         "TRUE",
          30,
          16
         ],
@@ -6425,14 +6425,14 @@
          9
         ],
         [
-         null,
+         "(blank)",
          "TRUE",
          null,
          9
         ],
         [
-         null,
-         null,
+         "(blank)",
+         "TRUE",
          10,
          9
         ],
@@ -6457,38 +6457,38 @@
          "43"
         ],
         [
-         "",
+         "East",
          "FALSE",
          "",
          "12"
         ],
         [
-         "",
-         "",
+         "East",
+         "FALSE",
          "20",
          "5"
         ],
         [
-         "",
-         "",
+         "East",
+         "FALSE",
          "20",
          "7"
         ],
         [
-         "",
+         "East",
          "TRUE",
          "",
          "31"
         ],
         [
-         "",
-         "",
+         "East",
+         "TRUE",
          "10",
          "14"
         ],
         [
-         "",
-         "",
+         "East",
+         "TRUE",
          "30",
          "17"
         ],
@@ -6499,32 +6499,32 @@
          "56"
         ],
         [
-         "",
+         "North",
          "FALSE",
          "",
          "24"
         ],
         [
-         "",
-         "",
+         "North",
+         "FALSE",
          "20",
          "24"
         ],
         [
-         "",
+         "North",
          "TRUE",
          "",
          "32"
         ],
         [
-         "",
-         "",
+         "North",
+         "TRUE",
          "10",
          "19"
         ],
         [
-         "",
-         "",
+         "North",
+         "TRUE",
          "30",
          "13"
         ],
@@ -6535,32 +6535,32 @@
          "52"
         ],
         [
-         "",
+         "South",
          "FALSE",
          "",
          "22"
         ],
         [
-         "",
-         "",
+         "South",
+         "FALSE",
          "20",
          "22"
         ],
         [
-         "",
+         "South",
          "TRUE",
          "",
          "30"
         ],
         [
-         "",
-         "",
+         "South",
+         "TRUE",
          "10",
          "11"
         ],
         [
-         "",
-         "",
+         "South",
+         "TRUE",
          "30",
          "19"
         ],
@@ -6571,32 +6571,32 @@
          "52"
         ],
         [
-         "",
+         "West",
          "FALSE",
          "",
          "16"
         ],
         [
-         "",
-         "",
+         "West",
+         "FALSE",
          "20",
          "16"
         ],
         [
-         "",
+         "West",
          "TRUE",
          "",
          "36"
         ],
         [
-         "",
-         "",
+         "West",
+         "TRUE",
          "10",
          "20"
         ],
         [
-         "",
-         "",
+         "West",
+         "TRUE",
          "30",
          "16"
         ],
@@ -6607,14 +6607,14 @@
          "9"
         ],
         [
-         "",
+         "(blank)",
          "TRUE",
          "",
          "9"
         ],
         [
-         "",
-         "",
+         "(blank)",
+         "TRUE",
          "10",
          "9"
         ],
@@ -7392,31 +7392,31 @@
          5
         ],
         [
-         null,
-         null,
+         "East",
+         "FALSE",
          "20",
          7
         ],
         [
-         null,
+         "East",
          "FALSE Total",
          null,
          12
         ],
         [
-         null,
+         "East",
          "TRUE",
          10,
          14
         ],
         [
-         null,
-         null,
+         "East",
+         "TRUE",
          30,
          17
         ],
         [
-         null,
+         "East",
          "TRUE Total",
          null,
          31
@@ -7434,25 +7434,25 @@
          24
         ],
         [
-         null,
+         "North",
          "FALSE Total",
          null,
          24
         ],
         [
-         null,
+         "North",
          "TRUE",
          10,
          19
         ],
         [
-         null,
-         null,
+         "North",
+         "TRUE",
          30,
          13
         ],
         [
-         null,
+         "North",
          "TRUE Total",
          null,
          32
@@ -7470,25 +7470,25 @@
          22
         ],
         [
-         null,
+         "South",
          "FALSE Total",
          null,
          22
         ],
         [
-         null,
+         "South",
          "TRUE",
          10,
          11
         ],
         [
-         null,
-         null,
+         "South",
+         "TRUE",
          30,
          19
         ],
         [
-         null,
+         "South",
          "TRUE Total",
          null,
          30
@@ -7506,25 +7506,25 @@
          16
         ],
         [
-         null,
+         "West",
          "FALSE Total",
          null,
          16
         ],
         [
-         null,
+         "West",
          "TRUE",
          10,
          20
         ],
         [
-         null,
-         null,
+         "West",
+         "TRUE",
          30,
          16
         ],
         [
-         null,
+         "West",
          "TRUE Total",
          null,
          36
@@ -7542,7 +7542,7 @@
          9
         ],
         [
-         null,
+         "(blank)",
          "TRUE Total",
          null,
          9
@@ -7574,31 +7574,31 @@
          "5"
         ],
         [
-         "",
-         "",
+         "East",
+         "FALSE",
          "20",
          "7"
         ],
         [
-         "",
+         "East",
          "FALSE Total",
          "",
          "12"
         ],
         [
-         "",
+         "East",
          "TRUE",
          "10",
          "14"
         ],
         [
-         "",
-         "",
+         "East",
+         "TRUE",
          "30",
          "17"
         ],
         [
-         "",
+         "East",
          "TRUE Total",
          "",
          "31"
@@ -7616,25 +7616,25 @@
          "24"
         ],
         [
-         "",
+         "North",
          "FALSE Total",
          "",
          "24"
         ],
         [
-         "",
+         "North",
          "TRUE",
          "10",
          "19"
         ],
         [
-         "",
-         "",
+         "North",
+         "TRUE",
          "30",
          "13"
         ],
         [
-         "",
+         "North",
          "TRUE Total",
          "",
          "32"
@@ -7652,25 +7652,25 @@
          "22"
         ],
         [
-         "",
+         "South",
          "FALSE Total",
          "",
          "22"
         ],
         [
-         "",
+         "South",
          "TRUE",
          "10",
          "11"
         ],
         [
-         "",
-         "",
+         "South",
+         "TRUE",
          "30",
          "19"
         ],
         [
-         "",
+         "South",
          "TRUE Total",
          "",
          "30"
@@ -7688,25 +7688,25 @@
          "16"
         ],
         [
-         "",
+         "West",
          "FALSE Total",
          "",
          "16"
         ],
         [
-         "",
+         "West",
          "TRUE",
          "10",
          "20"
         ],
         [
-         "",
-         "",
+         "West",
+         "TRUE",
          "30",
          "16"
         ],
         [
-         "",
+         "West",
          "TRUE Total",
          "",
          "36"
@@ -7724,7 +7724,7 @@
          "9"
         ],
         [
-         "",
+         "(blank)",
          "TRUE Total",
          "",
          "9"
@@ -17780,9 +17780,9 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:C27",
-       "area": "A3:C27",
-       "body": "C4:C27",
+       "table": "A3:C37",
+       "area": "A3:C37",
+       "body": "C4:C37",
        "values": [
         [
          "Region",
@@ -17810,9 +17810,19 @@
          12.69
         ],
         [
-         "East Total",
+         "East Sum",
          null,
          138.65
+        ],
+        [
+         "East Count",
+         null,
+         8
+        ],
+        [
+         "East Average",
+         null,
+         17.33125
         ],
         [
          "North",
@@ -17835,9 +17845,19 @@
          20.91
         ],
         [
-         "North Total",
+         "North Sum",
          null,
          237.8
+        ],
+        [
+         "North Count",
+         null,
+         12
+        ],
+        [
+         "North Average",
+         null,
+         21.61818181818182
         ],
         [
          "South",
@@ -17860,9 +17880,19 @@
          42.84
         ],
         [
-         "South Total",
+         "South Sum",
          null,
-         348.4000000000001
+         348.4
+        ],
+        [
+         "South Count",
+         null,
+         10
+        ],
+        [
+         "South Average",
+         null,
+         34.839999999999996
         ],
         [
          "West",
@@ -17890,9 +17920,19 @@
          36.39
         ],
         [
-         "West Total",
+         "West Sum",
          null,
          301.90999999999997
+        ],
+        [
+         "West Count",
+         null,
+         11
+        ],
+        [
+         "West Average",
+         null,
+         27.446363636363632
         ],
         [
          "(blank)",
@@ -17900,7 +17940,17 @@
          null
         ],
         [
-         "(blank) Total",
+         "(blank) Sum",
+         null,
+         null
+        ],
+        [
+         "(blank) Count",
+         null,
+         null
+        ],
+        [
+         "(blank) Average",
          null,
          null
         ],
@@ -17937,9 +17987,19 @@
          "12.69"
         ],
         [
-         "East Total",
+         "East Sum",
          "",
          "138.65"
+        ],
+        [
+         "East Count",
+         "",
+         "8"
+        ],
+        [
+         "East Average",
+         "",
+         "17.33125"
         ],
         [
          "North",
@@ -17962,9 +18022,19 @@
          "20.91"
         ],
         [
-         "North Total",
+         "North Sum",
          "",
          "237.8"
+        ],
+        [
+         "North Count",
+         "",
+         "12"
+        ],
+        [
+         "North Average",
+         "",
+         "21.61818182"
         ],
         [
          "South",
@@ -17987,9 +18057,19 @@
          "42.84"
         ],
         [
-         "South Total",
+         "South Sum",
          "",
          "348.4"
+        ],
+        [
+         "South Count",
+         "",
+         "10"
+        ],
+        [
+         "South Average",
+         "",
+         "34.84"
         ],
         [
          "West",
@@ -18017,9 +18097,19 @@
          "36.39"
         ],
         [
-         "West Total",
+         "West Sum",
          "",
          "301.91"
+        ],
+        [
+         "West Count",
+         "",
+         "11"
+        ],
+        [
+         "West Average",
+         "",
+         "27.44636364"
         ],
         [
          "(blank)",
@@ -18027,7 +18117,17 @@
          ""
         ],
         [
-         "(blank) Total",
+         "(blank) Sum",
+         "",
+         ""
+        ],
+        [
+         "(blank) Count",
+         "",
+         ""
+        ],
+        [
+         "(blank) Average",
          "",
          ""
         ],
@@ -18038,6 +18138,56 @@
         ]
        ],
        "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
         [
          "General",
          "General",
@@ -18612,9 +18762,9 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:B27",
-       "area": "A3:B27",
-       "body": "B4:B27",
+       "table": "A3:B37",
+       "area": "A3:B37",
+       "body": "B4:B37",
        "values": [
         [
          "Row Labels",
@@ -18622,7 +18772,7 @@
         ],
         [
          "East",
-         138.65
+         null
         ],
         [
          "Apple",
@@ -18641,8 +18791,16 @@
          12.69
         ],
         [
+         "East Max",
+         41.46
+        ],
+        [
+         "East Min",
+         1.03
+        ],
+        [
          "North",
-         237.8
+         null
         ],
         [
          "Apple",
@@ -18661,8 +18819,16 @@
          20.91
         ],
         [
+         "North Max",
+         45.07
+        ],
+        [
+         "North Min",
+         2.82
+        ],
+        [
          "South",
-         348.4000000000001
+         null
         ],
         [
          "Apple",
@@ -18681,8 +18847,16 @@
          42.84
         ],
         [
+         "South Max",
+         46.27
+        ],
+        [
+         "South Min",
+         13.71
+        ],
+        [
          "West",
-         301.90999999999997
+         null
         ],
         [
          "100",
@@ -18705,11 +18879,27 @@
          36.39
         ],
         [
+         "West Max",
+         47.51
+        ],
+        [
+         "West Min",
+         2.67
+        ],
+        [
          "(blank)",
          null
         ],
         [
          "Apple",
+         null
+        ],
+        [
+         "(blank) Max",
+         null
+        ],
+        [
+         "(blank) Min",
          null
         ],
         [
@@ -18724,7 +18914,7 @@
         ],
         [
          "East",
-         "138.65"
+         ""
         ],
         [
          "Apple",
@@ -18743,8 +18933,16 @@
          "12.69"
         ],
         [
+         "East Max",
+         "41.46"
+        ],
+        [
+         "East Min",
+         "1.03"
+        ],
+        [
          "North",
-         "237.8"
+         ""
         ],
         [
          "Apple",
@@ -18763,8 +18961,16 @@
          "20.91"
         ],
         [
+         "North Max",
+         "45.07"
+        ],
+        [
+         "North Min",
+         "2.82"
+        ],
+        [
          "South",
-         "348.4"
+         ""
         ],
         [
          "Apple",
@@ -18783,8 +18989,16 @@
          "42.84"
         ],
         [
+         "South Max",
+         "46.27"
+        ],
+        [
+         "South Min",
+         "13.71"
+        ],
+        [
          "West",
-         "301.91"
+         ""
         ],
         [
          "100",
@@ -18807,6 +19021,14 @@
          "36.39"
         ],
         [
+         "West Max",
+         "47.51"
+        ],
+        [
+         "West Min",
+         "2.67"
+        ],
+        [
          "(blank)",
          ""
         ],
@@ -18815,11 +19037,59 @@
          ""
         ],
         [
+         "(blank) Max",
+         ""
+        ],
+        [
+         "(blank) Min",
+         ""
+        ],
+        [
          "Grand Total",
          "1026.76"
         ]
        ],
        "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
         [
          "General",
          "General"
@@ -19509,7 +19779,7 @@
          null,
          "FALSE",
          null,
-         12
+         3
         ],
         [
          null,
@@ -19527,7 +19797,7 @@
          null,
          "TRUE",
          null,
-         31
+         7
         ],
         [
          null,
@@ -19551,7 +19821,7 @@
          null,
          "FALSE",
          null,
-         24
+         5
         ],
         [
          null,
@@ -19563,7 +19833,7 @@
          null,
          "TRUE",
          null,
-         32
+         9
         ],
         [
          null,
@@ -19587,7 +19857,7 @@
          null,
          "FALSE",
          null,
-         22
+         4
         ],
         [
          null,
@@ -19599,7 +19869,7 @@
          null,
          "TRUE",
          null,
-         30
+         7
         ],
         [
          null,
@@ -19623,7 +19893,7 @@
          null,
          "FALSE",
          null,
-         16
+         4
         ],
         [
          null,
@@ -19635,7 +19905,7 @@
          null,
          "TRUE",
          null,
-         36
+         8
         ],
         [
          null,
@@ -19659,7 +19929,7 @@
          null,
          "TRUE",
          null,
-         9
+         1
         ],
         [
          null,
@@ -19691,7 +19961,7 @@
          "",
          "FALSE",
          "",
-         "12"
+         "3"
         ],
         [
          "",
@@ -19709,7 +19979,7 @@
          "",
          "TRUE",
          "",
-         "31"
+         "7"
         ],
         [
          "",
@@ -19733,7 +20003,7 @@
          "",
          "FALSE",
          "",
-         "24"
+         "5"
         ],
         [
          "",
@@ -19745,7 +20015,7 @@
          "",
          "TRUE",
          "",
-         "32"
+         "9"
         ],
         [
          "",
@@ -19769,7 +20039,7 @@
          "",
          "FALSE",
          "",
-         "22"
+         "4"
         ],
         [
          "",
@@ -19781,7 +20051,7 @@
          "",
          "TRUE",
          "",
-         "30"
+         "7"
         ],
         [
          "",
@@ -19805,7 +20075,7 @@
          "",
          "FALSE",
          "",
-         "16"
+         "4"
         ],
         [
          "",
@@ -19817,7 +20087,7 @@
          "",
          "TRUE",
          "",
-         "36"
+         "8"
         ],
         [
          "",
@@ -19841,7 +20111,7 @@
          "",
          "TRUE",
          "",
-         "9"
+         "1"
         ],
         [
          "",
@@ -20390,13 +20660,15 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:H11",
-       "area": "A3:H11",
-       "body": "B6:H11",
+       "table": "A3:J11",
+       "area": "A3:J11",
+       "body": "B6:J11",
        "values": [
         [
          "Sum of Qty",
          "Column Labels",
+         null,
+         null,
          null,
          null,
          null,
@@ -20408,10 +20680,12 @@
          null,
          "FALSE",
          null,
-         "FALSE Total",
+         "FALSE Sum",
+         "FALSE Max",
          "TRUE",
          null,
-         "TRUE Total",
+         "TRUE Sum",
+         "TRUE Max",
          "Grand Total"
         ],
         [
@@ -20419,8 +20693,10 @@
          20,
          "20",
          null,
+         null,
          10,
          30,
+         null,
          null,
          null
         ],
@@ -20429,9 +20705,11 @@
          5,
          7,
          12,
+         7,
          14,
          17,
          31,
+         7,
          43
         ],
         [
@@ -20439,9 +20717,11 @@
          24,
          null,
          24,
+         8,
          19,
          13,
          32,
+         9,
          56
         ],
         [
@@ -20449,9 +20729,11 @@
          22,
          null,
          22,
+         9,
          11,
          19,
          30,
+         9,
          52
         ],
         [
@@ -20459,9 +20741,11 @@
          16,
          null,
          16,
+         7,
          20,
          16,
          36,
+         9,
          52
         ],
         [
@@ -20469,8 +20753,10 @@
          null,
          null,
          null,
+         null,
          9,
          null,
+         9,
          9,
          9
         ],
@@ -20479,9 +20765,11 @@
          67,
          7,
          74,
+         9,
          73,
          65,
          138,
+         9,
          212
         ]
        ],
@@ -20494,16 +20782,20 @@
          "",
          "",
          "",
+         "",
+         "",
          ""
         ],
         [
          "",
          "FALSE",
          "",
-         "FALSE Total",
+         "FALSE Sum",
+         "FALSE Max",
          "TRUE",
          "",
-         "TRUE Total",
+         "TRUE Sum",
+         "TRUE Max",
          "Grand Total"
         ],
         [
@@ -20511,8 +20803,10 @@
          "20",
          "20",
          "",
+         "",
          "10",
          "30",
+         "",
          "",
          ""
         ],
@@ -20521,9 +20815,11 @@
          "5",
          "7",
          "12",
+         "7",
          "14",
          "17",
          "31",
+         "7",
          "43"
         ],
         [
@@ -20531,9 +20827,11 @@
          "24",
          "",
          "24",
+         "8",
          "19",
          "13",
          "32",
+         "9",
          "56"
         ],
         [
@@ -20541,9 +20839,11 @@
          "22",
          "",
          "22",
+         "9",
          "11",
          "19",
          "30",
+         "9",
          "52"
         ],
         [
@@ -20551,9 +20851,11 @@
          "16",
          "",
          "16",
+         "7",
          "20",
          "16",
          "36",
+         "9",
          "52"
         ],
         [
@@ -20561,8 +20863,10 @@
          "",
          "",
          "",
+         "",
          "9",
          "",
+         "9",
          "9",
          "9"
         ],
@@ -20571,9 +20875,11 @@
          "67",
          "7",
          "74",
+         "9",
          "73",
          "65",
          "138",
+         "9",
          "212"
         ]
        ],
@@ -20586,14 +20892,6 @@
          "General",
          "General",
          "General",
-         "General"
-        ],
-        [
-         "General",
-         "General",
-         "General",
-         "General",
-         "General",
          "General",
          "General",
          "General"
@@ -20601,14 +20899,6 @@
         [
          "General",
          "General",
-         "General",
-         "General",
-         "General",
-         "General",
-         "General",
-         "General"
-        ],
-        [
          "General",
          "General",
          "General",
@@ -20626,14 +20916,6 @@
          "General",
          "General",
          "General",
-         "General"
-        ],
-        [
-         "General",
-         "General",
-         "General",
-         "General",
-         "General",
          "General",
          "General",
          "General"
@@ -20646,6 +20928,20 @@
          "General",
          "General",
          "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
          "General"
         ],
         [
@@ -20656,9 +20952,37 @@
          "General",
          "General",
          "General",
+         "General",
+         "General",
          "General"
         ],
         [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
          "General",
          "General",
          "General",

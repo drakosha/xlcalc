@@ -7,8 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "date": "2026-10-30",
-  "seconds": 111.8
+  "date": "2026-10-31",
+  "seconds": 40.6
  },
  "cases": [
   {
@@ -756,8 +756,8 @@
   "page-blank": "2818cda9a2f0ee937b80133c1d1fd0a4ddc3453091c20ec3d27766261d0dfe01 581bb1faa69789f2",
   "page-all": "6099e40a8c7b036f9bc461b7e20ecaffddd814623b781f76ff6e6b48b7db8537 581bb1faa69789f2",
   "page-two": "d2c7c832282eb947cd39dae22534a91c4f5b5a817ae37a7659e683bf8967491d 581bb1faa69789f2",
-  "equals": "9cd431c442a9bfefe22aeb17b238fb381b80744d631089e65db936a222d5cf86 581bb1faa69789f2",
-  "equals-case": "9cd431c442a9bfefe22aeb17b238fb381b80744d631089e65db936a222d5cf86 581bb1faa69789f2",
+  "equals": "13ae36fea99cecabce904445d23de26c577bf587c4b6dce1fbdbaa2f7e0ff4e1 581bb1faa69789f2",
+  "equals-case": "1f223330ff0ca35f73c78ada500944de0602f50824e80a485aca0a2d3db35a1c 581bb1faa69789f2",
   "not-equal": "c2d63deca6594def303f9d5e0699212a16b07e8fd8e539284e8a1ec2d2b84dc4 581bb1faa69789f2",
   "begins": "0c1f2922523284268c1d0a34e789609e6095cd646480a7570e91b3426e54036e 581bb1faa69789f2",
   "not-begins": "bfa5965d28fb4c742646c429892124e0c71e7d312e950ab20fd9da979c49a19a 581bb1faa69789f2",
@@ -771,40 +771,40 @@
   "less-equal": "8ec026b0d45aa7ebf72732f551d7acb118ead0a0a0642a13849d16b02d34ae7a 581bb1faa69789f2",
   "between": "d6e510adc5950205e3ef825f037751169efdb0d453b7a6cbea93969db5af8ec4 581bb1faa69789f2",
   "not-between": "ea71b4ed4b6fde118b6cd1346755401dc5b06f10866a31fa50e254902d697b1f 581bb1faa69789f2",
-  "wildcard-star": "19d7637b72d7cc48e8230f6e1453fc59770776e5f79235c9b948b4b26bf75519 581bb1faa69789f2",
-  "wildcard-mark": "73ffbcb3c286c46dee35ec753280b64c9b4a94aeea6558eac82850bdcb1ca1dc 581bb1faa69789f2",
-  "blank-label": "02dda18a89d350bfb89b99141255776650214f957ae324894fc8fa7ef5c8f49d 581bb1faa69789f2",
+  "wildcard-star": "6d4570f4fa12f0ebae6c0f225ef473139c3752124bc36640a00e7cba1d849fa3 581bb1faa69789f2",
+  "wildcard-mark": "9c706aa7d749854d792e63fad935f3e32e7d49a0ad7b55404c6713dacff43205 581bb1faa69789f2",
+  "blank-label": "12be62180d871ba9d27ded89655dbc39af1818bc15ab781b4756e1be81e00c48 581bb1faa69789f2",
   "label-numbers": "f378df7359a6fc388b3eac62c71c488e03cf45cd5916be290965666e77c8a988 581bb1faa69789f2",
-  "label-numbers-equal": "d157f3bfbc9bdde200f3e2a3a3828df487a92d6354866c0074663a1cf350a57c 581bb1faa69789f2",
-  "value-greater": "0e03a862e9d175f667d39d5fb41e9526c214d701458654e5bb0bb853f8f1b43f 581bb1faa69789f2",
-  "value-greater-equal": "bf58c9a4e5cf2052ec00a6122729c409144472ec73caf1313f8c6b3ef676ab62 581bb1faa69789f2",
-  "value-less": "f55e8cfd09865e6070b977f82bd59456a4b5575984e4a3eaadf844932dd88a22 581bb1faa69789f2",
-  "value-less-equal": "5fbf0966e58989dd46ad462402565367f3510d239e667ba1960bb4809b42140a 581bb1faa69789f2",
-  "value-equals": "968cbda0c2b928e9af9cd15b66a77805754da0c0be975d8ba15b9eded92d791e 581bb1faa69789f2",
-  "value-not-equal": "6078a04629c6853805f51964a183055dcedbbccc185434287f15497f145f6518 581bb1faa69789f2",
-  "value-between": "9348617a2e77774498840fd22d3280b77835689734abe70d449d59948c641bd7 581bb1faa69789f2",
-  "value-not-between": "a596148202df790db460e45531fe89c55e6ede50068a8f2f9e9399c6aa9a0503 581bb1faa69789f2",
-  "top-count": "60baa7b167b007720b158472507a52a31ac1f6b159936c3004381f2911a3c40f 581bb1faa69789f2",
-  "bottom-count": "a8afc239419e5dfb6eda9187f804a5ad020e198912ee92c09a8006729ad0ba60 581bb1faa69789f2",
-  "top-percent": "98637adb1f428421f47de8c41ab8e815edbe28545d77f9f8f27e515c37e93998 581bb1faa69789f2",
-  "bottom-percent": "1a25450b775fe33d180ab7135c68d3f4f26602a3774e4ffe9b36b252ec0871c0 581bb1faa69789f2",
-  "top-sum": "918c1c0543f6fdf8bba48e87bc4eeb55c41e2ccc497469238b756a211982920d 581bb1faa69789f2",
-  "bottom-sum": "daaa74709d831c06579b17352e642e1db62312e34eb6aef50a11549ba60d1c9b 581bb1faa69789f2",
-  "top-inner": "e68d3a4d5230dd70f065434a623a8fff78a8f72f1879a8d0cd0102af607904d2 581bb1faa69789f2",
-  "top-errors": "7b8fc2afbcbe0a9b74b9744682142b1bb790ebc9d7411a966de6394bee77ddb5 581bb1faa69789f2",
-  "date-after": "ef2f40445749049bb1d3da32a6d814bf7e19f8b5d709fb2b64e2788f331b6c10 581bb1faa69789f2",
-  "date-before-equal": "de0ec060da205fd7cd74ceaaeda73c10a0ef8e3c52d55db4b60f8ec487739ff9 581bb1faa69789f2",
-  "date-between": "1bc6e1003ca5bd6d35852d9a62d0ec63bac06809950634537fe3ab15ad2efddc 581bb1faa69789f2",
-  "date-not-between": "2bc413191d013937f0cef1479af0be8e6d48695f120f55888399ce19104f3622 581bb1faa69789f2",
-  "date-specific": "5a8febbe94aa21b7f11c14244d23eb5868073ce8e7fd1052cf9c360f8cd6a5d8 581bb1faa69789f2",
+  "label-numbers-equal": "dd365db92645496edae0d0f092e7c8def04a445dff19550a0cc0f42d76506f0f 581bb1faa69789f2",
+  "value-greater": "1d3aeb6c9b264f063d7e2f067cc8513a0bc0079593955f8bede956f039e344b2 581bb1faa69789f2",
+  "value-greater-equal": "4defc10d84b88b08e3ebdf4730ab0c4ef14ca64d2e18fcf9b3a7428e8ac6d059 581bb1faa69789f2",
+  "value-less": "1c971c84d6de22b3e31f500842870cc1f95fb44ff9fe377ebe127af5983722cd 581bb1faa69789f2",
+  "value-less-equal": "956d30c4ba92a5ec29f2531118f1462a86859e66b93a7cc512546758ccbc6708 581bb1faa69789f2",
+  "value-equals": "240641e21fdd937a547d1006c742d61f0ffa5ae24f0baae110a7a3948a541dc9 581bb1faa69789f2",
+  "value-not-equal": "76a02773eea3fbc55b2ebc64c64d2eec43297a82fdcb93c5dc567321369469c0 581bb1faa69789f2",
+  "value-between": "925f67ca450c891f636f9bf920fccfbd81d377ea2dd82386f7899ec472a130bf 581bb1faa69789f2",
+  "value-not-between": "d10a6f570132fe8c8f7cdf62a100d0e8123b80eb51bad62b0a0605b1447d911f 581bb1faa69789f2",
+  "top-count": "b95f5a0b06ab381bcb69f07baee6bdf9ac2ab63d7c9df2e148733e6aa391a276 581bb1faa69789f2",
+  "bottom-count": "35493beaedbd245185b22fefc5ca2d3df145e420e50f9b4d812f7ad1f1bef35a 581bb1faa69789f2",
+  "top-percent": "ef8f8ea882151ad74071cc0b2b37a8401f1f2df722083cf3d5a9a3bff4f731b8 581bb1faa69789f2",
+  "bottom-percent": "4d5edcfede1b11cf67322303e5272b767cf98b023660923c95e0129a1c8c7cd5 581bb1faa69789f2",
+  "top-sum": "2f15317ae227eed3606bceebe42091ee49c740050b7eba4e74b57867f1d6c6f7 581bb1faa69789f2",
+  "bottom-sum": "ccf220cbeee12ab18bd1d76c7bc503a8bdebf92676cd803c96ea2253262c1a92 581bb1faa69789f2",
+  "top-inner": "b1c8afaf371b524a76c853be904eeab2dd39e21ba8a4bf2cc2229f00dd413686 581bb1faa69789f2",
+  "top-errors": "4dba21a001a3aed675dfb1f5c0c350a8283b6db7c49098fc6dc67322207e19c7 581bb1faa69789f2",
+  "date-after": "ddb2a7d185f5af0c03342e96fde9f3264c1faec1990cb45b86220710f5545e79 581bb1faa69789f2",
+  "date-before-equal": "67f45f74a66d010a8e2c450fcca5935778d7cb622af05ac0f18cf75f9d2bb3ea 581bb1faa69789f2",
+  "date-between": "24f6db020778d5a93b6f1b174eabab78bedf4e1ce7d5d103e0624598e3abb560 581bb1faa69789f2",
+  "date-not-between": "a15a984259f872fa8f3656c52fac465ef88d42316addc36c6f3370c458fa617d 581bb1faa69789f2",
+  "date-specific": "c7556b0d2b47ead0edc49847405cfd4402e42ae8dcdfd0293f4e5b083c877926 581bb1faa69789f2",
   "date-january": "9018e28dc9eac441fee059287dcd3437e4303c4f99b388af7a5bab570206f72e 581bb1faa69789f2",
   "date-quarter-2": "3d7352e9d3b33a0d5a38f136dcf583b95ca00c8e7e46a215c2406c88259c4568 581bb1faa69789f2",
-  "label-and-value": "b060787737edbf37fe1e3f1e5499b35ab822bd4fd328b096ea58b1ab99094592 581bb1faa69789f2",
-  "label-then-value": "13cd71063291786d09bb546ae6bea1d8e7fe5b79318106ef3f7f930ae592d8f4 581bb1faa69789f2",
-  "hidden-and-value": "c25fd7ef25c7e8d6328da5f3b6d4298636cb17407d609a7da9d715e411df160e 581bb1faa69789f2",
+  "label-and-value": "56256ec4226013de58b8e3b91aeb2e68ca4f393d6a766ce38948d00b358cb3c3 581bb1faa69789f2",
+  "label-then-value": "509737f6071cec1de3b67b1bb6a509c0cca2d16821f84bb4e7f8954a0947033c 581bb1faa69789f2",
+  "hidden-and-value": "80e37c3981d2a5a168517b07caf288c682aaf7a56993fe1d67ac3e0c98cf691c 581bb1faa69789f2",
   "inner-label": "2cc45c65a5a336e7ba9bff7efa6926116055792832c2fa4aeedf596353bdb569 581bb1faa69789f2",
-  "outer-value-inner-label": "2473d1322e3192a92f6040ac338b709f84686cf80e8c1f0d252550e1db1f5c69 581bb1faa69789f2",
-  "column-filter": "6caa9023cae6879c7c24e58129a59d5a3cadf97fccdc3007a9da0f22c032aeb2 581bb1faa69789f2",
+  "outer-value-inner-label": "ac51ce83532a31ba7dc0bbd8a401e1874e6fdea4d95e86b319dee61587d2ff6b 581bb1faa69789f2",
+  "column-filter": "ff20333ea2015d43b763ba5c00c6e70b645cc028df6bf559c1fd8a3e206b3880 581bb1faa69789f2",
   "page-and-label": "d92e4b19a64be0983813ac3fba842b7c598b24eff6c71289b9c4749fe0d5119f 581bb1faa69789f2"
  },
  "answers": {
@@ -3666,26 +3666,218 @@
   "equals": {
    "phases": [
     {
-     "pivots": {}
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
     },
     {
-     "pivots": {},
-     "errors": [
-      "op 1: -2146827284 Unable to get the PivotTables property of the Worksheet class"
-     ]
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
     }
    ]
   },
   "equals-case": {
    "phases": [
     {
-     "pivots": {}
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
     },
     {
-     "pivots": {},
-     "errors": [
-      "op 1: -2146827284 Unable to get the PivotTables property of the Worksheet class"
-     ]
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
     }
    ]
   },
@@ -5714,21 +5906,17 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:B5",
-       "area": "A3:B5",
-       "body": "B4:B5",
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
        "values": [
         [
          "Row Labels",
          "Sum of Price"
         ],
         [
-         "North",
-         237.79999999999995
-        ],
-        [
          "Grand Total",
-         237.79999999999995
+         null
         ]
        ],
        "text": [
@@ -5737,19 +5925,11 @@
          "Sum of Price"
         ],
         [
-         "North",
-         "237.8"
-        ],
-        [
          "Grand Total",
-         "237.8"
+         ""
         ]
        ],
        "formats": [
-        [
-         "General",
-         "General"
-        ],
         [
          "General",
          "General"
@@ -5823,6 +6003,52 @@
     {
      "pivots": {
       "P!PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "blank-label": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
        "table": "A3:B5",
        "area": "A3:B5",
        "body": "B4:B5",
@@ -5832,12 +6058,12 @@
          "Sum of Price"
         ],
         [
-         "West",
-         301.91
+         "(blank)",
+         null
         ],
         [
          "Grand Total",
-         301.91
+         null
         ]
        ],
        "text": [
@@ -5846,12 +6072,63 @@
          "Sum of Price"
         ],
         [
-         "West",
-         "301.91"
+         "(blank)",
+         ""
         ],
         [
          "Grand Total",
-         "301.91"
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
         ]
        ],
        "formats": [
@@ -5873,19 +6150,6 @@
      "results": {
       "op 1": true
      }
-    }
-   ]
-  },
-  "blank-label": {
-   "phases": [
-    {
-     "pivots": {}
-    },
-    {
-     "pivots": {},
-     "errors": [
-      "op 1: -2146827284 Unable to get the PivotTables property of the Worksheet class"
-     ]
     }
    ]
   },
@@ -6037,13 +6301,133 @@
   "label-numbers-equal": {
    "phases": [
     {
-     "pivots": {}
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Grand Total",
+         74
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "74"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
     },
     {
-     "pivots": {},
-     "errors": [
-      "op 1: -2146827284 Unable to get the PivotTables property of the Worksheet class"
-     ]
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Grand Total",
+         74
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "74"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
     }
    ]
   },
