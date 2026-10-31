@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.73.0 (2026-10-31)
+
+Added:
+
+- `pivotCells(book, sheet, pivot)` and `pivotCellAt(book, sheet, cell)` from the root and `xlcalc/text`, over a workbook or a session's `getLayout()`, without the PivotTable engine: what each cell of a PivotTable is, as Excel's `Range.PivotCell` tells it (`PivotCell`: a value, an item's label, a subtotal, a grand total, a value field's name, a field's name or the header of the rows or columns, Σ Values, a report filter's item, or a blank), its field and item, the value field and the items of a value's row and column, and the cells with Excel's filter button.
+- `values` on `setPivotCalculatedField`: the new calculated field goes on the PivotTable's Values, last, with Sum and the name Excel's dialog gives it (`Sum of Unit`, `Сумма по полю Unit`), in the same step of undo; Σ Values goes on the columns once it is the second value field. Without it the operation places nothing, as Excel's object model.
+- `renamedValueField(name, from, to, field, locale?)` from the root and `xlcalc/text`: a value field's name after its function changes, as `editPivotTable` names it.
+
+Changed:
+
+- `editPivotTable` changing a value field's function without a new `name` (none, or the one it had) renames it as Excel does: a name that begins with the old function's words in the workbook's language keeps the rest (`Sum of Qty2` becomes `Count of Qty2`), any other name, the host's own or another language's default, becomes the new function's default, numbered if another value field has it. Before, a name the field held was kept.
+- `xlcalc/text` is 63 KB minified (it was 54).
+
 ## 0.72.1 (2026-10-31)
 
 Fixed:
