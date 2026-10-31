@@ -3,7 +3,7 @@
  * workbook's model alone (its place, its saved lines, its fields and value fields): no engine, so that a host's sheet
  * knows its menus and filter buttons without loading `xlcalc/pivot`.
  */
-import type { PivotAxisField, PivotCell, PivotCells, PivotItemRef, PivotTable, SheetInput } from '../contract.js'
+import type { BookInput, BookLayout, PivotAxisField, PivotCell, PivotCells, PivotItemRef, PivotTable } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkString, object } from '../input/basic.js'
@@ -14,7 +14,7 @@ import { pivotFrame, placeParts, savedLines, type LineView } from './frame.js'
 import { formOf } from './layout-lines.js'
 
 /** A workbook or `getLayout()`'s, of which the PivotTables are read. */
-type Sheets = { sheets: readonly Pick<SheetInput, 'name' | 'pivotTables'>[] }
+type Sheets = BookInput | BookLayout
 
 /** The path of a line's items up to its field `k`, the value fields left out (`value` names them). */
 const pathOf = (fields: readonly PivotAxisField[], line: LineView | undefined, k = (line?.items.length ?? 0) - 1): PivotItemRef[] =>
@@ -139,7 +139,7 @@ function sheetOf(book: Sheets, sheet: string) {
  * What every cell of the PivotTable `pivot` on `sheet` is, by address, its Filters area included, and the cells with
  * Excel's filter buttons; null when the sheet has no such PivotTable. `book` is a workbook or `getLayout()`'s.
  */
-export function pivotCells(book: Sheets, sheet: string, pivot: string): PivotCells | null {
+export function pivotCells(book: BookInput | BookLayout, sheet: string, pivot: string): PivotCells | null {
   const s = sheetOf(book, sheet)
   const key = caseKey(checkString(pivot, 'pivot'))
   const t = s?.pivotTables?.find((p) => caseKey(p.name) === key)
@@ -147,7 +147,7 @@ export function pivotCells(book: Sheets, sheet: string, pivot: string): PivotCel
 }
 
 /** What the cell `cell` of `sheet` is in the PivotTable whose cells hold it (`pivotCells`); null in no PivotTable. */
-export function pivotCellAt(book: Sheets, sheet: string, cell: string): PivotCell | null {
+export function pivotCellAt(book: BookInput | BookLayout, sheet: string, cell: string): PivotCell | null {
   const s = sheetOf(book, sheet)
   const x = parseRange(checkString(cell, 'cell'))
   if (!x || x.r1 !== x.r2 || x.c1 !== x.c2) throw new InputError('cell', `expected the address of a cell such as "B4", got ${JSON.stringify(cell)}`)

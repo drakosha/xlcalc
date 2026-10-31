@@ -583,7 +583,7 @@ axis, with no two spans overlapping.
 ### <a id="xlcalc-pivotcellat"></a>`pivotCellAt`
 
 ```ts
-function pivotCellAt(book: Sheets, sheet: string, cell: string): PivotCell | null
+function pivotCellAt(book: BookInput | BookLayout, sheet: string, cell: string): PivotCell | null
 ```
 
 What the cell `cell` of `sheet` is in the PivotTable whose cells hold it ([`pivotCells`](#xlcalc-pivotcells)); null in no PivotTable.
@@ -591,7 +591,7 @@ What the cell `cell` of `sheet` is in the PivotTable whose cells hold it ([`pivo
 ### <a id="xlcalc-pivotcells"></a>`pivotCells`
 
 ```ts
-function pivotCells(book: Sheets, sheet: string, pivot: string): PivotCells | null
+function pivotCells(book: BookInput | BookLayout, sheet: string, pivot: string): PivotCells | null
 ```
 
 What every cell of the PivotTable `pivot` on `sheet` is, by address, its Filters area included, and the cells with
