@@ -8,7 +8,7 @@ import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
 import { counted, countedIf, give, HEAD, MAIN, REL, X14 } from './xml.js'
 import { pivotAreaXml } from './pivot-area.js'
-import { fileDate } from '../pivot-dates.js'
+import { fileDate } from '../../pivot-time.js'
 
 /** A cache value as an item or a record holds it: `m` missing, `n` number, `s` text, `b` boolean, `e` error, `d` date. */
 export function valueXml(v: PivotValue, more = ''): string {

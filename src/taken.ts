@@ -4,9 +4,11 @@
  * (`=SUM(A1:A2)` is `SUM(A1:A2)`, the same input and the same `inputHash`), a second stays and is an error of the
  * formula (`==1`). Protection, a style's and a sheet's, holds only what differs from Excel's defaults
  * (`input/protection.ts`): `{ protection: { locked: true } }` is the style `{}`. What needs none is given back as it is, what needs one as a copy: the caller's input is not changed,
- * and input without one costs no copy.
+ * and input without one costs no copy. A pivot cache's time of day on Excel's 1899-12-30, as 0.71 read it, is at the model's
+ * day 0 (`pivot-time.ts`).
  */
-import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, CellStyle, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
+import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, CellStyle, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, PivotCache, PivotCacheField, SheetInput, StructureOp, TableInput } from './contract.js'
+import { modelValue } from './pivot-time.js'
 import { protectionTaken, styleTaken } from './input/protection.js'
 
 /** A formula with a leading `=`. */
@@ -77,12 +79,57 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
   return Object.keys(out).length ? { ...s, ...out } : s
 }
 
+/** A number or a date of a cache field's facts or a group's range, in the model's spelling. */
+const bound = <T extends { min?: unknown; max?: unknown } | { start?: unknown; end?: unknown }>(o: T, keys: readonly (keyof T)[]): T => {
+  if (!keys.some((k) => modelValue(o[k]) !== o[k])) return o
+  const out = { ...o }
+  for (const k of keys) out[k] = modelValue(o[k])
+  return out
+}
+
+/** A cache field's items, facts and group in the model's spelling of a time of day (`modelValue`); itself when none needs it. */
+function fieldTaken(f: PivotCacheField): PivotCacheField {
+  const items = f.items && each(f.items, modelValue)
+  const facts = f.facts && bound(f.facts, ['min', 'max'])
+  const range = f.group?.range && bound(f.group.range, ['start', 'end'])
+  const groupItems = f.group?.items && each(f.group.items, modelValue)
+  if (items === f.items && facts === f.facts && range === f.group?.range && groupItems === f.group?.items) return f
+  const group = f.group && { ...f.group, ...(range ? { range } : {}), ...(groupItems ? { items: groupItems } : {}) }
+  return { ...f, ...(items ? { items } : {}), ...(facts ? { facts } : {}), ...(group ? { group } : {}) }
+}
+
+/**
+ * Whether a field's records may hold a time on 1899-12-30: a field without items (whose records hold values, not
+ * indexes) whose least date is one, as 0.71's reader gave every field its facts from the file's.
+ */
+const timesInRecords = (f: PivotCacheField): boolean => !f.items && f.facts?.min !== undefined && modelValue(f.facts.min) !== f.facts.min
+
+/** Whether a record holds a time on 1899-12-30 in one of `columns`. */
+function oldIn(r: PivotCache['records'] extends (infer R)[] | undefined ? R : never, columns: number[]): boolean {
+  for (let i = 0; i < columns.length; i++) {
+    const v = r[columns[i]]
+    if (v !== null && typeof v === 'object' && modelValue(v) !== v) return true
+  }
+  return false
+}
+
+/** A cache with its times of day on Excel's 1899-12-30, as 0.71 read them, at the model's day 0; itself when it has none. */
+function cacheTaken(c: PivotCache): PivotCache {
+  const fields = each(c.fields, fieldTaken)
+  // only the columns that may hold one are read, as there can be many records
+  const columns = c.records ? c.fields.flatMap((f, k) => (timesInRecords(f) ? [k] : [])) : []
+  const records = c.records && columns.length ? each(c.records, (r) => (oldIn(r, columns) ? r.map(modelValue) : r)) : c.records
+  return fields === c.fields && records === c.records ? c : { ...c, fields, ...(records ? { records } : {}) }
+}
+
 /** A checked book as taken; `cells`, by sheet, the addresses of the cells that need it (a formula with `=`). */
 export function bookTaken(book: BookInput, cells: (string[] | undefined)[]): BookInput {
   const sheets = each(book.sheets, (s, i) => sheetTaken(s, cells[i]))
   const names = book.names && namesTaken(book.names)
   const styles = book.styles && stylesTaken(book.styles)
-  return sheets === book.sheets && names === book.names && styles === book.styles ? book : { ...book, sheets, ...(names ? { names } : {}), ...(styles ? { styles } : {}) }
+  const caches = book.pivotCaches && each(book.pivotCaches, cacheTaken)
+  if (sheets === book.sheets && names === book.names && styles === book.styles && caches === book.pivotCaches) return book
+  return { ...book, sheets, ...(names ? { names } : {}), ...(styles ? { styles } : {}), ...(caches ? { pivotCaches: caches } : {}) }
 }
 
 /** A style table as taken: each style's protection without the defaults (`styleTaken`). */

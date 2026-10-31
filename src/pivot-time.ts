@@ -2,6 +2,7 @@
  * A pivot cache's dates as the file holds them and as the model does: a time of day without a date, which the model
  * holds at day 0 of the 1900 system (`1900-01-00T08:30:00`, as a cell's serial 0.354 gives it), Excel writes on
  * 1899-12-30, the day 0 of its object model's dates (the set slicer-labels); a 1904 workbook's on 1904-01-01 in both.
+ * In the root, without the xlsx subpaths: a book taken in holds the model's (`taken.ts`), as 0.71's reader kept the file's.
  */
 const FILE_ZERO = '1899-12-30T'
 const MODEL_ZERO = '1900-01-00T'
@@ -11,3 +12,9 @@ export const modelDate = (d: string): string => (d.startsWith(FILE_ZERO) ? MODEL
 
 /** A date of the model in the file's spelling. */
 export const fileDate = (d: string): string => (d.startsWith(MODEL_ZERO) ? FILE_ZERO + d.slice(MODEL_ZERO.length) : d)
+
+/** A value of a cache in the model's spelling; itself when it needs none. */
+export function modelValue<V>(v: V): V {
+  const date = v !== null && typeof v === 'object' ? (v as { date?: unknown }).date : undefined
+  return typeof date === 'string' && date.startsWith(FILE_ZERO) ? ({ date: modelDate(date) } as V) : v
+}
