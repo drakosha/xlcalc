@@ -17,6 +17,7 @@ import * as layout from '../bench/coverage/pivot/layout.js'
 import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as show from '../bench/coverage/pivot/show.js'
+import * as showHeld from '../bench/coverage/pivot/show-held.js'
 import * as showItems from '../bench/coverage/pivot/show-items.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
 import * as sortHeld from '../bench/coverage/pivot/sort-held.js'
@@ -48,10 +49,11 @@ const KNOWN: Record<string, string[]> = {
   layout: [],
   refresh: [],
   show: [],
+  'show-held': [],
   'show-items': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld }
 
 /** The values of `range` on `sheet` as its cells hold them. */
 function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
@@ -73,7 +75,7 @@ const rounded = (g: CellValue[][]) => g.map((r) => r.map((v) => (typeof v === 'n
  * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums
  * whose last bit Excel's order of adding sets (`docs/limitations.md`), which a share carries into its 15th digit.
  */
-const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14 }
+const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14, 'show-held': 1e-14 }
 
 /** The cells alike: the same values, numbers to 15 significant digits or within `tolerance` of each other. */
 const alike = (got: CellValue[][], want: CellValue[][], tolerance: number) =>
