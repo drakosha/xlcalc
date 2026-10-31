@@ -339,7 +339,10 @@ export interface PivotItemRef {
  * field's name (`valueName`), a field's name or the header of the rows or columns (`field`), the value fields' own
  * field (`valuesField`, Σ Values), a report filter's item (`pageItem`) or none of them (`blank`). `field` is the field of
  * the label, header or filter, `item` its item, `value` the value field of a value, total or name; a value or a label
- * has its line's path of items on the rows and on the columns. `button` marks a cell with Excel's filter button.
+ * has its line's path of items on the rows and on the columns. `button` marks a cell where Excel draws a filter button:
+ * a report filter's item (`(All)`), not its name; Row Labels and Column Labels, which are `blank` with the `axis` whose
+ * fields their button filters; a field's name in the outline and tabular forms. A single value field's name at the
+ * corner has none.
  */
 export interface PivotCell {
   /** The PivotTable's name. */
@@ -354,7 +357,7 @@ export interface PivotCell {
   button?: true
 }
 
-/** Every cell of a PivotTable's area (`pivotCells`): what each is, by address, and the cells with Excel's filter buttons. */
+/** Every cell of a PivotTable's area (`pivotCells`): what each is, by address, and the cells where Excel draws a filter button (`PivotCell.button`). */
 export interface PivotCells {
   cells: Record<string, PivotCell>
   buttons: string[]
