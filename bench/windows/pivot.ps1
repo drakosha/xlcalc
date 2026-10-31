@@ -79,6 +79,22 @@ function PSlicerRead($wb, $s) {
   List ($sc.SlicerItems | ForEach-Object { List @((Str ([string]$_.Name)), (Cell ([bool]$_.Selected)), (Cell ([bool]$_.HasData))) })
 }
 
+# a slicer or a timeline by its name, of any slicer cache of the book
+function PSlicer($wb, $name) {
+  foreach ($sc in $wb.SlicerCaches) { foreach ($sl in $sc.Slicers) { if ([string]$sl.Name -eq $name) { return , $sl } } }
+  throw "no slicer $name"
+}
+
+# a property's value as JSON, or its error: a path of properties (Shape.TopLeftCell.Row), a whole number as a number
+function PGet($o, $prop) {
+  try {
+    $v = $o
+    foreach ($p in ([string]$prop -split '\.')) { $v = $v.$p }
+    if ($v -is [int]) { $v = [double]$v }
+    Cell $v
+  } catch { Err $_ }
+}
+
 # the cells an external step names ("S!A1"), each one's Value2, in their order
 function PCells($book, $s) {
   List ($s.cells.PSObject.Properties | ForEach-Object { $p = $_.Name -split '!'; Cell $book.Worksheets.Item($p[0]).Range($p[1]).Value2 })
@@ -218,7 +234,9 @@ function Pivot($xl, $wb, $s) {
       'slicer' {
         $pt = PTable $wb $s
         $sc = $wb.SlicerCaches.Add2($pt, [string]$s.field, [string]$s.name, [int]$s.kind)
-        [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, [string]$s.name, [string]$s.field, 10, 400, 150, 200)
+        # without a place (auto) where Excel puts it
+        if ($s.auto) { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, [string]$s.name, [string]$s.field) }
+        else { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, [string]$s.name, [string]$s.field, 10, 400, 150, 200) }
         foreach ($o in $s.also) { $sc.PivotTables.AddPivotTable($wb.Worksheets.Item([string]$o[0]).PivotTables([string]$o[1])) }
         Str ([string]$sc.Name)
       }
@@ -254,6 +272,21 @@ function Pivot($xl, $wb, $s) {
       'read' { PRead $wb $s }
       'external' { PExternal $xl $wb $s }
       'slicerRead' { PSlicerRead $wb $s }
+      # a slicer's or a timeline's properties, and each of its cache's items' ([own], [[item]...]), each value or its error
+      'slicerGet' {
+        $sl = PSlicer $wb ([string]$s.field)
+        $own = @($s.props | ForEach-Object { PGet $sl $_ })
+        $items = if (@($s.items).Count) { @($sl.SlicerCache.SlicerItems | ForEach-Object { $it = $_; List @($s.items | ForEach-Object { PGet $it $_ }) }) } else { @() }
+        List @((List $own), (List $items))
+      }
+      'slicerSet' { $sl = PSlicer $wb ([string]$s.field); $sl.([string]$s.prop) = PArg $s.value; 'null' }
+      # Protect without a password: DrawingObjects protects the objects (Edit objects off), AllowUsingPivotTables the 16th argument
+      'protect' {
+        $m = [Type]::Missing
+        $wb.Worksheets.Item([string]$s.sheet).Protect($m, (-not [bool]$s.objects), $true, $true, $false, $m, $m, $m, $m, $m, $m, $m, $m, $m, $m, [bool]$s.pivots)
+        'null'
+      }
+      'unprotect' { $wb.Worksheets.Item([string]$s.sheet).Unprotect(); 'null' }
       # a copy of the book as it is now, beside its answer: out\<n>.copy<k>.xlsx
       'copy' { $wb.SaveCopyAs((Join-Path $out "$i.copy$($s.k).xlsx")); 'null' }
       default { throw "unknown pivot op $($s.op)" }

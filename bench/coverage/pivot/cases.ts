@@ -142,8 +142,17 @@ export type PivotOp = (
   /** Items collapsed (`ShowDetail` false), or every item of the field; `expand` shows them again. */
   | { collapse: string; items: string[] | 'all'; expand?: boolean }
   | { ungroup: string }
-  /** A slicer on a field, on the sheet `on` (`P` by default), over the pivot tables named besides `pt`. */
-  | { slicer: string; name: string; pivots?: string[]; on?: string }
+  /** A slicer on a field, on the sheet `on` (`P` by default), over the pivot tables named besides `pt`; where Excel puts it without a place (`auto`). */
+  | { slicer: string; name: string; pivots?: string[]; on?: string; auto?: boolean }
+  /** A slicer's or a timeline's properties read by its name (`Slicer.Name`, `Top`), and each of its cache's items' (`SlicerItem.Caption`), as the operation's result. */
+  | { slicerGet: string; get?: string[]; items?: string[] }
+  /** A slicer's or a timeline's property set by its name (`Slicer.Name`, `Caption`, `Locked`, `DisableMoveResizeUI`, `Top`, `Width`). */
+  | { slicerSet: string; prop: string; to: string | number | boolean }
+  /** A timeline's dates set (`TimelineState.SetFilterDateRange`), by its cache's name. */
+  | { timelineSet: string; from: number; to: number }
+  /** The sheet protected without a password (`Worksheet.Protect`), Edit objects allowed (`objects`) or not, Use PivotTable reports (`pivots`) or not; or unprotected. */
+  | { protect: string; objects?: boolean; pivots?: boolean }
+  | { unprotect: string }
   /** A slicer's or timeline's cache deleted with its slicers (`SlicerCache.Delete`). */
   | { deleteSlicer: string }
   /** A sheet added at the end, or deleted with what is on it. */
@@ -155,8 +164,8 @@ export type PivotOp = (
   | { slicerSettings: string; order?: 'ascending' | 'descending' | 'source'; noData?: 'none' | 'last' | 'dimmed' | 'hidden' }
   /** A pivot table connected to a slicer, or disconnected (`off`). */
   | { link: string; pivot: string; off?: boolean }
-  /** A timeline on a date field, its range of dates and its level. */
-  | { timeline: string; name: string; from?: number; to?: number; level?: 'years' | 'quarters' | 'months' | 'days' }
+  /** A timeline on a date field, on the sheet `on` (`P` by default), its range of dates and its level; where Excel puts it without a place (`auto`). */
+  | { timeline: string; name: string; from?: number; to?: number; level?: 'years' | 'quarters' | 'months' | 'days'; on?: string; auto?: boolean }
   | { cache: { missingItems?: 'default' | 'none' | 'max'; refreshOnLoad?: boolean } }
   /** A cell of the source edited, or a formula typed on `G` (as Excel 365 types it, `Formula2`). */
   | { edit: string; to: EditValue }
@@ -183,6 +192,8 @@ export interface PivotCase {
   /** The rows (`DATA`, `sales` by default) and how the cache takes them (a range by default). */
   data?: string
   source?: SourceKind
+  /** The book's date system, 1900 by default. */
+  dateSystem?: 1904
   /** A saved book of another set (`basic/sum`) to start from instead of the rows; its pivot table `PT1` is there. */
   from?: string
   /**

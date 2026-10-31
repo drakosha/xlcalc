@@ -40,7 +40,7 @@ const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toI
 export function drive(c: PivotCase): DrivenPhase[] {
   if (c.from || c.file) throw new Error('a case from a saved book is not driven')
   const cols = DATA[c.data ?? 'sales']()
-  let book = sourceBook(cols, c.source ?? 'range')
+  let book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}) }
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
