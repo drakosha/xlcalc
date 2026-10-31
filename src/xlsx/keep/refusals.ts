@@ -185,8 +185,10 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
   }
   // a pivot cache's source by the name of a table: a table renamed (the same range of the same sheet) takes the new name
   const tables = new Set(book1.sheets.flatMap((s) => (s.tables ?? []).map((t) => caseKey(t.name))))
+  const held = (b: BookInput, name: string) => b.sheets.some((s) => s.tables?.some((t) => caseKey(t.name) === caseKey(name))) || (b.names ?? []).some((n) => caseKey(n.name) === caseKey(name))
   for (const b of c.byName) {
-    if (tables.has(caseKey(b.name)) || (book1.names ?? []).some((n) => caseKey(n.name) === caseKey(b.name))) continue
+    // a source the file names without the workbook having it (its sheet deleted in Excel) stays as the file has it
+    if (tables.has(caseKey(b.name)) || (book1.names ?? []).some((n) => caseKey(n.name) === caseKey(b.name)) || !held(book0, b.name)) continue
     const k = book0.sheets.findIndex((s) => s.tables?.some((t) => caseKey(t.name) === caseKey(b.name)))
     const was = k < 0 ? undefined : book0.sheets[k].tables!.find((t) => caseKey(t.name) === caseKey(b.name))!
     const j = k < 0 ? undefined : out.target.get(k)
