@@ -327,6 +327,39 @@ export interface PivotAreas {
   data: string
 }
 
+/** An item of a PivotTable's field on a path (`PivotCell.rowItems`): the field (`values` for a value field) and its item's index in the field's `items` (in `values`). */
+export interface PivotItemRef {
+  field: PivotAxisField
+  item: number
+}
+
+/**
+ * What a cell of a PivotTable is, as Excel's `Range.PivotCell` tells it (`pivotCellAt`, `pivotCells`): `kind` a value
+ * with its totals (`value`), an item's label (`item`), a subtotal's (`subtotal`), a grand total's (`grand`), a value
+ * field's name (`valueName`), a field's name or the header of the rows or columns (`field`), the value fields' own
+ * field (`valuesField`, Σ Values), a report filter's item (`pageItem`) or none of them (`blank`). `field` is the field of
+ * the label, header or filter, `item` its item, `value` the value field of a value, total or name; a value or a label
+ * has its line's path of items on the rows and on the columns. `button` marks a cell with Excel's filter button.
+ */
+export interface PivotCell {
+  /** The PivotTable's name. */
+  pivot: string
+  kind: 'value' | 'item' | 'subtotal' | 'grand' | 'valueName' | 'field' | 'valuesField' | 'pageItem' | 'blank'
+  axis?: 'rows' | 'columns' | 'pages'
+  field?: PivotAxisField
+  item?: number
+  value?: number
+  rowItems?: PivotItemRef[]
+  columnItems?: PivotItemRef[]
+  button?: true
+}
+
+/** Every cell of a PivotTable's area (`pivotCells`): what each is, by address, and the cells with Excel's filter buttons. */
+export interface PivotCells {
+  cells: Record<string, PivotCell>
+  buttons: string[]
+}
+
 /** A PivotTable's look, as Excel's PivotTable Style Options. */
 export interface PivotStyle {
   /** `PivotStyleLight16` and the others; none without it. */
