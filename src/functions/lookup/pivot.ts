@@ -27,9 +27,9 @@ interface Slot {
 const formOf = (t: PivotTable, f: number) => t.fields[f]?.layout ?? t.layout ?? 'compact'
 
 /**
- * An axis's lines as places, null for a line that holds no values of its own: a blank line, a line of a field's items
- * whose subtotal is not shown on it (subtotals off, at the bottom, or the tabular form), a line above the value fields
- * where they lie across the axis.
+ * An axis's lines as places, null for a line that holds no values of its own: a blank line, a line of a field's item
+ * whose subtotal is not shown on it (subtotals off, at the bottom, or the tabular form) and which is not collapsed, a
+ * line above the value fields where they lie across the axis.
  */
 function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undefined): (Slot | null)[] {
   const at = axis.indexOf('values')
@@ -43,10 +43,12 @@ function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undef
     for (let k = 0; k < depth; k++) if (axis[k] !== 'values') out.items.set(axis[k] as number, items[k])
     if (line.type !== undefined || depth >= axis.length) return out
     if (at >= depth) return null
-    // a line of an outer field's item: its subtotal where it is shown at the top; a value field's above the items, none
+    // a line of an outer field's item: its total where the item is collapsed (in any form), its subtotal where it is
+    // shown at the top; a value field's above the items, none
     const f = axis[depth - 1]
     if (f === 'values') return null
     const field = t.fields[f]
+    if (field?.items?.[items[depth - 1]]?.collapsed) return out
     return field?.subtotals?.length !== 0 && field?.subtotalTop !== false && formOf(t, f) !== 'tabular' ? { ...out, header: true } : null
   })
 }
