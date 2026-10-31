@@ -31,3 +31,11 @@ describe.each(SETS.filter(([ours, , r]) => existsSync(`test/excel/win/pivot/${ou
     expect(got.phases[1].pivots).toEqual(control[id].phases[1].pivots)
   })
 })
+
+describe.runIf(existsSync('test/excel/win/pivot/write-source-deleted.json'))('write-source-deleted: a source sheet deleted, written as a link to a file by its path', () => {
+  it('opens in Excel for Windows as Excel showed its own book; a refresh cannot read the link, as Excel says', () => {
+    const got = answers('write-source-deleted').link
+    expect(byName(got.phases[0].pivots)).toEqual(answers('basic')['amount-sum'].phases.at(-1)!.pivots)
+    expect(got.phases[1].errors).toEqual([expect.stringContaining("Can't open PivotTable source file")])
+  })
+})
