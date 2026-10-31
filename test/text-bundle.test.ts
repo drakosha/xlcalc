@@ -21,9 +21,10 @@ describe('text without the engine', () => {
     // wildcards: the lexer takes the escape of a regular expression's characters from it;
     // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections;
     // decimals, general, glyphs and functions/common (its rounding): Increase and Decrease Decimal, by what General shows in a column
-    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
+    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'drawing-size', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
     // 46.1 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10); 51.8 with stepDecimals;
-    // 54.5 with suggestPivotField; 63.0 (64,486 bytes) with pivotCells, pivotCellAt and renamedValueField (31.10)
+    // 54.5 with suggestPivotField; 63.0 (64,486 bytes) with pivotCells, pivotCellAt and renamedValueField (31.10); 64.1
+    // (65,614 bytes) with pivotBlankLabel, the sizes of a new slicer and timeline and the buttons where Excel draws them
     expect(code.length).toBeLessThan(65 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
@@ -47,7 +48,8 @@ describe('text without the engine', () => {
     // what a PivotTable's cell is, and a value field's name by its function, without the engine
     const book = "{ sheets: [{ name: 'P', cells: {}, pivotTables: [{ name: 'PT', cache: 1, location: { range: 'A3:B5', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: [{ items: [{ item: 0 }] }, {}], rows: [0], values: [{ field: 1, name: 'Sum of N' }], rowLines: [{ items: [0] }, { type: 'grand', items: [0] }], columnLines: [{ items: [] }] }] }] }"
     expect(out(`[TEXT.pivotCellAt(${book}, 'P', 'A4'), TEXT.pivotCellAt(${book}, 'P', 'B4').kind, TEXT.pivotCells(${book}, 'P', 'PT').buttons]`)).toEqual([{ pivot: 'PT', kind: 'item', axis: 'rows', field: 0, item: 0, rowItems: [{ field: 0, item: 0 }] }, 'value', ['A3']])
-    expect(out(`[TEXT.renamedValueField('sum of qty2', 'sum', 'count', 'Qty'), TEXT.renamedValueField('Quantity', 'sum', 'count', 'Qty', 'ru-RU')]`)).toEqual(['Count of qty2', 'Количество по полю Qty'])
+    expect(out(`[TEXT.renamedValueField('sum of qty2', 'sum', 'count', 'Qty'), TEXT.renamedValueField('Quantity', 'sum', 'count', 'Qty', ruRU)]`)).toEqual(['Count of qty2', 'Количество по полю Qty'])
+    expect(out(`[TEXT.pivotBlankLabel(), TEXT.pivotBlankLabel(ruRU), TEXT.DEFAULT_SLICER_SIZE.width, TEXT.DEFAULT_TIMELINE_SIZE.height]`)).toEqual(['(blank)', '(пусто)', 1_828_800, 1_371_600])
     expect(out(`(() => { try { TEXT.scanReferences('=A1', { locale: 'ru-RU' }) } catch (e) { return e.message } })()`)).toBe(
       "opts.locale: the locale ru-RU is not loaded: pass the locale as an object: ruRU from the package's module locales/ru-RU (loaded: en-US)",
     )

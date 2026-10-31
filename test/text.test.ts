@@ -10,7 +10,7 @@ import * as text from '../src/text.js'
 
 describe('xlcalc/text', () => {
   it("holds the root's functions themselves", () => {
-    expect(Object.keys(text).sort()).toEqual(['DEFAULT_ROW_HEIGHT', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'pivotCellAt', 'pivotCells', 'quoteSheetIfNeeded', 'refAt', 'renamedValueField', 'scanReferences', 'stepDecimals', 'suggestPivotField', 'valueComparator'])
+    expect(Object.keys(text).sort()).toEqual(['DEFAULT_ROW_HEIGHT', 'DEFAULT_SLICER_SIZE', 'DEFAULT_TIMELINE_SIZE', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'pivotBlankLabel', 'pivotCellAt', 'pivotCells', 'quoteSheetIfNeeded', 'refAt', 'renamedValueField', 'scanReferences', 'stepDecimals', 'suggestPivotField', 'valueComparator'])
     for (const [k, f] of Object.entries(text)) expect(root[k as keyof typeof root], k).toBe(f)
   })
 })

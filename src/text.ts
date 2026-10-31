@@ -12,7 +12,7 @@
 import { checkCellValue } from './input.js'
 import { InputError, what } from './input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyOptions } from './input/basic.js'
-import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat, PivotFunction } from './contract.js'
+import type { CellValue, CompareValuesOptions, FindTextOptions, Locale, NumberFormat, PivotFunction } from './contract.js'
 import { checkFormat } from './input/styles.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
@@ -33,6 +33,7 @@ import { escapeColumn as escaped } from './syntax/table.js'
 
 export { quoteSheetIfNeeded } from './a1.js'
 export { DEFAULT_ROW_HEIGHT, MAX_OUTLINE, MAX_ROW_HEIGHT } from './column-width.js'
+export { DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE } from './drawing-size.js'
 export { FUNCTION_CATEGORIES } from './function-categories.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
@@ -47,15 +48,23 @@ export const pivotCellAt = /* @__PURE__ */ strict(pivotView.pivotCellAt)
 
 /**
  * The name Excel gives a value field named `name` when its function changes from `from` to `to`, its source field being
- * `field`, in the workbook's language `locale`: what Value Field Settings shows as soon as a function is chosen, and what
- * `editPivotTable` names the field (made unique there among the others when it is the default name).
+ * `field`, in the workbook's language `locale` (the tag of a loaded locale or a locale, en-US without it): what Value
+ * Field Settings shows as soon as a function is chosen, and what `editPivotTable` names the field (made unique there
+ * among the others when it is the default name).
  */
-export const renamedValueField = /* @__PURE__ */ strict(function renamedValueField(name: string | null | undefined, from: PivotFunction, to: PivotFunction, field: string, locale?: string): string {
+export const renamedValueField = /* @__PURE__ */ strict(function renamedValueField(name: string | null | undefined, from: PivotFunction, to: PivotFunction, field: string, locale?: string | Locale): string {
   if (name !== undefined && name !== null) checkString(name, 'name')
   checkOneOf(from, 'from', words.PIVOT_FUNCTIONS)
   checkOneOf(to, 'to', words.PIVOT_FUNCTIONS)
-  if (locale !== undefined) checkString(locale, 'locale')
-  return words.renamedValueField(name ?? undefined, from, to, checkString(field, 'field'), locale)
+  return words.renamedValueField(name ?? undefined, from, to, checkString(field, 'field'), optionalLocale(locale, 'locale')?.tag)
+})
+
+/**
+ * A blank item's label as a PivotTable and a slicer show it in the workbook's language `locale` (the tag of a loaded
+ * locale or a locale, en-US without it): `(blank)`, `(пусто)` in ru-RU.
+ */
+export const pivotBlankLabel = /* @__PURE__ */ strict(function pivotBlankLabel(locale?: string | Locale): string {
+  return words.blankWord(optionalLocale(locale, 'locale')?.tag)
 })
 
 /**

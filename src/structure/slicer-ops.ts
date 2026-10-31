@@ -15,6 +15,7 @@ import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
+import { DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE } from '../drawing-size.js'
 import { entryAt, lines } from '../layout/spans.js'
 import { pivotArea } from '../pivot/area.js'
 import { pivotRefresh } from '../pivot/hook.js'
@@ -122,9 +123,6 @@ function checkItems(v: unknown, path: string, n: number): NonNullable<SlicerCach
   return items
 }
 
-/** The size Excel gives a new slicer and a new timeline, in EMU: 2 by 2.76 inches, 3.65 by 1.5 inches (the set slicer-objects). */
-const SIZE: Record<Kind, [width: number, height: number]> = { slicers: [1_828_800, 2_524_125], timelines: [3_333_750, 1_371_600] }
-
 /** EMU in a pixel and in a point; a column's pixels are 7 to a stored width's digit, 64 for the default width, as Excel for Windows draws Calibri 11. */
 const [PIXEL, POINT, COLUMN] = [9525, 12_700, 64]
 
@@ -137,7 +135,7 @@ function reach(at: number, length: number, size: (k: number) => number, last: nu
 
 /**
  * A new slicer's or timeline's place: from two columns right of the first PivotTable it filters, at its top row, and
- * Excel's size for it (`SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
+ * Excel's size for it (`DEFAULT_SLICER_SIZE`, `DEFAULT_TIMELINE_SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
  * window, and its Insert Slicer one after another there; the workbook has no window, so the place is the library's.
  */
 function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): DrawingPlace | undefined {
@@ -154,8 +152,9 @@ function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): Drawi
     const e = entryAt(rows, k)
     return e?.hidden ? 0 : (e?.height ?? DEFAULT_ROW_HEIGHT) * POINT
   }
-  const [c2, dx] = reach(x.c2 + 2, SIZE[kind][0], col, MAX_COLS - 1)
-  const [r2, dy] = reach(x.r1, SIZE[kind][1], row, MAX_ROWS - 1)
+  const size = kind === 'slicers' ? DEFAULT_SLICER_SIZE : DEFAULT_TIMELINE_SIZE
+  const [c2, dx] = reach(x.c2 + 2, size.width, col, MAX_COLS - 1)
+  const [r2, dy] = reach(x.r1, size.height, row, MAX_ROWS - 1)
   return { from: formatAddress(x.r1, x.c2 + 2), to: formatAddress(r2, c2), ...(dx || dy ? { toOffset: [dx, dy] as [number, number] } : {}) }
 }
 
