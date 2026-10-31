@@ -11,6 +11,7 @@ import type { Arg, Cx, FnDef } from '../../args.js'
 import { caseKey } from '../../collate.js'
 import type { NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
 import { dateToSerial } from '../../model.js'
+import { itemFormat } from '../../pivot/item-format.js'
 import { parseRange } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, Rng, type V } from '../../values.js'
@@ -60,13 +61,6 @@ function cellOf(v: PivotValue, epoch: number): V {
   return E[v.error]
 }
 
-/** The format of an item's label: its field's, a date's the short date (with the time where it has one), as Excel shows a date item (the set basic). */
-function formatOf(c: PivotCache, f: number, v: PivotValue): NumberFormat | undefined {
-  const own = c.fields[f].numberFormat
-  if (own !== undefined || v === null || typeof v !== 'object' || !('date' in v)) return own
-  return v.date.endsWith('T00:00:00') || !v.date.includes('T') ? 14 : 22
-}
-
 /** The values of a cache field's items, or of its groups' where it is grouped. */
 const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.items ?? c.fields[f]?.items ?? []
 
@@ -94,7 +88,7 @@ function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Se
   const found: [k: number, text: boolean][] = []
   t.fields[f]?.items?.forEach((it, k) => {
     const v = it.item === undefined ? undefined : values[it.item]
-    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, formatOf(c, f, v))) found.push([k, typeof v === 'string'])
+    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, itemFormat(c, f, v))) found.push([k, typeof v === 'string'])
   })
   const text = typeof arg === 'string' && found.some(([, x]) => x)
   return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
