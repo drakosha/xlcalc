@@ -16,11 +16,10 @@ import { withField } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { pivotArea } from '../pivot/area.js'
 import { pivotRefresh } from '../pivot/hook.js'
-import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
 import { checkedPivots, patched, relaid } from './pivots.js'
 import { sheetIndex } from './rewrite.js'
-import { fieldIndex, itemsShown, selectionLevel, slicerField, timelineBounds, withSlicerChoice, withTimelineChoice } from './slicer-choice.js'
+import { fieldIndex, itemsShown, sameRef, selectionLevel, slicerField, timelineBounds, withSlicerChoice, withTimelineChoice } from './slicer-choice.js'
 import type { ValuesIn } from './values.js'
 
 type Kind = 'slicers' | 'timelines'
@@ -42,8 +41,6 @@ export const SLICER_FIELDS: Record<string, string[]> = {
 }
 
 const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
-
-const sameRef = (a: PivotRef, b: PivotRef) => sheetKey(a.sheet) === sheetKey(b.sheet) && caseKey(a.name) === caseKey(b.name)
 
 const cachesOf = (book: BookInput, kind: Kind): Cache[] => book[CACHES[kind]] ?? []
 

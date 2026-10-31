@@ -15,7 +15,7 @@ import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
 import { layoutPivot } from './layout.js'
 import { placePivots, type Placement } from './place.js'
-import { fieldIndex, timelineBounds } from '../structure/slicer-choice.js'
+import { fieldIndex, sameRef, timelineBounds } from '../structure/slicer-choice.js'
 import { slicerItems } from './slicers.js'
 import { sourceGrid } from './source.js'
 
@@ -25,8 +25,6 @@ interface Calculated {
   table: PivotTable
   cache: PivotCache
 }
-
-const sameRef = (a: PivotRef, b: PivotRef) => caseKey(a.sheet) === caseKey(b.sheet) && caseKey(a.name) === caseKey(b.name)
 
 /** A PivotTable of the book and its sheet's index. */
 interface Spot {

@@ -12,7 +12,8 @@ import { sheetKey } from '../syntax.js'
 /** The index of a cache's field by its name, −1 for none. */
 export const fieldIndex = (cache: PivotCache, name: string): number => cache.fields.findIndex((f) => caseKey(f.name) === caseKey(name))
 
-const sameRef = (a: PivotRef, b: PivotRef) => sheetKey(a.sheet) === sheetKey(b.sheet) && caseKey(a.name) === caseKey(b.name)
+/** The same PivotTable: sheet and name in any case. */
+export const sameRef = (a: PivotRef, b: PivotRef) => sheetKey(a.sheet) === sheetKey(b.sheet) && caseKey(a.name) === caseKey(b.name)
 
 /** The book with each PivotTable of `refs` given by `f`. */
 function withPivots(book: BookInput, refs: readonly PivotRef[], f: (p: PivotTable) => PivotTable): BookInput {
