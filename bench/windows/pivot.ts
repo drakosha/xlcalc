@@ -56,6 +56,7 @@ function tableProps(t: TableProps): Props {
   if (t.emptyText !== undefined) p.push(['DisplayNullString', true], ['NullString', t.emptyText])
   if (t.multipleFilters !== undefined) p.push(['AllowMultipleFilters', t.multipleFilters])
   if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
+  if (t.valuesRow !== undefined) p.push(['ShowValuesRow', t.valuesRow])
   return p
 }
 
@@ -153,7 +154,11 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     else if ('calcItem' in o) add(role, call('calcItems', 'Add', [o.calcItem, o.formula, true], { field: o.field }))
     else if ('group' in o) add(role, { ...at, op: 'group', field: o.group, start: o.start ?? null, end: o.end ?? null, by: o.by ?? null, periods: o.periods ? PERIODS.map((p) => o.periods!.includes(p)) : null })
     else if ('groupItems' in o) add(role, { ...at, op: 'groupItems', field: o.groupItems, items: o.items })
-    else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
+    else if ('collapse' in o) {
+      const detail: Props = [['ShowDetail', o.expand ?? false]]
+      if (o.items === 'all') add(role, set('field', detail, { field: o.collapse }))
+      else for (const item of o.items) add(role, set('item', detail, { field: o.collapse, item }))
+    } else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
     else if ('slicer' in o) {
       slicers.push(o.name)
       add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
