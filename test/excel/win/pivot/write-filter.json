@@ -8,7 +8,7 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 40.6
+  "seconds": 16.1
  },
  "cases": [
   {
@@ -771,8 +771,8 @@
   "less-equal": "8ec026b0d45aa7ebf72732f551d7acb118ead0a0a0642a13849d16b02d34ae7a 581bb1faa69789f2",
   "between": "d6e510adc5950205e3ef825f037751169efdb0d453b7a6cbea93969db5af8ec4 581bb1faa69789f2",
   "not-between": "ea71b4ed4b6fde118b6cd1346755401dc5b06f10866a31fa50e254902d697b1f 581bb1faa69789f2",
-  "wildcard-star": "6d4570f4fa12f0ebae6c0f225ef473139c3752124bc36640a00e7cba1d849fa3 581bb1faa69789f2",
-  "wildcard-mark": "9c706aa7d749854d792e63fad935f3e32e7d49a0ad7b55404c6713dacff43205 581bb1faa69789f2",
+  "wildcard-star": "19d7637b72d7cc48e8230f6e1453fc59770776e5f79235c9b948b4b26bf75519 581bb1faa69789f2",
+  "wildcard-mark": "73ffbcb3c286c46dee35ec753280b64c9b4a94aeea6558eac82850bdcb1ca1dc 581bb1faa69789f2",
   "blank-label": "12be62180d871ba9d27ded89655dbc39af1818bc15ab781b4756e1be81e00c48 581bb1faa69789f2",
   "label-numbers": "f378df7359a6fc388b3eac62c71c488e03cf45cd5916be290965666e77c8a988 581bb1faa69789f2",
   "label-numbers-equal": "dd365db92645496edae0d0f092e7c8def04a445dff19550a0cc0f42d76506f0f 581bb1faa69789f2",
@@ -5906,17 +5906,21 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:B4",
-       "area": "A3:B4",
-       "body": "B4",
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
        "values": [
         [
          "Row Labels",
          "Sum of Price"
         ],
         [
+         "North",
+         237.79999999999995
+        ],
+        [
          "Grand Total",
-         null
+         237.79999999999995
         ]
        ],
        "text": [
@@ -5925,11 +5929,19 @@
          "Sum of Price"
         ],
         [
+         "North",
+         "237.8"
+        ],
+        [
          "Grand Total",
-         ""
+         "237.8"
         ]
        ],
        "formats": [
+        [
+         "General",
+         "General"
+        ],
         [
          "General",
          "General"
@@ -6003,17 +6015,21 @@
     {
      "pivots": {
       "P!PT1": {
-       "table": "A3:B4",
-       "area": "A3:B4",
-       "body": "B4",
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
        "values": [
         [
          "Row Labels",
          "Sum of Price"
         ],
         [
+         "West",
+         301.91
+        ],
+        [
          "Grand Total",
-         null
+         301.91
         ]
        ],
        "text": [
@@ -6022,11 +6038,19 @@
          "Sum of Price"
         ],
         [
+         "West",
+         "301.91"
+        ],
+        [
          "Grand Total",
-         ""
+         "301.91"
         ]
        ],
        "formats": [
+        [
+         "General",
+         "General"
+        ],
         [
          "General",
          "General"
