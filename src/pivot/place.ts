@@ -3,7 +3,7 @@
  * checked first, then the old areas cleared and the new cells written, the definitions with their new layout and place.
  */
 import type { BookInput, AlignmentStyle, CellInput, PivotTable, SheetInput } from '../contract.js'
-import { CONTENT, holds, withoutContent } from '../array-areas.js'
+import { CONTENT, holds } from '../array-areas.js'
 import { dateToSerial } from '../date-serial.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
@@ -33,12 +33,8 @@ const cleared = (c: CellInput): CellInput | undefined => {
   return Object.keys(out).length ? out : undefined
 }
 
-/**
- * What a PivotTable laid out over cells it cannot take becomes: refused (`pivot`), spilled, as Excel 365 refreshes it,
- * or, over cells that hold something (`replace`, as Excel replaces the contents of the destination cells), laid over
- * them, their contents cleared and their merges gone; over a table or another PivotTable it is refused either way.
- */
-export type Blocked = 'spill' | 'refuse' | 'replace'
+/** What a PivotTable laid out over cells it cannot take becomes: refused (`pivot`), or spilled, as Excel 365 refreshes it. */
+export type Blocked = 'spill' | 'refuse'
 
 /**
  * Writes the PivotTables `placed` to their sheets at once (`Placement`). An area over cells that hold something, a table,
@@ -52,7 +48,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const pivots = book.sheets[s]?.pivotTables ?? []
     const at = pivots.findIndex((t) => t.name === p.table.name)
     if (at < 0) throw new Error(`no PivotTable ${p.table.name} on ${p.sheet}`)
-    return { ...p, s, at, old: pivotArea(pivots[at]), parts: pivotParts(pivots[at]), spill: false, replace: false }
+    return { ...p, s, at, old: pivotArea(pivots[at]), parts: pivotParts(pivots[at]), spill: false }
   })
   // each new area against the cells it takes: cells holding something outside its own old area, tables, the other
   // PivotTables where they are, and those laid before it where they go
@@ -72,10 +68,6 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     // the cells its new parts take, not the blank row under its filters nor beside them, which hold anything
     const data = pivotParts({ location: p.laid.location }).some((part) => filled(sheet, part, p.parts))
     if (!others.length && !table && !data) continue
-    if (blocked === 'replace' && !others.length && !table) {
-      p.replace = true
-      continue
-    }
     if (blocked === 'spill') {
       p.spill = true
       continue
@@ -102,14 +94,6 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
         if (rest) cells[addr] = rest
         else delete cells[addr]
       }
-    // the contents under its new parts cleared, their formats kept, as Excel replaces them
-    if (p.replace)
-      for (const part of pivotParts({ location: p.laid.location }))
-        for (const [addr, c] of cellsIn(cells, part)) {
-          const rest = withoutContent(c)
-          if (rest) cells[addr] = rest
-          else delete cells[addr]
-        }
     const old = sheet.pivotTables![p.at].location.range.split(':')[0]
     const laid: PivotLaidOut = p.spill ? { ...p.laid, location: { range: old, firstHeaderRow: 0, firstDataRow: 0, firstDataColumn: 0 }, cells: [{ ...parseAddress(old), error: 'SPILL' }] } : p.laid
     for (const c of laid.cells) {
@@ -126,8 +110,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const pivotTables = [...(sheet.pivotTables ?? [])]
     pivotTables[p.at] = { ...p.table, location: laid.location, rowLines: laid.rowLines, columnLines: laid.columnLines }
     // the merged labels: the old area's go with it, where its PivotTable merged them, the new ones are added
-    let was = sheet.pivotTables![p.at].mergeLabels && p.old ? sheet.merges?.filter((m) => !contains(p.old!, parseRange(m)!)) : sheet.merges
-    if (p.replace) was = was?.filter((m) => !meets(p.laid.area, parseRange(m)!))
+    const was = sheet.pivotTables![p.at].mergeLabels && p.old ? sheet.merges?.filter((m) => !contains(p.old!, parseRange(m)!)) : sheet.merges
     const merged = p.spill ? [] : labelMerges(p.table, laid).map(cornersText)
     const merges = [...(was ?? []), ...merged]
     sheets[p.s] = withField({ ...sheet, cells, pivotTables }, 'merges', merges.length ? merges : undefined)

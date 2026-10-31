@@ -241,7 +241,7 @@ export function patched<T extends object>(target: T, patch: Record<string, unkno
  * The PivotTables `refs` laid out again by `xlcalc/pivot` (`fromSource`: their caches refreshed from the sources); without
  * it, their caches marked `stale`, the cells left.
  */
-export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = [], blocked: 'spill' | 'refuse' | 'replace' = 'spill', labelSort?: readonly number[]): Applied {
+export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = [], blocked: 'spill' | 'refuse' = 'spill', labelSort?: readonly number[]): Applied {
   const refresh = pivotRefresh()
   const r = refresh?.(book, refs, values, values.today?.() ?? 0, fromSource, blocked, labelSort)
   if (r && !r.ok) return r

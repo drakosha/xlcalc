@@ -12,10 +12,9 @@ import type { ValuesIn } from '../structure/values.js'
  * with `fromSource`, the caches refreshed from the sources' computed values (`values`), as `refreshPivots` and
  * `addPivotTable` do; without it, from the cache as saved, as Excel lays out an edit, a move, a slicer's choice. Relative
  * date filters go by the session's day `today`. A PivotTable laid over cells it cannot take spills, as a refresh in
- * Excel 365 (`spill`, the default), is refused, as a new or moved one (`refuse`), or takes the place of cells that hold
- * something, a new one with Replace (`replace`).
+ * Excel 365 (`spill`, the default), or is refused, as a new or moved one (`refuse`).
  */
-export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse' | 'replace', labelSort?: readonly number[]) => Applied
+export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse', labelSort?: readonly number[]) => Applied
 
 let refresh: PivotRefresh | null = null
 
