@@ -4,10 +4,9 @@
  * and templates over their arguments calculated in batches, each a row of a sheet of their own.
  */
 import type { CellInput, CellValue } from '../contract.js'
-import { createState } from '../engine.js'
+import { createState, toCellValue, valueAt } from '../engine.js'
 import { formatAddress } from '../model.js'
 import { clockOptions } from '../result.js'
-import { stateValues } from '../structure/values.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 import { eachToken } from '../syntax/links.js'
 
@@ -104,8 +103,7 @@ export function calculate(rows: readonly { text: string; values: readonly CellVa
     })
     cells[formatAddress(r, 0)] = { formula: text.replace(MARK, (_, k: string) => formatAddress(r, Number(k) + 1)) }
   })
-  const got = stateValues(createState({ sheets: [{ name: 'C', cells }] }, CLOCK))('C', { r1: 0, r2: rows.length - 1, c1: 0, c2: 0 })
-  const out: CellValue[] = rows.map(() => 0)
-  for (const [r, , v] of got) out[r] = v
-  return out
+  const state = createState({ sheets: [{ name: 'C', cells }] }, CLOCK)
+  // These are intermediate values of the pivot calculation, before the public result's 15-digit rounding.
+  return rows.map((_, r) => toCellValue(valueAt(state, 0, r, 0)) ?? 0)
 }
