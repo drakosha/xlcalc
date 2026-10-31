@@ -5,7 +5,8 @@ import { readFileSync } from 'node:fs'
 
 const { name } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
 const root = await import(name)
-const { compute, CONFIG_VERSION, createSession, FUNCTION_NAMES, InputError, validateFormula } = root
+const { compute, CONFIG_VERSION, createSession, FUNCTION_NAMES, InputError, PivotInputError, validateFormula } = root
+const core = await import(`${name}/core`)
 const contract = await import(`${name}/contract`)
 const text = await import(`${name}/text`)
 const { createState, parse, valuesHash } = await import(`${name}/unstable/internal`)
@@ -53,6 +54,8 @@ console.log(
     // the old names, removed: none of them is exported
     removed: ['engine', 'openSession', 'restructure', 'fromLegacy'].filter((k) => k in root),
     inputError: typeof InputError,
+    // the error over a PivotTable's cells, the same class from the root and core, an InputError with its alert and cell
+    pivotInputError: [PivotInputError === core.PivotInputError, new PivotInputError('edits', 'x', 'affect', 'P', 'A1') instanceof InputError],
     validate: validateFormula('SUM(A1:A3)').ok,
     contract: Object.keys(contract).sort(),
     internal: [typeof createState, typeof parse, typeof valuesHash],
