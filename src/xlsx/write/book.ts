@@ -9,6 +9,8 @@
 import type { BookInput } from '../../contract.js'
 import { activeSheetIndex } from '../view.js'
 import { epochOf } from '../../dates.js'
+import { MAX_COLS, readAddress } from '../../model.js'
+import { pivotCells } from '../../pivot/cells.js'
 import { SHEET_STATES } from '../../input.js'
 import { nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
@@ -133,6 +135,8 @@ export interface BookWriting {
   filterTables: (string | undefined)[]
   active: number
   epoch: number
+  /** The cells of a sheet with a PivotTable's filter button (`pivotCells`), by row and column (`row * MAX_COLS + col`). */
+  buttons(sheet: number): ReadonlySet<number> | undefined
 }
 
 export function bookWriting(book: BookInput): BookWriting {
@@ -148,7 +152,22 @@ export function bookWriting(book: BookInput): BookWriting {
     // Excel shows the active sheet, which is never a hidden one
     active: activeSheetIndex(book),
     epoch: epochOf(book.dateSystem),
+    buttons: (i) => pivotButtons(book, i),
   }
+}
+
+/** The cells of a sheet's PivotTables that Excel gives a filter button, none without a PivotTable laid out. */
+function pivotButtons(book: BookInput, i: number): ReadonlySet<number> | undefined {
+  const s = book.sheets[i]
+  if (!s.pivotTables?.length) return undefined
+  const out = new Set<number>()
+  const at = { r: 0, c: 0 }
+  for (const t of s.pivotTables)
+    for (const a of pivotCells(book, s.name, t.name)?.buttons ?? []) {
+      readAddress(a, at)
+      out.add(at.r * MAX_COLS + at.c)
+    }
+  return out.size ? out : undefined
 }
 
 /**
@@ -195,6 +214,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
       noteBlock,
       active: i === active,
+      buttons: bw.buttons(i),
     })
     if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
     return w

@@ -295,6 +295,7 @@ class Kept {
       ...(w.filterTables[i] ? { filterTable: w.filterTables[i] } : {}),
       noteBlock: this.block,
       active: w.active === i,
+      buttons: w.buttons(i),
     }
   }
 

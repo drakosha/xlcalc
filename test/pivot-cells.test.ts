@@ -9,7 +9,8 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { BookInput, PivotCell, PivotItemRef } from '../src/contract.js'
 import { labeler } from '../src/pivot/layout.js'
-import { readXlsx } from '../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { predictedCells } from '../bench/coverage/pivot/cells-predict.js'
 import type { PivotAnswer, PivotCase, PivotCellKind, PivotSet } from '../bench/coverage/pivot/cases.js'
@@ -130,4 +131,24 @@ describe.each(SETS)('what the cells of the pivot tables of the set %s are', (set
     }
     expect(misses).toEqual([])
   }, 120_000)
+
+  // Excel opening a file without them draws none until a refresh (Excel for Windows saved each such book without, and with them after RefreshTable)
+  it("writes the filter buttons where Excel's file has them, in writeXlsx and in writeKept over the sheet written again", async () => {
+    const { buildPivotCases } = (await import(`../bench/coverage/pivot/${set}.ts`)) as PivotSet
+    const misses: string[] = []
+    for (const c of buildPivotCases() as PivotCase[]) {
+      const bytes = new Uint8Array(readFileSync(new URL(`../${c.file}`, import.meta.url)))
+      const want = await fileButtons(bytes)
+      const book = (await readXlsx(bytes)).book
+      // writeKept over a sheet written again: a cell beside the PivotTable on its sheet
+      const kept = (await openKept(bytes)).book
+      const edited = { ...kept, sheets: kept.sheets.map((s) => (s.pivotTables?.length ? { ...s, cells: { ...s.cells, Z99: { value: 1 } } } : s)) }
+      for (const [how, written] of [['writeXlsx', (await writeXlsx({ book })).data], ['writeKept', (await writeKept(bytes, { book: edited })).data]] as const) {
+        const got = await fileButtons(written)
+        for (const [sheet, cells] of Object.entries(want))
+          if (JSON.stringify((got[sheet] ?? []).slice().sort()) !== JSON.stringify(cells.slice().sort())) misses.push(`${how} ${c.id} ${sheet}: written ${(got[sheet] ?? []).join(' ')}, Excel's ${cells.join(' ')}`)
+      }
+    }
+    expect(misses).toEqual([])
+  }, 240_000)
 })
