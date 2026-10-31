@@ -7,7 +7,8 @@ import { caseKey } from '../collate.js'
 import type { CellValue, NumberFormat, PivotAxisField, PivotCache, PivotCacheField, PivotField, PivotFieldFacts, PivotTable, PivotValue } from '../contract.js'
 import { generalText } from '../numfmt/general.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
-import { cacheDate, itemKey } from './values.js'
+import { itemKey } from './items.js'
+import { cacheDate } from './values.js'
 
 /** A source's cells: the header row first, each cell's value, and whether it shows a date; each column's number format. */
 export interface PivotSourceGrid {

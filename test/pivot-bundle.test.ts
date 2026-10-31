@@ -1,6 +1,6 @@
 /**
  * `xlcalc/pivot` stays out of the root: `compute` and the root's whole bundle take none of the PivotTable engine but its
- * hooks and a PivotTable's area, and the subpath adds to a host's bundle of the root no more than its budget, minified for the browser.
+ * hooks, a PivotTable's area and a cache's items (a slicer's field is listed without it), and the subpath adds to a host's bundle of the root no more than its budget, minified for the browser.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -14,8 +14,8 @@ async function minified(contents: string): Promise<{ bytes: number; used: string
 }
 
 const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
-/** The engine's modules: the calculation, its layout and refresh; not the hooks the root calls through, nor the area of a PivotTable an edit is refused on. */
-const engine = (used: string[]) => used.filter((f) => /\/pivot\/(?!(hook|area|part)\.)[^/]+\.(ts|js)$/.test(f))
+/** The engine's modules: the calculation, its layout and refresh; not the hooks the root calls through, nor the area of a PivotTable an edit is refused on, nor a cache's items a slicer lists. */
+const engine = (used: string[]) => used.filter((f) => /\/pivot\/(?!(hook|area|part|items)\.)[^/]+\.(ts|js)$/.test(f))
 
 describe('the bundle of xlcalc/pivot', () => {
   it('the root takes none of the engine, the subpath adds under its budget to the root', async () => {
