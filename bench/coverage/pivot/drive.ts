@@ -6,7 +6,7 @@
  * the cells of every PivotTable's area and the operations the engine refused. The prediction of a held-out set before
  * Excel runs it (`predict.ts --drive`); operations it does not take are refused as `unsupported`.
  */
-import type { BookInput, CellInput, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
+import type { BookInput, CellInput, PivotAxisField, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
 import { wordsOf } from '../../../src/pivot/captions.js'
@@ -27,6 +27,16 @@ const CLOCK = clockOptions({ now: '2026-10-30', seed: 0 })
 /** The harness's names of Show Values As that the contract spells otherwise. */
 const SHOW: Record<string, PivotShowAs> = { percentOfCol: 'percentOfColumn', percentOfParentCol: 'percentOfParentColumn' }
 const valuesOf = (b: BookInput) => stateValues(createState(b, CLOCK))
+
+/** The settings of a `table` operation the engine takes, each set on the PivotTable. */
+const TABLE_PROPS: Record<string, (t: PivotTable, v: never) => PivotTable> = {
+  customLists: (t, v: boolean) => ({ ...t, customListSort: v }),
+  pagesWrap: (t, v: number) => ({ ...t, pagesWrap: v }),
+  pagesAcross: (t, v: boolean) => ({ ...t, pagesAcrossFirst: v }),
+  rowGrand: (t, v: boolean) => ({ ...t, grandTotals: { ...t.grandTotals, rows: v } }),
+  columnGrand: (t, v: boolean) => ({ ...t, grandTotals: { ...t.grandTotals, columns: v } }),
+  classic: (t, v: boolean) => ({ ...t, classicLayout: v }),
+}
 
 /** A phase played: each PivotTable's area by its name, and the operations refused (`op <index>: <message>`). */
 export interface DrivenPhase {
@@ -148,6 +158,18 @@ export function drive(c: PivotCase): DrivenPhase[] {
       })
       return laid(k)
     }
+    if ('valuesOn' in op) {
+      // the value fields' own field (Σ Values) on rows or columns, at its place among the axis's fields
+      setTable(pt, (t) => {
+        const rows: PivotAxisField[] = (t.rows ?? []).filter((f) => f !== 'values')
+        const columns: PivotAxisField[] = (t.columns ?? []).filter((f) => f !== 'values')
+        const axis = op.valuesOn === 'row' ? rows : columns
+        const at = op.position === undefined ? axis.length : op.position - 1
+        if ((t.values?.length ?? 0) > 1) axis.splice(at, 0, 'values')
+        return { ...t, rows, columns, valuesOnRows: op.valuesOn === 'row', ...(op.position === undefined ? {} : { valuesPosition: at }) }
+      })
+      return laid(k)
+    }
     if ('layout' in op) {
       setTable(pt, (t) => ({ ...t, layout: op.layout }))
       return laid(k)
@@ -163,8 +185,8 @@ export function drive(c: PivotCase): DrivenPhase[] {
       })
       return laid(k, false, op.by === undefined ? [f] : undefined)
     }
-    if ('table' in op && Object.keys(op.table).every((k) => k === 'customLists')) {
-      setTable(pt, (t) => ({ ...t, customListSort: op.table.customLists }))
+    if ('table' in op && Object.keys(op.table).every((k) => k in TABLE_PROPS)) {
+      setTable(pt, (t) => Object.entries(op.table).reduce((x, [k, v]) => TABLE_PROPS[k](x, v as never), t))
       return laid(k)
     }
     if ('group' in op) {

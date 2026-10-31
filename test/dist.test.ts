@@ -64,6 +64,7 @@ describe('built package', () => {
     expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.removed).toEqual([])
     expect(out.inputError).toBe('function')
+    expect(out.pivotInputError).toEqual([true, true])
     expect(out.validate).toBe(true)
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])

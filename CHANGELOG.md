@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.71.4 (2026-10-31)
+
+Fixed:
+
+- `fillRange` of `editStructure` in a workbook with PivotTables deleted every PivotTable; it keeps them now, a fill on a PivotTable's sheet and on another alike.
+
 ## 0.71.3 (2026-10-31)
 
 Fixed:
