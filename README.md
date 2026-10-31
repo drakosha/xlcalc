@@ -10,6 +10,7 @@ Under heavy development. AI-engineered.
 - **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
 - **Displayed text.** Each cell carries the text Excel displays for it by its number format, locale and column width; a session also gives a viewport's conditional formats ([Number formats](docs/formats.md)).
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
+- **PivotTables.** Read from xlsx with their slicers and timelines, `GETPIVOTDATA` over them, created and changed in a session, and with `xlcalc/pivot` refreshed and laid out as Excel does: filters, sorting, Show Values As, grouping, calculated fields and items; written back as Excel opens them ([PivotTables](docs/pivot-tables.md)).
 - **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)).
 - **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
 - **Node 20.19 or newer and browsers**, no Node APIs.
@@ -44,6 +45,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 129 KB (20) |
 | `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (3), and the locale's module |
+| `xlcalc/pivot` | `pivotEngine`, which `registerPivot` loads: PivotTables refreshed and laid out ([PivotTables](docs/pivot-tables.md)) | |
 | `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
@@ -178,7 +180,7 @@ SheetJS writes without compression by default.
 
 Workbooks and formulas: [Formulas](docs/formulas.md), [Functions](docs/functions.md), [Forecasting with exponential smoothing](docs/forecast.md), [Array operations](docs/arrays-incell.md), [Spilling](docs/spill.md), [Defined names](docs/names.md), [Tables](docs/tables.md), [References](docs/references.md), [Circular references](docs/cycles.md), [External references](docs/links.md), [Legacy array formulas](docs/legacy.md).
 
-Sessions and grids: [Sessions](docs/sessions.md), [Rendering a grid](docs/grid.md), [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes and queries](docs/live-books.md), [Live objects](docs/live-objects.md), [Structure operations](docs/structure.md), [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md), [Addresses and formula text](docs/addresses.md).
+Sessions and grids: [Sessions](docs/sessions.md), [Rendering a grid](docs/grid.md), [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes and queries](docs/live-books.md), [Live objects](docs/live-objects.md), [Structure operations](docs/structure.md), [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md), [PivotTables](docs/pivot-tables.md), [Addresses and formula text](docs/addresses.md).
 
 Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Reading and writing CSV](docs/csv.md), [Asynchronous and threaded computation](docs/async.md), [Regular expressions in XLOOKUP and XMATCH](docs/regex.md), [Groups of functions](docs/function-groups.md).
 

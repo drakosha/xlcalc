@@ -312,7 +312,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `dataValidation` | a rule without a range on the sheet, without the formula its type needs, or of an unknown type, left out; cells a rule shares with an earlier one, which keep the earlier one; an IME mode; a list whose items contain commas (`x12ac:list`), read split at them |
 | `outline` | automatic outline styles |
 | `protection` | workbook protection; a sheet protection's password (`sheetPassword`), the sheet read as protected without one; ranges a protected sheet allows to edit (`protectedRanges`) |
-| `pivotTable` | a pivot cache over an external connection, the data model, consolidated ranges or scenarios, read as stored and not refreshed; a cache's OLAP part; a PivotTable's chart formats; a PivotTable or a timeline whose cache is missing, left out ([PivotTables](pivot-tables.md)) |
+| `pivotTable` | a pivot cache over an external connection, the data model, consolidated ranges or scenarios, read as stored and not refreshed; a cache's OLAP part; a PivotTable's chart formats; a PivotTable or a timeline whose cache is missing, left out; PivotTables, slicers and timelines whose ids or names clash, all left out; written, a table's slicer, left out ([PivotTables](pivot-tables.md)) |
 | `drawing`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
@@ -336,7 +336,7 @@ The messages are part of the locale's module, alongside its other messages ([doc
 
 ## Writing
 
-`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. It writes the file anew from the workbook; to keep what the workbook cannot hold (charts, pictures, pivot tables, the page setup), write over the original file with `xlcalc/xlsx/keep` ([Writing over the original file](xlsx-keep.md)). The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
+`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. It writes the file anew from the workbook; to keep what the workbook cannot hold (charts, pictures, the page setup), write over the original file with `xlcalc/xlsx/keep` ([Writing over the original file](xlsx-keep.md)). The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
 
 | option | |
 |---|---|
