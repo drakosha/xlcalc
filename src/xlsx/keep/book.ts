@@ -16,7 +16,7 @@ import { partText, relsOf, type Rel } from '../read/package.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
 import { bookWriting, filterDatabase, calcAttrs, nameElements, RICH_REL, type BookWriting } from '../write/book.js'
 import { nextBlock } from '../write/parts.js'
-import { sheetPieces, sheetXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
+import { sheetPieces, sheetXml, tablePartsXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
 import { tableXml } from '../write/tables.js'
 import { attr, attributes, attrsAt } from '../xml/scan.js'
@@ -542,7 +542,7 @@ class Kept {
       list.push(rels.add(relType('table'), relative(ss.part, part)))
     }
     if (!listChanged) return undefined
-    return list.length ? `<tableParts count="${list.length}">${list.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : ''
+    return tablePartsXml(list)
   }
 
   /** A sheet the file does not have, written as `writeXlsx` writes one, with its tables, notes and hyperlinks. */

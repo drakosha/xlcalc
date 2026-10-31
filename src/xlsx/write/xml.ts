@@ -40,6 +40,12 @@ export function give(o: object, spec: string): string {
   return out
 }
 
+/** A list element of `items` with their count: `<cols count="2">…</cols>`. */
+export const counted = (tag: string, items: string[]) => `<${tag} count="${items.length}">${items.join('')}</${tag}>`
+
+/** `counted` where there are items, else nothing. */
+export const countedIf = (tag: string, items: string[] | undefined) => (items?.length ? counted(tag, items) : '')
+
 /** Text cut to Excel's limit `max`, reported as `textLength` when it was longer; a character of two code units is not split. */
 export function clip(text: string, max: number, issues: Issues, message: XlsxMessage, where: Where): string {
   if (text.length <= max) return text

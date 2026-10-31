@@ -8,7 +8,7 @@ import type { ConditionalStyle, NumberFormat, PivotArea, PivotCache, PivotDataFi
 import { valueFieldName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
-import { give, HEAD, MAIN, X14, X15 } from './xml.js'
+import { counted, countedIf, give, HEAD, MAIN, X14, X15 } from './xml.js'
 import { fieldIndex, pivotAreaXml } from './pivot-area.js'
 import { AXIS, SHOW_NAME, SUBTOTAL_ATTR } from '../pivot-names.js'
 
@@ -39,7 +39,7 @@ function linesXml(tag: 'rowItems' | 'colItems', lines: PivotLine[] | undefined):
     const xs = l.items.map((v) => (v ? `<x v="${v}"/>` : '<x/>')).join('')
     return xs ? `<i${attrs}>${xs}</i>` : `<i${attrs}/>`
   })
-  return `<${tag} count="${items.length}">${items.join('')}</${tag}>`
+  return counted(tag, items)
 }
 
 /** Where a field lies: its axis, and whether it is summarized. */
@@ -80,7 +80,7 @@ function fieldXml(f: PivotField, i: number, p: PivotTable, place: ReturnType<typ
   // the subtotals' items close the list: automatic, or one per function
   if (items && subs === undefined) items.push('<item t="default"/>')
   if (items && own) for (const s of subs) items.push(`<item t="${SUBTOTAL_ATTR[s]}"/>`)
-  const list = items ? `<items count="${items.length}">${items.join('')}</items>` : ''
+  const list = items ? counted('items', items) : ''
   const scope = sort?.by ? `<autoSortScope>${pivotAreaXml({ dataOnly: false, outline: false, fieldPosition: 0, references: [{ field: 'values', items: [sort.by.value], selected: false }, ...(sort.by.at ?? []).map((r) => ({ field: r.field, items: [r.item], selected: false }))] })}</autoSortScope>` : ''
   // Repeat Item Labels, an Excel 2010 setting each field of a PivotTable that repeats them holds, which a refresh reads
   const repeat = f.repeatLabels ?? p.repeatLabels
@@ -164,27 +164,25 @@ export function pivotTableXml(p: PivotTable, c: PivotCache, w: PivotWriting): st
     give(cap, 'rowHeaderCaption=rowHeader colHeaderCaption=columnHeader') +
     give(p, 'multipleFieldFilters:b')
   const location = `<location${give(p.location, 'ref=range:n firstHeaderRow:n firstDataRow:n firstDataCol=firstDataColumn:n rowPageCount=pageRows:p colPageCount=pageColumns:p')}/>`
-  const fields = `<pivotFields count="${p.fields.length}">${p.fields.map((f, i) => fieldXml(f, i, p, place, w)).join('')}</pivotFields>`
-  const axisFields = (tag: string, list: PivotTable['rows']) => (list?.length ? `<${tag} count="${list.length}">${list.map((f) => `<field x="${fieldIndex(f)}"/>`).join('')}</${tag}>` : '')
-  const pages = p.pages?.length ? `<pageFields count="${p.pages.length}">${p.pages.map((g) => `<pageField fld="${g.field}"${g.item === undefined ? '' : ` item="${g.item}"`} hier="-1"/>`).join('')}</pageFields>` : ''
-  const data = p.values?.length ? `<dataFields count="${p.values.length}">${p.values.map((d) => dataFieldXml(d, c, w)).join('')}</dataFields>` : ''
-  const formats = p.formats?.length
-    ? `<formats count="${p.formats.length}">${p.formats
-        .map((f) => {
-          const style: ConditionalStyle = { ...(f.style ?? {}), ...(f.numberFormat === undefined ? {} : { numberFormat: f.numberFormat }) } as ConditionalStyle
-          const dxf = f.blank || !Object.keys(style).length ? '' : ` dxfId="${w.dxf(style)}"`
-          return `<format${f.blank ? ' action="blank"' : ''}${dxf}>${pivotAreaXml(f.area)}</format>`
-        })
-        .join('')}</formats>`
-    : ''
-  const rules = w.rules.length
-    ? `<conditionalFormats count="${w.rules.length}">${w.rules
-        .map((r) => `<conditionalFormat${r.scope && r.scope !== 'selection' ? ` scope="${r.scope}"` : ''}${r.type && r.type !== 'none' ? ` type="${r.type}"` : ''} priority="${r.priority}"><pivotAreas count="${r.areas.length}">${r.areas.map((x) => pivotAreaXml(x)).join('')}</pivotAreas></conditionalFormat>`)
-        .join('')}</conditionalFormats>`
-    : ''
+  const fields = counted('pivotFields', p.fields.map((f, i) => fieldXml(f, i, p, place, w)))
+  const axisFields = (tag: string, list: PivotTable['rows']) => countedIf(tag, list?.map((f) => `<field x="${fieldIndex(f)}"/>`))
+  const pages = countedIf('pageFields', p.pages?.map((g) => `<pageField fld="${g.field}"${g.item === undefined ? '' : ` item="${g.item}"`} hier="-1"/>`))
+  const data = countedIf('dataFields', p.values?.map((d) => dataFieldXml(d, c, w)))
+  const formats = countedIf(
+    'formats',
+    p.formats?.map((f) => {
+      const style: ConditionalStyle = { ...(f.style ?? {}), ...(f.numberFormat === undefined ? {} : { numberFormat: f.numberFormat }) } as ConditionalStyle
+      const dxf = f.blank || !Object.keys(style).length ? '' : ` dxfId="${w.dxf(style)}"`
+      return `<format${f.blank ? ' action="blank"' : ''}${dxf}>${pivotAreaXml(f.area)}</format>`
+    }),
+  )
+  const rules = countedIf(
+    'conditionalFormats',
+    w.rules.map((r) => `<conditionalFormat${r.scope && r.scope !== 'selection' ? ` scope="${r.scope}"` : ''}${r.type && r.type !== 'none' ? ` type="${r.type}"` : ''} priority="${r.priority}">${counted('pivotAreas', r.areas.map((x) => pivotAreaXml(x)))}</conditionalFormat>`),
+  )
   const st = p.style
   const style = st ? `<pivotTableStyleInfo${give(st, 'name showRowHeaders=rowHeaders:b showColHeaders=columnHeaders:b showRowStripes=rowStripes:b showColStripes=columnStripes:b showLastColumn=lastColumn:b')}/>` : ''
-  const filters = p.filters?.length ? `<filters count="${p.filters.length}">${p.filters.map((f, i) => filterXml(f, i + 1, w)).join('')}</filters>` : ''
+  const filters = countedIf('filters', p.filters?.map((f, i) => filterXml(f, i + 1, w)))
   // Excel 2010's settings: the Values row hidden (Excel shows it without the flag), Repeat All Item Labels, the alt text
   const x14 = (p.valuesRow ? '' : ' hideValuesRow="1"') + give(p, 'fillDownLabelsDefault=repeatLabels:f') + give(p.altText ?? {}, 'altText=title altTextSummary=description')
   const alt = x14 ? `<ext uri="{962EF5D1-5CA2-4c93-8EF4-DBF5C05439D2}" xmlns:x14="${X14}"><x14:pivotTableDefinition${x14}/></ext>` : ''

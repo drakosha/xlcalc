@@ -10,7 +10,7 @@ import { sheetKey } from '../../syntax/print.js'
 import { parseAddress } from '../../model.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr } from '../xml/text.js'
-import { give, HEAD, MAIN, X14, X15 } from './xml.js'
+import { counted, give, HEAD, MAIN, X14, X15 } from './xml.js'
 
 const MS = 'http://schemas.microsoft.com/office'
 export const SLICER_RELS = { slicerCache: `${MS}/2007/relationships/slicerCache`, slicer: `${MS}/2007/relationships/slicer`, timelineCache: `${MS}/2011/relationships/timelineCache`, timeline: `${MS}/2011/relationships/timeline` }
@@ -52,7 +52,7 @@ export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tab
   const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
   const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, 'customListSort:t showMissing:t')}${cross}`
   const hide = nd.hide ? `<extLst><x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext></extLst>` : ''
-  return `${HEAD}<slicerCacheDefinition xmlns="${X14}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
+  return `${HEAD}<slicerCacheDefinition xmlns="${X14}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}>${counted('items', items)}</tabular></data>${hide}</slicerCacheDefinition>`
 }
 
 /** A date of a timeline, ISO 8601 as the file writes it: with its time. */

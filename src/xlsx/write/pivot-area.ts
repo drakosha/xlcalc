@@ -5,7 +5,7 @@
  */
 import type { PivotArea, PivotAreaReference, PivotAxisField } from '../../contract.js'
 import { AXIS, SUBTOTAL_ATTR } from '../pivot-names.js'
-import { give } from './xml.js'
+import { counted, give } from './xml.js'
 
 /** A field of an area: a cache field's index, or -2 for the value fields. */
 export const fieldIndex = (f: PivotAxisField) => (f === 'values' ? -2 : f)
@@ -27,5 +27,5 @@ export function pivotAreaXml(a: PivotArea, tag = 'pivotArea'): string {
     (a.axis === undefined ? '' : ` axis="${AXIS[a.axis]}"`) +
     give(a, 'fieldPosition:n')
   const refs = a.references ?? []
-  return refs.length ? `<${tag}${attrs}><references count="${refs.length}">${refs.map(referenceXml).join('')}</references></${tag}>` : `<${tag}${attrs}/>`
+  return refs.length ? `<${tag}${attrs}>${counted('references', refs.map(referenceXml))}</${tag}>` : `<${tag}${attrs}/>`
 }
