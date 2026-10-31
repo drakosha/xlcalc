@@ -148,11 +148,12 @@ export type StructureOp =
    * `cell` of `sheet`, or on a new sheet named `sheet` inserted as `insertSheet` inserts it (`newSheet`, at A3 without
    * `cell`). A source by range, table or name makes a new pivot cache of its fields, its header row's; `{ cache }` shares
    * a cache of the workbook by its `id`. `definition` lays out its fields as `editPivotTable` does, `groupDates` too.
-   * Refused (`pivot`) over cells that are not empty, unless `replace` (Excel's Replace the contents of the destination
-   * cells): their contents are cleared and the PivotTable takes their place; over a table or another PivotTable, or
-   * with a name already used on the sheet, always.
+   * With `xlcalc/pivot`, a PivotTable laid over cells that hold something or over a table is made as Excel 365 makes it:
+   * it shows `#SPILL!` in its top-left cell, the cells in the way left as they are, until a refresh finds the place
+   * free; a value in its top-left cell it takes over. Refused (`pivot`) over another PivotTable, with a name already
+   * used on the sheet, and, without `xlcalc/pivot`, over cells that are not empty or a table.
    */
-  | { op: 'addPivotTable'; sheet: string; cell?: string; newSheet?: { before?: string }; name?: string; source: PivotSource | { cache: number }; definition?: PivotTablePatch; replace?: boolean; groupDates?: boolean }
+  | { op: 'addPivotTable'; sheet: string; cell?: string; newSheet?: { before?: string }; name?: string; source: PivotSource | { cache: number }; definition?: PivotTablePatch; groupDates?: boolean }
   /**
    * Changes a PivotTable's definition (`PivotTablePatch`): fields on its axes and their order, value fields, items hidden
    * or collapsed, filters, sorting, totals, layout, captions, style, options; `source` is Excel's Change Data Source, a
