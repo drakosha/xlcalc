@@ -75,20 +75,22 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
     const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : inputAt(s, i, ref.cell), text, now, way, (k, row, col) => cells.get(`${k}:${formatAddress(row, col)}`)?.edit.input)
     if (!typed.ok) return { ok: false, refusal: typed, ref }
     const edit = { ...ref, input: typed.input }
-    const refused = pasted ? null : textRefusal(s, edit)
+    // texts typed into several cells at once over a PivotTable affect it, as a paste does (the set alerts)
+    const refused = pasted ? null : textRefusal(s, edit, typings.length > 1)
     if (refused) return { ok: false, refusal: refused, ref }
     cells.set(k, { i, r, c, edit, ...(earlier?.wrap || breaksLine(text, typed.input) ? { wrap: true as const } : {}) })
   }
-  return pasted ? takenTogether(s, [...cells.values()]) : { ok: true, cells: [...cells.values()] }
+  return pasted ? takenTogether(s, [...cells.values()], true) : { ok: true, cells: [...cells.values()] }
 }
 
 /**
  * Cells written together, a paste or an entry into a selection: refused where they change part of an array formula (an
- * area they cover whole they replace) or put a formula into a table's header cell, as Excel refuses them, with the cell.
+ * area they cover whole they replace), a PivotTable's cells (a paste affects it, an entry changes its part) or put a
+ * formula into a table's header cell, as Excel refuses them, with the cell.
  */
-function takenTogether(s: EngineState, cells: Typed[]): TypedTexts {
+function takenTogether(s: EngineState, cells: Typed[], pasted = false): TypedTexts {
   const edits = cells.map((x) => x.edit)
-  const part = arrayRefusal(s, edits) ?? pivotRefusal(s, edits)
+  const part = arrayRefusal(s, edits) ?? pivotRefusal(s, edits, pasted)
   if (part) {
     const { sheet, cell, ...refusal } = part
     return { ok: false, refusal, ref: { sheet, cell } }

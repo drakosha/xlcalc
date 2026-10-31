@@ -63,11 +63,14 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     await thrown(s.validateEntry('P', 'B4', { value: 1 }), 'part', 'B4')
     expect(await s.setCellText('P', 'B4', '3')).toMatchObject(refusal)
     expect(await s.previewCellText('P', 'B4', '3')).toMatchObject(refusal)
-    expect(await s.pasteText('P', 'A4', '1\t2')).toMatchObject({ ...refusal, sheet: 'P', cell: 'A4', message: expect.stringContaining('P!A4') })
-    expect(await s.previewPasteText('P', 'B4', '1')).toMatchObject({ ...refusal, sheet: 'P', cell: 'B4' })
+    // a paste affects it, one cell's text too, as Excel's alert says
+    const affect = { ok: false, code: 'pivot', reason: 'affect', message: expect.stringContaining('will affect a PivotTable') }
+    expect(await s.pasteText('P', 'A4', '1\t2')).toMatchObject({ ...affect, sheet: 'P', cell: 'A4', message: expect.stringContaining('P!A4') })
+    expect(await s.previewPasteText('P', 'B4', '1')).toMatchObject({ ...affect, sheet: 'P', cell: 'B4' })
     expect(await s.fillCellText('P', 'C4:C5', '1')).toMatchObject({ ok: true })
     expect(await s.fillCellText('P', 'B5:C5', '1')).toMatchObject({ ok: false, code: 'pivot', reason: 'part' })
-    expect(await s.setCellTexts([{ sheet: 'P', cell: 'C1', text: 'x' }, { sheet: 'P', cell: 'A3', text: 'x' }])).toMatchObject({ ok: false, code: 'pivot', reason: 'part' })
+    expect(await s.setCellTexts([{ sheet: 'P', cell: 'C1', text: 'x' }, { sheet: 'P', cell: 'A3', text: 'x' }])).toMatchObject({ ...affect, sheet: 'P', cell: 'A3' })
+    expect(await s.setCellTexts([{ sheet: 'P', cell: 'B4', text: '1' }])).toMatchObject({ ...refusal, sheet: 'P', cell: 'B4' })
     // a look, and a cell beyond the area
     await s.setCells([{ sheet: 'P', cell: 'B4', input: { numberFormat: '0.00' } }, { sheet: 'P', cell: 'D4', input: { value: 1 } }])
     await s.clearCells([{ sheet: 'P', range: 'B4' }], 'formats')
@@ -75,6 +78,10 @@ describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
     // the blank row between the Filters area and the table takes anything, as in Excel
     await s.setCellText('P', 'A2', 'x')
     expect(await s.getValues('P', 'A2')).toEqual([['x']])
+    // its table and Filters area cleared whole delete it, its cells with it as deletePivotTable clears them
+    expect(await s.clearCells([{ sheet: 'P', range: 'A1:B1' }, { sheet: 'P', range: 'A3:B5' }], 'contents')).toMatchObject({ layout: ['P'] })
+    expect((await s.getBook()).sheets[1].pivotTables).toBeUndefined()
+    expect(await s.getValues('P', 'A1:B5')).toEqual(Array.from({ length: 5 }, () => [null, null]))
     await s.close()
   })
 })
@@ -98,10 +105,29 @@ describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot i
       expect(item).toBeInstanceOf(InputError)
       expect(item).not.toBeInstanceOf(PivotInputError)
       expect((item as Error).message).toContain('"b" is not an item of this field')
+      // one text of setCellTexts names its part as setCellText does; an entry into a selection, the active cell's alone
+      expect(await s.setCellTexts([{ sheet: 'P', cell: 'B3', text: 'Total' }])).toMatchObject({ ok: true })
+      expect(await s.getValues('P', 'B3')).toEqual([['Total']])
+      expect(await s.setCellTexts([{ sheet: 'P', cell: 'B4', text: '1' }])).toMatchObject({ ok: false, code: 'pivot', reason: 'part', sheet: 'P', cell: 'B4' })
+      expect(await s.fillCellText('P', 'A4:B4', 'y')).toMatchObject({ ok: true })
+      expect(await s.getValues('P', 'A4:B4')).toEqual([['y', 2]])
+      expect(await s.fillCellText('P', 'A4:B4', '1', { active: 'B4' })).toMatchObject({ ok: false, code: 'pivot', reason: 'part', sheet: 'P', cell: 'B4' })
+      expect(await s.fillCellText('P', 'A4:A5', '=1')).toMatchObject({ ok: false, code: 'pivot', reason: 'formula', sheet: 'P', cell: 'A4' })
+      await s.undo()
+      await s.undo()
       // a new name is an edit of the definition, which the session makes with editPivotTable: the item's caption, laid out again
       expect(await s.setCellText('P', 'A4', 'z')).toMatchObject({ ok: true })
       expect(await s.getValues('P', 'A3:B5')).toEqual([['Row Labels', 'Sum of N'], ['z', 2], ['Grand Total', 2]])
       expect((await s.getBook()).sheets[1].pivotTables![0].fields[0].items).toEqual([{ item: 0, caption: 'z' }])
+      // its contents cleared whole, with other cells, delete it in one step, as Excel does; part of it is refused first
+      await s.setCells([{ sheet: 'P', cell: 'D9', input: { value: 1 } }])
+      await thrown(s.clearCells([{ sheet: 'P', range: 'A3:B5' }, { sheet: 'P', range: 'D9' }], 'contents'), 'affect', 'A3')
+      expect(await s.clearCells([{ sheet: 'P', range: 'A1:B1' }, { sheet: 'P', range: 'A3:D9' }], 'contents')).toMatchObject({ layout: ['P'], changes: [{ sheet: 'P', cell: 'D9', value: null }] })
+      expect((await s.getBook()).sheets[1].pivotTables).toBeUndefined()
+      expect(await s.getValues('P', 'A1:D9')).toEqual(Array.from({ length: 9 }, () => [null, null, null, null]))
+      await s.undo()
+      expect((await s.getBook()).sheets[1].pivotTables!.map((t) => t.name)).toEqual(['PT'])
+      expect(await s.getValues('P', 'D9')).toEqual([[1]])
       await s.close()
     } finally {
       setPivotEntry(() => null)

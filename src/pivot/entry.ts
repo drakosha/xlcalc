@@ -39,7 +39,7 @@ export function pivotEntry(book: BookInput, sheet: string, cell: string, input: 
   if (!part) return refuse({ key: 'pivotPart', ...where })
   if (input?.formula !== undefined) return refuse({ key: 'pivotFormula', ...where })
   const v = input?.value
-  if (v === undefined || v === null || v === '') return refuse({ key: 'pivotClear', ...where })
+  if (v === undefined || v === null || v === '') return refuse({ key: 'pivotAffect', ...where })
   const { words, rules, fieldName, valueName, labelText } = labeler(table, cache, book)
   const text = typeof v === 'string' ? v : typeof v === 'object' ? v.date : rules.display(v, undefined, Infinity).text
   const edit = (set: PivotTablePatch): PivotEntry => ({ ok: true, op: { op: 'editPivotTable', sheet: sh.name, pivot: table.name, set } })

@@ -203,12 +203,12 @@ export function pivotRefusal(book: BookInput, op: StructureOp): Exclude<Applied,
   if (!book.sheets.some((s) => s.pivotTables?.length)) return null
   const at = (sheet: string) => sheetIndex(book, sheet)
   switch (op.op) {
-    // a paste, a fill or a merge onto one is Excel's alert of a part changed; a table over one has an alert of its own
+    // a paste, a fill or a merge onto one affects it, as Excel's alert says (the set alerts); a table over one has an alert of its own
     case 'copyRange':
-      return pivotMet(book, at(op.to.sheet), parseRange(op.to.range), 'part')
+      return pivotMet(book, at(op.to.sheet), parseRange(op.to.range), 'affect')
     case 'fillRange':
     case 'mergeCells':
-      return pivotMet(book, at(op.sheet), parseRange(op.op === 'fillRange' ? op.to : op.range), 'part')
+      return pivotMet(book, at(op.sheet), parseRange(op.op === 'fillRange' ? op.to : op.range), 'affect')
     case 'addTable':
       return pivotMet(book, at(op.sheet), typeof op.table?.range === 'string' ? parseRange(op.table.range) : null, undefined)
     case 'moveRange': {
@@ -219,10 +219,10 @@ export function pivotRefusal(book: BookInput, op: StructureOp): Exclude<Applied,
       // a PivotTable the move takes whole moves with it; one it takes part of is cut
       const whole = (p: PivotTable) => contains(src, pivotArea(p))
       const cut = pivotsOn(book, s).find((t) => meets(t.x, src) && !contains(src, t.x))
-      // one the move takes part of is affected; one it lands on has a part changed
+      // one the move takes part of, or lands on, is affected
       if (cut) return pivotMet(book, s, cut.x, 'affect')
       const dest = { r1: to.row, c1: to.col, r2: to.row + src.r2 - src.r1, c2: to.col + src.c2 - src.c1 }
-      return pivotMet(book, at(op.to.sheet), dest, 'part', (p) => at(op.to.sheet) === s && whole(p))
+      return pivotMet(book, at(op.to.sheet), dest, 'affect', (p) => at(op.to.sheet) === s && whole(p))
     }
     default:
       return null

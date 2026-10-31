@@ -394,7 +394,7 @@ const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMes
 const ENTRIES: [string, CellInput | null, EngineMessage][] = [
   ['B4', { value: 3 }, { key: 'pivotPart', sheet: 'Свод', cell: 'B4', pivot: 'Сводная1' }],
   ['A4', { formula: '1' }, { key: 'pivotFormula', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
-  ['A4', null, { key: 'pivotClear', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
+  ['A4', null, { key: 'pivotAffect', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
   ['B3', { value: 'n' }, { key: 'pivotNameTaken', name: 'n' }],
   ['B1', { value: 'b' }, { key: 'pivotNotItem', item: 'b' }],
 ]
