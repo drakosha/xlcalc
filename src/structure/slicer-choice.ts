@@ -43,14 +43,17 @@ function itemized(p: PivotTable, f: number, n: number): PivotTable['fields'][num
   return added.length ? { ...pf, items: [...(pf.items ?? []), ...added.map((item) => ({ item }))] } : pf
 }
 
-/** The items a new slicer cache of field `f` starts with: chosen unless hidden on the first PivotTable it filters, as Excel takes a filter already there. */
-export function itemsShown(book: BookInput, ref: PivotRef, f: number, n: number): NonNullable<SlicerCache['items']> {
-  const p = book.sheets.find((s) => sheetKey(s.name) === sheetKey(ref.sheet))?.pivotTables?.find((q) => caseKey(q.name) === caseKey(ref.name))
+/** The cache items of field `f` a PivotTable does not show: its hidden items, or, on the Filters area with one item shown, all but that one. */
+export function unchosen(p: PivotTable | undefined, f: number): Set<number> {
   const items = p?.fields[f]?.items ?? []
-  // a page field's one item shown is the one chosen
   const page = p?.pages?.find((x) => x.field === f)?.item
   const shown = page !== undefined ? items[page]?.item : undefined
-  const hidden = new Set(items.flatMap((x) => (x.item !== undefined && (shown !== undefined ? x.item !== shown : x.hidden) ? [x.item] : [])))
+  return new Set(items.flatMap((x) => (x.item !== undefined && (shown !== undefined ? x.item !== shown : x.hidden) ? [x.item] : [])))
+}
+
+/** The items a new slicer cache of field `f` starts with: chosen unless the first PivotTable it filters does not show them, as Excel takes a filter already there. */
+export function itemsShown(book: BookInput, ref: PivotRef, f: number, n: number): NonNullable<SlicerCache['items']> {
+  const hidden = unchosen(book.sheets.find((s) => sheetKey(s.name) === sheetKey(ref.sheet))?.pivotTables?.find((q) => caseKey(q.name) === caseKey(ref.name)), f)
   return Array.from({ length: n }, (_, item) => (hidden.has(item) ? { item, selected: false } : { item }))
 }
 
@@ -64,6 +67,12 @@ export function withSlicerChoice(book: BookInput, sc: SlicerCache, refs: readonl
     at.book,
     refs,
     (p) => {
+      // a page field showing its one item keeps it while that item alone is chosen
+      const one = p.pages?.find((x) => x.field === at.field)?.item
+      if (one !== undefined) {
+        const shown = p.fields[at.field]?.items?.[one]?.item
+        if (shown !== undefined && off.size === n - 1 && !off.has(shown)) return p
+      }
       const pf = itemized(p, at.field, n)
       const items = pf.items?.map((x) => {
         const hide = x.item !== undefined && off.has(x.item)

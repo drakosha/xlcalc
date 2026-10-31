@@ -3,9 +3,9 @@
  * PivotTable it filters, marked when no record has them under the other fields' filters, in its order (by label, the
  * custom lists first, ascending by default) with the items with data first unless its cache says otherwise.
  */
-import type { PivotCache, PivotRef, PivotTable, SlicerCache, TimelineCache } from '../contract.js'
+import type { BookInput, PivotCache, PivotRef, PivotTable, SlicerCache, TimelineCache } from '../contract.js'
 import { caseKey } from '../collate.js'
-import { fieldIndex, sameRef } from '../structure/slicer-choice.js'
+import { fieldIndex, sameRef, unchosen } from '../structure/slicer-choice.js'
 import { itemsWithData } from './compute.js'
 import type { PivotComputeOptions } from './result.js'
 import { labelOrder } from './values.js'
@@ -19,26 +19,32 @@ export function slicerItems(sc: SlicerCache, results: readonly { table: PivotTab
   if (!values) return sc
   const data = new Set<number>()
   for (const r of results) for (const k of itemsWithData(r.table, r.cache, f, options)) data.add(k)
-  const hidden = new Set((first.table.fields[f]?.items ?? []).flatMap((x) => (x.hidden && x.item !== undefined ? [x.item] : [])))
+  const hidden = unchosen(first.table, f)
   const epoch = options.date1904 ? EPOCH_1904 : 0
   const lists = sc.customListSort !== false ? (options.lists ?? null) : null
   const order = values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], sc.sort === 'descending', lists, epoch) || a - b)
   // Excel's default: the items with data at the top
   if (sc.noData?.mark !== false && sc.noData?.last !== false) order.sort((a, b) => Number(!data.has(a)) - Number(!data.has(b)))
-  return { ...sc, items: order.map((item) => ({ item, ...(hidden.has(item) ? { selected: false } : {}), ...(data.has(item) ? {} : { noData: true }) })) }
+  // without cross filtering (`crossFilter="none"`) Excel marks no item as without data
+  const mark = sc.noData?.mark !== false
+  return { ...sc, items: order.map((item) => ({ item, ...(hidden.has(item) ? { selected: false } : {}), ...(!mark || data.has(item) ? {} : { noData: true }) })) }
 }
 
 /**
- * A PivotTable's filters without those of a field on no axis that no timeline over it names: such a filter is a deleted
- * timeline's, which the file keeps and Excel no longer applies, also on a refresh (the set slicer-file). Excel filters
- * by label or date only a field on rows or columns, and a timeline's field anywhere.
+ * A PivotTable as Excel calculates it: a field on no axis filters it only while a slicer or timeline over it names the
+ * field. Its hidden items and its label and date filters are otherwise what a deleted timeline or a disconnected slicer
+ * left in the file, which Excel saves and no longer applies, also on a refresh (the sets slicer-file and slicer-held).
+ * Excel filters by label or date only a field on rows or columns, and a timeline's field anywhere.
  */
-export function liveFilters(table: PivotTable, ref: PivotRef, timelines: readonly TimelineCache[] | undefined, fields: readonly { name: string }[]): PivotTable {
-  if (!table.filters?.length) return table
+export function liveFilters(table: PivotTable, ref: PivotRef, book: Pick<BookInput, 'slicerCaches' | 'timelineCaches'>, fields: readonly { name: string }[]): PivotTable {
   const placed = new Set<number | 'values'>([...(table.rows ?? []), ...(table.columns ?? []), ...(table.pages ?? []).map((p) => p.field)])
-  const named = new Set((timelines ?? []).filter((t) => t.pivots.some((r) => sameRef(r, ref))).map((t) => caseKey(t.field)))
-  const filters = table.filters.filter((f) => placed.has(f.field) || named.has(caseKey(fields[f.field]?.name ?? '')))
-  if (filters.length === table.filters.length) return table
+  const over = (caches: readonly (SlicerCache | TimelineCache)[] | undefined) => new Set((caches ?? []).filter((c) => c.pivots.some((r) => sameRef(r, ref))).map((c) => caseKey(c.field)))
+  const [sliced, timed] = [over(book.slicerCaches), over(book.timelineCaches)]
+  const named = (f: number, by: Set<string>) => placed.has(f) || by.has(caseKey(fields[f]?.name ?? ''))
+  const stale = table.fields.some((pf, f) => !named(f, sliced) && pf.items?.some((x) => x.hidden))
+  const filters = table.filters?.filter((x) => named(x.field, timed))
+  if (!stale && filters?.length === table.filters?.length) return table
   const { filters: _, ...rest } = table
-  return filters.length ? { ...rest, filters } : rest
+  const shown = stale ? table.fields.map((pf, f) => (named(f, sliced) || !pf.items ? pf : { ...pf, items: pf.items.map(({ hidden: __, ...x }) => x) })) : table.fields
+  return { ...rest, fields: shown, ...(filters?.length ? { filters } : {}) }
 }

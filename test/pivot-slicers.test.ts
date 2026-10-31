@@ -117,7 +117,7 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     s.close()
   })
 
-  it('takes the filter a PivotTable has, filters a PivotTable connected later, and keeps the filter when deleted', () => {
+  it('takes the filter a PivotTable has, filters a PivotTable connected later, not one disconnected, and keeps the filter when deleted', () => {
     const s = createSession(fresh())
     s.editStructure({ op: 'addSlicer', sheet: 'P', slicer: { name: 'Fruit' }, cache: { field: 'Product', pivots: [PT2] } })
     s.editStructure({ op: 'editSlicer', slicer: 'Fruit', cache: { items: [{ item: 0, selected: false }, { item: 1 }, { item: 2 }] } })
@@ -128,6 +128,10 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     expect(s.editStructure({ op: 'editSlicer', slicer: 'Fruit', cache: { pivots: [PT2, PT1] } }).ok).toBe(true)
     // PT1 without Apple: North 7, South 20, West 1
     expect(s.getValues('P', 'A4:B7')).toEqual([['North', 7], ['South', 20], ['West', 1], ['Grand Total', 28]])
+    // disconnected, PT1 shows every product again; connected back, it takes the choice
+    s.editStructure({ op: 'editSlicer', slicer: 'Fruit', cache: { pivots: [PT2] } })
+    expect(s.getValues('P', 'A3:B8')).toEqual(ALL)
+    s.editStructure({ op: 'editSlicer', slicer: 'Fruit', cache: { pivots: [PT2, PT1] } })
     expect(s.editStructure({ op: 'deleteSlicer', slicer: 'Fruit' }).ok).toBe(true)
     const b = s.getBook()
     expect([b.slicerCaches, b.sheets[1].slicers, b.sheets[1].pivotTables![0].fields[2].items?.[0]]).toEqual([undefined, undefined, { item: 0, hidden: true }])

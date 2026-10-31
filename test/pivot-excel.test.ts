@@ -23,6 +23,8 @@ import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import { replays, rounded, shown } from '../bench/coverage/pivot/phases.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as show from '../bench/coverage/pivot/show.js'
+import * as slicer from '../bench/coverage/pivot/slicer.js'
+import * as slicerHeld from '../bench/coverage/pivot/slicer-held.js'
 import * as showHeld from '../bench/coverage/pivot/show-held.js'
 import * as showItems from '../bench/coverage/pivot/show-items.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
@@ -50,9 +52,11 @@ const KNOWN: Record<string, string[]> = {
   'group-held': [],
   'calc-held': [],
   'show-items': [],
+  slicer: [],
+  'slicer-held': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld }
 
 /**
  * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums,

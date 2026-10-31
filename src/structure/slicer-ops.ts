@@ -173,7 +173,8 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
   const sheets = [...out.sheets]
   sheets[s] = withField(sheets[s], kind, [...((sheets[s][kind] ?? []) as (Slicer | Timeline)[]), item] as never)
   out = { ...out, sheets }
-  if (fresh) out = chosen(withCaches(out, kind, [...cachesOf(out, kind), cache]), kind, cache)
+  // its choice is the filter its PivotTables hold already: a page field keeps its one item (the set slicer-held)
+  if (fresh) out = withCaches(out, kind, [...cachesOf(out, kind), cache])
   // a new slicer filters nothing yet: its PivotTables are laid out again only to learn its items' data
   return laidOut(checkedPivots(out), cache.pivots, values, false)
 }
@@ -220,14 +221,16 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
     if (String(sel.start) > String(sel.end)) throw new InputError('op.cache.selection', 'expected a start on or before the end')
   }
   const next = patched(c, patch)
-  // the PivotTables it filters now take its choice; one no longer connected keeps the filter it has, as after a deletion
+  // the PivotTables it filters now take its choice; one no longer connected shows every item again (the set slicer-held)
   const choice = patch.items !== undefined || patch.selection !== undefined
   const added = next.pivots.filter((r) => !c.pivots.some((q) => sameRef(q, r)))
+  const removed = c.pivots.filter((r) => !next.pivots.some((q) => sameRef(q, r)))
   out = withCaches(out, kind, caches.map((y) => (y === c ? next : y)))
   if (kind === 'timelines' && patch.selection !== undefined) out = withLevels(out, next as TimelineCache)
   if (choice || added.length) out = chosen(out, kind, next, choice ? next.pivots : added)
+  if (removed.length) out = chosen(out, kind, { ...next, items: undefined, selection: undefined } as Cache, removed)
   const refs = [...c.pivots, ...added]
-  return laidOut(checkedPivots(out), refs, values, choice || added.length > 0)
+  return laidOut(checkedPivots(out), refs, values, choice || added.length + removed.length > 0)
 }
 
 /** The book with the timelines of `tc` at the level its dates are chosen at, none without a selection. */

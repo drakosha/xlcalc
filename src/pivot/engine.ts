@@ -76,7 +76,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     } else if (!cache.records) continue
     over.forEach((spot, k) => {
       const ref = { sheet: book.sheets[spot.s].name, name: spot.table.name }
-      const result = computePivot(liveFilters(tables[k], ref, book.timelineCaches, next.fields), next, options)
+      const result = computePivot(liveFilters(tables[k], ref, book, next.fields), next, options)
       next = result.cache
       results.push({ ref, table: result.table, cache: result.cache })
       placed.push({ sheet: book.sheets[spot.s].name, table: { ...result.table, name: spot.table.name }, laid: layoutPivot(result, book) })
