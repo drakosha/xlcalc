@@ -20,6 +20,7 @@ const TIMED = [
   'test/limits-writes.test.ts',
   'test/outside.test.ts',
   'test/regex-levels.test.ts',
+  'test/review-1021-lines.test.ts',
   'test/session-structure.test.ts',
   'test/session-undo-async.test.ts',
   'test/spill-occupied.test.ts',
