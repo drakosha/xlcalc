@@ -11,6 +11,7 @@ import { buildCheckedCases as first } from '../bench/coverage/pivot/checked-1.js
 import { buildCheckedCases as held } from '../bench/coverage/pivot/checked-held.js'
 import { buildCheckedCases as values } from '../bench/coverage/pivot/checked-values.js'
 import { buildCheckedCases as values2 } from '../bench/coverage/pivot/checked-values-2.js'
+import { buildCheckedCases as dates } from '../bench/coverage/pivot/checked-dates.js'
 import type { BookInput } from '../src/contract.js'
 import { readXlsx } from '../src/xlsx.js'
 
@@ -28,12 +29,13 @@ const UNPLACED = ['Text', 'Years', 'Bool', 'Blank', 'dates-columns', 'month-colu
 
 const cellsOf = (b: BookInput) => Object.fromEntries(Object.entries(b.sheets.find((s) => s.name === 'P')!.cells).flatMap(([a, c]) => (c.value !== undefined || c.formula !== undefined ? [[a, c.formula ?? c.value]] : [])))
 
-for (const [set, cases] of [['checked-1', first()], ['checked-held', held()], ['checked-values', values().filter((c) => !UNPLACED.includes(c.id))], ['checked-values-2', values2()]] as [string, CheckedCase[]][]) {
+// checked-dates in ru-RU: the fields Excel 365 groups by itself named in its interface's language (`Годы (Years)`)
+for (const [set, cases, locale] of [['checked-1', first()], ['checked-held', held()], ['checked-values', values().filter((c) => !UNPLACED.includes(c.id))], ['checked-values-2', values2()], ['ru-RU/checked-dates', dates(), 'ru-RU']] as [string, CheckedCase[], string?][]) {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')).answers
   describe(`${set} against Excel for Windows`, () => {
     for (const c of cases.filter((x) => !answers[x.id].error))
       it(c.id, async () => {
-        const book = predictBook(c)
+        const book = predictBook(c, locale)
         if (typeof book === 'string') throw new Error(book)
         const { dialog: _, ...want } = answers[c.id]
         expect(checkedOf(book, c.watch)).toEqual(want)
