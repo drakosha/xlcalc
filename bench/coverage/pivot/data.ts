@@ -183,8 +183,20 @@ export function labelColumns(): SourceColumn[] {
   return cols.map(([name, values]) => ({ name, values }))
 }
 
+/**
+ * The rows of `errors`, made by hand for the order of errors among a field's items: N (whole numbers to sum), and Err
+ * with each of Excel's seven classic errors once, out of their order, among numbers, text, a boolean and a blank.
+ */
+export function errorColumns(): SourceColumn[] {
+  const errs: (CellInput | undefined)[] = [{ formula: '#VALUE!' }, { value: 2 }, { formula: '#N/A' }, { formula: '#NULL!' }, { value: 'x' }, { formula: '#NUM!' }, { formula: '#REF!' }, undefined, { formula: '#DIV/0!' }, { value: true }, { formula: '#NAME?' }, { value: 1 }]
+  return [
+    { name: 'N', values: errs.map((_, k) => ({ value: k + 1 })) },
+    { name: 'Err', values: errs },
+  ]
+}
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2, labels: labelColumns }
+export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2, labels: labelColumns, errors: errorColumns }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`
