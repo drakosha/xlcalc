@@ -16,27 +16,32 @@ export interface ValuesPlacing {
 const marked = (list: unknown) => Array.isArray(list) && list.includes('values')
 
 /**
- * The PivotTable `t` (a patch `set` made to it) with Σ Values where Excel puts it: where an axis of the patch names it;
- * else at the patch's `valuesOnRows` and `valuesPosition`; else where it was, or, when it was on no axis, at the place
- * kept (the end of the columns without one). With fewer than two value fields it leaves the axes, its place kept.
+ * The PivotTable `t` (a patch `set` made to it) with Σ Values where Excel puts it. Where an axis of the patch names it,
+ * that is its place, kept as `valuesPosition` unless it is last; moved by the patch's `valuesOnRows` (to the end of that
+ * axis) or `valuesPosition`, it goes there; else it stays where it is. On no axis, it comes at the place kept, the end of
+ * the axis without one. With fewer than two value fields it leaves the axes and `valuesOnRows` and `valuesPosition` stay,
+ * as Excel keeps them; a field moved beside it leaves `valuesPosition` as it was, as Excel does.
  */
 export function placedValues(t: PivotTable, set: ValuesPlacing = {}): PivotTable {
   const rows: PivotAxisField[] = (t.rows ?? []).filter((f) => f !== 'values')
   const columns: PivotAxisField[] = (t.columns ?? []).filter((f) => f !== 'values')
   const inRows = (t.rows ?? []).indexOf('values')
   const inColumns = (t.columns ?? []).indexOf('values')
-  const now = inRows >= 0 ? { onRows: true, at: inRows } : inColumns >= 0 ? { onRows: false, at: inColumns } : { onRows: t.valuesOnRows === true, at: t.valuesPosition }
-  let { onRows, at } = now
-  // moved by `valuesOnRows` or `valuesPosition` alone: to the end of the other axis unless a position is given
-  if (!marked(set.rows) && !marked(set.columns) && (set.valuesOnRows !== undefined || set.valuesPosition !== undefined)) {
+  const marker = inRows >= 0 || inColumns >= 0
+  let onRows = marker ? inRows >= 0 : t.valuesOnRows === true
+  let position = t.valuesPosition
+  let at = marker ? Math.max(inRows, inColumns) : position
+  if (marked(set.rows) || marked(set.columns)) position = at! < (onRows ? rows : columns).length ? at : undefined
+  else if (set.valuesOnRows !== undefined || set.valuesPosition !== undefined) {
+    // moved to the end of the other axis, or to the position given
+    const was = onRows
     if (set.valuesOnRows !== undefined) onRows = t.valuesOnRows === true
-    at = set.valuesPosition !== undefined ? t.valuesPosition : onRows === now.onRows ? now.at : undefined
+    if (set.valuesPosition === undefined && onRows !== was) position = undefined
+    if (set.valuesPosition !== undefined || onRows !== was) at = position
   }
   const axis = onRows ? rows : columns
-  // the last place is kept as no position, as Excel writes it
-  const position = at !== undefined && at < axis.length ? at : undefined
+  if ((t.values?.length ?? 0) >= 2) axis.splice(Math.min(at ?? axis.length, axis.length), 0, 'values')
   const out: PivotTable = { ...t }
-  if ((t.values?.length ?? 0) >= 2) axis.splice(position ?? axis.length, 0, 'values')
   // an axis the PivotTable names keeps its list, an empty one too
   for (const [key, list] of [['rows', rows], ['columns', columns]] as const) if (list.length || t[key]) out[key] = list
   if (onRows) out.valuesOnRows = true
