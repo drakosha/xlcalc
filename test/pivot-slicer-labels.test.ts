@@ -126,3 +126,37 @@ describe('a field of times of day without a date', () => {
     s.close()
   })
 })
+
+describe("a slicer's items after its PivotTables are refreshed, over Excel's books (the set slicer-labels)", () => {
+  const dir = new URL('./excel/win/pivot/', import.meta.url)
+  const answers = (JSON.parse(readFileSync(new URL('slicer-labels.json', dir), 'utf8')) as { answers: Record<string, { phases: { slicers?: Record<string, [string, boolean, boolean][]> }[] }> }).answers
+  /** Each slicer's items as Excel's slicer lists them: label, chosen, with data. */
+  type Items = Record<string, [string, boolean, boolean][]>
+  const shown = (layout: Awaited<ReturnType<ReturnType<typeof createSession>['getLayout']>>): Items =>
+    Object.fromEntries(layout.sheets.flatMap((s) => s.slicers ?? []).map((sl) => [sl.name, layout.slicerCaches!.find((c) => c.name === sl.cache)!.items!.map((x) => [x.label, x.selected !== false, !x.noData] as [string, boolean, boolean])]))
+  // numbers grouped: the groups, those with data first; errors as the PivotTable lists them; months and years grouped
+  const IDS = ['n-numbers', 'err', 'day-months-years']
+  const book = async (id: string) => (await readXlsx(readFileSync(new URL(`slicer-labels/${id}.xlsx`, dir)))).book
+
+  for (const execution of ['closures', 'eval'] as const)
+    it(`are the groups and the order Excel showed, in a session (${execution})`, async () => {
+      for (const id of IDS) {
+        const s = createSession(await book(id), { execution })
+        expect(s.editStructure({ op: 'refreshPivots' }).ok).toBe(true)
+        expect([id, shown(s.getLayout())]).toEqual([id, answers[id].phases.at(-1)!.slicers])
+        s.close()
+      }
+    })
+
+  const { made } = closedAfter()
+  for (const [kind, calc] of [['inline', async () => createInlineCalc()], ['pool', () => made({ threads: 1 })]] as const)
+    it(`are the groups and the order Excel showed, in the ${kind} calculator`, async () => {
+      const c = await calc()
+      for (const id of IDS) {
+        const s = await c.createSession(await book(id))
+        expect((await s.editStructure({ op: 'refreshPivots' })).ok).toBe(true)
+        expect([id, shown(await s.getLayout())]).toEqual([id, answers[id].phases.at(-1)!.slicers])
+        await s.close()
+      }
+    })
+})
