@@ -7,7 +7,7 @@ import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
 import { cellCount, cellsWithin, parseRange, type Rect } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
-import { attr, attributes, element, elements, has, type Element } from '../xml/scan.js'
+import { attr, attributes, element, elements, has, within, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { setCell } from './cells.js'
 import type { Rel } from './package.js'
@@ -75,8 +75,8 @@ function commentCell(ref: string | undefined, sheet: string, issues: Issues): st
 
 function comments(xml: string | undefined, sheet: string, issues: Issues): Comment[] {
   if (!xml) return []
-  const authors = elements(element(xml, 'authors')?.body ?? '', 'author').map((e) => readText(e.body ?? ''))
-  return elements(element(xml, 'commentList')?.body ?? '', 'comment').flatMap((e) => {
+  const authors = within(xml, 'authors', 'author').map((e) => readText(e.body ?? ''))
+  return within(xml, 'commentList', 'comment').flatMap((e) => {
     const a = attributes(e.attrs)
     const cell = commentCell(a.ref, sheet, issues)
     if (!cell) return []
@@ -152,7 +152,7 @@ const LINK_CELLS = 4096
 function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issues): Map<string, CellLink> {
   const out = new Map<string, CellLink>()
   const rels = new Map(src.rels.map((r) => [r.id, r]))
-  for (const e of elements(element(src.tail, 'hyperlinks')?.body ?? '', 'hyperlink')) {
+  for (const e of within(src.tail, 'hyperlinks', 'hyperlink')) {
     const a = attributes(e.attrs)
     const link: CellLink = {}
     const id = attr(a, 'id')

@@ -18,7 +18,7 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
-import { attributes, element, elements, flag, has, lastChild, ownEntry, type Element } from '../xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, has, lastChild, ownEntry, within, type Element } from '../xml/scan.js'
 import { decimal, look, outlineOf, readCells, setCell, xfAt, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
@@ -193,7 +193,7 @@ function spans<T>(lines: [lo: number, hi: number, T][], axis: 'r' | 'c'): Record
 
 function columns(head: string, read: CellsContext): Record<string, ColumnInput> | undefined {
   const lines: [number, number, ColumnInput][] = []
-  for (const e of elements(element(head, 'cols')?.body ?? '', 'col')) {
+  for (const e of within(head, 'cols', 'col')) {
     const a = attributes(e.attrs)
     const [lo, hi] = [Number(a.min) - 1, Number(a.max) - 1]
     if (!(lo >= 0 && hi >= lo && hi < MAX_COLS)) continue
@@ -219,7 +219,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
 function merges(rest: string, sheet: string, issues: Issues): string[] | undefined {
   const refs: string[] = []
   const all: Rect[] = []
-  for (const e of elements(element(rest, 'mergeCells')?.body ?? '', 'mergeCell')) {
+  for (const e of within(rest, 'mergeCells', 'mergeCell')) {
     const ref = attributes(e.attrs).ref?.toUpperCase()
     const x = ref ? parseMerge(ref) : null
     if (!x) continue
@@ -254,7 +254,7 @@ function hasCriteria(filter: Element | undefined): boolean {
 function filterMode(head: string, tail: string, src: SheetSource, issues: Issues): boolean {
   const where = { sheet: src.name }
   const own = element(tail, 'autoFilter')
-  const mark = flag(attributes(element(head, 'sheetPr')?.attrs ?? '').filterMode)
+  const mark = flag(attrsAt(head, 'sheetPr').filterMode)
   const tables = src.tables.some((x) => hasCriteria(element(x, 'autoFilter')))
   const criteria = hasCriteria(own)
   if (criteria) issues.add('autoFilter', { key: 'autoFilterCriteria' }, where)
@@ -266,7 +266,7 @@ function filterMode(head: string, tail: string, src: SheetSource, issues: Issues
 
 /** The sheet's AutoFilter (`<autoFilter ref>`) as the model holds it: a range of cells over no table of the sheet's, else reported. */
 function autoFilter(tail: string, sheet: SheetInput, issues: Issues): AutoFilter | undefined {
-  const ref = attributes(element(tail, 'autoFilter')?.attrs ?? '').ref
+  const ref = attrsAt(tail, 'autoFilter').ref
   if (ref === undefined) return undefined
   const x = parseRange(ref)
   if (x && !(sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, x))) return { range: rectText(x) }
@@ -279,7 +279,7 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const where = { sheet: src.name }
   for (const [local, code, message] of FEATURES) if (has(outside, local)) issues.add(code, message, where)
   // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
-  const fp = attributes(element(head, 'sheetFormatPr')?.attrs ?? '')
+  const fp = attrsAt(head, 'sheetFormatPr')
   const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
   if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', { key: 'defaultWidth', width: Math.round(width * 100) / 100 }, where)
   const setup = element(tail, 'pageSetup')

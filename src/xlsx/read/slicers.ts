@@ -5,12 +5,12 @@
  */
 import type { DrawingPlace, PivotRef, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { formatAddress } from '../../model.js'
-import { attributes, element, elements, flag } from '../xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, within } from '../xml/scan.js'
 import { attrText, take } from './pivot-cache.js'
 
 /** The PivotTables a cache names by the sheet's id (`tabId`, the workbook's `sheetId`) and name. */
 function pivotsOf(xml: string, sheetOf: (id: string | undefined) => string | undefined): PivotRef[] {
-  return elements(element(xml, 'pivotTables')?.body ?? '', 'pivotTable').flatMap((e) => {
+  return within(xml, 'pivotTables', 'pivotTable').flatMap((e) => {
     const a = attributes(e.attrs)
     const sheet = sheetOf(a.tabId)
     return sheet === undefined ? [] : [{ sheet, name: attrText(a.name) }]
@@ -25,14 +25,14 @@ export interface SlicerContext {
 }
 
 export function readSlicerCache(xml: string, ctx: SlicerContext): SlicerCache {
-  const a = attributes(element(xml, 'slicerCacheDefinition')?.attrs ?? '')
+  const a = attrsAt(xml, 'slicerCacheDefinition')
   const c: SlicerCache = { name: attrText(a.name), field: attrText(a.sourceName), pivots: pivotsOf(xml, ctx.sheetOf) }
   const tab = element(xml, 'tabular')
   if (tab) {
     const ta = attributes(tab.attrs)
     const cache = ctx.cacheOf(ta.pivotCacheId)
     if (cache !== undefined) c.cache = cache
-    c.items = elements(element(tab.body ?? '', 'items')?.body ?? '', 'i').map((e) => {
+    c.items = within(tab.body ?? '', 'items', 'i').map((e) => {
       const ia = attributes(e.attrs)
       return { item: Number(ia.x ?? 0), ...(flag(ia.s) ? {} : { selected: false }), ...(flag(ia.nd) ? { noData: true } : {}) }
     })
@@ -56,11 +56,11 @@ export function readSlicerCache(xml: string, ctx: SlicerContext): SlicerCache {
 const LEVELS: TimelineLevel[] = ['years', 'quarters', 'months', 'days']
 
 export function readTimelineCache(xml: string, ctx: SlicerContext): TimelineCache {
-  const a = attributes(element(xml, 'timelineCacheDefinition')?.attrs ?? '')
-  const state = attributes(element(xml, 'state')?.attrs ?? '')
+  const a = attrsAt(xml, 'timelineCacheDefinition')
+  const state = attrsAt(xml, 'state')
   const c: TimelineCache = { name: attrText(a.name), field: attrText(a.sourceName), pivots: pivotsOf(xml, ctx.sheetOf), cache: ctx.cacheOf(state.pivotCacheId) ?? -1 }
   for (const k of ['selection', 'bounds'] as const) {
-    const s = attributes(element(xml, k)?.attrs ?? '')
+    const s = attrsAt(xml, k)
     if (s.startDate !== undefined && s.endDate !== undefined) c[k] = { start: s.startDate, end: s.endDate }
   }
   return c

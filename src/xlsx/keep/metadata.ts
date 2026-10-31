@@ -8,7 +8,7 @@ import { ERROR_TEXT } from '../../syntax/errors.js'
 import { cellMetadata, RICH_TYPE } from '../read/metadata.js'
 import { DYNAMIC, DYNAMIC_BLOCK, ERROR_STRUCTURE, metadata, metadataType, RICH, richBlock, richError, richValuesXml } from '../write/book.js'
 import { HEAD } from '../write/xml.js'
-import { attributes, element, elements } from '../xml/scan.js'
+import { attributes, elements, within } from '../xml/scan.js'
 import { appended, childrenOf, opening, rootOf, setAttrs, type Placed } from './xml.js'
 
 type Rich = keyof typeof RICH_TYPE
@@ -28,7 +28,7 @@ export interface MetaPlan {
 
 export function planMeta(xml: string | undefined, values: string | undefined, structures: string | undefined): MetaPlan {
   const meta = cellMetadata(xml, values, structures)
-  const count = (local: string) => elements(element(xml ?? '', local)?.body ?? '', 'bk').length
+  const count = (local: string) => within(xml ?? '', local, 'bk').length
   let mark = 0
   for (let cm = 1; cm <= count('cellMetadata') && !mark; cm++) if (meta.dynamic(cm)) mark = cm
   const found = new Map<string, number>()

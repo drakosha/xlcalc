@@ -15,7 +15,7 @@ import { slicerCacheXml, slicersPartXml, timelineCacheXml, timelinesPartXml } fr
 import { KeptRefusal } from './refusals.js'
 import { sheetKey } from '../../syntax/print.js'
 import type { CellFormats } from '../write/styles.js'
-import { attr, attributes, element } from '../xml/scan.js'
+import { attr, attrsAt } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { relsPath, type Source, type SourceSheet } from './source.js'
 import { attrsOf, childrenOf, Rels, relType, rootOf, TYPE, type ContentTypes, type Placed } from './xml.js'
@@ -87,7 +87,7 @@ const unsourced = (c: PivotCache | undefined) => JSON.stringify(c && { ...c, sou
 
 /** A cache's source as its part gives it, its references written back: a range by sheet and reference, a table or name by its name. */
 function fileSource(xml: string): string {
-  const a = attributes(element(xml, 'worksheetSource')?.attrs ?? '')
+  const a = attrsAt(xml, 'worksheetSource')
   return a.name !== undefined ? `n${readText(a.name)}` : `r${readText(a.sheet ?? '')}!${a.ref ?? ''}`
 }
 
@@ -184,7 +184,7 @@ export class KeptPivots {
     for (const r of ss.rels) {
       if (r.kind !== 'pivotTable' || r.external) continue
       const xml = this.files.tables.get(r.target) ?? ''
-      const name = readText(attributes(element(xml, 'pivotTableDefinition')?.attrs ?? '').name ?? '')
+      const name = readText(attrsAt(xml, 'pivotTableDefinition').name ?? '')
       const p0 = before.find((p) => caseKey(p.name) === caseKey(name))
       // a PivotTable the model left out stays as the file has it
       if (!p0) continue

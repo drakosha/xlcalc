@@ -7,7 +7,7 @@
  */
 import type { ExternalBook, ExternalName, ExternalSheet, ExternalValue } from '../../contract.js'
 import type { Issues } from '../issues.js'
-import { attr, attributes, element, elements, flag, ownEntry } from '../xml/scan.js'
+import { attr, attributes, element, elements, flag, ownEntry, within } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { Archive } from '../zip/read.js'
 import { ERRORS } from './cells.js'
@@ -66,8 +66,8 @@ function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): Exte
   const root = element(xml, 'externalBook')!
   const id = attr(attributes(root.attrs), 'id')
   const body = root.body ?? ''
-  const sheets: ExternalSheet[] = elements(element(body, 'sheetNames')?.body ?? '', 'sheetName').map((e) => ({ name: readText(attributes(e.attrs).val ?? '') }))
-  for (const d of elements(element(body, 'sheetDataSet')?.body ?? '', 'sheetData')) {
+  const sheets: ExternalSheet[] = within(body, 'sheetNames', 'sheetName').map((e) => ({ name: readText(attributes(e.attrs).val ?? '') }))
+  for (const d of within(body, 'sheetDataSet', 'sheetData')) {
     const a = attributes(d.attrs)
     const sheet = sheets[Number(a.sheetId)]
     if (!sheet) continue
@@ -75,7 +75,7 @@ function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): Exte
     if (flag(a.refreshError)) sheet.refreshError = true
   }
   const names: ExternalName[] = []
-  for (const e of elements(element(body, 'definedNames')?.body ?? '', 'definedName')) {
+  for (const e of within(body, 'definedNames', 'definedName')) {
     const a = attributes(e.attrs)
     const name: ExternalName = { name: readText(a.name ?? ''), ref: readText(a.refersTo ?? '').replace(/^=/, '') }
     if (a.sheetId !== undefined) {
@@ -97,7 +97,7 @@ function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): Exte
 export async function readLinks(archive: Archive, wb: string, rels: Rel[], issues: Issues): Promise<ReadLinks> {
   const out: ReadLinks = { books: [], known: new Set() }
   const byId = new Map(rels.map((r) => [r.id, r]))
-  for (const e of elements(element(wb, 'externalReferences')?.body ?? '', 'externalReference')) {
+  for (const e of within(wb, 'externalReferences', 'externalReference')) {
     const n = out.books.length + 1
     const r = byId.get(attr(attributes(e.attrs), 'id') ?? '')
     const xml = r && !r.external ? await archive.text(r.target) : undefined

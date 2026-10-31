@@ -14,7 +14,7 @@ import { DEFAULT_TABLE_STYLE, sheetTables, STYLE_OPTIONS, TABLE_STYLE, TOTALS } 
 import type { Issues } from '../issues.js'
 import { setCell } from './cells.js'
 import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
-import { attributes, element, elements, flag } from '../xml/scan.js'
+import { attributes, element, flag, within } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 
 /** Whether two styles are the same: the same name and options, an option false when it is absent. */
@@ -46,7 +46,7 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
   const range = a.ref?.toUpperCase()
   if (!name || !range) return null
   const formulas: (ReadFormula | undefined)[] = []
-  const columns = elements(element(xml, 'tableColumns')?.body ?? '', 'tableColumn').map((e): TableColumn => {
+  const columns = within(xml, 'tableColumns', 'tableColumn').map((e): TableColumn => {
     const c = attributes(e.attrs)
     const col: TableColumn = { name: readText(c.name ?? '') }
     const calc = element(e.body ?? '', 'calculatedColumnFormula')

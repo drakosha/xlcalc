@@ -19,7 +19,7 @@ import { nextBlock } from '../write/parts.js'
 import { sheetPieces, sheetXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
 import { tableXml } from '../write/tables.js'
-import { attr, attributes, element } from '../xml/scan.js'
+import { attr, attributes, attrsAt } from '../xml/scan.js'
 import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
@@ -124,7 +124,7 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
         const xml = await src.archive.text(r.target)
         if (xml === undefined) continue
         tables.set(r.target, xml)
-        tableId = Math.max(tableId, Number(attributes(element(xml, 'table')?.attrs ?? '').id) || 0)
+        tableId = Math.max(tableId, Number(attrsAt(xml, 'table').id) || 0)
       }
   const rels = new Map<string, string[]>()
   for (const name of src.archive.names) {
@@ -514,7 +514,7 @@ class Kept {
     for (const r of ss.rels) {
       if (r.kind !== 'table' || r.external) continue
       const xml = this.setup.tables.get(r.target)
-      const a = attributes(element(xml ?? '', 'table')?.attrs ?? '')
+      const a = attrsAt(xml ?? '', 'table')
       const t0 = xml === undefined ? undefined : before.find((t) => caseKey(t.name) === caseKey(readText(a.displayName ?? a.name ?? '')))
       // a table the model left out stays as the file has it
       const t1 = t0 && take(t0)
