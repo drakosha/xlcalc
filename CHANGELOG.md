@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.71.2 (2026-10-31)
+
+Fixed:
+
+- An answer of `externals.resolve` lands in the cache only while its call is still the one kept. An answer asked before `refreshConnections` and arriving after the one asked again no longer overwrites the new answer, and the next recalculation of the cell takes the new value.
+
 ## 0.71.1 (2026-10-31)
 
 Changed:
