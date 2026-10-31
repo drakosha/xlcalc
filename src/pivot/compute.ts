@@ -60,6 +60,22 @@ function valueReader(cache: PivotCache, field: number, epoch: number): (r: numbe
 
 const key = (path: readonly number[]) => path.join(',')
 
+/**
+ * The cache items of field `field` that some record has under the filters of the other fields (hidden items, a page
+ * field's item, label and date filters), as a slicer of the field tells its items with data. `table` and `cache` are a
+ * calculation's (`PivotResult`), the field listed.
+ */
+export function itemsWithData(table: PivotTable, cache: PivotCache, field: number, options: PivotComputeOptions = {}): Set<number> {
+  const epoch = options.date1904 ? EPOCH_1904 : 0
+  const at = itemIndexes(table, cache)
+  const shown = shownItems(table, cache, options.today ?? 0, epoch)
+  const out = new Set<number>()
+  ;(cache.records ?? []).forEach((rec, r) => {
+    if (shown.every((s, f) => f === field || !s || (at[f][r] >= 0 && s[at[f][r]])) && typeof rec[field] === 'number') out.add(rec[field] as number)
+  })
+  return out
+}
+
 /** Calculates a PivotTable over its cache's records. */
 export function computePivot(given: PivotTable, givenCache: PivotCache, options: PivotComputeOptions = {}): PivotResult {
   const epoch = options.date1904 ? EPOCH_1904 : 0

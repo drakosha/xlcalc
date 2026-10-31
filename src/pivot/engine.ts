@@ -3,7 +3,7 @@
  * sources (or taken as saved), every PivotTable over them calculated again, all of them or none: a refusal of one is
  * the refusal of the whole operation.
  */
-import type { BookInput, PivotCache, PivotTable } from '../contract.js'
+import type { BookInput, PivotCache, PivotRef, PivotTable } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
@@ -15,7 +15,17 @@ import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
 import { layoutPivot } from './layout.js'
 import { placePivots, type Placement } from './place.js'
+import { slicerItems } from './slicers.js'
 import { sourceGrid } from './source.js'
+
+/** A PivotTable calculated: its sheet and name, and the calculation's PivotTable and cache. */
+interface Calculated {
+  ref: PivotRef
+  table: PivotTable
+  cache: PivotCache
+}
+
+const sameRef = (a: PivotRef, b: PivotRef) => caseKey(a.sheet) === caseKey(b.sheet) && caseKey(a.name) === caseKey(b.name)
 
 /** A PivotTable of the book and its sheet's index. */
 interface Spot {
@@ -41,6 +51,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
   const options = { today, date1904: epoch > 0, lists: listsOf(book) }
   const placed: Placement[] = []
   const newCaches = new Map<number, PivotCache>()
+  const results: Calculated[] = []
   for (const id of wanted) {
     const cache = caches.get(id)
     const over = spots.filter((x) => x.table.cache === id)
@@ -67,10 +78,15 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     over.forEach((spot, k) => {
       const result = computePivot(tables[k], next, options)
       next = result.cache
+      results.push({ ref: { sheet: book.sheets[spot.s].name, name: spot.table.name }, table: result.table, cache: result.cache })
       placed.push({ sheet: book.sheets[spot.s].name, table: { ...result.table, name: spot.table.name }, laid: layoutPivot(result, book) })
     })
     newCaches.set(id, next)
   }
   if (!newCaches.size) return { ok: true, book, geometry: [] }
-  return placePivots({ ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }, placed)
+  const out: BookInput = { ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }
+  // the slicers over the caches laid out learn their items' data and choice
+  if (book.slicerCaches?.some((sc) => sc.cache !== undefined && newCaches.has(sc.cache)))
+    out.slicerCaches = book.slicerCaches.map((sc) => (sc.cache !== undefined && newCaches.has(sc.cache) ? slicerItems(sc, sc.pivots.flatMap((r) => results.filter((x) => sameRef(x.ref, r))), options) : sc))
+  return placePivots(out, placed)
 }
