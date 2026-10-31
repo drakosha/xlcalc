@@ -1,6 +1,6 @@
 /**
  * Where Excel's PivotTable Fields list puts a field whose box is checked, by the kinds of value its cache holds alone
- * (no engine): numbers go to Values, the others to the rows.
+ * (no engine): numbers, empty cells among them, go to Values with Sum; any other field to the rows.
  */
 import type { PivotCache, PivotCacheField, PivotFieldFacts, PivotFieldSuggestion, PivotValue } from './contract.js'
 import { array, integer, object } from './input/basic.js'
@@ -20,9 +20,9 @@ function kindsOf(cache: PivotCache, f: number): Set<Kind> {
 
 /**
  * Where checking the box of the field `field` (its index in `cache.fields`) in Excel's PivotTable Fields list puts it: a
- * field of numbers alone on Values with Sum, of numbers and empty cells with Count; a calculated field on Values with
- * Sum; any other field (text, dates, booleans, errors, numbers among them, a field of groups, a field the cache holds no
- * value of) on the rows.
+ * field of numbers, with empty cells or without, on Values with Sum, as a calculated field; any other field (text,
+ * dates, booleans, errors or text among numbers, empty cells alone, a field of groups, a field the cache holds no value
+ * of) on the rows.
  */
 export function suggestPivotField(cache: PivotCache, field: number): PivotFieldSuggestion {
   const c = object(cache, 'cache', 'a pivot cache such as { id: 1, source: {...}, fields: [{ name: "Amount" }] }')
@@ -32,5 +32,5 @@ export function suggestPivotField(cache: PivotCache, field: number): PivotFieldS
   if (at.group) return { axis: 'rows' }
   const kinds = kindsOf(cache, f)
   if (!kinds.has('number') || [...kinds].some((k) => k !== 'number' && k !== 'blank')) return { axis: 'rows' }
-  return { axis: 'values', function: kinds.has('blank') ? 'count' : 'sum' }
+  return { axis: 'values', function: 'sum' }
 }
