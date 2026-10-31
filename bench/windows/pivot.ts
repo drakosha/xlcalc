@@ -182,7 +182,7 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     } else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
     else if ('slicer' in o) {
       slicers.push(o.name)
-      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: o.on ?? 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
+      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: o.on ?? 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]), ...(o.auto ? { auto: true } : {}), ...(o.slicerName !== undefined ? { named: o.slicerName } : {}) })
     } else if ('select' in o) add(role, { ...at, op: 'only', on: 'slicerCache', field: o.select, items: o.items })
     else if ('deleteSlicer' in o) add(role, call('slicerCache', 'Delete', [], { field: o.deleteSlicer }))
     else if ('addSheet' in o) add(role, { do: 'struct', op: 'insertSheet', target: o.addSheet })
@@ -192,10 +192,15 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       if (o.order) props.push(['SortItems', SLICER_SORT[o.order]])
       if (o.noData) props.push(['CrossFilterType', CROSS_FILTER[o.noData]])
       add(role, set('slicerCache', props, { field: o.slicerSettings }))
-    } else if ('link' in o) add(role, { do: 'pivot', op: 'link', field: o.link, sheet: sheets.get(o.pivot) ?? 'P', pt: o.pivot, off: o.off ?? false })
+    } else if ('slicerGet' in o) add(role, { do: 'pivot', op: 'slicerGet', field: o.slicerGet, props: o.get ?? [], items: o.items ?? [] })
+    else if ('slicerSet' in o) add(role, { do: 'pivot', op: 'slicerSet', field: o.slicerSet, prop: o.prop, value: o.to })
+    else if ('timelineSet' in o) add(role, call('timeline', 'SetFilterDateRange', [{ d: o.from }, { d: o.to }], { field: o.timelineSet }))
+    else if ('protect' in o) add(role, { do: 'pivot', op: 'protect', sheet: o.protect, objects: o.objects ?? false, pivots: o.pivots ?? false })
+    else if ('unprotect' in o) add(role, { do: 'pivot', op: 'unprotect', sheet: o.unprotect })
+    else if ('link' in o) add(role, { do: 'pivot', op: 'link', field: o.link, sheet: sheets.get(o.pivot) ?? 'P', pt: o.pivot, off: o.off ?? false })
     else if ('timeline' in o) {
       slicers.push(o.name)
-      add(role, { ...at, op: 'slicer', field: o.timeline, name: o.name, kind: 2, at: 'P', also: [] })
+      add(role, { ...at, op: 'slicer', field: o.timeline, name: o.name, kind: 2, at: o.on ?? 'P', also: [], ...(o.auto ? { auto: true } : {}) })
       if (o.from !== undefined && o.to !== undefined) add(role, call('timeline', 'SetFilterDateRange', [{ d: o.from }, { d: o.to }], { field: o.name }))
       if (o.level) add(role, set('timelineView', [['Level', LEVEL[o.level]]], { field: o.name }))
     } else if ('cache' in o) {
@@ -289,7 +294,7 @@ const savedBook = (tag: Tag) => (name: string) => new Uint8Array(readFileSync(wi
 export async function stepPivot(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<PivotSet>('pivot', set)).buildPivotCases()
   const saved = savedBook(tag)
-  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.file ? new Uint8Array(readFileSync(resolve(ROOT, c.file))) : c.from ? saved(c.from) : (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range') }, { values: 'omit' })).data))
+  const { files, sent: parts } = await caseFiles(cases, async (c) => (c.file ? new Uint8Array(readFileSync(resolve(ROOT, c.file))) : c.from ? saved(c.from) : (await writeXlsx({ book: { ...sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}) } }, { values: 'omit' })).data))
   const plans = new Map(cases.map((c) => [c.id, pivotSteps(c, saved)]))
   // a case runs again when its file or its steps change (the steps carry the books of external operations)
   const sent = Object.fromEntries(cases.map((c) => [c.id, `${parts[c.id]} ${createHash('sha256').update(JSON.stringify(plans.get(c.id)!.steps)).digest('hex').slice(0, 16)}`]))

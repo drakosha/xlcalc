@@ -1,0 +1,80 @@
+{
+ "xlsx": {
+  "op 0": [
+   [
+    "Slicer_Region",
+    false,
+    true
+   ],
+   []
+  ],
+  "op 1": [
+   [
+    "Products",
+    true,
+    false
+   ],
+   []
+  ],
+  "op 2": [
+   [
+    "Timeline_Date",
+    false,
+    null
+   ],
+   []
+  ],
+  "op 3": [
+   [
+    "Timeline_When",
+    true,
+    null
+   ],
+   []
+  ]
+ },
+ "kept": {
+  "op 0": [
+   [
+    "Slicer_Region",
+    false,
+    true
+   ],
+   []
+  ],
+  "op 1": [
+   [
+    "Products",
+    true,
+    false
+   ],
+   []
+  ],
+  "op 2": [
+   [
+    "Timeline_Date",
+    false,
+    null
+   ],
+   []
+  ],
+  "op 3": [
+   [
+    "Timeline_When",
+    true,
+    null
+   ],
+   []
+  ]
+ },
+ "space": {
+  "op 3": [
+   [
+    " ",
+    true,
+    false
+   ],
+   []
+  ]
+ }
+}

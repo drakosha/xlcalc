@@ -4,6 +4,7 @@
  * custom lists first, ascending by default) with the items with data first unless its cache says otherwise.
  */
 import type { BookInput, PivotCache, PivotRef, PivotTable, SlicerCache, TimelineCache } from '../contract.js'
+import { groupedItems } from './items.js'
 import { caseKey } from '../collate.js'
 import { fieldIndex, sameRef, unchosen } from '../structure/slicer-choice.js'
 import { itemsWithData } from './compute.js'
@@ -15,7 +16,8 @@ import { EPOCH_1904 } from '../dates.js'
 export function slicerItems(sc: SlicerCache, results: readonly { table: PivotTable; cache: PivotCache }[], options: PivotComputeOptions): SlicerCache {
   const first = results[0]
   const f = first ? fieldIndex(first.cache, sc.field) : -1
-  const values = f >= 0 ? first.cache.fields[f].items : undefined
+  // a grouped field's slicer lists its groups (the set slicer-labels)
+  const values = f >= 0 ? groupedItems(first.cache.fields[f]) : undefined
   if (!values) return sc
   const data = new Set<number>()
   for (const r of results) for (const k of itemsWithData(r.table, r.cache, f, options)) data.add(k)

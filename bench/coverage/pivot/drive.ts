@@ -18,6 +18,7 @@ import { refreshCache } from '../../../src/pivot/refresh.js'
 import { sourceGrid } from '../../../src/pivot/source.js'
 import { itemText } from '../../../src/pivot/values.js'
 import { clockOptions } from '../../../src/result.js'
+import { epochOf } from '../../../src/dates.js'
 import type { Applied } from '../../../src/structure/geometry.js'
 import { stateValues } from '../../../src/structure/values.js'
 import { placedValues } from '../../../src/structure/pivot-values.js'
@@ -57,11 +58,11 @@ const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toI
 /** The book a case starts from, in the workbook's language `locale` (ru-RU names value fields `Сумма по полю Qty`): the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
 export function startBook(c: PivotCase, locale?: string): BookInput {
   const cols = DATA[c.data ?? 'sales']()
-  const book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(locale ? { locale } : {}) }
+  const book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}), ...(locale ? { locale } : {}) }
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
-  const made = refreshCache({ id: 1, source, fields: [] }, [], grid)
+  const made = refreshCache({ id: 1, source, fields: [] }, [], grid, epochOf(book.dateSystem))
   if (typeof made === 'string') throw new Error(made)
   return { ...book, pivotCaches: [made.cache], sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [emptyTable(made.cache, 'PT1', 'A3')] } : s)) }
 }

@@ -1,0 +1,50 @@
+{
+ "as-read": {
+  "op 0": [
+   [
+    "Slicer_Region"
+   ],
+   []
+  ]
+ },
+ "locks": {
+  "op 0": [
+   [
+    "Slicer_Region"
+   ],
+   []
+  ]
+ },
+ "rename": {
+  "op 0": [
+   [
+    "Slicer_Region"
+   ],
+   []
+  ]
+ },
+ "one-timeline": {
+  "op 0": [
+   [
+    "Slicer_Region"
+   ],
+   []
+  ]
+ },
+ "no-timelines": {
+  "op 0": [
+   [
+    "Slicer_Region"
+   ],
+   []
+  ]
+ },
+ "one-each": {
+  "op 0": [
+   [
+    "Slicer_Product"
+   ],
+   []
+  ]
+ }
+}

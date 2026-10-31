@@ -210,13 +210,13 @@ export type StructureOp =
    * (`Region`, `Region 1`…) without `slicer.name`, and a new cache's `Slicer_Region`.
    */
   | { op: 'addSlicer'; sheet: string; slicer: Omit<Slicer, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
-  /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its look and place. */
+  /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its name, look and place. */
   | { op: 'editSlicer'; slicer: string; set?: SlicerPatch; cache?: SlicerCachePatch }
   /** Deletes the slicer; its cache goes with its last slicer. */
   | { op: 'deleteSlicer'; slicer: string }
   /** Excel's Insert Timeline, as `addSlicer`, of a date field. */
   | { op: 'addTimeline'; sheet: string; timeline: Omit<Timeline, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
-  /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its level, look and place. */
+  /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its name, level, look and place. */
   | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }
   /** Deletes the timeline; its cache goes with its last timeline. */
   | { op: 'deleteTimeline'; timeline: string }

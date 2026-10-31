@@ -220,19 +220,21 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     const named = xml.indexOf('legacyDrawing')
     const drawing = named < 0 ? undefined : attr(attributes(element(xml.slice(Math.max(0, xml.lastIndexOf('<', named))), 'legacyDrawing')?.attrs ?? ''), 'id')
     const linked = (kind: string, id?: string) => partText(archive, sheetRels, kind, id)
-    const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
+    // the drawing is read for the frames of the sheet's slicers and timelines
+    const framed = sheetRels.some((r) => (r.kind === 'slicer' || r.kind === 'timeline') && !r.external)
+    const [comments, vml, threads, drawn] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment'), framed ? linked('drawing') : undefined])
     const pivotParts = await pivotTableParts(archive, sheetRels)
     const pivotRules = new Map<number, PivotRuleScope>()
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules, drawing: drawn },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {
       const a = attrsAt(t ?? '', 'table')
       if (a.id !== undefined) tableIds.set(a.id, readText(a.displayName ?? a.name ?? ''))
     }
-    await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, pivots, issues)
+    await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, drawn, pivots, issues)
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
     cached.sheets.push({ name: d.name, cells: read.cached })
   }

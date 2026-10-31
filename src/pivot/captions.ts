@@ -3,7 +3,7 @@
  * Amount`): en-US, and ru-RU as Excel for Windows ru-RU writes them. A PivotTable's own captions replace them.
  */
 import type { PivotFunction } from '../contract.js'
-import { EN_FUNCTIONS, RU_FUNCTIONS, valueFieldName } from '../pivot-words.js'
+import { blankWord, EN_FUNCTIONS, RU_FUNCTIONS, valueFieldName } from '../pivot-words.js'
 
 export interface PivotWords {
   grandTotal: string
@@ -24,12 +24,12 @@ export interface PivotWords {
 const WORDS: Record<string, PivotWords> = {
   'en-US': {
     grandTotal: 'Grand Total', rowHeader: 'Row Labels', columnHeader: 'Column Labels', values: 'Values', total: 'Total',
-    blank: '(blank)', all: '(All)', multiple: '(Multiple Items)', functions: EN_FUNCTIONS,
+    blank: blankWord(), all: '(All)', multiple: '(Multiple Items)', functions: EN_FUNCTIONS,
     valueName: (fn, field) => valueFieldName(fn, field),
   },
   'ru-RU': {
     grandTotal: 'Общий итог', rowHeader: 'Названия строк', columnHeader: 'Названия столбцов', values: 'Значения', total: 'Итог',
-    blank: '(пусто)', all: '(Все)', multiple: '(несколько элементов)', functions: RU_FUNCTIONS,
+    blank: blankWord('ru-RU'), all: '(Все)', multiple: '(несколько элементов)', functions: RU_FUNCTIONS,
     valueName: (fn, field) => valueFieldName(fn, field, 'ru-RU'),
   },
 }

@@ -1,0 +1,4741 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 32.8
+ },
+ "cases": [
+  {
+   "id": "text",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Text"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Text",
+     "name": "Slicer_Text"
+    },
+    {
+     "slicerGet": "Slicer_Text",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "money",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Money"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Money",
+     "name": "Slicer_Money"
+    },
+    {
+     "slicerGet": "Slicer_Money",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pct",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Pct"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Pct",
+     "name": "Slicer_Pct"
+    },
+    {
+     "slicerGet": "Slicer_Pct",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "plain",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Plain"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Plain",
+     "name": "Slicer_Plain"
+    },
+    {
+     "slicerGet": "Slicer_Plain",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "thou",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Thou"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Thou",
+     "name": "Slicer_Thou"
+    },
+    {
+     "slicerGet": "Slicer_Thou",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "day",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Day"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Day",
+     "name": "Slicer_Day"
+    },
+    {
+     "slicerGet": "Slicer_Day",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "long",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Long"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Long",
+     "name": "Slicer_Long"
+    },
+    {
+     "slicerGet": "Slicer_Long",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "time",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Time"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Time",
+     "name": "Slicer_Time"
+    },
+    {
+     "slicerGet": "Slicer_Time",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "when",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "When",
+     "name": "Slicer_When"
+    },
+    {
+     "slicerGet": "Slicer_When",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "clock",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Clock"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Clock",
+     "name": "Slicer_Clock"
+    },
+    {
+     "slicerGet": "Slicer_Clock",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "flag",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Flag",
+     "name": "Slicer_Flag"
+    },
+    {
+     "slicerGet": "Slicer_Flag",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "err",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Err"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Err",
+     "name": "Slicer_Err"
+    },
+    {
+     "slicerGet": "Slicer_Err",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mixed",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Mixed"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Mixed",
+     "name": "Slicer_Mixed"
+    },
+    {
+     "slicerGet": "Slicer_Mixed",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "money-no-axis",
+   "data": "labels",
+   "ops": [
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Money",
+     "name": "Slicer_Money"
+    },
+    {
+     "slicerGet": "Slicer_Money",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "plain-own-format",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Plain"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "props": {
+      "format": "0.00"
+     },
+     "field": "Plain"
+    },
+    {
+     "slicer": "Plain",
+     "name": "Slicer_Plain"
+    },
+    {
+     "slicerGet": "Slicer_Plain",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "day-months",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Day"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "group": "Day",
+     "periods": [
+      "months"
+     ]
+    },
+    {
+     "slicer": "Day",
+     "name": "Slicer_Day"
+    },
+    {
+     "slicerGet": "Slicer_Day",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "day-months-years",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "Long"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "group": "Long",
+     "periods": [
+      "months",
+      "years"
+     ]
+    },
+    {
+     "slicer": "Months (Long)",
+     "name": "Slicer_Months"
+    },
+    {
+     "slicerGet": "Slicer_Months",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    },
+    {
+     "slicer": "Years (Long)",
+     "name": "Slicer_Years"
+    },
+    {
+     "slicerGet": "Slicer_Years",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "time-1904",
+   "data": "labels",
+   "dateSystem": 1904,
+   "ops": [
+    {
+     "rows": [
+      "Time"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Time",
+     "name": "Slicer_Time"
+    },
+    {
+     "slicerGet": "Slicer_Time",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "clock-1904",
+   "data": "labels",
+   "dateSystem": 1904,
+   "ops": [
+    {
+     "rows": [
+      "Clock"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Clock",
+     "name": "Slicer_Clock"
+    },
+    {
+     "slicerGet": "Slicer_Clock",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "time-no-axis",
+   "data": "labels",
+   "ops": [
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Time",
+     "name": "Slicer_Time"
+    },
+    {
+     "slicerGet": "Slicer_Time",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "n-numbers",
+   "data": "labels",
+   "ops": [
+    {
+     "rows": [
+      "N"
+     ]
+    },
+    {
+     "value": {
+      "field": "Pct"
+     }
+    },
+    {
+     "group": "N",
+     "start": 1,
+     "end": 8,
+     "by": 3
+    },
+    {
+     "slicer": "N",
+     "name": "Slicer_N"
+    },
+    {
+     "slicerGet": "Slicer_N",
+     "items": [
+      "Name",
+      "Caption",
+      "Value"
+     ]
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "text": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 0e20ab1d76e1535f",
+  "money": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 1e23c709d617375f",
+  "pct": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 4100f05548ebf9e8",
+  "plain": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 65aabf1064a49275",
+  "thou": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 f89b9624f65cefca",
+  "day": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 be5112da27eef744",
+  "long": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 b292823897b9ed5c",
+  "time": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 6dccd19974cadbae",
+  "when": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 d0d0e88c1311824f",
+  "clock": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a7dd06bef479d7d0",
+  "flag": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 6c38ff869a23c66b",
+  "err": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 63c1578f1e494b94",
+  "mixed": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 1b904c5abe19c821",
+  "money-no-axis": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 b0ac6040b3441f22",
+  "plain-own-format": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 35fc4b319caf2928",
+  "day-months": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a1896928b3308127",
+  "day-months-years": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 835ae749d76c8ee1",
+  "time-1904": "0fdc123cb366a033a98e2104446eb1f80ebb42adf3b499b76006c6f1b6a206e5 6dccd19974cadbae",
+  "clock-1904": "0fdc123cb366a033a98e2104446eb1f80ebb42adf3b499b76006c6f1b6a206e5 a7dd06bef479d7d0",
+  "time-no-axis": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 dc63ed3d78a0d7d7",
+  "n-numbers": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a5e7b42c62cad74c"
+ },
+ "answers": {
+  "text": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "East",
+         12
+        ],
+        [
+         "North",
+         6
+        ],
+        [
+         "south",
+         2
+        ],
+        [
+         "West",
+         6
+        ],
+        [
+         "Zeta",
+         7
+        ],
+        [
+         "(blank)",
+         3
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "East",
+         "12"
+        ],
+        [
+         "North",
+         "6"
+        ],
+        [
+         "south",
+         "2"
+        ],
+        [
+         "West",
+         "6"
+        ],
+        [
+         "Zeta",
+         "7"
+        ],
+        [
+         "(blank)",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Text",
+      "op 3": [
+       [],
+       [
+        [
+         "East",
+         "East",
+         "East"
+        ],
+        [
+         "North",
+         "North",
+         "North"
+        ],
+        [
+         "south",
+         "south",
+         "south"
+        ],
+        [
+         "West",
+         "West",
+         "West"
+        ],
+        [
+         "Zeta",
+         "Zeta",
+         "Zeta"
+        ],
+        [
+         "(blank)",
+         "(blank)",
+         "(blank)"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Text": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "south",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "Zeta",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "money": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         -20,
+         2
+        ],
+        [
+         -0.25,
+         8
+        ],
+        [
+         0,
+         3
+        ],
+        [
+         0.5,
+         7
+        ],
+        [
+         99.999,
+         5
+        ],
+        [
+         1234.5,
+         5
+        ],
+        [
+         1000000,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "-$20.00",
+         "2"
+        ],
+        [
+         "-$0.25",
+         "8"
+        ],
+        [
+         "$0.00",
+         "3"
+        ],
+        [
+         "$0.50",
+         "7"
+        ],
+        [
+         "$100.00",
+         "5"
+        ],
+        [
+         "$1,234.50",
+         "5"
+        ],
+        [
+         "$1,000,000.00",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ],
+        [
+         "\\$#,##0.00",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Money",
+      "op 3": [
+       [],
+       [
+        [
+         "-$20.00",
+         "-$20.00",
+         "-$20.00"
+        ],
+        [
+         "-$0.25",
+         "-$0.25",
+         "-$0.25"
+        ],
+        [
+         "$0.00",
+         "$0.00",
+         "$0.00"
+        ],
+        [
+         "$0.50",
+         "$0.50",
+         "$0.50"
+        ],
+        [
+         "$100.00",
+         "$100.00",
+         "$100.00"
+        ],
+        [
+         "$1,234.50",
+         "$1,234.50",
+         "$1,234.50"
+        ],
+        [
+         "$1,000,000.00",
+         "$1,000,000.00",
+         "$1,000,000.00"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Money": [
+       [
+        "-$20.00",
+        true,
+        true
+       ],
+       [
+        "-$0.25",
+        true,
+        true
+       ],
+       [
+        "$0.00",
+        true,
+        true
+       ],
+       [
+        "$0.50",
+        true,
+        true
+       ],
+       [
+        "$100.00",
+        true,
+        true
+       ],
+       [
+        "$1,234.50",
+        true,
+        true
+       ],
+       [
+        "$1,000,000.00",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "pct": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         -0.05,
+         4
+        ],
+        [
+         0,
+         8
+        ],
+        [
+         0.125,
+         7
+        ],
+        [
+         0.3333,
+         5
+        ],
+        [
+         0.5,
+         2
+        ],
+        [
+         1,
+         3
+        ],
+        [
+         2,
+         7
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "-5.0%",
+         "4"
+        ],
+        [
+         "0.0%",
+         "8"
+        ],
+        [
+         "12.5%",
+         "7"
+        ],
+        [
+         "33.3%",
+         "5"
+        ],
+        [
+         "50.0%",
+         "2"
+        ],
+        [
+         "100.0%",
+         "3"
+        ],
+        [
+         "200.0%",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ],
+        [
+         "0.0%",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Pct",
+      "op 3": [
+       [],
+       [
+        [
+         "-5.0%",
+         "-5.0%",
+         "-5.0%"
+        ],
+        [
+         "0.0%",
+         "0.0%",
+         "0.0%"
+        ],
+        [
+         "12.5%",
+         "12.5%",
+         "12.5%"
+        ],
+        [
+         "33.3%",
+         "33.3%",
+         "33.3%"
+        ],
+        [
+         "50.0%",
+         "50.0%",
+         "50.0%"
+        ],
+        [
+         "100.0%",
+         "100.0%",
+         "100.0%"
+        ],
+        [
+         "200.0%",
+         "200.0%",
+         "200.0%"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Pct": [
+       [
+        "-5.0%",
+        true,
+        true
+       ],
+       [
+        "0.0%",
+        true,
+        true
+       ],
+       [
+        "12.5%",
+        true,
+        true
+       ],
+       [
+        "33.3%",
+        true,
+        true
+       ],
+       [
+        "50.0%",
+        true,
+        true
+       ],
+       [
+        "100.0%",
+        true,
+        true
+       ],
+       [
+        "200.0%",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "plain": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         -2,
+         4
+        ],
+        [
+         0.000012,
+         3
+        ],
+        [
+         0.3333333333333333,
+         5
+        ],
+        [
+         1.5,
+         9
+        ],
+        [
+         1234567.891,
+         2
+        ],
+        [
+         123456789012,
+         7
+        ],
+        [
+         100000000000000000000,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "-2",
+         "4"
+        ],
+        [
+         "0.000012",
+         "3"
+        ],
+        [
+         "0.333333333",
+         "5"
+        ],
+        [
+         "1.5",
+         "9"
+        ],
+        [
+         "1234567.891",
+         "2"
+        ],
+        [
+         "1.23457E+11",
+         "7"
+        ],
+        [
+         "1E+20",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Plain",
+      "op 3": [
+       [],
+       [
+        [
+         "-2",
+         "-2",
+         "-2"
+        ],
+        [
+         "0.000012",
+         "0.000012",
+         "0.000012"
+        ],
+        [
+         "0.333333333333333",
+         "0.333333333333333",
+         "0.333333333333333"
+        ],
+        [
+         "1.5",
+         "1.5",
+         "1.5"
+        ],
+        [
+         "1234567.891",
+         "1234567.891",
+         "1234567.891"
+        ],
+        [
+         "123456789012",
+         "123456789012",
+         "123456789012"
+        ],
+        [
+         "100000000000000000000",
+         "100000000000000000000",
+         "100000000000000000000"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Plain": [
+       [
+        "-2",
+        true,
+        true
+       ],
+       [
+        "0.000012",
+        true,
+        true
+       ],
+       [
+        "0.333333333333333",
+        true,
+        true
+       ],
+       [
+        "1.5",
+        true,
+        true
+       ],
+       [
+        "1234567.891",
+        true,
+        true
+       ],
+       [
+        "123456789012",
+        true,
+        true
+       ],
+       [
+        "100000000000000000000",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "thou": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         -987,
+         3
+        ],
+        [
+         0,
+         4
+        ],
+        [
+         5,
+         7
+        ],
+        [
+         12.6,
+         6
+        ],
+        [
+         1234,
+         6
+        ],
+        [
+         999999,
+         8
+        ],
+        [
+         1234567,
+         2
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "-987",
+         "3"
+        ],
+        [
+         "0",
+         "4"
+        ],
+        [
+         "5",
+         "7"
+        ],
+        [
+         "13",
+         "6"
+        ],
+        [
+         "1,234",
+         "6"
+        ],
+        [
+         "999,999",
+         "8"
+        ],
+        [
+         "1,234,567",
+         "2"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ],
+        [
+         "#,##0",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Thou",
+      "op 3": [
+       [],
+       [
+        [
+         "-987",
+         "-987",
+         "-987"
+        ],
+        [
+         "0",
+         "0",
+         "0"
+        ],
+        [
+         "5",
+         "5",
+         "5"
+        ],
+        [
+         "13",
+         "13",
+         "13"
+        ],
+        [
+         "1,234",
+         "1,234",
+         "1,234"
+        ],
+        [
+         "999,999",
+         "999,999",
+         "999,999"
+        ],
+        [
+         "1,234,567",
+         "1,234,567",
+         "1,234,567"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Thou": [
+       [
+        "-987",
+        true,
+        true
+       ],
+       [
+        "0",
+        true,
+        true
+       ],
+       [
+        "5",
+        true,
+        true
+       ],
+       [
+        "13",
+        true,
+        true
+       ],
+       [
+        "1,234",
+        true,
+        true
+       ],
+       [
+        "999,999",
+        true,
+        true
+       ],
+       [
+        "1,234,567",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "day": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         45306,
+         6
+        ],
+        [
+         45356,
+         2
+        ],
+        [
+         45605,
+         7
+        ],
+        [
+         45689,
+         6
+        ],
+        [
+         45842,
+         8
+        ],
+        [
+         46022,
+         3
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1/15/2024",
+         "6"
+        ],
+        [
+         "3/5/2024",
+         "2"
+        ],
+        [
+         "11/9/2024",
+         "7"
+        ],
+        [
+         "2/1/2025",
+         "6"
+        ],
+        [
+         "7/4/2025",
+         "8"
+        ],
+        [
+         "12/31/2025",
+         "3"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Day",
+      "op 3": [
+       [],
+       [
+        [
+         "1/15/2024",
+         "1/15/2024",
+         "1/15/2024"
+        ],
+        [
+         "3/5/2024",
+         "3/5/2024",
+         "3/5/2024"
+        ],
+        [
+         "11/9/2024",
+         "11/9/2024",
+         "11/9/2024"
+        ],
+        [
+         "2/1/2025",
+         "2/1/2025",
+         "2/1/2025"
+        ],
+        [
+         "7/4/2025",
+         "7/4/2025",
+         "7/4/2025"
+        ],
+        [
+         "12/31/2025",
+         "12/31/2025",
+         "12/31/2025"
+        ],
+        [
+         "(blank)",
+         "(blank)",
+         "(blank)"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Day": [
+       [
+        "1/15/2024",
+        true,
+        true
+       ],
+       [
+        "3/5/2024",
+        true,
+        true
+       ],
+       [
+        "11/9/2024",
+        true,
+        true
+       ],
+       [
+        "2/1/2025",
+        true,
+        true
+       ],
+       [
+        "7/4/2025",
+        true,
+        true
+       ],
+       [
+        "12/31/2025",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "long": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         45306,
+         6
+        ],
+        [
+         45356,
+         2
+        ],
+        [
+         45413,
+         4
+        ],
+        [
+         45605,
+         7
+        ],
+        [
+         45689,
+         6
+        ],
+        [
+         45842,
+         8
+        ],
+        [
+         46022,
+         3
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "15 January 2024",
+         "6"
+        ],
+        [
+         "5 March 2024",
+         "2"
+        ],
+        [
+         "1 May 2024",
+         "4"
+        ],
+        [
+         "9 November 2024",
+         "7"
+        ],
+        [
+         "1 February 2025",
+         "6"
+        ],
+        [
+         "4 July 2025",
+         "8"
+        ],
+        [
+         "31 December 2025",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ],
+        [
+         "d mmmm yyyy",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Long",
+      "op 3": [
+       [],
+       [
+        [
+         "15 January 2024",
+         "15 January 2024",
+         "15 January 2024"
+        ],
+        [
+         "5 March 2024",
+         "5 March 2024",
+         "5 March 2024"
+        ],
+        [
+         "1 May 2024",
+         "1 May 2024",
+         "1 May 2024"
+        ],
+        [
+         "9 November 2024",
+         "9 November 2024",
+         "9 November 2024"
+        ],
+        [
+         "1 February 2025",
+         "1 February 2025",
+         "1 February 2025"
+        ],
+        [
+         "4 July 2025",
+         "4 July 2025",
+         "4 July 2025"
+        ],
+        [
+         "31 December 2025",
+         "31 December 2025",
+         "31 December 2025"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Long": [
+       [
+        "15 January 2024",
+        true,
+        true
+       ],
+       [
+        "5 March 2024",
+        true,
+        true
+       ],
+       [
+        "1 May 2024",
+        true,
+        true
+       ],
+       [
+        "9 November 2024",
+        true,
+        true
+       ],
+       [
+        "1 February 2025",
+        true,
+        true
+       ],
+       [
+        "4 July 2025",
+        true,
+        true
+       ],
+       [
+        "31 December 2025",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "time": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         0.0625,
+         4
+        ],
+        [
+         0.25,
+         6
+        ],
+        [
+         0.5,
+         9
+        ],
+        [
+         0.5625,
+         8
+        ],
+        [
+         0.75,
+         3
+        ],
+        [
+         0.9990046296296297,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1:30",
+         "4"
+        ],
+        [
+         "6:00",
+         "6"
+        ],
+        [
+         "12:00",
+         "9"
+        ],
+        [
+         "13:30",
+         "8"
+        ],
+        [
+         "18:00",
+         "3"
+        ],
+        [
+         "23:58",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Time",
+      "op 3": [
+       [],
+       [
+        [
+         "1:30",
+         "1:30",
+         "1:30"
+        ],
+        [
+         "6:00",
+         "6:00",
+         "6:00"
+        ],
+        [
+         "12:00",
+         "12:00",
+         "12:00"
+        ],
+        [
+         "13:30",
+         "13:30",
+         "13:30"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ],
+        [
+         "23:58",
+         "23:58",
+         "23:58"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Time": [
+       [
+        "1:30",
+        true,
+        true
+       ],
+       [
+        "6:00",
+        true,
+        true
+       ],
+       [
+        "12:00",
+        true,
+        true
+       ],
+       [
+        "13:30",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ],
+       [
+        "23:58",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "when": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         45306,
+         4
+        ],
+        [
+         45306.395833333336,
+         6
+        ],
+        [
+         45356.75,
+         2
+        ],
+        [
+         45605.5,
+         7
+        ],
+        [
+         45689.00069444445,
+         6
+        ],
+        [
+         45842.29513888889,
+         8
+        ],
+        [
+         46022.99930555555,
+         3
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1/15/2024 0:00",
+         "4"
+        ],
+        [
+         "1/15/2024 9:30",
+         "6"
+        ],
+        [
+         "3/5/2024 18:00",
+         "2"
+        ],
+        [
+         "11/9/2024 12:00",
+         "7"
+        ],
+        [
+         "2/1/2025 0:01",
+         "6"
+        ],
+        [
+         "7/4/2025 7:05",
+         "8"
+        ],
+        [
+         "12/31/2025 23:59",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ],
+        [
+         "m/d/yyyy h:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_When",
+      "op 3": [
+       [],
+       [
+        [
+         "1/15/2024 0:00",
+         "1/15/2024 0:00",
+         "1/15/2024 0:00"
+        ],
+        [
+         "1/15/2024 9:30",
+         "1/15/2024 9:30",
+         "1/15/2024 9:30"
+        ],
+        [
+         "3/5/2024 18:00",
+         "3/5/2024 18:00",
+         "3/5/2024 18:00"
+        ],
+        [
+         "11/9/2024 12:00",
+         "11/9/2024 12:00",
+         "11/9/2024 12:00"
+        ],
+        [
+         "2/1/2025 0:01",
+         "2/1/2025 0:01",
+         "2/1/2025 0:01"
+        ],
+        [
+         "7/4/2025 7:05",
+         "7/4/2025 7:05",
+         "7/4/2025 7:05"
+        ],
+        [
+         "12/31/2025 23:59",
+         "12/31/2025 23:59",
+         "12/31/2025 23:59"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_When": [
+       [
+        "1/15/2024 0:00",
+        true,
+        true
+       ],
+       [
+        "1/15/2024 9:30",
+        true,
+        true
+       ],
+       [
+        "3/5/2024 18:00",
+        true,
+        true
+       ],
+       [
+        "11/9/2024 12:00",
+        true,
+        true
+       ],
+       [
+        "2/1/2025 0:01",
+        true,
+        true
+       ],
+       [
+        "7/4/2025 7:05",
+        true,
+        true
+       ],
+       [
+        "12/31/2025 23:59",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "clock": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         0,
+         7
+        ],
+        [
+         0.35400462962962964,
+         6
+        ],
+        [
+         0.5,
+         3
+        ],
+        [
+         0.75,
+         8
+        ],
+        [
+         45306,
+         4
+        ],
+        [
+         45306.395833333336,
+         2
+        ],
+        [
+         45689.75,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "0:00",
+         "7"
+        ],
+        [
+         "8:29",
+         "6"
+        ],
+        [
+         "12:00",
+         "3"
+        ],
+        [
+         "18:00",
+         "8"
+        ],
+        [
+         "0:00",
+         "4"
+        ],
+        [
+         "9:30",
+         "2"
+        ],
+        [
+         "18:00",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Clock",
+      "op 3": [
+       [],
+       [
+        [
+         "0:00",
+         "0:00",
+         "0:00"
+        ],
+        [
+         "8:29",
+         "8:29",
+         "8:29"
+        ],
+        [
+         "12:00",
+         "12:00",
+         "12:00"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ],
+        [
+         "0:00",
+         "0:00",
+         "0:00"
+        ],
+        [
+         "9:30",
+         "9:30",
+         "9:30"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Clock": [
+       [
+        "0:00",
+        true,
+        true
+       ],
+       [
+        "8:29",
+        true,
+        true
+       ],
+       [
+        "12:00",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ],
+       [
+        "0:00",
+        true,
+        true
+       ],
+       [
+        "9:30",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "flag": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "FALSE",
+         14
+        ],
+        [
+         "TRUE",
+         22
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "FALSE",
+         "14"
+        ],
+        [
+         "TRUE",
+         "22"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Flag",
+      "op 3": [
+       [],
+       [
+        [
+         "FALSE",
+         "FALSE",
+         "FALSE"
+        ],
+        [
+         "TRUE",
+         "TRUE",
+         "TRUE"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Flag": [
+       [
+        "FALSE",
+        true,
+        true
+       ],
+       [
+        "TRUE",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "err": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         1,
+         7
+        ],
+        [
+         2,
+         4
+        ],
+        [
+         "#N/A",
+         7
+        ],
+        [
+         "#NUM!",
+         7
+        ],
+        [
+         "#DIV/0!",
+         3
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1",
+         "7"
+        ],
+        [
+         "2",
+         "4"
+        ],
+        [
+         "#N/A",
+         "7"
+        ],
+        [
+         "#NUM!",
+         "7"
+        ],
+        [
+         "#DIV/0!",
+         "3"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Err",
+      "op 3": [
+       [],
+       [
+        [
+         "1",
+         "1",
+         "1"
+        ],
+        [
+         "2",
+         "2",
+         "2"
+        ],
+        [
+         "#N/A",
+         "#N/A",
+         "#N/A"
+        ],
+        [
+         "#NUM!",
+         "#NUM!",
+         "#NUM!"
+        ],
+        [
+         "#DIV/0!",
+         "#DIV/0!",
+         "#DIV/0!"
+        ],
+        [
+         "(blank)",
+         "(blank)",
+         "(blank)"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Err": [
+       [
+        "1",
+        true,
+        true
+       ],
+       [
+        "2",
+        true,
+        true
+       ],
+       [
+        "#N/A",
+        true,
+        true
+       ],
+       [
+        "#NUM!",
+        true,
+        true
+       ],
+       [
+        "#DIV/0!",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "mixed": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         2.5,
+         3
+        ],
+        [
+         10,
+         6
+        ],
+        [
+         "10",
+         4
+        ],
+        [
+         "ten",
+         9
+        ],
+        [
+         "TRUE",
+         6
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "2.5",
+         "3"
+        ],
+        [
+         "10",
+         "6"
+        ],
+        [
+         "10",
+         "4"
+        ],
+        [
+         "ten",
+         "9"
+        ],
+        [
+         "TRUE",
+         "6"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Mixed",
+      "op 3": [
+       [],
+       [
+        [
+         "2.5",
+         "2.5",
+         "2.5"
+        ],
+        [
+         "10",
+         "10",
+         "10"
+        ],
+        [
+         "10",
+         "10",
+         "10"
+        ],
+        [
+         "ten",
+         "ten",
+         "ten"
+        ],
+        [
+         "TRUE",
+         "TRUE",
+         "TRUE"
+        ],
+        [
+         "(blank)",
+         "(blank)",
+         "(blank)"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Mixed": [
+       [
+        "2.5",
+        true,
+        true
+       ],
+       [
+        "10",
+        true,
+        true
+       ],
+       [
+        "10",
+        true,
+        true
+       ],
+       [
+        "ten",
+        true,
+        true
+       ],
+       [
+        "TRUE",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "money-no-axis": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Sum of N"
+        ],
+        [
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Sum of N"
+        ],
+        [
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": "Sum of N",
+      "op 1": "Slicer_Money",
+      "op 2": [
+       [],
+       [
+        [
+         "-$20.00",
+         "-$20.00",
+         "-$20.00"
+        ],
+        [
+         "-$0.25",
+         "-$0.25",
+         "-$0.25"
+        ],
+        [
+         "$0.00",
+         "$0.00",
+         "$0.00"
+        ],
+        [
+         "$0.50",
+         "$0.50",
+         "$0.50"
+        ],
+        [
+         "$100.00",
+         "$100.00",
+         "$100.00"
+        ],
+        [
+         "$1,234.50",
+         "$1,234.50",
+         "$1,234.50"
+        ],
+        [
+         "$1,000,000.00",
+         "$1,000,000.00",
+         "$1,000,000.00"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Money": [
+       [
+        "-$20.00",
+        true,
+        true
+       ],
+       [
+        "-$0.25",
+        true,
+        true
+       ],
+       [
+        "$0.00",
+        true,
+        true
+       ],
+       [
+        "$0.50",
+        true,
+        true
+       ],
+       [
+        "$100.00",
+        true,
+        true
+       ],
+       [
+        "$1,234.50",
+        true,
+        true
+       ],
+       [
+        "$1,000,000.00",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "plain-own-format": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         -2,
+         4
+        ],
+        [
+         0.000012,
+         3
+        ],
+        [
+         0.3333333333333333,
+         5
+        ],
+        [
+         1.5,
+         9
+        ],
+        [
+         1234567.891,
+         2
+        ],
+        [
+         123456789012,
+         7
+        ],
+        [
+         100000000000000000000,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "-2.00",
+         "4"
+        ],
+        [
+         "0.00",
+         "3"
+        ],
+        [
+         "0.33",
+         "5"
+        ],
+        [
+         "1.50",
+         "9"
+        ],
+        [
+         "1234567.89",
+         "2"
+        ],
+        [
+         "123456789012.00",
+         "7"
+        ],
+        [
+         "100000000000000000000.00",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ],
+        [
+         "0.00",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 3": "Slicer_Plain",
+      "op 4": [
+       [],
+       [
+        [
+         "-2.00",
+         "-2.00",
+         "-2.00"
+        ],
+        [
+         "0.00",
+         "0.00",
+         "0.00"
+        ],
+        [
+         "0.33",
+         "0.33",
+         "0.33"
+        ],
+        [
+         "1.50",
+         "1.50",
+         "1.50"
+        ],
+        [
+         "1234567.89",
+         "1234567.89",
+         "1234567.89"
+        ],
+        [
+         "123456789012.00",
+         "123456789012.00",
+         "123456789012.00"
+        ],
+        [
+         "100000000000000000000.00",
+         "100000000000000000000.00",
+         "100000000000000000000.00"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Plain": [
+       [
+        "-2.00",
+        true,
+        true
+       ],
+       [
+        "0.00",
+        true,
+        true
+       ],
+       [
+        "0.33",
+        true,
+        true
+       ],
+       [
+        "1.50",
+        true,
+        true
+       ],
+       [
+        "1234567.89",
+        true,
+        true
+       ],
+       [
+        "123456789012.00",
+        true,
+        true
+       ],
+       [
+        "100000000000000000000.00",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "day-months": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "<1/15/2024",
+         4
+        ],
+        [
+         "Jan",
+         6
+        ],
+        [
+         "Feb",
+         6
+        ],
+        [
+         "Mar",
+         2
+        ],
+        [
+         "Jul",
+         8
+        ],
+        [
+         "Nov",
+         7
+        ],
+        [
+         "Dec",
+         3
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "<1/15/2024",
+         "4"
+        ],
+        [
+         "Jan",
+         "6"
+        ],
+        [
+         "Feb",
+         "6"
+        ],
+        [
+         "Mar",
+         "2"
+        ],
+        [
+         "Jul",
+         "8"
+        ],
+        [
+         "Nov",
+         "7"
+        ],
+        [
+         "Dec",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 3": "Slicer_Day",
+      "op 4": [
+       [],
+       [
+        [
+         "1/15/2024",
+         "1/15/2024",
+         "1/15/2024"
+        ],
+        [
+         "3/5/2024",
+         "3/5/2024",
+         "3/5/2024"
+        ],
+        [
+         "11/9/2024",
+         "11/9/2024",
+         "11/9/2024"
+        ],
+        [
+         "2/1/2025",
+         "2/1/2025",
+         "2/1/2025"
+        ],
+        [
+         "7/4/2025",
+         "7/4/2025",
+         "7/4/2025"
+        ],
+        [
+         "12/31/2025",
+         "12/31/2025",
+         "12/31/2025"
+        ],
+        [
+         "(blank)",
+         "(blank)",
+         "(blank)"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Day": [
+       [
+        "1/15/2024",
+        true,
+        true
+       ],
+       [
+        "3/5/2024",
+        true,
+        true
+       ],
+       [
+        "11/9/2024",
+        true,
+        true
+       ],
+       [
+        "2/1/2025",
+        true,
+        true
+       ],
+       [
+        "7/4/2025",
+        true,
+        true
+       ],
+       [
+        "12/31/2025",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "day-months-years": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B13",
+       "area": "A3:B13",
+       "body": "B4:B13",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "2024",
+         19
+        ],
+        [
+         "Jan",
+         6
+        ],
+        [
+         "Mar",
+         2
+        ],
+        [
+         "May",
+         4
+        ],
+        [
+         "Nov",
+         7
+        ],
+        [
+         "2025",
+         17
+        ],
+        [
+         "Feb",
+         6
+        ],
+        [
+         "Jul",
+         8
+        ],
+        [
+         "Dec",
+         3
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "2024",
+         "19"
+        ],
+        [
+         "Jan",
+         "6"
+        ],
+        [
+         "Mar",
+         "2"
+        ],
+        [
+         "May",
+         "4"
+        ],
+        [
+         "Nov",
+         "7"
+        ],
+        [
+         "2025",
+         "17"
+        ],
+        [
+         "Feb",
+         "6"
+        ],
+        [
+         "Jul",
+         "8"
+        ],
+        [
+         "Dec",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 3": "Slicer_Months",
+      "op 4": [
+       [],
+       [
+        [
+         "Jan",
+         "Jan",
+         "Jan"
+        ],
+        [
+         "Feb",
+         "Feb",
+         "Feb"
+        ],
+        [
+         "Mar",
+         "Mar",
+         "Mar"
+        ],
+        [
+         "May",
+         "May",
+         "May"
+        ],
+        [
+         "Jul",
+         "Jul",
+         "Jul"
+        ],
+        [
+         "Nov",
+         "Nov",
+         "Nov"
+        ],
+        [
+         "Dec",
+         "Dec",
+         "Dec"
+        ],
+        [
+         "Apr",
+         "Apr",
+         "Apr"
+        ],
+        [
+         "Jun",
+         "Jun",
+         "Jun"
+        ],
+        [
+         "Aug",
+         "Aug",
+         "Aug"
+        ],
+        [
+         "Sep",
+         "Sep",
+         "Sep"
+        ],
+        [
+         "Oct",
+         "Oct",
+         "Oct"
+        ],
+        [
+         "<1/15/2024",
+         "<1/15/2024",
+         "<1/15/2024"
+        ],
+        [
+         ">1/1/2026",
+         ">1/1/2026",
+         ">1/1/2026"
+        ]
+       ]
+      ],
+      "op 5": "Slicer_Years",
+      "op 6": [
+       [],
+       [
+        [
+         "2024",
+         "2024",
+         "2024"
+        ],
+        [
+         "2025",
+         "2025",
+         "2025"
+        ],
+        [
+         "<1/15/2024",
+         "<1/15/2024",
+         "<1/15/2024"
+        ],
+        [
+         ">1/1/2026",
+         ">1/1/2026",
+         ">1/1/2026"
+        ],
+        [
+         "2026",
+         "2026",
+         "2026"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Months": [
+       [
+        "Jan",
+        true,
+        true
+       ],
+       [
+        "Feb",
+        true,
+        true
+       ],
+       [
+        "Mar",
+        true,
+        true
+       ],
+       [
+        "May",
+        true,
+        true
+       ],
+       [
+        "Jul",
+        true,
+        true
+       ],
+       [
+        "Nov",
+        true,
+        true
+       ],
+       [
+        "Dec",
+        true,
+        true
+       ],
+       [
+        "Apr",
+        true,
+        false
+       ],
+       [
+        "Jun",
+        true,
+        false
+       ],
+       [
+        "Aug",
+        true,
+        false
+       ],
+       [
+        "Sep",
+        true,
+        false
+       ],
+       [
+        "Oct",
+        true,
+        false
+       ],
+       [
+        "<1/15/2024",
+        true,
+        false
+       ],
+       [
+        ">1/1/2026",
+        true,
+        false
+       ]
+      ],
+      "Slicer_Years": [
+       [
+        "2024",
+        true,
+        true
+       ],
+       [
+        "2025",
+        true,
+        true
+       ],
+       [
+        "<1/15/2024",
+        true,
+        false
+       ],
+       [
+        ">1/1/2026",
+        true,
+        false
+       ],
+       [
+        "2026",
+        true,
+        false
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "time-1904": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         0.0625,
+         4
+        ],
+        [
+         0.25,
+         6
+        ],
+        [
+         0.5,
+         9
+        ],
+        [
+         0.5625,
+         8
+        ],
+        [
+         0.75,
+         3
+        ],
+        [
+         0.9990046296296297,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1:30",
+         "4"
+        ],
+        [
+         "6:00",
+         "6"
+        ],
+        [
+         "12:00",
+         "9"
+        ],
+        [
+         "13:30",
+         "8"
+        ],
+        [
+         "18:00",
+         "3"
+        ],
+        [
+         "23:58",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Time",
+      "op 3": [
+       [],
+       [
+        [
+         "1:30",
+         "1:30",
+         "1:30"
+        ],
+        [
+         "6:00",
+         "6:00",
+         "6:00"
+        ],
+        [
+         "12:00",
+         "12:00",
+         "12:00"
+        ],
+        [
+         "13:30",
+         "13:30",
+         "13:30"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ],
+        [
+         "23:58",
+         "23:58",
+         "23:58"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Time": [
+       [
+        "1:30",
+        true,
+        true
+       ],
+       [
+        "6:00",
+        true,
+        true
+       ],
+       [
+        "12:00",
+        true,
+        true
+       ],
+       [
+        "13:30",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ],
+       [
+        "23:58",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "clock-1904": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         0,
+         7
+        ],
+        [
+         0.35400462962962964,
+         6
+        ],
+        [
+         0.5,
+         3
+        ],
+        [
+         0.75,
+         8
+        ],
+        [
+         45306,
+         4
+        ],
+        [
+         45306.395833333336,
+         2
+        ],
+        [
+         45689.75,
+         6
+        ],
+        [
+         "Grand Total",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "0:00",
+         "7"
+        ],
+        [
+         "8:29",
+         "6"
+        ],
+        [
+         "12:00",
+         "3"
+        ],
+        [
+         "18:00",
+         "8"
+        ],
+        [
+         "0:00",
+         "4"
+        ],
+        [
+         "9:30",
+         "2"
+        ],
+        [
+         "18:00",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ],
+        [
+         "h:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Clock",
+      "op 3": [
+       [],
+       [
+        [
+         "0:00",
+         "0:00",
+         "0:00"
+        ],
+        [
+         "8:29",
+         "8:29",
+         "8:29"
+        ],
+        [
+         "12:00",
+         "12:00",
+         "12:00"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ],
+        [
+         "0:00",
+         "0:00",
+         "0:00"
+        ],
+        [
+         "9:30",
+         "9:30",
+         "9:30"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Clock": [
+       [
+        "0:00",
+        true,
+        true
+       ],
+       [
+        "8:29",
+        true,
+        true
+       ],
+       [
+        "12:00",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ],
+       [
+        "0:00",
+        true,
+        true
+       ],
+       [
+        "9:30",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "time-no-axis": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Sum of N"
+        ],
+        [
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Sum of N"
+        ],
+        [
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": "Sum of N",
+      "op 1": "Slicer_Time",
+      "op 2": [
+       [],
+       [
+        [
+         "1:30",
+         "1:30",
+         "1:30"
+        ],
+        [
+         "6:00",
+         "6:00",
+         "6:00"
+        ],
+        [
+         "12:00",
+         "12:00",
+         "12:00"
+        ],
+        [
+         "13:30",
+         "13:30",
+         "13:30"
+        ],
+        [
+         "18:00",
+         "18:00",
+         "18:00"
+        ],
+        [
+         "23:58",
+         "23:58",
+         "23:58"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_Time": [
+       [
+        "1:30",
+        true,
+        true
+       ],
+       [
+        "6:00",
+        true,
+        true
+       ],
+       [
+        "12:00",
+        true,
+        true
+       ],
+       [
+        "13:30",
+        true,
+        true
+       ],
+       [
+        "18:00",
+        true,
+        true
+       ],
+       [
+        "23:58",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "n-numbers": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Pct"
+        ],
+        [
+         "1-3",
+         1.625
+        ],
+        [
+         "4-6",
+         0.4083
+        ],
+        [
+         "7-9",
+         2
+        ],
+        [
+         "Grand Total",
+         4.0333000000000006
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Pct"
+        ],
+        [
+         "1-3",
+         "162.5%"
+        ],
+        [
+         "4-6",
+         "40.8%"
+        ],
+        [
+         "7-9",
+         "200.0%"
+        ],
+        [
+         "Grand Total",
+         "403.3%"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "0.0%"
+        ],
+        [
+         "General",
+         "0.0%"
+        ],
+        [
+         "General",
+         "0.0%"
+        ],
+        [
+         "General",
+         "0.0%"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Pct",
+      "op 3": "Slicer_N",
+      "op 4": [
+       [],
+       [
+        [
+         "1-3",
+         "1-3",
+         "1-3"
+        ],
+        [
+         "4-6",
+         "4-6",
+         "4-6"
+        ],
+        [
+         "7-9",
+         "7-9",
+         "7-9"
+        ],
+        [
+         "<1",
+         "<1",
+         "<1"
+        ],
+        [
+         ">10",
+         ">10",
+         ">10"
+        ]
+       ]
+      ]
+     },
+     "slicers": {
+      "Slicer_N": [
+       [
+        "1-3",
+        true,
+        true
+       ],
+       [
+        "4-6",
+        true,
+        true
+       ],
+       [
+        "7-9",
+        true,
+        true
+       ],
+       [
+        "<1",
+        true,
+        false
+       ],
+       [
+        ">10",
+        true,
+        false
+       ]
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -4,7 +4,7 @@ import type { PivotArea, PivotCache, PivotTable, PivotValue } from '../contract.
 import { sortOrder } from '../sort-order.js'
 import { groupedItems } from './items.js'
 import { sortPivotItems } from './sort.js'
-import { plainOf } from './values.js'
+import { errorRank, plainOf } from './values.js'
 
 const indexes = new WeakMap<readonly (readonly string[])[], Map<string, Map<number, number>>>()
 function positions(lists: readonly (readonly string[])[]): Map<string, Map<number, number>> {
@@ -36,7 +36,7 @@ export function sortLabels(order: number[], value: (i: number) => PivotValue, de
       }
       if (right) return 1
     }
-    return sortOrder(plainOf(a, epoch), plainOf(b, epoch), false)
+    return sortOrder(plainOf(a, epoch), plainOf(b, epoch), false) || errorRank(a, b)
   }
   sortPivotItems(order, (pivot, item) => ((compare(item, pivot) || initial.get(item)! - initial.get(pivot)!) < 0) !== descending)
 }

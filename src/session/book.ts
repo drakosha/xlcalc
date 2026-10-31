@@ -9,6 +9,7 @@ import { parseMerge } from '../layout/merges.js'
 import { meets, parseRange, type Rect } from '../structure/area.js'
 import { autoFilterOverlap } from '../tables/check.js'
 import { tablesOf } from '../tables/model.js'
+import { labelled } from '../pivot-format.js'
 
 /** A scalar as JSON writes it: a number's -0 as 0, NaN and the infinities as null. */
 const json = (v: unknown) => (typeof v === 'number' ? (Number.isFinite(v) ? v + 0 : null) : v)
@@ -66,9 +67,11 @@ export function inputAt(s: EngineState, i: number, cell: string): CellInput | un
   return inputIn(sheet, cell, row, col)
 }
 
-/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own; the looks are not read. */
+/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own but the slicers' caches, labelled; the looks are not read. */
 export function bookLayout(book: BookInput): BookLayout {
-  return { ...book, sheets: book.sheets.map((s) => Object.fromEntries(Object.keys(s).filter((k) => k !== 'cells' && k !== 'looks').map((k) => [k, s[k as keyof SheetInput]])) as unknown as SheetLayout) }
+  const sheets = book.sheets.map((s) => Object.fromEntries(Object.keys(s).filter((k) => k !== 'cells' && k !== 'looks').map((k) => [k, s[k as keyof SheetInput]])) as unknown as SheetLayout)
+  const { slicerCaches, ...rest } = book
+  return { ...rest, sheets, ...(slicerCaches ? { slicerCaches: slicerCaches.map((sc) => labelled(book, sc)) } : {}) }
 }
 
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */

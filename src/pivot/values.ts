@@ -6,6 +6,7 @@ import { dateToSerial } from '../model.js'
 import { generalText } from '../numfmt/general.js'
 import { sortOrder } from '../sort-order.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
+import { ERROR_TYPE } from '../error-type.js'
 
 /** A date of a cache as a serial number of the workbook's date system (`epoch` 1462 for 1904). */
 export const dateSerial = (iso: string, epoch = 0): number => dateToSerial(iso) - epoch
@@ -62,6 +63,12 @@ export function labelOrder(a: PivotValue, b: PivotValue, desc: boolean, lists: r
       return desc ? -c : c
     }
   }
-  const c = sortOrder(plainOf(a, epoch), plainOf(b, epoch), false)
+  const c = sortOrder(plainOf(a, epoch), plainOf(b, epoch), false) || errorRank(a, b)
   return desc ? -c : c
+}
+
+/** Two errors in Excel's ascending order of labels: by `ERROR.TYPE` down, `#N/A`, `#NUM!`, `#DIV/0!` (the set slicer-labels); 0 for any other two values. */
+export function errorRank(a: PivotValue, b: PivotValue): number {
+  const type = (v: PivotValue) => (v !== null && typeof v === 'object' && 'error' in v ? (ERROR_TYPE[v.error] ?? 0) : 0)
+  return type(b) - type(a)
 }
