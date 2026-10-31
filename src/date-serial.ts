@@ -33,6 +33,9 @@ export const isDateSerial = (serial: number, e: number) => serial >= 0 && serial
 
 const pad = (n: number, width = 2) => String(n).padStart(width, '0')
 
+/** The problem of a date before day 0 of the date system whose day 0 is `e` of the 1900 one. */
+export const beforeDayZero = (text: string, e: number) => `${JSON.stringify(text)} is before the ${e === EPOCH_1904 ? '1904' : '1900'} date system's day 0 (${e === EPOCH_1904 ? '1904-01-01' : '1900-01-00'}): Excel has no such date`
+
 /**
  * The serial number of a date and time in the form `CellInput.date` accepts (`2026-01-31` is 46053, `2026-01-31T18:00`
  * is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
@@ -46,7 +49,7 @@ export function dateToSerial(text: string, opts?: DateSystemOptions): number {
   } catch {
     throw new InputError('text', `invalid date ${JSON.stringify(text)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`)
   }
-  if (serial < 0) throw new InputError('text', `${JSON.stringify(text)} is before the ${e === EPOCH_1904 ? '1904' : '1900'} date system's day 0 (${e === EPOCH_1904 ? '1904-01-01' : '1900-01-00'}): Excel has no such date`)
+  if (serial < 0) throw new InputError('text', beforeDayZero(text, e))
   return serial
 }
 

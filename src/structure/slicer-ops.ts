@@ -261,8 +261,8 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
   if (kind === 'timelines' && patch.selection != null) {
     const sel = object(patch.selection, 'op.cache.selection', 'dates such as { start: "2024-01-01T00:00:00", end: "2024-12-31T00:00:00" }')
     onlyKeys(sel, 'op.cache.selection', ['start', 'end'])
-    checkIsoDate(sel.start, 'op.cache.selection.start')
-    checkIsoDate(sel.end, 'op.cache.selection.end')
+    checkIsoDate(sel.start, 'op.cache.selection.start', out.dateSystem)
+    checkIsoDate(sel.end, 'op.cache.selection.end', out.dateSystem)
     if (String(sel.start) > String(sel.end)) throw new InputError('op.cache.selection', 'expected a start on or before the end')
   }
   const next = patched(c, patch)
