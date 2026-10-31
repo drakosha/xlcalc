@@ -1,0 +1,117 @@
+{
+ "Years": {
+  "rows": [
+   "Годы (Years)",
+   "Кварталы (Years)",
+   "Месяцы (Years)",
+   "Years"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Месяцы (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Кварталы (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Годы (Years)",
+    "base": "Years",
+    "by": "years"
+   }
+  ]
+ },
+ "OneYear": {
+  "rows": [
+   "Месяцы (OneYear)",
+   "Дни (OneYear)",
+   "OneYear"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Дни (OneYear)",
+    "base": "OneYear",
+    "by": "days"
+   },
+   {
+    "field": "Месяцы (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ },
+ "DateBlank": {
+  "rows": [
+   "Годы (DateBlank)",
+   "Кварталы (DateBlank)",
+   "Месяцы (DateBlank)",
+   "DateBlank"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Месяцы (DateBlank)",
+    "base": "DateBlank",
+    "by": "months"
+   },
+   {
+    "field": "Кварталы (DateBlank)",
+    "base": "DateBlank",
+    "by": "quarters"
+   },
+   {
+    "field": "Годы (DateBlank)",
+    "base": "DateBlank",
+    "by": "years"
+   }
+  ]
+ },
+ "two-dates": {
+  "rows": [
+   "Годы (Years)",
+   "Кварталы (Years)",
+   "Месяцы (Years)",
+   "Years",
+   "Месяцы (OneYear)",
+   "Дни (OneYear)",
+   "OneYear"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Месяцы (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Кварталы (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Годы (Years)",
+    "base": "Years",
+    "by": "years"
+   },
+   {
+    "field": "Дни (OneYear)",
+    "base": "OneYear",
+    "by": "days"
+   },
+   {
+    "field": "Месяцы (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ }
+}
