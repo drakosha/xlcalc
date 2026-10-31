@@ -18,6 +18,7 @@ import * as filter from '../bench/coverage/pivot/filter.js'
 import * as corpusShapes from '../bench/coverage/pivot/corpus-shapes.js'
 import * as corpusShapes2 from '../bench/coverage/pivot/corpus-shapes-2.js'
 import * as corpusShapes3 from '../bench/coverage/pivot/corpus-shapes-3.js'
+import * as errorOrder from '../bench/coverage/pivot/error-order.js'
 import * as filterHeld from '../bench/coverage/pivot/filter-held.js'
 import * as group from '../bench/coverage/pivot/group.js'
 import * as groupHeld from '../bench/coverage/pivot/group-held.js'
@@ -64,9 +65,10 @@ const KNOWN: Record<string, string[]> = {
   'corpus-shapes-2': [],
   'corpus-shapes-3': [],
   'ru-RU/layout': [],
+  'error-order': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout, 'error-order': errorOrder }
 
 async function differences(set: string): Promise<string[]> {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }

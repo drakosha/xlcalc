@@ -3,22 +3,14 @@
  * PivotTable it filters, marked when no record has them under the other fields' filters, in its order (by label, the
  * custom lists first, ascending by default) with the items with data first unless its cache says otherwise.
  */
-import type { BookInput, PivotCache, PivotRef, PivotTable, PivotValue, SlicerCache, TimelineCache } from '../contract.js'
+import type { BookInput, PivotCache, PivotRef, PivotTable, SlicerCache, TimelineCache } from '../contract.js'
 import { groupedItems } from './items.js'
-import { ERROR_TYPE } from '../error-type.js'
 import { caseKey } from '../collate.js'
 import { fieldIndex, sameRef, unchosen } from '../structure/slicer-choice.js'
 import { itemsWithData } from './compute.js'
 import type { PivotComputeOptions } from './result.js'
 import { labelOrder } from './values.js'
 import { EPOCH_1904 } from '../dates.js'
-
-/** Errors in a slicer's ascending order: by `ERROR.TYPE` down, `#N/A`, `#NUM!`, `#DIV/0!`, as Excel's PivotTable lists them too (the set slicer-labels). */
-function errorOrder(a: PivotValue, b: PivotValue, desc: boolean): number {
-  const type = (v: PivotValue) => (v !== null && typeof v === 'object' && 'error' in v ? (ERROR_TYPE[v.error] ?? 0) : 0)
-  const c = type(b) - type(a)
-  return desc ? -c : c
-}
 
 /** A slicer cache's items from the calculations of its PivotTables (`results`, the first the one it reads its choice from); the cache as it was without one. */
 export function slicerItems(sc: SlicerCache, results: readonly { table: PivotTable; cache: PivotCache }[], options: PivotComputeOptions): SlicerCache {
@@ -32,7 +24,7 @@ export function slicerItems(sc: SlicerCache, results: readonly { table: PivotTab
   const hidden = unchosen(first.table, f)
   const epoch = options.date1904 ? EPOCH_1904 : 0
   const lists = sc.customListSort !== false ? (options.lists ?? null) : null
-  const order = values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], sc.sort === 'descending', lists, epoch) || errorOrder(values[a], values[b], sc.sort === 'descending') || a - b)
+  const order = values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], sc.sort === 'descending', lists, epoch) || a - b)
   // Excel's default: the items with data at the top
   if (sc.noData?.mark !== false && sc.noData?.last !== false) order.sort((a, b) => Number(!data.has(a)) - Number(!data.has(b)))
   // without cross filtering (`crossFilter="none"`) Excel marks no item as without data
