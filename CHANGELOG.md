@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.71.0 (2026-10-31)
+
+Added:
+
+- PivotTables. `readXlsx` and `openKept` read a workbook's PivotTables, their caches, slicers and timelines into the model (`BookInput.pivotCaches`, `slicerCaches`, `timelineCaches`; `SheetInput.pivotTables`, `slicers`, `timelines`), with the formats of their areas and their conditional formats; what the model does not hold (a data model, OLAP, an external connection, PivotCharts) is kept in the file and reported.
+- `GETPIVOTDATA` computes by a PivotTable's saved layout, as Excel finds a value field, its items and their totals; in ru-RU `ПОЛУЧИТЬ.ДАННЫЕ.СВОДНОЙ.ТАБЛИЦЫ`. It no longer answers `#NAME?`.
+- `xlcalc/pivot`, the PivotTable engine, and `registerPivot(pivotEngine)` from the root and from `xlcalc/core`, for every session and a pool's threads: a PivotTable refreshed from its source (a range, a table, a name, a dynamic name) or laid out again from its cache, with Excel's aggregates, filters by items, labels, values, Top 10 and dates, sorting, subtotals and grand totals, the compact, outline and tabular forms, grouping of dates, times and numbers and groups by hand, calculated fields and items, the 15 calculations of Show Values As, and slicers and timelines.
+- Operations of `editStructure` over PivotTables: `addPivotTable`, `editPivotTable`, `renamePivotTable`, `movePivotTable`, `deletePivotTable`, `refreshPivots`; over a cache: `groupPivotField`, `ungroupPivotField`, `renamePivotGroup`, `setPivotCalculatedField`, `setPivotCalculatedItem`; over slicers and timelines: `addSlicer`, `editSlicer`, `deleteSlicer`, `addTimeline`, `editTimeline`, `deleteTimeline`. Each is one step of undo, in every kind of session. Without `xlcalc/pivot` a change of a definition marks its cache `stale`, and a workbook written then asks Excel to refresh it on opening.
+- Typing into a PivotTable as in Excel: a label, a field's name or a value field's name renames it; a value, a formula or a cleared cell is refused.
+- The structure carries PivotTables: inserting and deleting rows and columns, moving ranges and renaming or deleting sheets move a PivotTable, its cache's source and the places of its slicers and timelines; an operation that cuts a PivotTable is refused.
+- `writeXlsx` writes PivotTables, their caches with their records, slicers and timelines; `writeKept` rewrites a PivotTable or cache the session changed and keeps every other part byte for byte. Excel for Windows opens such files and shows the same cells before and after it refreshes them.
+
+Changed:
+
+- Breaking: `StructureRefusal`, `CellTextRefusal` and `PasteTextRefusal` gain the code `pivot`; `writeKept` refuses with `slicers` where slicers or timelines were added or deleted. `setCells` and the other edits that throw refuse a cell of a PivotTable's area with an `InputError`.
+- What the model does not hold of a PivotTable is reported by the issues `pivotTable` and `pivotUnread`; the source of a cache whose sheet was deleted is written as Excel writes it, a link to the workbook's own file, and reported (`pivotSourceLinked`).
+- The bundle of `xlcalc/xlsx/keep` is under 400 KB minified, up from 340 KB, and `compute` of `xlcalc/core` under 325 KB, up from 320 KB; `xlcalc/pivot` adds under 80 KB to the root.
+
+Checked against Excel for Windows 16.0 on 25 sets of PivotTables Excel built and saved (and in ru-RU, and on Excel for Mac for the display), the engine's answers committed before each set ran; [docs/pivot-tables.md](docs/pivot-tables.md) has the rules and the known differences.
+
 ## 0.70.0 (2026-10-30)
 
 Added:
