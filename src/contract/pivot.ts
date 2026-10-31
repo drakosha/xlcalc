@@ -87,10 +87,13 @@ export interface PivotCacheField {
 }
 
 /**
- * Where Excel's PivotTable Fields list puts a field when its box is checked (`suggestPivotField`): on the rows, or on
- * Values with the function it takes.
+ * What Excel's PivotTable Fields list does with a field (`suggestPivotField`): `axis` where checking its box puts it, on
+ * the rows or on Values; `function` the function it takes on Values, checked there or dragged there.
  */
-export type PivotFieldSuggestion = { axis: 'rows' } | { axis: 'values'; function: PivotFunction }
+export interface PivotFieldSuggestion {
+  axis: 'rows' | 'values'
+  function: 'sum' | 'count'
+}
 
 /** How a date is grouped, or numbers by intervals (`numbers`). */
 export type PivotGroupBy = 'numbers' | 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'quarters' | 'years'
