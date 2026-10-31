@@ -142,6 +142,10 @@ export type PivotOp = (
   | { slicer: string; name: string; pivots?: string[] }
   /** A slicer's items selected, the others not. */
   | { select: string; items: string[] }
+  /** A slicer's order of items and what it does with items that have no data (`XlSlicerCrossFilterType`: none, at the end, dimmed in place, hidden). */
+  | { slicerSettings: string; order?: 'ascending' | 'descending' | 'source'; noData?: 'none' | 'last' | 'dimmed' | 'hidden' }
+  /** A pivot table connected to a slicer, or disconnected (`off`). */
+  | { link: string; pivot: string; off?: boolean }
   /** A timeline on a date field, its range of dates and its level. */
   | { timeline: string; name: string; from?: number; to?: number; level?: 'years' | 'quarters' | 'months' | 'days' }
   | { cache: { missingItems?: 'default' | 'none' | 'max'; refreshOnLoad?: boolean } }
