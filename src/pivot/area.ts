@@ -38,25 +38,28 @@ export function pivotParts(t: Pick<PivotTable, 'location'>): Rect[] {
 type Placed = Pick<PivotTable, 'location' | 'rows' | 'columns' | 'values' | 'rowLines' | 'columnLines'>
 
 /**
- * A PivotTable's areas (`PivotLocation.areas`) from its place and saved layout: the table and its Filters area; once laid
- * out, the header rows above its values, the labels of its rows left of them, and its values when it has value fields.
- * One not laid out (no saved lines), shrunk to its top-left cell (`#SPILL!`) or with no field at all has its table alone.
+ * A PivotTable's areas (`PivotLocation.areas`) from its place and saved layout, as Excel gives them (the set areas): the
+ * table, its Filters area and its values (`DataBodyRange`, there without a value field too: below the header rows and
+ * right of the labels, or the last row or column where there is none); once laid out with a field, the header rows
+ * above the values and the labels of its rows left of them when it has fields on rows. One not laid out (no saved
+ * lines), shrunk to its top-left cell (`#SPILL!`) or with no field at all has no headers or labels.
  */
 export function pivotAreas(t: Placed): PivotAreas {
   const { range, firstDataRow: dr, firstDataColumn: dc } = t.location
   const x = parseRange(range)
-  const out: PivotAreas = { table: range }
-  if (!x) return out
-  const page = pageArea(t, x)
-  if (page) out.page = rectText(page)
-  const empty = !t.rows?.length && !t.columns?.length && !t.values?.length
+  if (!x) return { table: range, data: range }
   const top = x.r1 + dr
-  if (!t.rowLines || dr <= 0 || top > x.r2 || empty) return out
   const left = x.c1 + dc
-  out.columnHeaders = rectText({ ...x, r2: top - 1 })
-  if (dc > 0) out.rowLabels = rectText({ ...x, r1: top, c2: Math.min(x.c2, left - 1) })
-  if (t.values?.length && left <= x.c2) out.data = rectText({ ...x, r1: top, c1: left })
-  return out
+  const page = pageArea(t, x)
+  const out: Omit<PivotAreas, 'data'> = { ...(page ? { page: rectText(page) } : {}), table: range }
+  const empty = !t.rows?.length && !t.columns?.length && !t.values?.length
+  if (t.rowLines && dr > 0 && !empty) {
+    // the header rows are the whole table where no line of values is under them (column fields alone)
+    out.columnHeaders = rectText({ ...x, r2: Math.min(x.r2, top - 1) })
+    // without a field on rows, the column left of the values holds a value field's name alone (Excel's RowRange is none)
+    if (dc > 0 && t.rows?.length && top <= x.r2) out.rowLabels = rectText({ ...x, r1: top, c2: Math.min(x.c2, left - 1) })
+  }
+  return { ...out, data: rectText({ ...x, r1: Math.min(top, x.r2), c1: Math.min(left, x.c2) }) }
 }
 
 const sameAreas = (a: PivotAreas | undefined, b: PivotAreas) => a !== undefined && a.table === b.table && a.page === b.page && a.columnHeaders === b.columnHeaders && a.rowLabels === b.rowLabels && a.data === b.data && Object.keys(a).length === Object.keys(b).length

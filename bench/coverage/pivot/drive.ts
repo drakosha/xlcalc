@@ -6,7 +6,7 @@
  * the cells of every PivotTable's area and the operations the engine refused. The prediction of a held-out set before
  * Excel runs it (`predict.ts --drive`); operations it does not take are refused as `unsupported`.
  */
-import type { BookInput, CellInput, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
+import type { BookInput, CellInput, PivotAxisField, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
 import { wordsOf } from '../../../src/pivot/captions.js'
@@ -154,6 +154,18 @@ export function drive(c: PivotCase): DrivenPhase[] {
         const list = [...off[axis]]
         list.splice(op.position === undefined ? list.length : op.position - 1, 0, f)
         return { ...off, [axis]: list }
+      })
+      return laid(k)
+    }
+    if ('valuesOn' in op) {
+      // the value fields' own field (Σ Values) on rows or columns, at its place among the axis's fields
+      setTable(pt, (t) => {
+        const rows: PivotAxisField[] = (t.rows ?? []).filter((f) => f !== 'values')
+        const columns: PivotAxisField[] = (t.columns ?? []).filter((f) => f !== 'values')
+        const axis = op.valuesOn === 'row' ? rows : columns
+        const at = op.position === undefined ? axis.length : op.position - 1
+        if ((t.values?.length ?? 0) > 1) axis.splice(at, 0, 'values')
+        return { ...t, rows, columns, valuesOnRows: op.valuesOn === 'row', ...(op.position === undefined ? {} : { valuesPosition: at }) }
       })
       return laid(k)
     }

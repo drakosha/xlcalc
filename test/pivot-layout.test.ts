@@ -173,7 +173,7 @@ describe('layoutPivot', () => {
 
   it('keeps the place of the drop zones for a PivotTable with no field', () => {
     const l = laid({ values: [] })
-    expect(l.location).toEqual({ range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0, areas: { table: 'A3:C20' } })
+    expect(l.location).toEqual({ range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0, areas: { table: 'A3:C20', data: 'A4:C20' } })
     expect(l.cells).toEqual([])
   })
 })
