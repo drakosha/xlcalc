@@ -10,7 +10,7 @@ import { allot, spend } from '../../exec/budget.js'
 import { MAX_ROWS } from '../../model.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
-import { NEWER_MAX_ARGS } from '../common.js'
+import { ints, NEWER_MAX_ARGS } from '../common.js'
 
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
 function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
@@ -18,7 +18,6 @@ function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
   return selectArray(a, rs, cs)
 }
 
-const range = (from: number, to: number) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i)
 
 /** CHOOSECOLS/CHOOSEROWS indexes: numbers (an array gives each of its values), negative from the end, 0 or past the end #VALUE!. */
 function indexes(segs: readonly Segment[], n: number, rules: Rules): number[] | CErr {
@@ -55,7 +54,7 @@ function takeDrop(take: boolean): FnDef {
       const [c0, c1] = part(g.cols, cols, take)
       if (r1 <= r0 || c1 <= c0) return EMPTY
       if (x instanceof Rng) return new Rng(x.s, x.r1 + r0, x.c1 + c0, x.r1 + r1 - 1, x.c1 + c1 - 1)
-      return pick(fromGrid(g), range(r0, r1), range(c0, c1))
+      return pick(fromGrid(g), ints(r0, r1), ints(c0, c1))
     },
   }
 }
@@ -164,11 +163,11 @@ function transpose(a: Arr): Arr {
 export const functions: Record<string, FnDef> = {
   CHOOSECOLS: { args: 'G V', rep: 1, max: NEWER_MAX_ARGS, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
     const cs = indexes(segs, g.cols, cx.rules)
-    return isErr(cs) ? cs : pick(fromGrid(g), range(0, g.rows), cs)
+    return isErr(cs) ? cs : pick(fromGrid(g), ints(0, g.rows), cs)
   } },
   CHOOSEROWS: { args: 'G V', rep: 1, max: NEWER_MAX_ARGS, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
     const rs = indexes(segs, g.rows, cx.rules)
-    return isErr(rs) ? rs : pick(fromGrid(g), rs, range(0, g.cols))
+    return isErr(rs) ? rs : pick(fromGrid(g), rs, ints(0, g.cols))
   } },
   DROP: takeDrop(false),
   EXPAND: {

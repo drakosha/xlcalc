@@ -20,6 +20,9 @@ export const MAX_TRIG = 2 ** 27
 
 /** Numeric aggregates in input order, with Excel's empty-list results. */
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
+
+/** The integers from `from` up to `to`, not included. */
+export const ints = (from: number, to: number) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i)
 /** The numbers added in turn: the sum before the last one, and the sum of all. */
 function lastAddition(xs: readonly number[]): [before: number, sum: number] {
   let s = 0

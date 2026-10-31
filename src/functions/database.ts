@@ -9,7 +9,7 @@ import { isArea } from '../arrays/lift.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
-import { max, min, product, sum } from './common.js'
+import { ints, max, min, product, sum } from './common.js'
 import { meanOrDiv0, numbersOf, stdev, variance } from './statistical/common.js'
 
 /** What tests count of the database functions (`watchRecords`): the records checked one by one. Nothing is counted unless a test asks. */
@@ -102,7 +102,6 @@ function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules):
 }
 
 /** The positions `from`…`to` − 1. */
-const span = (from: number, to: number) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i)
 
 /** Positions in either of two ascending lists, ascending, each once. */
 function union(a: readonly number[], b: readonly number[]): number[] {
@@ -134,7 +133,7 @@ function selectedIn(cx: Cx, db: Rng, field: V | undefined, criteria: Grid): V[] 
   for (const row of criteriaRows(header, criteria, rules)) {
     if (row.some((t) => t.col < 0)) continue
     if (!row.length) {
-      sel = span(0, n)
+      sel = ints(0, n)
       break
     }
     const s = cx.select(row.map((t) => [column(t.col), conditionValue(t.v, rules)]))
@@ -142,7 +141,7 @@ function selectedIn(cx: Cx, db: Rng, field: V | undefined, criteria: Grid): V[] 
     // the selection reads the part its columns occupy, which can pass the database's or stop short of it (blank there)
     const blank = rows - s.rest
     let got = s.sel.length && s.sel[s.sel.length - 1] >= n ? s.sel.filter((p) => p < n) : s.sel
-    if (s.rest && blank < n) got = got.concat(span(blank, n))
+    if (s.rest && blank < n) got = got.concat(ints(blank, n))
     sel = sel ? union(sel, got) : got
   }
   if (!sel) return []
