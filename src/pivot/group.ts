@@ -83,8 +83,9 @@ export function rangeLabels(range: Range, blank: boolean, integer: boolean, epoc
     switch (range.by) {
       case 'numbers': {
         const a = s + k * i
-        // whole numbers end a group one below the next's start, the last at the end when that lies on its bound
-        const b = integer ? (k === count - 1 ? Math.max(a + i - 1, e) : a + i - 1) : a + i
+        // whole numbers by a whole interval end a group one below the next's start, the last at the end when that lies
+        // on its bound; by a fraction at the next's start (the set period-names-held: `2-3.5`)
+        const b = integer && Number.isInteger(i) ? (k === count - 1 ? Math.max(a + i - 1, e) : a + i - 1) : a + i
         return `${g(a)}-${g(b)}`
       }
       case 'days': {
