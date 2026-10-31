@@ -1,7 +1,7 @@
 /** Structure operations (`editStructure`) and their answers, and a sheet's outline groups and commands over its rows and columns (`outlineGroups`, `outlineEdit`). */
 import type { CellRef, LineSpan, RangeRef, Refusal } from './values.js'
 import type { Book, ColumnInput, RowInput, TableInput } from './book.js'
-import type { PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
+import type { PivotGrouping, PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
 import type { EditResult } from './edits.js'
 
 /**
@@ -170,6 +170,33 @@ export type StructureOp =
    * a PivotTable that is not there, a source that cannot be refreshed, or the subpath not loaded, is refused (`pivot`).
    */
   | { op: 'refreshPivots'; pivots?: PivotRef[] }
+  /**
+   * Excel's Group on the field `field` (its index in the cache) of a PivotTable, for every PivotTable of its cache, laid
+   * out again in one step. Refused (`pivot`) where Excel refuses: text among the dates or numbers grouped, a field with
+   * calculated items, items by hand of a field of dates or numbers grouped; and without `xlcalc/pivot`.
+   */
+  | { op: 'groupPivotField'; sheet: string; pivot: string; field: number; group: PivotGrouping }
+  /**
+   * Excel's Ungroup: a field of dates or numbers back to its values, the fields its periods made gone from every
+   * PivotTable of the cache; a field of groups made by hand gone; with `items` (indexes into the PivotTable field's
+   * `items`), those groups by hand alone, their items each a group of its own again.
+   */
+  | { op: 'ungroupPivotField'; sheet: string; pivot: string; field: number; items?: number[] }
+  /** A group's label in the cache (`Group1` to `East and West`): the item `item` of the field `field`, on every PivotTable of the cache. */
+  | { op: 'renamePivotGroup'; sheet: string; pivot: string; field: number; item: number; name: string }
+  /**
+   * Excel's Insert Calculated Field: the cache's calculated field `name`, a formula over fields by name as Excel's dialog
+   * takes it (`=Amount/Qty`, `='Unit Price'*Qty`), added, or its formula changed when the cache has it (Modify); a null
+   * `formula` deletes it, and it leaves every PivotTable of the cache. Adding does not place it on Values
+   * (`editPivotTable` does).
+   */
+  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null }
+  /**
+   * Excel's Insert Calculated Item of the field `field`: the item `name`, a formula over the field's items as Excel's
+   * dialog takes it (`=East+West`, `='North'*2`), added on every PivotTable of the cache, or its formula changed when
+   * the field has it; a null `formula` deletes it.
+   */
+  | { op: 'setPivotCalculatedItem'; sheet: string; pivot: string; field: number; name: string; formula: string | null }
   /**
    * Excel's Insert Slicer on `sheet`: over a slicer cache of the workbook by its name, or a new one of the source field
    * `field` that filters the PivotTables `pivots`, all of one pivot cache. Its name is the first free from the field's
