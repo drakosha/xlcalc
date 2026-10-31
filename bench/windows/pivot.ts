@@ -161,8 +161,11 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     } else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
     else if ('slicer' in o) {
       slicers.push(o.name)
-      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
+      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: o.on ?? 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
     } else if ('select' in o) add(role, { ...at, op: 'only', on: 'slicerCache', field: o.select, items: o.items })
+    else if ('deleteSlicer' in o) add(role, call('slicerCache', 'Delete', [], { field: o.deleteSlicer }))
+    else if ('addSheet' in o) add(role, { do: 'struct', op: 'insertSheet', target: o.addSheet })
+    else if ('deleteSheet' in o) add(role, { do: 'struct', op: 'deleteSheet', sheet: o.deleteSheet })
     else if ('timeline' in o) {
       slicers.push(o.name)
       add(role, { ...at, op: 'slicer', field: o.timeline, name: o.name, kind: 2, at: 'P', also: [] })
