@@ -5,6 +5,7 @@
  * `xlcalc/pivot`'s, which registers it for every check of a workbook.
  */
 import type { BookInput } from '../contract.js'
+import type { DateSystem } from '../dates.js'
 import { InputError } from '../input-error.js'
 import { checkIsoDate, checkPivotValue } from '../input/pivot.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
@@ -22,7 +23,11 @@ const oneOf = (values: readonly string[]): Check => (v, p) => checkOneOf(v, p, v
 const list = (c: Check): Check => (v, p) => array(v, p, 'an array').forEach((x, i) => c(x, `${p}[${i}]`))
 const range: Check = (v, p) => void checkRange(v, p)
 
-const isoDate: Check = checkIsoDate
+/** The date system of the workbook checked, whose day 0 its dates begin at (`checkPivotShapes`). */
+let system: DateSystem | undefined
+
+const isoDate: Check = (v, p) => checkIsoDate(v, p, system)
+const pivotValue: Check = (v, p) => checkPivotValue(v, p, system)
 
 /** An object of `fields`, those named in `required` given. */
 function shape(fields: Record<string, Check>, required: string[], expected: string): Check {
@@ -36,7 +41,7 @@ function shape(fields: Record<string, Check>, required: string[], expected: stri
 }
 
 const numberOrDate: Check = (v, p) => (typeof v === 'number' ? finite(v, p) : shape({ date: isoDate }, ['date'], 'a number or { date }')(v, p))
-const values = list(checkPivotValue)
+const values = list(pivotValue)
 const FUNCTIONS = ['sum', 'count', 'average', 'max', 'min', 'product', 'countNums', 'stdDev', 'stdDevp', 'var', 'varp'] as const
 const fn = oneOf(FUNCTIONS)
 const axisField: Check = (v, p) => (v === 'values' ? undefined : index(v, p))
@@ -93,7 +98,7 @@ const cacheField = shape(
 const records: Check = (v, p) =>
   array(v, p, 'an array of records').forEach((r, i) => {
     const rp = `${p}[${i}]`
-    for (const [k, x] of array(r, rp, 'an array of values').entries()) if (typeof x !== 'number' && typeof x !== 'string') checkPivotValue(x, `${rp}[${k}]`)
+    for (const [k, x] of array(r, rp, 'an array of values').entries()) if (typeof x !== 'number' && typeof x !== 'string') pivotValue(x, `${rp}[${k}]`)
   })
 
 const cache = shape(
@@ -255,6 +260,15 @@ const timeline = shape(
 
 /** Every PivotTable, cache, slicer and timeline of the book, and every conditional format's PivotTable, by its shape. */
 export function checkPivotShapes(book: BookInput, path = 'book') {
+  system = book.dateSystem
+  try {
+    shapesOf(book, path)
+  } finally {
+    system = undefined
+  }
+}
+
+function shapesOf(book: BookInput, path: string) {
   const each = (v: unknown, p: string, check: Check) => v !== undefined && list(check)(v, p)
   each(book.pivotCaches, `${path}.pivotCaches`, cache)
   each(book.slicerCaches, `${path}.slicerCaches`, slicerCache)

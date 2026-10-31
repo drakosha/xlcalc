@@ -7,7 +7,7 @@ import type { NumberFormat, PivotCache, PivotCacheField, PivotFieldFacts, PivotF
 import { attr, attributes, attrsAt, element, flag, has, within } from '../xml/scan.js'
 import { decodeEscapes, decodeXml } from '../xml/text.js'
 import { ERRORS } from './cells.js'
-import { modelDate } from '../pivot-dates.js'
+import { modelDate } from '../../pivot-time.js'
 
 /** The tags of values (`<s v="North"/>`, `<x v="2"/>`, `<m/>`), and with `r` a record's. */
 const VALUES = /<(?:[\w.-]+:)?(r|[xnsbedm])((?:\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?)(\/?)>/g

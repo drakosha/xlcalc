@@ -9,23 +9,33 @@ import type { BookInput } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError, what } from '../input-error.js'
 import { dateToSerial } from '../model.js'
+import { epochOf, type DateSystem } from '../dates.js'
+import { beforeDayZero } from '../date-serial.js'
+import { modelDate } from '../pivot-time.js'
 import { pivotCheck } from '../pivot/hook.js'
 import { array, checkBoolean, checkCellValue, checkNumber, checkString, given, isObject, object, type Check } from './basic.js'
 import { checkRange } from './range.js'
 
-/** An ISO date, as a cache stores it (`2025-01-31T00:00:00`). */
-export function checkIsoDate(v: unknown, p: string) {
+/**
+ * An ISO date, as a cache stores it (`2025-01-31T00:00:00`), of the workbook's date system: from its day 0 on, as the
+ * layout reads it, a time of day on Excel's 1899-12-30 at day 0 (`pivot-time.ts`).
+ */
+export function checkIsoDate(v: unknown, p: string, dateSystem?: DateSystem) {
   checkString(v, p)
+  let serial: number
   try {
-    dateToSerial(v as string)
+    serial = dateToSerial(modelDate(v as string))
   } catch {
     throw new InputError(p, `invalid date ${JSON.stringify(v)}: expected an ISO date such as "2025-01-31T00:00:00"`)
   }
+  // the day 0 the layout reads its dates from (`date-serial.ts`)
+  const e = epochOf(dateSystem)
+  if (serial < e) throw new InputError(p, beforeDayZero(v as string, e))
 }
 
-/** A value of a cache: a cell's (blank, number, text, boolean, `{ error }`) or `{ date }`. */
-export function checkPivotValue(v: unknown, p: string) {
-  if (isObject(v) && Object.keys(v).length === 1 && typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`)
+/** A value of a cache: a cell's (blank, number, text, boolean, `{ error }`) or `{ date }` of the workbook's date system. */
+export function checkPivotValue(v: unknown, p: string, dateSystem?: DateSystem) {
+  if (isObject(v) && Object.keys(v).length === 1 && typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`, dateSystem)
   try {
     checkCellValue(v, p)
   } catch {
@@ -92,7 +102,8 @@ export function checkPivots(book: Fields, path: string) {
   const cache: Check = (v, p) => {
     if (!fields.has(v as number)) throw new InputError(p, `expected the id of a pivot cache of the workbook, got ${what(v)}`)
   }
-  const values = list(checkPivotValue, 'an array of values')
+  const dateSystem = book.dateSystem as DateSystem | undefined
+  const values = list((v, p) => checkPivotValue(v, p, dateSystem), 'an array of values')
   given(book, path, {
     pivotCaches: objects((c, p) => {
       index(c.id, `${p}.id`)
