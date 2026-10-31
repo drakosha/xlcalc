@@ -17,3 +17,8 @@ export function gpdCase(id: string, from: string, onG: string[], onP: string[] =
 
 /** `GETPIVOTDATA(data, P!$A$3, pairs...)` with the arguments as written. */
 export const gpd = (data: string, ...pairs: string[]): string => `GETPIVOTDATA(${[data, 'P!$A$3', ...pairs].join(',')})`
+
+/** A case that builds its pivot tables (`ops`) and then types its formulas on `G` from A1. */
+export function gpdOver(id: string, ops: PivotOp[], onG: string[], data?: string): PivotCase {
+  return { id, ...(data ? { data } : {}), ops: [...ops, ...onG.map((f, i): PivotOp => ({ edit: `G!A${i + 1}`, to: { formula: f } }))], watch: [`G!A1:A${onG.length}`] }
+}

@@ -121,7 +121,7 @@ export interface BookFacts {
   /** The active cell of the active sheet, and the top-left cell of its window. */
   activeCell(): { s: number; r: number; c: number }
   topLeft(): { r: number; c: number }
-  /** The PivotTable of sheet `s` whose cells (`pivotArea`) hold a cell, with its cache and those cells (GETPIVOTDATA). */
+  /** The PivotTable of sheet `s` whose cells (`pivotArea`, and the cell above its top left without a Filters area) hold a cell, with its cache and those cells (GETPIVOTDATA). */
   pivotAt(s: number, r: number, c: number): { table: PivotTable; cache: PivotCache | undefined; area: Rect } | undefined
 }
 

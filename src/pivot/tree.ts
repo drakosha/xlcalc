@@ -78,20 +78,24 @@ function otherPath(fields: readonly number[], given: readonly { field: number; i
 
 /**
  * Sorts each branch's items by its field's sort: by label (custom lists first, with `customListSort`), or by a value
- * field's values at the other axis's items (`value`, its paths on the rows and the columns); ties keep the order before.
+ * field's values at the other axis's items (`value`, its paths on the rows and the columns); ties under an item of a field
+ * before go by the item's value over all of them (`alone`), then keep the order before.
  */
-export function sortBranches(s: Sorting, root: Branch, real: readonly number[], other: readonly number[], rows: boolean, value: (path: number[], at: number[], v: number) => CellValue): void {
+export function sortBranches(s: Sorting, root: Branch, real: readonly number[], other: readonly number[], rows: boolean, value: (path: number[], at: number[], v: number) => CellValue, alone: (f: number, item: number, at: number[], v: number) => CellValue): void {
   const walk = (b: Branch, level: number, path: number[]) => {
     if (level === real.length) return
     const f = real[level]
     const pf = s.table.fields[f]
-    const sort = pf.autoSort === false ? undefined : pf.sort
+    const sort = pf.sort
     if (sort?.by) {
       const at = otherPath(other, sort.by.at)
       const v = sort.by.value
+      const desc = sort.order === 'descending'
       const val = new Map(b.order.map((p) => [p, rows ? value([...path, p], at, v) : value(at, [...path, p], v)]))
+      // under an item of a field before, ties go by the items' values over every item before (the set sort-held)
+      const whole = new Map(level ? b.order.map((p) => [p, alone(f, p, at, v)]) : [])
       const was = new Map(b.order.map((p, i) => [p, i]))
-      b.order.sort((x, y) => valueOrder(val.get(x)!, val.get(y)!, sort.order === 'descending') || was.get(x)! - was.get(y)!)
+      b.order.sort((x, y) => valueOrder(val.get(x)!, val.get(y)!, desc) || (level ? valueOrder(whole.get(x)!, whole.get(y)!, desc) : 0) || was.get(x)! - was.get(y)!)
     } else if (sort) {
       const cached = s.cache.fields[f]?.items ?? []
       const item = (p: number) => {

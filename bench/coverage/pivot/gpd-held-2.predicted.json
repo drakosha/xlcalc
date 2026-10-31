@@ -1,0 +1,143 @@
+{
+ "collapsed-some-tabular": {
+  "G!A1": 1026.76,
+  "G!A2": 138.65,
+  "G!A3": 348.4,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 127.41,
+  "G!A6": {
+   "error": "REF"
+  }
+ },
+ "collapsed-all-tabular": {
+  "G!A1": 1026.76,
+  "G!A2": 138.65,
+  "G!A3": 348.4,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": {
+   "error": "REF"
+  },
+  "G!A6": {
+   "error": "REF"
+  }
+ },
+ "collapsed-some-compact": {
+  "G!A1": 1026.76,
+  "G!A2": 138.65,
+  "G!A3": 348.4,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 127.41,
+  "G!A6": {
+   "error": "REF"
+  }
+ },
+ "collapsed-all-compact": {
+  "G!A1": 1026.76,
+  "G!A2": 138.65,
+  "G!A3": 348.4,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": {
+   "error": "REF"
+  },
+  "G!A6": {
+   "error": "REF"
+  }
+ },
+ "collapsed-columns": {
+  "G!A1": 138,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": 31,
+  "G!A4": 67
+ },
+ "around-one-value": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": {
+   "error": "REF"
+  },
+  "G!A6": {
+   "error": "REF"
+  },
+  "G!A7": {
+   "error": "REF"
+  },
+  "G!A8": 1026.76,
+  "G!A9": 1026.76
+ },
+ "around-values-row-shown": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": 48,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 48
+ },
+ "around-values-row-hidden": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 48
+ },
+ "around-values-row-on": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 48
+ },
+ "values-outside-numbers": {
+  "G!A1": 138.65,
+  "G!A2": 43,
+  "G!A3": 45.88,
+  "G!A4": 65,
+  "G!A5": 4.43,
+  "G!A6": 1026.76
+ },
+ "values-outside-numbers-tabular": {
+  "G!A1": 301.91,
+  "G!A2": 16,
+  "G!A3": 1026.76
+ }
+}

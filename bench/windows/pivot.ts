@@ -37,6 +37,8 @@ const PERIODS: readonly Period[] = ['seconds', 'minutes', 'hours', 'days', 'mont
 const LEVEL = { years: 0, quarters: 1, months: 2, days: 3 } as const
 const MISSING = { default: -1, none: 0, max: 32500 } as const
 const ROW_LAYOUT = { compact: 0, tabular: 1, outline: 2 } as const
+/** `XlSortOrder`, and `xlManual` for no sorting on update. */
+const SORT_ORDER = { ascending: 1, descending: 2, manual: -4135 } as const
 /** The pivot table's and the cache's version, 8 as Excel 365 makes them (COM refuses `xlPivotTableVersionCurrent`, -1). */
 const VERSION = 8
 
@@ -54,6 +56,7 @@ function tableProps(t: TableProps): Props {
   if (t.emptyText !== undefined) p.push(['DisplayNullString', true], ['NullString', t.emptyText])
   if (t.multipleFilters !== undefined) p.push(['AllowMultipleFilters', t.multipleFilters])
   if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
+  if (t.valuesRow !== undefined) p.push(['ShowValuesRow', t.valuesRow])
   return p
 }
 
@@ -145,13 +148,17 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       else if (o.items.length === 1) add(role, set('field', [['EnableMultiplePageItems', false], ['CurrentPage', o.items[0]]], { field: o.page }))
       else add(role, set('field', [['EnableMultiplePageItems', true]], { field: o.page }), { ...at, op: 'only', on: 'field', field: o.page, items: o.items })
     } else if ('filter' in o) add(role, { ...at, op: 'filter', field: o.filter, type: FILTER_TYPES[o.type], dataField: o.by ?? null, value1: o.value1 ?? null, value2: o.value2 ?? null, wholeDays: o.wholeDays ?? null })
-    else if ('sort' in o) add(role, call('field', 'AutoSort', [o.order === 'ascending' ? 1 : 2, o.by ?? o.sort], { field: o.sort }))
+    else if ('sort' in o) add(role, call('field', 'AutoSort', [SORT_ORDER[o.order], o.by ?? o.sort], { field: o.sort }))
     else if ('item' in o) add(role, set('item', [['Position', o.position]], { field: o.of, item: o.item }))
     else if ('calcField' in o) add(role, call('calcFields', 'Add', [o.calcField, o.formula, true]))
     else if ('calcItem' in o) add(role, call('calcItems', 'Add', [o.calcItem, o.formula, true], { field: o.field }))
     else if ('group' in o) add(role, { ...at, op: 'group', field: o.group, start: o.start ?? null, end: o.end ?? null, by: o.by ?? null, periods: o.periods ? PERIODS.map((p) => o.periods!.includes(p)) : null })
     else if ('groupItems' in o) add(role, { ...at, op: 'groupItems', field: o.groupItems, items: o.items })
-    else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
+    else if ('collapse' in o) {
+      const detail: Props = [['ShowDetail', o.expand ?? false]]
+      if (o.items === 'all') add(role, set('field', detail, { field: o.collapse }))
+      else for (const item of o.items) add(role, set('item', detail, { field: o.collapse, item }))
+    } else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
     else if ('slicer' in o) {
       slicers.push(o.name)
       add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })

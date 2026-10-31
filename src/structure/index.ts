@@ -277,6 +277,12 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'deleteTimeline':
       r = pivotOp(book, op as PivotOp, values)
       break
+    case 'groupPivotField':
+    case 'ungroupPivotField':
+    case 'renamePivotGroup':
+    case 'setPivotCalculatedField':
+    case 'setPivotCalculatedItem':
+      throw new InputError('op.op', `${o.op} is not supported yet`)
   }
   return r
 }

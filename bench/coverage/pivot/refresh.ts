@@ -5,7 +5,8 @@
  * range that does not grow; the source edited and, before any refresh, a filter, a sort, the layout, a field moved, a
  * data field added or its function changed (what the pivot table shows from its cache), then refreshed; two pivot
  * tables of one cache, one growing over the other on a refresh, and over cells with values; a cache to refresh on
- * opening; a book Excel saved opened as it is and refreshed.
+ * opening; a book Excel saved opened as it is and refreshed; GETPIVOTDATA over a pivot table that a refresh turned into
+ * #SPILL!, before and after, and after the cells in its way are cleared and it is refreshed again.
  */
 import type { PivotCase, PivotOp } from './cases.js'
 import { salesColumns } from './data.js'
@@ -17,6 +18,14 @@ export function buildPivotCases(): PivotCase[] {
   const base: PivotOp[] = [{ rows: ['Region'] }, { value: { field: 'Price' } }]
   const eastGone: PivotOp[] = EAST.map((r): PivotOp => ({ edit: `D!A${r}`, to: 'West' }))
   const newRegions = (n: number, from = 2): PivotOp[] => Array.from({ length: n }, (_, i): PivotOp => ({ edit: `D!A${from + i}`, to: `Region ${i + 1}` }))
+  // GETPIVOTDATA over PT1 (the total, an item, an item it will gain) and PT2, typed before the refresh
+  const spillReads: PivotOp[] = [
+    { edit: 'G!A1', to: { formula: 'GETPIVOTDATA("Sum of Price",P!$A$3)' } },
+    { edit: 'G!A2', to: { formula: 'GETPIVOTDATA("Sum of Price",P!$A$3,"Region","East")' } },
+    { edit: 'G!A3', to: { formula: 'GETPIVOTDATA("Sum of Price",P!$A$3,"Region","Region 1")' } },
+    { edit: 'G!A4', to: { formula: 'GETPIVOTDATA("Sum of Qty",P!$A$12)' } },
+    { edit: 'G!A5', to: { formula: 'GETPIVOTDATA("Sum of Qty",P!$A$12,"Flag",TRUE)' } },
+  ]
   const before = (id: string, change: PivotOp[], start: PivotOp[] = base): PivotCase => ({ id, ops: [...start, { read: true }, { edit: 'D!E3', to: 1000 }, { edit: 'D!A5', to: 'Central' }, ...change, { read: true }, { refresh: true }] })
   return [
     { id: 'new-item', ops: [...base, { read: true }, { edit: 'D!A2', to: 'Central' }, { refresh: true }] },
@@ -62,6 +71,12 @@ export function buildPivotCases(): PivotCase[] {
       ops: [...base, { create: 'PT2', at: 'P!D3', source: 'range' }, { rows: ['Region'], pt: 'PT2' }, { value: { field: 'Price' }, pt: 'PT2' }, { read: true }, { edit: 'D!A2', to: 'Central' }, { refresh: true }],
     },
     { id: 'over-values', ops: [...base, { edit: 'P!A12', to: 'kept?' }, { edit: 'P!B13', to: 7 }, { read: true }, ...newRegions(5), { refresh: true }], watch: ['P!A12:B16'] },
+    {
+      id: 'two-overlap-gpd',
+      ops: [...base, { create: 'PT2', at: 'P!A12' }, { rows: ['Flag'], pt: 'PT2' }, { value: { field: 'Qty' }, pt: 'PT2' }, ...spillReads, { read: true }, ...newRegions(5), { refresh: true }],
+      watch: ['G!A1:A5'],
+    },
+    { id: 'over-values-gpd', ops: [...base, { edit: 'P!A12', to: 'kept?' }, ...spillReads.slice(0, 3), { read: true }, ...newRegions(5), { refresh: true }, { read: true }, { edit: 'P!A12', to: null }, { refresh: true }], watch: ['G!A1:A3'] },
     { id: 'refresh-on-open', ops: [...base, { cache: { refreshOnLoad: true } }, { edit: 'D!A2', to: 'Central' }] },
     { id: 'open-saved', file: 'test/excel/win/pivot/basic/columns.xlsx', ops: [{ read: true }, { refreshAll: true }] },
     { id: 'open-saved-two', file: 'test/excel/win/pivot/basic/page-one.xlsx', ops: [{ read: true }, { refreshAll: true }] },

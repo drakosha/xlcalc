@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type CellValue, type PivotCache, type PivotFilterType, type PivotTable, type PivotValue } from '../src/index.js'
 import { readXlsx, type XlsxRead } from '../src/xlsx.js'
 import { openKept } from '../src/xlsx-keep.js'
-import { formatAddress } from '../src/model.js'
+import { dateToSerial, formatAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
 import { ERROR_TEXT } from '../src/syntax.js'
 import { buildPivotCases } from '../bench/coverage/pivot/basic.js'
@@ -24,7 +24,11 @@ function literal(v: PivotValue): string {
   if (typeof v === 'string') return `"${v.replaceAll('"', '""')}"`
   if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE'
   if (typeof v === 'number') return String(v)
-  if ('date' in v) return String(Math.round((Date.parse(`${v.date}Z`) - Date.UTC(1899, 11, 30)) / 864e5))
+  if ('date' in v) {
+    // a date and time as DATE and TIME give it: a literal of more than 15 digits is cut to 15
+    const [y, m, d, h, mi, sec] = v.date.split(/[-T:]/).map(Number)
+    return h || mi || sec ? `(DATE(${y},${m},${d})+TIME(${h},${mi},${sec}))` : String(dateToSerial(v.date))
+  }
   return `"${ERROR_TEXT[v.error]}"`
 }
 
@@ -54,12 +58,11 @@ function lines(t: PivotTable, c: PivotCache, axis: 'rows' | 'columns') {
 const near = (a: unknown, b: unknown) => (typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b)) : a === b || JSON.stringify(a) === JSON.stringify(b))
 
 /** The sets of PivotTables Excel for Windows saved. */
-const SETS = ['basic', 'layout', 'calc', 'edit', 'filter', 'refresh', 'sort']
+const SETS = ['basic', 'layout', 'calc', 'edit', 'filter', 'refresh', 'sort', 'layout-held', 'filter-held', 'sort-held', 'edit-held']
 
 /**
  * One PivotTable against what Excel showed of it: its range, the top left of its values, with `labels` each row's label
- * (the innermost item it names, a value field's name, Grand Total); and GETPIVOTDATA of each value Excel showed (the
- * first line of the same items where several show them: a field's subtotals of several functions); the cells checked.
+ * (the innermost item it names, a value field's name, Grand Total); and GETPIVOTDATA of each value Excel showed ; the cells checked.
  */
 function checked(r: XlsxRead, sheet: string, t: PivotTable, shown: PivotArea, labels: boolean, id: string, bad: string[]): number {
   const cache = r.book.pivotCaches!.find((x) => x.id === t.cache)!
@@ -84,7 +87,9 @@ function checked(r: XlsxRead, sheet: string, t: PivotTable, shown: PivotArea, la
   if (!t.values?.length) return 0
   const formulas: Record<string, { formula: string }> = {}
   const wanted: [string, CellValue][] = []
+  // a formula of the items of several lines names none of them (a field's subtotals of several functions): left out
   const seen = new Set<string>()
+  const twice = new Set<string>()
   const ref = `'${sheet}'!${formatAddress(range.r1, range.c1)}`
   rows.forEach((rl, i) =>
     columns.forEach((cl, j) => {
@@ -93,13 +98,15 @@ function checked(r: XlsxRead, sheet: string, t: PivotTable, shown: PivotArea, la
       const pairs = [...rl.named, ...cl.named].flatMap(([f, item]) => [`"${f}"`, literal(item)])
       const value = (t.rows ?? []).includes('values') ? rl.value : cl.value
       const formula = `GETPIVOTDATA("${t.values![value].name}",${ref}${pairs.map((p) => `,${p}`).join('')})`
-      if (seen.has(formula)) return
+      if (seen.has(formula)) twice.add(formula)
       seen.add(formula)
       const a = formatAddress(wanted.length, 0)
       formulas[a] = { formula }
       wanted.push([a, v])
     }),
   )
+  for (const [a, f] of Object.entries(formulas)) if (twice.has(f.formula)) delete formulas[a]
+  wanted.splice(0, wanted.length, ...wanted.filter(([a]) => formulas[a]))
   const book: BookInput = { ...r.book, sheets: [...r.book.sheets, { name: 'Check', cells: formulas }] }
   const out = compute(book).sheets.at(-1)!.cells
   for (const [a, v] of wanted) {

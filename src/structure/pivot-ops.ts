@@ -26,7 +26,7 @@ import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
 import type { ValuesIn } from './values.js'
 
-export type PivotOp = Extract<StructureOp, { op: `${string}Pivot${string}` | `${string}Slicer` | `${string}Timeline` }>
+export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTable' | 'renamePivotTable' | 'movePivotTable' | 'deletePivotTable' | 'refreshPivots' | `${string}Slicer` | `${string}Timeline` }>
 
 /** The fields of each operation, for `editStructure`'s check of its shape. */
 export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {

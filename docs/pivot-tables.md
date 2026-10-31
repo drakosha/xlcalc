@@ -71,17 +71,22 @@ A sheet renamed in a session renames it in the sources of the caches and in the 
 the items the pairs name:
 
 - `pivot_table` is a reference to any cell of the PivotTable, its Filters area too, or a range whose top left cell is
-  one; a cell outside every PivotTable is `#REF!`.
+  one; without a Filters area, the cell just above its top left cell is the PivotTable's too (`A2` of a PivotTable at
+  `A3`, not `B2` or `A1`). A cell outside every PivotTable is `#REF!`.
 - `data_field` is the value field's name (`Sum of Price`) or its source field's (`Price`), in any case. Given as a
   reference to a cell holding the name, it is `#REF!`, as in Excel; text a formula makes (`TEXT(A1,"0")`) is taken.
-- A field is named as the PivotTable or the source names it, in any case. An item is matched by its label, in any case:
+- A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is
+  not found as `Region`), in any case. An item is matched by its label, in any case:
   `"North"`, `"(blank)"` for the blank item, a number's or a date's label as the PivotTable shows it (`"10"`, not
   `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. A number matches a number
-  or a date of that value (`DATE(2024,1,1)`, `45292`), a boolean a boolean.
+  or a date of that value as `=` compares them (`DATE(2024,1,1)`, `45292`, `DATE(2025,1,2)+TIME(9,33,0)`), a boolean a
+  boolean.
 - The pairs pick the line of the rows and the column that name exactly their fields: naming all of them gives a value
-  cell, naming fewer a subtotal or the grand total where the PivotTable shows one. A field of the Filters area is
-  matched against the item it shows. What the layout does not show (an item filtered out, an inner field without its
-  outer one, a field on no axis, a pair without its item) is `#REF!`.
+  cell, naming fewer a subtotal or the grand total where the PivotTable shows one, a collapsed item's total on its own
+  line. An inner field named without a field between finds the one line that names it, where there is one (North and
+  Code 10 when only one Flag of North has Code 10). A field of the Filters area is matched against the item it shows.
+  What the layout does not show (an item filtered out, an inner field under several outer items, a field on no axis, a
+  pair without its item, an item with subtotals of several functions) is `#REF!`.
 - The answer is the value of that cell, an error as it is, an empty cell 0.
 - A PivotTable whose definition changed without being laid out again (`PivotCache.stale`) is `#REF!`.
 - A PivotTable in another workbook (`[1]P!$A$3`) is `#REF!` when calculated; a file opened keeps the value Excel saved
@@ -210,13 +215,15 @@ Records count where every field lets them through:
 - a page field's item, or the items left checked with Select Multiple Items;
 - label filters, by the item's caption: equals, begins with, ends with and contains take `?` and `*` (`~` before one takes it as it is), in any case; greater than and between compare text in Excel's order, a number item against a number by value;
 - date filters on a field of dates, by whole days unless the filter takes the time: before, after, between, a specific date, a quarter or month of any year; the relative ones (today, this week from Sunday, last month, next quarter, year to date…) count from the session's clock, the day `TODAY` returns;
-- value filters and Top 10, by a value field's values, among the items under the same item of the fields before: an empty value counts as 0, an error fails; Top 10 keeps the items tied with the last one it takes; by percent or sum, the items from the top (or the bottom) until their total reaches the share or the sum.
+- value filters and Top 10, by a value field's values, among the items under the same item of the fields before: an empty value counts as 0, an error fails; Top 10 by items keeps the items tied with the last one it takes; by percent or sum, the items from the top (or the bottom) until their total reaches the share or the sum, no more (of two tied items, the first).
+
+An axis shows the items its own filters leave: a value filter on the rows that leaves no row still shows the columns' items, empty.
 
 A label or date filter and a value filter on one field both apply (Allow multiple filters per field). Totals summarize the records left: a grand total under Top 10 is the total of the items shown.
 
 ### Sorting
 
-A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep their order. A field sorted by hand keeps its order, new items after it; with "Sort automatically every time the report is updated" off, a sort is not applied again.
+A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep their order, and under an item of a field before go by the items' values over all of them. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
 
 ## Checked against Excel
 
@@ -230,4 +237,4 @@ has the details.
 
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 
-Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with three known differences (`docs/limitations.md`).
+Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with one known difference (`docs/limitations.md`). Held-out sets, predicted before Excel ran them, matched 20 of 20 of layout, 20 of 22 of filters and 17 of 18 of sorting; their three misses are rules now.
