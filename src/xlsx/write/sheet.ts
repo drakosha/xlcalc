@@ -83,6 +83,8 @@ export interface SheetContext extends FileNames {
   noteBlock: number
   /** The sheet is the book's active one (`workbookView activeTab`), its tab selected unless the saved view specifies it. */
   active: boolean
+  /** The cells with a PivotTable's filter button, by row and column (`BookWriting.buttons`). */
+  buttons?: ReadonlySet<number>
 }
 
 /** A relationship of the sheet after its tables': its id is `rId` and its number among all the sheet's relationships. */
@@ -209,7 +211,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some(hasLook))
   const sAttr = (row: number, col: number, c: CellInput | undefined) => {
     const look: Look | undefined = lined ? sheetLook.look(row, col, c) : c
-    const xf = styles.xf(look?.style, look?.numberFormat)
+    const xf = styles.xf(look?.style, look?.numberFormat, ctx.buttons?.has(row * MAX_COLS + col))
     return xf ? ` s="${xf}"` : ''
   }
   // the cells' addresses, listed once for the looks' numbering and the cells' walk

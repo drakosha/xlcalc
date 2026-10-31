@@ -113,16 +113,16 @@ export class KeptStyles {
   /** The cell formats of a book's style table, the file's where they look the same. */
   of(styles: CellStyle[] | undefined): CellFormats {
     return {
-      xf: (style, format) => {
+      xf: (style, format, button = false) => {
         const s = style === undefined ? undefined : styles?.[style]
-        const key = lookKey(s, format)
+        const key = lookKey(s, format) + (button ? '\nb' : '')
         let i = this.byLook.get(key)
         if (i !== undefined) return i
         const numFmt = format === '' ? 0 : this.numFmt(format)
         const font = s?.font ? this.add('fonts', fontXml(s.font, this.base)) : 0
         const fill = s?.fill ? this.add('fills', fillXml(s.fill)) : 0
         const border = s?.border ? this.add('borders', borderXml(s.border)) : 0
-        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, s))
+        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, s, button))
         this.byLook.set(key, i)
         return i
       },

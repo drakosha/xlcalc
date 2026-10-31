@@ -58,12 +58,15 @@ function cellProtectionXml(p: CellStyle['protection']): string {
   return p && (p.locked === false || p.hidden) ? `<protection${p.locked === false ? ' locked="0"' : ''}${p.hidden ? ' hidden="1"' : ''}/>` : ''
 }
 
-/** A cell format (`<xf>`) of a number format and a font, fill and border by index, with the style's alignment and protection. */
-export function xfXml(numFmt: number, font: number, fill: number, border: number, s: CellStyle | undefined): string {
+/**
+ * A cell format (`<xf>`) of a number format and a font, fill and border by index, with the style's alignment and protection;
+ * `button`, Excel's filter button of a PivotTable's header (`pivotButton`), which Excel draws only from the file until a refresh.
+ */
+export function xfXml(numFmt: number, font: number, fill: number, border: number, s: CellStyle | undefined, button = false): string {
   const align = alignmentXml(s?.alignment)
   const protect = cellProtectionXml(s?.protection)
   const applied = [numFmt ? ' applyNumberFormat="1"' : '', font ? ' applyFont="1"' : '', fill ? ' applyFill="1"' : '', border ? ' applyBorder="1"' : '', align ? ' applyAlignment="1"' : '', protect ? ' applyProtection="1"' : ''].join('')
-  const open = `<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0"${applied}`
+  const open = `<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0"${button ? ' pivotButton="1"' : ''}${applied}`
   return align || protect ? `${open}>${align}${protect}</xf>` : `${open}/>`
 }
 
@@ -106,8 +109,8 @@ class Table {
 
 /** What the sheet writers ask of a file's styles: the cell format of a style and a number format, and the differential format of a rule's style. */
 export interface CellFormats {
-  /** The cell format of a style (by index) and a number format; 0 is the default. */
-  xf(style: number | undefined, format: NumberFormat | undefined): number
+  /** The cell format of a style (by index) and a number format, with a PivotTable's filter button; 0 is the default. */
+  xf(style: number | undefined, format: NumberFormat | undefined, button?: boolean): number
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
   dxf(s: ConditionalStyle): number
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
@@ -141,19 +144,19 @@ export class StyleWriter implements CellFormats {
     })
   }
 
-  /** The cell format of a style (by index) and a number format; 0 is the default. */
-  xf(style: number | undefined, format: NumberFormat | undefined): number {
+  /** The cell format of a style (by index) and a number format, with a PivotTable's filter button; 0 is the default. */
+  xf(style: number | undefined, format: NumberFormat | undefined, button = false): number {
     // by the format's id: 0 (General) and '0' (whole numbers) are two formats, 14 and '14' too; an empty code stays
     // General, as it was written before (whether Excel opens an empty formatCode is not measured)
     const numFmt = format === '' ? 0 : this.numFmt(format)
-    const key = `${style ?? ''}\n${numFmt}`
+    const key = `${style ?? ''}\n${numFmt}${button ? '\nb' : ''}`
     let i = this.byKey.get(key)
     if (i !== undefined) return i
     const s = style === undefined ? {} : this.styles[style]
     const font = s.font ? this.fonts.of(fontXml(s.font, this.base)) : 0
     const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
-    i = this.xfs.of(xfXml(numFmt, font, fill, border, s))
+    i = this.xfs.of(xfXml(numFmt, font, fill, border, s, button))
     this.byKey.set(key, i)
     return i
   }
