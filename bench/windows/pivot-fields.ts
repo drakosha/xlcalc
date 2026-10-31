@@ -21,7 +21,10 @@ export async function stepPivotFields(set: string, tag: Tag, e: WinEnv): Promise
   for (const c of cases) books.set(c.id, (await writeXlsx({ book: sourceBook(DATA[c.data ?? 'kinds'](), 'range') }, { values: 'omit' })).data)
   const byId = new Map(cases.map((c) => [c.id, c]))
   const t0 = Date.now()
-  const done = await savedOnScreen('pivotfields', 'pivot-fields.ps1', books, (id) => ({ source: sourceText('range', DATA[byId.get(id)!.data ?? 'kinds']()), fields: byId.get(id)!.fields }), 90 + 30 * cases.length)
+  const done = await savedOnScreen('pivotfields', 'pivot-fields.ps1', books, (id) => {
+    const c = byId.get(id)!
+    return { source: sourceText('range', DATA[c.data ?? 'kinds']()), fields: c.fields, ...c.under, ...(c.answer ? { answer: c.answer } : {}) }
+  }, 120 + 40 * cases.length)
   const file = winFile(`pivot-fields/${set}.json`)
   const dir = file.slice(0, -'.json'.length)
   mkdirSync(dir, { recursive: true })
@@ -33,7 +36,7 @@ export async function stepPivotFields(set: string, tag: Tag, e: WinEnv): Promise
       continue
     }
     writeFileSync(join(dir, `${c.id}.xlsx`), got.saved)
-    answers[c.id] = { ...checkedOf((await readXlsx(got.saved)).book), ...(got.answer.dialog ? { dialog: got.answer.dialog } : {}) }
+    answers[c.id] = { ...checkedOf((await readXlsx(got.saved)).book, c.watch), ...(got.answer.dialog ? { dialog: got.answer.dialog } : {}) }
   }
   writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Date.now() - t0) / 1000) }, cases, answers })
   console.log(`pivot-fields ${set}: ${Object.values(answers).filter((a) => !('error' in a)).length} of ${cases.length} placed`)

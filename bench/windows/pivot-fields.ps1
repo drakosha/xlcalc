@@ -5,8 +5,11 @@
 # list, and each field's box in the list checked by UI Automation (its Toggle pattern), or, for one to the columns
 # (`to`), the field's menu opened with the mouse's right button and its Add to Column Labels invoked; then the book saved. No call of the object
 # model is made while a window of Excel's other than the list is open (a modal window blocks every call): such a window
-# is read, closed with Escape, and the book's step fails. Each wait has its own limit. With `discover` the elements of
-# Excel's window and its other windows that name a field are listed instead of checked.
+# is read and closed with Escape, and the book's step fails; a book with `answer` has it answered (`yes` with Return,
+# `no` with Escape) and goes on, its boxes clicked with the mouse then, so that no call waits on the window. Before the
+# PivotTable is made, the book's `cells` (values, formulas, number formats), `merge` and `table` are put on P through
+# the object model. Each wait has its own limit, and a watchdog stops this script's Excel when the whole job runs past
+# its limit (a minute and 40 seconds a book). With `discover` the elements of Excel's windows that name a field are listed instead.
 # Output: { version, answers: [per book { error, dialog, found }] } as UTF-8 JSON in $out.
 param([Parameter(Mandatory = $true)][string]$job, [Parameter(Mandatory = $true)][string]$out)
 Add-Type -AssemblyName System.Windows.Forms, UIAutomationClient, UIAutomationTypes
@@ -30,16 +33,24 @@ function Texts($e) {
   $byText = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, [System.Windows.Automation.ControlType]::Text)
   "$($e.Current.Name): " + ((@($e.FindAll($Scope::Descendants, $byText)) | ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' ')
 }
-# a modal window read and closed with Escape (at most three tries); true when one was there
-function Closed {
+# a modal window read and answered with `key` (Escape without it; at most three tries); true when one was there
+function Closed($key = '{ESC}') {
   $m = Modals
   if (-not $m.Count) { return $false }
   $script:dialog += (($m | ForEach-Object { Texts $_ }) -join ' | ')
   for ($k = 0; $k -lt 3 -and (Modals).Count; $k++) {
-    [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+    [System.Windows.Forms.SendKeys]::SendWait($key)
     Start-Sleep 1
   }
   $true
+}
+# a click of the left button at the middle of an element
+function Click($e) {
+  $r = $e.Current.BoundingRectangle
+  [void][XlScreen.Win]::SetCursorPos([int]($r.X + $r.Width / 2), [int]($r.Y + $r.Height / 2))
+  Start-Sleep -Milliseconds 300
+  [XlScreen.Win]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
+  [XlScreen.Win]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
 }
 # the elements of Excel's windows named one of `names`, every one when `names` is empty
 function Named($names) {
@@ -95,28 +106,43 @@ try {
   $res.version = [string]$xl.Version
   $hwnd = [int64]$xl.Hwnd
   $proc = (Get-Process EXCEL | Where-Object { [int64]$_.MainWindowHandle -eq $hwnd } | Select-Object -First 1).Id
+  $limit = 60 + 40 * @($books).Count
+  Start-Process powershell -WindowStyle Hidden -ArgumentList "-NoProfile -Command `"Start-Sleep $limit; if (-not (Test-Path '$out')) { Stop-Process -Id $proc -Force }`""
   foreach ($b in $books) {
     $script:dialog = ''
     $found = @()
     $err = ''
     $wb = $xl.Workbooks.Open((Join-Path $dir $b.file), 0, $false)
     try {
-      $pc = $wb.PivotCaches().Create(1, [string]$b.source, 8)
       $ws = $wb.Worksheets.Item('P')
+      foreach ($c in @($b.cells)) {
+        if ($null -eq $c) { continue }
+        $rg = $ws.Range([string]$c.cell)
+        if ($null -ne $c.format) { $rg.NumberFormat = [string]$c.format }
+        if ($null -ne $c.formula) { $rg.Formula = [string]$c.formula } elseif ($null -ne $c.value) { $rg.Value2 = $c.value }
+      }
+      if ($b.merge) { [void]$ws.Range([string]$b.merge).Merge() }
+      if ($b.table) { [void]$ws.ListObjects.Add(1, $ws.Range([string]$b.table), [Type]::Missing, 1) }
+      $pc = $wb.PivotCaches().Create(1, [string]$b.source, 8)
       [void]$pc.CreatePivotTable($ws.Range('A3'), 'PT1', $true, 8)
       [void]$ws.Activate()
       [void]$ws.Range('A3').Select()
       $wb.ShowPivotTableFieldList = $true
       Front $xl.Hwnd
       Start-Sleep 2
-      if ($b.discover) { $found = @(Named @($b.fields | ForEach-Object { [string]$_.name }) | ForEach-Object { Describe $_ }) }
+      if ($b.discover) {
+        $found = @(Named @($b.fields | ForEach-Object { [string]$_.name }) | ForEach-Object { Describe $_ })
+        # the areas of the list, where a field is dragged to
+        $found += @(Named @('Columns', 'Rows', 'Values', 'Filters', 'Column Labels', 'Row Labels', 'Report Filter', 'Drag fields between areas below:') | ForEach-Object { Describe $_ })
+      }
       else {
         foreach ($f in @($b.fields)) {
           Front $xl.Hwnd
           $box = FieldBox ([string]$f.name) 15
-          if ($f.to -eq 'columns') { ToColumns $box } else { $box.GetCurrentPattern($Toggle).Toggle() }
-          Start-Sleep 2
-          if (Closed) { throw "a window came after placing $($f.name)" }
+          if ($f.to -eq 'columns') { ToColumns $box } elseif ($b.answer) { Click $box } else { $box.GetCurrentPattern($Toggle).Toggle() }
+          Start-Sleep 3
+          if ($b.answer) { [void](Closed $(if ($b.answer -eq 'yes') { '{ENTER}' } else { '{ESC}' })) }
+          elseif (Closed) { throw "a window came after placing $($f.name)" }
         }
       }
     } catch { $err = [string]$_.Exception.Message + ' at line ' + [string]$_.InvocationInfo.ScriptLineNumber }

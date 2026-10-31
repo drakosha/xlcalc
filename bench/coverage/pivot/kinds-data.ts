@@ -34,3 +34,28 @@ export function kindColumns(): SourceColumn[] {
     col('DateText', (k) => (k === 3 ? { value: 'none' } : date(serial(2024 + (k % 2), 1 + k, 3)))),
   ]
 }
+
+/**
+ * The rows of `kinds2`, for the held-out set: dates over a turn of the year within four months, over two months of a
+ * year, a single day, over years with times, the last day of a year and the first of the next, the first and the last
+ * day of a year, a single day with empty cells; negative and fractional numbers, numbers in a currency and a percent
+ * format, half of them empty; booleans with empty cells.
+ */
+export function kindColumns2(): SourceColumn[] {
+  const rows = Array.from({ length: 12 }, (_, k) => k)
+  const col = (name: string, f: (k: number) => CellInput | undefined): SourceColumn => ({ name, values: rows.map(f) })
+  return [
+    col('TurnOfYear', (k) => date(serial(2024 + (k % 4 >= 2 ? 1 : 0), [11, 12, 1, 2][k % 4], 1 + k))),
+    col('TwoMonths', (k) => date(serial(2025, 3 + (k % 2), 2 + k))),
+    col('SameDay', () => date(serial(2025, 3, 4))),
+    col('YearsTimes', (k) => ({ value: serial(2023 + (k % 3), 1 + k, 2, k), numberFormat: 'yyyy-mm-dd hh:mm' })),
+    col('NewYear', (k) => date(k % 2 ? serial(2025, 1, 1) : serial(2024, 12, 31))),
+    col('WholeYear', (k) => date(k % 2 ? serial(2025, 12, 31) : serial(2025, 1, 1))),
+    col('SameDayBlank', (k) => (k % 3 ? date(serial(2025, 3, 4)) : undefined)),
+    col('Fractions', (k) => ({ value: (k - 6) * 1.25 })),
+    col('Money', (k) => ({ value: k * 10.5, numberFormat: '"$"#,##0.00' })),
+    col('Percent', (k) => ({ value: k / 10, numberFormat: '0%' })),
+    col('HalfBlank', (k) => (k % 2 ? undefined : { value: k })),
+    col('BoolBlank', (k) => (k % 3 ? { value: k % 2 === 0 } : undefined)),
+  ]
+}
