@@ -126,7 +126,7 @@ An item shows its caption (`PivotFieldItem.caption`), or its value: text as text
 
 ### Value fields
 
-Each value cell shows its value field's value with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
+Each value cell shows its value field's value ([Show Values As](#show-values-as) applied) with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. The line of an item over its group, which shows no value, takes the format too. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
 
 Several value fields lie across the columns by default, or across the rows (`valuesOnRows`), at the place `valuesPosition` gives among the axis's fields. With **Show the Values Row** (`valuesRow`) a caption row stands over value fields alone on the columns.
 
@@ -286,19 +286,116 @@ A label or date filter and a value filter on one field both apply (Allow multipl
 
 A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep their order, and under an item of a field before go by the items' values over all of them. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
 
+### Show Values As
+
+A value field shows its values as Excel's Show Values As does (`showAs`, with `baseField` and `baseItem` where the calculation takes them), over the values of the items shown:
+
+| `showAs` | A cell shows | Its totals |
+|---|---|---|
+| `percentOfTotal`, `percentOfRow`, `percentOfColumn` | its share of the grand total, of its row's total, of its column's total | their shares, the grand total 100% |
+| `percentOfParentRow`, `percentOfParentColumn` | its share of the item above it on the rows (columns) | the grand total 100% |
+| `percentOfParent` | its share of the base field's item it lies under | the base field's items 100%, totals above them empty |
+| `index` | value × grand total / (row total × column total) | the same |
+| `difference`, `percent`, `percentDiff` | its difference from the base item's value at the same items, its share of it, the difference as a share | the base item's own cells empty (100% for `percent`), totals above the base field empty |
+| `runTotal`, `percentOfRunningTotal` | the sum of the base field's items up to it, in the order shown, and that sum's share of all of them | totals above the base field empty |
+| `rankAscending`, `rankDescending` | its rank among the base field's items, 1 for the smallest (largest); ties share a rank, and the next value takes the next one (1, 2, 2, 3) | totals above the base field empty |
+
+- A cell with no record counts as 0: it shows 0% of a total, a running total so far, a difference of 0 less the base. A share of a base item and a percentage difference show `#NULL!` there, as Excel does.
+- A share of an empty value (a parent with no record, a base item's empty cell, a running total of empty cells) is empty; of 0, or of an empty row or column total, `#DIV/0!`.
+- The previous and next items (`baseItem: 'previous'`, `'next'`) are those with a line at the same items under them: `West`'s previous for `Banana` is the region before it that has a `Banana` line. The first item's previous, and the last's next, is the item itself.
+- A base item with no line at the cell's items (`East` has no `Banana`) is `#N/A`; a base item hidden or filtered out, a base field on no axis (on the Filters area too) and no base field are `#N/A` in every cell, the totals too.
+- An error among the values is the cell's error, or the error of the value it is set against; a running total takes the last error it passes; an error has no rank; a share of a parent is empty where the value or its parent is an error.
+- Hidden and filtered items take no part: shares are of the totals of the items shown, and running totals, ranks and the previous and next items pass over the hidden ones. A Filters area's item or items limit the records as for any value.
+- Sorting by a value field sorts by its values before Show Values As: a field sorted by a rank goes by the sums ranked.
+
+## Grouping
+
+A field of dates can show them by periods, a field of numbers by intervals, and any field its items gathered by hand into groups, as Excel's Group dialog does. A grouping belongs to the cache: every PivotTable over it sees the groups, and a refresh makes them again over the new values.
+
+```js
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 2, group: { by: 'dates', periods: ['months', 'years'] } })
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 5, group: { by: 'numbers', interval: 10 } })
+session.editStructure({ op: 'groupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 0, group: { by: 'items', items: [0, 3] } })
+session.editStructure({ op: 'renamePivotGroup', sheet: 'Report', pivot: 'PivotTable1', field: 10, item: 0, name: 'Coast' })
+session.editStructure({ op: 'ungroupPivotField', sheet: 'Report', pivot: 'PivotTable1', field: 10 })
+```
+
+Fields are named by their index in the cache and items by their place in the PivotTable's field, as elsewhere. Each operation lays out every PivotTable of the cache again and is one step of undo; without `xlcalc/pivot` it is refused (`pivot`).
+
+- **Dates by periods.** Each period makes a field of its own after the source's, `Months (Date)`, `Years (Date)`, as Excel 365 does: the PivotTable grouped shows them, coarsest first, in place of the dates; another PivotTable of the cache that shows the dates shows the periods before them. The labels are Excel's: `:00`…`:59` for seconds and minutes, `12 AM`…`11 PM`, `1-Jan`…`31-Dec` (29 February among them), `Jan`…`Dec`, `Qtr1`…`Qtr4`, the years. Days by a number of days (`days: 7`) make groups from the start, labelled `1/1/2024 - 1/7/2024`, as many as whole intervals reach the end, the last one cut short at it.
+- **Numbers by an interval.** The field itself shows the groups: `1-2`, `3-4` over whole numbers, `1.03-11.03` over others; the last group of whole numbers takes the end in (`7-9` of 1 to 9 by 2).
+- **Start and end.** Without them they are the least and greatest value, and a date field of whole days ends a day after its last date (12/22/2025 ends at 12/23/2025), as Excel takes it. A value before the start goes to the first group, `<1/1/2024`, one after the end to the last, `>12/23/2025`. A blank date goes to the first group; among numbers, the first group is `(blank)`, or `<10 or (blank)` with a start of one's own.
+- **Items by hand.** The items chosen make a group of a new field, `Region2` over `Region`, which every PivotTable showing `Region` shows before it; each item not chosen is a group of its own, and further groups are `Group2`, `Group3`. The groups follow the order of their first items. Renaming a group changes its label for every PivotTable of the cache; text typed over the label changes it on that PivotTable alone, as a caption ([Typing into a PivotTable](#typing-into-a-pivottable)). Ungrouping takes away the groups given (`items`) or all of them, the field with the last.
+- **A refresh** takes an automatic start and end from the new values again and makes the labels again: a new group (a year before or after the others) comes after the groups the PivotTable lists, a new item of a field grouped by hand as a group of its own.
+- **Refused, as in Excel:** grouping text among dates or numbers ("Cannot group that selection"), grouping a field with calculated items, and ungrouping a field that is not grouped.
+
+## Calculated fields and items
+
+A calculated field is a formula over other fields by name; a calculated item a formula over other items of its field. Both belong to the cache, and every PivotTable over it can show them.
+
+```js
+session.editStructure({ op: 'setPivotCalculatedField', sheet: 'Report', pivot: 'PivotTable1', name: 'Unit price', formula: '=Amount/Qty' })
+session.editStructure({ op: 'setPivotCalculatedItem', sheet: 'Report', pivot: 'PivotTable1', field: 0, name: 'Coast', formula: '=East+West' })
+session.editStructure({ op: 'setPivotCalculatedField', sheet: 'Report', pivot: 'PivotTable1', name: 'Unit price', formula: null }) // deleted
+```
+
+A name the cache has changes the formula (Excel's Modify), and a null formula deletes the field or item. Adding a calculated field does not place it on Values; `editPivotTable` does.
+
+- **A calculated field** is calculated in each cell of the PivotTable, totals too, over the sums of the fields it names, not row by row: `Amount/Qty` over two rows of 100 and 100, Qty 1 and 9, is 200/10 = 20. A field is named as it is (`Amount`), in quotes with spaces in its name (`'Unit price'`), and may name another calculated field. The sum of a field with errors is the last of them; of a field with no number at the cell, 0 (`MIN(Price,10*Qty)` there is 0).
+- Every cell of the rows and columns shown gets the formula, one no record reaches too, over sums of 0: `Price/Qty` there is `#DIV/0!`. A subtotal by a function of its own (Field Settings, Custom) is empty.
+- **A calculated item** is calculated in each cell over the values of the items it names at the same place, by the value field's function, and is counted in the totals over it: `=East+West` shows East and West added, and the grand total takes them once more, as Excel does. It shows under every item of the field before it, with every item of the fields after it that any item of its field has (`7`, under West alone, shows under `North+South` too, as 0). An item is named as it is (`East`), in quotes when it is not a plain name (`'Dragonfruit from the far south'`, `'10'`); the cache keeps the formula as Excel's file does, `Region[East]+Region[West]`.
+- The formulas are calculated by the engine: any function of the sheet Excel allows there (`IF`, `ROUND`, `MAX`, `IFERROR`, `AND`), constants, booleans, errors and division by zero as in a cell. A reference to a cell or a range is refused ("References, names, and arrays are not supported in PivotTable formulas"), so is a formula that does not read or names itself.
+- **Refused, as in Excel:** a calculated item in a grouped field, and in a PivotTable whose value fields average or take a deviation or variance ("Averages, standard deviations, and variances are not supported when a PivotTable report has calculated items").
+
+## Slicers and timelines
+
+A slicer filters PivotTables by the items of one field, a timeline by a range of dates. A session adds, changes and deletes them through `editStructure`, as Insert Slicer, Insert Timeline, Report Connections and the slicer's buttons do in Excel:
+
+```js
+session.editStructure({ op: 'addSlicer', sheet: 'Report', slicer: {}, cache: { field: 'Region', pivots: [{ sheet: 'Report', name: 'PivotTable1' }] } })
+// the slicer Region over the new cache Slicer_Region, captioned Region, placed right of the PivotTable
+const items = session.getBook().slicerCaches[0].items // [{ item: 2 }, { item: 0 }, …] in the slicer's order
+session.editStructure({ op: 'editSlicer', slicer: 'Region', cache: { items: items.map((x) => ({ item: x.item, selected: x.item === 0 })) } })
+// PivotTable1 shows North alone
+session.editStructure({ op: 'addTimeline', sheet: 'Report', timeline: {}, cache: { field: 'Date', pivots: [{ sheet: 'Report', name: 'PivotTable1' }] } })
+session.editStructure({ op: 'editTimeline', timeline: 'Date', cache: { selection: { start: '2025-01-01T00:00:00', end: '2025-06-30T00:00:00' } } })
+// the first half of 2025
+```
+
+- A slicer chooses items of its field (`SlicerCache.items`, an index into the cache field's `items` with `selected: false` for an item not chosen); at least one stays chosen. Its choice is the filter of every PivotTable its cache names: the items not chosen are hidden on that field of each, whether the field lies on an axis or on none. A PivotTable's hidden items are what the calculation reads, so a PivotTable filtered by a slicer is filtered the same once the file is opened again, and a refresh keeps the choice: an item new in the source comes unchosen, as in a manual filter.
+- A slicer over a field the cache lists no items of (numbers on no axis) lists them in the cache, as Excel does.
+- A new slicer over a field whose items a PivotTable already hides, or whose Filters area shows one item, starts with that choice, and the PivotTable stays as it is. A choice on a page field hides the items not chosen and shows the field's items by Select Multiple Items, unless the one item it shows is the one chosen. Connecting another PivotTable (`cache: { pivots }`) gives it the slicer's choice; a PivotTable disconnected shows every item of the field again.
+- A field on no axis filters a PivotTable only while a slicer or timeline over the PivotTable names it. Excel saves the hidden items of a slicer disconnected, and a deleted timeline's filter, and applies neither, also on a refresh; so does the calculation here.
+- A slicer without cross filtering (Visually indicate items with no data off, `noData.mark: false`) marks no item, and Excel's object model tells none has data.
+- After a choice, the PivotTables are laid out again from their cache, without reading the source, as Excel does. Each slicer then knows which of its items have data: an item has data when a record of it passes the other fields' filters (other slicers, page fields, label and date filters) and has a value for a value field. A region whose only record has no price has no data under Sum of Price. Items with no data come last, marked, unless the cache says otherwise (`noData`); items are ordered by label, ascending by default, the texts of custom lists first (`sort`, `customListSort`).
+- A timeline's dates (`TimelineCache.selection`) filter its field on every PivotTable it names, by whole days: between the two dates, or on the one day when they are the same. The field stays where it is, on no axis as a rule. The level shown (`Timeline.level`) does not change the filter; `selectionLevel` is the widest level whose periods the dates span whole (2025-01-01 to 2025-06-30: quarters). `selection: null` is Clear Filter.
+- Deleting a slicer or a timeline deletes its cache with the last one over it. The PivotTables keep a slicer's choice, its items stay hidden, and lose a timeline's: its dates no longer filter. A slicer or timeline whose PivotTables are all gone stays, filtering none, with its choice, as Excel keeps it when the sheet of its PivotTable is deleted.
+- A name is unique among the workbook's slicers and timelines; without one, a slicer takes its field's (`Region`, `Region 1`…). A new cache is `Slicer_Region`, a timeline's `NativeTimeline_Date`. A field that is not in the source, a timeline over a field without dates and a name already used are rejected (`pivot`).
+- Each choice is one step of undo. Without `xlcalc/pivot` the choice is written all the same, and the PivotTables keep their cells with their cache marked `stale`.
+
+A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, and its look, place and order change; its choice is the AutoFilter's, which the workbook does not hold (`docs/limitations.md`), so `editSlicer` rejects items for it.
+
 ## Checked against Excel
 
 Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit,
 filter, refresh and sort): for every PivotTable after each step, the PivotTable `readXlsx` reads lies where Excel showed
 it, its values begin where Excel's did, and `GETPIVOTDATA` of every value Excel showed, by the items of its line and
 column, returns that value (over 2,000 cells); the fields, value fields, filters and sorting read are those the steps
-made. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
-PivotTable of another workbook open, closed and reopened, give Excel's values. [Development](development.md#pivottables)
+made; the slicers and timelines of the set slicer read with the items chosen and with data, and the dates and level,
+Excel showed. 101 `GETPIVOTDATA` formulas over these PivotTables in Excel for Windows (the set gpd-1), and formulas over a
+PivotTable of another workbook open, closed and reopened, give Excel's values; of the held-out sets gpd-held (55
+formulas) and gpd-held-2 (61), predicted before they ran, 51 and 57 held, and the rest were fitted. [Development](development.md#pivottables)
 has the details.
+
+Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, a calculated field's total within one part in 10¹⁴ (`test/pivot-excel.test.ts`), and the operations played over the rows give the same PivotTables.
 
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 
 Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with one known difference (`docs/limitations.md`). Held-out sets, predicted before Excel ran them, matched 20 of 20 of layout, 20 of 22 of filters and 17 of 18 of sorting; their three misses are rules now.
+
+Show Values As was compared on 36 PivotTables of the 15 calculations (over two row fields and a column field, the base field inner and outer, on rows and on columns, fixed, previous and next base items, a blank one, values with errors and empty cells, beside a plain value field, tabular, sorted), 22 more of hidden and filtered items, Filters area items, Top 10, items with no data shown, a base item hidden, a base field off the axes, sorting by the values shown, value fields on the rows, an average and a count, and a held-out set of 20 over other rows. Laid out again from the saved cache and refreshed from the source, each gives the cells and number formats Excel showed, a share to within one part in 10¹⁴ (`docs/limitations.md`).
+
+Excel for Windows added slicers and timelines through its object model and chose their items and dates (the set slicer, 16 cases): a slicer on a row field, on fields on no axis (booleans, numbers with one kept as text), one item, several, the blank, all of them again; over two PivotTables and over one of two; two slicers, one leaving the other's items without data; over a field with items hidden; with a page field; a timeline's range, level and single day, over dates on the rows, beside a slicer. The same operations through a session give the cells Excel showed in every PivotTable and each slicer's items, chosen and with data, in Excel's order, and each timeline's dates and level (`test/pivot-slicers-excel.test.ts`). Each workbook Excel saved holds the choice as the session writes it. Deleting a slicer, a timeline, and the sheet of a PivotTable they filter (the set slicer-delete, 5 cases), and refreshing the workbooks saved after (slicer-file), gave the rules of deletion above. The held-out set slicer-held over other rows (16 cases: slicers over a page field and fields on no axis, over two PivotTables, crossing, sorted, items without data placed or hidden, connected and disconnected; timelines by levels and over one day) held 47 of 50 reads as predicted; its three misses are the rules of disconnecting and of no cross filtering above.
 
 Excel for Windows opened the files `writeXlsx` wrote of every book of the sets basic, layout, filter, sort and slicer
 (the books read and written again), and the files `writeKept` wrote after each entry of the set edit made by a session

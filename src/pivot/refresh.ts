@@ -4,10 +4,12 @@
  * moved onto the new fields and items, their hidden items kept hidden.
  */
 import { caseKey } from '../collate.js'
-import type { CellValue, NumberFormat, PivotAxisField, PivotCache, PivotCacheField, PivotField, PivotFieldFacts, PivotTable, PivotValue } from '../contract.js'
+import type { CellValue, NumberFormat, PivotAxisField, PivotCache, PivotCacheField, PivotDataField, PivotField, PivotFieldFacts, PivotTable, PivotValue } from '../contract.js'
 import { generalText } from '../numfmt/general.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
-import { cacheDate, itemKey } from './values.js'
+import { regroup } from './group.js'
+import { groupedItems, itemKey } from './items.js'
+import { cacheDate } from './values.js'
 
 /** A source's cells: the header row first, each cell's value, and whether it shows a date; each column's number format. */
 export interface PivotSourceGrid {
@@ -103,7 +105,7 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
   if (!names) return 'field_name'
   if (!rows.length) return 'no_rows'
   // the source's fields come first; a field of a grouping's further level or a calculated one ends them
-  const made = cache.fields.findIndex((f) => f.group?.base !== undefined || f.formula !== undefined)
+  const made = cache.fields.findIndex((f, i) => (f.group?.base !== undefined && f.group.base !== i) || f.formula !== undefined)
   const sourceCount = made < 0 ? cache.fields.length : made
   const old = new Map(cache.fields.slice(0, sourceCount).map((f, i) => [caseKey(f.name), i]))
   const grouped = new Set([...groupedBy(tables)].filter((f): f is number => typeof f === 'number'))
@@ -134,10 +136,12 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
     const items: PivotValue[] = []
     const unused: number[] = []
     const map = new Map<number, number>()
+    // a calculated item is in no record, and stays
+    const calculated = new Set((cache.calculatedItems ?? []).flatMap((x) => (x.field === was ? [x.item] : [])))
     before.forEach((v, i) => {
       const k = itemKey(v)
       if (keys.has(k)) return
-      const there = present.has(k)
+      const there = present.has(k) || calculated.has(i)
       if (!there && retained >= limit) return
       if (!there) {
         retained++
@@ -145,7 +149,7 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
       }
       keys.set(k, items.length)
       map.set(i, items.length)
-      items.push(there ? present.get(k)! : v)
+      items.push(present.get(k) ?? v)
     })
     values.forEach((v, i) => {
       const k = itemKey(v)
@@ -163,13 +167,28 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
   })
   // the fields grouping and calculation made, after the source's
   cache.fields.slice(sourceCount).forEach((_, i) => fieldMap.set(sourceCount + i, fields.length + i))
-  for (const f of cache.fields.slice(sourceCount)) {
-    const g = f.group
-    fields.push(g ? { ...f, group: { ...g, ...(g.base !== undefined ? { base: fieldMap.get(g.base) } : {}), ...(g.parent !== undefined ? { parent: fieldMap.get(g.parent) } : {}) } } : f)
-  }
+  fields.push(...cache.fields.slice(sourceCount))
+  // groups follow their fields to their new places, and are made again over the values refreshed
+  const groupMaps = regroup(fields, fieldMap, itemMaps, epoch)
+  groupMaps.forEach((m, f) => (itemMaps[f] = m))
   const { stale: _, ...rest } = cache
   const out: PivotCache = { ...rest, fields, records }
+  const calculatedItems = cache.calculatedItems?.flatMap((x) => {
+    const field = fieldMap.get(x.field)
+    const item = field === undefined ? undefined : itemMaps[field]?.get(x.item)
+    return item === undefined ? [] : [{ ...x, field: field!, item }]
+  })
+  if (calculatedItems) out.calculatedItems = calculatedItems
   return { cache: out, tables: tables.map((t) => moved(t, fields, fieldMap, itemMaps)) }
+}
+
+/** A value field's base field and item moved onto the refreshed fields; both left out with a base field gone, the item with an item gone. */
+function based(v: PivotDataField, to: (f: number) => number | undefined, placeOf: (f: number, p: number) => number | undefined): PivotDataField {
+  const { baseField, baseItem, ...rest } = v
+  const f = baseField === undefined ? undefined : to(baseField)
+  if (f === undefined) return rest
+  const item = typeof baseItem === 'number' ? placeOf(f, baseItem) : baseItem
+  return { ...rest, baseField: f, ...(item === undefined ? {} : { baseItem: item }) }
 }
 
 /** A PivotTable moved onto the refreshed fields: a field gone leaves every place, items move to their new indexes. */
@@ -186,7 +205,7 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
       out[n] = pf
       return
     }
-    const unused = new Set(fields[n].unused)
+    const unused = new Set(fields[n].group?.items ? [] : fields[n].unused)
     const place = new Map<number, number>()
     const kept: NonNullable<PivotField['items']> = []
     pf.items.forEach((x, p) => {
@@ -204,7 +223,7 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
     // the items new to the field come last, hidden where the field hides some and does not take new items in
     const listed = new Set(kept.flatMap((x) => (x.item === undefined ? [] : [x.item])))
     const hide = pf.items.some((x) => x.hidden) && !pf.includeNewItems
-    fields[n].items!.forEach((_, i) => !listed.has(i) && !unused.has(i) && kept.push(hide ? { item: i, hidden: true } : { item: i }))
+    groupedItems(fields[n])!.forEach((_, i) => !listed.has(i) && !unused.has(i) && kept.push(hide ? { item: i, hidden: true } : { item: i }))
     placeMaps.set(n, place)
     out[n] = { ...pf, items: kept }
   })
@@ -222,7 +241,7 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
       if (item !== undefined && out[f].items?.[item]?.missing) item = out[f].items!.findIndex((x) => !x.missing && !x.hidden)
       return [item === undefined || item < 0 ? { field: f } : { field: f, item }]
     })
-  if (t.values) result.values = t.values.flatMap((v) => (to(v.field) === undefined ? [] : [{ ...v, field: to(v.field)!, ...(v.baseField !== undefined && to(v.baseField) !== undefined ? { baseField: to(v.baseField) } : {}) }]))
+  if (t.values) result.values = t.values.flatMap((v) => (to(v.field) === undefined ? [] : [{ ...based(v, to, (f, p) => (placeMaps.has(f) ? placeMaps.get(f)!.get(p) : p)), field: to(v.field)! }]))
   if (t.filters) result.filters = t.filters.flatMap((x) => (to(x.field) === undefined ? [] : [{ ...x, field: to(x.field)! }]))
   for (const pf of out)
     if (pf.sort?.by?.at) pf.sort = { ...pf.sort, by: { ...pf.sort.by, at: pf.sort.by.at.flatMap((a) => (to(a.field) === undefined ? [] : [{ field: to(a.field)!, item: placeOf(to(a.field)!, a.item) }])) } }

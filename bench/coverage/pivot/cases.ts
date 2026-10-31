@@ -140,10 +140,19 @@ export type PivotOp = (
   /** Items collapsed (`ShowDetail` false), or every item of the field; `expand` shows them again. */
   | { collapse: string; items: string[] | 'all'; expand?: boolean }
   | { ungroup: string }
-  /** A slicer on a field, on the sheet `P`, over the pivot tables named besides `pt`. */
-  | { slicer: string; name: string; pivots?: string[] }
+  /** A slicer on a field, on the sheet `on` (`P` by default), over the pivot tables named besides `pt`. */
+  | { slicer: string; name: string; pivots?: string[]; on?: string }
+  /** A slicer's or timeline's cache deleted with its slicers (`SlicerCache.Delete`). */
+  | { deleteSlicer: string }
+  /** A sheet added at the end, or deleted with what is on it. */
+  | { addSheet: string }
+  | { deleteSheet: string }
   /** A slicer's items selected, the others not. */
   | { select: string; items: string[] }
+  /** A slicer's order of items and what it does with items that have no data (`XlSlicerCrossFilterType`: none, at the end, dimmed in place, hidden). */
+  | { slicerSettings: string; order?: 'ascending' | 'descending' | 'source'; noData?: 'none' | 'last' | 'dimmed' | 'hidden' }
+  /** A pivot table connected to a slicer, or disconnected (`off`). */
+  | { link: string; pivot: string; off?: boolean }
   /** A timeline on a date field, its range of dates and its level. */
   | { timeline: string; name: string; from?: number; to?: number; level?: 'years' | 'quarters' | 'months' | 'days' }
   | { cache: { missingItems?: 'default' | 'none' | 'max'; refreshOnLoad?: boolean } }

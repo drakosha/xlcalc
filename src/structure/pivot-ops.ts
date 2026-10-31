@@ -26,7 +26,7 @@ import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
 import type { ValuesIn } from './values.js'
 
-export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTable' | 'renamePivotTable' | 'movePivotTable' | 'deletePivotTable' | 'refreshPivots' | `${string}Slicer` | `${string}Timeline` }>
+export type PivotOp = Extract<StructureOp, { op: 'addPivotTable' | 'editPivotTable' | 'renamePivotTable' | 'movePivotTable' | 'deletePivotTable' | 'refreshPivots' }>
 
 /** The fields of each operation, for `editStructure`'s check of its shape. */
 export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {
@@ -36,12 +36,6 @@ export const PIVOT_FIELDS: Record<PivotOp['op'], string[]> = {
   movePivotTable: ['sheet', 'pivot', 'to'],
   deletePivotTable: ['sheet', 'pivot'],
   refreshPivots: ['pivots'],
-  addSlicer: ['sheet', 'slicer', 'cache'],
-  editSlicer: ['slicer', 'set', 'cache'],
-  deleteSlicer: ['slicer'],
-  addTimeline: ['sheet', 'timeline', 'cache'],
-  editTimeline: ['timeline', 'set', 'cache'],
-  deleteTimeline: ['timeline'],
 }
 
 /** The fields of a PivotTable a patch sets: all but its identity, place and saved layout. */
@@ -360,8 +354,6 @@ export function pivotOp(book: BookInput, op: PivotOp, values: ValuesIn): Applied
       return deletePivotTable(book, o)
     case 'refreshPivots':
       return refreshPivots(book, o, values)
-    default:
-      throw new InputError('op.op', `${op.op} is not supported yet`)
   }
 }
 

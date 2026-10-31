@@ -12,6 +12,7 @@ import { caseKey } from '../../collate.js'
 import type { NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
 import { dateToSerial } from '../../model.js'
 import { itemFormat } from '../../pivot-format.js'
+import { groupedItems } from '../../pivot/items.js'
 import { parseRange } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, Rng, type V } from '../../values.js'
@@ -62,7 +63,7 @@ function cellOf(v: PivotValue, epoch: number): V {
 }
 
 /** The values of a cache field's items, or of its groups' where it is grouped. */
-const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.items ?? c.fields[f]?.items ?? []
+const itemsOf = (c: PivotCache, f: number): PivotValue[] => groupedItems(c.fields[f]) ?? []
 
 /**
  * Whether an argument names an item: text by the item's label alone (in any case; `(blank)` a blank item, a number or a
@@ -91,7 +92,10 @@ function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Se
     if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, itemFormat(c, f, v))) found.push([k, typeof v === 'string'])
   })
   const text = typeof arg === 'string' && found.some(([, x]) => x)
-  return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
+  const kept = found.filter(([, x]) => !text || x)
+  // items whose labels differ in case alone (a cache that keeps both): the one spelled as the argument where there is one
+  const spelled = kept.filter(([k]) => typeof arg === 'string' && values[t.fields[f].items![k].item!] === arg)
+  return new Set((spelled.length ? spelled : kept).map(([k]) => k))
 }
 
 /** A field by its name in the PivotTable, the source's where it has none of its own, in any case (the set gpd-held). */
@@ -124,7 +128,9 @@ function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f
   const at = (keep: (x: Slot) => boolean) => list.flatMap((x, k) => (x && keep(x) ? [k] : []))
   const exact = at((x) => fits(x, true))
   const lines = exact.filter((k) => !list[k]!.header)
-  if (exact.length) return lines.length > 1 ? -1 : (lines[0] ?? exact[0])
+  // lines of the same items are a field's subtotals of several functions; of other items, the first is taken
+  const same = (a: Slot, b: Slot) => a.items.size === b.items.size && [...a.items].every(([f, i]) => b.items.get(f) === i)
+  if (exact.length) return lines.length > 1 && same(list[lines[0]]!, list[lines[1]]!) ? -1 : (lines[0] ?? exact[0])
   const more = at((x) => fits(x, false))
   const fewest = Math.min(...more.map((k) => list[k]!.items.size))
   const least = more.filter((k) => list[k]!.items.size === fewest)

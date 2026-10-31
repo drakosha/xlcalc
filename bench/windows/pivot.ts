@@ -37,6 +37,9 @@ const PERIODS: readonly Period[] = ['seconds', 'minutes', 'hours', 'days', 'mont
 const LEVEL = { years: 0, quarters: 1, months: 2, days: 3 } as const
 const MISSING = { default: -1, none: 0, max: 32500 } as const
 const ROW_LAYOUT = { compact: 0, tabular: 1, outline: 2 } as const
+/** `XlSlicerSort`, `XlSlicerCrossFilterType`. */
+const SLICER_SORT = { source: 1, ascending: 2, descending: 3 } as const
+const CROSS_FILTER = { none: 1, last: 2, dimmed: 3, hidden: 4 } as const
 /** `XlSortOrder`, and `xlManual` for no sorting on update. */
 const SORT_ORDER = { ascending: 1, descending: 2, manual: -4135 } as const
 /** The pivot table's and the cache's version, 8 as Excel 365 makes them (COM refuses `xlPivotTableVersionCurrent`, -1). */
@@ -162,8 +165,17 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     } else if ('ungroup' in o) add(role, { ...at, op: 'ungroup', field: o.ungroup })
     else if ('slicer' in o) {
       slicers.push(o.name)
-      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
+      add(role, { ...at, op: 'slicer', field: o.slicer, name: o.name, kind: 1, at: o.on ?? 'P', also: (o.pivots ?? []).map((p) => [sheets.get(p) ?? 'P', p]) })
     } else if ('select' in o) add(role, { ...at, op: 'only', on: 'slicerCache', field: o.select, items: o.items })
+    else if ('deleteSlicer' in o) add(role, call('slicerCache', 'Delete', [], { field: o.deleteSlicer }))
+    else if ('addSheet' in o) add(role, { do: 'struct', op: 'insertSheet', target: o.addSheet })
+    else if ('deleteSheet' in o) add(role, { do: 'struct', op: 'deleteSheet', sheet: o.deleteSheet })
+    else if ('slicerSettings' in o) {
+      const props: Props = []
+      if (o.order) props.push(['SortItems', SLICER_SORT[o.order]])
+      if (o.noData) props.push(['CrossFilterType', CROSS_FILTER[o.noData]])
+      add(role, set('slicerCache', props, { field: o.slicerSettings }))
+    } else if ('link' in o) add(role, { do: 'pivot', op: 'link', field: o.link, sheet: sheets.get(o.pivot) ?? 'P', pt: o.pivot, off: o.off ?? false })
     else if ('timeline' in o) {
       slicers.push(o.name)
       add(role, { ...at, op: 'slicer', field: o.timeline, name: o.name, kind: 2, at: 'P', also: [] })

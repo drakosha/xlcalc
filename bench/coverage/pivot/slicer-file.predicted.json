@@ -1,0 +1,102 @@
+{
+ "delete-timeline": [
+  {
+   "P!PT1": {
+    "area": "A3:B9",
+    "values": [
+     [
+      "Row Labels",
+      "Sum of Price"
+     ],
+     [
+      "East",
+      138.65
+     ],
+     [
+      "North",
+      237.79999999999998
+     ],
+     [
+      "South",
+      348.4
+     ],
+     [
+      "West",
+      301.91
+     ],
+     [
+      "(blank)",
+      null
+     ],
+     [
+      "Grand Total",
+      1026.76
+     ]
+    ]
+   }
+  },
+  {
+   "P!PT1": {
+    "area": "A3:B6",
+    "values": [
+     [
+      "Row Labels",
+      "Sum of Price"
+     ],
+     [
+      "East",
+      138.65
+     ],
+     [
+      "North",
+      154.98999999999998
+     ],
+     [
+      "Grand Total",
+      293.64
+     ]
+    ]
+   }
+  }
+ ],
+ "delete-slicer": [
+  {
+   "P!PT1": {
+    "area": "A3:B5",
+    "values": [
+     [
+      "Row Labels",
+      "Sum of Price"
+     ],
+     [
+      "West",
+      301.91
+     ],
+     [
+      "Grand Total",
+      301.91
+     ]
+    ]
+   }
+  },
+  {
+   "P!PT1": {
+    "area": "A3:B5",
+    "values": [
+     [
+      "Row Labels",
+      "Sum of Price"
+     ],
+     [
+      "West",
+      301.91
+     ],
+     [
+      "Grand Total",
+      301.91
+     ]
+    ]
+   }
+  }
+ ]
+}

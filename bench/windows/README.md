@@ -128,7 +128,32 @@ A pivot set (`bench/coverage/pivot/<set>.ts`) describes its cases as data (`benc
 - The pivot table and its cache are of version 8, as Excel 365 makes them; COM refuses `xlPivotTableVersionCurrent` (-1).
 - A page field's several items are chosen by setting `Visible` on each item, the ones kept first, as Excel refuses to hide them all; a slicer's items by `Selected` the same way.
 - GETPIVOTDATA over a pivot table of another book (`external`): the book of another set is sent with the step, opened beside as `Src.xlsx`, the formulas typed and read; then read with it closed, before and after a full calculation, the book saved and opened alone without updating its links (`UpdateLinks` 0), read, computed and read; and opened again after `Src.xlsx`.
-- A case runs again when its book or its steps change: the answers' `sent` holds both hashes.
+- A case runs again when its book or its steps change: the answers' `sent` holds both hashes. The saved books of cases a set no longer has are removed.
+- A case may start from any xlsx (`file`, such as one the engine wrote): Excel opens it as it is, and each phase reads every pivot table of the book (`readAll`, keyed `sheet!name`); `refreshAll` refreshes each and answers what `RefreshTable` said.
+- What an operation answers is kept by phase (`results`): a data field's caption as Excel named it, `RefreshTable`'s answer. A refusal is kept as the operation's error (`errors`), and the case goes on.
+- Items grouped by hand are grouped through one range of their labels (`Application.Union` takes no two ranges from PowerShell). A date field grouped into several levels is named `Months (Date)` and `Years (Date)` by Excel 365, and `PivotFields("Date")` has no `DataRange` then, so `Ungroup` goes to the first item cell of the field on the rows or columns (`PivotCell`).
+- A timeline is read as its dates and its level (`TimelineState`, `TimelineViewState.Level`), a slicer as its items, each selected or not and with data or not.
+- Rows of another seed and other items, `stock`, are the source of the held-out sets but `gpd-held` and `gpd-held-2`, which use the books of the open sets or build their own.
+- Excel for Mac (`npx tsx bench/coverage/run.ts pivot <set>`, `bench/coverage/pivot-mac.ts`, `excel-pivot.applescript`) opens the books Windows saved for `basic`, `gpd-1` and `layout` as they are, without links updated, recalculation or refresh, reads what each cell of the areas and of the watched ranges shows, and saves them (`test/excel/pivot/<set>.json`, `differs` per case). It shows what Windows shows in every cell but two kinds: dates of the built-in format 14 (`1/1/24` against `1/1/2024`), and a General number cut to its column's width (`0.294041`).
+
+| set | cases | refused by COM | |
+|---|---:|---:|---|
+| `basic`, ru-RU | 48, 48 | 0, 1 | the 11 functions over values with errors, empty cells and text; columns; two data fields; items of each kind; the three sources. In ru-RU COM refuses the format `#,##0.00` on a data field |
+| `gpd-1`, ru-RU | 12 books, 12 | 0 | about 110 GETPIVOTDATA formulas over the books of `basic`, and over a pivot table in another book |
+| `layout`, ru-RU | 37, 37 | 0 | the three forms, repeated labels, subtotals, grand totals, blank lines, captions |
+| `filter` | 61 | 1 | hidden items, page fields, label, value, top 10 and date filters; two items named `20` (a number and a text), which `PivotItems` finds by neither |
+| `sort` | 29 | 0 | labels, values, by hand, custom lists, through a refresh, with sorting on update off |
+| `edit` | 43 | 13 | text and numbers put into each part of the area: Excel's refusals are the answers |
+| `refresh` | 36 | 0 | the source edited, items new and gone, sources, changes before a refresh, pivot tables growing over others, GETPIVOTDATA over one turned into `#SPILL!` |
+| `calc` | 33 | 1 | calculated fields and items; Excel refuses an average beside calculated items |
+| `group` | 30 | 4 | dates, times, numbers, items by hand; a field with text among its numbers or dates, which Excel refuses to group |
+| `show` | 36 | 0 | the 15 calculations of Show Values As |
+| `slicer` | 16 | 0 | slicers and timelines |
+| `shown-null` | 11 | 0 | the text of empty cells |
+| `layout-held`, `filter-held`, `sort-held`, `edit-held`, `gpd-held`, `gpd-held-2`, `show-held` | 20, 22, 18, 18, 15, 11, 20 | 0, 1, 0, 3, 1, 0, 0 | run after the branches they judge committed their predictions |
+| `group-held`, `calc-held` | 19, 18 | | described, not run yet |
+
+A set runs in 20 s to 2 min, most of it Excel opening and saving books; the answers' `meta` has the last run's time.
 
 ## What is not run here
 

@@ -30,6 +30,7 @@ import { shift } from './shift.js'
 import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
+import { pivotCacheEdit, type PivotCacheOp } from '../pivot/hook.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS } from './outline-command.js'
@@ -40,6 +41,7 @@ import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
+import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -69,7 +71,16 @@ const FIELDS: Record<string, string[]> = {
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
   ...PIVOT_FIELDS,
+  groupPivotField: ['sheet', 'pivot', 'field', 'group'],
+  ungroupPivotField: ['sheet', 'pivot', 'field', 'items'],
+  renamePivotGroup: ['sheet', 'pivot', 'field', 'item', 'name'],
+  setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula'],
+  setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
+  ...SLICER_FIELDS,
 }
+
+/** The operations on PivotTables, slicers and timelines, which place them themselves: the carriers of the others do not go through them. */
+const PIVOT_OPS = new Set([...Object.keys(PIVOT_FIELDS), ...Object.keys(SLICER_FIELDS), 'groupPivotField', 'ungroupPivotField', 'renamePivotGroup', 'setPivotCalculatedField', 'setPivotCalculatedItem'])
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
@@ -128,7 +139,7 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
     // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
-    const carried = Object.hasOwn(PIVOT_FIELDS, (op as { op?: string })?.op ?? '') ? null : carryPivots(input)
+    const carried = PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
     const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
     const refused = r.ok ? pivotRefusal(input, op) : null
     if (refused) return refused
@@ -269,20 +280,25 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'movePivotTable':
     case 'deletePivotTable':
     case 'refreshPivots':
+      r = pivotOp(book, op as PivotOp, values)
+      break
     case 'addSlicer':
     case 'editSlicer':
     case 'deleteSlicer':
     case 'addTimeline':
     case 'editTimeline':
     case 'deleteTimeline':
-      r = pivotOp(book, op as PivotOp, values)
+      r = slicerOp(book, o, values)
       break
     case 'groupPivotField':
     case 'ungroupPivotField':
     case 'renamePivotGroup':
     case 'setPivotCalculatedField':
-    case 'setPivotCalculatedItem':
-      throw new InputError('op.op', `${o.op} is not supported yet`)
+    case 'setPivotCalculatedItem': {
+      const edit = pivotCacheEdit()
+      r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
+      break
+    }
   }
   return r
 }

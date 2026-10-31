@@ -11,9 +11,11 @@ import { formatAddress, parseAddress } from '../model.js'
 import { cornersText, type Rect } from '../structure/area.js'
 import { pivotArea } from './area.js'
 import { wordsOf } from './captions.js'
+import { groupedItems } from './items.js'
 import { itemFormat } from '../pivot-format.js'
 import { axisLines, formOf, hasItems, type AxisLine } from './layout-lines.js'
 import type { PivotResult } from './result.js'
+import { shownValues, type PivotValueAt } from './show.js'
 
 /** A cell of a PivotTable's area: its place on the sheet (zero-based), its value or error, its number format, its indent in compact form. */
 export interface PivotCell {
@@ -74,7 +76,7 @@ export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInp
     if (f === 'values') return { value: valueName(item) }
     const fi = table.fields[f]?.items?.[item]
     const cf = cache.fields[f]
-    const v = fi?.item === undefined ? undefined : (cf?.group?.items ?? cf?.items)?.[fi.item]
+    const v = fi?.item === undefined ? undefined : groupedItems(cf)?.[fi.item]
     const numberFormat = typeof v === 'number' || (typeof v === 'object' && v !== null && 'date' in v) ? (table.fields[f]?.numberFormat ?? itemFormat(cache, f, v)) : undefined
     // a caption keeps the item's format (the set edit-held: a date item named `first`)
     if (fi?.caption !== undefined) return numberFormat === undefined ? { value: fi.caption } : { value: fi.caption, numberFormat }
@@ -93,8 +95,11 @@ export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInp
   return { words, rules, fieldName, valueName, itemLabel, labelText }
 }
 
-/** Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. */
-export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>): PivotLaidOut {
+/**
+ * Lays out the PivotTable of a calculation; `book` gives the language of its words and the date system. The values
+ * come as their value fields show them (`shown`, Show Values As over the calculation's).
+ */
+export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' | 'dateSystem'>, shown: PivotValueAt = shownValues(result)): PivotLaidOut {
   const { table, cache } = result
   const values = table.values ?? []
   const rowFields = result.rows.fields
@@ -233,14 +238,18 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   // the values: each line with values against each column's, by the value field of either and a subtotal's function
   if (values.length && dataCols)
     rowLines.forEach((ra, i) => {
-      if (ra.kind === 'item' || ra.kind === 'blank') return
+      if (ra.kind === 'blank') return
       columnLines.forEach((ca, j) => {
         const v = ra.value ?? ca.value ?? 0
-        const fn = ra.fn ?? ca.fn
-        const x = result.value(ra.path, ca.path, v, fn)
         const numberFormat = values[v].numberFormat ?? (PERCENT.has(values[v].showAs ?? 'normal') ? 10 : undefined)
         const row = top + height + i
         const col = left + width + j
+        // an item's line over its group shows no value, but the format of the first value field (the set show-items)
+        if (ra.kind === 'item') {
+          if (numberFormat !== undefined) put(row, col, { value: undefined, numberFormat })
+          return
+        }
+        const x = shown(ra.path, ca.path, v, ra.fn ?? ca.fn)
         const cell: Label = { value: undefined }
         if (numberFormat !== undefined) cell.numberFormat = numberFormat
         if (x === null) {

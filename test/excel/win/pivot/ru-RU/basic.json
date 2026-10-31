@@ -1,0 +1,7286 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 66.3
+ },
+ "cases": [
+  {
+   "id": "amount-sum",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-average",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-max",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-min",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "min"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-product",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "product"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-countNums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-stdDev",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "stdDev"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-stdDevp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "stdDevp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-var",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "var"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-varp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "varp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-sum",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-average",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-max",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-min",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "min"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-product",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "product"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-countNums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-stdDev",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "stdDev"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-stdDevp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "stdDevp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-var",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "var"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-varp",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "varp"
+     }
+    }
+   ]
+  },
+  {
+   "id": "region-count",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Region",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "region-count-nums",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Region",
+      "fn": "countNums"
+     }
+    }
+   ]
+  },
+  {
+   "id": "note-count",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Note",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "columns-only",
+   "ops": [
+    {
+     "columns": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "values-only",
+   "ops": [
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "rows-only",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "two-values",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-values-rows",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    },
+    {
+     "valuesOn": "row"
+    }
+   ]
+  },
+  {
+   "id": "two-values-rows-first",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "average"
+     }
+    },
+    {
+     "valuesOn": "row",
+     "position": 1
+    }
+   ]
+  },
+  {
+   "id": "two-values-columns",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "max"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-values-alone",
+   "ops": [
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "value": {
+      "field": "Amount",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "same-field-twice",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "average"
+     }
+    }
+   ]
+  },
+  {
+   "id": "code-rows",
+   "ops": [
+    {
+     "rows": [
+      "Code"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "date-rows",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "flag-rows",
+   "ops": [
+    {
+     "rows": [
+      "Flag"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "product-rows",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "note-rows",
+   "ops": [
+    {
+     "rows": [
+      "Note"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-rows",
+   "ops": [
+    {
+     "rows": [
+      "Amount"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    }
+   ]
+  },
+  {
+   "id": "caption-format",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "caption": "Total price",
+      "format": "#,##0.00"
+     }
+    }
+   ]
+  },
+  {
+   "id": "shown-errors",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "errorText": "err",
+      "emptyText": "-"
+     }
+    }
+   ]
+  },
+  {
+   "id": "source-table",
+   "source": "table",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "source-name",
+   "source": "name",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "sum"
+     }
+    }
+   ]
+  },
+  {
+   "id": "two-rows",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "page",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "page-one",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "page": "Product",
+     "items": [
+      "Apple"
+     ]
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "amount-sum": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8fc692c840244fe5",
+  "amount-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0b49dce9dc4d5c07",
+  "amount-average": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 124a8c6ff33a3000",
+  "amount-max": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0dd381e6c5404f5c",
+  "amount-min": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a6fe0312e1fc540b",
+  "amount-product": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a8f4d8924d527cc2",
+  "amount-countNums": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 55c12d5401ad9db2",
+  "amount-stdDev": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e1ddf490859afe86",
+  "amount-stdDevp": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 834c913d765a232e",
+  "amount-var": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 843ddb9b6891c02d",
+  "amount-varp": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 359d93205df1bf1d",
+  "price-sum": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a1b864f84611c696",
+  "price-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b5fc473140bb488c",
+  "price-average": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 f53881e61447c43f",
+  "price-max": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 557b262fe92bf0bf",
+  "price-min": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 f247951adf65b07a",
+  "price-product": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 26089fc3846c5b34",
+  "price-countNums": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0cfdc5879c29703f",
+  "price-stdDev": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fb072a1740556741",
+  "price-stdDevp": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 18b606af1077119f",
+  "price-var": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 61f0cbdeea3cd4d7",
+  "price-varp": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8178e66a0530ec0d",
+  "region-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a8cc3d9f17aecce6",
+  "region-count-nums": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7d9dd5e262fc59b6",
+  "note-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 3724f169c49122d4",
+  "columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 14a605f50b3f3e34",
+  "columns-only": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 51d0170cea727c14",
+  "values-only": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7606c837e7891dfa",
+  "rows-only": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 76681d29e77d1f47",
+  "two-values": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b3984d3efd22c954",
+  "two-values-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 11fc4e091a98e45a",
+  "two-values-rows-first": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6fa6dc95104189d5",
+  "two-values-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9a02ce0bba5aab87",
+  "two-values-alone": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4c0539c51a01346b",
+  "same-field-twice": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1cfbbf96151295b8",
+  "code-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8d88075dfce19181",
+  "date-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8f6b7e46610c1d72",
+  "flag-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 95b893e0fbdd7f77",
+  "product-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cbc9a1162a89b434",
+  "note-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1345b5ad57ac341b",
+  "amount-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 86cdae44b6fe64f9",
+  "caption-format": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 74c7805021a2127e",
+  "shown-errors": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d15f7fe39ea4df4d",
+  "source-table": "7984deddc0056b5aba4918bbaa7e772499df9c09d376b974a74d84222d5e48be 236f4ab37ede8a89",
+  "source-name": "7bb713bbb5a552763bf812621f76e2d656502963880a6d0e6321d5a51f5b2749 514c9496fe5977fb",
+  "two-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9070582d03a926cb",
+  "page": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8b2dd5ed50ad1922",
+  "page-one": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 865155c943ff1300"
+ },
+ "answers": {
+  "amount-sum": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Amount"
+        ],
+        [
+         "East",
+         801
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         2028.27
+        ],
+        [
+         "(пусто)",
+         -76.03
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Amount"
+        ],
+        [
+         "East",
+         "801"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "2028,27"
+        ],
+        [
+         "(пусто)",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-count": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Amount"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         12
+        ],
+        [
+         "South",
+         10
+        ],
+        [
+         "West",
+         10
+        ],
+        [
+         "(пусто)",
+         1
+        ],
+        [
+         "Общий итог",
+         43
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Amount"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "12"
+        ],
+        [
+         "South",
+         "10"
+        ],
+        [
+         "West",
+         "10"
+        ],
+        [
+         "(пусто)",
+         "1"
+        ],
+        [
+         "Общий итог",
+         "43"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-average": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Среднее по полю Amount"
+        ],
+        [
+         "East",
+         89
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         225.36333333333334
+        ],
+        [
+         "(пусто)",
+         -76.03
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Среднее по полю Amount"
+        ],
+        [
+         "East",
+         "89"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "225,3633333"
+        ],
+        [
+         "(пусто)",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Среднее по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-max": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Максимум по полю Amount"
+        ],
+        [
+         "East",
+         616.51
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         665.77
+        ],
+        [
+         "(пусто)",
+         -76.03
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Максимум по полю Amount"
+        ],
+        [
+         "East",
+         "616,51"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "665,77"
+        ],
+        [
+         "(пусто)",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Максимум по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-min": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Минимум по полю Amount"
+        ],
+        [
+         "East",
+         -80.65
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         13.19
+        ],
+        [
+         "(пусто)",
+         -76.03
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Минимум по полю Amount"
+        ],
+        [
+         "East",
+         "-80,65"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "13,19"
+        ],
+        [
+         "(пусто)",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Минимум по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-product": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Произведение по полю Amount"
+        ],
+        [
+         "East",
+         -18238552697492624
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         6901205177816748000
+        ],
+        [
+         "(пусто)",
+         -76.03
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Произведение по полю Amount"
+        ],
+        [
+         "East",
+         "-1,82386E+16"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "6,90121E+18"
+        ],
+        [
+         "(пусто)",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Произведение по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-countNums": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Amount"
+        ],
+        [
+         "East",
+         9
+        ],
+        [
+         "North",
+         11
+        ],
+        [
+         "South",
+         8
+        ],
+        [
+         "West",
+         9
+        ],
+        [
+         "(пусто)",
+         1
+        ],
+        [
+         "Общий итог",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Amount"
+        ],
+        [
+         "East",
+         "9"
+        ],
+        [
+         "North",
+         "11"
+        ],
+        [
+         "South",
+         "8"
+        ],
+        [
+         "West",
+         "9"
+        ],
+        [
+         "(пусто)",
+         "1"
+        ],
+        [
+         "Общий итог",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-stdDev": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Стандартное отклонение по полю Amount"
+        ],
+        [
+         "East",
+         220.98861718423416
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         249.6654513043404
+        ],
+        [
+         "(пусто)",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Стандартное отклонение по полю Amount"
+        ],
+        [
+         "East",
+         "220,9886172"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "249,6654513"
+        ],
+        [
+         "(пусто)",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Стандартное отклонение по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-stdDevp": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Несмещенное отклонение по полю Amount"
+        ],
+        [
+         "East",
+         208.3500663680133
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         235.38684486039847
+        ],
+        [
+         "(пусто)",
+         0
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Несмещенное отклонение по полю Amount"
+        ],
+        [
+         "East",
+         "208,3500664"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "235,3868449"
+        ],
+        [
+         "(пусто)",
+         "0"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Несмещенное отклонение по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-var": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Дисперсия по полю Amount"
+        ],
+        [
+         "East",
+         48835.968924999994
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         62332.83757499997
+        ],
+        [
+         "(пусто)",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Дисперсия по полю Amount"
+        ],
+        [
+         "East",
+         "48835,96893"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "62332,83758"
+        ],
+        [
+         "(пусто)",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Дисперсия по полю Amount"
+     }
+    }
+   ]
+  },
+  "amount-varp": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Несмещенная дисперсия по полю Amount"
+        ],
+        [
+         "East",
+         43409.75015555555
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         55406.9667333333
+        ],
+        [
+         "(пусто)",
+         0
+        ],
+        [
+         "Общий итог",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Несмещенная дисперсия по полю Amount"
+        ],
+        [
+         "East",
+         "43409,75016"
+        ],
+        [
+         "North",
+         "#Н/Д"
+        ],
+        [
+         "South",
+         "#ДЕЛ/0!"
+        ],
+        [
+         "West",
+         "55406,96673"
+        ],
+        [
+         "(пусто)",
+         "0"
+        ],
+        [
+         "Общий итог",
+         "#Н/Д"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Несмещенная дисперсия по полю Amount"
+     }
+    }
+   ]
+  },
+  "price-sum": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "price-count": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Price"
+        ],
+        [
+         "East",
+         8
+        ],
+        [
+         "North",
+         12
+        ],
+        [
+         "South",
+         10
+        ],
+        [
+         "West",
+         11
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         41
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Price"
+        ],
+        [
+         "East",
+         "8"
+        ],
+        [
+         "North",
+         "12"
+        ],
+        [
+         "South",
+         "10"
+        ],
+        [
+         "West",
+         "11"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "41"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Price"
+     }
+    }
+   ]
+  },
+  "price-average": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Среднее по полю Price"
+        ],
+        [
+         "East",
+         17.33125
+        ],
+        [
+         "North",
+         21.618181818181817
+        ],
+        [
+         "South",
+         34.839999999999996
+        ],
+        [
+         "West",
+         27.44636363636364
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         25.669
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Среднее по полю Price"
+        ],
+        [
+         "East",
+         "17,33125"
+        ],
+        [
+         "North",
+         "21,61818182"
+        ],
+        [
+         "South",
+         "34,84"
+        ],
+        [
+         "West",
+         "27,44636364"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "25,669"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Среднее по полю Price"
+     }
+    }
+   ]
+  },
+  "price-max": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Максимум по полю Price"
+        ],
+        [
+         "East",
+         41.46
+        ],
+        [
+         "North",
+         45.07
+        ],
+        [
+         "South",
+         46.27
+        ],
+        [
+         "West",
+         47.51
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         47.51
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Максимум по полю Price"
+        ],
+        [
+         "East",
+         "41,46"
+        ],
+        [
+         "North",
+         "45,07"
+        ],
+        [
+         "South",
+         "46,27"
+        ],
+        [
+         "West",
+         "47,51"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "47,51"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Максимум по полю Price"
+     }
+    }
+   ]
+  },
+  "price-min": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Минимум по полю Price"
+        ],
+        [
+         "East",
+         1.03
+        ],
+        [
+         "North",
+         2.82
+        ],
+        [
+         "South",
+         13.71
+        ],
+        [
+         "West",
+         2.67
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1.03
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Минимум по полю Price"
+        ],
+        [
+         "East",
+         "1,03"
+        ],
+        [
+         "North",
+         "2,82"
+        ],
+        [
+         "South",
+         "13,71"
+        ],
+        [
+         "West",
+         "2,67"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1,03"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Минимум по полю Price"
+     }
+    }
+   ]
+  },
+  "price-product": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Произведение по полю Price"
+        ],
+        [
+         "East",
+         142080304.86404195
+        ],
+        [
+         "North",
+         8979337690834.781
+        ],
+        [
+         "South",
+         1580489189196042
+        ],
+        [
+         "West",
+         434821531556894.3
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         8.767600562964024e+50
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Произведение по полю Price"
+        ],
+        [
+         "East",
+         "142080304,9"
+        ],
+        [
+         "North",
+         "8,97934E+12"
+        ],
+        [
+         "South",
+         "1,58049E+15"
+        ],
+        [
+         "West",
+         "4,34822E+14"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "8,7676E+50"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Произведение по полю Price"
+     }
+    }
+   ]
+  },
+  "price-countNums": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Price"
+        ],
+        [
+         "East",
+         8
+        ],
+        [
+         "North",
+         11
+        ],
+        [
+         "South",
+         10
+        ],
+        [
+         "West",
+         11
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         40
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Price"
+        ],
+        [
+         "East",
+         "8"
+        ],
+        [
+         "North",
+         "11"
+        ],
+        [
+         "South",
+         "10"
+        ],
+        [
+         "West",
+         "11"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "40"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Price"
+     }
+    }
+   ]
+  },
+  "price-stdDev": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Стандартное отклонение по полю Price"
+        ],
+        [
+         "East",
+         15.589396980457122
+        ],
+        [
+         "North",
+         14.528107115644366
+        ],
+        [
+         "South",
+         10.100944950294963
+        ],
+        [
+         "West",
+         15.405327826909279
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         14.949345033247342
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Стандартное отклонение по полю Price"
+        ],
+        [
+         "East",
+         "15,58939698"
+        ],
+        [
+         "North",
+         "14,52810712"
+        ],
+        [
+         "South",
+         "10,10094495"
+        ],
+        [
+         "West",
+         "15,40532783"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "14,94934503"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Стандартное отклонение по полю Price"
+     }
+    }
+   ]
+  },
+  "price-stdDevp": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Несмещенное отклонение по полю Price"
+        ],
+        [
+         "East",
+         14.582545591819692
+        ],
+        [
+         "North",
+         13.852006627319591
+        ],
+        [
+         "South",
+         9.582597768872505
+        ],
+        [
+         "West",
+         14.688403758022094
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         14.761295471604107
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Несмещенное отклонение по полю Price"
+        ],
+        [
+         "East",
+         "14,58254559"
+        ],
+        [
+         "North",
+         "13,85200663"
+        ],
+        [
+         "South",
+         "9,582597769"
+        ],
+        [
+         "West",
+         "14,68840376"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "14,76129547"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Несмещенное отклонение по полю Price"
+     }
+    }
+   ]
+  },
+  "price-var": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Дисперсия по полю Price"
+        ],
+        [
+         "East",
+         243.02929821428566
+        ],
+        [
+         "North",
+         211.06589636363643
+        ],
+        [
+         "South",
+         102.02908888888932
+        ],
+        [
+         "West",
+         237.32412545454537
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         223.48291692307697
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Дисперсия по полю Price"
+        ],
+        [
+         "East",
+         "243,0292982"
+        ],
+        [
+         "North",
+         "211,0658964"
+        ],
+        [
+         "South",
+         "102,0290889"
+        ],
+        [
+         "West",
+         "237,3241255"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "223,4829169"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Дисперсия по полю Price"
+     }
+    }
+   ]
+  },
+  "price-varp": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Несмещенная дисперсия по полю Price"
+        ],
+        [
+         "East",
+         212.65063593749994
+        ],
+        [
+         "North",
+         191.8780876033059
+        ],
+        [
+         "South",
+         91.8261800000003
+        ],
+        [
+         "West",
+         215.74920495867755
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         217.89584399999993
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Несмещенная дисперсия по полю Price"
+        ],
+        [
+         "East",
+         "212,6506359"
+        ],
+        [
+         "North",
+         "191,8780876"
+        ],
+        [
+         "South",
+         "91,82618"
+        ],
+        [
+         "West",
+         "215,749205"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "217,895844"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Несмещенная дисперсия по полю Price"
+     }
+    }
+   ]
+  },
+  "region-count": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Количество по полю Region"
+        ],
+        [
+         47
+        ]
+       ],
+       "text": [
+        [
+         "Количество по полю Region"
+        ],
+        [
+         "47"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Region"
+     }
+    }
+   ]
+  },
+  "region-count-nums": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Количество по полю Region"
+        ],
+        [
+         0
+        ]
+       ],
+       "text": [
+        [
+         "Количество по полю Region"
+        ],
+        [
+         "0"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Region"
+     }
+    }
+   ]
+  },
+  "note-count": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Note"
+        ],
+        [
+         "100",
+         1
+        ],
+        [
+         "Apple",
+         10
+        ],
+        [
+         "Banana",
+         11
+        ],
+        [
+         "Cherry",
+         10
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         4
+        ],
+        [
+         "Общий итог",
+         36
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Note"
+        ],
+        [
+         "100",
+         "1"
+        ],
+        [
+         "Apple",
+         "10"
+        ],
+        [
+         "Banana",
+         "11"
+        ],
+        [
+         "Cherry",
+         "10"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "4"
+        ],
+        [
+         "Общий итог",
+         "36"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Note"
+     }
+    }
+   ]
+  },
+  "columns": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Сумма по полю Price",
+         "Названия столбцов",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Названия строк",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Общий итог"
+        ],
+        [
+         "East",
+         null,
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         null,
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         null,
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(пусто)",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Общий итог",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Сумма по полю Price",
+         "Названия столбцов",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Названия строк",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Общий итог"
+        ],
+        [
+         "East",
+         "",
+         "42,49",
+         "42,25",
+         "41,22",
+         "12,69",
+         "138,65"
+        ],
+        [
+         "North",
+         "",
+         "112,07",
+         "59,39",
+         "45,43",
+         "20,91",
+         "237,8"
+        ],
+        [
+         "South",
+         "",
+         "127,41",
+         "70,96",
+         "107,19",
+         "42,84",
+         "348,4"
+        ],
+        [
+         "West",
+         "14,85",
+         "73,68",
+         "126,81",
+         "50,18",
+         "36,39",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Общий итог",
+         "14,85",
+         "355,65",
+         "299,41",
+         "244,02",
+         "112,83",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "columns-only": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G5",
+       "area": "A3:G5",
+       "body": "B5:G5",
+       "values": [
+        [
+         null,
+         "Названия столбцов",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         null,
+         "East",
+         "North",
+         "South",
+         "West",
+         "(пусто)",
+         "Общий итог"
+        ],
+        [
+         "Сумма по полю Price",
+         138.65,
+         237.79999999999998,
+         348.4,
+         301.91,
+         null,
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "",
+         "Названия столбцов",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "",
+         "East",
+         "North",
+         "South",
+         "West",
+         "(пусто)",
+         "Общий итог"
+        ],
+        [
+         "Сумма по полю Price",
+         "138,65",
+         "237,8",
+         "348,4",
+         "301,91",
+         "",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "values-only": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Сумма по полю Price"
+        ],
+        [
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Сумма по полю Price"
+        ],
+        [
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "rows-only": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A9",
+       "area": "A3:A9",
+       "body": "A4:A9",
+       "values": [
+        [
+         "Названия строк"
+        ],
+        [
+         "East"
+        ],
+        [
+         "North"
+        ],
+        [
+         "South"
+        ],
+        [
+         "West"
+        ],
+        [
+         "(пусто)"
+        ],
+        [
+         "Общий итог"
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк"
+        ],
+        [
+         "East"
+        ],
+        [
+         "North"
+        ],
+        [
+         "South"
+        ],
+        [
+         "West"
+        ],
+        [
+         "(пусто)"
+        ],
+        [
+         "Общий итог"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ],
+        [
+         "Основной"
+        ]
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "two-values": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C9",
+       "area": "A3:C9",
+       "body": "B4:C9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Количество по полю Qty"
+        ],
+        [
+         "East",
+         138.65,
+         10
+        ],
+        [
+         "North",
+         237.79999999999998,
+         14
+        ],
+        [
+         "South",
+         348.4,
+         11
+        ],
+        [
+         "West",
+         301.91,
+         12
+        ],
+        [
+         "(пусто)",
+         null,
+         1
+        ],
+        [
+         "Общий итог",
+         1026.76,
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Количество по полю Qty"
+        ],
+        [
+         "East",
+         "138,65",
+         "10"
+        ],
+        [
+         "North",
+         "237,8",
+         "14"
+        ],
+        [
+         "South",
+         "348,4",
+         "11"
+        ],
+        [
+         "West",
+         "301,91",
+         "12"
+        ],
+        [
+         "(пусто)",
+         "",
+         "1"
+        ],
+        [
+         "Общий итог",
+         "1026,76",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price",
+      "op 2": "Количество по полю Qty"
+     }
+    }
+   ]
+  },
+  "two-values-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B20",
+       "area": "A3:B20",
+       "body": "B4:B20",
+       "values": [
+        [
+         "Названия строк",
+         null
+        ],
+        [
+         "East",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         138.65
+        ],
+        [
+         "Количество по полю Qty",
+         10
+        ],
+        [
+         "North",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         237.79999999999998
+        ],
+        [
+         "Количество по полю Qty",
+         14
+        ],
+        [
+         "South",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         348.4
+        ],
+        [
+         "Количество по полю Qty",
+         11
+        ],
+        [
+         "West",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         301.91
+        ],
+        [
+         "Количество по полю Qty",
+         12
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         null
+        ],
+        [
+         "Количество по полю Qty",
+         1
+        ],
+        [
+         "Итог Сумма по полю Price",
+         1026.76
+        ],
+        [
+         "Итог Количество по полю Qty",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         ""
+        ],
+        [
+         "East",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         "138,65"
+        ],
+        [
+         "Количество по полю Qty",
+         "10"
+        ],
+        [
+         "North",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         "237,8"
+        ],
+        [
+         "Количество по полю Qty",
+         "14"
+        ],
+        [
+         "South",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         "348,4"
+        ],
+        [
+         "Количество по полю Qty",
+         "11"
+        ],
+        [
+         "West",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         "301,91"
+        ],
+        [
+         "Количество по полю Qty",
+         "12"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         ""
+        ],
+        [
+         "Количество по полю Qty",
+         "1"
+        ],
+        [
+         "Итог Сумма по полю Price",
+         "1026,76"
+        ],
+        [
+         "Итог Количество по полю Qty",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price",
+      "op 2": "Количество по полю Qty"
+     }
+    }
+   ]
+  },
+  "two-values-rows-first": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Названия строк",
+         null
+        ],
+        [
+         "Сумма по полю Price",
+         null
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Среднее по полю Qty",
+         null
+        ],
+        [
+         "East",
+         4.3
+        ],
+        [
+         "North",
+         4
+        ],
+        [
+         "South",
+         4.7272727272727275
+        ],
+        [
+         "West",
+         4.333333333333333
+        ],
+        [
+         "(пусто)",
+         9
+        ],
+        [
+         "Итог Сумма по полю Price",
+         1026.76
+        ],
+        [
+         "Итог Среднее по полю Qty",
+         4.416666666666667
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         ""
+        ],
+        [
+         "Сумма по полю Price",
+         ""
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Среднее по полю Qty",
+         ""
+        ],
+        [
+         "East",
+         "4,3"
+        ],
+        [
+         "North",
+         "4"
+        ],
+        [
+         "South",
+         "4,727272727"
+        ],
+        [
+         "West",
+         "4,333333333"
+        ],
+        [
+         "(пусто)",
+         "9"
+        ],
+        [
+         "Итог Сумма по полю Price",
+         "1026,76"
+        ],
+        [
+         "Итог Среднее по полю Qty",
+         "4,416666667"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price",
+      "op 2": "Среднее по полю Qty"
+     }
+    }
+   ]
+  },
+  "two-values-columns": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G11",
+       "area": "A3:G11",
+       "body": "B6:G11",
+       "values": [
+        [
+         null,
+         "Названия столбцов",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         null,
+         "ЛОЖЬ",
+         null,
+         "ИСТИНА",
+         null,
+         "Итог Сумма по полю Price",
+         "Итог Максимум по полю Qty"
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Максимум по полю Qty",
+         "Сумма по полю Price",
+         "Максимум по полю Qty",
+         null,
+         null
+        ],
+        [
+         "East",
+         38.620000000000005,
+         7,
+         100.03,
+         7,
+         138.65,
+         7
+        ],
+        [
+         "North",
+         97.35000000000001,
+         8,
+         140.45,
+         9,
+         237.8,
+         9
+        ],
+        [
+         "South",
+         111.85,
+         9,
+         236.55,
+         9,
+         348.40000000000003,
+         9
+        ],
+        [
+         "West",
+         88.12,
+         7,
+         213.79000000000002,
+         9,
+         301.91,
+         9
+        ],
+        [
+         "(пусто)",
+         null,
+         null,
+         null,
+         9,
+         null,
+         9
+        ],
+        [
+         "Общий итог",
+         335.94,
+         9,
+         690.8199999999999,
+         9,
+         1026.7600000000002,
+         9
+        ]
+       ],
+       "text": [
+        [
+         "",
+         "Названия столбцов",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "",
+         "ЛОЖЬ",
+         "",
+         "ИСТИНА",
+         "",
+         "Итог Сумма по полю Price",
+         "Итог Максимум по полю Qty"
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Максимум по полю Qty",
+         "Сумма по полю Price",
+         "Максимум по полю Qty",
+         "",
+         ""
+        ],
+        [
+         "East",
+         "38,62",
+         "7",
+         "100,03",
+         "7",
+         "138,65",
+         "7"
+        ],
+        [
+         "North",
+         "97,35",
+         "8",
+         "140,45",
+         "9",
+         "237,8",
+         "9"
+        ],
+        [
+         "South",
+         "111,85",
+         "9",
+         "236,55",
+         "9",
+         "348,4",
+         "9"
+        ],
+        [
+         "West",
+         "88,12",
+         "7",
+         "213,79",
+         "9",
+         "301,91",
+         "9"
+        ],
+        [
+         "(пусто)",
+         "",
+         "",
+         "",
+         "9",
+         "",
+         "9"
+        ],
+        [
+         "Общий итог",
+         "335,94",
+         "9",
+         "690,82",
+         "9",
+         "1026,76",
+         "9"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Сумма по полю Price",
+      "op 3": "Максимум по полю Qty"
+     }
+    }
+   ]
+  },
+  "two-values-alone": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "A4:B4",
+       "values": [
+        [
+         "Сумма по полю Price",
+         "Количество по полю Amount"
+        ],
+        [
+         1026.7600000000002,
+         43
+        ]
+       ],
+       "text": [
+        [
+         "Сумма по полю Price",
+         "Количество по полю Amount"
+        ],
+        [
+         "1026,76",
+         "43"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": "Сумма по полю Price",
+      "op 1": "Количество по полю Amount"
+     }
+    }
+   ]
+  },
+  "same-field-twice": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C9",
+       "area": "A3:C9",
+       "body": "B4:C9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Среднее по полю Price"
+        ],
+        [
+         "East",
+         138.65,
+         17.33125
+        ],
+        [
+         "North",
+         237.79999999999998,
+         21.618181818181817
+        ],
+        [
+         "South",
+         348.4,
+         34.839999999999996
+        ],
+        [
+         "West",
+         301.91,
+         27.44636363636364
+        ],
+        [
+         "(пусто)",
+         null,
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76,
+         25.669
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price",
+         "Среднее по полю Price"
+        ],
+        [
+         "East",
+         "138,65",
+         "17,33125"
+        ],
+        [
+         "North",
+         "237,8",
+         "21,61818182"
+        ],
+        [
+         "South",
+         "348,4",
+         "34,84"
+        ],
+        [
+         "West",
+         "301,91",
+         "27,44636364"
+        ],
+        [
+         "(пусто)",
+         "",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76",
+         "25,669"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price",
+      "op 2": "Среднее по полю Price"
+     }
+    }
+   ]
+  },
+  "code-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         10,
+         73
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         30,
+         65
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Общий итог",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "10",
+         "73"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "30",
+         "65"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Общий итог",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Qty"
+     }
+    }
+   ]
+  },
+  "date-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45488,
+         14
+        ],
+        [
+         45536,
+         21
+        ],
+        [
+         45611,
+         21
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "(пусто)",
+         2
+        ],
+        [
+         "Общий итог",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "01.01.2024",
+         "19"
+        ],
+        [
+         "15.03.2024",
+         "15"
+        ],
+        [
+         "01.05.2024",
+         "9"
+        ],
+        [
+         "15.07.2024",
+         "14"
+        ],
+        [
+         "01.09.2024",
+         "21"
+        ],
+        [
+         "15.11.2024",
+         "21"
+        ],
+        [
+         "08.02.2025",
+         "17"
+        ],
+        [
+         "22.04.2025",
+         "20"
+        ],
+        [
+         "08.06.2025",
+         "22"
+        ],
+        [
+         "22.08.2025",
+         "16"
+        ],
+        [
+         "08.10.2025",
+         "20"
+        ],
+        [
+         "22.12.2025",
+         "16"
+        ],
+        [
+         "(пусто)",
+         "2"
+        ],
+        [
+         "Общий итог",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "ДД.ММ.ГГГГ",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Qty"
+     }
+    }
+   ]
+  },
+  "flag-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "ЛОЖЬ",
+         74
+        ],
+        [
+         "ИСТИНА",
+         138
+        ],
+        [
+         "Общий итог",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "ЛОЖЬ",
+         "74"
+        ],
+        [
+         "ИСТИНА",
+         "138"
+        ],
+        [
+         "Общий итог",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Qty"
+     }
+    }
+   ]
+  },
+  "product-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "100",
+         3
+        ],
+        [
+         "Apple",
+         69
+        ],
+        [
+         "Banana",
+         62
+        ],
+        [
+         "Cherry",
+         55
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         23
+        ],
+        [
+         "Общий итог",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "100",
+         "3"
+        ],
+        [
+         "Apple",
+         "69"
+        ],
+        [
+         "Banana",
+         "62"
+        ],
+        [
+         "Cherry",
+         "55"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "23"
+        ],
+        [
+         "Общий итог",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Qty"
+     }
+    }
+   ]
+  },
+  "note-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B14",
+       "area": "A3:B14",
+       "body": "B4:B14",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "check",
+         39
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 1",
+         4
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 17",
+         8
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 25",
+         4
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 33",
+         2
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 41",
+         5
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 9",
+         4
+        ],
+        [
+         "late",
+         38
+        ],
+        [
+         "OK",
+         47
+        ],
+        [
+         "(пусто)",
+         61
+        ],
+        [
+         "Общий итог",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Qty"
+        ],
+        [
+         "check",
+         "39"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 1",
+         "4"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 17",
+         "8"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 25",
+         "4"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 33",
+         "2"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 41",
+         "5"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea, row 9",
+         "4"
+        ],
+        [
+         "late",
+         "38"
+        ],
+        [
+         "OK",
+         "47"
+        ],
+        [
+         "(пусто)",
+         "61"
+        ],
+        [
+         "Общий итог",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Qty"
+     }
+    }
+   ]
+  },
+  "amount-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B48",
+       "area": "A3:B48",
+       "body": "B4:B48",
+       "values": [
+        [
+         "Названия строк",
+         "Количество по полю Qty"
+        ],
+        [
+         -80.65,
+         1
+        ],
+        [
+         -80.26,
+         1
+        ],
+        [
+         -76.03,
+         1
+        ],
+        [
+         -57.61,
+         1
+        ],
+        [
+         -50.39,
+         1
+        ],
+        [
+         -30.95,
+         1
+        ],
+        [
+         -11.58,
+         1
+        ],
+        [
+         -9.48,
+         1
+        ],
+        [
+         -3.02,
+         1
+        ],
+        [
+         13.19,
+         1
+        ],
+        [
+         44.32,
+         1
+        ],
+        [
+         53.64,
+         1
+        ],
+        [
+         98.19,
+         1
+        ],
+        [
+         98.93,
+         1
+        ],
+        [
+         104.6,
+         1
+        ],
+        [
+         109.75,
+         1
+        ],
+        [
+         120.22,
+         1
+        ],
+        [
+         144.6,
+         1
+        ],
+        [
+         151.32,
+         1
+        ],
+        [
+         156.76,
+         1
+        ],
+        [
+         178.47,
+         1
+        ],
+        [
+         180.37,
+         1
+        ],
+        [
+         208.93,
+         1
+        ],
+        [
+         248.1,
+         1
+        ],
+        [
+         301.99,
+         1
+        ],
+        [
+         305.39,
+         1
+        ],
+        [
+         421.32,
+         1
+        ],
+        [
+         459.98,
+         1
+        ],
+        [
+         616.51,
+         1
+        ],
+        [
+         623.11,
+         1
+        ],
+        [
+         637.35,
+         1
+        ],
+        [
+         642.68,
+         1
+        ],
+        [
+         665.77,
+         1
+        ],
+        [
+         674.23,
+         1
+        ],
+        [
+         730.74,
+         1
+        ],
+        [
+         738.05,
+         1
+        ],
+        [
+         740.55,
+         1
+        ],
+        [
+         787.09,
+         1
+        ],
+        [
+         "12",
+         1
+        ],
+        [
+         "n/a",
+         1
+        ],
+        [
+         "ИСТИНА",
+         1
+        ],
+        [
+         "#Н/Д",
+         1
+        ],
+        [
+         "#ДЕЛ/0!",
+         1
+        ],
+        [
+         "(пусто)",
+         5
+        ],
+        [
+         "Общий итог",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Количество по полю Qty"
+        ],
+        [
+         "-80,65",
+         "1"
+        ],
+        [
+         "-80,26",
+         "1"
+        ],
+        [
+         "-76,03",
+         "1"
+        ],
+        [
+         "-57,61",
+         "1"
+        ],
+        [
+         "-50,39",
+         "1"
+        ],
+        [
+         "-30,95",
+         "1"
+        ],
+        [
+         "-11,58",
+         "1"
+        ],
+        [
+         "-9,48",
+         "1"
+        ],
+        [
+         "-3,02",
+         "1"
+        ],
+        [
+         "13,19",
+         "1"
+        ],
+        [
+         "44,32",
+         "1"
+        ],
+        [
+         "53,64",
+         "1"
+        ],
+        [
+         "98,19",
+         "1"
+        ],
+        [
+         "98,93",
+         "1"
+        ],
+        [
+         "104,6",
+         "1"
+        ],
+        [
+         "109,75",
+         "1"
+        ],
+        [
+         "120,22",
+         "1"
+        ],
+        [
+         "144,6",
+         "1"
+        ],
+        [
+         "151,32",
+         "1"
+        ],
+        [
+         "156,76",
+         "1"
+        ],
+        [
+         "178,47",
+         "1"
+        ],
+        [
+         "180,37",
+         "1"
+        ],
+        [
+         "208,93",
+         "1"
+        ],
+        [
+         "248,1",
+         "1"
+        ],
+        [
+         "301,99",
+         "1"
+        ],
+        [
+         "305,39",
+         "1"
+        ],
+        [
+         "421,32",
+         "1"
+        ],
+        [
+         "459,98",
+         "1"
+        ],
+        [
+         "616,51",
+         "1"
+        ],
+        [
+         "623,11",
+         "1"
+        ],
+        [
+         "637,35",
+         "1"
+        ],
+        [
+         "642,68",
+         "1"
+        ],
+        [
+         "665,77",
+         "1"
+        ],
+        [
+         "674,23",
+         "1"
+        ],
+        [
+         "730,74",
+         "1"
+        ],
+        [
+         "738,05",
+         "1"
+        ],
+        [
+         "740,55",
+         "1"
+        ],
+        [
+         "787,09",
+         "1"
+        ],
+        [
+         "12",
+         "1"
+        ],
+        [
+         "n/a",
+         "1"
+        ],
+        [
+         "ИСТИНА",
+         "1"
+        ],
+        [
+         "#Н/Д",
+         "1"
+        ],
+        [
+         "#ДЕЛ/0!",
+         "1"
+        ],
+        [
+         "(пусто)",
+         "5"
+        ],
+        [
+         "Общий итог",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Количество по полю Qty"
+     }
+    }
+   ]
+  },
+  "caption-format": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Total price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Total price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "errors": [
+      "op 1: -2146827284 Нельзя установить свойство NumberFormat класса PivotField"
+     ]
+    }
+   ]
+  },
+  "shown-errors": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Сумма по полю Amount",
+         "Названия столбцов",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Названия строк",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Общий итог"
+        ],
+        [
+         "East",
+         0,
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         0,
+         "err",
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         "err"
+        ],
+        [
+         "South",
+         0,
+         1928.77,
+         47.8,
+         "err",
+         623.11,
+         "err"
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(пусто)",
+         0,
+         -76.03,
+         0,
+         0,
+         0,
+         -76.03
+        ],
+        [
+         "Общий итог",
+         44.32,
+         "err",
+         2805.73,
+         "err",
+         1817.3500000000001,
+         "err"
+        ]
+       ],
+       "text": [
+        [
+         "Сумма по полю Amount",
+         "Названия столбцов",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Названия строк",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Общий итог"
+        ],
+        [
+         "East",
+         "0",
+         "935,19",
+         "-69,19",
+         "-61,98",
+         "-3,02",
+         "801"
+        ],
+        [
+         "North",
+         "0",
+         "err",
+         "1451,84",
+         "920,42",
+         "1045,94",
+         "err"
+        ],
+        [
+         "South",
+         "0",
+         "1928,77",
+         "47,8",
+         "err",
+         "623,11",
+         "err"
+        ],
+        [
+         "West",
+         "44,32",
+         "120,22",
+         "1375,28",
+         "337,13",
+         "151,32",
+         "2028,27"
+        ],
+        [
+         "(пусто)",
+         "0",
+         "-76,03",
+         "0",
+         "0",
+         "0",
+         "-76,03"
+        ],
+        [
+         "Общий итог",
+         "44,32",
+         "err",
+         "2805,73",
+         "err",
+         "1817,35",
+         "err"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Сумма по полю Amount"
+     }
+    }
+   ]
+  },
+  "source-table": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "source-name": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "two-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B27",
+       "area": "A3:B27",
+       "body": "B4:B27",
+       "values": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "Apple",
+         42.49
+        ],
+        [
+         "Banana",
+         42.25
+        ],
+        [
+         "Cherry",
+         41.22
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         12.69
+        ],
+        [
+         "North",
+         237.8
+        ],
+        [
+         "Apple",
+         112.07000000000001
+        ],
+        [
+         "Banana",
+         59.38999999999999
+        ],
+        [
+         "Cherry",
+         45.43
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         20.91
+        ],
+        [
+         "South",
+         348.4000000000001
+        ],
+        [
+         "Apple",
+         127.41000000000003
+        ],
+        [
+         "Banana",
+         70.96000000000001
+        ],
+        [
+         "Cherry",
+         107.19
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         42.84
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         73.68
+        ],
+        [
+         "Banana",
+         126.81
+        ],
+        [
+         "Cherry",
+         50.18
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         36.39
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Apple",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "Apple",
+         "42,49"
+        ],
+        [
+         "Banana",
+         "42,25"
+        ],
+        [
+         "Cherry",
+         "41,22"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "12,69"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "Apple",
+         "112,07"
+        ],
+        [
+         "Banana",
+         "59,39"
+        ],
+        [
+         "Cherry",
+         "45,43"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "20,91"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "Apple",
+         "127,41"
+        ],
+        [
+         "Banana",
+         "70,96"
+        ],
+        [
+         "Cherry",
+         "107,19"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "42,84"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "100",
+         "14,85"
+        ],
+        [
+         "Apple",
+         "73,68"
+        ],
+        [
+         "Banana",
+         "126,81"
+        ],
+        [
+         "Cherry",
+         "50,18"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "36,39"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Apple",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "page": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Product",
+         "(Все)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "(Все)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "138,65"
+        ],
+        [
+         "North",
+         "237,8"
+        ],
+        [
+         "South",
+         "348,4"
+        ],
+        [
+         "West",
+         "301,91"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "1026,76"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Сумма по полю Price"
+     }
+    }
+   ]
+  },
+  "page-one": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Product",
+         "Apple"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         42.49
+        ],
+        [
+         "North",
+         112.07
+        ],
+        [
+         "South",
+         127.41000000000003
+        ],
+        [
+         "West",
+         73.68
+        ],
+        [
+         "(пусто)",
+         null
+        ],
+        [
+         "Общий итог",
+         355.65000000000003
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "Apple"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Названия строк",
+         "Сумма по полю Price"
+        ],
+        [
+         "East",
+         "42,49"
+        ],
+        [
+         "North",
+         "112,07"
+        ],
+        [
+         "South",
+         "127,41"
+        ],
+        [
+         "West",
+         "73,68"
+        ],
+        [
+         "(пусто)",
+         ""
+        ],
+        [
+         "Общий итог",
+         "355,65"
+        ]
+       ],
+       "formats": [
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ],
+        [
+         "Основной",
+         "Основной"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Сумма по полю Price"
+     }
+    }
+   ]
+  }
+ }
+}

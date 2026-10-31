@@ -224,6 +224,13 @@ function Pivot($xl, $wb, $s) {
       }
       # the table of the sheet D named resized to a range there
       'resize' { [void]$wb.Worksheets.Item('D').ListObjects.Item([string]$s.table).Resize($wb.Worksheets.Item('D').Range([string]$s.range)); 'null' }
+      # a pivot table connected to the slicer cache named, or disconnected
+      'link' {
+        $sc = $wb.SlicerCaches.Item([string]$s.field)
+        $pt = PTable $wb $s
+        if ($s.off) { [void]$sc.PivotTables.RemovePivotTable($pt) } else { [void]$sc.PivotTables.AddPivotTable($pt) }
+        'null'
+      }
       # what RefreshTable answers (true when Excel refreshed)
       'refresh' { Cell ([bool](PTable $wb $s).RefreshTable()) }
       # every pivot table of the book, [sheet, name], in the order of the sheets

@@ -15,7 +15,7 @@ import { readXlsx } from '../src/xlsx.js'
 import { savedResult } from './pivot-saved.js'
 
 const ROOT = new URL('./excel/win/pivot/', import.meta.url).pathname
-const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc', 'layout-held', 'filter-held', 'sort-held', 'edit-held'].filter((s) => existsSync(`${ROOT}${s}.json`))
+const SETS = ['basic', 'gpd-1', 'layout', 'filter', 'sort', 'edit', 'refresh', 'calc', 'layout-held', 'filter-held', 'sort-held', 'edit-held', 'show', 'show-items', 'show-held', 'group', 'group-held', 'calc-held', 'slicer', 'slicer-delete', 'slicer-held'].filter((s) => existsSync(`${ROOT}${s}.json`))
 
 interface Shown {
   area: string
@@ -55,7 +55,9 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
         if (!shown) continue
         seen++
         const cache = book.pivotCaches!.find((c) => c.id === t.cache)!
-        const laid = layoutPivot(savedResult(t, cache, sheet), book)
+        // the saved cells hold the values as shown, Show Values As applied
+        const saved = savedResult(t, cache, sheet)
+        const laid = layoutPivot(saved, book, saved.value)
         expect(laid.rowLines).toEqual(t.rowLines)
         expect(laid.columnLines).toEqual(t.columnLines)
         if (sheet.cells[t.location.range]?.formula === '#SPILL!') {

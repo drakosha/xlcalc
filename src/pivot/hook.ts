@@ -54,3 +54,19 @@ export const pivotEntryHook = (): PivotEntryHook | null => entry
 export function setPivotEntry(f: PivotEntryHook): void {
   entry = f
 }
+
+/** The operations at the level of a pivot cache, which `xlcalc/pivot` applies (`pivot/cache-ops.ts`): grouping, calculated fields and items. */
+export type PivotCacheOp = Extract<StructureOp, { op: 'groupPivotField' | 'ungroupPivotField' | 'renamePivotGroup' | 'setPivotCalculatedField' | 'setPivotCalculatedItem' }>
+
+/** Applies a cache's operation and lays out every PivotTable of the cache again; the day `today` as in `PivotRefresh`. */
+export type PivotCacheEdit = (book: BookInput, op: PivotCacheOp, values: ValuesIn, today: number) => Applied
+
+let cacheEdit: PivotCacheEdit | null = null
+
+/** The cache's operations registered, or null. */
+export const pivotCacheEdit = (): PivotCacheEdit | null => cacheEdit
+
+/** Registers the cache's operations of `xlcalc/pivot`, the last one registered used. */
+export function setPivotCacheEdit(f: PivotCacheEdit): void {
+  cacheEdit = f
+}
