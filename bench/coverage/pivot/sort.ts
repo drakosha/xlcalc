@@ -38,6 +38,8 @@ export function buildPivotCases(): PivotCase[] {
     { id: 'months-no-lists', ops: [{ table: { customLists: false } }, ...monthEdits, { refresh: true }, ...by('Note', 'Qty')] },
     { id: 'refresh-value-sort', ops: [...base, { sort: 'Region', order: 'descending', by: 'Sum of Price' }, { read: true }, { edit: 'D!E3', to: 900 }, { refresh: true }] },
     { id: 'refresh-label-sort-new', ops: [...base, { sort: 'Region', order: 'descending' }, { read: true }, { edit: 'D!A4', to: 'Central' }, { edit: 'D!A6', to: 'Zulu' }, { refresh: true }] },
+    { id: 'refresh-auto-off', ops: [...base, { sort: 'Region', order: 'descending' }, { sort: 'Region', order: 'manual' }, { read: true }, { edit: 'D!A4', to: 'Central' }, { edit: 'D!A6', to: 'Zulu' }, { refresh: true }] },
+    { id: 'refresh-value-auto-off', ops: [...base, { sort: 'Region', order: 'descending', by: 'Sum of Price' }, { sort: 'Region', order: 'manual', by: 'Sum of Price' }, { read: true }, { edit: 'D!E3', to: 900 }, { refresh: true }] },
     { id: 'refresh-unsorted-new', ops: [...base, { read: true }, { edit: 'D!A4', to: 'Central' }, { edit: 'D!A6', to: 'Alpha' }, { refresh: true }] },
     { id: 'refresh-manual-new', ops: [...base, { item: 'West', of: 'Region', position: 1 }, { read: true }, { edit: 'D!A4', to: 'Central' }, { refresh: true }] },
   ]

@@ -2,7 +2,7 @@
  * Every way a message reaches a person gives it in the language of the book or of the locale called with: a formula that
  * does not read (`validateLocalFormula`, `toInvariant`, `toLocal`, `parseEntry`), a refused structure operation
  * (`editStructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
- * text of `explain`. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
+ * text of `explain`; a PivotTable refused a refresh, an entry into its cells, a place. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
  * without messages of its own (and in an en-US book) the English one, at the same place. Together the cases reach
  * every message of the catalog but the rules of names, which only `validateName` gives, in English, and the call of a
  * function of a group not loaded, which only a cell's issue gives, in English as the other issues of cells
@@ -10,7 +10,10 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { closeTyped } from '../src/entry/close.js'
-import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { createInlineCalc, createSession, parseEntry, editStructure, registerPivot, toInvariant, toLocal, validateLocalFormula, type BookInput, type CellInput, type Locale, type PivotRef, type PivotSource, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { pivotEngine } from '../src/pivot/index.js'
+import type { PivotLaidOut } from '../src/pivot/layout.js'
+import { placePivots } from '../src/pivot/place.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
@@ -318,6 +321,111 @@ it("an edit over limits.writes says it in the book's language, in a session as i
     await expect((await calc.createSession(book)).editStructure(copy)).rejects.toThrow(text)
     await calc.close()
   }
+})
+
+/** A ru-RU or other book with a PivotTable of Region by Sum of N at Свод!A3:B5 over Данные!A1:B2, its Filters area at A1:B1. */
+const pivotBook = (locale?: string, source: PivotSource = { type: 'range', sheet: 'Данные', range: 'A1:B2' }, header = 'Регион'): BookInput => ({
+  ...(locale ? { locale } : {}),
+  sheets: [
+    { name: 'Данные', cells: { A1: { value: header }, B1: { value: 'N' }, A2: { value: 'a' }, B2: { value: 2 } } },
+    {
+      name: 'Свод',
+      cells: { A1: { value: 'Регион' }, B1: { value: '(All)' }, A3: { value: 'Row Labels' }, B3: { value: 'Sum of N' }, A4: { value: 'a' }, B4: { value: 2 }, A5: { value: 'Grand Total' }, B5: { value: 2 } },
+      pivotTables: [
+        {
+          name: 'Сводная1',
+          cache: 1,
+          location: { range: 'A3:B5', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1, pageRows: 1, pageColumns: 1 },
+          fields: [{ items: [{ item: 0 }] }, {}],
+          rows: [0],
+          pages: [{ field: 0 }],
+          values: [{ field: 1, name: 'Sum of N' }],
+          rowLines: [{ items: [0] }, { type: 'grand', items: [0] }],
+          columnLines: [{ items: [] }],
+        },
+      ],
+    },
+  ],
+  pivotCaches: [{ id: 1, source, fields: [{ name: 'Регион', items: ['a'] }, { name: 'N' }] }],
+})
+
+/** A refresh refused, by the book it is refused on and the PivotTables it names. */
+const REFRESHES: [string, (locale?: string) => BookInput, PivotRef[], EngineMessage][] = [
+  ['a PivotTable not there', (l) => pivotBook(l), [{ sheet: 'Свод', name: 'Сводная9' }], { key: 'pivotUnknown', sheet: 'Свод', pivot: 'Сводная9' }],
+  ['a source in another workbook', (l) => pivotBook(l, { type: 'range', sheet: 'Данные', range: 'A1:B2', book: 'Другая.xlsx' }), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotSourceKept', pivot: 'Сводная1', why: 'outside' }],
+  ['a source of the data model', (l) => pivotBook(l, { type: 'dataModel' }), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotSourceKept', pivot: 'Сводная1', why: 'kind' }],
+  ['a cache refreshing is not allowed for', (l) => ({ ...pivotBook(l), pivotCaches: [{ ...pivotBook().pivotCaches![0], enableRefresh: false }] }), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotSourceKept', pivot: 'Сводная1', why: 'disabled' }],
+  ['a source gone', (l) => pivotBook(l, { type: 'table', table: 'Нет' }), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotSourceGone', pivot: 'Сводная1' }],
+  ['an empty header', (l) => pivotBook(l, undefined, ''), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotFieldName', pivot: 'Сводная1' }],
+]
+
+/** Text typed into a cell of the PivotTable, refused by `setCellText` (or `setCells`, which throws): the cell, the input, the message. */
+const ENTRIES: [string, CellInput | null, EngineMessage][] = [
+  ['B4', { value: 3 }, { key: 'pivotPart', sheet: 'Свод', cell: 'B4', pivot: 'Сводная1' }],
+  ['A4', { formula: '1' }, { key: 'pivotFormula', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
+  ['A4', null, { key: 'pivotClear', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
+  ['B3', { value: 'n' }, { key: 'pivotNameTaken', name: 'n' }],
+  ['B1', { value: 'b' }, { key: 'pivotNotItem', item: 'b' }],
+]
+
+/** A PivotTable laid over what it cannot take, as a new or moved one is placed (`placePivots`, refused): the sheet's own, and the message. */
+const PLACED: [string, Partial<SheetInput>, EngineMessage][] = [
+  ['over cells that hold something', { cells: { D4: { value: 1 } } }, { key: 'pivotOverData', sheet: 'Свод', range: 'A3:D5', pivot: 'Сводная1' }],
+  ['over another PivotTable', { pivotTables: [{ ...pivotBook().sheets[1].pivotTables![0], name: 'Сводная2', location: { range: 'D3:E5', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 } }] }, { key: 'pivotOverPivot', pivot: 'Сводная1', other: 'Сводная2' }],
+  ['over a table', { tables: [{ name: 'Т', range: 'D3:D5', columns: [{ name: 'Кол' }] }] }, { key: 'pivotOverTable', pivot: 'Сводная1', table: 'Т' }],
+]
+
+describe('PivotTables', () => {
+  afterAll(closeCalcs)
+
+  it.each(KINDS)('a refresh without xlcalc/pivot, then with it: %s', async (kind) => {
+    const open = await opener(kind)
+    const refresh = (refs: PivotRef[]) => ({ op: 'refreshPivots', pivots: refs }) as const
+    if (kind === KINDS[0]) {
+      reached.add('pivotNotLoaded')
+      for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+        expect(message(editStructure(pivotBook(locale), { op: 'refreshPivots' }))).toBe(say({ key: 'pivotNotLoaded' }))
+        expect(message(await (await open(pivotBook(locale), {})).editStructure({ op: 'refreshPivots' }))).toBe(say({ key: 'pivotNotLoaded' }))
+      }
+    }
+    registerPivot(pivotEngine)
+    for (const [what, book, refs, m] of REFRESHES) {
+      reached.add(m.key)
+      for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+        const s = await open(book(locale), {})
+        expect(message(await s.editStructure(refresh(refs))), what).toBe(say(m))
+        await s.close()
+      }
+    }
+  }, 60_000)
+
+  it.each(KINDS)('an entry into its cells: %s', async (kind) => {
+    registerPivot(pivotEngine)
+    const open = await opener(kind)
+    for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+      const s = await open(pivotBook(locale), {})
+      for (const [cell, input, m] of ENTRIES) {
+        reached.add(m.key)
+        await expect(s.setCells([{ sheet: 'Свод', cell, input }]), `${cell} ${JSON.stringify(input)}`).rejects.toThrow(say(m))
+      }
+      expect(await s.setCellText('Свод', 'B4', '3')).toEqual({ ok: false, code: 'pivot', message: say(ENTRIES[0][2]) })
+      await s.close()
+    }
+  }, 60_000)
+
+  it('a PivotTable placed over what it cannot take', () => {
+    for (const [what, own, m] of PLACED) {
+      reached.add(m.key)
+      for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+        const book = pivotBook(locale)
+        const sheet = book.sheets[1]
+        const sheets = [book.sheets[0], { ...sheet, ...own, cells: { ...sheet.cells, ...own.cells }, pivotTables: [...sheet.pivotTables!, ...(own.pivotTables ?? [])] }]
+        const laid: PivotLaidOut = { location: sheet.pivotTables![0].location, rowLines: [], columnLines: [], area: { r1: 2, c1: 0, r2: 4, c2: 3 }, cells: [] }
+        const r = placePivots({ ...book, sheets }, [{ sheet: 'Свод', table: sheet.pivotTables![0], laid }], 'refuse')
+        expect(message(r), what).toBe(say(m))
+      }
+    }
+  })
 })
 
 it('the cases reach every message of the catalog but the rules of names and a group not loaded', () => {

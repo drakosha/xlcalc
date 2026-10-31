@@ -4200,10 +4200,12 @@ interface PivotField {
   pageBreak?: boolean
   /** Show items with no data. */
   showEmpty?: boolean
-  /** Sort its items by label, or by a value field's values (`by`), ascending or descending; the cache's order without it. */
+  /**
+   * Sort its items by label, or by a value field's values (`by`), ascending or descending, every time the PivotTable is
+   * updated; the order of `items` without it. Excel keeps a sort only when it is automatic: a sort made once leaves the
+   * items in that order.
+   */
   sort?: { order: 'ascending' | 'descending'; by?: PivotSortBy }
-  /** Sort automatically every time the report is updated (true by default). */
-  autoSort?: boolean
   /** Include new items in a manual filter. */
   includeNewItems?: boolean
   /** Several items may be shown at once on the Filters area (Select Multiple Items). */
@@ -4357,6 +4359,20 @@ How a date is grouped, or numbers by intervals (`numbers`).
 
 ```ts
 type PivotGroupBy = 'numbers' | 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'quarters' | 'years'
+```
+
+### `PivotGrouping`
+
+How Excel's Group dialog groups a field (`groupPivotField`): dates by periods, several periods making a field each, as
+Excel 365 does (`Months (Date)`, `Years (Date)`), days by a number of days (`days`, with `periods` `['days']`); numbers
+by an interval; or the items chosen by hand into one group (`Group1`), each an index into the PivotTable field's
+`items`. `start` and `end` (Starting at, Ending at) are automatic where left out: a date ISO 8601 without a zone.
+
+```ts
+type PivotGrouping =
+  | { by: 'dates'; periods: Exclude<PivotGroupBy, 'numbers'>[]; days?: number; start?: string; end?: string }
+  | { by: 'numbers'; interval: number; start?: number; end?: number }
+  | { by: 'items'; items: number[] }
 ```
 
 ### `PivotLayout`
@@ -5833,6 +5849,33 @@ type StructureOp =
    * a PivotTable that is not there, a source that cannot be refreshed, or the subpath not loaded, is refused (`pivot`).
    */
   | { op: 'refreshPivots'; pivots?: PivotRef[] }
+  /**
+   * Excel's Group on the field `field` (its index in the cache) of a PivotTable, for every PivotTable of its cache, laid
+   * out again in one step. Refused (`pivot`) where Excel refuses: text among the dates or numbers grouped, a field with
+   * calculated items, items by hand of a field of dates or numbers grouped; and without `xlcalc/pivot`.
+   */
+  | { op: 'groupPivotField'; sheet: string; pivot: string; field: number; group: PivotGrouping }
+  /**
+   * Excel's Ungroup: a field of dates or numbers back to its values, the fields its periods made gone from every
+   * PivotTable of the cache; a field of groups made by hand gone; with `items` (indexes into the PivotTable field's
+   * `items`), those groups by hand alone, their items each a group of its own again.
+   */
+  | { op: 'ungroupPivotField'; sheet: string; pivot: string; field: number; items?: number[] }
+  /** A group's label in the cache (`Group1` to `East and West`): the item `item` of the field `field`, on every PivotTable of the cache. */
+  | { op: 'renamePivotGroup'; sheet: string; pivot: string; field: number; item: number; name: string }
+  /**
+   * Excel's Insert Calculated Field: the cache's calculated field `name`, a formula over fields by name as Excel's dialog
+   * takes it (`=Amount/Qty`, `='Unit Price'*Qty`), added, or its formula changed when the cache has it (Modify); a null
+   * `formula` deletes it, and it leaves every PivotTable of the cache. Adding does not place it on Values
+   * (`editPivotTable` does).
+   */
+  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null }
+  /**
+   * Excel's Insert Calculated Item of the field `field`: the item `name`, a formula over the field's items as Excel's
+   * dialog takes it (`=East+West`, `='North'*2`), added on every PivotTable of the cache, or its formula changed when
+   * the field has it; a null `formula` deletes it.
+   */
+  | { op: 'setPivotCalculatedItem'; sheet: string; pivot: string; field: number; name: string; formula: string | null }
   /**
    * Excel's Insert Slicer on `sheet`: over a slicer cache of the workbook by its name, or a new one of the source field
    * `field` that filters the PivotTables `pivots`, all of one pivot cache. Its name is the first free from the field's

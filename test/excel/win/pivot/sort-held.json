@@ -1,0 +1,5707 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-30",
+  "seconds": 39
+ },
+ "cases": [
+  {
+   "id": "region-down",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending"
+    }
+   ]
+  },
+  {
+   "id": "product-up",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Product",
+     "order": "ascending"
+    }
+   ]
+  },
+  {
+   "id": "code-up",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Code"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Code",
+     "order": "ascending"
+    }
+   ]
+  },
+  {
+   "id": "when-down",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "When"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "When",
+     "order": "descending"
+    }
+   ]
+  },
+  {
+   "id": "price-down",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Price"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Price",
+     "order": "descending"
+    }
+   ]
+  },
+  {
+   "id": "value-average-down",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "average"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Average of Price"
+    }
+   ]
+  },
+  {
+   "id": "value-count-up-ties",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Flag",
+      "fn": "count"
+     }
+    },
+    {
+     "sort": "Product",
+     "order": "ascending",
+     "by": "Count of Flag"
+    }
+   ]
+  },
+  {
+   "id": "second-value",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "value": {
+      "field": "Price",
+      "fn": "max"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Max of Price"
+    }
+   ]
+  },
+  {
+   "id": "outer-label-inner-value",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Product",
+     "order": "descending"
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "column-label-down",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Code"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Code",
+     "order": "descending"
+    }
+   ]
+  },
+  {
+   "id": "tabular-value",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "sort": "Product",
+     "order": "ascending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "manual-two",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "item": "North",
+     "of": "Region",
+     "position": 1
+    },
+    {
+     "item": "Central",
+     "of": "Region",
+     "position": 6
+    }
+   ]
+  },
+  {
+   "id": "manual-inner",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "item": "South",
+     "of": "Region",
+     "position": 1
+    }
+   ]
+  },
+  {
+   "id": "manual-then-sort",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "item": "South",
+     "of": "Region",
+     "position": 1
+    },
+    {
+     "read": true
+    },
+    {
+     "sort": "Region",
+     "order": "ascending"
+    }
+   ]
+  },
+  {
+   "id": "days-list",
+   "data": "stock",
+   "ops": [
+    {
+     "edit": "D!I2",
+     "to": "Tue"
+    },
+    {
+     "edit": "D!I3",
+     "to": "Monday"
+    },
+    {
+     "edit": "D!I4",
+     "to": "sun"
+    },
+    {
+     "edit": "D!I5",
+     "to": "Sat"
+    },
+    {
+     "edit": "D!I6",
+     "to": "Wednesday"
+    },
+    {
+     "edit": "D!I7",
+     "to": "Thu"
+    },
+    {
+     "edit": "D!I8",
+     "to": "fri"
+    },
+    {
+     "edit": "D!I9",
+     "to": "Jun"
+    },
+    {
+     "edit": "D!I10",
+     "to": "May"
+    },
+    {
+     "refresh": true
+    },
+    {
+     "rows": [
+      "Note"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "refresh-value-up-new",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "ascending",
+     "by": "Sum of Qty"
+    },
+    {
+     "read": true
+    },
+    {
+     "edit": "D!A2",
+     "to": "Middle"
+    },
+    {
+     "edit": "D!F3",
+     "to": 90
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "refresh-label-down-gone",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending"
+    },
+    {
+     "read": true
+    },
+    {
+     "edit": "D!A2",
+     "to": "North"
+    },
+    {
+     "edit": "D!A7",
+     "to": "North"
+    },
+    {
+     "edit": "D!A12",
+     "to": "North"
+    },
+    {
+     "edit": "D!A17",
+     "to": "North"
+    },
+    {
+     "edit": "D!A22",
+     "to": "North"
+    },
+    {
+     "edit": "D!A32",
+     "to": "North"
+    },
+    {
+     "edit": "D!A37",
+     "to": "North"
+    },
+    {
+     "edit": "D!A42",
+     "to": "North"
+    },
+    {
+     "edit": "D!A47",
+     "to": "North"
+    },
+    {
+     "edit": "D!A52",
+     "to": "North"
+    },
+    {
+     "edit": "D!A57",
+     "to": "North"
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "refresh-manual-gone",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "item": "Central",
+     "of": "Region",
+     "position": 3
+    },
+    {
+     "read": true
+    },
+    {
+     "edit": "D!A2",
+     "to": "Zeta"
+    },
+    {
+     "refresh": true
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "region-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 60d2fefc4ec180a7",
+  "product-up": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 0571a0c47ce0e43c",
+  "code-up": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8ab7de4c8f777aa8",
+  "when-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9c3d062f42eccc49",
+  "price-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 d3946df87bcabb11",
+  "value-average-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8bbe707b8290adf3",
+  "value-count-up-ties": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 18069d2952019769",
+  "second-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdd1e6cc5317cdfc",
+  "outer-label-inner-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 dd3db5bffd19e7e3",
+  "column-label-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 14d7aec35ed17b46",
+  "tabular-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9d93d49bc66a4730",
+  "manual-two": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e60792984d1baced",
+  "manual-inner": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 7e2bd48e2a48507e",
+  "manual-then-sort": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 a1c2fdeafb05d554",
+  "days-list": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 b873a27ae518f4aa",
+  "refresh-value-up-new": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 67ea57c21eeafa12",
+  "refresh-label-down-gone": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdf4662c98e61c47",
+  "refresh-manual-gone": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e9f380ff2eb6c9e3"
+ },
+ "answers": {
+  "region-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "product-up": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         5
+        ],
+        [
+         "Apple",
+         64
+        ],
+        [
+         "Fig",
+         68
+        ],
+        [
+         "Pear",
+         62
+        ],
+        [
+         "Plum",
+         62
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         29
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         "5"
+        ],
+        [
+         "Apple",
+         "64"
+        ],
+        [
+         "Fig",
+         "68"
+        ],
+        [
+         "Pear",
+         "62"
+        ],
+        [
+         "Plum",
+         "62"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "29"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "code-up": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         5,
+         71
+        ],
+        [
+         15,
+         57
+        ],
+        [
+         25,
+         71
+        ],
+        [
+         35,
+         82
+        ],
+        [
+         "15",
+         9
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "5",
+         "71"
+        ],
+        [
+         "15",
+         "57"
+        ],
+        [
+         "25",
+         "71"
+        ],
+        [
+         "35",
+         "82"
+        ],
+        [
+         "15",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "when-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B64",
+       "area": "A3:B64",
+       "body": "B4:B64",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45721.91805555556,
+         5
+        ],
+        [
+         45721.32430555556,
+         3
+        ],
+        [
+         45721.188888888886,
+         5
+        ],
+        [
+         45721.05347222222,
+         1
+        ],
+        [
+         45720.92638888889,
+         2
+        ],
+        [
+         45720.83263888889,
+         4
+        ],
+        [
+         45720.697222222225,
+         3
+        ],
+        [
+         45720.06180555555,
+         7
+        ],
+        [
+         45719.799305555556,
+         9
+        ],
+        [
+         45719.705555555556,
+         9
+        ],
+        [
+         45719.57013888889,
+         7
+        ],
+        [
+         45719.43472222222,
+         3
+        ],
+        [
+         45718.67222222222,
+         2
+        ],
+        [
+         45718.57847222222,
+         9
+        ],
+        [
+         45718.44305555556,
+         6
+        ],
+        [
+         45718.30763888889,
+         6
+        ],
+        [
+         45717.45138888889,
+         4
+        ],
+        [
+         45717.31597222222,
+         6
+        ],
+        [
+         45717.180555555555,
+         8
+        ],
+        [
+         45717.04513888889,
+         4
+        ],
+        [
+         45693.96319444444,
+         9
+        ],
+        [
+         45693.86944444444,
+         4
+        ],
+        [
+         45693.23402777778,
+         2
+        ],
+        [
+         45693.09861111111,
+         1
+        ],
+        [
+         45692.97152777778,
+         7
+        ],
+        [
+         45692.83611111111,
+         8
+        ],
+        [
+         45692.74236111111,
+         9
+        ],
+        [
+         45692.106944444444,
+         4
+        ],
+        [
+         45691.84444444445,
+         5
+        ],
+        [
+         45691.709027777775,
+         2
+        ],
+        [
+         45691.615277777775,
+         6
+        ],
+        [
+         45691.47986111111,
+         5
+        ],
+        [
+         45690.623611111114,
+         8
+        ],
+        [
+         45690.48819444444,
+         8
+        ],
+        [
+         45690.35277777778,
+         2
+        ],
+        [
+         45690.217361111114,
+         2
+        ],
+        [
+         45689.49652777778,
+         1
+        ],
+        [
+         45689.36111111111,
+         1
+        ],
+        [
+         45689.225694444445,
+         4
+        ],
+        [
+         45689.09027777778,
+         4
+        ],
+        [
+         45662.91458333333,
+         8
+        ],
+        [
+         45662.27916666667,
+         9
+        ],
+        [
+         45662.14375,
+         4
+        ],
+        [
+         45662.00833333333,
+         6
+        ],
+        [
+         45661.88125,
+         1
+        ],
+        [
+         45661.7875,
+         5
+        ],
+        [
+         45661.652083333334,
+         3
+        ],
+        [
+         45661.01666666667,
+         5
+        ],
+        [
+         45660.88958333333,
+         1
+        ],
+        [
+         45660.754166666666,
+         3
+        ],
+        [
+         45660.660416666666,
+         8
+        ],
+        [
+         45660.525,
+         7
+        ],
+        [
+         45659.62708333333,
+         8
+        ],
+        [
+         45659.53333333333,
+         2
+        ],
+        [
+         45659.39791666667,
+         8
+        ],
+        [
+         45659.2625,
+         7
+        ],
+        [
+         45658.40625,
+         1
+        ],
+        [
+         45658.270833333336,
+         4
+        ],
+        [
+         45658.135416666664,
+         1
+        ],
+        [
+         45658,
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "2025-03-05 22:02",
+         "5"
+        ],
+        [
+         "2025-03-05 07:47",
+         "3"
+        ],
+        [
+         "2025-03-05 04:32",
+         "5"
+        ],
+        [
+         "2025-03-05 01:17",
+         "1"
+        ],
+        [
+         "2025-03-04 22:14",
+         "2"
+        ],
+        [
+         "2025-03-04 19:59",
+         "4"
+        ],
+        [
+         "2025-03-04 16:44",
+         "3"
+        ],
+        [
+         "2025-03-04 01:29",
+         "7"
+        ],
+        [
+         "2025-03-03 19:11",
+         "9"
+        ],
+        [
+         "2025-03-03 16:56",
+         "9"
+        ],
+        [
+         "2025-03-03 13:41",
+         "7"
+        ],
+        [
+         "2025-03-03 10:26",
+         "3"
+        ],
+        [
+         "2025-03-02 16:08",
+         "2"
+        ],
+        [
+         "2025-03-02 13:53",
+         "9"
+        ],
+        [
+         "2025-03-02 10:38",
+         "6"
+        ],
+        [
+         "2025-03-02 07:23",
+         "6"
+        ],
+        [
+         "2025-03-01 10:50",
+         "4"
+        ],
+        [
+         "2025-03-01 07:35",
+         "6"
+        ],
+        [
+         "2025-03-01 04:20",
+         "8"
+        ],
+        [
+         "2025-03-01 01:05",
+         "4"
+        ],
+        [
+         "2025-02-05 23:07",
+         "9"
+        ],
+        [
+         "2025-02-05 20:52",
+         "4"
+        ],
+        [
+         "2025-02-05 05:37",
+         "2"
+        ],
+        [
+         "2025-02-05 02:22",
+         "1"
+        ],
+        [
+         "2025-02-04 23:19",
+         "7"
+        ],
+        [
+         "2025-02-04 20:04",
+         "8"
+        ],
+        [
+         "2025-02-04 17:49",
+         "9"
+        ],
+        [
+         "2025-02-04 02:34",
+         "4"
+        ],
+        [
+         "2025-02-03 20:16",
+         "5"
+        ],
+        [
+         "2025-02-03 17:01",
+         "2"
+        ],
+        [
+         "2025-02-03 14:46",
+         "6"
+        ],
+        [
+         "2025-02-03 11:31",
+         "5"
+        ],
+        [
+         "2025-02-02 14:58",
+         "8"
+        ],
+        [
+         "2025-02-02 11:43",
+         "8"
+        ],
+        [
+         "2025-02-02 08:28",
+         "2"
+        ],
+        [
+         "2025-02-02 05:13",
+         "2"
+        ],
+        [
+         "2025-02-01 11:55",
+         "1"
+        ],
+        [
+         "2025-02-01 08:40",
+         "1"
+        ],
+        [
+         "2025-02-01 05:25",
+         "4"
+        ],
+        [
+         "2025-02-01 02:10",
+         "4"
+        ],
+        [
+         "2025-01-05 21:57",
+         "8"
+        ],
+        [
+         "2025-01-05 06:42",
+         "9"
+        ],
+        [
+         "2025-01-05 03:27",
+         "4"
+        ],
+        [
+         "2025-01-05 00:12",
+         "6"
+        ],
+        [
+         "2025-01-04 21:09",
+         "1"
+        ],
+        [
+         "2025-01-04 18:54",
+         "5"
+        ],
+        [
+         "2025-01-04 15:39",
+         "3"
+        ],
+        [
+         "2025-01-04 00:24",
+         "5"
+        ],
+        [
+         "2025-01-03 21:21",
+         "1"
+        ],
+        [
+         "2025-01-03 18:06",
+         "3"
+        ],
+        [
+         "2025-01-03 15:51",
+         "8"
+        ],
+        [
+         "2025-01-03 12:36",
+         "7"
+        ],
+        [
+         "2025-01-02 15:03",
+         "8"
+        ],
+        [
+         "2025-01-02 12:48",
+         "2"
+        ],
+        [
+         "2025-01-02 09:33",
+         "8"
+        ],
+        [
+         "2025-01-02 06:18",
+         "7"
+        ],
+        [
+         "2025-01-01 09:45",
+         "1"
+        ],
+        [
+         "2025-01-01 06:30",
+         "4"
+        ],
+        [
+         "2025-01-01 03:15",
+         "1"
+        ],
+        [
+         "2025-01-01 00:00",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "price-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B56",
+       "area": "A3:B56",
+       "body": "B4:B56",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         40
+        ],
+        [
+         "free",
+         7
+        ],
+        [
+         46.85,
+         3
+        ],
+        [
+         46.64,
+         7
+        ],
+        [
+         44.19,
+         8
+        ],
+        [
+         44.01,
+         4
+        ],
+        [
+         41.52,
+         7
+        ],
+        [
+         37.86,
+         2
+        ],
+        [
+         36.07,
+         2
+        ],
+        [
+         35.98,
+         9
+        ],
+        [
+         34.51,
+         9
+        ],
+        [
+         33.76,
+         6
+        ],
+        [
+         33.52,
+         4
+        ],
+        [
+         33.16,
+         8
+        ],
+        [
+         32.98,
+         5
+        ],
+        [
+         31.81,
+         6
+        ],
+        [
+         26.25,
+         9
+        ],
+        [
+         25.32,
+         5
+        ],
+        [
+         25,
+         9
+        ],
+        [
+         24.18,
+         1
+        ],
+        [
+         23.13,
+         4
+        ],
+        [
+         23.05,
+         5
+        ],
+        [
+         22.77,
+         4
+        ],
+        [
+         21.74,
+         8
+        ],
+        [
+         19.14,
+         1
+        ],
+        [
+         17.74,
+         1
+        ],
+        [
+         17.57,
+         4
+        ],
+        [
+         16.54,
+         8
+        ],
+        [
+         14.38,
+         5
+        ],
+        [
+         13.52,
+         1
+        ],
+        [
+         12.74,
+         3
+        ],
+        [
+         12.01,
+         3
+        ],
+        [
+         11.94,
+         1
+        ],
+        [
+         11.5,
+         4
+        ],
+        [
+         11.4,
+         9
+        ],
+        [
+         11.21,
+         6
+        ],
+        [
+         10.19,
+         6
+        ],
+        [
+         8.09,
+         1
+        ],
+        [
+         8.03,
+         3
+        ],
+        [
+         7.52,
+         1
+        ],
+        [
+         7.43,
+         5
+        ],
+        [
+         6.1,
+         7
+        ],
+        [
+         5.64,
+         4
+        ],
+        [
+         4.32,
+         8
+        ],
+        [
+         4.01,
+         1
+        ],
+        [
+         3.48,
+         8
+        ],
+        [
+         3.26,
+         6
+        ],
+        [
+         2.83,
+         7
+        ],
+        [
+         2.08,
+         9
+        ],
+        [
+         1.67,
+         2
+        ],
+        [
+         0.84,
+         2
+        ],
+        [
+         0.02,
+         2
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "40"
+        ],
+        [
+         "free",
+         "7"
+        ],
+        [
+         "46.85",
+         "3"
+        ],
+        [
+         "46.64",
+         "7"
+        ],
+        [
+         "44.19",
+         "8"
+        ],
+        [
+         "44.01",
+         "4"
+        ],
+        [
+         "41.52",
+         "7"
+        ],
+        [
+         "37.86",
+         "2"
+        ],
+        [
+         "36.07",
+         "2"
+        ],
+        [
+         "35.98",
+         "9"
+        ],
+        [
+         "34.51",
+         "9"
+        ],
+        [
+         "33.76",
+         "6"
+        ],
+        [
+         "33.52",
+         "4"
+        ],
+        [
+         "33.16",
+         "8"
+        ],
+        [
+         "32.98",
+         "5"
+        ],
+        [
+         "31.81",
+         "6"
+        ],
+        [
+         "26.25",
+         "9"
+        ],
+        [
+         "25.32",
+         "5"
+        ],
+        [
+         "25",
+         "9"
+        ],
+        [
+         "24.18",
+         "1"
+        ],
+        [
+         "23.13",
+         "4"
+        ],
+        [
+         "23.05",
+         "5"
+        ],
+        [
+         "22.77",
+         "4"
+        ],
+        [
+         "21.74",
+         "8"
+        ],
+        [
+         "19.14",
+         "1"
+        ],
+        [
+         "17.74",
+         "1"
+        ],
+        [
+         "17.57",
+         "4"
+        ],
+        [
+         "16.54",
+         "8"
+        ],
+        [
+         "14.38",
+         "5"
+        ],
+        [
+         "13.52",
+         "1"
+        ],
+        [
+         "12.74",
+         "3"
+        ],
+        [
+         "12.01",
+         "3"
+        ],
+        [
+         "11.94",
+         "1"
+        ],
+        [
+         "11.5",
+         "4"
+        ],
+        [
+         "11.4",
+         "9"
+        ],
+        [
+         "11.21",
+         "6"
+        ],
+        [
+         "10.19",
+         "6"
+        ],
+        [
+         "8.09",
+         "1"
+        ],
+        [
+         "8.03",
+         "3"
+        ],
+        [
+         "7.52",
+         "1"
+        ],
+        [
+         "7.43",
+         "5"
+        ],
+        [
+         "6.1",
+         "7"
+        ],
+        [
+         "5.64",
+         "4"
+        ],
+        [
+         "4.32",
+         "8"
+        ],
+        [
+         "4.01",
+         "1"
+        ],
+        [
+         "3.48",
+         "8"
+        ],
+        [
+         "3.26",
+         "6"
+        ],
+        [
+         "2.83",
+         "7"
+        ],
+        [
+         "2.08",
+         "9"
+        ],
+        [
+         "1.67",
+         "2"
+        ],
+        [
+         "0.84",
+         "2"
+        ],
+        [
+         "0.02",
+         "2"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "value-average-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Average of Price"
+        ],
+        [
+         "South",
+         19.858000000000004
+        ],
+        [
+         "east",
+         19.736666666666665
+        ],
+        [
+         "Central",
+         19.58818181818182
+        ],
+        [
+         "North",
+         18.93
+        ],
+        [
+         "West",
+         18.878
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         19.389999999999997
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Average of Price"
+        ],
+        [
+         "South",
+         "19.858"
+        ],
+        [
+         "east",
+         "19.73666667"
+        ],
+        [
+         "Central",
+         "19.58818182"
+        ],
+        [
+         "North",
+         "18.93"
+        ],
+        [
+         "West",
+         "18.878"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "19.39"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Average of Price"
+     }
+    }
+   ]
+  },
+  "value-count-up-ties": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Flag"
+        ],
+        [
+         "7",
+         1
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         5
+        ],
+        [
+         "Apple",
+         12
+        ],
+        [
+         "Pear",
+         12
+        ],
+        [
+         "Fig",
+         13
+        ],
+        [
+         "Plum",
+         17
+        ],
+        [
+         "Grand Total",
+         60
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Flag"
+        ],
+        [
+         "7",
+         "1"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "5"
+        ],
+        [
+         "Apple",
+         "12"
+        ],
+        [
+         "Pear",
+         "12"
+        ],
+        [
+         "Fig",
+         "13"
+        ],
+        [
+         "Plum",
+         "17"
+        ],
+        [
+         "Grand Total",
+         "60"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Count of Flag"
+     }
+    }
+   ]
+  },
+  "second-value": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C10",
+       "area": "A3:C10",
+       "body": "B4:C10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty",
+         "Max of Price"
+        ],
+        [
+         "South",
+         54,
+         46.85
+        ],
+        [
+         "West",
+         98,
+         44.19
+        ],
+        [
+         "Central",
+         42,
+         44.01
+        ],
+        [
+         "North",
+         27,
+         36.07
+        ],
+        [
+         "east",
+         65,
+         35.98
+        ],
+        [
+         "(blank)",
+         4,
+         null
+        ],
+        [
+         "Grand Total",
+         290,
+         46.85
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty",
+         "Max of Price"
+        ],
+        [
+         "South",
+         "54",
+         "46.85"
+        ],
+        [
+         "West",
+         "98",
+         "44.19"
+        ],
+        [
+         "Central",
+         "42",
+         "44.01"
+        ],
+        [
+         "North",
+         "27",
+         "36.07"
+        ],
+        [
+         "east",
+         "65",
+         "35.98"
+        ],
+        [
+         "(blank)",
+         "4",
+         ""
+        ],
+        [
+         "Grand Total",
+         "290",
+         "46.85"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Max of Price"
+     }
+    }
+   ]
+  },
+  "outer-label-inner-value": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B36",
+       "area": "A3:B36",
+       "body": "B4:B36",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         29
+        ],
+        [
+         "South",
+         10
+        ],
+        [
+         "east",
+         7
+        ],
+        [
+         "West",
+         6
+        ],
+        [
+         "Central",
+         6
+        ],
+        [
+         "Plum",
+         62
+        ],
+        [
+         "West",
+         27
+        ],
+        [
+         "Central",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "east",
+         5
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "North",
+         1
+        ],
+        [
+         "Pear",
+         62
+        ],
+        [
+         "West",
+         22
+        ],
+        [
+         "North",
+         21
+        ],
+        [
+         "east",
+         12
+        ],
+        [
+         "Central",
+         4
+        ],
+        [
+         "South",
+         3
+        ],
+        [
+         "Fig",
+         68
+        ],
+        [
+         "east",
+         21
+        ],
+        [
+         "West",
+         20
+        ],
+        [
+         "Central",
+         13
+        ],
+        [
+         "South",
+         12
+        ],
+        [
+         "North",
+         2
+        ],
+        [
+         "Apple",
+         64
+        ],
+        [
+         "east",
+         20
+        ],
+        [
+         "West",
+         18
+        ],
+        [
+         "South",
+         18
+        ],
+        [
+         "Central",
+         5
+        ],
+        [
+         "North",
+         3
+        ],
+        [
+         "7",
+         5
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "29"
+        ],
+        [
+         "South",
+         "10"
+        ],
+        [
+         "east",
+         "7"
+        ],
+        [
+         "West",
+         "6"
+        ],
+        [
+         "Central",
+         "6"
+        ],
+        [
+         "Plum",
+         "62"
+        ],
+        [
+         "West",
+         "27"
+        ],
+        [
+         "Central",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "east",
+         "5"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "North",
+         "1"
+        ],
+        [
+         "Pear",
+         "62"
+        ],
+        [
+         "West",
+         "22"
+        ],
+        [
+         "North",
+         "21"
+        ],
+        [
+         "east",
+         "12"
+        ],
+        [
+         "Central",
+         "4"
+        ],
+        [
+         "South",
+         "3"
+        ],
+        [
+         "Fig",
+         "68"
+        ],
+        [
+         "east",
+         "21"
+        ],
+        [
+         "West",
+         "20"
+        ],
+        [
+         "Central",
+         "13"
+        ],
+        [
+         "South",
+         "12"
+        ],
+        [
+         "North",
+         "2"
+        ],
+        [
+         "Apple",
+         "64"
+        ],
+        [
+         "east",
+         "20"
+        ],
+        [
+         "West",
+         "18"
+        ],
+        [
+         "South",
+         "18"
+        ],
+        [
+         "Central",
+         "5"
+        ],
+        [
+         "North",
+         "3"
+        ],
+        [
+         "7",
+         "5"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "column-label-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G11",
+       "area": "A3:G11",
+       "body": "B5:G11",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "15",
+         35,
+         25,
+         15,
+         5,
+         "Grand Total"
+        ],
+        [
+         "Central",
+         null,
+         8,
+         12,
+         9,
+         13,
+         42
+        ],
+        [
+         "east",
+         null,
+         22,
+         12,
+         10,
+         21,
+         65
+        ],
+        [
+         "North",
+         null,
+         16,
+         null,
+         11,
+         null,
+         27
+        ],
+        [
+         "South",
+         9,
+         10,
+         11,
+         8,
+         16,
+         54
+        ],
+        [
+         "West",
+         null,
+         22,
+         36,
+         19,
+         21,
+         98
+        ],
+        [
+         "(blank)",
+         null,
+         4,
+         null,
+         null,
+         null,
+         4
+        ],
+        [
+         "Grand Total",
+         9,
+         82,
+         71,
+         57,
+         71,
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "15",
+         "35",
+         "25",
+         "15",
+         "5",
+         "Grand Total"
+        ],
+        [
+         "Central",
+         "",
+         "8",
+         "12",
+         "9",
+         "13",
+         "42"
+        ],
+        [
+         "east",
+         "",
+         "22",
+         "12",
+         "10",
+         "21",
+         "65"
+        ],
+        [
+         "North",
+         "",
+         "16",
+         "",
+         "11",
+         "",
+         "27"
+        ],
+        [
+         "South",
+         "9",
+         "10",
+         "11",
+         "8",
+         "16",
+         "54"
+        ],
+        [
+         "West",
+         "",
+         "22",
+         "36",
+         "19",
+         "21",
+         "98"
+        ],
+        [
+         "(blank)",
+         "",
+         "4",
+         "",
+         "",
+         "",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "9",
+         "82",
+         "71",
+         "57",
+         "71",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "tabular-value": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C36",
+       "area": "A3:C36",
+       "body": "C4:C36",
+       "values": [
+        [
+         "Product",
+         "Region",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         "West",
+         5
+        ],
+        [
+         "7 Total",
+         null,
+         5
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Central",
+         6
+        ],
+        [
+         null,
+         "east",
+         7
+        ],
+        [
+         null,
+         "South",
+         10
+        ],
+        [
+         null,
+         "West",
+         6
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays Total",
+         null,
+         29
+        ],
+        [
+         "Pear",
+         "Central",
+         4
+        ],
+        [
+         null,
+         "east",
+         12
+        ],
+        [
+         null,
+         "North",
+         21
+        ],
+        [
+         null,
+         "South",
+         3
+        ],
+        [
+         null,
+         "West",
+         22
+        ],
+        [
+         "Pear Total",
+         null,
+         62
+        ],
+        [
+         "Plum",
+         "Central",
+         14
+        ],
+        [
+         null,
+         "east",
+         5
+        ],
+        [
+         null,
+         "North",
+         1
+        ],
+        [
+         null,
+         "South",
+         11
+        ],
+        [
+         null,
+         "West",
+         27
+        ],
+        [
+         null,
+         "(blank)",
+         4
+        ],
+        [
+         "Plum Total",
+         null,
+         62
+        ],
+        [
+         "Apple",
+         "Central",
+         5
+        ],
+        [
+         null,
+         "east",
+         20
+        ],
+        [
+         null,
+         "North",
+         3
+        ],
+        [
+         null,
+         "South",
+         18
+        ],
+        [
+         null,
+         "West",
+         18
+        ],
+        [
+         "Apple Total",
+         null,
+         64
+        ],
+        [
+         "Fig",
+         "Central",
+         13
+        ],
+        [
+         null,
+         "east",
+         21
+        ],
+        [
+         null,
+         "North",
+         2
+        ],
+        [
+         null,
+         "South",
+         12
+        ],
+        [
+         null,
+         "West",
+         20
+        ],
+        [
+         "Fig Total",
+         null,
+         68
+        ],
+        [
+         "Grand Total",
+         null,
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "Region",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         "West",
+         "5"
+        ],
+        [
+         "7 Total",
+         "",
+         "5"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "Central",
+         "6"
+        ],
+        [
+         "",
+         "east",
+         "7"
+        ],
+        [
+         "",
+         "South",
+         "10"
+        ],
+        [
+         "",
+         "West",
+         "6"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays Total",
+         "",
+         "29"
+        ],
+        [
+         "Pear",
+         "Central",
+         "4"
+        ],
+        [
+         "",
+         "east",
+         "12"
+        ],
+        [
+         "",
+         "North",
+         "21"
+        ],
+        [
+         "",
+         "South",
+         "3"
+        ],
+        [
+         "",
+         "West",
+         "22"
+        ],
+        [
+         "Pear Total",
+         "",
+         "62"
+        ],
+        [
+         "Plum",
+         "Central",
+         "14"
+        ],
+        [
+         "",
+         "east",
+         "5"
+        ],
+        [
+         "",
+         "North",
+         "1"
+        ],
+        [
+         "",
+         "South",
+         "11"
+        ],
+        [
+         "",
+         "West",
+         "27"
+        ],
+        [
+         "",
+         "(blank)",
+         "4"
+        ],
+        [
+         "Plum Total",
+         "",
+         "62"
+        ],
+        [
+         "Apple",
+         "Central",
+         "5"
+        ],
+        [
+         "",
+         "east",
+         "20"
+        ],
+        [
+         "",
+         "North",
+         "3"
+        ],
+        [
+         "",
+         "South",
+         "18"
+        ],
+        [
+         "",
+         "West",
+         "18"
+        ],
+        [
+         "Apple Total",
+         "",
+         "64"
+        ],
+        [
+         "Fig",
+         "Central",
+         "13"
+        ],
+        [
+         "",
+         "east",
+         "21"
+        ],
+        [
+         "",
+         "North",
+         "2"
+        ],
+        [
+         "",
+         "South",
+         "12"
+        ],
+        [
+         "",
+         "West",
+         "20"
+        ],
+        [
+         "Fig Total",
+         "",
+         "68"
+        ],
+        [
+         "Grand Total",
+         "",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "manual-two": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "manual-inner": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B36",
+       "area": "A3:B36",
+       "body": "B4:B36",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         5
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Apple",
+         64
+        ],
+        [
+         "South",
+         18
+        ],
+        [
+         "Central",
+         5
+        ],
+        [
+         "east",
+         20
+        ],
+        [
+         "North",
+         3
+        ],
+        [
+         "West",
+         18
+        ],
+        [
+         "Fig",
+         68
+        ],
+        [
+         "South",
+         12
+        ],
+        [
+         "Central",
+         13
+        ],
+        [
+         "east",
+         21
+        ],
+        [
+         "North",
+         2
+        ],
+        [
+         "West",
+         20
+        ],
+        [
+         "Pear",
+         62
+        ],
+        [
+         "South",
+         3
+        ],
+        [
+         "Central",
+         4
+        ],
+        [
+         "east",
+         12
+        ],
+        [
+         "North",
+         21
+        ],
+        [
+         "West",
+         22
+        ],
+        [
+         "Plum",
+         62
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "Central",
+         14
+        ],
+        [
+         "east",
+         5
+        ],
+        [
+         "North",
+         1
+        ],
+        [
+         "West",
+         27
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         29
+        ],
+        [
+         "South",
+         10
+        ],
+        [
+         "Central",
+         6
+        ],
+        [
+         "east",
+         7
+        ],
+        [
+         "West",
+         6
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7",
+         "5"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Apple",
+         "64"
+        ],
+        [
+         "South",
+         "18"
+        ],
+        [
+         "Central",
+         "5"
+        ],
+        [
+         "east",
+         "20"
+        ],
+        [
+         "North",
+         "3"
+        ],
+        [
+         "West",
+         "18"
+        ],
+        [
+         "Fig",
+         "68"
+        ],
+        [
+         "South",
+         "12"
+        ],
+        [
+         "Central",
+         "13"
+        ],
+        [
+         "east",
+         "21"
+        ],
+        [
+         "North",
+         "2"
+        ],
+        [
+         "West",
+         "20"
+        ],
+        [
+         "Pear",
+         "62"
+        ],
+        [
+         "South",
+         "3"
+        ],
+        [
+         "Central",
+         "4"
+        ],
+        [
+         "east",
+         "12"
+        ],
+        [
+         "North",
+         "21"
+        ],
+        [
+         "West",
+         "22"
+        ],
+        [
+         "Plum",
+         "62"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "Central",
+         "14"
+        ],
+        [
+         "east",
+         "5"
+        ],
+        [
+         "North",
+         "1"
+        ],
+        [
+         "West",
+         "27"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "29"
+        ],
+        [
+         "South",
+         "10"
+        ],
+        [
+         "Central",
+         "6"
+        ],
+        [
+         "east",
+         "7"
+        ],
+        [
+         "West",
+         "6"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "manual-then-sort": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "days-list": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B23",
+       "area": "A3:B23",
+       "body": "B4:B23",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Monday",
+         2
+        ],
+        [
+         "Wednesday",
+         4
+        ],
+        [
+         "sun",
+         3
+        ],
+        [
+         "Tue",
+         4
+        ],
+        [
+         "Thu",
+         4
+        ],
+        [
+         "fri",
+         7
+        ],
+        [
+         "Sat",
+         3
+        ],
+        [
+         "May",
+         3
+        ],
+        [
+         "Jun",
+         5
+        ],
+        [
+         "check",
+         56
+        ],
+        [
+         "late",
+         49
+        ],
+        [
+         "ok",
+         65
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 17",
+         2
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 25",
+         6
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 33",
+         9
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 41",
+         1
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 49",
+         5
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 57",
+         2
+        ],
+        [
+         "(blank)",
+         60
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Monday",
+         "2"
+        ],
+        [
+         "Wednesday",
+         "4"
+        ],
+        [
+         "sun",
+         "3"
+        ],
+        [
+         "Tue",
+         "4"
+        ],
+        [
+         "Thu",
+         "4"
+        ],
+        [
+         "fri",
+         "7"
+        ],
+        [
+         "Sat",
+         "3"
+        ],
+        [
+         "May",
+         "3"
+        ],
+        [
+         "Jun",
+         "5"
+        ],
+        [
+         "check",
+         "56"
+        ],
+        [
+         "late",
+         "49"
+        ],
+        [
+         "ok",
+         "65"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 17",
+         "2"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 25",
+         "6"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 33",
+         "9"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 41",
+         "1"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 49",
+         "5"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays, row 57",
+         "2"
+        ],
+        [
+         "(blank)",
+         "60"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 9": true,
+      "op 11": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "refresh-value-up-new": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Middle",
+         4
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "Central",
+         38
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "West",
+         186
+        ],
+        [
+         "Grand Total",
+         378
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Middle",
+         "4"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "Central",
+         "38"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "West",
+         "186"
+        ],
+        [
+         "Grand Total",
+         "378"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 6": true
+     }
+    }
+   ]
+  },
+  "refresh-label-down-gone": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "North",
+         65
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "Central",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "North",
+         "65"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "Central",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 15": true
+     }
+    }
+   ]
+  },
+  "refresh-manual-gone": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "Central",
+         38
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Zeta",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "Central",
+         "38"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Zeta",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 5": true
+     }
+    }
+   ]
+  }
+ }
+}

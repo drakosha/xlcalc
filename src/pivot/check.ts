@@ -156,7 +156,6 @@ const field = shape(
     pageBreak: bool,
     showEmpty: bool,
     sort: shape({ order: oneOf(['ascending', 'descending']), by: shape({ value: index, at: list(shape({ field: index, item: index }, ['field', 'item'], 'an item of a field')) }, ['value'], 'a value field') }, ['order'], 'a sort'),
-    autoSort: bool,
     includeNewItems: bool,
     multipleItems: bool,
     numberFormat: checkFormat,

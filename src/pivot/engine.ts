@@ -34,7 +34,7 @@ interface Spot {
 
 const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
 
-export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource) => {
+export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource, blocked) => {
   const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table) => ({ s, table })))
   const caches = new Map((book.pivotCaches ?? []).map((c) => [c.id, c]))
   let wanted: Set<number>
@@ -93,5 +93,5 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
       const bounds = pc && timelineBounds(pc, fieldIndex(pc, tc.field))
       return bounds ? { ...tc, bounds } : tc
     })
-  return placePivots(out, placed)
+  return placePivots(out, placed, blocked)
 }

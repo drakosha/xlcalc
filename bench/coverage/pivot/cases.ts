@@ -62,6 +62,8 @@ export interface TableProps {
   emptyText?: string
   /** Several filters on one field (a label filter and a value filter). */
   multipleFilters?: boolean
+  /** The row naming the data fields (`Values`) shown, as by default. */
+  valuesRow?: boolean
   /** Items sorted by Excel's custom lists (the month and day names), as by default. */
   customLists?: boolean
 }
@@ -124,8 +126,8 @@ export type PivotOp = (
   | { page: string; items: string[] | '(All)' }
   /** A filter on a field; `by` names the data field (its caption) a value filter or top 10 looks at. */
   | { filter: string; type: FilterType; value1?: FilterValue; value2?: FilterValue; by?: string; wholeDays?: boolean }
-  /** AutoSort of a field by its labels, or by a data field (its caption). */
-  | { sort: string; order: 'ascending' | 'descending'; by?: string }
+  /** AutoSort of a field by its labels, or by a data field (its caption); `manual` turns sorting on each update off and keeps the order shown. */
+  | { sort: string; order: 'ascending' | 'descending' | 'manual'; by?: string }
   /** An item moved by hand to a position. */
   | { item: string; of: string; position: number }
   | { calcField: string; formula: string }
@@ -133,6 +135,8 @@ export type PivotOp = (
   /** Excel's grouping of a field of dates or numbers: start and end (Excel's own where left out), an interval, the periods. */
   | { group: string; start?: FilterValue; end?: FilterValue; by?: number; periods?: Period[] }
   | { groupItems: string; items: string[] }
+  /** Items collapsed (`ShowDetail` false), or every item of the field; `expand` shows them again. */
+  | { collapse: string; items: string[] | 'all'; expand?: boolean }
   | { ungroup: string }
   /** A slicer on a field, on the sheet `P`, over the pivot tables named besides `pt`. */
   | { slicer: string; name: string; pivots?: string[] }

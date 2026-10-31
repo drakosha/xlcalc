@@ -129,7 +129,8 @@ export function itemPasses(f: PivotFilter, item: PivotValue, caption: string | u
 
 /**
  * The items of one group (those under the same items of the fields before) that a value filter or Top 10 keeps, by
- * their values: an empty value counts as 0, an error fails them. Top 10 keeps the items tied with the last one it takes.
+ * their values: an empty value counts as 0, an error fails them. Top 10 by count keeps the items tied with the last one it
+ * takes; by percent or sum it takes no more once it has enough, of tied items the earlier first (the set filter-held).
  */
 export function valuesKept(f: PivotFilter, values: readonly CellValue[]): boolean[] {
   // an empty value is 0 to them (the set filter: (blank) kept by "less than"), an error fails them
@@ -157,13 +158,12 @@ export function valuesKept(f: PivotFilter, values: readonly CellValue[]): boolea
     sum = 0,
     last: number | undefined
   for (const i of order) {
-    const x = nums[i]!
-    const enough = f.type === 'count' ? taken >= a : taken > 0 && sum >= target
-    if (enough && x !== last) break
+    // by count, the items tied with the last one taken come too; by percent or sum, no more once there is enough
+    if (f.type === 'count' ? taken >= a && nums[i] !== last : taken > 0 && sum >= target) break
     kept[i] = true
     taken++
-    sum += x
-    last = x
+    sum += nums[i]!
+    last = nums[i]
   }
   return kept
 }
