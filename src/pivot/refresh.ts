@@ -214,6 +214,13 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
     const listed = new Set(kept.flatMap((x) => (x.item === undefined ? [] : [x.item])))
     const hide = pf.items.some((x) => x.hidden) && !pf.includeNewItems
     groupedItems(fields[n])!.forEach((_, i) => !listed.has(i) && !unused.has(i) && kept.push(hide ? { item: i, hidden: true } : { item: i }))
+    // a field of groups by dates or numbers lists its groups in their order, new ones where they fall
+    if (fields[n].group?.range) {
+      const by = kept.map((_, p) => p).sort((a, b) => (kept[a].item ?? 0) - (kept[b].item ?? 0))
+      const at = new Map(by.map((p, q) => [p, q]))
+      place.forEach((p, old) => place.set(old, at.get(p)!))
+      kept.splice(0, kept.length, ...by.map((p) => kept[p]))
+    }
     placeMaps.set(n, place)
     out[n] = { ...pf, items: kept }
   })
