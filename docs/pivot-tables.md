@@ -124,7 +124,7 @@ An item shows its caption (`PivotFieldItem.caption`), or its value: text as text
 
 ### Value fields
 
-Each value cell shows its value field's value with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
+Each value cell shows its value field's value ([Show Values As](#show-values-as) applied) with the value field's number format; a value shown as a percentage (`showAs` of a share or a percentage difference) without a format of its own shows as `0.00%`. The line of an item over its group, which shows no value, takes the format too. **For error values show** and **For empty cells show** (`errors`, `empty`) put their text in place of an error and of an empty value; a text that reads as a number is shown as the number (`0`).
 
 Several value fields lie across the columns by default, or across the rows (`valuesOnRows`), at the place `valuesPosition` gives among the axis's fields. With **Show the Values Row** (`valuesRow`) a caption row stands over value fields alone on the columns.
 
@@ -225,6 +225,28 @@ A label or date filter and a value filter on one field both apply (Allow multipl
 
 A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep their order, and under an item of a field before go by the items' values over all of them. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
 
+### Show Values As
+
+A value field shows its values as Excel's Show Values As does (`showAs`, with `baseField` and `baseItem` where the calculation takes them), over the values of the items shown:
+
+| `showAs` | A cell shows | Its totals |
+|---|---|---|
+| `percentOfTotal`, `percentOfRow`, `percentOfColumn` | its share of the grand total, of its row's total, of its column's total | their shares, the grand total 100% |
+| `percentOfParentRow`, `percentOfParentColumn` | its share of the item above it on the rows (columns) | the grand total 100% |
+| `percentOfParent` | its share of the base field's item it lies under | the base field's items 100%, totals above them empty |
+| `index` | value × grand total / (row total × column total) | the same |
+| `difference`, `percent`, `percentDiff` | its difference from the base item's value at the same items, its share of it, the difference as a share | the base item's own cells empty (100% for `percent`), totals above the base field empty |
+| `runTotal`, `percentOfRunningTotal` | the sum of the base field's items up to it, in the order shown, and that sum's share of all of them | totals above the base field empty |
+| `rankAscending`, `rankDescending` | its rank among the base field's items, 1 for the smallest (largest); ties share a rank | totals above the base field empty |
+
+- A cell with no record counts as 0: it shows 0% of a total, a running total so far, a difference of 0 less the base. A share of a base item and a percentage difference show `#NULL!` there, as Excel does.
+- A share of an empty value (a parent with no record, a base item's empty cell, a running total of empty cells) is empty; of 0, or of an empty row or column total, `#DIV/0!`.
+- The previous and next items (`baseItem: 'previous'`, `'next'`) are those with a line at the same items under them: `West`'s previous for `Banana` is the region before it that has a `Banana` line. The first item's previous, and the last's next, is the item itself.
+- A base item with no line at the cell's items (`East` has no `Banana`) is `#N/A`; a base item hidden or filtered out, a base field on no axis (on the Filters area too) and no base field are `#N/A` in every cell, the totals too.
+- An error among the values is the cell's error, or the error of the value it is set against; a running total takes the last error it passes; an error has no rank.
+- Hidden and filtered items take no part: shares are of the totals of the items shown, and running totals, ranks and the previous and next items pass over the hidden ones. A Filters area's item or items limit the records as for any value.
+- Sorting by a value field sorts by its values before Show Values As: a field sorted by a rank goes by the sums ranked.
+
 ## Checked against Excel
 
 Excel for Windows built PivotTables through its object model and saved them (the sets basic, layout, calc, edit,
@@ -238,3 +260,5 @@ has the details.
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 
 Excel for Windows built PivotTables over 48 rows of text, numbers with blanks, text, an error and a boolean among them, dates, numbers kept as text and long text, and saved them: 48 PivotTables of the 11 functions, columns, two value fields and kinds of items; 61 of filters; 27 of sorting; 34 of refreshing after edits of the source (new items, items gone with each Number of items to retain, values and types changed, an error appearing, a table grown and resized, a name made smaller, a header renamed, the source edited before a filter, a sort, a layout change, a field moved or added, two PivotTables of one cache, two caches). Each PivotTable laid out again from the cache Excel saved, and refreshed from its source, gives the cells Excel showed, with one known difference (`docs/limitations.md`). Held-out sets, predicted before Excel ran them, matched 20 of 20 of layout, 20 of 22 of filters and 17 of 18 of sorting; their three misses are rules now.
+
+Show Values As was compared on 36 PivotTables of the 15 calculations (over two row fields and a column field, the base field inner and outer, on rows and on columns, fixed, previous and next base items, a blank one, values with errors and empty cells, beside a plain value field, tabular, sorted) and 22 more of hidden and filtered items, Filters area items, Top 10, items with no data shown, a base item hidden, a base field off the axes, sorting by the values shown, value fields on the rows, an average and a count. Laid out again from the saved cache and refreshed from the source, each gives the cells and number formats Excel showed, a share to within one part in 10¹⁴ (`docs/limitations.md`).
