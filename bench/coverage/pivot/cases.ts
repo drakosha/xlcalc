@@ -119,6 +119,13 @@ export type PivotOp = (
   | { value: ValueField }
   /** A data field by its caption taken off Values (`DataFields(caption).Orientation` hidden). */
   | { dropValue: string }
+  /** Fields placed by `PivotTable.AddFields` (added to those there), or a field's `CubeField` given an orientation. */
+  | { addFields: { rows?: string[]; columns?: string[] } }
+  | { cubeField: string; to: 'row' | 'column' }
+  /** A cell's number format (`P!H5`), cells merged (`P!H6:I6`), a table with headers over a range named `name`. */
+  | { cellFormat: string; numberFormat: string }
+  | { merge: string }
+  | { addTable: string; name: string }
   /** The data fields' own field (Σ Values) on rows or columns, at a position. */
   | { valuesOn: 'row' | 'column'; position?: number }
   | { layout: 'compact' | 'outline' | 'tabular' }

@@ -140,6 +140,15 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       if (v.item !== undefined) props.push(['BaseItem', v.item])
       add(role, { ...at, op: 'data', field: v.field, caption: v.caption ?? null, fn: FN[v.fn ?? 'sum'], props })
     } else if ('dropValue' in o) add(role, set('data', [['Orientation', AXIS.hidden]], { field: o.dropValue }))
+    else if ('addFields' in o) add(role, call('table', 'AddFields', [o.addFields.rows ?? null, o.addFields.columns ?? null, null, true]))
+    else if ('cubeField' in o) add(role, set('cubeField', [['Orientation', AXIS[o.to]]], { field: o.cubeField }))
+    else if ('cellFormat' in o) {
+      const [sheet, range] = o.cellFormat.split('!')
+      add(role, { ...at, op: 'set', on: 'range', rangeSheet: sheet, range, props: [['NumberFormat', o.numberFormat]] })
+    } else if ('merge' in o || 'addTable' in o) {
+      const [sheet, range] = ('merge' in o ? o.merge : o.addTable).split('!')
+      add(role, { do: 'struct', op: 'merge' in o ? 'mergeCells' : 'addTable', sheet, range, target: 'merge' in o ? '' : o.name })
+    }
     else if ('valuesOn' in o) add(role, set('values', [['Orientation', AXIS[o.valuesOn]], ...(o.position ? [['Position', o.position] as [string, unknown]] : [])]))
     else if ('layout' in o) add(role, call('table', 'RowAxisLayout', [ROW_LAYOUT[o.layout]]))
     else if ('repeatAll' in o) add(role, call('table', 'RepeatAllLabels', [o.repeatAll ? 2 : 1]))

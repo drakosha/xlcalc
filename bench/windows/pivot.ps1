@@ -15,13 +15,15 @@ function PArg($x) {
 function PTable($wb, $s) { $wb.Worksheets.Item([string]$s.sheet).PivotTables([string]$s.pt) }
 
 # what a step works on: the pivot table, one of its fields, a data field by its caption, the values field (Σ Values),
-# an item, the cache, a slicer cache by name or one of its items, a slicer; the comma keeps a collection whole
+# a field's cube field, a range of a sheet, an item, the cache, a slicer cache by name or one of its items, a slicer; the comma keeps a collection whole
 function POn($wb, $s) {
   switch ($s.on) {
     'table' { return , (PTable $wb $s) }
     'field' { return , (PTable $wb $s).PivotFields([string]$s.field) }
     'data' { return , (PTable $wb $s).DataFields([string]$s.field) }
     'values' { return , (PTable $wb $s).DataPivotField }
+    'cubeField' { return , (PTable $wb $s).PivotFields([string]$s.field).CubeField }
+    'range' { return , $wb.Worksheets.Item([string]$s.rangeSheet).Range([string]$s.range) }
     'item' { return , (PTable $wb $s).PivotFields([string]$s.field).PivotItems([string]$s.item) }
     'cache' { return , (PTable $wb $s).PivotCache() }
     'calcFields' { return , (PTable $wb $s).CalculatedFields() }

@@ -20,6 +20,10 @@ import { clockOptions } from '../../../src/result.js'
 import type { Applied } from '../../../src/structure/geometry.js'
 import { stateValues } from '../../../src/structure/values.js'
 import { placedValues } from '../../../src/structure/pivot-values.js'
+import { pivotOp } from '../../../src/structure/pivot-ops.js'
+import { parseRange } from '../../../src/structure/area.js'
+import { pivotArea } from '../../../src/pivot/area.js'
+import { formatAddress, parseAddress } from '../../../src/model.js'
 import { patched } from '../../../src/structure/pivots.js'
 import type { PivotCase, PivotOp } from './cases.js'
 import { DATA, sourceBook, sourceRange } from './data.js'
@@ -39,7 +43,7 @@ export interface DrivenPhase {
 const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toISOString().slice(0, 19)
 
 /** The book a case starts from: the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
-function startBook(c: PivotCase): BookInput {
+export function startBook(c: PivotCase): BookInput {
   const cols = DATA[c.data ?? 'sales']()
   const book = sourceBook(cols, c.source ?? 'range')
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
@@ -56,7 +60,6 @@ const emptyTable = (cache: PivotCache, name: string, at: string): PivotTable => 
 export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
   if (c.file || (c.from && !saved)) throw new Error('a case from a file, or from a saved book without it, is not driven')
   let book = c.from ? saved! : startBook(c)
-  const empty = (name: string, at: string) => emptyTable(book.pivotCaches![0], name, at)
   const out: DrivenPhase[] = []
   let errors: string[] = []
   const tableOf = (name = 'PT1') => book.sheets.find((s) => s.name === 'P')!.pivotTables!.find((t) => t.name === name)!
@@ -76,6 +79,15 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       errors.push(`op ${k}: ${(e as Error).message}`)
     }
   }
+  /** A cell of a PivotTable's area (`P!A5`), which an edit there is an entry into. */
+  const onPivot = (cell: string) => {
+    const [sheet, at] = cell.split('!')
+    const { row, col } = parseAddress(at)
+    return (book.sheets.find((s) => s.name === sheet)?.pivotTables ?? []).some((t) => {
+      const x = pivotArea(t)
+      return x !== null && row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2
+    })
+  }
   /** The place of an item on a PivotTable's field by its label. */
   const itemAt = (t: PivotTable, f: number, label: string) => {
     const values = groupedItems(book.pivotCaches![0].fields[f]) ?? []
@@ -89,9 +101,34 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       return
     }
     if ('create' in op) {
-      const at = op.at.split('!')[1]
-      book = { ...book, sheets: book.sheets.map((s) => (s.name === 'P' ? { ...s, pivotTables: [...s.pivotTables!, empty(op.create, at)] } : s)) }
+      // over the cache of PT1, as addPivotTable makes it; COM with Excel's alerts off answers its question to replace the cells
+      const [sheet, cell] = op.at.split('!')
+      return take(k, pivotOp(book, { op: 'addPivotTable', sheet, cell, name: op.create, source: { cache: book.pivotCaches![0].id }, replace: true }, valuesOf(book)))
+    }
+    if ('addFields' in op || 'cubeField' in op) {
+      // placed as Orientation places them
+      const add = 'addFields' in op ? op.addFields : { [op.to === 'row' ? 'rows' : 'columns']: [op.cubeField] }
+      for (const axis of ['rows', 'columns'] as const) {
+        const fs = (add[axis] ?? []).map(fieldOf)
+        const other = axis === 'rows' ? 'columns' : 'rows'
+        setTable(pt, (t) => placedValues({ ...t, [other]: (t[other] ?? []).filter((f) => !fs.includes(f as number)), [axis]: [...(t[axis] ?? []).filter((f) => !fs.includes(f as number)), ...fs] }))
+      }
       return laid(k)
+    }
+    if ('cellFormat' in op || 'merge' in op || 'addTable' in op) {
+      const [sheet, range] = ('cellFormat' in op ? op.cellFormat : 'merge' in op ? op.merge : op.addTable).split('!')
+      book = {
+        ...book,
+        sheets: book.sheets.map((s) => {
+          if (s.name !== sheet) return s
+          if ('cellFormat' in op) return { ...s, cells: { ...s.cells, [range]: { ...s.cells[range], numberFormat: op.numberFormat } } }
+          if ('merge' in op) return { ...s, merges: [...(s.merges ?? []), range] }
+          const x = parseRange(range)!
+          const columns = Array.from({ length: x.c2 - x.c1 + 1 }, (_, c) => ({ name: String(s.cells[formatAddress(x.r1, x.c1 + c)]?.value ?? `Column${c + 1}`) }))
+          return { ...s, tables: [...(s.tables ?? []), { name: op.name, range, columns }] }
+        }),
+      }
+      return
     }
     if ('rows' in op || 'columns' in op) {
       const axis = 'rows' in op ? 'rows' : 'columns'
@@ -210,7 +247,7 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       })
       return laid(k)
     }
-    if ('edit' in op && !op.edit.startsWith('P!')) {
+    if ('edit' in op && !onPivot(op.edit)) {
       const [sheet, cell] = op.edit.split('!')
       const to = op.to
       // the cell keeps its format, as Value2 leaves it
