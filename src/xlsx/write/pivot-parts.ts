@@ -39,7 +39,7 @@ export function pivotRules(sheet: SheetInput, name: string, priority: (i: number
 }
 
 /** The parts of the book's caches and PivotTables; `styles` holds the number formats and the differential formats they use. */
-export function pivotPackage(book: BookInput, styles: CellFormats): PivotPackage {
+export function pivotPackage(book: BookInput, styles: CellFormats, slicerIds: ReadonlySet<number> = new Set()): PivotPackage {
   const out: PivotPackage = { files: [], contentTypes: [], caches: [], sheets: book.sheets.map(() => []) }
   const caches = book.pivotCaches ?? []
   if (!caches.length) return out
@@ -52,7 +52,7 @@ export function pivotPackage(book: BookInput, styles: CellFormats): PivotPackage
     if (saved) own.push([`${REL}/pivotCacheRecords`, `pivotCacheRecords${n}.xml`])
     const book_ = 'book' in c.source ? c.source.book : undefined
     if (book_ !== undefined) own.push([`${REL}/externalLinkPath`, book_, true])
-    out.files.push({ name, text: pivotCacheXml(c, (f) => styles.numFmt(f.numberFormat), saved ? 'rId1' : undefined, book_ === undefined ? undefined : `rId${own.length}`) })
+    out.files.push({ name, text: pivotCacheXml(c, (f) => styles.numFmt(f.numberFormat), saved ? 'rId1' : undefined, book_ === undefined ? undefined : `rId${own.length}`, slicerIds.has(c.id) ? c.id : undefined) })
     out.contentTypes.push([`/${name}`, `${TYPE}.pivotCacheDefinition+xml`])
     if (saved) {
       out.files.push({ name: `xl/pivotCache/pivotCacheRecords${n}.xml`, text: pivotRecordsXml(c) })

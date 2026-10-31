@@ -29,6 +29,7 @@ import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
 import { pivotPackage } from './pivot-parts.js'
+import { sheetSlicerExt, SLICER_RELS, slicerPackage, workbookSlicerExt } from './slicers.js'
 import { HEAD, MAIN, relsXml as rels } from './xml.js'
 import { RICH_TYPE } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
@@ -202,14 +203,13 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   })
   const dynamic = sheets.some((s) => s.formulas)
   if (dynamic && unasked) issues.add('noCachedValues', { key: 'noResult' })
-  if (book.slicerCaches || book.timelineCaches) issues.add('pivotTable', { key: 'pivotNotWritten' })
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
-  const pivots = pivotPackage(book, styles)
+  const slicers = slicerPackage(book, issues)
+  const pivots = pivotPackage(book, styles, slicers.pivotCacheIds)
   let vml = false
   sheets.forEach((s, i) => {
-    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(s) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
@@ -226,11 +226,20 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       ...s.rels.map((r): [string, string, boolean] => [`${REL}/${r.type}`, r.target, r.type === 'hyperlink']),
       ...pivots.sheets[i].map((target): [string, string] => [`${REL}/pivotTable`, target]),
     ]
+    // the drawing of its slicers' and timelines' frames, before its notes' drawing, and their parts named by its extensions
+    const sl = slicers.sheets[i]
+    const add = (type: string, target: string | undefined) => (target === undefined ? undefined : `rId${sheetRels.push([type, target])}`)
+    const drawing = add(`${REL}/drawing`, sl.drawing)
+    const ext = sheetSlicerExt(add(SLICER_RELS.slicer, sl.slicers), add(SLICER_RELS.timeline, sl.timelines))
+    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(drawing || ext ? { ...s, legacyDrawing: `${drawing ? `<drawing r:id="${drawing}"/>` : ''}${s.legacyDrawing}`, ext: s.ext + ext } : s) })
     if (sheetRels.length) files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(sheetRels) })
   })
   files.push(...pivots.files)
   contentTypes.push(...pivots.contentTypes)
   const pivotCaches = pivots.caches.map((c) => `<pivotCache cacheId="${c.id}" r:id="rId${wbRels.push([`${REL}/pivotCacheDefinition`, c.target])}"/>`).join('')
+  files.push(...slicers.files)
+  contentTypes.push(...slicers.contentTypes)
+  const wbExt = workbookSlicerExt(slicers.caches.map((c) => ({ kind: c.kind, id: `rId${wbRels.push([SLICER_RELS[c.kind], c.target])}` })))
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
@@ -262,7 +271,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}${wbExt ? `<extLst>${wbExt}</extLst>` : ''}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

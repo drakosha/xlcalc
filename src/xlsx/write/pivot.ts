@@ -152,7 +152,9 @@ function filterXml(f: PivotFilter, id: number, w: PivotWriting): string {
     (f.description === undefined ? '' : ` description="${escapeAttr(f.description)}"`) +
     s(0) +
     s(1)
-  return `<filter${a}><autoFilter ref="A1"><filterColumn colId="0">${conditionXml(f, w)}</filterColumn></autoFilter></filter>`
+  // a date filter of whole days, as a timeline sets it (Excel 2013's)
+  const whole = f.wholeDays ? '<extLst><ext uri="{0605FD5F-26C8-4aeb-8148-2DB25E43C511}" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main"><x15:pivotFilter useWholeDay="1"/></ext></extLst>' : ''
+  return `<filter${a}><autoFilter ref="A1"><filterColumn colId="0">${conditionXml(f, w)}</filterColumn></autoFilter>${whole}</filter>`
 }
 
 /** The PivotTable's part, over its cache `c`. */
