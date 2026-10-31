@@ -3,6 +3,12 @@
  * caches whose source is on it and to the slicers' and timelines' PivotTables on it.
  */
 import type { BookInput, PivotCache, PivotRef, PivotSource } from '../contract.js'
+import { caseKey } from '../collate.js'
+import { checkBook } from '../input.js'
+import { pivotCheck, pivotRefresh } from '../pivot/hook.js'
+import type { Applied, Geometry } from './geometry.js'
+import { sheetIndex } from './rewrite.js'
+import type { ValuesIn } from './values.js'
 
 /** A source's sheet renamed; a source in another workbook keeps its sheet. */
 function renamedSource(s: PivotSource, rename: (name: string) => string): PivotSource {
@@ -24,5 +30,37 @@ export function renamePivotSheets(book: BookInput, rename: (name: string) => str
   })
   if (book.slicerCaches) out.slicerCaches = book.slicerCaches.map((c) => ({ ...c, pivots: renamedRefs(c.pivots, rename) }))
   if (book.timelineCaches) out.timelineCaches = book.timelineCaches.map((c) => ({ ...c, pivots: renamedRefs(c.pivots, rename) }))
+  return out
+}
+
+/** The patch's fields set on `target`: a value replaces, null removes. */
+export function patched<T extends object>(target: T, patch: Record<string, unknown>): T {
+  const out: Record<string, unknown> = { ...(target as Record<string, unknown>) }
+  for (const [k, v] of Object.entries(patch)) {
+    if (v === null) delete out[k]
+    else if (v !== undefined) out[k] = v
+  }
+  return out as T
+}
+
+/**
+ * The PivotTables `refs` laid out again by `xlcalc/pivot` (`fromSource`: their caches refreshed from the sources); without
+ * it, their caches marked `stale`, the cells left.
+ */
+export function relaid(book: BookInput, refs: PivotRef[], values: ValuesIn, fromSource: boolean, geometry: Geometry = []): Applied {
+  const refresh = pivotRefresh()
+  const r = refresh?.(book, refs, values, values.today?.() ?? 0, fromSource)
+  if (r && !r.ok) return r
+  // laid out, unless the cache keeps no rows to lay it out from
+  if (r && r.book !== book) return { ...r, geometry: [...geometry, ...r.geometry] }
+  const caches = new Set(refs.flatMap((r) => book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.filter((p) => caseKey(p.name) === caseKey(r.name)).map((p) => p.cache) ?? []))
+  const pivotCaches = book.pivotCaches?.map((c) => (caches.has(c.id) && !c.stale ? { ...c, stale: true } : c))
+  return { ok: true, book: pivotCaches ? { ...book, pivotCaches } : book, geometry, stale: refs }
+}
+
+/** The book checked as input, the full check of PivotTables too when `xlcalc/pivot` registered it. */
+export function checkedPivots(book: BookInput, path = 'op'): BookInput {
+  const out = checkBook(book, path)
+  pivotCheck()?.(out, path)
   return out
 }

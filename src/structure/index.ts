@@ -40,6 +40,7 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -69,6 +70,7 @@ const FIELDS: Record<string, string[]> = {
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
   refreshPivots: ['pivots'],
+  ...SLICER_FIELDS,
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
@@ -87,7 +89,7 @@ export function editStructure(book: BookInput, op: StructureOp): StructureResult
   const r = applyOp(book, op, lazyValues(book))
   if (!r.ok) return r
   const out = { ...r.book, sheets: r.book.sheets.map((s) => looksTaken(s)) }
-  return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }) }
+  return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }), ...(r.stale ? { stale: r.stale } : {}) }
 }
 
 /** The names of a book's sheets, in order. */
@@ -275,6 +277,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'addTimeline':
     case 'editTimeline':
     case 'deleteTimeline':
+      r = slicerOp(book, o, values)
+      break
     case 'groupPivotField':
     case 'ungroupPivotField':
     case 'renamePivotGroup':

@@ -373,6 +373,9 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pivotFormula: { sheet: string; cell: string; pivot: string }
   pivotNameTaken: { name: string }
   pivotNotItem: { item: string }
+  slicerField: { field: string }
+  slicerNameTaken: { name: string }
+  timelineField: { field: string }
   // typing into a cell
   headerFormula: { sheet: string; cell: string; table: string }
   validationError: object
@@ -399,6 +402,7 @@ export type EditKey =
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
   | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
   | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
+  | 'slicerField' | 'slicerNameTaken' | 'timelineField'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 
