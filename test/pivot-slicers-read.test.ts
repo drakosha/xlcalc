@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { PivotValue } from '../src/index.js'
 import { dateToSerial } from '../src/model.js'
-import { readXlsx } from '../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { pack } from './xlsx-fixtures.js'
 
@@ -114,5 +114,15 @@ describe('a drawing of slicers and timelines', () => {
     const r = await readXlsx(await withDrawn(picture))
     expect(r.issues.filter((i) => i.code === 'drawing').map((i) => i.sheet)).toEqual(['P'])
     expect(r.book.sheets.find((s) => s.name === 'P')!.timelines?.map((s) => s.name)).toEqual(['Timeline_Date'])
+  })
+})
+
+describe('a timeline without dates chosen, written', () => {
+  it("has its state's filter type unknown, as Excel writes it and needs it to open the file (the sets slicer-objects, slicer-locks-probe)", async () => {
+    const r = await readXlsx(readFileSync(new URL('./excel/win/pivot/slicer-objects/place-mixed.xlsx', import.meta.url)))
+    expect(r.book.timelineCaches!.map((c) => c.selection)).toEqual([undefined, undefined])
+    const a = openArchive((await writeXlsx({ book: r.book })).data)
+    const states = await Promise.all(a.names.filter((n) => n.startsWith('xl/timelineCaches/')).map(async (n) => /<state [^>]*>/.exec((await a.text(n))!)![0]))
+    expect(states.map((x) => /filterType="(\w+)"/.exec(x)?.[1])).toEqual(['unknown', 'unknown'])
   })
 })

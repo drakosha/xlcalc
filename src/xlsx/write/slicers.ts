@@ -68,7 +68,8 @@ export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId =
   // the dates it spans: the model's, else from January 1 of its first date's year to January 1 after its last's
   const bounds = c.bounds ?? (min && max ? { start: yearOf(min, false), end: yearOf(max, true) } : undefined)
   const sel = c.selection
-  const type = !sel ? '' : ` filterType="${isoTime(sel.start) === isoTime(sel.end) ? 'dateEqual' : 'dateBetween'}"`
+  // Excel opens no file whose timeline without a selection lacks a filter type
+  const type = ` filterType="${!sel ? 'unknown' : isoTime(sel.start) === isoTime(sel.end) ? 'dateEqual' : 'dateBetween'}"`
   const state = `<state minimalRefreshVersion="6" lastRefreshVersion="6" pivotCacheId="${cacheId}"${type}>${sel ? `<selection startDate="${isoTime(sel.start)}" endDate="${isoTime(sel.end)}"/>` : ''}${bounds ? `<bounds startDate="${isoTime(bounds.start)}" endDate="${isoTime(bounds.end)}"/>` : ''}</state>`
   return `${HEAD}<timelineCacheDefinition xmlns="${X15}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}${state}</timelineCacheDefinition>`
 }
