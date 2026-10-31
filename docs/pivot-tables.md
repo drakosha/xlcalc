@@ -74,14 +74,18 @@ the items the pairs name:
   one; a cell outside every PivotTable is `#REF!`.
 - `data_field` is the value field's name (`Sum of Price`) or its source field's (`Price`), in any case. Given as a
   reference to a cell holding the name, it is `#REF!`, as in Excel; text a formula makes (`TEXT(A1,"0")`) is taken.
-- A field is named as the PivotTable or the source names it, in any case. An item is matched by its label, in any case:
+- A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is
+  not found as `Region`), in any case. An item is matched by its label, in any case:
   `"North"`, `"(blank)"` for the blank item, a number's or a date's label as the PivotTable shows it (`"10"`, not
   `"10.0"`; `"1/1/2024"`, not `"2024-01-01"`), a text item before a number of the same label. A number matches a number
-  or a date of that value (`DATE(2024,1,1)`, `45292`), a boolean a boolean.
+  or a date of that value as `=` compares them (`DATE(2024,1,1)`, `45292`, `DATE(2025,1,2)+TIME(9,33,0)`), a boolean a
+  boolean.
 - The pairs pick the line of the rows and the column that name exactly their fields: naming all of them gives a value
-  cell, naming fewer a subtotal or the grand total where the PivotTable shows one. A field of the Filters area is
-  matched against the item it shows. What the layout does not show (an item filtered out, an inner field without its
-  outer one, a field on no axis, a pair without its item) is `#REF!`.
+  cell, naming fewer a subtotal or the grand total where the PivotTable shows one, a collapsed item's total on its own
+  line. An inner field named without a field between finds the one line that names it, where there is one (North and
+  Code 10 when only one Flag of North has Code 10). A field of the Filters area is matched against the item it shows.
+  What the layout does not show (an item filtered out, an inner field under several outer items, a field on no axis, a
+  pair without its item, an item with subtotals of several functions) is `#REF!`.
 - The answer is the value of that cell, an error as it is, an empty cell 0.
 - A PivotTable whose definition changed without being laid out again (`PivotCache.stale`) is `#REF!`.
 - A PivotTable in another workbook (`[1]P!$A$3`) is `#REF!` when calculated; a file opened keeps the value Excel saved
