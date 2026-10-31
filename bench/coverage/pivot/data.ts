@@ -9,6 +9,7 @@ import { formatAddress } from '../../../src/model.js'
 import { ORDER_DATA } from './order-data.js'
 import { numericOrderColumns } from './numeric-order-data.js'
 import { filterOrderColumns } from './filter-order-data.js'
+import { kindColumns } from './kinds-data.js'
 
 /** Where a cache takes its rows: the range itself, the table over it, or the defined name over it. */
 export type SourceKind = 'range' | 'table' | 'name'
@@ -156,7 +157,7 @@ export function blankColumns2(): SourceColumn[] {
 }
 
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2 }
+export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2, kinds: kindColumns }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`
