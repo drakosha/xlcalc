@@ -10,8 +10,7 @@ import { caseKey } from '../collate.js'
 import { InputError, what } from '../input-error.js'
 import { dateToSerial } from '../model.js'
 import { pivotCheck } from '../pivot/hook.js'
-import { ERROR_TEXT } from '../syntax.js'
-import { array, checkBoolean, checkNumber, checkString, given, isObject, object, type Check } from './basic.js'
+import { array, checkBoolean, checkCellValue, checkNumber, checkString, given, isObject, object, type Check } from './basic.js'
 import { checkRange } from './range.js'
 
 /** An ISO date, as a cache stores it (`2025-01-31T00:00:00`). */
@@ -24,21 +23,21 @@ export function checkIsoDate(v: unknown, p: string) {
   }
 }
 
-/** A value of a cache: blank, number, text, boolean, `{ error }` or `{ date }`. */
+/** A value of a cache: a cell's (blank, number, text, boolean, `{ error }`) or `{ date }`. */
 export function checkPivotValue(v: unknown, p: string) {
-  if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return
-  if (isObject(v) && Object.keys(v).length === 1) {
-    if (typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`)
-    if (Object.hasOwn(ERROR_TEXT, v.error as string)) return
+  if (isObject(v) && Object.keys(v).length === 1 && typeof v.date === 'string') return checkIsoDate(v.date, `${p}.date`)
+  try {
+    checkCellValue(v, p)
+  } catch {
+    throw new InputError(p, `expected a number, text, a boolean, null, { error: code } or { date: "2025-01-31T00:00:00" }, got ${what(v)}`)
   }
-  throw new InputError(p, `expected a number, text, a boolean, null, { error: code } or { date: "2025-01-31T00:00:00" }, got ${what(v)}`)
 }
 
 type Fields = Record<string, unknown>
 
 const MAX = 2 ** 31
 const index: Check = (v, p) => checkNumber(v, p, 0, MAX - 1, true)
-const text: Check = (v, p) => void checkString(v, p)
+const text: Check = checkString
 
 /** An array, each of its elements checked by `each`. */
 const list = (each: Check, expected: string): Check => (v, p) => array(v, p, expected).forEach((x, i) => each(x, `${p}[${i}]`))

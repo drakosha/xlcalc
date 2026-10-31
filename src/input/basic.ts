@@ -1,9 +1,11 @@
 /**
  * The checks of input's shape that the API's boundaries share: a plain object, an array, a string, a boolean, a number
- * within bounds, one of a few values, and the fields an object may have. Each refuses with `InputError` naming the
+ * within bounds, one of a few values, a cell's value, and the fields an object may have. Each refuses with `InputError` naming the
  * place; the module needs nothing of the engine.
  */
+import type { CellValue } from '../contract.js'
 import { InputError, what } from '../input-error.js'
+import { ERROR_TEXT } from '../syntax/errors.js'
 import { optionHint } from '../strict-args.js'
 
 /** A check of a value at its path, which refuses with `InputError`. */
@@ -65,3 +67,10 @@ export function onlyKeys(o: Record<string, unknown>, path: string, allowed: read
 
 /** An options object's fields, as `onlyKeys`: an unknown one that another call takes says which call (`optionHint`). */
 export const onlyOptions = (o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') => onlyKeys(o, path, allowed, hint + optionHint(o, allowed))
+
+/** `displayValue`'s value: a number, text, a boolean, null or an error `{ error: code }`. */
+export function checkCellValue(v: unknown, path: string): CellValue {
+  if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return v
+  if (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 1 && Object.hasOwn(ERROR_TEXT, (v as { error?: unknown }).error as string)) return v as CellValue
+  throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
+}

@@ -12,7 +12,7 @@ import type { EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
-import { array, checkBoolean, checkNumber, object, onlyOptions } from '../input/basic.js'
+import { array, checkBoolean, checkNumber, given, object, onlyOptions } from '../input/basic.js'
 import { issueDetail, type Place } from '../issues.js'
 import { isHiddenColumn, isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines, type SheetLines } from '../layout/lines.js'
@@ -53,7 +53,7 @@ export function checkViewportOptions(v: unknown, path = 'opts', saved = false): 
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { formulaLocal: true, maxCells: 20000 }')
   onlyOptions(o, path, ['formulaLocal', 'diagnostics', 'maxCells', 'rows', 'columns', 'editText', ...(saved ? ['appearance'] : [])])
-  for (const k of ['formulaLocal', 'diagnostics', 'editText', 'appearance']) if (o[k] !== undefined) checkBoolean(o[k], `${path}.${k}`)
+  given(o, path, { formulaLocal: checkBoolean, diagnostics: checkBoolean, editText: checkBoolean, appearance: checkBoolean })
   if (o.maxCells !== undefined) checkNumber(o.maxCells, `${path}.maxCells`, 1, MAX_COLS * MAX_ROWS, true)
   if (o.rows !== undefined) checkLineNumbers(o.rows, `${path}.rows`, MAX_ROWS)
   if (o.columns !== undefined) checkLineNumbers(o.columns, `${path}.columns`, MAX_COLS)
