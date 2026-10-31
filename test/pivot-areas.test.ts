@@ -12,7 +12,7 @@ import { parseRange, rectText } from '../src/structure/area.js'
 import { predictedAreas } from '../bench/coverage/pivot/areas-predict.js'
 import type { PivotArea, PivotAnswer, PivotCase, PivotSet } from '../bench/coverage/pivot/cases.js'
 
-const SETS = ['areas']
+const SETS = ['areas', 'areas-held']
 
 /**
  * The pivot tables whose areas Excel's ranges do not give: a pivot table with a report filter alone, whose
@@ -46,7 +46,8 @@ describe.each(SETS)('the areas of the pivot tables of the set %s', (set) => {
     const { buildPivotCases } = (await import(`../bench/coverage/pivot/${set}.ts`)) as PivotSet
     const misses: string[] = []
     let compared = 0
-    for (const c of buildPivotCases() as PivotCase[]) {
+    const cases = buildPivotCases() as PivotCase[]
+    for (const c of cases) {
       const ours = await predictedAreas(c)
       for (const [key, got] of Object.entries(answers.answers[c.id].phases.at(-1)!.pivots)) {
         const want = OWN[c.id] ?? ('error' in got ? null : excelAreas(got))
@@ -59,10 +60,11 @@ describe.each(SETS)('the areas of the pivot tables of the set %s', (set) => {
       }
     }
     expect(misses).toEqual([])
-    expect(compared).toBe(83)
+    // every case, a saved book with two pivot tables twice
+    expect(compared).toBeGreaterThanOrEqual(cases.length)
   })
 
-  it.each(Object.keys(OWN))('%s: Excel names no header rows, its DataBodyRange is the data', (id) => {
+  it.each(Object.keys(OWN).filter((id) => answers.answers[id]))('%s: Excel names no header rows, its DataBodyRange is the data', (id) => {
     const got = answers.answers[id].phases.at(-1)!.pivots.PT1
     if ('error' in got) expect(got.error).toContain('null-valued')
     else expect([got.rows, got.columns, got.body]).toEqual(['', '', OWN[id].data])

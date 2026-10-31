@@ -10,7 +10,15 @@ import { describe, expect, it } from 'vitest'
 import { predictedAlert, type AlertPrediction } from '../bench/coverage/pivot/alerts-predict.js'
 import type { PivotAnswer, PivotCase, PivotSet } from '../bench/coverage/pivot/cases.js'
 
-const SETS = ['alerts', 'alerts-clear']
+const SETS = ['alerts', 'alerts-clear', 'alerts-held']
+
+/**
+ * Where the engine knowingly parts from Excel: text set through the object model over a range whose first cell is
+ * outside a pivot table and the rest over it (`Formula2` over `A3:B5`, `A3` the blank row under its filters) leaves
+ * every cell as it was, without an error; `fillCellText` with its active cell there refuses it (`part`), as the
+ * interface's Ctrl+Enter there is not measured.
+ */
+const KNOWN: Record<string, string> = { 'typed-first-outside': 'part' }
 
 /** Excel's alert by its text, as `reason` names it; another alert of its own as `own`. */
 function alertOf(error: string): string {
@@ -36,7 +44,7 @@ describe.each(SETS)('the alerts of the set %s', (set) => {
       const after = answers.answers[c.id].phases.at(-1)!
       const error = after.errors?.find((e) => e.startsWith('op '))
       const pivots = Object.fromEntries(Object.entries(after.pivots).flatMap(([k, v]) => ('error' in v ? [] : [[k, v.values]])))
-      const want = error ? alertOf(error) : c.watch ? { pivots, cells: after.cells } : pivots
+      const want = KNOWN[c.id] ?? (error ? alertOf(error) : c.watch ? { pivots, cells: after.cells } : pivots)
       const got = ours(await predictedAlert(c))
       if (JSON.stringify(got) !== JSON.stringify(want)) misses.push(`${c.id}: ours ${JSON.stringify(got)}, Excel ${JSON.stringify(want)}`)
     }
