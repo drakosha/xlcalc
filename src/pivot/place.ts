@@ -3,7 +3,7 @@
  * checked first, then the old areas cleared and the new cells written, the definitions with their new layout and place.
  */
 import type { BookInput, AlignmentStyle, CellInput, PivotTable, SheetInput } from '../contract.js'
-import { CONTENT, holds } from '../array-areas.js'
+import { CONTENT, holds, withoutContent } from '../array-areas.js'
 import { dateToSerial } from '../date-serial.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
@@ -106,9 +106,8 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     if (p.replace)
       for (const part of pivotParts({ location: p.laid.location }))
         for (const [addr, c] of cellsIn(cells, part)) {
-          const rest = { ...c }
-          for (const k of CONTENT) delete rest[k]
-          if (Object.keys(rest).length) cells[addr] = rest
+          const rest = withoutContent(c)
+          if (rest) cells[addr] = rest
           else delete cells[addr]
         }
     const old = sheet.pivotTables![p.at].location.range.split(':')[0]

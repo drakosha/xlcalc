@@ -20,6 +20,13 @@ export const holds = (c: CellInput | undefined) => c !== undefined && (c.formula
 /** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
 export const CONTENT = ['value', 'formula', 'array', 'held'] as const
 
+/** A cell without its content, as Clear Contents leaves it (its format, style, note kept); undefined when nothing is left. */
+export function withoutContent(c: CellInput): CellInput | undefined {
+  const rest = { ...c }
+  for (const k of CONTENT) delete rest[k]
+  return Object.keys(rest).length ? rest : undefined
+}
+
 /** The two areas cross, as Excel never lets array formulas do: the text of the refusal; null when they do not meet. */
 export const crossing = (x: Rect, top: string, y: Rect, other: string): string | null =>
   meets(x, y) ? `the area of the array formula at ${top} (${cornersText(x)}) overlaps the area of the array formula at ${other} (${cornersText(y)})` : null

@@ -4,8 +4,8 @@
  * PivotTable shows, `xlcalc/pivot` lays it out again when loaded (`pivot/hook.ts`); without it, the PivotTable keeps its
  * cells and its cache is marked `stale`, which a file asks Excel to refresh on opening.
  */
-import type { BookInput, CellInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, SheetInput, StructureOp } from '../contract.js'
-import { CONTENT } from '../array-areas.js'
+import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, SheetInput, StructureOp } from '../contract.js'
+import { withoutContent } from '../array-areas.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
@@ -182,9 +182,8 @@ function emptied(sheet: SheetInput, x: Rect): SheetInput {
   for (const [a, cell] of Object.entries(cells)) {
     const { row, col } = parseAddress(a)
     if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
-    const rest: CellInput = { ...cell }
-    for (const k of CONTENT) delete rest[k]
-    if (Object.keys(rest).length) cells[a] = rest
+    const rest = withoutContent(cell)
+    if (rest) cells[a] = rest
     else delete cells[a]
   }
   const merges = sheet.merges?.filter((m) => !meets(x, parseRange(m)!))
