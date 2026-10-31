@@ -234,9 +234,10 @@ function Pivot($xl, $wb, $s) {
       'slicer' {
         $pt = PTable $wb $s
         $sc = $wb.SlicerCaches.Add2($pt, [string]$s.field, [string]$s.name, [int]$s.kind)
-        # without a place (auto) where Excel puts it
-        if ($s.auto) { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, [string]$s.name, [string]$s.field) }
-        else { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, [string]$s.name, [string]$s.field, 10, 400, 150, 200) }
+        # without a place (auto) where Excel puts it; the slicer's own name (named) apart from its cache's
+        $own = if ($null -ne $s.named) { [string]$s.named } else { [string]$s.name }
+        if ($s.auto) { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, $own, [string]$s.field) }
+        else { [void]$sc.Slicers.Add($wb.Worksheets.Item([string]$s.at), [Type]::Missing, $own, [string]$s.field, 10, 400, 150, 200) }
         foreach ($o in $s.also) { $sc.PivotTables.AddPivotTable($wb.Worksheets.Item([string]$o[0]).PivotTables([string]$o[1])) }
         Str ([string]$sc.Name)
       }

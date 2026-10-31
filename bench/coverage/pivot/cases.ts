@@ -142,8 +142,8 @@ export type PivotOp = (
   /** Items collapsed (`ShowDetail` false), or every item of the field; `expand` shows them again. */
   | { collapse: string; items: string[] | 'all'; expand?: boolean }
   | { ungroup: string }
-  /** A slicer on a field, on the sheet `on` (`P` by default), over the pivot tables named besides `pt`; where Excel puts it without a place (`auto`). */
-  | { slicer: string; name: string; pivots?: string[]; on?: string; auto?: boolean }
+  /** A slicer on a field, on the sheet `on` (`P` by default), over the pivot tables named besides `pt`; where Excel puts it without a place (`auto`); the slicer named `slicerName` apart from its cache `name`. */
+  | { slicer: string; name: string; pivots?: string[]; on?: string; auto?: boolean; slicerName?: string }
   /** A slicer's or a timeline's properties read by its name (`Slicer.Name`, `Top`), and each of its cache's items' (`SlicerItem.Caption`), as the operation's result. */
   | { slicerGet: string; get?: string[]; items?: string[] }
   /** A slicer's or a timeline's property set by its name (`Slicer.Name`, `Caption`, `Locked`, `DisableMoveResizeUI`, `Top`, `Width`). */
