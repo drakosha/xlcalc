@@ -16,7 +16,7 @@ import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
-import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, given, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
 import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
@@ -213,21 +213,22 @@ export const SHEET_STATES = new Map<true | 'very', string>([
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
-  if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
-  if (book.font !== undefined) {
-    const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
-    onlyKeys(f, `${path}.font`, ['name', 'size'])
-    if (checkString(f.name, `${path}.font.name`) === '') throw new InputError(`${path}.font.name`, 'expected the name of a font, got an empty string')
-    checkNumber(f.size, `${path}.font.size`, 1, 409)
-  }
-  if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (book.calculation !== undefined) checkOneOf(book.calculation, `${path}.calculation`, ['manual', 'autoNoTable'])
-  if (book.iteration !== undefined) {
-    const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
-    onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])
-    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, ...ITERATION.maxIterations, true)
-    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, ...ITERATION.maxChange)
-  }
+  given(book, path, {
+    locale: checkBookLocale,
+    font: (x, p) => {
+      const f = object(x, p, "a font such as { name: 'Arial', size: 10 }")
+      onlyKeys(f, p, ['name', 'size'])
+      if (checkString(f.name, `${p}.name`) === '') throw new InputError(`${p}.name`, 'expected the name of a font, got an empty string')
+      checkNumber(f.size, `${p}.size`, 1, 409)
+    },
+    dateSystem: (x, p) => checkOneOf(x, p, DATE_SYSTEMS),
+    calculation: (x, p) => checkOneOf(x, p, ['manual', 'autoNoTable']),
+    iteration: (x, p) => {
+      const it = object(x, p, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
+      onlyKeys(it, p, ['maxIterations', 'maxChange'])
+      given(it, p, { maxIterations: (y, q) => checkNumber(y, q, ...ITERATION.maxIterations, true), maxChange: (y, q) => checkNumber(y, q, ...ITERATION.maxChange) })
+    },
+  })
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a look alone (into the sheet's looks)
@@ -259,19 +260,21 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
       if (lookAlone(cell as CellInput)) (alone[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
-    if (sheet.looks !== undefined) checkLooks(sheet.looks, `${p}.looks`, styles)
-    if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
-    if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
-    if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
-    if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
-    if (sheet.autoFilter !== undefined) checkAutoFilter(sheet.autoFilter, `${p}.autoFilter`)
-    if (sheet.view !== undefined) checkSheetView(sheet.view, `${p}.view`)
-    if (sheet.tabColor !== undefined) checkColor(sheet.tabColor, `${p}.tabColor`)
-    if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
-    if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
-    if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
-    if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
-    if (sheet.protection !== undefined) checkSheetProtection(sheet.protection, `${p}.protection`)
+    given(sheet, p, {
+      looks: (x, q) => checkLooks(x, q, styles),
+      columns: (x, q) => checkLines(x, q, 'c', styles),
+      rows: (x, q) => checkLines(x, q, 'r', styles),
+      merges: checkMerges,
+      filtered: checkBoolean,
+      autoFilter: checkAutoFilter,
+      view: checkSheetView,
+      tabColor: checkColor,
+      frozen: checkFrozen,
+      conditionalFormats: checkConditionalFormats,
+      validations: checkValidations,
+      outline: checkOutline,
+      protection: checkSheetProtection,
+    })
     if (sheet.hidden !== undefined && sheet.hidden !== false && !SHEET_STATES.has(sheet.hidden as true)) throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
   // Excel keeps one visible sheet at least
@@ -282,8 +285,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     const active = (book.sheets as BookInput['sheets']).find((s) => sheetKey(s.name) === sheetKey(name))
     if (!active || active.hidden) throw new InputError(`${path}.activeSheet`, 'expected the name of a visible sheet of the workbook')
   }
-  if (book.names !== undefined) checkNames(book.names, `${path}.names`)
-  if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
+  given(book, path, { names: checkNames, externalBooks: checkExternalBooks })
   checkTables(book as unknown as BookInput, path)
   checkPivots(book, path)
   const out = bookTaken(book as unknown as BookInput, taken)

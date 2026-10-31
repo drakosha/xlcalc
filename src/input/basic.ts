@@ -6,6 +6,14 @@
 import { InputError, what } from '../input-error.js'
 import { optionHint } from '../strict-args.js'
 
+/** A check of a value at its path, which refuses with `InputError`. */
+export type Check = (v: unknown, path: string) => void
+
+/** The fields of `o` that are given, each checked in turn by its check in `checks`. */
+export function given(o: Record<string, unknown>, path: string, checks: Record<string, Check>) {
+  for (const k in checks) if (o[k] !== undefined) checks[k](o[k], `${path}.${k}`)
+}
+
 /** A plain object: not null, not an array. */
 export const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
