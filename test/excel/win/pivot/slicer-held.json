@@ -1,0 +1,3592 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 29.8
+ },
+ "cases": [
+  {
+   "id": "page-field",
+   "data": "stock",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    },
+    {
+     "select": "Slicer_Product",
+     "items": [
+      "Fig",
+      "Pear"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "page-field-one",
+   "data": "stock",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "page": "Product",
+     "items": [
+      "Plum"
+     ]
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    }
+   ]
+  },
+  {
+   "id": "off-axes",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Code",
+     "name": "Slicer_Code"
+    },
+    {
+     "select": "Slicer_Code",
+     "items": [
+      "25"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "off-axes-text-number",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Code",
+     "name": "Slicer_Code"
+    },
+    {
+     "select": "Slicer_Code",
+     "items": [
+      "15"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "two-pivots",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "slicer": "Flag",
+     "name": "Slicer_Flag",
+     "pivots": [
+      "PT2"
+     ]
+    },
+    {
+     "select": "Slicer_Flag",
+     "items": [
+      "FALSE"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "two-slicers-cross",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region",
+     "pivots": [
+      "PT2"
+     ]
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product",
+     "pivots": [
+      "PT2"
+     ]
+    },
+    {
+     "select": "Slicer_Product",
+     "items": [
+      "7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sort-descending",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "slicerSettings": "Slicer_Region",
+     "order": "descending"
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "North",
+      "east"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sort-source",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    },
+    {
+     "slicerSettings": "Slicer_Product",
+     "order": "source"
+    }
+   ]
+  },
+  {
+   "id": "no-data-hidden",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    },
+    {
+     "slicerSettings": "Slicer_Region",
+     "noData": "hidden"
+    },
+    {
+     "select": "Slicer_Product",
+     "items": [
+      "7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "no-data-none",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    },
+    {
+     "slicerSettings": "Slicer_Region",
+     "noData": "none"
+    },
+    {
+     "select": "Slicer_Product",
+     "items": [
+      "7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "no-data-dimmed",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "slicer": "Product",
+     "name": "Slicer_Product"
+    },
+    {
+     "slicerSettings": "Slicer_Region",
+     "noData": "dimmed"
+    },
+    {
+     "select": "Slicer_Product",
+     "items": [
+      "7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "connect",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "South"
+     ]
+    },
+    {
+     "read": true
+    },
+    {
+     "link": "Slicer_Region",
+     "pivot": "PT2"
+    }
+   ]
+  },
+  {
+   "id": "disconnect",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region",
+     "pivots": [
+      "PT2"
+     ]
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "South"
+     ]
+    },
+    {
+     "read": true
+    },
+    {
+     "link": "Slicer_Region",
+     "pivot": "PT2",
+     "off": true
+    },
+    {
+     "read": true
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "timeline-years",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date",
+     "from": 45658,
+     "to": 46022,
+     "level": "years"
+    }
+   ]
+  },
+  {
+   "id": "timeline-months-two",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "create": "PT2",
+     "at": "P!E3"
+    },
+    {
+     "rows": [
+      "Product"
+     ],
+     "pt": "PT2"
+    },
+    {
+     "value": {
+      "field": "Price"
+     },
+     "pt": "PT2"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date",
+     "from": 45323,
+     "to": 45535,
+     "level": "months"
+    },
+    {
+     "link": "Timeline_Date",
+     "pivot": "PT2"
+    }
+   ]
+  },
+  {
+   "id": "timeline-one-day",
+   "data": "stock",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date",
+     "from": 45769,
+     "to": 45769,
+     "level": "days"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "page-field": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 0cd34c24ecf23ea8",
+  "page-field-one": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 10d170f7f700c38a",
+  "off-axes": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 a2060a48a1b588c2",
+  "off-axes-text-number": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 7719407afb61baf5",
+  "two-pivots": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 705cf6139b6bdd5d",
+  "two-slicers-cross": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 735f93ee8bfec45a",
+  "sort-descending": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 227f88b065a2e197",
+  "sort-source": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 b96ba6ea6de629b9",
+  "no-data-hidden": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 feeda5c7c340b95a",
+  "no-data-none": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 6895657b6a2c8337",
+  "no-data-dimmed": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 00541977dbdbc45c",
+  "connect": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 71bf883bc43730c3",
+  "disconnect": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 5ab32ec57c909481",
+  "timeline-years": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 60c13417e61ca6b9",
+  "timeline-months-two": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 3431258073ecbbde",
+  "timeline-one-day": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 f3abbf41478cc249"
+ },
+ "answers": {
+  "page-field": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Product",
+         "(Multiple Items)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         17
+        ],
+        [
+         "east",
+         33
+        ],
+        [
+         "North",
+         23
+        ],
+        [
+         "South",
+         15
+        ],
+        [
+         "West",
+         42
+        ],
+        [
+         "Grand Total",
+         130
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "(Multiple Items)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "17"
+        ],
+        [
+         "east",
+         "33"
+        ],
+        [
+         "North",
+         "23"
+        ],
+        [
+         "South",
+         "15"
+        ],
+        [
+         "West",
+         "42"
+        ],
+        [
+         "Grand Total",
+         "130"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty",
+      "op 3": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Product": [
+       [
+        "7",
+        false,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        true,
+        true
+       ],
+       [
+        "Pear",
+        true,
+        true
+       ],
+       [
+        "Plum",
+        false,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "page-field-one": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A1:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Product",
+         "Plum"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         14
+        ],
+        [
+         "east",
+         5
+        ],
+        [
+         "North",
+         1
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         27
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         62
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "Plum"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "14"
+        ],
+        [
+         "east",
+         "5"
+        ],
+        [
+         "North",
+         "1"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "27"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "62"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty",
+      "op 4": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Product": [
+       [
+        "7",
+        false,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        false,
+        true
+       ],
+       [
+        "Pear",
+        false,
+        true
+       ],
+       [
+        "Plum",
+        true,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "off-axes": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         12
+        ],
+        [
+         "east",
+         12
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         36
+        ],
+        [
+         "Grand Total",
+         71
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "12"
+        ],
+        [
+         "east",
+         "12"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "36"
+        ],
+        [
+         "Grand Total",
+         "71"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Code"
+     },
+     "slicers": {
+      "Slicer_Code": [
+       [
+        "5",
+        false,
+        true
+       ],
+       [
+        "15",
+        false,
+        true
+       ],
+       [
+        "25",
+        true,
+        true
+       ],
+       [
+        "35",
+        false,
+        true
+       ],
+       [
+        "15",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "off-axes-text-number": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         9
+        ],
+        [
+         "east",
+         10
+        ],
+        [
+         "North",
+         11
+        ],
+        [
+         "South",
+         17
+        ],
+        [
+         "West",
+         19
+        ],
+        [
+         "Grand Total",
+         66
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "9"
+        ],
+        [
+         "east",
+         "10"
+        ],
+        [
+         "North",
+         "11"
+        ],
+        [
+         "South",
+         "17"
+        ],
+        [
+         "West",
+         "19"
+        ],
+        [
+         "Grand Total",
+         "66"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Code"
+     },
+     "slicers": {
+      "Slicer_Code": [
+       [
+        "5",
+        false,
+        true
+       ],
+       [
+        "15",
+        true,
+        true
+       ],
+       [
+        "25",
+        false,
+        true
+       ],
+       [
+        "35",
+        false,
+        true
+       ],
+       [
+        "15",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "two-pivots": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         10
+        ],
+        [
+         "east",
+         18
+        ],
+        [
+         "North",
+         11
+        ],
+        [
+         "South",
+         28
+        ],
+        [
+         "West",
+         25
+        ],
+        [
+         "Grand Total",
+         92
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "10"
+        ],
+        [
+         "east",
+         "18"
+        ],
+        [
+         "North",
+         "11"
+        ],
+        [
+         "South",
+         "28"
+        ],
+        [
+         "West",
+         "25"
+        ],
+        [
+         "Grand Total",
+         "92"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F8",
+       "area": "E3:F8",
+       "body": "F4:F8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         28.29
+        ],
+        [
+         "Fig",
+         87.72999999999999
+        ],
+        [
+         "Pear",
+         130.2
+        ],
+        [
+         "Plum",
+         78.89999999999999
+        ],
+        [
+         "Grand Total",
+         325.11999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         "28.29"
+        ],
+        [
+         "Fig",
+         "87.73"
+        ],
+        [
+         "Pear",
+         "130.2"
+        ],
+        [
+         "Plum",
+         "78.9"
+        ],
+        [
+         "Grand Total",
+         "325.12"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price",
+      "op 5": "Slicer_Flag"
+     },
+     "slicers": {
+      "Slicer_Flag": [
+       [
+        "FALSE",
+        true,
+        true
+       ],
+       [
+        "TRUE",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "two-slicers-cross": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Grand Total",
+         5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F5",
+       "area": "E3:F5",
+       "body": "F4:F5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price",
+      "op 5": "Slicer_Region",
+      "op 6": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "Central",
+        true,
+        false
+       ],
+       [
+        "east",
+        true,
+        false
+       ],
+       [
+        "North",
+        true,
+        false
+       ],
+       [
+        "South",
+        true,
+        false
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Slicer_Product": [
+       [
+        "7",
+        true,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        false,
+        true
+       ],
+       [
+        "Pear",
+        false,
+        true
+       ],
+       [
+        "Plum",
+        false,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "sort-descending": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "Grand Total",
+         92
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "Grand Total",
+         "92"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Region"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "(blank)",
+        false,
+        true
+       ],
+       [
+        "West",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "east",
+        true,
+        true
+       ],
+       [
+        "Central",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "sort-source": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         42
+        ],
+        [
+         "east",
+         65
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         290
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "42"
+        ],
+        [
+         "east",
+         "65"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "290"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Product"
+     },
+     "errors": [
+      "op 3: -2147024809 Value does not fall within the expected range."
+     ],
+     "slicers": {
+      "Slicer_Product": [
+       [
+        "7",
+        true,
+        true
+       ],
+       [
+        "Apple",
+        true,
+        true
+       ],
+       [
+        "Fig",
+        true,
+        true
+       ],
+       [
+        "Pear",
+        true,
+        true
+       ],
+       [
+        "Plum",
+        true,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "no-data-hidden": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Grand Total",
+         5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Region",
+      "op 3": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "Central",
+        true,
+        false
+       ],
+       [
+        "east",
+        true,
+        false
+       ],
+       [
+        "North",
+        true,
+        false
+       ],
+       [
+        "South",
+        true,
+        false
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Slicer_Product": [
+       [
+        "7",
+        true,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        false,
+        true
+       ],
+       [
+        "Pear",
+        false,
+        true
+       ],
+       [
+        "Plum",
+        false,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "no-data-none": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Grand Total",
+         5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Region",
+      "op 3": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        true,
+        false
+       ],
+       [
+        "east",
+        true,
+        false
+       ],
+       [
+        "North",
+        true,
+        false
+       ],
+       [
+        "South",
+        true,
+        false
+       ],
+       [
+        "West",
+        true,
+        false
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Slicer_Product": [
+       [
+        "7",
+        true,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        false,
+        true
+       ],
+       [
+        "Pear",
+        false,
+        true
+       ],
+       [
+        "Plum",
+        false,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "no-data-dimmed": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         5
+        ],
+        [
+         "Grand Total",
+         5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": "Slicer_Region",
+      "op 3": "Slicer_Product"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        true,
+        false
+       ],
+       [
+        "east",
+        true,
+        false
+       ],
+       [
+        "North",
+        true,
+        false
+       ],
+       [
+        "South",
+        true,
+        false
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Slicer_Product": [
+       [
+        "7",
+        true,
+        true
+       ],
+       [
+        "Apple",
+        false,
+        true
+       ],
+       [
+        "Fig",
+        false,
+        true
+       ],
+       [
+        "Pear",
+        false,
+        true
+       ],
+       [
+        "Plum",
+        false,
+        true
+       ],
+       [
+        "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "connect": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "Grand Total",
+         54
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "Grand Total",
+         "54"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F10",
+       "area": "E3:F10",
+       "body": "F4:F10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         null
+        ],
+        [
+         "Apple",
+         185.06
+        ],
+        [
+         "Fig",
+         244.48999999999998
+        ],
+        [
+         "Pear",
+         217.14000000000001
+        ],
+        [
+         "Plum",
+         244.61
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         78.19999999999999
+        ],
+        [
+         "Grand Total",
+         969.5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         ""
+        ],
+        [
+         "Apple",
+         "185.06"
+        ],
+        [
+         "Fig",
+         "244.49"
+        ],
+        [
+         "Pear",
+         "217.14"
+        ],
+        [
+         "Plum",
+         "244.61"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "78.2"
+        ],
+        [
+         "Grand Total",
+         "969.5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price",
+      "op 5": "Slicer_Region"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        false,
+        true
+       ],
+       [
+        "east",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        false,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        true
+       ]
+      ]
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "Grand Total",
+         54
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "Grand Total",
+         "54"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F9",
+       "area": "E3:F9",
+       "body": "F4:F9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         42.769999999999996
+        ],
+        [
+         "Fig",
+         4.32
+        ],
+        [
+         "Pear",
+         46.85
+        ],
+        [
+         "Plum",
+         45.99
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         58.65
+        ],
+        [
+         "Grand Total",
+         198.58
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         "42.77"
+        ],
+        [
+         "Fig",
+         "4.32"
+        ],
+        [
+         "Pear",
+         "46.85"
+        ],
+        [
+         "Plum",
+         "45.99"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "58.65"
+        ],
+        [
+         "Grand Total",
+         "198.58"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        false,
+        true
+       ],
+       [
+        "east",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        false,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "disconnect": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "Grand Total",
+         54
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "Grand Total",
+         "54"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F9",
+       "area": "E3:F9",
+       "body": "F4:F9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         42.769999999999996
+        ],
+        [
+         "Fig",
+         4.32
+        ],
+        [
+         "Pear",
+         46.85
+        ],
+        [
+         "Plum",
+         45.99
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         58.65
+        ],
+        [
+         "Grand Total",
+         198.58
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         "42.77"
+        ],
+        [
+         "Fig",
+         "4.32"
+        ],
+        [
+         "Pear",
+         "46.85"
+        ],
+        [
+         "Plum",
+         "45.99"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "58.65"
+        ],
+        [
+         "Grand Total",
+         "198.58"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price",
+      "op 5": "Slicer_Region"
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        false,
+        true
+       ],
+       [
+        "east",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        false,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        true
+       ]
+      ]
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         54
+        ],
+        [
+         "Grand Total",
+         54
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "South",
+         "54"
+        ],
+        [
+         "Grand Total",
+         "54"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F10",
+       "area": "E3:F10",
+       "body": "F4:F10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         null
+        ],
+        [
+         "Apple",
+         185.06
+        ],
+        [
+         "Fig",
+         244.48999999999998
+        ],
+        [
+         "Pear",
+         217.14000000000001
+        ],
+        [
+         "Plum",
+         244.61
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         78.19999999999999
+        ],
+        [
+         "Grand Total",
+         969.5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         ""
+        ],
+        [
+         "Apple",
+         "185.06"
+        ],
+        [
+         "Fig",
+         "244.49"
+        ],
+        [
+         "Pear",
+         "217.14"
+        ],
+        [
+         "Plum",
+         "244.61"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "78.2"
+        ],
+        [
+         "Grand Total",
+         "969.5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        false,
+        true
+       ],
+       [
+        "east",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        false,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        true
+       ]
+      ]
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         98
+        ],
+        [
+         "Grand Total",
+         98
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "West",
+         "98"
+        ],
+        [
+         "Grand Total",
+         "98"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F10",
+       "area": "E3:F10",
+       "body": "F4:F10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         null
+        ],
+        [
+         "Apple",
+         185.06
+        ],
+        [
+         "Fig",
+         244.48999999999998
+        ],
+        [
+         "Pear",
+         217.14000000000001
+        ],
+        [
+         "Plum",
+         244.61
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         78.19999999999999
+        ],
+        [
+         "Grand Total",
+         969.5
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         ""
+        ],
+        [
+         "Apple",
+         "185.06"
+        ],
+        [
+         "Fig",
+         "244.49"
+        ],
+        [
+         "Pear",
+         "217.14"
+        ],
+        [
+         "Plum",
+         "244.61"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "78.2"
+        ],
+        [
+         "Grand Total",
+         "969.5"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "Central",
+        false,
+        true
+       ],
+       [
+        "east",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  "timeline-years": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         17
+        ],
+        [
+         "east",
+         32
+        ],
+        [
+         "North",
+         27
+        ],
+        [
+         "South",
+         27
+        ],
+        [
+         "West",
+         41
+        ],
+        [
+         "(blank)",
+         4
+        ],
+        [
+         "Grand Total",
+         148
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "17"
+        ],
+        [
+         "east",
+         "32"
+        ],
+        [
+         "North",
+         "27"
+        ],
+        [
+         "South",
+         "27"
+        ],
+        [
+         "West",
+         "41"
+        ],
+        [
+         "(blank)",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "148"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": {
+       "e": 0
+      }
+     },
+     "slicers": {
+      "Timeline_Date": {
+       "timeline": [
+        45658,
+        46022,
+        0
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "timeline-months-two": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         16
+        ],
+        [
+         "east",
+         18
+        ],
+        [
+         "South",
+         12
+        ],
+        [
+         "West",
+         32
+        ],
+        [
+         "Grand Total",
+         78
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "Central",
+         "16"
+        ],
+        [
+         "east",
+         "18"
+        ],
+        [
+         "South",
+         "12"
+        ],
+        [
+         "West",
+         "32"
+        ],
+        [
+         "Grand Total",
+         "78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      },
+      "PT2": {
+       "table": "E3:F10",
+       "area": "E3:F10",
+       "body": "F4:F10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         null
+        ],
+        [
+         "Apple",
+         57.89
+        ],
+        [
+         "Fig",
+         86.08
+        ],
+        [
+         "Pear",
+         55.519999999999996
+        ],
+        [
+         "Plum",
+         15.459999999999999
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         12.01
+        ],
+        [
+         "Grand Total",
+         226.96
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "7",
+         ""
+        ],
+        [
+         "Apple",
+         "57.89"
+        ],
+        [
+         "Fig",
+         "86.08"
+        ],
+        [
+         "Pear",
+         "55.52"
+        ],
+        [
+         "Plum",
+         "15.46"
+        ],
+        [
+         "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+         "12.01"
+        ],
+        [
+         "Grand Total",
+         "226.96"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 4": "Sum of Price",
+      "op 5": {
+       "e": 0
+      }
+     },
+     "slicers": {
+      "Timeline_Date": {
+       "timeline": [
+        45323,
+        45535,
+        2
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "timeline-one-day": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45769,
+         24
+        ],
+        [
+         "Grand Total",
+         24
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "4/22/2025",
+         "24"
+        ],
+        [
+         "Grand Total",
+         "24"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty",
+      "op 2": {
+       "e": 0
+      }
+     },
+     "slicers": {
+      "Timeline_Date": {
+       "timeline": [
+        45769,
+        45769,
+        3
+       ]
+      }
+     }
+    }
+   ]
+  }
+ }
+}
