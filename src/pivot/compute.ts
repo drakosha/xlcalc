@@ -224,7 +224,8 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   /** A field's value at a cell: its sum, or a calculated field's formula over the values of the fields it names. */
   const fieldValue = (rows: readonly number[], columns: readonly number[], field: number): CellValue => {
     const t = formulas.get(field)
-    if (!t) return measure(rows, columns, sumAt.get(field)!, 'sum')
+    // a field with no number at the cell is 0 (the set calc-held: MIN(Price,10*Qty) over no price is 0)
+    if (!t) return measure(rows, columns, sumAt.get(field)!, 'sum') ?? 0
     // every cell of the rows and columns shown, one no record reaches too (its sums blank)
     if (!reached(rows, columns)) return null
     return batch.get(t.text, t.args.map((f) => fieldValue(rows, columns, f)))

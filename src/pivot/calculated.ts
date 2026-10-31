@@ -112,7 +112,8 @@ function union(bs: readonly Branch[]): Branch {
 
 /**
  * The calculated items of the axis's fields `real` put under every item of the field before, shown ones only: each
- * last among them, with the items under the ones it names below it.
+ * last among them, with every item under the field's other items below it (the set calc-held: `7`, under West alone,
+ * under North+South too).
  */
 export function withCalculatedItems(root: Branch, real: readonly number[], items: ReadonlyMap<number, Map<number, Template<number>>>, shown: readonly (boolean[] | undefined)[]): void {
   const walk = (b: Branch, level: number) => {
@@ -121,9 +122,9 @@ export function withCalculatedItems(root: Branch, real: readonly number[], items
     const own = items.get(f)
     for (const n of b.next.values()) walk(n, level + 1)
     if (!own) return
-    for (const [p, t] of own) {
+    for (const p of own.keys()) {
       if (!(shown[f]?.[p] ?? true) || b.next.has(p)) continue
-      b.next.set(p, union(t.args.flatMap((q) => (b.next.has(q) ? [b.next.get(q)!] : []))))
+      b.next.set(p, union([...b.next].flatMap(([q, n]) => (own.has(q) ? [] : [n]))))
       b.order.push(p)
     }
   }

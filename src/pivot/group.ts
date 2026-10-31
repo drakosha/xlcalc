@@ -37,7 +37,8 @@ function inner(range: Range, s: number, e: number): { count: number; place: (x: 
     }
     case 'days': {
       if (i > 1) {
-        const n = groups(Math.floor(e) - Math.floor(s) + 1, i)
+        // as many groups as whole intervals reach the end, the last cut short at it (the set group-held: 546 days by 14 are 39)
+        const n = groups(Math.floor(e) - Math.floor(s), i)
         return { count: n, place: (x) => Math.min(n - 1, Math.floor((Math.floor(x) - Math.floor(s)) / i)) }
       }
       return { count: 366, place: (x) => { const { m, d } = ymd(x); return BEFORE[m - 1] + d - 1 } }
@@ -105,7 +106,8 @@ export function rangeLabels(range: Range, blank: boolean, integer: boolean, epoc
         return `:${String(k).padStart(2, '0')}`
     }
   }
-  const first = range.by === 'numbers' ? (blank ? '(blank)' : `<${g(s)}`) : `<${dayText(s)}`
+  // a blank shares the first group with the values before a start of one's own (the set group-held: `<10 or (blank)`)
+  const first = range.by === 'numbers' ? (blank ? (range.autoStart === false ? `<${g(s)} or (blank)` : '(blank)') : `<${g(s)}`) : `<${dayText(s)}`
   const last = range.by === 'numbers' ? `>${g(s + groups(e - s, i) * i)}` : `>${dayText(e)}`
   return [first, ...Array.from({ length: count }, (_, k) => at(k)), last]
 }
