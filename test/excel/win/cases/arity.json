@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 14.6,
+  "seconds": 14.9,
   "dynamic": true
  },
  "cases": [
@@ -406,6 +406,12 @@
    "group": "STOCKHISTORY",
    "fn": "STOCKHISTORY",
    "formula": "IF(FALSE,_xlfn.STOCKHISTORY(\"MSFT\",45658,45688,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),0)"
+  },
+  {
+   "id": "GETPIVOTDATA:254",
+   "group": "GETPIVOTDATA",
+   "fn": "GETPIVOTDATA",
+   "formula": "GETPIVOTDATA(\"Sum of Price\",D!B1,\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\",\"Region\")"
   }
  ],
  "values": {
@@ -672,6 +678,10 @@
   "STOCKHISTORY:254": {
    "t": "n",
    "v": 0
+  },
+  "GETPIVOTDATA:254": {
+   "t": "e",
+   "v": "REF"
   }
  }
 }
