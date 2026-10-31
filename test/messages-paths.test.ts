@@ -17,13 +17,14 @@ import { placePivots } from '../src/pivot/place.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
-import { say, type EngineMessage, type MessageKey } from '../src/locale/messages.js'
+import { PIVOT_MESSAGES, sayPivot } from '../src/locale/pivot-messages.js'
+import type { EngineMessage, MessageKey } from '../src/locale/messages.js'
 import { closedAfter, pool } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
-const ru = (m: EngineMessage) => say('ru-RU', m)
-const en = (m: EngineMessage) => say('en-US', m)
+const ru = (m: EngineMessage) => sayPivot('ru-RU', m)
+const en = (m: EngineMessage) => sayPivot('en-US', m)
 /** ru-RU's formula text without messages of its own: English messages, the same places. */
 const english: Locale = { ...ruRU, tag: 'xx-YY', messages: undefined }
 
@@ -486,5 +487,5 @@ describe('PivotTables', () => {
 })
 
 it('the cases reach every message of the catalog but the rules of names and a group not loaded', () => {
-  expect([...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES)].filter((k) => !reached.has(k as MessageKey))).toEqual(['functionNotLoaded', 'nameRule'])
+  expect([...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(PIVOT_MESSAGES)].filter((k) => !reached.has(k as MessageKey))).toEqual(['functionNotLoaded', 'nameRule'])
 })

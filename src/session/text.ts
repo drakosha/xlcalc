@@ -13,7 +13,7 @@ import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { mergedOf } from '../layout/merges.js'
 import { hasCell } from '../structure/area.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { parseAddress } from '../model.js'
 import { arrayPart } from '../spill/fixed.js'
 import { pivotPart } from '../pivot/part.js'
@@ -72,7 +72,7 @@ export function cellText(s: EngineState, i: number, r: number, c: number, own: C
 /** Why Excel would not take the edits: they change part of an array formula; null when it takes them. */
 export function arrayRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'array'> & CellRef) | null {
   const part = arrayPart(s, edits)
-  return part && { ok: false, code: 'array', message: say(s.input.locale, { key: 'arrayPart', ...part }), sheet: part.sheet, cell: part.cell }
+  return part && { ok: false, code: 'array', message: sayPivot(s.input.locale, { key: 'arrayPart', ...part }), sheet: part.sheet, cell: part.cell }
 }
 
 /** Why Excel would not take an entry into the cell: it puts a formula into a table's header cell; null when it takes it. */
@@ -81,13 +81,13 @@ export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'heade
   const i = sheetIndexOf(s, edit.sheet)!
   const { row, col } = parseAddress(edit.cell)
   const table = s.tables.list.find((t) => t.headers && t.s === i && t.r1 === row && col >= t.c1 && col <= t.c2)
-  return table ? { ok: false, code: 'header', message: say(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null
+  return table ? { ok: false, code: 'header', message: sayPivot(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null
 }
 
 /** Why Excel would not take the edits: they change a cell of a PivotTable's area; null when it takes them. */
 export function pivotRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'pivot'> & CellRef) | null {
   const part = pivotPart(s, edits)
-  return part && { ok: false, code: 'pivot', message: say(s.input.locale, { key: 'pivotPart', ...part }), sheet: part.sheet, cell: part.cell }
+  return part && { ok: false, code: 'pivot', message: sayPivot(s.input.locale, { key: 'pivotPart', ...part }), sheet: part.sheet, cell: part.cell }
 }
 
 /** Why Excel would not take an entry into the cell alone: it changes part of an array formula or a PivotTable's cell, or puts a formula into a table's header cell; null when it takes it. */
@@ -122,7 +122,7 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number, 
 }
 
 /** A rule's alert: its style (stop by default) and its message, the rule's own or else the library's in the book's locale. */
-const alertOf = (s: EngineState, rule: DataValidation) => ({ rule, severity: rule.errorStyle ?? 'stop', message: rule.error ?? say(s.input.locale, { key: 'validationError' }) })
+const alertOf = (s: EngineState, rule: DataValidation) => ({ rule, severity: rule.errorStyle ?? 'stop', message: rule.error ?? sayPivot(s.input.locale, { key: 'validationError' }) })
 
 /** The alert Excel shows for the value the cell holds now against its rule of data validation; none when it meets it, or when the rule shows no alert. */
 export function validationAlert(s: EngineState, i: number, r: number, c: number): ValidationAlert | undefined {

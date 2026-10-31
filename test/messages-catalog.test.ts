@@ -5,10 +5,11 @@
  */
 import { describe, expect, it } from 'vitest'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
-import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
+import { EDIT_MESSAGES, sayEdit } from '../src/locale/edit-messages.js'
+import { PIVOT_MESSAGES, sayPivot } from '../src/locale/pivot-messages.js'
 import { toLocal } from '../src/locale/index.js'
 import { ruRU } from './locales.js'
-import { CSV_MESSAGE_KEYS, KEPT_MESSAGE_KEYS, ownText, say, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+import { CSV_MESSAGE_KEYS, KEPT_MESSAGE_KEYS, ownText, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
 import type { XlsxMessage } from '../src/xlsx/issues.js'
 import { issueText, XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
 import { KEPT_SAMPLES, XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
@@ -170,7 +171,7 @@ const isXlsx = (m: Any): m is XlsxMessage => Object.hasOwn(XLSX_MESSAGE_KEYS, m.
 const isKept = (m: Any): m is KeptMessage => Object.hasOwn(KEPT_MESSAGE_KEYS, m.key)
 const isCsv = (m: Any): m is CsvMessage => Object.hasOwn(CSV_MESSAGE_KEYS, m.key)
 /** A message in English: en-US's of the engine, the xlsx and csv subpaths' of an issue, the xlsx/keep subpath's of a refusal. */
-const en = (m: Any) => (isXlsx(m) ? issueText('en-US', m) : isKept(m) ? keptText('en-US', m) : isCsv(m) ? csvText('en-US', m) : say('en-US', m))
+const en = (m: Any) => (isXlsx(m) ? issueText('en-US', m) : isKept(m) ? keptText('en-US', m) : isCsv(m) ? csvText('en-US', m) : sayPivot('en-US', m))
 const ru = (m: Any) => ownText('ru-RU', m, (f) => (toLocal(f, ruRU) as { formula: string }).formula)!
 
 /** The ways ru-RU writes a parameter's value: as it is, a function's or a specifier's name, a number, a formula. */
@@ -195,7 +196,7 @@ const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValu
 
 describe('the catalog of messages', () => {
   it("ru-RU writes every message of en-US and of the xlsx and csv subpaths, whose keys registerLocale takes", () => {
-    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES), ...Object.keys(KEPT_EN_MESSAGES), ...Object.keys(CSV_EN_MESSAGES)]
+    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(PIVOT_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES), ...Object.keys(KEPT_EN_MESSAGES), ...Object.keys(CSV_EN_MESSAGES)]
     expect(keys.filter((k) => ruRU.messages?.[k as MessageKey] === undefined)).toEqual([])
     expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
     expect(Object.keys(XLSX_MESSAGE_KEYS).sort()).toEqual(Object.keys(XLSX_EN_MESSAGES).sort())
@@ -241,9 +242,9 @@ describe('the catalog of messages', () => {
 
   it('a locale without its own text of a message takes the loaded locale\'s of its tag, else the English one', () => {
     const own = { ...ruRU, tag: 'xx-YY', messages: undefined }
-    expect(say(own, { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
-    expect(say('xx-YY', { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
-    expect(say({ ...ruRU, messages: undefined }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
-    expect(say({ ...ruRU, tag: 'xx-YY' }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
+    expect(sayEdit(own, { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
+    expect(sayEdit('xx-YY', { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
+    expect(sayEdit({ ...ruRU, messages: undefined }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
+    expect(sayEdit({ ...ruRU, tag: 'xx-YY' }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
   })
 })

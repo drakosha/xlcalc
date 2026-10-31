@@ -7,7 +7,8 @@
  * (`editPivotTable`); a value, an empty cell, a cleared label, a formula and a name already taken are refused.
  */
 import type { BookInput, CellInput, PivotAxisField, PivotFieldPatch, PivotTable, PivotTablePatch, Refusal, StructureOp } from '../contract.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { hasCell } from '../structure/area.js'
 import { sheetIndex } from '../structure/rewrite.js'
@@ -29,7 +30,7 @@ export function pivotEntry(book: BookInput, sheet: string, cell: string, input: 
   const cache = table && book.pivotCaches?.find((c) => c.id === table.cache)
   if (!table || !cache) return null
   const where = { sheet: sh.name, cell, pivot: table.name }
-  const refuse = (m: EngineMessage): PivotEntry => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
+  const refuse = (m: EngineMessage): PivotEntry => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
   const part = layoutPivot(savedResult(table, cache), book).cells.find((c) => formatAddress(c.row, c.col) === cell)?.part
   if (!part) return refuse({ key: 'pivotPart', ...where })
   if (input?.formula !== undefined) return refuse({ key: 'pivotFormula', ...where })

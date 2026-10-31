@@ -7,7 +7,7 @@ import type { BookInput, PivotCache, PivotRef, PivotTable } from '../contract.js
 import { caseKey } from '../collate.js'
 import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 import { computePivot } from './compute.js'
@@ -32,7 +32,7 @@ interface Spot {
   table: PivotTable
 }
 
-const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
+const refused = (book: BookInput, m: Parameters<typeof sayPivot>[1]): Applied => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
 
 export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource, blocked) => {
   const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table) => ({ s, table })))

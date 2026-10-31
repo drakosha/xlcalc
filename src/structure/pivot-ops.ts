@@ -11,7 +11,8 @@ import { checkSheetOf } from '../input.js'
 import { checkString, object, onlyKeys } from '../input/basic.js'
 import { pivotRefs } from '../input/pivot-refs.js'
 import { checkAddress } from '../input/range.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { pivotRefresh } from '../pivot/hook.js'
@@ -48,7 +49,7 @@ const EMPTY_COLUMNS = 3
 /** A new PivotTable's style and options, as Excel 365 makes one. */
 const NEW_STYLE = { name: 'PivotStyleLight16', rowHeaders: true, columnHeaders: true, lastColumn: true }
 
-const refuse = (book: BookInput, m: EngineMessage): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
+const refuse = (book: BookInput, m: EngineMessage): Applied => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
 
 /** A PivotTable of the book by sheet and name: its sheet's index and its index there. */
 function pivotAt(book: BookInput, sheet: unknown, name: unknown, path: string): { s: number; k: number; p: PivotTable } {

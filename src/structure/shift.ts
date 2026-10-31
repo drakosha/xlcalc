@@ -7,7 +7,8 @@
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { formatAddress } from '../model.js'
-import { say, type EngineMessage } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { hi, LINES, LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
@@ -48,7 +49,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
   if (emptied) return keepFirstRow(input, sheet, at, -n, emptied)
   const tables = tableShift(input, sheet, axis, at, n)
-  if (tables.refuse) return { ok: false, code: 'table', message: say(input.locale, tables.refuse) }
+  if (tables.refuse) return { ok: false, code: 'table', message: sayPivot(input.locale, tables.refuse) }
   const book = tables.before(input)
   const count = Math.abs(n)
   const ti = sheetIndex(book, sheet)
@@ -56,7 +57,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const grid = gridOf(target)
   const line = axis === 'r' ? grid.row : grid.col
   const lines = LINES[axis]
-  const refuse = (code: 'off_sheet' | 'array', m: EngineMessage): Applied => ({ ok: false, code, message: say(input.locale, m) })
+  const refuse = (code: 'off_sheet' | 'array', m: EngineMessage): Applied => ({ ok: false, code, message: sayPivot(input.locale, m) })
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })

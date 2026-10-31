@@ -4,7 +4,7 @@
  */
 import type { BookInput, AlignmentStyle, CellInput, PivotTable, SheetInput } from '../contract.js'
 import { CONTENT, holds } from '../array-areas.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { contains, cornersText, hasCell, meets, parseRange, type Rect } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
@@ -71,7 +71,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
       continue
     }
     const more = others.length ? { key: 'pivotOverPivot', other: others[0] } : table ? { key: 'pivotOverTable', table: table.name } : { key: 'pivotOverData', sheet: sheet.name, range: cornersText(x) }
-    return { ok: false, code: 'pivot', message: say(book.locale, { pivot: p.table.name, ...more } as never) }
+    return { ok: false, code: 'pivot', message: sayPivot(book.locale, { pivot: p.table.name, ...more } as never) }
   }
   const sheets = [...book.sheets]
   let styles = book.styles ?? []

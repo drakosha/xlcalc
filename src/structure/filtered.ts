@@ -6,7 +6,7 @@
  * counts, whatever hid it.
  */
 import type { BookInput, CellInput } from '../contract.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { cornersText, hasCell, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
 import { copyRange, tiles, type PasteHow } from './copy.js'
@@ -114,7 +114,7 @@ export function pasteClip(book: BookInput, clip: Clipboard, to: string, target: 
   const parts = how.whole ? null : pasteRuns(book, to, target)
   if (!parts) return copyRange(book, at, rect, to, target, withMeta, source, how)
   if (clip.packed && parts.length > 1)
-    return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
+    return { ok: false, code: 'filtered', message: sayPivot(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
   const runs = parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))
   const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source, how)))
   if (runs.length === 1) return steps(book)

@@ -5,7 +5,7 @@
  * its own.
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
-import type { EngineMessage } from '../locale/messages.js'
+import type { EngineMessage, Message } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, hi, intersect, lo, meets, parseRange, rectText, shiftRect, type Axis, type Rect } from './area.js'
@@ -44,10 +44,10 @@ export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: numbe
   return null
 }
 
-const refuse = (sheet: string, cell: string, x: Rect): EngineMessage => ({ key: 'arrayPart', sheet, cell, area: rectText(x) })
+const refuse = (sheet: string, cell: string, x: Rect): Message<'arrayPart'> => ({ key: 'arrayPart', sheet, cell, area: rectText(x) })
 
 /** Why Excel refuses a move or a paste, or null: a move taking part of an area, cells landing on part of one that stays. */
-export function arrayRefusal(book: BookInput, p: Paste): EngineMessage | null {
+export function arrayRefusal(book: BookInput, p: Paste): Message<'arrayPart'> | null {
   if (p.move) for (const [addr, x] of arraysOf(sheetOf(book, p.from))) if (meets(x, p.src) && !contains(p.src, x)) return refuse(p.from, addr, x)
   const moving = (x: Rect) => p.move && sheetKey(p.from) === sheetKey(p.to) && contains(p.src, x)
   for (const [addr, x] of arraysOf(sheetOf(book, p.to))) if (meets(x, p.area) && !contains(p.area, x) && !moving(x)) return refuse(p.to, addr, x)
@@ -55,7 +55,7 @@ export function arrayRefusal(book: BookInput, p: Paste): EngineMessage | null {
 }
 
 /** Why Excel refuses an operation of Paste Special over `area` of `sheet`, or null: any legacy array formula it meets, of one cell or its whole range (the paste set `array-ops`). */
-export function operationRefusal(sheet: SheetInput, area: Rect): EngineMessage | null {
+export function operationRefusal(sheet: SheetInput, area: Rect): Message<'arrayPart'> | null {
   for (const [addr, x] of arraysOf(sheet)) if (meets(x, area)) return refuse(sheet.name, addr, x)
   return null
 }

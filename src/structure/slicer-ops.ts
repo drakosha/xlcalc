@@ -11,7 +11,7 @@ import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
 import { array, checkBoolean, checkString, integer, object, onlyKeys } from '../input/basic.js'
 import { checkIsoDate } from '../input/pivot.js'
-import { say } from '../locale/messages.js'
+import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { pivotArea } from '../pivot/area.js'
@@ -41,7 +41,7 @@ export const SLICER_FIELDS: Record<string, string[]> = {
   deleteTimeline: ['timeline'],
 }
 
-const refused = (book: BookInput, m: Parameters<typeof say>[1]): Applied => ({ ok: false, code: 'pivot', message: say(book.locale, m) })
+const refused = (book: BookInput, m: Parameters<typeof sayPivot>[1]): Applied => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
 
 const cachesOf = (book: BookInput, kind: Kind): Cache[] => book[CACHES[kind]] ?? []
 
