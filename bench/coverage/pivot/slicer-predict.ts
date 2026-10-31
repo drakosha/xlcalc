@@ -4,9 +4,10 @@
  * hidden items put in its model, then the slicers and timelines added and chosen through a session's `editStructure`
  * with `xlcalc/pivot` loaded. Each phase gives the cells of every PivotTable's area and each slicer's items as the
  * harness reads them (name, selected, has data, in the slicer's order) or a timeline's dates and level. Run:
- * `npx tsx bench/coverage/pivot/slicer-predict.ts <out.json>`. `slicer.predicted.json` is the prediction made before the
+ * `npx tsx bench/coverage/pivot/slicer-predict.ts <set> <out.json>`. `slicer.predicted.json` is the prediction made before the
  * answers were read: 31 of 38 held, the 7 others a blank region whose one record has no price, which Excel tells has no
- * data. The comparison with Excel: `test/pivot-slicers-excel.test.ts`.
+ * data. `slicer-delete.predicted.json` likewise for that set's cases a session takes. The comparison with Excel:
+ * `test/pivot-slicers-excel.test.ts`.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { createSession, registerPivot, type BookInput, type CellValue, type PivotRef, type StructureOp } from '../../../src/index.js'
@@ -20,8 +21,7 @@ import { areaText } from '../../../src/structure/area.js'
 import { fieldIndex } from '../../../src/structure/slicer-choice.js'
 import { ERROR_CODE } from '../../../src/syntax/errors.js'
 import { readXlsx } from '../../../src/xlsx.js'
-import type { PivotCase, PivotOp, PivotPhase, SlicerItem } from './cases.js'
-import { buildPivotCases } from './slicer.js'
+import type { PivotCase, PivotOp, PivotPhase, PivotSet, SlicerItem } from './cases.js'
 
 const ROOT = new URL('../../../', import.meta.url)
 const LEVELS = ['years', 'quarters', 'months', 'days'] as const
@@ -85,7 +85,7 @@ async function start(c: PivotCase): Promise<{ book: BookInput; rest: PivotOp[] }
       const order = values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], false, null))
       const item = order.findIndex((k) => itemText(values[k]) === (o.items as string[])[0])
       book = changed(book, 'PT1', (p) => ({ ...p, pages: [{ field: f, item }], fields: p.fields.map((pf, i) => (i !== f ? pf : { ...pf, items: order.map((k) => ({ item: k })) })) }))
-    } else if ('slicer' in o || 'select' in o || 'timeline' in o || 'read' in o) rest.push(o)
+    } else if ('slicer' in o || 'select' in o || 'timeline' in o || 'read' in o || 'deleteSlicer' in o) rest.push(o)
   }
   return { book, rest }
 }
@@ -131,6 +131,10 @@ export async function predict(c: PivotCase): Promise<PredictedPhase[]> {
         edit({ op: 'addTimeline', sheet: 'P', timeline: { name: o.name, ...(o.level ? { level: o.level } : {}) }, cache: { field: o.timeline, pivots } })
         if (o.from !== undefined && o.to !== undefined) edit({ op: 'editTimeline', timeline: o.name, cache: { selection: { start: isoOf(o.from), end: isoOf(o.to) } } })
       }
+    } else if ('deleteSlicer' in o) {
+      // SlicerCache.Delete: every slicer or timeline of the cache
+      const b = s.getBook()
+      for (const sh of b.sheets) for (const kind of ['slicers', 'timelines'] as const) for (const x of sh[kind] ?? []) if (x.cache === o.deleteSlicer || x.name === o.deleteSlicer) edit(kind === 'slicers' ? { op: 'deleteSlicer', slicer: x.name } : { op: 'deleteTimeline', timeline: x.name })
     } else if ('select' in o) {
       const b = s.getBook()
       const sc = b.slicerCaches!.find((x) => x.name === o.select)!
@@ -142,10 +146,14 @@ export async function predict(c: PivotCase): Promise<PredictedPhase[]> {
   return phases
 }
 
+/** The cases of a set this script predicts: those whose operations a session takes (no sheet added or deleted). */
+export const predicted = (cases: PivotCase[]) => cases.filter((c) => !c.ops.some((o) => 'addSheet' in o || 'deleteSheet' in o))
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   registerPivot(pivotEngine)
   const out: Record<string, PredictedPhase[]> = {}
-  for (const c of buildPivotCases()) out[c.id] = await predict(c)
-  writeFileSync(process.argv[2], JSON.stringify(out, null, 1) + '\n')
+  const set = (await import(`./${process.argv[2]}.js`)) as PivotSet
+  for (const c of predicted(set.buildPivotCases())) out[c.id] = await predict(c)
+  writeFileSync(process.argv[3], JSON.stringify(out, null, 1) + '\n')
   console.log(Object.keys(out).length, 'cases predicted')
 }
