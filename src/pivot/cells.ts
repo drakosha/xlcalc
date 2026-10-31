@@ -10,7 +10,7 @@ import { checkString, object } from '../input/basic.js'
 import { formatAddress } from '../model.js'
 import { hasCell, parseRange } from '../structure/area.js'
 import { pivotParts } from './area.js'
-import { pivotFrame, placeParts, savedLines, type LineView, type PartAt, type PivotPart } from './frame.js'
+import { pivotFrame, placeParts, savedLines, type LineView } from './frame.js'
 
 type Sheets = Pick<BookInput, 'sheets'>
 
@@ -32,55 +32,65 @@ function cellsOf(t: PivotTable): PivotCells {
   const laid = !!t.rowLines && t.location.firstDataRow > 0 && (rowFields.length || colFields.length || values.length)
   // the frame as the place saved it: the rows above the values and the columns of the labels
   const frame = { ...pivotFrame(t, rowFields, colFields), height: t.location.firstDataRow, width: t.location.firstDataColumn }
+  const { height, width, captionRow, labelCol } = frame
+  const [top, left] = [x.r1, x.c1]
   const rowLines = laid ? savedLines(t.rowLines, rowFields) : []
   const columnLines = laid ? savedLines(t.columnLines, colFields) : []
-  const axisOf = (f: PivotAxisField, at: PartAt): PivotCell['axis'] => (at.page !== undefined ? 'pages' : at.rows !== undefined ? (at.rows ? 'rows' : 'columns') : rowFields.includes(f) ? 'rows' : 'columns')
-  const first = (fields: readonly PivotAxisField[]) => fields.find((f) => f !== 'values')
-  const kindOf = (part: PivotPart, at: PartAt): Omit<PivotCell, 'pivot'> => {
-    // a label's path goes down to its own field, a total's to its line's
-    const fields = at.rows ? rowFields : colFields
-    const depth = part.kind === 'item' ? fields.indexOf(part.field) : undefined
-    const path = at.line ? pathOf(fields, at.line, depth) : []
-    const paths = path.length ? (at.rows ? { rowItems: path } : { columnItems: path }) : {}
-    const value = at.line?.value === undefined ? {} : { value: at.line.value }
-    switch (part.kind) {
-      case 'field':
-        return part.field === 'values' ? { kind: 'valuesField', axis: axisOf('values', at), field: 'values' } : { kind: 'field', axis: axisOf(part.field, at), field: part.field }
-      case 'rowHeader':
-      case 'columnHeader': {
-        const rows = part.kind === 'rowHeader'
-        const f = first(rows ? rowFields : colFields)
-        return f === undefined ? { kind: 'blank' } : { kind: 'field', axis: rows ? 'rows' : 'columns', field: f }
-      }
-      case 'value':
-        return { kind: 'valueName', value: part.value }
-      case 'page':
-        return { kind: 'pageItem', axis: 'pages', field: part.field }
-      case 'grand':
-        return { kind: 'grand', axis: at.rows ? 'rows' : 'columns', ...value, ...paths }
-      case 'item':
-        if (part.field === 'values') return { kind: 'valueName', axis: at.rows ? 'rows' : 'columns', value: part.item, ...paths }
-        return { kind: 'item', axis: at.rows ? 'rows' : 'columns', field: part.field, item: part.item, ...paths }
-      case 'subtotal':
-        return { kind: 'subtotal', axis: at.rows ? 'rows' : 'columns', field: part.field, item: part.item, ...value, ...paths }
-    }
-  }
-  placeParts(t, frame, x.r1, x.c1, rowFields, colFields, rowLines, columnLines, (row, col, part, at) => {
-    const cell = kindOf(part, at)
-    if (laid || at.page !== undefined) put(row, col, cell)
+  // the Filters area and the headers: a field's name, Σ Values', a value field's (`Total` in the classic layout is the grand total's); Row and Column Labels name no field
+  placeParts(t, frame, top, left, rowFields, colFields, [], [], (row, col, part, at) => {
+    if (!laid && at.page === undefined) return
+    const axis = at.page !== undefined ? 'pages' : part.kind === 'field' && colFields.includes(part.field) ? 'columns' : 'rows'
+    if (part.kind === 'page') put(row, col, { kind: 'pageItem', axis, field: part.field })
+    else if (part.kind === 'field') put(row, col, part.field === 'values' ? { kind: 'valuesField', axis, field: 'values' } : { kind: 'field', axis, field: part.field })
+    else if (part.kind === 'value') put(row, col, part.total ? { kind: 'grand', axis: 'columns' } : { kind: 'valueName', value: part.value })
     // Excel's filter buttons: the headers of the rows and columns and the report filters' items
-    if ((laid || at.page !== undefined) && (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'page' || (part.kind === 'field' && part.field !== 'values' && at.page === undefined))) buttons.push(formatAddress(row, col))
+    if (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'page' || (part.kind === 'field' && part.field !== 'values' && at.page === undefined)) buttons.push(formatAddress(row, col))
   })
-  // the values: each line with values against each column's, by the value field of either
-  if (laid && values.length)
+  if (laid) {
+    // a single value field's name at the corner over column labels, whether a row field shows it there or not
+    if (captionRow && values.length === 1) put(top, left, { kind: 'valueName', value: 0 })
+    const one = values.length ? (rowFields.includes('values') || colFields.includes('values') ? undefined : 0) : undefined
+    // every cell of a line's labels is of its item on the field of that row or column the line reaches, else of the
+    // line's own; a total's cells are the total's, a blank line's blank
+    const label = (fields: readonly PivotAxisField[], a: LineView, k: number | undefined, axis: 'rows' | 'columns'): Omit<PivotCell, 'pivot'> => {
+      const d = a.items.length - 1
+      const value = (a.value ?? one) === undefined ? {} : { value: a.value ?? one }
+      const path = (to: number) => {
+        const p = pathOf(fields, a, to)
+        return p.length ? { [axis === 'rows' ? 'rowItems' : 'columnItems']: p } : {}
+      }
+      if (a.kind === 'grand') return { kind: 'grand', axis, ...(values.length ? { value: a.value ?? 0 } : {}) }
+      if (a.kind === 'blank') return { kind: 'blank' }
+      if (a.kind === 'subtotal') return { kind: 'subtotal', axis, field: fields[d], item: a.items[d], ...value, ...path(d) }
+      const at = k === undefined || k > d ? d : k
+      if (at < 0) return values.length === 1 ? { kind: 'valueName', value: 0 } : { kind: 'blank' }
+      const f = fields[at]
+      return f === 'values' ? { kind: 'valueName', axis, value: a.items[at], ...path(at) } : { kind: 'item', axis, field: f, item: a.items[at], ...path(at) }
+    }
+    rowLines.forEach((a, i) => {
+      for (let c = 0; c < width; c++) {
+        // the deepest field of this column
+        let k: number | undefined
+        labelCol.forEach((lc, j) => lc === c && j <= a.items.length - 1 && (k = j))
+        if (k === undefined && labelCol.includes(c)) k = labelCol.indexOf(c)
+        put(top + height + i, left + c, label(rowFields, a, k, 'rows'))
+      }
+    })
+    columnLines.forEach((a, j) => {
+      for (let r = captionRow; r < height; r++) if (r - captionRow < colFields.length || a.kind === 'grand') put(top + r, left + width + j, label(colFields, a, r - captionRow, 'columns'))
+    })
+    // the values, of no value field too: each line against each column's, of the value field of either
     rowLines.forEach((ra, i) => {
-      if (ra.kind === 'blank') return
+      if (ra.kind === 'blank' || top + height + i > x.r2) return
       columnLines.forEach((ca, j) => {
+        if (left + width + j > x.c2) return
         const rowItems = pathOf(rowFields, ra)
         const columnItems = pathOf(colFields, ca)
-        put(x.r1 + frame.height + i, x.c1 + frame.width + j, { kind: 'value', value: ra.value ?? ca.value ?? 0, ...(rowItems.length ? { rowItems } : {}), ...(columnItems.length ? { columnItems } : {}) })
+        const value = ra.value ?? ca.value ?? one
+        put(top + height + i, left + width + j, { kind: 'value', ...(value === undefined ? {} : { value }), ...(rowItems.length ? { rowItems } : {}), ...(columnItems.length ? { columnItems } : {}) })
       })
     })
+  }
   for (const a of buttons) cells[a] = { ...cells[a], button: true }
   return { cells, buttons }
 }
