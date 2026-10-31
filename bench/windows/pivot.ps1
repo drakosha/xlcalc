@@ -242,14 +242,15 @@ function Pivot($xl, $wb, $s) {
         if ($added.Count -ne 1) { throw 'Show Details did not make one sheet' }
         Grid $added[0].UsedRange.Value2
       }
-      # a range copied and pasted at a cell of P with it selected (Ctrl+C, Ctrl+V), the copy's marquee dropped after
+      # a range copied and pasted at a cell of P with it selected (Ctrl+C, Ctrl+V); the copy's marquee stays, as COM takes
+      # no False for CutCopyMode from PowerShell
       'copyPaste' {
         $p = ([string]$s.from) -split '!'
         [void]$wb.Worksheets.Item($p[0]).Range($p[1]).Copy()
         $ws = $wb.Worksheets.Item('P')
         [void]$ws.Activate()
         [void]$ws.Range([string]$s.at).Select()
-        try { [void]$ws.Paste() } finally { $xl.CutCopyMode = $false; [void]$wb.Worksheets.Item(1).Activate() }
+        try { [void]$ws.Paste() } finally { [void]$wb.Worksheets.Item(1).Activate() }
         'null'
       }
       'refresh' { Cell ([bool](PTable $wb $s).RefreshTable()) }
