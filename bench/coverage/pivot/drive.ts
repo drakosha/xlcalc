@@ -9,6 +9,7 @@
 import type { BookInput, CellInput, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
+import { editStructure } from '../../../src/structure/index.js'
 import { wordsOf } from '../../../src/pivot/captions.js'
 import { refreshPivots } from '../../../src/pivot/engine.js'
 import { groupedItems } from '../../../src/pivot/items.js'
@@ -54,10 +55,10 @@ export interface DrivenPhase {
 
 const isoOf = (d: number) => new Date(Math.round((d - 25_569) * 86_400_000)).toISOString().slice(0, 19)
 
-/** The book a case starts from: the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
-export function startBook(c: PivotCase): BookInput {
+/** The book a case starts from, in the workbook's language `locale` (ru-RU names value fields `Сумма по полю Qty`): the source rows on `D`, a cache refreshed from them and `PT1` at `P!A3`. */
+export function startBook(c: PivotCase, locale?: string): BookInput {
   const cols = DATA[c.data ?? 'sales']()
-  const book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}) }
+  const book: BookInput = { ...sourceBook(cols, c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}), ...(locale ? { locale } : {}) }
   const source = c.source === 'table' ? { type: 'table' as const, table: 'Sales' } : c.source === 'name' ? { type: 'name' as const, name: 'SalesData' } : { type: 'range' as const, sheet: 'D', range: sourceRange(cols) }
   const grid = sourceGrid(book, source, valuesOf(book))
   if (typeof grid === 'string') throw new Error(grid)
@@ -68,10 +69,13 @@ export function startBook(c: PivotCase): BookInput {
 
 const emptyTable = (cache: PivotCache, name: string, at: string): PivotTable => ({ name, cache: cache.id, location: { range: at, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: cache.fields.map(() => ({})) })
 
-/** Plays a case: its phases, each with the book at its end; a case from a saved book (`from`) starts from `saved`, that book as Excel saved it. */
-export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
+/**
+ * Plays a case in the workbook's language `locale` (en-US without it): its phases, each with the book at its end; a case
+ * from a saved book (`from`) starts from `saved`, that book as Excel saved it.
+ */
+export function drive(c: PivotCase, saved?: BookInput, locale?: string): DrivenPhase[] {
   if (c.file || (c.from && !saved)) throw new Error('a case from a file, or from a saved book without it, is not driven')
-  let book = c.from ? saved! : startBook(c)
+  let book = c.from ? saved! : startBook(c, locale)
   const out: DrivenPhase[] = []
   let errors: string[] = []
   const tableOf = (name = 'PT1') => book.sheets.find((s) => s.name === 'P')!.pivotTables!.find((t) => t.name === name)!
@@ -184,7 +188,12 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
         return
       }
       const v = op.value
-      const d: PivotDataField = { field: f, name: v.caption ?? wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }
+      // a second field of the same default name gets 2 after it, as Excel names it
+      const base = wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name)
+      const taken = new Set((tableOf(pt).values ?? []).map((x) => x.name?.toLowerCase()))
+      let name = v.caption ?? base
+      for (let n = 2; v.caption === undefined && taken.has(name.toLowerCase()); n++) name = `${base}${n}`
+      const d: PivotDataField = { field: f, name, ...(fn !== 'sum' ? { function: fn } : {}) }
       if (v.show && v.show !== 'normal') d.showAs = (SHOW[v.show] ?? v.show) as PivotShowAs
       if (v.base) d.baseField = fieldOf(v.base)
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
@@ -196,7 +205,7 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       // the function the field list gives the field on Values
       const f = fieldOf(op.valueDefault)
       const fn = suggestPivotField(book.pivotCaches![0], f).function
-      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), { field: f, name: wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn === 'sum' ? {} : { function: fn }) }] }))
+      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), { field: f, name: wordsOf(locale).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn === 'sum' ? {} : { function: fn }) }] }))
       return laid(k)
     }
     if ('dropValue' in op) {
@@ -256,6 +265,15 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
     }
     if ('ungroup' in op) return cacheOp(k, { op: 'ungroupPivotField', sheet: 'P', pivot: pt, field: fieldOf(op.ungroup) })
     if ('calcField' in op) return cacheOp(k, { op: 'setPivotCalculatedField', sheet: 'P', pivot: pt, name: op.calcField, formula: op.formula })
+    if ('calcFormula' in op) return cacheOp(k, { op: 'setPivotCalculatedField', sheet: 'P', pivot: pt, name: op.calcFormula, formula: op.formula })
+    if ('setValue' in op) {
+      // through editPivotTable, which names a value field given another function as Excel does
+      const values = (tableOf(pt).values ?? []).map((d, j) => (j === op.setValue - 1 ? { ...d, ...(op.fn ? { function: op.fn as PivotFunction } : {}), ...(op.caption !== undefined ? { name: op.caption } : {}) } : d))
+      const r = editStructure(book, { op: 'editPivotTable', sheet: 'P', pivot: pt, set: { values } })
+      if (!r.ok) errors.push(`op ${k}: ${r.message}`)
+      else book = r.book
+      return laid(k)
+    }
     if ('calcItem' in op) return cacheOp(k, { op: 'setPivotCalculatedItem', sheet: 'P', pivot: pt, field: fieldOf(op.field), name: op.calcItem, formula: op.formula })
     if ('subtotals' in op) {
       const f = fieldOf(op.subtotals)

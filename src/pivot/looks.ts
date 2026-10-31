@@ -7,7 +7,7 @@
  */
 import type { AlignmentStyle, PivotLayout, PivotTable } from '../contract.js'
 import { parseRange, type Rect } from '../structure/area.js'
-import type { PivotCell, PivotLaidOut } from './layout.js'
+import type { LaidCell, PivotLaidOut } from './layout.js'
 
 /** The rows of the row labels and the columns of the column labels of a laid out PivotTable. */
 interface Frame {
@@ -36,7 +36,7 @@ const formOf = (t: PivotTable): PivotLayout => t.layout ?? 'compact'
  * The indent of a compact form's row label: an item's its level's, a subtotal's at the bottom its field's level, at the
  * top and the grand total's none.
  */
-function labelIndent(t: PivotTable, c: PivotCell): number {
+function labelIndent(t: PivotTable, c: LaidCell): number {
   const part = c.part!
   if (part.kind === 'item') return c.indent ?? 0
   if (part.kind !== 'subtotal') return 0
@@ -45,14 +45,14 @@ function labelIndent(t: PivotTable, c: PivotCell): number {
 }
 
 /** Where a cell lies: among the row labels, the column labels, or neither. */
-function regionOf(f: Frame, c: PivotCell): 'rows' | 'columns' | null {
+function regionOf(f: Frame, c: LaidCell): 'rows' | 'columns' | null {
   if (c.row >= f.rows.r1 && c.col <= f.rows.c2) return 'rows'
   if (c.row >= f.columns.r1 && c.row <= f.columns.r2 && c.col >= f.columns.c1) return 'columns'
   return null
 }
 
 /** The alignment Excel keeps in a cell of the area, none for the others (values, a compact form's headers without `mergeLabels`). */
-export function cellAlignment(t: PivotTable, laid: PivotLaidOut, c: PivotCell): AlignmentStyle | undefined {
+export function cellAlignment(t: PivotTable, laid: PivotLaidOut, c: LaidCell): AlignmentStyle | undefined {
   const f = frameOf(laid)
   const kind = c.part?.kind
   if (!f || !kind) return undefined

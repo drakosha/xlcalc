@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { dateToSerial } from '../src/date-serial.js'
 import { formatAddress, parseAddress } from '../src/model.js'
-import { layoutPivot, type PivotCell } from '../src/pivot/layout.js'
+import { layoutPivot, type LaidCell } from '../src/pivot/layout.js'
 import { placePivots } from '../src/pivot/place.js'
 import { readXlsx } from '../src/xlsx.js'
 import { savedResult } from './pivot-saved.js'
@@ -32,7 +32,7 @@ const RU_CODES: Record<string, string> = { Основной: 'General', 'ДД.М
 const BUILTIN: Record<number, string> = { 4: '#,##0.00', 10: '0.00%', 14: 'm/d/yyyy' }
 
 /** What a laid out cell holds as the answers write Excel's `Value2`: a date its serial, an error by its code, an empty cell null. */
-function value2(c: PivotCell | undefined): unknown {
+function value2(c: LaidCell | undefined): unknown {
   if (!c) return null
   if (c.error) return { error: c.error }
   const v = c.value

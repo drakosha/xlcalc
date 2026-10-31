@@ -149,6 +149,10 @@ export type PivotOp = (
   /** An item moved by hand to a position. */
   | { item: string; of: string; position: number }
   | { calcField: string; formula: string }
+  /** A calculated field's formula changed (`PivotField.Formula`, Excel's Modify). */
+  | { calcFormula: string; formula: string }
+  /** The value field at a place (1 the first, `DataFields(index)`) given a function or a name (`Function`, `Caption`). */
+  | { setValue: number; fn?: Agg; caption?: string }
   | { calcItem: string; field: string; formula: string }
   /** Excel's grouping of a field of dates or numbers: start and end (Excel's own where left out), an interval, the periods. */
   | { group: string; start?: FilterValue; end?: FilterValue; by?: number; periods?: Period[] }
@@ -230,6 +234,8 @@ export interface PivotCase {
   ops: PivotOp[]
   /** Ranges read at the end of each phase (`G!A1:A20`). */
   watch?: string[]
+  /** Each phase also reads what every cell of every pivot table is (`Range.PivotCell`). */
+  kinds?: true
 }
 
 export interface PivotSet {
@@ -253,6 +259,15 @@ export interface PivotArea {
   columns?: string
 }
 
+/**
+ * A cell of a pivot table as `Range.PivotCell` tells it: its address, `PivotCellType` (0 a value, 1 an item, 2 a
+ * subtotal, 3 a grand total, 4 a data field's name, 5 a field's, 6 a page field's item, 7 a custom subtotal, 8 the data
+ * fields' own field, 9 a blank cell), its PivotField's `SourceName`, its PivotItem's `Name`, its DataField's `Name`,
+ * and its `RowItems` and `ColumnItems` as [field, item] (null where Excel gives none); the address alone for a cell
+ * that is no pivot cell (the blank row under the filters).
+ */
+export type PivotCellKind = [address: string, type?: number, field?: string | null, item?: string | null, data?: string | null, rows?: [string, string][] | null, columns?: [string, string][] | null]
+
 /** A slicer's items: name, selected, has data. */
 export type SlicerItem = [name: string, selected: boolean, hasData: boolean]
 
@@ -264,6 +279,8 @@ export interface PivotPhase {
   pivots: Record<string, PivotArea | { error: string }>
   cells?: Record<string, CellValue>
   slicers?: Record<string, SlicerItem[] | { timeline: [start: number | null, end: number | null, level: number] } | { error: string }>
+  /** What each cell of each pivot table is, keyed `sheet!name` (a case with `kinds`), by rows of `TableRange2`. */
+  kinds?: Record<string, PivotCellKind[] | { error: string }>
   /** What an `external` operation read: each read's cells, in the order the operation names them. */
   external?: { reads: Record<string, Record<string, CellValue>>; errors?: string[] }
 }

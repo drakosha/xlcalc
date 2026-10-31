@@ -3,15 +3,16 @@
  * is typed, for colouring them, what an arrow does in it (Point mode, `point.ts`), a sheet's name and a table column's name as a reference writes them, the clipboard's
  * text as the rectangle Excel pastes, and the category of a number format as the ribbon's Number Format box shows it,
  * with the items of its list (`numfmt/category.ts`, by the engine's reader of format codes), and where Excel's PivotTable
- * Fields list puts a field checked there (`pivot-suggest.ts`, by the kinds of value its cache holds). The tokenizer, the parser
+ * Fields list puts a field checked there (`pivot-suggest.ts`, by the kinds of value its cache holds), and what each cell of a
+ * PivotTable is (`pivot/cells.ts`, by its place and saved lines). The tokenizer, the parser
  * and the translation of a locale's formula text are the engine's own (`scan.ts`, `locale/translate.ts`); they compute nothing,
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
 import { checkCellValue } from './input.js'
 import { InputError, what } from './input-error.js'
-import { array, checkBoolean, checkNumber, checkString, object, onlyOptions } from './input/basic.js'
-import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat } from './contract.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyOptions } from './input/basic.js'
+import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat, PivotFunction } from './contract.js'
 import { checkFormat } from './input/styles.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
@@ -23,7 +24,9 @@ import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as decimals from './numfmt/decimals.js'
 import * as point from './point.js'
+import * as pivotView from './pivot/cells.js'
 import * as pivotSuggest from './pivot-suggest.js'
+import * as words from './pivot-words.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
@@ -39,6 +42,21 @@ export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 export const suggestPivotField = /* @__PURE__ */ strict(pivotSuggest.suggestPivotField)
+export const pivotCells = /* @__PURE__ */ strict(pivotView.pivotCells)
+export const pivotCellAt = /* @__PURE__ */ strict(pivotView.pivotCellAt)
+
+/**
+ * The name Excel gives a value field named `name` when its function changes from `from` to `to`, its source field being
+ * `field`, in the workbook's language `locale`: what Value Field Settings shows as soon as a function is chosen, and what
+ * `editPivotTable` names the field (made unique there among the others when it is the default name).
+ */
+export const renamedValueField = /* @__PURE__ */ strict(function renamedValueField(name: string | null | undefined, from: PivotFunction, to: PivotFunction, field: string, locale?: string): string {
+  if (name !== undefined && name !== null) checkString(name, 'name')
+  checkOneOf(from, 'from', words.PIVOT_FUNCTIONS)
+  checkOneOf(to, 'to', words.PIVOT_FUNCTIONS)
+  if (locale !== undefined) checkString(locale, 'locale')
+  return words.renamedValueField(name ?? undefined, from, to, checkString(field, 'field'), locale)
+})
 
 /**
  * The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General

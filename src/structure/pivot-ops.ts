@@ -4,7 +4,7 @@
  * PivotTable shows, `xlcalc/pivot` lays it out again when loaded (`pivot/hook.ts`); without it, the PivotTable keeps its
  * cells and its cache is marked `stale`, which a file asks Excel to refresh on opening.
  */
-import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
+import type { BookInput, PivotCache, PivotCacheField, PivotDataField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
@@ -16,7 +16,7 @@ import type { EngineMessage } from '../locale/messages.js'
 import { withField } from '../looks/sheet.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { pivotRefresh } from '../pivot/hook.js'
-import { valueFieldName } from '../pivot-words.js'
+import { defaultValueName, renamedValueField } from '../pivot-words.js'
 import { tablesOf } from '../tables/model.js'
 import { sourcePlace } from '../pivot-source.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
@@ -108,8 +108,9 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     const names = new Set<string>()
     out = {
       ...out,
-      values: out.values.map((d) => {
-        const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
+      values: out.values.map((given, k) => {
+        const d = renamedForFunction(p.values?.[k], given, c, locale)
+        const base = defaultValueName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
         let name = d.name ?? base
         if (d.name === undefined) for (let n = 2; names.has(caseKey(name)); n++) name = `${base}${n}`
         names.add(caseKey(name))
@@ -118,6 +119,18 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     }
   }
   return out
+}
+
+/**
+ * A value field given another function and no name of its own in the patch (the name it had, or none) is named as
+ * Excel names it (`renamedValueField`, the sets value-names); its new default name is made unique among the others.
+ */
+function renamedForFunction(was: PivotDataField | undefined, d: PivotDataField, c: PivotCache, locale: string | undefined): PivotDataField {
+  if (!was || was.field !== d.field || (was.function ?? 'sum') === (d.function ?? 'sum') || (d.name !== undefined && d.name !== was.name)) return d
+  const { name: _, ...rest } = d
+  const field = c.fields[d.field]?.name ?? ''
+  const name = renamedValueField(was.name, was.function ?? 'sum', d.function ?? 'sum', field, locale)
+  return name === defaultValueName(d.function ?? 'sum', field, locale) ? rest : { ...rest, name }
 }
 
 /** The text of a header cell as a field's name: a number or a boolean as Excel shows it plainly; empty without a value. */

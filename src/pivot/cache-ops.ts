@@ -8,7 +8,7 @@ import type { BookInput, PivotCacheField, PivotFieldGroup, PivotGrouping, PivotG
 import { EPOCH_1904 } from '../dates.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
-import { array, checkNumber, checkOneOf, checkString, integer, object, onlyKeys } from '../input/basic.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, integer, object, onlyKeys } from '../input/basic.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import type { EngineMessage } from '../locale/messages.js'
 import type { Applied } from '../structure/geometry.js'
@@ -23,6 +23,8 @@ import { groupedItems } from './items.js'
 import type { PivotCacheEdit, PivotCacheOp } from './hook.js'
 import { itemKey } from './items.js'
 import { cacheDate, dateSerial, itemText, numberOf } from './values.js'
+import { defaultValueName } from '../pivot-words.js'
+import { placedValues } from '../structure/pivot-values.js'
 
 /** A refusal's message, thrown out of an operation. */
 class Refused extends Error {
@@ -38,6 +40,7 @@ const refuse = (m: EngineMessage): never => {
 interface Work extends CacheTables {
   own: number
   epoch: number
+  locale?: string
 }
 
 const DATE_PERIODS = ['seconds', 'minutes', 'hours', 'days', 'months', 'quarters', 'years'] as const
@@ -278,7 +281,13 @@ function checkedFormula(text: string, names: (field: string | null, name: string
 
 const formulaText = (v: unknown, path: string) => checkString(v, path).replace(/^\s*=/, '').trim()
 
-function calculatedField(w: Work, name: unknown, formula: unknown): void {
+/**
+ * The cache's calculated field `name` added, its formula changed, or deleted (a null formula); added with `values`, it goes
+ * on the Values of the PivotTable the operation names, last, with Sum and the name Excel gives it (`Sum of Unit`, a
+ * second `Sum of Unit2`), as Excel's Insert Calculated Field puts it there.
+ */
+function calculatedField(w: Work, name: unknown, formula: unknown, values: unknown): void {
+  if (values !== undefined) checkBoolean(values, 'op.values')
   const n = checkString(name, 'op.name').trim()
   if (!n) throw new InputError('op.name', 'expected a name, got an empty text')
   const at = w.cache.fields.findIndex((f) => caseKey(f.name) === caseKey(n))
@@ -305,7 +314,22 @@ function calculatedField(w: Work, name: unknown, formula: unknown): void {
     const fields = w.cache.fields.slice()
     fields[at] = { ...fields[at], formula: text }
     w.cache = { ...w.cache, fields }
-  } else withFields(w, [{ name: n, formula: text }])
+  } else {
+    withFields(w, [{ name: n, formula: text }])
+    if (values === true) onValues(w, w.cache.fields.length - 1)
+  }
+}
+
+/** The field `f` on the Values of the PivotTable the operation names, last, with Sum and its default name made unique, Σ Values placed. */
+function onValues(w: Work, f: number) {
+  const t = w.tables[w.own]
+  const list = t.values ?? []
+  const base = defaultValueName('sum', w.cache.fields[f].name, w.locale)
+  const taken = new Set(list.map((d) => caseKey(d.name ?? '')))
+  let name = base
+  for (let k = 2; taken.has(caseKey(name)); k++) name = `${base}${k}`
+  // a second value field brings Σ Values onto the columns, where Excel's dialog puts it
+  w.tables[w.own] = placedValues({ ...t, values: [...list, { field: f, name }] })
 }
 
 const AVERAGES = ['average', 'stdDev', 'stdDevp', 'var', 'varp']
@@ -388,7 +412,7 @@ function apply(w: Work, o: Record<string, unknown>): void {
     case 'renamePivotGroup':
       return renameGroup(w, field(), o.item, o.name)
     case 'setPivotCalculatedField':
-      return calculatedField(w, o.name, o.formula)
+      return calculatedField(w, o.name, o.formula, o.values)
     case 'setPivotCalculatedItem':
       return calculatedItem(w, field(), o.name, o.formula)
   }
@@ -402,7 +426,7 @@ export const editPivotCache: PivotCacheEdit = (book, op, values, today) => {
   if (!table) throw new InputError('op.pivot', `unknown PivotTable ${JSON.stringify(name)} on ${JSON.stringify(book.sheets[s].name)}`)
   const cache = (book.pivotCaches ?? []).find((c) => c.id === table.cache)!
   const spots = book.sheets.flatMap((sh, i) => (sh.pivotTables ?? []).flatMap((t, k) => (t.cache === cache.id ? [{ s: i, k, t }] : [])))
-  const w: Work = { cache, tables: spots.map((x) => x.t), own: spots.findIndex((x) => x.t === table), epoch: book.dateSystem === 1904 ? EPOCH_1904 : 0 }
+  const w: Work = { cache, tables: spots.map((x) => x.t), own: spots.findIndex((x) => x.t === table), epoch: book.dateSystem === 1904 ? EPOCH_1904 : 0, locale: book.locale }
   try {
     apply(w, o)
   } catch (e) {

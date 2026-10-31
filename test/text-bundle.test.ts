@@ -1,8 +1,9 @@
 /**
  * The `./text` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
  * the tokenizer, the translation of a locale's formula text, the check of its functions' arguments and the category of a
- * number format's code (no parser, formatting or computation), en-US's messages alone of the locales' data, stays under
- * 55 KB, and runs in an empty `node:vm`
+ * number format's code, where the field list puts a field, what each cell of a PivotTable is and a value field's name
+ * by its function (no parser, formatting, computation or PivotTable engine), en-US's messages alone of the locales' data,
+ * stays under 65 KB, and runs in an empty `node:vm`
  * context with ru-RU given as an object, or the part of it a formula's text needs. It holds no `xlcalc`, which a host
  * looks for in its bundle as the sign of the engine: a tag not loaded asks for the locale as an object, and only the root
  * names the module to import and `registerLocale`.
@@ -15,14 +16,15 @@ import { ruRU } from '../src/locales/ru-RU.js'
 const bundle = () => browserBundle('text.js', 'TEXT')
 
 describe('text without the engine', () => {
-  it('the bundle holds the modules of formula text alone, under 55 KB', async () => {
+  it('the bundle holds the modules of formula text alone, under 65 KB', async () => {
     const { code, used } = await bundle()
     // wildcards: the lexer takes the escape of a regular expression's characters from it;
     // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections;
     // decimals, general, glyphs and functions/common (its rounding): Increase and Decrease Decimal, by what General shows in a column
-    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
-    // 46.1 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10); 51.8 with stepDecimals
-    expect(code.length).toBeLessThan(55 * 1024)
+    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
+    // 46.1 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10); 51.8 with stepDecimals;
+    // 54.5 with suggestPivotField; 63.0 (64,486 bytes) with pivotCells, pivotCellAt and renamedValueField (31.10)
+    expect(code.length).toBeLessThan(65 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
 
@@ -42,6 +44,10 @@ describe('text without the engine', () => {
       { category: 'number', name: 'Числовой' },
       { key: 'currency', name: 'Денежный', format: '#,##0.00\\ "₽"', code: '#,##0.00\\ "₽"' },
     ])
+    // what a PivotTable's cell is, and a value field's name by its function, without the engine
+    const book = "{ sheets: [{ name: 'P', cells: {}, pivotTables: [{ name: 'PT', cache: 1, location: { range: 'A3:B5', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: [{ items: [{ item: 0 }] }, {}], rows: [0], values: [{ field: 1, name: 'Sum of N' }], rowLines: [{ items: [0] }, { type: 'grand', items: [0] }], columnLines: [{ items: [] }] }] }] }"
+    expect(out(`[TEXT.pivotCellAt(${book}, 'P', 'A4'), TEXT.pivotCellAt(${book}, 'P', 'B4').kind, TEXT.pivotCells(${book}, 'P', 'PT').buttons]`)).toEqual([{ pivot: 'PT', kind: 'item', axis: 'rows', field: 0, item: 0, rowItems: [{ field: 0, item: 0 }] }, 'value', ['A3']])
+    expect(out(`[TEXT.renamedValueField('sum of qty2', 'sum', 'count', 'Qty'), TEXT.renamedValueField('Quantity', 'sum', 'count', 'Qty', 'ru-RU')]`)).toEqual(['Count of qty2', 'Количество по полю Qty'])
     expect(out(`(() => { try { TEXT.scanReferences('=A1', { locale: 'ru-RU' }) } catch (e) { return e.message } })()`)).toBe(
       "opts.locale: the locale ru-RU is not loaded: pass the locale as an object: ruRU from the package's module locales/ru-RU (loaded: en-US)",
     )
