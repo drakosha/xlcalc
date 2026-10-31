@@ -137,8 +137,11 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   })
   const colItems = hasItems(colFields)
   const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems ? 1 : 0
+  // the classic layout keeps the row of the columns' drop zone with no column field: the value field's name over it, `Total`
+  // over its values (the set corpus-shapes)
+  const classic = table.classicLayout === true && !colItems && values.length > 0
   // the caption row over the column fields; over value fields alone only with the Values row shown
-  const captionRow = colItems || (table.valuesRow && colFields.includes('values')) ? 1 : 0
+  const captionRow = colItems || classic || (table.valuesRow && colFields.includes('values')) ? 1 : 0
   const height = captionRow + Math.max(colFields.length, 1)
   const empty = !rowFields.length && !colFields.length && !values.length
   const dataCols = empty ? EMPTY_COLS - width : !values.length && !colFields.length ? 0 : columnLines.length
@@ -202,7 +205,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
       put(top + height - 1, left + labelCol[k], header ? (table.captions?.rowHeader ?? words.rowHeader) : fieldName(f), header ? { kind: 'rowHeader' } : { kind: 'field', field: f })
     })
   }
-  if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, valueName(0), { kind: 'value', value: 0 })
+  if (!colFields.length && values.length === 1 && !rowFields.includes('values')) put(top + height - 1, left + width, classic ? words.total : valueName(0), { kind: 'value', value: 0 })
   if (!rowFields.length && width === 1 && values.length === 1) put(top + height, left, valueName(0), { kind: 'value', value: 0 })
 
   // the labels of the columns' lines, a field per row under the caption row

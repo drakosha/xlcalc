@@ -463,7 +463,7 @@ describe('PivotTables', () => {
         const book = pivotBook(locale)
         const sheet = book.sheets[1]
         const sheets = [book.sheets[0], { ...sheet, ...own, cells: { ...sheet.cells, ...own.cells }, pivotTables: [...sheet.pivotTables!, ...(own.pivotTables ?? [])] }]
-        const laid: PivotLaidOut = { location: sheet.pivotTables![0].location, rowLines: [], columnLines: [], area: { r1: 2, c1: 0, r2: 4, c2: 3 }, cells: [] }
+        const laid: PivotLaidOut = { location: { ...sheet.pivotTables![0].location, range: 'A3:D5' }, rowLines: [], columnLines: [], area: { r1: 2, c1: 0, r2: 4, c2: 3 }, cells: [] }
         const r = placePivots({ ...book, sheets }, [{ sheet: 'Свод', table: sheet.pivotTables![0], laid }], 'refuse')
         expect(message(r), what).toBe(say(m))
       }

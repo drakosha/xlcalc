@@ -1,0 +1,3524 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 30
+ },
+ "cases": [
+  {
+   "id": "ties-down",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-up",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "ascending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-count-down",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Count of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-second-value",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty",
+      "fn": "count"
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-inner-down",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-inner-up",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Product",
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "ascending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-both-down",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    },
+    {
+     "sort": "Product",
+     "order": "descending",
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "ties-after-value-filter",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "sort": "Region",
+     "order": "descending",
+     "by": "Sum of Qty"
+    },
+    {
+     "filter": "Region",
+     "type": "ValueIsGreaterThan",
+     "value1": 0,
+     "by": "Sum of Qty"
+    }
+   ]
+  },
+  {
+   "id": "classic-tabular",
+   "data": "shapes",
+   "ops": [
+    {
+     "table": {
+      "classic": true
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "classic-no-subtotals",
+   "data": "shapes",
+   "ops": [
+    {
+     "table": {
+      "classic": true
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "rows": [
+      "Region",
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "subtotals": "Region",
+     "fns": "none"
+    }
+   ]
+  },
+  {
+   "id": "classic-two-values",
+   "data": "shapes",
+   "ops": [
+    {
+     "table": {
+      "classic": true
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    }
+   ]
+  },
+  {
+   "id": "classic-columns",
+   "data": "shapes",
+   "ops": [
+    {
+     "table": {
+      "classic": true
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "classic-page",
+   "data": "shapes",
+   "ops": [
+    {
+     "table": {
+      "classic": true
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "pages": [
+      "Code"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "hidden-column-row",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "hide": "Product",
+     "items": [
+      "Z"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hidden-column-row-no-grand",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "table": {
+      "columnGrand": false
+     }
+    },
+    {
+     "hide": "Product",
+     "items": [
+      "Z"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hidden-row-column",
+   "data": "shapes",
+   "ops": [
+    {
+     "rows": [
+      "Product"
+     ]
+    },
+    {
+     "columns": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "hide": "Product",
+     "items": [
+      "Z"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "page-one-of-several",
+   "data": "shapes",
+   "ops": [
+    {
+     "pages": [
+      "Code"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "page": "Code",
+     "items": [
+      "15",
+      "25"
+     ]
+    },
+    {
+     "hide": "Code",
+     "items": [
+      "25"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "page-one-text-of-several",
+   "data": "shapes",
+   "ops": [
+    {
+     "pages": [
+      "Product"
+     ]
+    },
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "page": "Product",
+     "items": [
+      "X",
+      "Z"
+     ]
+    },
+    {
+     "hide": "Product",
+     "items": [
+      "Z"
+     ]
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "ties-down": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 c9a32bdf14eb94ba",
+  "ties-up": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 f3ef414e24d368b2",
+  "ties-count-down": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 1d2239283db5d94a",
+  "ties-second-value": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 5b50a3cb9d66d3bd",
+  "ties-inner-down": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 a2a5fc0d2cc29d4d",
+  "ties-inner-up": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 6c24b9e761e7a732",
+  "ties-both-down": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 d12915ce2e76146f",
+  "ties-after-value-filter": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 7bf48b81340c0fa5",
+  "classic-tabular": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 f2ac164166b8e48e",
+  "classic-no-subtotals": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 3f4bef8ab772013a",
+  "classic-two-values": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 ed8cd3a4da45047b",
+  "classic-columns": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 fa27b31391377413",
+  "classic-page": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 540c6a6cb786261f",
+  "hidden-column-row": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 e166f459d6a8f42b",
+  "hidden-column-row-no-grand": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 26ba29f142cceb98",
+  "hidden-row-column": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 b7677cb37efad048",
+  "page-one-of-several": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 60401fa02b143a33",
+  "page-one-text-of-several": "26193ffe2ddf674fb53777cf2bc441722ffa093634ffa1a5aa082e4459e25905 ba951b11c057dce6"
+ },
+ "answers": {
+  "ties-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "A",
+         10
+        ],
+        [
+         "B",
+         10
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "A",
+         "10"
+        ],
+        [
+         "B",
+         "10"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-up": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "B",
+         10
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "A",
+         10
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "B",
+         "10"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "A",
+         "10"
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-count-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C10",
+       "area": "A3:C10",
+       "body": "B4:C10",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty",
+         "Sum of Qty"
+        ],
+        [
+         "A",
+         2,
+         10
+        ],
+        [
+         "D",
+         2,
+         10
+        ],
+        [
+         "B",
+         2,
+         10
+        ],
+        [
+         "F",
+         1,
+         3
+        ],
+        [
+         "C",
+         1,
+         5
+        ],
+        [
+         "E",
+         null,
+         null
+        ],
+        [
+         "Grand Total",
+         8,
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty",
+         "Sum of Qty"
+        ],
+        [
+         "A",
+         "2",
+         "10"
+        ],
+        [
+         "D",
+         "2",
+         "10"
+        ],
+        [
+         "B",
+         "2",
+         "10"
+        ],
+        [
+         "F",
+         "1",
+         "3"
+        ],
+        [
+         "C",
+         "1",
+         "5"
+        ],
+        [
+         "E",
+         "",
+         ""
+        ],
+        [
+         "Grand Total",
+         "8",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Count of Qty",
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-second-value": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:D10",
+       "area": "A3:D10",
+       "body": "B4:D10",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty",
+         "Sum of Qty",
+         "Sum of Price"
+        ],
+        [
+         "D",
+         2,
+         10,
+         9.25
+        ],
+        [
+         "A",
+         2,
+         10,
+         11.25
+        ],
+        [
+         "B",
+         2,
+         10,
+         8
+        ],
+        [
+         "C",
+         1,
+         5,
+         4.75
+        ],
+        [
+         "F",
+         1,
+         3,
+         9
+        ],
+        [
+         "E",
+         null,
+         null,
+         5
+        ],
+        [
+         "Grand Total",
+         8,
+         38,
+         47.25
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty",
+         "Sum of Qty",
+         "Sum of Price"
+        ],
+        [
+         "D",
+         "2",
+         "10",
+         "9.25"
+        ],
+        [
+         "A",
+         "2",
+         "10",
+         "11.25"
+        ],
+        [
+         "B",
+         "2",
+         "10",
+         "8"
+        ],
+        [
+         "C",
+         "1",
+         "5",
+         "4.75"
+        ],
+        [
+         "F",
+         "1",
+         "3",
+         "9"
+        ],
+        [
+         "E",
+         "",
+         "",
+         "5"
+        ],
+        [
+         "Grand Total",
+         "8",
+         "38",
+         "47.25"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Count of Qty",
+      "op 2": "Sum of Qty",
+      "op 3": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "ties-inner-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "X",
+         17
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "D",
+         4
+        ],
+        [
+         "A",
+         4
+        ],
+        [
+         "B",
+         4
+        ],
+        [
+         "Y",
+         18
+        ],
+        [
+         "A",
+         6
+        ],
+        [
+         "D",
+         6
+        ],
+        [
+         "B",
+         6
+        ],
+        [
+         "Z",
+         3
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "X",
+         "17"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "D",
+         "4"
+        ],
+        [
+         "A",
+         "4"
+        ],
+        [
+         "B",
+         "4"
+        ],
+        [
+         "Y",
+         "18"
+        ],
+        [
+         "A",
+         "6"
+        ],
+        [
+         "D",
+         "6"
+        ],
+        [
+         "B",
+         "6"
+        ],
+        [
+         "Z",
+         "3"
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-inner-up": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "X",
+         17
+        ],
+        [
+         "B",
+         4
+        ],
+        [
+         "D",
+         4
+        ],
+        [
+         "A",
+         4
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "Y",
+         18
+        ],
+        [
+         "B",
+         6
+        ],
+        [
+         "A",
+         6
+        ],
+        [
+         "D",
+         6
+        ],
+        [
+         "Z",
+         3
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "X",
+         "17"
+        ],
+        [
+         "B",
+         "4"
+        ],
+        [
+         "D",
+         "4"
+        ],
+        [
+         "A",
+         "4"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "Y",
+         "18"
+        ],
+        [
+         "B",
+         "6"
+        ],
+        [
+         "A",
+         "6"
+        ],
+        [
+         "D",
+         "6"
+        ],
+        [
+         "Z",
+         "3"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-both-down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B19",
+       "area": "A3:B19",
+       "body": "B4:B19",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "A",
+         10
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "B",
+         10
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "X",
+         5
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "Z",
+         3
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "Z",
+         null
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "A",
+         "10"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "B",
+         "10"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "X",
+         "5"
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "Z",
+         "3"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "Z",
+         ""
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "ties-after-value-filter": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "A",
+         10
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "B",
+         10
+        ],
+        [
+         "X",
+         4
+        ],
+        [
+         "Y",
+         6
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "X",
+         5
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "Z",
+         3
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "A",
+         "10"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "B",
+         "10"
+        ],
+        [
+         "X",
+         "4"
+        ],
+        [
+         "Y",
+         "6"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "X",
+         "5"
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "Z",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "classic-tabular": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C20",
+       "area": "A3:C20",
+       "body": "C5:C20",
+       "values": [
+        [
+         "Sum of Qty",
+         null,
+         null
+        ],
+        [
+         "Region",
+         "Product",
+         "Total"
+        ],
+        [
+         "A",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "A Total",
+         null,
+         10
+        ],
+        [
+         "B",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "B Total",
+         null,
+         10
+        ],
+        [
+         "C",
+         "X",
+         5
+        ],
+        [
+         "C Total",
+         null,
+         5
+        ],
+        [
+         "D",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "D Total",
+         null,
+         10
+        ],
+        [
+         "E",
+         "Z",
+         null
+        ],
+        [
+         "E Total",
+         null,
+         null
+        ],
+        [
+         "F",
+         "Z",
+         3
+        ],
+        [
+         "F Total",
+         null,
+         3
+        ],
+        [
+         "Grand Total",
+         null,
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "",
+         ""
+        ],
+        [
+         "Region",
+         "Product",
+         "Total"
+        ],
+        [
+         "A",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "A Total",
+         "",
+         "10"
+        ],
+        [
+         "B",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "B Total",
+         "",
+         "10"
+        ],
+        [
+         "C",
+         "X",
+         "5"
+        ],
+        [
+         "C Total",
+         "",
+         "5"
+        ],
+        [
+         "D",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "D Total",
+         "",
+         "10"
+        ],
+        [
+         "E",
+         "Z",
+         ""
+        ],
+        [
+         "E Total",
+         "",
+         ""
+        ],
+        [
+         "F",
+         "Z",
+         "3"
+        ],
+        [
+         "F Total",
+         "",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "classic-no-subtotals": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C14",
+       "area": "A3:C14",
+       "body": "C5:C14",
+       "values": [
+        [
+         "Sum of Qty",
+         null,
+         null
+        ],
+        [
+         "Region",
+         "Product",
+         "Total"
+        ],
+        [
+         "A",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "B",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "C",
+         "X",
+         5
+        ],
+        [
+         "D",
+         "X",
+         4
+        ],
+        [
+         null,
+         "Y",
+         6
+        ],
+        [
+         "E",
+         "Z",
+         null
+        ],
+        [
+         "F",
+         "Z",
+         3
+        ],
+        [
+         "Grand Total",
+         null,
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "",
+         ""
+        ],
+        [
+         "Region",
+         "Product",
+         "Total"
+        ],
+        [
+         "A",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "B",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "C",
+         "X",
+         "5"
+        ],
+        [
+         "D",
+         "X",
+         "4"
+        ],
+        [
+         "",
+         "Y",
+         "6"
+        ],
+        [
+         "E",
+         "Z",
+         ""
+        ],
+        [
+         "F",
+         "Z",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "classic-two-values": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C11",
+       "area": "A3:C11",
+       "body": "B5:C11",
+       "values": [
+        [
+         null,
+         "Values",
+         null
+        ],
+        [
+         "Region",
+         "Sum of Qty",
+         "Sum of Price"
+        ],
+        [
+         "A",
+         10,
+         11.25
+        ],
+        [
+         "B",
+         10,
+         8
+        ],
+        [
+         "C",
+         5,
+         4.75
+        ],
+        [
+         "D",
+         10,
+         9.25
+        ],
+        [
+         "E",
+         null,
+         5
+        ],
+        [
+         "F",
+         3,
+         9
+        ],
+        [
+         "Grand Total",
+         38,
+         47.25
+        ]
+       ],
+       "text": [
+        [
+         "",
+         "Values",
+         ""
+        ],
+        [
+         "Region",
+         "Sum of Qty",
+         "Sum of Price"
+        ],
+        [
+         "A",
+         "10",
+         "11.25"
+        ],
+        [
+         "B",
+         "10",
+         "8"
+        ],
+        [
+         "C",
+         "5",
+         "4.75"
+        ],
+        [
+         "D",
+         "10",
+         "9.25"
+        ],
+        [
+         "E",
+         "",
+         "5"
+        ],
+        [
+         "F",
+         "3",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "38",
+         "47.25"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 3": "Sum of Qty",
+      "op 4": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "classic-columns": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:E11",
+       "area": "A3:E11",
+       "body": "B5:E11",
+       "values": [
+        [
+         "Sum of Qty",
+         "Product",
+         null,
+         null,
+         null
+        ],
+        [
+         "Region",
+         "X",
+         "Y",
+         "Z",
+         "Grand Total"
+        ],
+        [
+         "A",
+         4,
+         6,
+         null,
+         10
+        ],
+        [
+         "B",
+         4,
+         6,
+         null,
+         10
+        ],
+        [
+         "C",
+         5,
+         null,
+         null,
+         5
+        ],
+        [
+         "D",
+         4,
+         6,
+         null,
+         10
+        ],
+        [
+         "E",
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "F",
+         null,
+         null,
+         3,
+         3
+        ],
+        [
+         "Grand Total",
+         17,
+         18,
+         3,
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Product",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Region",
+         "X",
+         "Y",
+         "Z",
+         "Grand Total"
+        ],
+        [
+         "A",
+         "4",
+         "6",
+         "",
+         "10"
+        ],
+        [
+         "B",
+         "4",
+         "6",
+         "",
+         "10"
+        ],
+        [
+         "C",
+         "5",
+         "",
+         "",
+         "5"
+        ],
+        [
+         "D",
+         "4",
+         "6",
+         "",
+         "10"
+        ],
+        [
+         "E",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "F",
+         "",
+         "",
+         "3",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "17",
+         "18",
+         "3",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 4": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "classic-page": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A1:B11",
+       "body": "B5:B11",
+       "values": [
+        [
+         "Code",
+         "(All)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Sum of Qty",
+         null
+        ],
+        [
+         "Region",
+         "Total"
+        ],
+        [
+         "A",
+         10
+        ],
+        [
+         "B",
+         10
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "E",
+         null
+        ],
+        [
+         "F",
+         3
+        ],
+        [
+         "Grand Total",
+         38
+        ]
+       ],
+       "text": [
+        [
+         "Code",
+         "(All)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Sum of Qty",
+         ""
+        ],
+        [
+         "Region",
+         "Total"
+        ],
+        [
+         "A",
+         "10"
+        ],
+        [
+         "B",
+         "10"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "E",
+         ""
+        ],
+        [
+         "F",
+         "3"
+        ],
+        [
+         "Grand Total",
+         "38"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 4": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "hidden-column-row": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:D9",
+       "area": "A3:D9",
+       "body": "B5:D9",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "X",
+         "Y",
+         "Grand Total"
+        ],
+        [
+         "A",
+         4,
+         6,
+         10
+        ],
+        [
+         "B",
+         4,
+         6,
+         10
+        ],
+        [
+         "C",
+         5,
+         null,
+         5
+        ],
+        [
+         "D",
+         4,
+         6,
+         10
+        ],
+        [
+         "Grand Total",
+         17,
+         18,
+         35
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "X",
+         "Y",
+         "Grand Total"
+        ],
+        [
+         "A",
+         "4",
+         "6",
+         "10"
+        ],
+        [
+         "B",
+         "4",
+         "6",
+         "10"
+        ],
+        [
+         "C",
+         "5",
+         "",
+         "5"
+        ],
+        [
+         "D",
+         "4",
+         "6",
+         "10"
+        ],
+        [
+         "Grand Total",
+         "17",
+         "18",
+         "35"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "hidden-column-row-no-grand": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:D8",
+       "area": "A3:D8",
+       "body": "B5:D8",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "X",
+         "Y",
+         "Grand Total"
+        ],
+        [
+         "A",
+         4,
+         6,
+         10
+        ],
+        [
+         "B",
+         4,
+         6,
+         10
+        ],
+        [
+         "C",
+         5,
+         null,
+         5
+        ],
+        [
+         "D",
+         4,
+         6,
+         10
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "X",
+         "Y",
+         "Grand Total"
+        ],
+        [
+         "A",
+         "4",
+         "6",
+         "10"
+        ],
+        [
+         "B",
+         "4",
+         "6",
+         "10"
+        ],
+        [
+         "C",
+         "5",
+         "",
+         "5"
+        ],
+        [
+         "D",
+         "4",
+         "6",
+         "10"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "hidden-row-column": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:F7",
+       "area": "A3:F7",
+       "body": "B5:F7",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "A",
+         "B",
+         "C",
+         "D",
+         "Grand Total"
+        ],
+        [
+         "X",
+         4,
+         4,
+         5,
+         4,
+         17
+        ],
+        [
+         "Y",
+         6,
+         6,
+         null,
+         6,
+         18
+        ],
+        [
+         "Grand Total",
+         10,
+         10,
+         5,
+         10,
+         35
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "A",
+         "B",
+         "C",
+         "D",
+         "Grand Total"
+        ],
+        [
+         "X",
+         "4",
+         "4",
+         "5",
+         "4",
+         "17"
+        ],
+        [
+         "Y",
+         "6",
+         "6",
+         "",
+         "6",
+         "18"
+        ],
+        [
+         "Grand Total",
+         "10",
+         "10",
+         "5",
+         "10",
+         "35"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "page-one-of-several": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B5",
+       "area": "A1:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Code",
+         15
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         10
+        ],
+        [
+         "Grand Total",
+         10
+        ]
+       ],
+       "text": [
+        [
+         "Code",
+         "15"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "D",
+         "10"
+        ],
+        [
+         "Grand Total",
+         "10"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "page-one-text-of-several": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B8",
+       "area": "A1:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Product",
+         "X"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "A",
+         4
+        ],
+        [
+         "B",
+         4
+        ],
+        [
+         "C",
+         5
+        ],
+        [
+         "D",
+         4
+        ],
+        [
+         "Grand Total",
+         17
+        ]
+       ],
+       "text": [
+        [
+         "Product",
+         "X"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "A",
+         "4"
+        ],
+        [
+         "B",
+         "4"
+        ],
+        [
+         "C",
+         "5"
+        ],
+        [
+         "D",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "17"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
+     }
+    }
+   ]
+  }
+ }
+}

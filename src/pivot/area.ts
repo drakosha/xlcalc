@@ -15,10 +15,14 @@ export function pivotArea(t: Pick<PivotTable, 'location'>): Rect | null {
   return { r1: Math.max(0, x.r1 - rows - 1), c1: x.c1, r2: x.r2, c2: Math.max(x.c2, x.c1 + wide) }
 }
 
-/** The parts of a PivotTable an entry cannot change: its range and its Filters area, not the blank row between them, which takes anything as in Excel. */
+/**
+ * The parts of a PivotTable an entry cannot change and a refresh clears: its range and its Filters area as wide as its
+ * filters, not the blank row between them nor the cells beside the filters, which hold anything as in Excel.
+ */
 export function pivotParts(t: Pick<PivotTable, 'location'>): Rect[] {
   const whole = pivotArea(t)
   const x = parseRange(t.location.range)
   if (!whole || !x) return []
-  return whole.r1 < x.r1 - 1 ? [x, { ...whole, r2: x.r1 - 2 }] : [x]
+  const wide = 3 * Math.max(1, t.location.pageColumns ?? 1) - 2
+  return whole.r1 < x.r1 - 1 ? [x, { r1: whole.r1, r2: x.r1 - 2, c1: x.c1, c2: x.c1 + wide }] : [x]
 }

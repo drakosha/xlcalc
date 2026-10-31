@@ -96,8 +96,64 @@ function variantColumns(v: Variant): SourceColumn[] {
 
 export const salesColumns = (): SourceColumn[] => variantColumns(SALES)
 
+/**
+ * The rows of `shapes`, few and made by hand for the shapes of the PivotTables a corpus showed: Region first comes as B,
+ * D, A, C (its order sorted A, B, C, D, E, F), and A, B and D sum 10 of Qty each, 4 of it with X and 6 with Y, so a sort
+ * by a value has ties over the products and within one; E holds no Qty, F only the product Z; Code numbers.
+ */
+export function shapeColumns(): SourceColumn[] {
+  const rows: [string, string, number, number | undefined, number][] = [
+    ['B', 'X', 5, 4, 1.5],
+    ['D', 'X', 15, 4, 2.25],
+    ['A', 'Y', 5, 6, 3],
+    ['C', 'X', 25, 5, 4.75],
+    ['E', 'Z', 35, undefined, 5],
+    ['B', 'Y', 5, 6, 6.5],
+    ['D', 'Y', 15, 6, 7],
+    ['A', 'X', 25, 4, 8.25],
+    ['F', 'Z', 25, 3, 9],
+  ]
+  const names = ['Region', 'Product', 'Code', 'Qty', 'Price']
+  return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number })) }))
+}
+
+/**
+ * The rows of `blanks`, made by hand: Product of text, a number and empty cells, B and D with an empty Product alone, B
+ * with Flag FALSE alone; for an item whose records all lie in a hidden item of another field.
+ */
+export function blankColumns(): SourceColumn[] {
+  const rows: [string, string | number | undefined, number, number, boolean][] = [
+    ['A', 'X', 1, 2, true],
+    ['A', undefined, 2, 3, true],
+    ['B', undefined, 2, 4, false],
+    ['C', 10, 1, 5, true],
+    ['C', 'X', 3, 1, false],
+    ['D', undefined, 4, 6, true],
+  ]
+  const names = ['Region', 'Product', 'Code', 'Qty', 'Flag']
+  return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number | boolean })) }))
+}
+
+/**
+ * The rows of `blanks2`, made by hand: Region with empty cells whose Product is empty too, Product of numbers, text and
+ * empty cells, Flag FALSE on some rows of A and of the empty Region.
+ */
+export function blankColumns2(): SourceColumn[] {
+  const rows: [string | undefined, string | number | undefined, number, number, boolean][] = [
+    ['A', 1, 5, 2, true],
+    ['A', 'X', 6, 3, false],
+    [undefined, undefined, 5, 4, true],
+    [undefined, undefined, 6, 7, false],
+    ['B', 2, 7, 5, false],
+    ['B', undefined, 7, 1, true],
+    ['A', 'X', 5, 8, true],
+  ]
+  const names = ['Region', 'Product', 'Code', 'Qty', 'Flag']
+  return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number | boolean })) }))
+}
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK) }
+export const DATA: Record<string, () => SourceColumn[]> = { sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2 }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`

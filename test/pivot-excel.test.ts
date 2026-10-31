@@ -15,6 +15,9 @@ import * as calcHeld from '../bench/coverage/pivot/calc-held.js'
 import type { PivotPhase, PivotSet } from '../bench/coverage/pivot/cases.js'
 import type { CellValue } from '../src/contract.js'
 import * as filter from '../bench/coverage/pivot/filter.js'
+import * as corpusShapes from '../bench/coverage/pivot/corpus-shapes.js'
+import * as corpusShapes2 from '../bench/coverage/pivot/corpus-shapes-2.js'
+import * as corpusShapes3 from '../bench/coverage/pivot/corpus-shapes-3.js'
 import * as filterHeld from '../bench/coverage/pivot/filter-held.js'
 import * as group from '../bench/coverage/pivot/group.js'
 import * as groupHeld from '../bench/coverage/pivot/group-held.js'
@@ -57,10 +60,13 @@ const KNOWN: Record<string, string[]> = {
   slicer: [],
   'slicer-held': [],
   'ru-RU/basic': [],
+  'corpus-shapes': [],
+  'corpus-shapes-2': [],
+  'corpus-shapes-3': [],
   'ru-RU/layout': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'ru-RU/basic': basic, 'ru-RU/layout': layout }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout }
 
 /**
  * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums,

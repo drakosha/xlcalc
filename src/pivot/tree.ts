@@ -2,7 +2,7 @@
  * An axis's items as shown: the paths of the records let through as branches, items with no data where a field shows
  * them, each branch's items in the order shown (sorted by label or by a value), then as `PivotNode`s.
  */
-import type { CellValue, ErrorCode, PivotAxisField, PivotCache, PivotTable } from '../contract.js'
+import type { CellValue, ErrorCode, PivotAxisField, PivotCache, PivotLine, PivotTable } from '../contract.js'
 import { ERROR_TYPE } from '../error-type.js'
 import { sortOrder } from '../sort-order.js'
 import type { PivotNode } from './result.js'
@@ -79,10 +79,11 @@ function otherPath(fields: readonly number[], given: readonly { field: number; i
 
 /**
  * Sorts each branch's items by its field's sort: by label (custom lists first, with `customListSort`), or by a value
- * field's values at the other axis's items (`value`, its paths on the rows and the columns); ties under an item of a field
- * before go by the item's value over all of them (`alone`), then keep the order before.
+ * field's values at the other axis's items (`value`, its paths on the rows and the columns); ties keep the order of the
+ * last layout (`before`, by path), then under an item of a field before go by the item's value over all of them
+ * (`alone`), then keep the field's order.
  */
-export function sortBranches(s: Sorting, root: Branch, real: readonly number[], other: readonly number[], rows: boolean, value: (path: number[], at: number[], v: number) => CellValue, alone: (f: number, item: number, at: number[], v: number) => CellValue): void {
+export function sortBranches(s: Sorting, root: Branch, real: readonly number[], other: readonly number[], rows: boolean, value: (path: number[], at: number[], v: number) => CellValue, alone: (f: number, item: number, at: number[], v: number) => CellValue, before: ReadonlyMap<string, number>): void {
   const walk = (b: Branch, level: number, path: number[]) => {
     if (level === real.length) return
     const f = real[level]
@@ -96,7 +97,14 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
       // under an item of a field before, ties go by the items' values over every item before (the set sort-held)
       const whole = new Map(level ? b.order.map((p) => [p, alone(f, p, at, v)]) : [])
       const was = new Map(b.order.map((p, i) => [p, i]))
-      b.order.sort((x, y) => valueOrder(val.get(x)!, val.get(y)!, desc) || (level ? valueOrder(whole.get(x)!, whole.get(y)!, desc) : 0) || was.get(x)! - was.get(y)!)
+      // ties keep the order the PivotTable was last laid out in, which Excel's sort leaves them in by no rule we found
+      // (the set corpus-shapes), and an item new to it comes after those it had
+      const last = new Map(b.order.map((p) => [p, before.get([...path, p].join(',')) ?? Infinity]))
+      const earlier = (x: number, y: number) => {
+        const [a, b] = [last.get(x)!, last.get(y)!]
+        return a === b ? 0 : a < b ? -1 : 1
+      }
+      b.order.sort((x, y) => valueOrder(val.get(x)!, val.get(y)!, desc) || earlier(x, y) || (level ? valueOrder(whole.get(x)!, whole.get(y)!, desc) : 0) || was.get(x)! - was.get(y)!)
     } else if (sort) {
       const cached = groupedItems(s.cache.fields[f]) ?? []
       const item = (p: number) => {
@@ -133,4 +141,25 @@ const copied = (ns: readonly PivotNode[]): PivotNode[] => ns.map((n) => ({ ...n,
 function withValues(tree: PivotNode[], at: number, count: number): PivotNode[] {
   if (at === 0) return Array.from({ length: count }, (_, v): PivotNode => ({ field: 'values', item: v, children: copied(tree) }))
   return tree.map((n) => ({ ...n, children: withValues(n.children, at - 1, count) }))
+}
+
+/**
+ * The place of each path of an axis's items in the PivotTable's saved lines (`rowLines`, `columnLines`), the first line
+ * a path begins: its key the path's items joined (`values` left out).
+ */
+export function linesBefore(lines: readonly PivotLine[] | undefined, fields: readonly PivotAxisField[]): Map<string, number> {
+  const out = new Map<string, number>()
+  let path: number[] = []
+  ;(lines ?? []).forEach((line, n) => {
+    if (line.type === 'grand' || line.type === 'blank') return
+    path = [...path.slice(0, line.repeat ?? 0), ...line.items]
+    const real: number[] = []
+    path.forEach((p, k) => {
+      if (fields[k] === 'values' || k >= fields.length) return
+      real.push(p)
+      const key = real.join(',')
+      if (!out.has(key)) out.set(key, n)
+    })
+  })
+  return out
 }
