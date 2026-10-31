@@ -447,7 +447,7 @@ function Step($xl, $wb, $s) {
       $rg = Rg $wb $s.sheet $s.cell
       try {
         switch ($s.kind) {
-          'n' { $rg.Value2 = [double]::Parse($s.value, $inv) }
+          'n' { $rg.Value2 = if ($s.bits) { [BitConverter]::Int64BitsToDouble([Convert]::ToInt64([string]$s.bits, 16)) } else { [double]::Parse($s.value, $inv) } }
           's' { $rg.Value2 = [string]$s.value }
           'f' { $rg.Formula = [string]$s.value }
           'f2' { $rg.Formula2 = [string]$s.value }

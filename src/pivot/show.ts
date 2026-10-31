@@ -16,6 +16,7 @@
  * shown (the sets show-items and show-held).
  */
 import type { CellValue, ErrorCode, PivotDataField, PivotFunction } from '../contract.js'
+import { pivotAdd, pivotDivide, pivotMultiply } from './number.js'
 import type { PivotNode, PivotResult } from './result.js'
 
 /** A value at the paths of the rows and the columns, of a value field, by a subtotal's own function. */
@@ -32,7 +33,7 @@ function ratio(x: CellValue, y: CellValue): CellValue {
   if (isError(x)) return x
   if (isError(y)) return y
   if (typeof x !== 'number' || typeof y !== 'number') return null
-  return y === 0 ? DIV0 : x / y
+  return y === 0 ? DIV0 : pivotDivide(x, y)
 }
 
 /** A share of a parent: empty where either is an error (the set show-held). */
@@ -106,7 +107,7 @@ export function shownValues(result: PivotResult): PivotValueAt {
         const [r, c, g] = [at(rows, []), at([], columns), at([], [])].map((y) => y ?? 0)
         const e = [n, r, c, g].find(isError)
         if (e) return e
-        return ratio((n as number) * (g as number), (r as number) * (c as number))
+        return ratio(ratio(pivotMultiply(n as number, g as number), r), c)
       }
     }
     // the rest go along the base field's items, at the cells on its level and under it
@@ -141,10 +142,10 @@ export function shownValues(result: PivotResult): PivotValueAt {
         const y = along(b)
         if (show === 'difference') {
           const m = y ?? 0
-          return isError(n) ? n : isError(m) ? m : (n as number) - (m as number)
+          return isError(n) ? n : isError(m) ? m : pivotAdd(n as number, -(m as number))
         }
         if (x === null) return NULL
-        return show === 'percent' ? ratio(x, y) : ratio(typeof x === 'number' && typeof y === 'number' ? x - y : x, y)
+        return show === 'percent' ? ratio(x, y) : ratio(typeof x === 'number' && typeof y === 'number' ? pivotAdd(x, -y) : x, y)
       }
       case 'runTotal':
       case 'percentOfRunningTotal': {
@@ -155,14 +156,15 @@ export function shownValues(result: PivotResult): PivotValueAt {
         for (const item of items) {
           const y = along(item)
           if (isError(y)) total = y
-          else if (typeof y === 'number' && !isError(total)) total = (total ?? 0) + y
+          else if (typeof y === 'number' && !isError(total)) total = pivotAdd(total ?? 0, y)
           if (!passed) sum = total ?? 0
           if (item === own) {
             if (show === 'runTotal') return sum
             passed = true
           }
         }
-        return ratio(sum, total)
+        const denominator = path.length === level + 1 ? (axis ? at(rows, path.slice(0, level)) : at(path.slice(0, level), columns)) : total
+        return ratio(sum, denominator)
       }
       case 'rankAscending':
       case 'rankDescending': {

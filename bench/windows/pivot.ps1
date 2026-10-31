@@ -232,6 +232,13 @@ function Pivot($xl, $wb, $s) {
         'null'
       }
       # what RefreshTable answers (true when Excel refreshed)
+      'drill' {
+        $before = @($wb.Worksheets | ForEach-Object { [string]$_.Name })
+        $wb.Worksheets.Item([string]$s.sheet).Range([string]$s.cell).ShowDetail = $true
+        $added = @($wb.Worksheets | Where-Object { $before -notcontains [string]$_.Name })
+        if ($added.Count -ne 1) { throw 'Show Details did not make one sheet' }
+        Grid $added[0].UsedRange.Value2
+      }
       'refresh' { Cell ([bool](PTable $wb $s).RefreshTable()) }
       # every pivot table of the book, [sheet, name], in the order of the sheets
       'list' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1])) }) }

@@ -6,7 +6,7 @@ import type { PivotAxisField, PivotCache, PivotField, PivotTable } from '../cont
 import { byValue } from './filters.js'
 import { groupedItems } from './items.js'
 import { withListed } from './items.js'
-import { labelOrder } from './values.js'
+import { sortLabels } from './label-sort.js'
 
 /** The fields that group the records: on rows, columns or Filters, or filtered by hidden items (a slicer's field) or by label or date (a timeline's). */
 function groupingFields(table: PivotTable): Set<number> {
@@ -34,7 +34,7 @@ export function prepared(table: PivotTable, cache: PivotCache, epoch: number, li
     const added = items.map((_, k) => k).filter((k) => !known.has(k))
     if (!added.length) return pf
     // groups of a range keep their order, from the first to the last
-    if (!pf.items?.length && !out.fields[i].group?.range) added.sort((a, b) => labelOrder(items[a], items[b], false, table.customListSort !== false ? lists : null, epoch) || a - b)
+    if (!pf.items?.length && !out.fields[i].group?.range) sortLabels(added, p => items[p], false, table.customListSort !== false ? lists : null, epoch)
     const calculated = new Set((out.calculatedItems ?? []).flatMap((c) => (c.field === i ? [c.item] : [])))
     return { ...pf, items: [...(pf.items ?? []), ...added.map((item) => (calculated.has(item) ? { item, calculated: true } : { item }))] }
   })

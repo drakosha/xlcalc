@@ -13,6 +13,7 @@ import type { ValuesIn } from '../structure/values.js'
 import { computePivot } from './compute.js'
 import type { PivotRefresh } from './hook.js'
 import { refreshCache } from './refresh.js'
+import { orderedArea, type ItemOrder } from './label-sort.js'
 import { layoutPivot } from './layout.js'
 import { placePivots, type Placement } from './place.js'
 import { fieldIndex, sameRef, timelineBounds } from '../structure/slicer-choice.js'
@@ -21,6 +22,7 @@ import { sourceGrid } from './source.js'
 
 /** A PivotTable calculated: its sheet and name, and the calculation's PivotTable and cache. */
 interface Calculated {
+  itemOrder?: ItemOrder
   ref: PivotRef
   table: PivotTable
   cache: PivotCache
@@ -34,7 +36,7 @@ interface Spot {
 
 const refused = (book: BookInput, m: Parameters<typeof sayPivot>[1]): Applied => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
 
-export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource, blocked) => {
+export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today, fromSource, blocked, labelSort) => {
   const spots: Spot[] = book.sheets.flatMap((sh, s) => (sh.pivotTables ?? []).map((table) => ({ s, table })))
   const caches = new Map((book.pivotCaches ?? []).map((c) => [c.id, c]))
   let wanted: Set<number>
@@ -76,15 +78,24 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
     } else if (!cache.records) continue
     over.forEach((spot, k) => {
       const ref = { sheet: book.sheets[spot.s].name, name: spot.table.name }
-      const result = computePivot(liveFilters(tables[k], ref, book, next.fields), next, options)
+      const result = computePivot(liveFilters(tables[k], ref, book, next.fields), next, { ...options, sortLabels: fromSource || (refs?.some(r => sameRef(r, ref)) ? labelSort ?? false : false) })
       next = result.cache
-      results.push({ ref, table: result.table, cache: result.cache })
+      results.push({ itemOrder: result.itemOrder, ref, table: result.table, cache: result.cache })
       placed.push({ sheet: book.sheets[spot.s].name, table: { ...result.table, name: spot.table.name }, laid: layoutPivot(result, book) })
     })
     newCaches.set(id, next)
   }
   if (!newCaches.size) return { ok: true, book, geometry: [] }
   const out: BookInput = { ...book, pivotCaches: (book.pivotCaches ?? []).map((c) => newCaches.get(c.id) ?? c) }
+  out.sheets = out.sheets.map(sh => {
+    if (!sh.conditionalFormats) return sh
+    const changed = results.filter(r => caseKey(r.ref.sheet) === caseKey(sh.name) && r.itemOrder?.size)
+    if (!changed.length) return sh
+    return { ...sh, conditionalFormats: sh.conditionalFormats.map(rule => {
+      const r = rule.pivot && changed.find(r => caseKey(r.ref.name) === caseKey(rule.pivot!.pivot))
+      return r ? { ...rule, pivot: { ...rule.pivot!, areas: rule.pivot!.areas.map(a => orderedArea(a, r.itemOrder!)) } } : rule
+    }) }
+  })
   // the slicers over the caches laid out learn their items' data and choice
   if (book.slicerCaches?.some((sc) => sc.cache !== undefined && newCaches.has(sc.cache)))
     out.slicerCaches = book.slicerCaches.map((sc) => (sc.cache !== undefined && newCaches.has(sc.cache) ? slicerItems(sc, sc.pivots.flatMap((r) => results.filter((x) => sameRef(x.ref, r))), options) : sc))

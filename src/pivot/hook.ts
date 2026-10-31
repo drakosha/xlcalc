@@ -14,7 +14,7 @@ import type { ValuesIn } from '../structure/values.js'
  * date filters go by the session's day `today`. A PivotTable laid over cells it cannot take spills, as a refresh in
  * Excel 365 (`spill`, the default), or is refused, as a new or moved one (`refuse`).
  */
-export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse') => Applied
+export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse', labelSort?: readonly number[]) => Applied
 
 let refresh: PivotRefresh | null = null
 

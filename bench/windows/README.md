@@ -46,6 +46,8 @@ Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `d
 
 `XLWIN_OUT` directs all local job files to a caller's own temporary directory. Each job carries its own `xl.ps1` and `cond.ps1`: another worktree updating the shared `bin` cannot change a running job's steps.
 
+Numeric edits sent by `comEdit` carry their binary64 bits. The Windows step decodes those bits before assigning `Value2`; the legacy decimal parser can move a value to an adjacent double. Old job descriptions without bits still use their text. New measurements use new set names so the recorded answers from the older input path stay unchanged.
+
 ## Running it
 
 A command that takes a locale takes `en`, `ru` or the tag of one of the package's locales (`de-DE`), en-US when it names none.

@@ -5,7 +5,7 @@
  * source too; and a phase that refreshes after edits of the source is made from the phase before: its PivotTables and
  * caches, the source as this phase's book holds it, refreshed. The cells of each PivotTable's area are compared with
  * those Excel showed, numbers to 15 significant digits, a refusal with Excel's; the cases each set lists as known
- * differences are left out.
+ * differences are left out. Label sorts with overlapping lists use the separately recorded refresh as the source oracle.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -39,7 +39,7 @@ const DIR = new URL('./excel/win/pivot/', import.meta.url)
 
 /**
  * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
- * custom lists at once, which Excel orders by no order we found (`docs/development.md`).
+ * custom lists at once are checked against the recorded refresh as well as the saved layout.
  */
 const KNOWN: Record<string, string[]> = {
   'layout-held': [],
@@ -49,7 +49,7 @@ const KNOWN: Record<string, string[]> = {
   filter: [],
   group: [],
   calc: [],
-  sort: ['months-down/0/saved', 'months-down/0/source'],
+  sort: [],
   layout: [],
   refresh: [],
   show: [],
@@ -68,30 +68,17 @@ const KNOWN: Record<string, string[]> = {
 
 const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'corpus-shapes': corpusShapes, 'corpus-shapes-2': corpusShapes2, 'corpus-shapes-3': corpusShapes3, 'ru-RU/basic': basic, 'ru-RU/layout': layout }
 
-/**
- * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums,
- * and a calculated field's formula takes them, whose last bit Excel's order of adding sets (`docs/limitations.md`),
- * which a share or a ratio carries into its 15th digit.
- */
-const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14, 'show-held': 1e-14, calc: 1e-14, 'calc-held': 1e-14 }
-
-/** The cells alike: the same values, numbers to 15 significant digits or within `tolerance` of each other. */
-const alike = (got: CellValue[][], want: CellValue[][], tolerance: number) =>
-  got.length === want.length &&
-  got.every((r, i) => r.length === want[i].length && r.every((v, j) => {
-    const w = want[i][j]
-    return JSON.stringify(v) === JSON.stringify(w) || (typeof v === 'number' && typeof w === 'number' && Math.abs(v - w) <= tolerance * Math.abs(w))
-  }))
-
 async function differences(set: string): Promise<string[]> {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }
-  const tolerance = TOLERANCE[set] ?? 0
+  const refreshed = set === 'sort' ? JSON.parse(readFileSync(new URL('refresh-sort.json', DIR), 'utf8')).answers as Record<string, { phases: PivotPhase[] }> : undefined
   const out: string[] = []
   for (const c of SETS[set].buildPivotCases()) {
     const answer = answers.answers[c.id]
     if (!answer) continue
     for (const { at, result: r, refresh } of await replays(set, c, answer.phases.length)) {
-      const want = answer.phases[Number(at.split('/')[1])]
+      // A custom-list label sort is not idempotent: use Excel's actual refresh of this snapshot where recorded.
+      const want = at.endsWith('/source') && answer.phases.length === 1 && refreshed?.[c.id]?.phases[1]
+        ? refreshed[c.id].phases[1] : answer.phases[Number(at.split('/')[1])]
       const excelRefused = refresh && (want.errors ?? []).length > 0
       if (!r.ok) {
         if (!excelRefused) out.push(`${at}: refused, ${r.message}`)
@@ -104,7 +91,7 @@ async function differences(set: string): Promise<string[]> {
       for (const [name, area] of Object.entries(want.pivots)) {
         if ('error' in area) continue
         const got = rounded(shown(r.book, 'P', area.area))
-        if (!alike(got, rounded(area.values), tolerance)) out.push(`${at} ${name}: ${JSON.stringify(got)} for ${JSON.stringify(area.values)}`)
+        if (JSON.stringify(got) !== JSON.stringify(rounded(area.values))) out.push(`${at} ${name}: ${JSON.stringify(got)} for ${JSON.stringify(area.values)}`)
       }
     }
   }
