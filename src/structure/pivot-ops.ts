@@ -4,7 +4,7 @@
  * PivotTable shows, `xlcalc/pivot` lays it out again when loaded (`pivot/hook.ts`); without it, the PivotTable keeps its
  * cells and its cache is marked `stale`, which a file asks Excel to refresh on opening.
  */
-import type { BookInput, PivotCache, PivotCacheField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
+import type { BookInput, PivotCache, PivotCacheField, PivotDataField, PivotRef, PivotSource, PivotTable, PivotTablePatch, StructureOp } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
@@ -104,7 +104,8 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     const names = new Set<string>()
     out = {
       ...out,
-      values: out.values.map((d) => {
+      values: out.values.map((given, k) => {
+        const d = renamedForFunction(p.values?.[k], given, c, locale)
         const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
         let name = d.name ?? base
         if (d.name === undefined) for (let n = 2; names.has(caseKey(name)); n++) name = `${base}${n}`
@@ -114,6 +115,24 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
     }
   }
   return out
+}
+
+/** A value field's default name, Excel's for its function and field, with the number Excel adds to a second (`Sum of Qty2`). */
+const isDefaultName = (name: string | undefined, d: PivotDataField, c: PivotCache, locale: string | undefined) => {
+  if (name === undefined) return true
+  const base = valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', locale)
+  return caseKey(name) === caseKey(base) || (caseKey(name).startsWith(caseKey(base)) && /^\d+$/.test(name.slice(base.length)))
+}
+
+/**
+ * A value field given another function and no name of its own (the name it had, or none) takes the new function's
+ * default name where it had the old one's, as Excel renames it; a name of its own stays.
+ */
+function renamedForFunction(was: PivotDataField | undefined, d: PivotDataField, c: PivotCache, locale: string | undefined): PivotDataField {
+  if (!was || was.field !== d.field || (was.function ?? 'sum') === (d.function ?? 'sum') || (d.name !== undefined && d.name !== was.name)) return d
+  if (!isDefaultName(was.name, was, c, locale)) return d
+  const { name: _, ...rest } = d
+  return rest
 }
 
 /** The text of a header cell as a field's name: a number or a boolean as Excel shows it plainly; empty without a value. */
