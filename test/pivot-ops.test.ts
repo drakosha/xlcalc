@@ -121,6 +121,8 @@ describe('operations of the structure over a PivotTable', () => {
   it.each<[string, StructureOp, unknown]>([
     ['rows inserted above move it', { op: 'insertRows', sheet: 'P', row: 1, count: 2 }, [[], ['A5:C22']]],
     ['rows inserted into it are refused', { op: 'insertRows', sheet: 'P', row: 5 }, 'pivot'],
+    ['a fill elsewhere keeps it', { op: 'fillRange', sheet: 'P', range: 'H1', to: 'H1:H3' }, [[], ['A3:C20']]],
+    ['a fill on another sheet keeps it', { op: 'fillRange', sheet: 'Data', range: 'H1', to: 'H1:H3' }, [[], ['A3:C20']]],
     ['columns deleted before it move it', { op: 'insertColumns', sheet: 'P', column: 'A' }, [[], ['B3:D20']]],
     ['its rows deleted all delete it', { op: 'deleteRows', sheet: 'P', row: 2, count: 30 }, [[], []]],
     ['part of its rows deleted is refused', { op: 'deleteRows', sheet: 'P', row: 4 }, 'pivot'],
