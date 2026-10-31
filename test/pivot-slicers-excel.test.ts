@@ -13,6 +13,7 @@ import { predict, predicted } from '../bench/coverage/pivot/slicer-predict.js'
 import * as slicer from '../bench/coverage/pivot/slicer.js'
 import * as slicerDelete from '../bench/coverage/pivot/slicer-delete.js'
 import * as slicerFile from '../bench/coverage/pivot/slicer-file.js'
+import * as slicerHeld from '../bench/coverage/pivot/slicer-held.js'
 import { createState } from '../src/engine.js'
 import { formatAddress } from '../src/model.js'
 import { clockOptions } from '../src/result.js'
@@ -26,7 +27,7 @@ import { readXlsx } from '../src/xlsx.js'
 
 const DIR = new URL('./excel/win/pivot/', import.meta.url)
 const answersOf = (set: string) => (JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }).answers
-const SETS = { slicer, 'slicer-delete': slicerDelete }
+const SETS = { slicer, 'slicer-delete': slicerDelete, 'slicer-held': slicerHeld }
 
 const rounded = (v: unknown): unknown => (typeof v === 'number' ? Number(v.toPrecision(15)) : Array.isArray(v) ? v.map(rounded) : v)
 
@@ -37,7 +38,7 @@ function shown(book: BookInput, range: string): unknown[][] {
   return Array.from({ length: x.r2 - x.r1 + 1 }, (_, r) => Array.from({ length: x.c2 - x.c1 + 1 }, (_, c) => cells[formatAddress(x.r1 + r, x.c1 + c)]?.value ?? null))
 }
 
-const books = async () => Promise.all(['slicer', 'slicer-delete'].flatMap((set) => readdirSync(new URL(`${set}/`, DIR)).map(async (f) => [`${set}/${f}`, (await readXlsx(readFileSync(new URL(`${set}/${f}`, DIR)))).book] as const)))
+const books = async () => Promise.all(['slicer', 'slicer-delete', 'slicer-held'].flatMap((set) => readdirSync(new URL(`${set}/`, DIR)).map(async (f) => [`${set}/${f}`, (await readXlsx(readFileSync(new URL(`${set}/${f}`, DIR)))).book] as const)))
 
 beforeAll(() => registerPivot(pivotEngine))
 

@@ -115,7 +115,8 @@ function slicersOf(book: BookInput): PredictedPhase['slicers'] {
   for (const s of sheet.slicers ?? []) {
     const sc = book.slicerCaches!.find((c) => c.name === s.cache)!
     const values = book.pivotCaches!.find((c) => c.id === sc.cache)!.fields[fieldIndex(book.pivotCaches![0], sc.field)].items!
-    out[s.name] = (sc.items ?? []).map((x): SlicerItem => [itemText(values[x.item]), x.selected !== false, !x.noData])
+    // Excel's HasData is false for every item of a slicer without cross filtering (the set slicer-held)
+    out[s.name] = (sc.items ?? []).map((x): SlicerItem => [itemText(values[x.item]), x.selected !== false, sc.noData?.mark !== false && !x.noData])
   }
   for (const t of sheet.timelines ?? []) {
     const tc = book.timelineCaches!.find((c) => c.name === t.cache)!
