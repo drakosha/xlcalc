@@ -127,4 +127,15 @@ describe('writeKept over a file with a PivotTable', () => {
     const slicerAnchor = (x: string) => /<xdr:twoCellAnchor\b(?:(?!<\/xdr:twoCellAnchor>)[\s\S])*?sle:slicer[\s\S]*?<\/xdr:twoCellAnchor>/.exec(x)![0]
     expect(slicerAnchor(one)).toBe(slicerAnchor((await partsOf(fixed)).get('xl/drawings/drawing1.xml')!))
   })
+
+  it('Excel for Windows opened the files writeXlsx and writeKept wrote with these locks, read them as written and saved them so (the set slicer-locks)', async () => {
+    const answers = (JSON.parse(readFileSync('test/excel/win/pivot/slicer-locks.json', 'utf8')) as { answers: Record<string, { phases: { results?: Record<string, [unknown[], unknown]> }[] }> }).answers
+    const WRITTEN = [['Slicer_Region', false, true], ['Products', true, false], ['Timeline_Date', false, null], ['Timeline_When', true, null]]
+    for (const how of ['xlsx', 'kept']) {
+      expect([how, Object.values(answers[how].phases.at(-1)!.results!).map((x) => x[0])]).toEqual([how, WRITTEN])
+      const saved = (await readXlsx(readFileSync(`test/excel/win/pivot/slicer-locks/${how}.xlsx`))).book
+      const own = saved.sheets.flatMap((x) => [...(x.slicers ?? []).map((y) => [y.name, y.locked !== false, !!y.positionLocked]), ...(x.timelines ?? []).map((y) => [y.name, y.locked !== false, null])])
+      expect([how, own.sort()]).toEqual([how, [...WRITTEN].sort()])
+    }
+  })
 })
