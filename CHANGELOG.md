@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.71.1 (2026-10-31)
+
+Changed:
+
+- The refusal of `refreshPivots` and the other operations that need `xlcalc/pivot` no longer names the package in its text: "The PivotTable engine is not loaded: registerPivot(pivotEngine) loads it" (ru-RU "Движок сводных таблиц не загружен: его загружает registerPivot(pivotEngine)").
+
 ## 0.71.0 (2026-10-31)
 
 Added:
