@@ -6,7 +6,7 @@
  * `timeoutMs`, a call's abort reaching the host. In both execution modes, the same thread and a pool.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, type AbortSignalLike, type BookInput, type Calc, type CellValue, type ExternalAnswer, type ExternalCall, type Externals } from '../src/index.js'
+import { compute, createInlineCalc, createSession, type AbortSignalLike, type AsyncSession, type BookInput, type Calc, type CellValue, type ExternalAnswer, type ExternalCall, type Externals } from '../src/index.js'
 import { pool as testPool } from './fixtures/pool.js'
 
 const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -254,5 +254,108 @@ describe.each([
     await new Promise((r) => setTimeout(r, 20))
     expect(signals.length).toBeGreaterThan(0)
     expect(signals.every((s) => s.aborted)).toBe(true)
+  })
+})
+
+/** A1 asking the host by a promise, B1:B3000 over it, a while to compute; the host's calls counted, its answer 7 given by `release`. */
+function slowOver() {
+  const cells: BookInput['sheets'][number]['cells'] = { A1: { formula: 'BAL()' } }
+  for (let r = 1; r <= 3000; r++) cells[`B${r}`] = { formula: `A1+${r}+SUMPRODUCT(ROW(C$1:C200)*A1)` }
+  const host = { calls: 0, release: () => {} }
+  const externals: Externals = {
+    functions: ['BAL'],
+    resolve: () => {
+      host.calls++
+      return new Promise<ExternalAnswer>((done) => (host.release = () => done(7)))
+    },
+  }
+  return { book: { sheets: [{ name: 'S', cells }] }, externals, host }
+}
+
+const BUSY = { error: 'BUSY' }
+const shown = async (s: AsyncSession) => Promise.all(['A1', 'B1', 'B3000'].map(async (a) => (await s.getCell('S', a))?.value))
+/** A call stopped by its soft deadline or its abort after a few milliseconds. */
+const stopping = (stop: 'soft_timeout' | 'aborted') => {
+  if (stop === 'soft_timeout') return { timeoutMs: 5 }
+  const ac = new AbortController()
+  setTimeout(() => ac.abort(), 5)
+  return { signal: ac.signal }
+}
+const stoppedBy = async (p: Promise<unknown>) => {
+  const e = await p.then(() => null, (x: { code?: string }) => x)
+  return e?.code
+}
+
+describe.each([
+  ['in the same thread', async () => createInlineCalc({ sliceMs: 1 })],
+  ['in a pool', async () => testPool({ threads: 1, sliceMs: 1 })],
+] as const)('a call stopped while it takes the answers that arrived keeps the old state, %s', (_, make) => {
+  describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
+    it.each(['soft_timeout', 'aborted'] as const)('settleConnections, %s: the cells wait; a call again takes the answers whole, without asking again', async (stop) => {
+      const c = await make()
+      calcs.push(c)
+      const { book, externals, host } = slowOver()
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      expect(await shown(s)).toEqual([BUSY, BUSY, BUSY])
+      host.release()
+      await new Promise((done) => setTimeout(done, 10))
+      expect(await stoppedBy(s.settleConnections(stopping(stop)))).toBe(stop)
+      expect(await shown(s)).toEqual([BUSY, BUSY, BUSY])
+      const r = await s.settleConnections()
+      expect([r.changes.length, await shown(s), host.calls]).toEqual([3001, [7, 7 + 1 + 7 * 20100, 7 + 3000 + 7 * 20100], 1])
+      await s.close()
+    })
+
+    it.each(['soft_timeout', 'aborted'] as const)('an edit taking them on its way, %s: the edit and the answers come with the call again', async (stop) => {
+      const c = await make()
+      calcs.push(c)
+      const { book, externals, host } = slowOver()
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      host.release()
+      await new Promise((done) => setTimeout(done, 10))
+      const edit = [{ sheet: 'S', cell: 'D1', input: { value: 1 } }]
+      expect(await stoppedBy(s.setCells(edit, stopping(stop)))).toBe(stop)
+      expect([await shown(s), (await s.getCell('S', 'D1'))?.value ?? null]).toEqual([[BUSY, BUSY, BUSY], null])
+      const r = await s.setCells(edit)
+      expect([r.changes.length, await shown(s), host.calls]).toEqual([3002, [7, 7 + 1 + 7 * 20100, 7 + 3000 + 7 * 20100], 1])
+      await s.close()
+    })
+
+    it.each(['previewChanges', 'previewCellText'] as const)('%s takes no answer: the cells wait after it; settleConnections takes them whole, without asking again', async (preview) => {
+      const c = await make()
+      calcs.push(c)
+      const { book, externals, host } = slowOver()
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      host.release()
+      await new Promise((done) => setTimeout(done, 10))
+      if (preview === 'previewChanges') {
+        const p = await s.previewChanges([{ op: 'setCells', edits: [{ sheet: 'S', cell: 'D1', input: { value: 1 } }] }])
+        expect(p.changes.map((x) => x.cell)).toEqual(['D1'])
+      } else expect(await s.previewCellText('S', 'D1', '1')).toMatchObject({ ok: true, value: 1 })
+      expect([await shown(s), host.calls]).toEqual([[BUSY, BUSY, BUSY], 1])
+      const r = await s.settleConnections()
+      expect([r.changes.length, await shown(s), host.calls]).toEqual([3001, [7, 7 + 1 + 7 * 20100, 7 + 3000 + 7 * 20100], 1])
+      await s.close()
+    })
+
+    it.each(['soft_timeout', 'aborted'] as const)('refreshConnections, %s: the old answers stay; a call again asks again', async (stop) => {
+      const c = await make()
+      calcs.push(c)
+      const { book, externals, host } = slowOver()
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      host.release()
+      await s.settleConnections()
+      const before = await shown(s)
+      expect(await stoppedBy(s.refreshConnections(undefined, stopping(stop)))).toBe(stop)
+      expect([await shown(s), host.calls]).toEqual([before, 2])
+      const releasing = setInterval(() => host.release(), 1)
+      try {
+        const r = await s.refreshConnections()
+        expect([r.changes, await shown(s), host.calls]).toEqual([[], before, 3])
+      } finally {
+        clearInterval(releasing)
+      }
+      await s.close()
+    })
   })
 })

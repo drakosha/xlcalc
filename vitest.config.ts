@@ -18,6 +18,7 @@ const TIMED = [
   'test/budgets.test.ts',
   'test/end.test.ts',
   'test/limits-writes.test.ts',
+  'test/outside.test.ts',
   'test/regex-levels.test.ts',
   'test/session-structure.test.ts',
   'test/session-undo-async.test.ts',

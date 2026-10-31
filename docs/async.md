@@ -98,7 +98,7 @@ What a viewport needs besides its cells is also available without `getBook()`. `
 
 On the same thread, `getResult()`, `getHash()` and `getCells()` yield to the event loop between slices, as a calculation does. On the synthetic workbook of 34,000 rows, `getResult()` takes 0.95 s there and the event loop waits at most 50 ms: listing the 506,594 cells of its largest sheet is a single step.
 
-A call that stopped while recalculating (`setCells`, `setClock` or `setLayout` past its deadline, aborted, or over the limits) leaves the session needing to recalculate its workbook, and the session's next call does that first. That recalculation does not count toward the next call's `timeoutMs`; only its `signal` and a pool's hard deadline bound it, so a call after a stopped one can exceed its `timeoutMs` by the duration of a cold calculation of the workbook.
+A call that stopped while recalculating (`setCells`, `setClock`, `setLayout`, `settleConnections` or `refreshConnections` past its deadline, aborted, or over the limits) leaves the session needing to recalculate its workbook, and the session's next call does that first. That recalculation does not count toward the next call's `timeoutMs`; only its `signal` and a pool's hard deadline bound it, so a call after a stopped one can exceed its `timeoutMs` by the duration of a cold calculation of the workbook.
 
 ## Deadlines and cancellation
 
@@ -119,6 +119,13 @@ await calc.compute(book, { signal })
 That one stops a formula in progress at its next check. A structure operation stops at its checks but does not yield to the event loop. On the same thread, a signal that fires while it runs is seen when it ends, and its deadline stops it partway: on the synthetic workbook of 34,000 rows, `insertRows` (0.3 s without a deadline) stops after 45 ms with `timeoutMs: 20`. A deadline that passes later, while the new workbook's state is being prepared, can be detected up to 0.4 s late there.
 
 A call whose workbook waits for answers from `externals.resolve` given as promises waits for them up to its `timeoutMs`, which then counts its calculation on from where it stopped: a call can last twice its `timeoutMs`, waiting and calculating. Past the wait the call succeeds with the cells still `#BUSY!` or `#GETTING_DATA` and the result's `pending` naming them; `signal` ends the wait as it stops a calculation ([A resolver](formulas.md#a-resolver)). In a pool a task's hard deadline starts again with each answer that reaches its thread.
+
+Answers that have arrived are taken by the call that calculates their cells: `settleConnections()`, or any edit, which takes them on its way. A call stopped while it does so changes nothing, like any stopped call: the cells still wait, `#BUSY!` or `#GETTING_DATA`, and the next call that calculates takes those answers whole, returning every cell they change, without asking the resolver again. A stopped `refreshConnections()` keeps the answers it was asking again for; called again, it asks again. A preview (`previewChanges`, `previewCellText` and the other `preview…` calls) takes no answers: the cells waiting still wait in its changes and after it.
+
+```js
+await s.settleConnections({ timeoutMs: 5 }).catch((e) => e.code) // → 'soft_timeout': A1 is still #BUSY!
+const { changes } = await s.settleConnections() // A1 and all the cells over it, the resolver not called again
+```
 
 A call stopped by its deadline or its signal throws `CalcError` with `soft_timeout` or `aborted` (the signal's reason is the error's `cause`).
 

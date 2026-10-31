@@ -59,22 +59,70 @@ function taken(a: ExternalAnswer): { value: V | Arr | undefined; member?: string
 
 const isThenable = (x: unknown): x is PromiseLike<unknown> => x !== null && typeof x === 'object' && typeof (x as { then?: unknown }).then === 'function'
 
+/** `m`'s entry at `p` set to `v` (none: deleted), the entry as the call started recorded in `was` at its first change. */
+function change<V>(m: Map<number, V>, was: Map<number, V | undefined>, p: number, v: V | undefined) {
+  if (!was.has(p)) was.set(p, m.get(p))
+  if (v === undefined) m.delete(p)
+  else m.set(p, v)
+}
+
+/** `m`'s entries changed since the call started put back (`change`). */
+function putBack<V>(m: Map<number, V>, was: Map<number, V | undefined>) {
+  for (const [p, v] of was) {
+    if (v === undefined) m.delete(p)
+    else m.set(p, v)
+  }
+  was.clear()
+}
+
 export class Outside {
   private readonly answers = new Map<string, Answer>()
   /** The member a cube function answered, by its cell (`placeOf`). */
   private readonly members = new Map<number, string>()
   /** The cells waiting for an answer on its way, by place, with the call's text. */
   readonly waiting = new Map<number, string>()
+  // what the call running changed (`mark`), put back if it stops (`back`): the waits and members as it started, the answers it dropped
+  private readonly wasWaiting = new Map<number, string | undefined>()
+  private readonly wasMembers = new Map<number, string | undefined>()
+  private readonly dropped = new Map<string, Answer>()
+  /** The calls the cells waited for as a stopped call or a preview started: the cells computed show them waiting, though their answers arrived. */
+  private held: ReadonlySet<string> | null = null
   constructor(
     readonly resolve: ExternalResolver | undefined,
     readonly values: Readonly<Record<string, CellValue>>,
   ) {}
 
+  /** A call starts: what it changes is recorded from here, and the answers held for a state built again are taken as any. */
+  mark() {
+    this.wasWaiting.clear()
+    this.wasMembers.clear()
+    this.dropped.clear()
+    this.held = null
+  }
+
+  /** A preview starts: the answers the cells wait for are held, so that it takes none of them (`back` after it). */
+  hold() {
+    this.held = new Set(this.waiting.values())
+  }
+
+  /**
+   * The call stopped, or a preview ended: the waits, members and answers as the call started put back, and the answers
+   * the cells waited for then held, so that the state built again shows them waiting and the next call takes them with
+   * all they change; with `hold` false, as a preview inside a call ends, the call goes on taking them.
+   */
+  back(hold = true) {
+    putBack(this.waiting, this.wasWaiting)
+    putBack(this.members, this.wasMembers)
+    for (const [key, a] of this.dropped) this.answers.set(key, a)
+    this.dropped.clear()
+    this.held = hold ? new Set(this.waiting.values()) : null
+  }
+
   /** A cell computed again forgets what it waited for and the member it answered. */
   forget(s: number, r: number, c: number) {
     const p = placeOf(s, r, c)
-    this.waiting.delete(p)
-    this.members.delete(p)
+    if (this.waiting.has(p)) change(this.waiting, this.wasWaiting, p, undefined)
+    if (this.members.has(p)) change(this.members, this.wasMembers, p, undefined)
   }
 
   /** Arguments as the host takes them: a cell a cube function answered with a member gives that member. */
@@ -112,11 +160,11 @@ export class Outside {
       this.answers.set(key, a)
     }
     const p = placeOf(s, r, c)
-    if ('pending' in a) {
-      this.waiting.set(p, key)
+    if ('pending' in a || this.held?.has(key)) {
+      change(this.waiting, this.wasWaiting, p, key)
       return cube ? E.GETTING_DATA : E.BUSY
     }
-    if (a.member !== undefined) this.members.set(p, a.member)
+    if (a.member !== undefined) change(this.members, this.wasMembers, p, a.member)
     return a.value
   }
 
@@ -142,6 +190,7 @@ export class Outside {
   /** Whether a waiting cell's answer is still on its way. */
   onTheWay(): boolean {
     for (const key of this.waiting.values()) {
+      if (this.held?.has(key)) continue
       const a = this.answers.get(key)
       if (a && 'pending' in a) return true
     }
@@ -152,6 +201,7 @@ export class Outside {
   arrived(): number[] {
     const out: number[] = []
     for (const [p, key] of this.waiting) {
+      if (this.held?.has(key)) continue
       const a = this.answers.get(key)
       if (!a || !('pending' in a)) out.push(p)
     }
@@ -165,6 +215,10 @@ export class Outside {
 
   /** The kept answers of `names` (every one without them) dropped, so the next calculation asks again. */
   drop(names?: readonly string[]) {
-    for (const key of [...this.answers.keys()]) if (!names || names.some((n) => key.startsWith(`${n}(`))) this.answers.delete(key)
+    for (const [key, a] of [...this.answers]) {
+      if (names && !names.some((n) => key.startsWith(`${n}(`))) continue
+      if (!this.dropped.has(key)) this.dropped.set(key, a)
+      this.answers.delete(key)
+    }
   }
 }

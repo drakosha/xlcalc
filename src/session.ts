@@ -210,10 +210,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     // a group of functions loaded since a formula called one of it (`groups/registry.ts`): built again too, the formulas
     // over it calculated; no change is told, the host reads what it shows again
     if (stale || (s.groups.waiting && s.groups.version !== functionsVersion())) {
+      // a stopped call's answers from outside the workbook as it started: the cells it took them for wait again
+      if (stale) outside?.back()
       // what an earlier call left to do does not count in this call's soft deadline
       state = yield* untimed(build(s.input, unlent))
       stale = false
     }
+    outside?.mark()
     return state!
   }
   const sheetIndex = (s: EngineState) => (name: string) => sheetIndexOf(s, name)
@@ -327,6 +330,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return [next, { ...nothing(), keys, fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)), styles, looks: repaint }, diff]
     } catch (e) {
       untick(old, at)
+      // the old state stays: the waits the new one's cells changed are put back
+      outside?.back()
       throw e
     }
   }
@@ -374,6 +379,15 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       st().input = book
       clock = at
       stale = true
+    }
+  }
+  /** The cells computed again with answers from outside the workbook; stopped, the state is built again as the call found it (`Outside.back`). */
+  function* takingAnswers(steps: Steps<number[]>): Steps<number[]> {
+    try {
+      return yield* steps
+    } catch (e) {
+      stale = true
+      throw e
     }
   }
   const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display }
@@ -487,12 +501,16 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /** What `read` gives with the typed cells written, which are taken back after it. */
   function* previewed<T>(s: EngineState, cells: Typed[], read: () => T): Steps<T> {
+    // a preview takes no answer from outside the workbook: the cells waiting wait in it and after it
+    outside?.hold()
     try {
       return yield* withInputs(s, cells.map((x) => x.edit), read)
     } catch (e) {
       // the inputs put in for the preview may still be there: the state is built again on the next call
       stale = true
       throw e
+    } finally {
+      outside?.back(false)
     }
   }
   /** A step taken by undo or redo, answered as its call answered. */
@@ -584,7 +602,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const beforeLayers = beforeBook.sheets.map((x) => layerOf(x))
     besides = []
     const captured = tracker()
-    if (preview) old.capture = captured
+    if (preview) {
+      old.capture = captured
+      outside?.hold()
+    }
     controlledClock = opts.clock ?? (preview && live ? fresh() : undefined)
     let completed = false,
       next = old,
@@ -639,6 +660,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         putInputs(beforeBook.sheets, (name) => sheetIndexOf(old, name)!, back)
         old.input = beforeBook
         setNow(old, clockSerial(beforeClock), beforeClock.seed)
+        outside?.back()
         if (next === old) {
           stale = true
           if (preview) {
@@ -845,12 +867,12 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       outside?.drop(up)
       // the formulas over calls outside the workbook (not one holding its value over a function the engine does not know), of the functions named
       const calls = (f: Formula) => (f.external || (f.stored !== undefined && f.stored !== f.unknown?.fn)) && (!up || up.some((n) => f.text.toUpperCase().includes(`${n}(`)))
-      const keys = yield* applyOutside(s, s.formulas.flatMap((f) => (f && calls(f) ? [f.id] : [])))
+      const keys = yield* takingAnswers(applyOutside(s, s.formulas.flatMap((f) => (f && calls(f) ? [f.id] : []))))
       return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
     },
     *takeAnswers() {
       const s = yield* ready()
-      const keys = yield* applyAnswers(s)
+      const keys = yield* takingAnswers(applyAnswers(s))
       return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
     },
     settled: () => outside?.settled() ?? Promise.resolve(),
