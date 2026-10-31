@@ -12,7 +12,7 @@ import { groupedItems } from './items.js'
 import { byValue, itemPasses, valuesKept } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
 import type { PivotComputeOptions, PivotPageResult, PivotResult } from './result.js'
-import { branches, nodesOf, sortBranches, type Branch } from './tree.js'
+import { branches, linesBefore, nodesOf, sortBranches, type Branch } from './tree.js'
 import { numberOf } from './values.js'
 
 /**
@@ -238,8 +238,8 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   // an item's value over every item of the fields before it on its axis, at the other axis's path `other`
   const alone = (f: number, item: number, other: number[], v: number, otherFields: readonly number[]): CellValue =>
     values[v] ? tally(alive.filter((r) => at[f][r] === item && other.every((p, k) => at[otherFields[k]][r] === p)), v).value(fns[v]) : null
-  sortBranches(sorting, rowRoot, rowFields, colFields, true, value, (f, p, o, v) => alone(f, p, o, v, colFields))
-  sortBranches(sorting, colRoot, colFields, rowFields, false, value, (f, p, o, v) => alone(f, p, o, v, rowFields))
+  sortBranches(sorting, rowRoot, rowFields, colFields, true, value, (f, p, o, v) => alone(f, p, o, v, colFields), linesBefore(table.rowLines, axes.rows))
+  sortBranches(sorting, colRoot, colFields, rowFields, false, value, (f, p, o, v) => alone(f, p, o, v, rowFields), linesBefore(table.columnLines, axes.columns))
   memo = new Map()
   if (formulas.size || calcItems.size) prefetch(batch, rowRoot, colRoot, values.length, (r, c, v) => measure(r, c, v, fns[v]))
   const pages = (table.pages ?? []).map((p): PivotPageResult => {

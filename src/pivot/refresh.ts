@@ -4,11 +4,12 @@
  * moved onto the new fields and items, their hidden items kept hidden.
  */
 import { caseKey } from '../collate.js'
-import type { CellValue, NumberFormat, PivotAxisField, PivotCache, PivotCacheField, PivotDataField, PivotField, PivotFieldFacts, PivotTable, PivotValue } from '../contract.js'
+import type { CellValue, NumberFormat, PivotAxisField, PivotCache, PivotCacheField, PivotDataField, PivotField, PivotFieldFacts, PivotLine, PivotTable, PivotValue } from '../contract.js'
 import { generalText } from '../numfmt/general.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 import { regroup } from './group.js'
 import { groupedItems, itemKey } from './items.js'
+import { axesOf } from './prepare.js'
 import { cacheDate } from './values.js'
 
 /** A source's cells: the header row first, each cell's value, and whether it shows a date; each column's number format. */
@@ -232,6 +233,27 @@ function moved(t: PivotTable, fields: readonly PivotCacheField[], fieldMap: Read
   const result: PivotTable = { ...t, fields: out }
   if (t.rows) result.rows = axis(t.rows)
   if (t.columns) result.columns = axis(t.columns)
+  // the saved lines on the items' new places, which a sort's ties keep; none where an item or a field of them is gone
+  const axes = axesOf(t)
+  const moveLines = (ls: PivotLine[] | undefined, fields: readonly PivotAxisField[]): PivotLine[] | undefined => {
+    if (!ls) return undefined
+    const moved = ls.map((l) => {
+      if (l.type === 'grand' || l.type === 'blank') return l
+      const items = l.items.map((p, j) => {
+        const f = fields[(l.repeat ?? 0) + j]
+        if (f === undefined || f === 'values') return p
+        const n = to(f)
+        return n === undefined ? undefined : placeMaps.has(n) ? placeMaps.get(n)!.get(p) : p
+      })
+      return items.every((p) => p !== undefined) ? { ...l, items: items as number[] } : null
+    })
+    return moved.every((l) => l !== null) ? (moved as PivotLine[]) : undefined
+  }
+  for (const [k, fields] of [['rowLines', axes.rows], ['columnLines', axes.columns]] as const) {
+    const ls = moveLines(t[k], fields)
+    if (ls) result[k] = ls
+    else delete result[k]
+  }
   if (t.pages)
     result.pages = t.pages.flatMap((p) => {
       const f = to(p.field)
