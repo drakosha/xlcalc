@@ -9,7 +9,7 @@ import { epochOf } from '../dates.js'
 import { displayRules } from '../locale/rules.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { cornersText, type Rect } from '../structure/area.js'
-import { pivotArea } from './area.js'
+import { pivotArea, pivotAreas } from './area.js'
 import { wordsOf } from './captions.js'
 import { groupedItems } from './items.js'
 import { itemFormat } from '../pivot-format.js'
@@ -178,6 +178,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     cells.set(formatAddress(row, col), cell)
   }
   const out: PivotLaidOut = { location, rowLines: rowLines.map((a) => a.line), columnLines: columnLines.map((a) => a.line), area: pivotArea({ location })!, cells: [] }
+  location.areas = pivotAreas({ ...table, location, rowLines: out.rowLines, columnLines: out.columnLines })
   if (empty) return out
 
   pages.forEach((p, k) => {

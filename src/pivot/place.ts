@@ -14,7 +14,7 @@ import { ERROR_TEXT } from '../syntax/errors.js'
 import { internStyle } from '../style-table.js'
 import { withField } from '../looks/sheet.js'
 import { cellAlignment, labelMerges } from './looks.js'
-import { pivotArea, pivotParts } from './area.js'
+import { pivotArea, pivotParts, withAreas } from './area.js'
 import type { PivotLaidOut } from './layout.js'
 
 /** A PivotTable to write: its sheet, its definition as refreshed (its `name` the one on the sheet), and its layout. */
@@ -108,7 +108,7 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
       cells[addr] = out
     }
     const pivotTables = [...(sheet.pivotTables ?? [])]
-    pivotTables[p.at] = { ...p.table, location: laid.location, rowLines: laid.rowLines, columnLines: laid.columnLines }
+    pivotTables[p.at] = withAreas({ ...p.table, location: laid.location, rowLines: laid.rowLines, columnLines: laid.columnLines })
     // the merged labels: the old area's go with it, where its PivotTable merged them, the new ones are added
     const was = sheet.pivotTables![p.at].mergeLabels && p.old ? sheet.merges?.filter((m) => !contains(p.old!, parseRange(m)!)) : sheet.merges
     const merged = p.spill ? [] : labelMerges(p.table, laid).map(cornersText)

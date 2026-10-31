@@ -27,6 +27,7 @@ import type { DateSystemOptions } from '../../date-serial.js'
 import { serialToUtcMs } from '../../model.js'
 import type { Dxf } from '../styles/dxf.js'
 import { attributes, attrsAt, element, elements, flag, within, type Element } from '../xml/scan.js'
+import { pivotAreas } from '../../pivot/area.js'
 import { attrText, take, values } from './pivot-cache.js'
 import { AXIS, inverse, SHOW_NAME, SUBTOTAL_ATTR } from '../pivot-names.js'
 
@@ -245,6 +246,7 @@ export function readPivotTable(xml: string, cache: number, ctx: TableContext): {
   if (rowLines) t.rowLines = rowLines
   const columnLines = linesOf(xml, 'colItems')
   if (columnLines) t.columnLines = columnLines
+  t.location.areas = pivotAreas(t)
   return { table: t, charts: element(xml, 'chartFormats') !== undefined }
 }
 

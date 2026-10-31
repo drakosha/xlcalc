@@ -32,7 +32,7 @@ describe('addPivotTable without xlcalc/pivot', () => {
     if (!r.ok) return
     // a repeated header gets 2, as Excel names it
     expect(r.book.pivotCaches).toEqual([{ id: 1, source: { type: 'range', sheet: 'Data', range: 'A1:C4' }, fields: [{ name: 'Region' }, { name: 'Amount' }, { name: 'Amount2' }], stale: true }])
-    expect(pivots(r.book)).toEqual([{ name: 'PivotTable1', cache: 1, location: { range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0 }, fields: [{}, {}, {}], indent: 0, multipleFieldFilters: false, style: { name: 'PivotStyleLight16', rowHeaders: true, columnHeaders: true, lastColumn: true } }])
+    expect(pivots(r.book)).toEqual([{ name: 'PivotTable1', cache: 1, location: { range: 'A3:C20', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 0, areas: { table: 'A3:C20' } }, fields: [{}, {}, {}], indent: 0, multipleFieldFilters: false, style: { name: 'PivotStyleLight16', rowHeaders: true, columnHeaders: true, lastColumn: true } }])
   })
 
   it('takes a table, a name, a cache, a definition and a new sheet', () => {
