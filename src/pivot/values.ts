@@ -19,23 +19,6 @@ export function cacheDate(serial: number, epoch = 0): string {
   return `${pad(y, 4)}-${pad(m)}-${pad(d)}T${pad(Math.floor(second / 3600))}:${pad(Math.floor(second / 60) % 60)}:${pad(second % 60)}`
 }
 
-/**
- * The key two values are one item by: text in any case is one (`North` and `north`), a date is no number, each error
- * its own.
- */
-export function itemKey(v: PivotValue): string {
-  if (v === null) return 'b'
-  switch (typeof v) {
-    case 'number':
-      return `n${v}`
-    case 'string':
-      return `s${caseKey(v)}`
-    case 'boolean':
-      return v ? 'T' : 'F'
-  }
-  return 'error' in v ? `e${v.error}` : `d${v.date}`
-}
-
 /** A value as a number to summarize: a number, or a date's serial; nothing else counts as one. */
 export const numberOf = (v: PivotValue, epoch = 0): number | undefined =>
   typeof v === 'number' ? v : v !== null && typeof v === 'object' && 'date' in v ? dateSerial(v.date, epoch) : undefined

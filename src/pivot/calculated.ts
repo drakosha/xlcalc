@@ -7,7 +7,7 @@
 import { caseKey } from '../collate.js'
 import type { CellValue, PivotCache, PivotTable } from '../contract.js'
 import { calculate, template, type Template } from './formulas.js'
-import { groupedItems } from './group.js'
+import { groupedItems } from './items.js'
 import type { Branch } from './tree.js'
 import { itemText } from './values.js'
 

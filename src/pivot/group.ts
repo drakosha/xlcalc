@@ -15,9 +15,6 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 /** Days before each month in a leap year: a group by days lists every day of one, 29 February too. */
 const BEFORE = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
 
-/** The values of a cache field's items, or of its groups' where it is grouped. */
-export const groupedItems = (f: PivotCacheField | undefined): PivotValue[] | undefined => f?.group?.items ?? f?.items
-
 const bound = (v: number | { date: string } | undefined, epoch: number): number => (v === undefined ? 0 : typeof v === 'number' ? v : dateSerial(v.date, epoch))
 
 /** A day as Excel's en-US short date (`1/31/2024`). */

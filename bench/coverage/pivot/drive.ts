@@ -6,12 +6,12 @@
  * the cells of every PivotTable's area and the operations the engine refused. The prediction of a held-out set before
  * Excel runs it (`predict.ts --drive`); operations it does not take are refused as `unsupported`.
  */
-import type { BookInput, CellInput, PivotCache, PivotFunction, PivotTable } from '../../../src/contract.js'
+import type { BookInput, CellInput, PivotCache, PivotDataField, PivotFunction, PivotShowAs, PivotTable } from '../../../src/contract.js'
 import { createState } from '../../../src/engine.js'
 import { editPivotCache } from '../../../src/pivot/cache-ops.js'
 import { wordsOf } from '../../../src/pivot/captions.js'
 import { refreshPivots } from '../../../src/pivot/engine.js'
-import { groupedItems } from '../../../src/pivot/group.js'
+import { groupedItems } from '../../../src/pivot/items.js'
 import type { PivotCacheOp } from '../../../src/pivot/hook.js'
 import { refreshCache } from '../../../src/pivot/refresh.js'
 import { sourceGrid } from '../../../src/pivot/source.js'
@@ -23,6 +23,8 @@ import type { PivotCase, PivotOp } from './cases.js'
 import { DATA, sourceBook, sourceRange } from './data.js'
 
 const CLOCK = clockOptions({ now: '2026-10-30', seed: 0 })
+/** The harness's names of Show Values As that the contract spells otherwise. */
+const SHOW: Record<string, PivotShowAs> = { percentOfCol: 'percentOfColumn', percentOfParentCol: 'percentOfParentColumn' }
 const valuesOf = (b: BookInput) => stateValues(createState(b, CLOCK))
 
 /** A phase played: each PivotTable's area by its name, and the operations refused (`op <index>: <message>`). */
@@ -100,7 +102,13 @@ export function drive(c: PivotCase): DrivenPhase[] {
         errors.push(`op ${k}: Averages, standard deviations, and variances are not supported when a PivotTable report has calculated items.`)
         return
       }
-      setTable(pt, (t) => ({ ...t, values: [...(t.values ?? []), { field: f, name: op.value.caption ?? wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }] }))
+      const v = op.value
+      const d: PivotDataField = { field: f, name: v.caption ?? wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn !== 'sum' ? { function: fn } : {}) }
+      if (v.show && v.show !== 'normal') d.showAs = (SHOW[v.show] ?? v.show) as PivotShowAs
+      if (v.base) d.baseField = fieldOf(v.base)
+      if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
+      else if (v.item !== undefined && d.baseField !== undefined && itemAt(tableOf(pt), d.baseField, v.item) >= 0) d.baseItem = itemAt(tableOf(pt), d.baseField, v.item)
+      setTable(pt, (t) => ({ ...t, values: [...(t.values ?? []), d] }))
       return laid(k)
     }
     if ('move' in op) {

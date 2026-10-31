@@ -6,7 +6,7 @@ import type { CellValue, ErrorCode, PivotAxisField, PivotCache, PivotTable } fro
 import { ERROR_TYPE } from '../error-type.js'
 import { sortOrder } from '../sort-order.js'
 import type { PivotNode } from './result.js'
-import { groupedItems } from './group.js'
+import { groupedItems } from './items.js'
 import { labelOrder } from './values.js'
 
 /** An item of an axis and the items of the next field under it, in the order shown (`order`); `data`: some record reaches it. */

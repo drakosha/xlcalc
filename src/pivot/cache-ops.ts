@@ -17,9 +17,11 @@ import { tokenize } from '../syntax/tokens.js'
 import { refreshPivots } from './engine.js'
 import { placeOf, placed, withFields, withoutFields, type CacheTables } from './fields.js'
 import { template } from './formulas.js'
-import { groupedItems, rangeLabels } from './group.js'
+import { rangeLabels } from './group.js'
+import { groupedItems } from './items.js'
 import type { PivotCacheEdit, PivotCacheOp } from './hook.js'
-import { cacheDate, dateSerial, itemKey, itemText, numberOf } from './values.js'
+import { itemKey } from './items.js'
+import { cacheDate, dateSerial, itemText, numberOf } from './values.js'
 
 /** A refusal's message, thrown out of an operation. */
 class Refused extends Error {

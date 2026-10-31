@@ -7,7 +7,8 @@ import { listsOf } from '../locale/lists.js'
 import type { CellValue, ErrorCode, PivotCache, PivotFunction, PivotTable, PivotValue } from '../contract.js'
 import { Tally } from './aggregate.js'
 import { Batch, fieldFormulas, itemFormulas, prefetch, settled, sumsOf, withCalculatedItems } from './calculated.js'
-import { groupedItems, recordItems } from './group.js'
+import { recordItems } from './group.js'
+import { groupedItems } from './items.js'
 import { byValue, itemPasses, valuesKept } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
 import type { PivotComputeOptions, PivotPageResult, PivotResult } from './result.js'
@@ -66,6 +67,25 @@ const key = (path: readonly number[]) => path.join(',')
 /** A value as a tally takes a record's. */
 const asRecord = (v: CellValue): [n: number | undefined, filled: boolean, error?: ErrorCode] =>
   v === null ? [undefined, false] : typeof v === 'object' ? [undefined, true, v.error] : [typeof v === 'number' ? v : undefined, true]
+
+/**
+ * The cache items of field `field` that some record has under the filters of the other fields (hidden items, a page
+ * field's item, label and date filters) with a value for a value field, as a slicer of the field tells its items with
+ * data (the set slicer: a region whose only record has no price has none under Sum of Price). `table` and `cache` are a
+ * calculation's (`PivotResult`), the field listed.
+ */
+export function itemsWithData(table: PivotTable, cache: PivotCache, field: number, options: PivotComputeOptions = {}): Set<number> {
+  const epoch = options.date1904 ? EPOCH_1904 : 0
+  const at = itemIndexes(table, cache, epoch)
+  const shown = shownItems(table, cache, options.today ?? 0, epoch)
+  const readers = (table.values ?? []).map((v) => valueReader(cache, v.field, epoch))
+  const out = new Set<number>()
+  ;(cache.records ?? []).forEach((rec, r) => {
+    if (typeof rec[field] !== 'number' || out.has(rec[field] as number)) return
+    if (shown.every((s, f) => f === field || !s || (at[f][r] >= 0 && s[at[f][r]])) && (!readers.length || readers.some((read) => read(r)[1]))) out.add(rec[field] as number)
+  })
+  return out
+}
 
 /** Calculates a PivotTable over its cache's records. */
 export function computePivot(given: PivotTable, givenCache: PivotCache, options: PivotComputeOptions = {}): PivotResult {

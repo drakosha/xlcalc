@@ -108,6 +108,24 @@ describe('grouping a field of a PivotTable', () => {
   })
 })
 
+describe('grouping with slicers', () => {
+  it('filters PivotTables grouped by months with a slicer of another field, and with a slicer of the years', () => {
+    const s = createSession(book(1))
+    s.editStructure(byMonths)
+    const pivots = [{ sheet: 'P', name: 'PT1' }]
+    expect(s.editStructure({ op: 'addSlicer', sheet: 'P', slicer: {}, cache: { field: 'Region', pivots } }).ok).toBe(true)
+    // Region's items in the cache: North, South, East, West
+    s.editStructure({ op: 'editSlicer', slicer: 'Region', cache: { items: [0, 1, 2, 3].map((item) => ({ item, selected: item === 0 })) } })
+    expect(s.getValues('P', 'A3:B8')).toEqual([['Row Labels', 'Sum of Qty'], ['2024', 1], ['Jan', 1], ['2025', 4], ['Jan', 4], ['Grand Total', 5]])
+    s.editStructure({ op: 'editSlicer', slicer: 'Region', cache: { items: [0, 1, 2, 3].map((item) => ({ item })) } })
+    // the years' groups: <1/15/2024, 2024, 2025, >3/2/2025
+    expect(s.editStructure({ op: 'addSlicer', sheet: 'P', slicer: {}, cache: { field: 'Years (Date)', pivots } }).ok).toBe(true)
+    s.editStructure({ op: 'editSlicer', slicer: 'Years (Date)', cache: { items: [0, 1, 2, 3].map((item) => ({ item, selected: item === 2 })) } })
+    expect(s.getValues('P', 'A3:B7')).toEqual([['Row Labels', 'Sum of Qty'], ['2025', 9], ['Jan', 4], ['Mar', 5], ['Grand Total', 9]])
+    s.close()
+  })
+})
+
 describe('calculated fields and items', () => {
   for (const execution of ['closures', 'eval'] as const)
     it(`adds a calculated field over the sums, changes and deletes it, on both PivotTables (${execution})`, () => {

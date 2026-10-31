@@ -370,7 +370,7 @@ const withItem = (locale?: string, fn?: 'average'): BookInput => {
   }
 }
 
-/** An operation on the PivotTable's cache refused: the book, the operation, the message. */
+/** An operation on the PivotTable's cache, or on its slicers and timelines, refused: the book, the operation, the message. */
 const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMessage][] = [
   ['text grouped as dates', (l) => pivotBook(l), { op: 'groupPivotField', sheet: 'Свод', pivot: 'Сводная1', field: 0, group: { by: 'dates', periods: ['months'] } }, { key: 'pivotCantGroup' }],
   ['a field not grouped ungrouped', (l) => pivotBook(l), { op: 'ungroupPivotField', sheet: 'Свод', pivot: 'Сводная1', field: 0 }, { key: 'pivotNotGrouped', field: 'Регион' }],
@@ -378,6 +378,14 @@ const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMes
   ['a calculated item beside an average', (l) => withItem(l, 'average'), { op: 'setPivotCalculatedItem', sheet: 'Свод', pivot: 'Сводная1', field: 0, name: 'c', formula: '=a*2' }, { key: 'pivotItemsAverage' }],
   ['a calculated field over a cell', (l) => pivotBook(l), { op: 'setPivotCalculatedField', sheet: 'Свод', pivot: 'Сводная1', name: 'X', formula: '=A1*2' }, { key: 'pivotFormulaRefs' }],
   ['a calculated field that does not read', (l) => pivotBook(l), { op: 'setPivotCalculatedField', sheet: 'Свод', pivot: 'Сводная1', name: 'X', formula: '=N/' }, { key: 'pivotFormulaBad', formula: '=N/' }],
+  ['a slicer over a field not in the source', (l) => pivotBook(l), { op: 'addSlicer', sheet: 'Свод', slicer: {}, cache: { field: 'Нет', pivots: [{ sheet: 'Свод', name: 'Сводная1' }] } }, { key: 'slicerField', field: 'Нет' }],
+  ['a timeline over a field without dates', (l) => pivotBook(l), { op: 'addTimeline', sheet: 'Свод', timeline: {}, cache: { field: 'Регион', pivots: [{ sheet: 'Свод', name: 'Сводная1' }] } }, { key: 'timelineField', field: 'Регион' }],
+  [
+    'a slicer of a name used',
+    (l) => ({ ...pivotBook(l), slicerCaches: [{ name: 'Slicer_N', field: 'N', pivots: [{ sheet: 'Свод', name: 'Сводная1' }], cache: 1 }], sheets: pivotBook(l).sheets.map((sh, i) => (i === 1 ? { ...sh, slicers: [{ name: 'N', cache: 'Slicer_N' }] } : sh)) }),
+    { op: 'addSlicer', sheet: 'Свод', slicer: { name: 'n' }, cache: { field: 'Регион', pivots: [{ sheet: 'Свод', name: 'Сводная1' }] } },
+    { key: 'slicerNameTaken', name: 'n' },
+  ],
   ['a calculated item named as an item', (l) => pivotBook(l), { op: 'setPivotCalculatedItem', sheet: 'Свод', pivot: 'Сводная1', field: 0, name: 'A', formula: '=a*2' }, { key: 'pivotItemTaken', item: 'A' }],
 ]
 
