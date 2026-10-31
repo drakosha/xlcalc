@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.72.0 (2026-10-31)
+
+Added:
+
+- `PivotLocation.areas`: the rectangles of a PivotTable's parts as Excel's ranges name them, the Filters area (`page`, `PageRange`), the PivotTable without it (`table`, `TableRange1`), the rows of headers (`columnHeaders`), the row labels (`rowLabels`) and the values (`data`, `DataBodyRange`, which Excel gives a PivotTable without value fields too). Computed by the engine wherever it returns a location; a host's own is computed again on input.
+- `reason` on a refusal with the code `pivot`, by the alert Excel shows: `part` (a value typed into the values), `formula` (a formula over an item or a field's name), `affect` (a paste, a copy, a cut, a fill, a merge or rows and columns inserted or deleted through a PivotTable, and a clear of part of it). The edits that throw over a PivotTable's cells throw `PivotInputError`, an `InputError` with `reason`, `sheet` and `cell`, in a pool's threads too.
+- `editPivotTable` and `addPivotTable` place Σ Values as Excel does: on the columns, last, once there are two value fields; a place the host gave it (on the rows, not last) is kept while there are two or more and comes back when a second one is added again.
+- `groupDates` on `addPivotTable` and `editPivotTable`: a date field the operation puts on the rows or columns is grouped as Excel 365's field list groups it (years, quarters and months over several years; months and days within one year; none within one month), in one step of undo. Excel does not group it through its object model.
+- `suggestPivotField(cache, field)` from the root and `xlcalc/text`: where Excel's field list puts a field ticked (`rows` or `values`) and the function a field in the values gets (`sum` for numbers, empty cells among them, `count` for anything else).
+- Slicers: `label` on each item of `getLayout().slicerCaches`, the text Excel shows on its button in the workbook's locale (the field's number format on its first PivotTable, dates as the short date, `(blank)`); `name` in `editSlicer` and `editTimeline` (any name but an empty one or another slicer's or timeline's, its caption unchanged); `Timeline.locked`; a new slicer and timeline take Excel's own sizes.
+
+Changed:
+
+- Breaking: `Slicer.locked` is Excel's Locked (Format Slicer, Properties, the drawing's `fLocksWithSheet`), true by default; what it read before, Disable resizing and moving, is the new `Slicer.positionLocked`.
+- `addPivotTable` with `xlcalc/pivot` over cells with values or over a table creates the PivotTable showing `#SPILL!`, as Excel 365 does without asking (through its object model and its interface alike), and lays it out when its place is free; over another PivotTable it is still refused.
+- Clearing the contents of a whole PivotTable (`clearCells` over its table and its Filters area) deletes it in one step, as Excel does; clearing part of it is refused (`affect`).
+- `setCellTexts` with one entry over a PivotTable's label renames it as `setCellText` does; several entries over a PivotTable are refused (`affect`). `fillCellText` with its active cell in a PivotTable enters only that cell.
+- A fill out of a PivotTable writes beyond it, as in Excel; a fill into it is refused.
+
+Fixed:
+
+- A PivotTable with no row fields and several value fields or none gets no column of row labels, and with no value fields no row of values, as in Excel (`columns-alone`: A3:C4, before A3:D5).
+- A slicer over grouped numbers has the groups as its items after a refresh by the engine, not the field's numbers; errors among the items of a PivotTable and a slicer come in Excel's order, by `ERROR.TYPE` (`#N/A`, `#NUM!`, `#NAME?`, `#REF!`, `#VALUE!`, `#DIV/0!`, `#NULL!`), reversed descending.
+- A cache item of a time without a date, which Excel writes as `1899-12-30T08:30:00` (`1904-01-01T…` in the 1904 date system), is read as a time; laying out, labels and slicers no longer throw on it.
+- `writeXlsx` writes a timeline with no dates chosen as Excel does (`filterType="unknown"`): Excel did not open such a file.
+- `readXlsx` no longer reports a sheet with slicers or timelines as having pictures; a picture beside them is still reported.
+
 ## 0.71.4 (2026-10-31)
 
 Fixed:
