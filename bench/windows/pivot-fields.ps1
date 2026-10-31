@@ -24,9 +24,14 @@ function TopWindows {
   $byPid = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $proc)
   @($UIA::RootElement.FindAll($Scope::Children, $byPid))
 }
-# windows of the process that wait for an answer: any top window but Excel's own and the field list floating
+# windows of the process that wait for an answer: a dialog's (a message box, Excel's own dialogs), or one modal by its
+# Window pattern; not a workbook's window (XLMAIN), the field list floating, a tooltip
+$WindowP = [System.Windows.Automation.WindowPattern]::Pattern
 function Modals {
-  @(TopWindows | Where-Object { $_.Current.NativeWindowHandle -ne $hwnd -and $_.Current.Name -notmatch 'PivotTable Fields' })
+  @(TopWindows | Where-Object {
+      $c = $_.Current.ClassName
+      $_.Current.NativeWindowHandle -ne $hwnd -and $c -ne 'XLMAIN' -and ($c -match '^(#32770|NUIDialog|bosa_sdm)' -or ($_.GetSupportedPatterns() -contains $WindowP -and $_.GetCurrentPattern($WindowP).Current.IsModal))
+    })
 }
 function Texts($e) {
   $byText = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, [System.Windows.Automation.ControlType]::Text)
@@ -124,7 +129,7 @@ try {
         if ($null -eq $c) { continue }
         $rg = $ws.Range([string]$c.cell)
         if ($null -ne $c.format) { $rg.NumberFormat = [string]$c.format }
-        if ($null -ne $c.formula) { $rg.Formula = [string]$c.formula } elseif ($null -ne $c.value) { $rg.Value2 = $c.value }
+        if ($null -ne $c.formula) { $rg.Formula = [string]$c.formula } elseif ($c.value -is [string]) { $rg.Value2 = [string]$c.value } elseif ($null -ne $c.value) { $rg.Value2 = [double]$c.value }
       }
       if ($b.merge) { [void]$ws.Range([string]$b.merge).Merge() }
       if ($b.table) { [void]$ws.ListObjects.Add(1, $ws.Range([string]$b.table), [Type]::Missing, 1) }
@@ -151,10 +156,10 @@ try {
         }
       }
     } catch { $err = [string]$_.Exception.Message + ' at line ' + [string]$_.InvocationInfo.ScriptLineNumber }
-    if (-not (Closed)) {
-      try { $wb.SaveAs((Join-Path $dir $b.out), 51) } catch { $err += ' save: ' + [string]$_.Exception.Message }
-    }
-    if (-not (Closed)) { try { $wb.Close($false) } catch { $err += ' close: ' + [string]$_.Exception.Message } }
+    if (Closed) { $err += ' a window was open before the save' }
+    else { try { $wb.SaveAs((Join-Path $dir $b.out), 51) } catch { $err += ' save: ' + [string]$_.Exception.Message } }
+    if (Closed) { $err += ' a window was open before the close' }
+    else { try { $wb.Close($false) } catch { $err += ' close: ' + [string]$_.Exception.Message } }
     [void]$res.answers.Add([ordered]@{ error = $err; dialog = $script:dialog; found = $found })
   }
 } catch { $res.error = [string]$_.Exception.Message + ' ' + [string]$_.InvocationInfo.PositionMessage } finally {
