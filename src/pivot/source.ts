@@ -92,7 +92,7 @@ export function sourceGrid(book: BookInput, source: PivotSource, values: ValuesI
   if (typeof place === 'string') return place
   const { s, rect } = place
   const sheet = book.sheets[s]
-  const got = values(sheet.name, rect)
+  const got = (values.raw ?? values)(sheet.name, rect)
   const last = got.reduce((m, [r]) => Math.max(m, r), rect.r1 + 1)
   const r2 = Math.min(rect.r2, last)
   const width = rect.c2 - rect.c1 + 1

@@ -102,6 +102,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const colFields = axes.columns.filter((f): f is number => f !== 'values')
   const values = table.values ?? []
   const fns = values.map((v) => v.function ?? 'sum')
+  const onlySums = fns.every(f => f === 'sum')
   // a calculated field is no record's value: its formula is calculated over the sums of the fields it names at each cell,
   // which are measures after the value fields' (`sums`)
   const formulas = fieldFormulas(cache)
@@ -117,9 +118,14 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   let alive: number[] = []
   for (let r = 0; r < count; r++) if (shown.every((s, f) => !s || (at[f][r] >= 0 && s[at[f][r]]))) alive.push(r)
 
+  const cacheItem = (f: number, p: number) => table.fields[f].items?.[p]?.item ?? p
+  const addRecord = (t: Tally, m: number, r: number) => {
+    const [n, filled, error] = readers[m](r)
+    t.add(n, filled, error, error ? [...rowFields.map(f => cacheItem(f, at[f][r])), ...colFields.map(f => cacheItem(f, at[f][r])), r] : undefined)
+  }
   const tally = (rs: readonly number[], v: number) => {
     const t = new Tally()
-    for (const r of rs) t.add(...readers[v](r))
+    for (const r of rs) addRecord(t, v, r)
     return t
   }
   // value filters and Top 10, field by field down the rows then the columns: each item against the others under the same
@@ -152,11 +158,13 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
 
   // the cells of the cube's last items on both axes, of the records in their order
   const leaves = new Map<string, Tally[]>()
+  const leafRecords = new Map<string, number[]>()
   for (const r of alive) {
     const k = `${key(rowFields.map((f) => at[f][r]))}|${key(colFields.map((f) => at[f][r]))}`
+    ;(leafRecords.get(k) ?? leafRecords.set(k, []).get(k)!).push(r)
     let cell = leaves.get(k)
     if (!cell) leaves.set(k, (cell = measures.map((_, m) => new Tally(m >= values.length))))
-    for (let m = 0; m < measures.length; m++) cell[m].add(...readers[m](r))
+    for (let m = 0; m < measures.length; m++) addRecord(cell[m], m, r)
   }
   const sorting = { table, cache, shown, epoch, lists, sortThreads: options.sortThreads ?? 2 }
   const rowRoot = branches(sorting, at, shownBy.rows, rowFields)
@@ -164,52 +172,72 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const calcItems = itemFormulas(table, cache, epoch)
   withCalculatedItems(rowRoot, rowFields, calcItems, shown)
   withCalculatedItems(colRoot, colFields, calcItems, shown)
-  const calculated = (f: number, p: number) => calcItems.get(f)?.get(p)
   const batch = new Batch()
-  // a total is made of the cells under it in the cache's order of their items, down the rows first, then across the
-  // columns, as Excel adds them (the set basic: a product's grand total)
-  const cacheOrder = (f: number, b: Branch) => [...b.next.keys()].sort((x, y) => (table.fields[f].items?.[x]?.item ?? x) - (table.fields[f].items?.[y]?.item ?? y))
   let memo = new Map<string, Tally[] | null>()
+  let pathsMemo = new WeakMap<Branch, number[][]>()
+  const lastPaths = (b: Branch, path: readonly number[], fields: readonly number[]): number[][] => {
+    let paths = pathsMemo.get(b)
+    if (!paths) {
+      paths = path.length === fields.length ? [[...path]] : b.order.flatMap(p => lastPaths(b.next.get(p)!, [...path, p], fields))
+      pathsMemo.set(b, paths)
+    }
+    return paths
+  }
+  const newTallies = () => measures.map((_, m) => new Tally(m >= values.length))
   const walk = (root: Branch, path: readonly number[]) => path.reduce<Branch | undefined>((b, p) => b?.next.get(p), root)
-  const cell = (rows: readonly number[], rb: Branch, cols: readonly number[], cb: Branch): Tally[] | null => {
-    const k = `${key(rows)}|${key(cols)}`
-    let out = memo.get(k)
-    if (out !== undefined) return out
-    if (rows.length === rowFields.length && cols.length === colFields.length) out = leaves.get(k) ?? null
+  const cell = (rows: readonly number[], rb: Branch, cols: readonly number[], cb: Branch, sumMode: boolean): Tally[] | null => {
+    const plain = `${key(rows)}|${key(cols)}`
+    const k = `${plain}|${sumMode ? 1 : 0}`
+    const cached = memo.get(k)
+    if (cached !== undefined) return cached
+    let out: Tally[] | null
+    if (rows.length === rowFields.length && cols.length === colFields.length) out = leaves.get(plain) ?? null
     else {
-      const down = rows.length < rowFields.length
-      const b = down ? rb : cb
+      const rp = lastPaths(rb, rows, rowFields), cp = lastPaths(cb, cols, colFields)
+      // Sum combines leaf-cell totals across each finest row, then the rows. Other measures replay the records;
+      // a total over columns first accumulates each finest row, then combines those row states.
+      const byRow = sumMode || cols.length < colFields.length
       out = null
-      const f = down ? rowFields[rows.length] : colFields[cols.length]
-      for (const p of cacheOrder(f, b)) {
-        const n = b.next.get(p)!
-        if (!n.data) continue
-        const [r, c] = down ? [[...rows, p], cols] : [rows, [...cols, p]]
-        if (calculated(f, p)) {
-          // a calculated item counts in the totals over it as one value more
-          const got = measures.map((_, m) => measure(r, c, m, m < values.length ? fns[m] : 'sum'))
-          out ??= measures.map((_, m) => new Tally(m >= values.length))
-          out.forEach((x, m) => x.add(...asRecord(got[m])))
-          continue
+      for (const r of rp) {
+        let row: Tally[] | null = byRow ? null : out
+        for (const c of cp) {
+          const leaf = `${key(r)}|${key(c)}`
+          if (sumMode) {
+            let t = leaves.get(leaf)
+            if (!t && calcAt(r, c)) {
+              t = newTallies()
+              t.forEach((x, m) => x.add(...asRecord(measure(r, c, m, 'sum'))))
+            }
+            if (t) { row ??= newTallies(); row.forEach((x, m) => x.merge(t[m])) }
+          } else {
+            if (!leafRecords.has(leaf) && calcAt(r, c)) {
+              row ??= newTallies()
+              row.forEach((x, m) => x.add(...asRecord(measure(r, c, m, m < values.length ? fns[m] : 'sum'))))
+            }
+            for (const record of leafRecords.get(leaf) ?? []) {
+              row ??= newTallies()
+              for (let m = 0; m < measures.length; m++) addRecord(row[m], m, record)
+            }
+          }
         }
-        const t = down ? cell(r, n, c, cb) : cell(r, rb, c, n)
-        if (!t) continue
-        out ??= measures.map((_, m) => new Tally(m >= values.length))
-        out.forEach((x, m) => x.merge(t[m]))
+        if (row) {
+          if (byRow) { out ??= newTallies(); out.forEach((x, m) => x.merge(row![m])) }
+          else out = row
+        }
       }
     }
     memo.set(k, out)
     return out
   }
-  const reach = (rows: readonly number[], columns: readonly number[]) => {
+  const reach = (rows: readonly number[], columns: readonly number[], sumMode = false) => {
     const [rb, cb] = [walk(rowRoot, rows), walk(colRoot, columns)]
-    return rb?.data && cb?.data ? cell(rows, rb, columns, cb) : null
+    return rb?.data && cb?.data ? cell(rows, rb, columns, cb, sumMode) : null
   }
   // the first calculated item of a path: its axis, level and formula
   const calcAt = (rows: readonly number[], columns: readonly number[]) => {
     for (const [path, fields] of [[rows, rowFields], [columns, colFields]] as const)
       for (let k = 0; k < path.length; k++) {
-        const t = calculated(fields[k], path[k])
+        const t = calcItems.get(fields[k])?.get(path[k])
         if (t) return { rows: path === rows, k, t }
       }
     return null
@@ -220,7 +248,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     const field = measures[m]
     if (formulas.has(field)) return fieldValue(rows, columns, field)
     const c = calcAt(rows, columns)
-    if (!c) return reach(rows, columns)?.[m]?.value(fn) ?? null
+    if (!c) return reach(rows, columns, fn === 'sum' && m < values.length && onlySums)?.[m]?.value(fn) ?? null
     if (!reached(rows, columns)) return null
     const swap = (q: number) => (c.rows ? [rows.map((p, k) => (k === c.k ? q : p)), columns] : [rows, columns.map((p, k) => (k === c.k ? q : p))]) as [number[], number[]]
     return batch.get(c.t.text, c.t.args.map((q) => measure(...swap(q), m, fn)))
@@ -241,6 +269,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   sortBranches(sorting, rowRoot, rowFields, colFields, true, value)
   sortBranches(sorting, colRoot, colFields, rowFields, false, value)
   memo = new Map()
+  pathsMemo = new WeakMap()
   if (formulas.size || calcItems.size) prefetch(batch, rowRoot, colRoot, values.length, (r, c, v) => measure(r, c, v, fns[v]))
   const pages = (table.pages ?? []).map((p): PivotPageResult => {
     const all = (table.fields[p.field].items ?? []).map((_, i) => i)

@@ -1,7 +1,7 @@
 /** The computed values of a book's cells, for a paste of values (a copy from a filtered sheet). */
 import type { CellValue } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { valueAt, type EngineState } from '../engine.js'
+import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { outCell } from '../result.js'
 import { sheetKey } from '../syntax.js'
 import { meets, type Rect } from './area.js'
@@ -9,9 +9,9 @@ import { meets, type Rect } from './area.js'
 /**
  * The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included:
  * [row, column, value]; the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`); and the
- * day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take.
+ * unrounded values for internal calculations (`raw`); and the day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take.
  */
-export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number }
+export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { raw?: ValuesIn; spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number }
 
 /** The spilled arrays of a computed state over more than one cell that meet `x` on `sheet`. */
 function spillsOf(state: EngineState, sheet: string, x: Rect): Rect[] {
@@ -21,7 +21,7 @@ function spillsOf(state: EngineState, sheet: string, x: Rect): Rect[] {
 
 /** The values of a computed state. */
 export function stateValues(state: EngineState): ValuesIn {
-  const values = (sheet: string, x: Rect) => {
+  const values = (sheet: string, x: Rect, raw = false) => {
     const s = state.sheetIdx.get(sheetKey(sheet))!
     const sh = state.ctx.sheets[s]
     const out: [number, number, CellValue][] = []
@@ -30,13 +30,13 @@ export function stateValues(state: EngineState): ValuesIn {
       for (let r = x.r1; r <= Math.min(x.r2, sh.rows - 1); r++) {
         spend(1)
         const v = valueAt(state, s, r, c)
-        if (v !== null && v !== undefined) out.push([r, c, outCell(v)])
+        if (v !== null && v !== undefined) out.push([r, c, raw ? toCellValue(v) : outCell(v)])
       }
     }
     // the unstored cells of a large spill (`spill/fill.ts`) the loop above does not reach
     for (const f of sh.fills) {
       if (f.v === null) continue
-      const v = outCell(f.v)
+      const v = raw ? toCellValue(f.v) : outCell(f.v)
       for (let c = Math.max(x.c1, f.c1); c <= Math.min(x.c2, f.c2); c++)
         for (let r = Math.max(x.r1, f.r1); r <= Math.min(x.r2, f.r2); r++) {
           if (sh.cols[c] && r < sh.rows) continue
@@ -46,5 +46,5 @@ export function stateValues(state: EngineState): ValuesIn {
     }
     return out
   }
-  return Object.assign(values, { spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x), today: () => Math.floor(state.ctx.now) })
+  return Object.assign(values, { raw: (sheet: string, x: Rect) => values(sheet, x, true), spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x), today: () => Math.floor(state.ctx.now) })
 }
