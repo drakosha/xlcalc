@@ -24,6 +24,7 @@ import { areaText, meets, parseRange, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
 import { checkedPivots, movedPivot, patched, pivotArea, pivotsOn, relaid, withoutPivot } from './pivots.js'
+import { placedValues } from './pivot-values.js'
 import { sheetIndex } from './rewrite.js'
 import { insertSheet } from './sheets.js'
 import type { ValuesIn } from './values.js'
@@ -100,6 +101,8 @@ function withDefinition(p: PivotTable, c: PivotCache, set: unknown, path: string
       if (seen.has(f)) throw new InputError(`${path}.${axis}[${i}]`, `the field ${JSON.stringify(f)} is on ${seen.get(f)} already: a field lies on one axis`)
       seen.set(f, axis)
     })
+  // Σ Values on an axis while there are two value fields or more, where Excel keeps it
+  out = placedValues(out, patch)
   if (out.values) {
     const names = new Set<string>()
     out = {
@@ -250,6 +253,7 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
       ...(p.values ? { values: p.values.flatMap((d) => (map(d.field) < 0 ? [] : [{ ...d, field: map(d.field) }])) } : {}),
     }
     for (const f of next.fields) if (f.items === undefined) delete f.items
+    next = placedValues(next)
     c = fresh
   }
   if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set', book.locale)
