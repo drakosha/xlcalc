@@ -27,11 +27,28 @@ export async function pivotGpdBook(c: PivotCase, set?: string): Promise<BookInpu
     if (!('edit' in o)) continue
     const [sheet, cell] = o.edit.split('!')
     const s = book.sheets.find((x) => x.name === sheet)!
+    if (s.pivotTables && typeof o.to === 'string') renameItem(book, s, cell, o.to)
     // a value typed as Excel reads it: text of a number a number
     const typed = typeof o.to === 'string' && o.to.trim() !== '' && Number.isFinite(Number(o.to)) ? Number(o.to) : o.to
     s.cells[cell] = typeof o.to === 'object' && o.to !== null && 'formula' in o.to ? { formula: o.to.formula } : { value: typed as string | number }
   }
   return book
+}
+
+/**
+ * Text typed over an item's label in a PivotTable renames the item, as Excel's entry does (the set edit): the item of a
+ * field on the rows or columns whose label is the cell's gives its caption.
+ */
+function renameItem(book: BookInput, sheet: BookInput['sheets'][number], cell: string, to: string) {
+  const was = sheet.cells[cell]?.value
+  for (const t of sheet.pivotTables ?? []) {
+    const c = book.pivotCaches!.find((x) => x.id === t.cache)!
+    for (const f of [...(t.rows ?? []), ...(t.columns ?? [])]) {
+      if (f === 'values') continue
+      const it = t.fields[f].items?.find((i) => (i.caption ?? String(c.fields[f].items?.[i.item!] ?? '(blank)')) === String(was))
+      if (it) it.caption = to
+    }
+  }
 }
 
 /** The cells of a case's watched ranges (`G!A1:A9`), as `G!A1`. */
