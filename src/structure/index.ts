@@ -75,7 +75,7 @@ const FIELDS: Record<string, string[]> = {
   groupPivotField: ['sheet', 'pivot', 'field', 'group'],
   ungroupPivotField: ['sheet', 'pivot', 'field', 'items'],
   renamePivotGroup: ['sheet', 'pivot', 'field', 'item', 'name'],
-  setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula'],
+  setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula', 'values'],
   setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
   ...SLICER_FIELDS,
 }

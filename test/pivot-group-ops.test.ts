@@ -146,6 +146,25 @@ describe('calculated fields and items', () => {
       s.close()
     })
 
+  it("adds a calculated field on Values of its PivotTable in one step, as Excel's Insert Calculated Field does; its change of formula keeps it there", () => {
+    const s = createSession(book(0))
+    const pt = () => s.getBook().sheets[1].pivotTables!
+    const before = pt().map((t) => t.values)
+    expect(s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'Unit price', formula: '=Price/Qty', values: true }).ok).toBe(true)
+    expect(pt()[0].values).toEqual([{ field: 2 }, { field: 4, name: 'Sum of Unit price' }])
+    // the other PivotTable of the cache does not take it
+    expect(pt()[1].values).toEqual(before[1])
+    expect(s.getValues('P', 'C3:C4')).toEqual([['Sum of Unit price'], [10]])
+    expect(s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'Unit price', formula: '=Price/Qty*2', values: true }).ok).toBe(true)
+    expect(pt()[0].values).toEqual([{ field: 2 }, { field: 4, name: 'Sum of Unit price' }])
+    expect(s.getValues('P', 'C4')).toEqual([[20]])
+    s.undo()
+    s.undo()
+    expect([pt()[0].values, s.getBook().pivotCaches![0].fields.length]).toEqual([before[0], 4])
+    expect(() => s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'U', formula: '=Qty', values: 1 as never })).toThrow('op.values')
+    s.close()
+  })
+
   it('adds a calculated item counted in the grand total, in the file form, and deletes it', () => {
     const s = createSession(book(0))
     expect(s.editStructure({ op: 'setPivotCalculatedItem', ...P, field: 0, name: 'Coast', formula: "=East+'West'" }).ok).toBe(true)
