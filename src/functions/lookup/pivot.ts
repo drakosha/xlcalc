@@ -11,6 +11,7 @@ import type { Arg, Cx, FnDef } from '../../args.js'
 import { caseKey } from '../../collate.js'
 import type { NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
 import { dateToSerial } from '../../model.js'
+import { itemFormat } from '../../pivot-format.js'
 import { parseRange } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, Rng, type V } from '../../values.js'
@@ -27,9 +28,9 @@ interface Slot {
 const formOf = (t: PivotTable, f: number) => t.fields[f]?.layout ?? t.layout ?? 'compact'
 
 /**
- * An axis's lines as places, null for a line that holds no values of its own: a blank line, a line of a field's items
- * whose subtotal is not shown on it (subtotals off, at the bottom, or the tabular form), a line above the value fields
- * where they lie across the axis.
+ * An axis's lines as places, null for a line that holds no values of its own: a blank line, a line of a field's item
+ * whose subtotal is not shown on it (subtotals off, at the bottom, or the tabular form) and which is not collapsed, a
+ * line above the value fields where they lie across the axis.
  */
 function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undefined): (Slot | null)[] {
   const at = axis.indexOf('values')
@@ -43,10 +44,12 @@ function slots(t: PivotTable, axis: PivotAxisField[], lines: PivotLine[] | undef
     for (let k = 0; k < depth; k++) if (axis[k] !== 'values') out.items.set(axis[k] as number, items[k])
     if (line.type !== undefined || depth >= axis.length) return out
     if (at >= depth) return null
-    // a line of an outer field's item: its subtotal where it is shown at the top; a value field's above the items, none
+    // a line of an outer field's item: its total where the item is collapsed (in any form), its subtotal where it is
+    // shown at the top; a value field's above the items, none
     const f = axis[depth - 1]
     if (f === 'values') return null
     const field = t.fields[f]
+    if (field?.items?.[items[depth - 1]]?.collapsed) return out
     return field?.subtotals?.length !== 0 && field?.subtotalTop !== false && formOf(t, f) !== 'tabular' ? { ...out, header: true } : null
   })
 }
@@ -58,13 +61,6 @@ function cellOf(v: PivotValue, epoch: number): V {
   return E[v.error]
 }
 
-/** The format of an item's label: its field's, a date's the short date (with the time where it has one), as Excel shows a date item (the set basic). */
-function formatOf(c: PivotCache, f: number, v: PivotValue): NumberFormat | undefined {
-  const own = c.fields[f].numberFormat
-  if (own !== undefined || v === null || typeof v !== 'object' || !('date' in v)) return own
-  return v.date.endsWith('T00:00:00') || !v.date.includes('T') ? 14 : 22
-}
-
 /** The values of a cache field's items, or of its groups' where it is grouped. */
 const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.items ?? c.fields[f]?.items ?? []
 
@@ -74,6 +70,8 @@ const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.
  * number or date; a boolean by an equal boolean.
  */
 function names(cx: Cx, arg: V, item: V, label: string | undefined, format: NumberFormat | undefined): boolean {
+  // a number by the comparison of `=`, to 15 significant digits: a date and time typed or calculated equals the item's
+  if (typeof arg === 'number') return typeof item === 'number' && cx.rules.compareOp(arg, item) === 0
   if (typeof arg !== 'string') return typeof arg === typeof item && arg === item
   const key = caseKey(arg)
   if (label !== undefined) return caseKey(label) === key
@@ -90,17 +88,16 @@ function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Se
   const found: [k: number, text: boolean][] = []
   t.fields[f]?.items?.forEach((it, k) => {
     const v = it.item === undefined ? undefined : values[it.item]
-    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, formatOf(c, f, v))) found.push([k, typeof v === 'string'])
+    if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, itemFormat(c, f, v))) found.push([k, typeof v === 'string'])
   })
   const text = typeof arg === 'string' && found.some(([, x]) => x)
   return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
 }
 
-/** A field by its name in the PivotTable or the source, in any case. */
+/** A field by its name in the PivotTable, the source's where it has none of its own, in any case (the set gpd-held). */
 function fieldNamed(t: PivotTable, c: PivotCache, name: string): number {
   const key = caseKey(name)
-  const k = t.fields.findIndex((f) => f.name !== undefined && caseKey(f.name) === key)
-  return k >= 0 ? k : c.fields.findIndex((f) => caseKey(f.name) === key)
+  return c.fields.findIndex((f, k) => caseKey(t.fields[k]?.name ?? f.name) === key)
 }
 
 /** A value field by its caption, else by its source field's name, in any case. */
@@ -111,16 +108,27 @@ function valueNamed(t: PivotTable, c: PivotCache, name: string): number {
   return k >= 0 ? k : values.findIndex((d) => c.fields[d.field] !== undefined && caseKey(c.fields[d.field].name) === key)
 }
 
-/** A slot whose fields are exactly those of `wanted` on its axis, each with one of its items, and of the value field `value` where it tells one. */
+/**
+ * The slot of the pairs on an axis, of the value field `value` where the axis tells one: the line whose fields are
+ * exactly those of `wanted` on the axis, each with one of its items, a line of an item's own subtotal before the item's
+ * line above it; several such lines (subtotals of several functions) name none. Without one, a line that names more
+ * fields, the fewest, where only one does: an inner field named without the one between (the set gpd-held).
+ */
 function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f: number) => boolean, value: number, tells: boolean): number {
-  const fits = (x: Slot | null): x is Slot => {
+  const fits = (x: Slot | null, exact: boolean): x is Slot => {
     if (!x || (tells && x.value !== value)) return false
     for (const [f, items] of wanted) if (own(f) && !(x.items.has(f) && items.has(x.items.get(f)!))) return false
-    for (const f of x.items.keys()) if (!wanted.has(f)) return false
+    if (exact) for (const f of x.items.keys()) if (!wanted.has(f)) return false
     return true
   }
-  const k = list.findIndex((x) => fits(x) && !x.header)
-  return k >= 0 ? k : list.findIndex(fits)
+  const at = (keep: (x: Slot) => boolean) => list.flatMap((x, k) => (x && keep(x) ? [k] : []))
+  const exact = at((x) => fits(x, true))
+  const lines = exact.filter((k) => !list[k]!.header)
+  if (exact.length) return lines.length > 1 ? -1 : (lines[0] ?? exact[0])
+  const more = at((x) => fits(x, false))
+  const fewest = Math.min(...more.map((k) => list[k]!.items.size))
+  const least = more.filter((k) => list[k]!.items.size === fewest)
+  return least.length === 1 ? least[0] : -1
 }
 
 function getPivotData(cx: Cx, data: Arg, ref: Arg, pairs: V[]): Arg {

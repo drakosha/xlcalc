@@ -109,7 +109,7 @@ function modelOf(c: PivotCase): BookInput {
       const flt: PivotFilter = { field: at(o.filter), type: FILTERS[o.type], args: [o.value1 as string | number] }
       if (o.by) flt.value = value(o.by)
       t.filters = [...(t.filters ?? []), flt]
-    } else if ('sort' in o) t.fields[at(o.sort)].sort = { order: o.order, ...(o.by ? { by: { value: value(o.by) } } : {}) }
+    } else if ('sort' in o && o.order !== 'manual') t.fields[at(o.sort)].sort = { order: o.order, ...(o.by ? { by: { value: value(o.by) } } : {}) }
   }
   return first
 }

@@ -12,11 +12,14 @@ import { describe, expect, it } from 'vitest'
 import * as basic from '../bench/coverage/pivot/basic.js'
 import type { PivotCase, PivotOp, PivotPhase, PivotSet } from '../bench/coverage/pivot/cases.js'
 import * as filter from '../bench/coverage/pivot/filter.js'
+import * as filterHeld from '../bench/coverage/pivot/filter-held.js'
 import * as layout from '../bench/coverage/pivot/layout.js'
+import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as show from '../bench/coverage/pivot/show.js'
 import * as showItems from '../bench/coverage/pivot/show-items.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
+import * as sortHeld from '../bench/coverage/pivot/sort-held.js'
 import type { BookInput, CellValue, PivotRef } from '../src/contract.js'
 import { createState } from '../src/engine.js'
 import { dateToSerial, formatAddress } from '../src/model.js'
@@ -32,23 +35,23 @@ const DIR = new URL('./excel/win/pivot/', import.meta.url)
 const CLOCK = { now: '2026-10-30', seed: 0 }
 
 /**
- * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. basic: empty cells with
- * "For empty cells show", which Excel shows as 0 (not measured further). sort: items of several custom lists at once,
- * which Excel orders by no order we found (`docs/development.md`). refresh: a refresh growing over cells or another
- * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it. layout: a field's subtotals by
- * several functions, which the reading of the file does not take yet.
+ * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
+ * custom lists at once, which Excel orders by no order we found (`docs/development.md`).
  */
 const KNOWN: Record<string, string[]> = {
-  basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
+  'layout-held': [],
+  'filter-held': [],
+  'sort-held': [],
+  basic: [],
   filter: [],
   sort: ['months-down/0/saved', 'months-down/0/source'],
-  layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
-  refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
+  layout: [],
+  refresh: [],
   show: [],
   'show-items': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, show, 'show-items': showItems }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems }
 
 /** The values of `range` on `sheet` as its cells hold them. */
 function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
@@ -142,8 +145,12 @@ async function differences(set: string): Promise<string[]> {
       const refs = k > 0 ? refreshed(ops[k]) : null
       const prev = refs && (await book(set, c.id, k - 1, last))
       if (!prev) continue
-      // the PivotTables and caches of the phase before, over the source as this phase's book holds it
-      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? prev.sheets.find((x) => x.name === 'P')! : s)), pivotCaches: prev.pivotCaches }
+      // the PivotTables and caches of the phase before, over the source as this phase's book holds it, with the phase's
+      // edits of the PivotTables' sheet (a cell in the way cleared)
+      const pivots = prev.sheets.find((x) => x.name === 'P')!
+      const cells = { ...pivots.cells }
+      for (const op of ops[k]) if ('edit' in op && op.edit.startsWith('P!')) op.to === null ? delete cells[op.edit.slice(2)] : (cells[op.edit.slice(2)] = typeof op.to === 'object' ? ('formula' in op.to ? { formula: op.to.formula } : { value: op.to.typed }) : { value: op.to })
+      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? { ...pivots, cells } : s)), pivotCaches: prev.pivotCaches }
       out.push(...compared(`${c.id}/${k}/refresh`, source, refs === 'all' ? undefined : refs!, true, want, tolerance))
     }
   }

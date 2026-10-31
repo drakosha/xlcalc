@@ -115,6 +115,17 @@ export interface PivotFieldGroup {
   items?: PivotValue[]
 }
 
+/**
+ * How Excel's Group dialog groups a field (`groupPivotField`): dates by periods, several periods making a field each, as
+ * Excel 365 does (`Months (Date)`, `Years (Date)`), days by a number of days (`days`, with `periods` `['days']`); numbers
+ * by an interval; or the items chosen by hand into one group (`Group1`), each an index into the PivotTable field's
+ * `items`. `start` and `end` (Starting at, Ending at) are automatic where left out: a date ISO 8601 without a zone.
+ */
+export type PivotGrouping =
+  | { by: 'dates'; periods: Exclude<PivotGroupBy, 'numbers'>[]; days?: number; start?: string; end?: string }
+  | { by: 'numbers'; interval: number; start?: number; end?: number }
+  | { by: 'items'; items: number[] }
+
 /** A field on an axis: the index of a cache field, or `values`, the place of the value fields when there are several (Σ Values). */
 export type PivotAxisField = number | 'values'
 
@@ -201,10 +212,12 @@ export interface PivotField {
   pageBreak?: boolean
   /** Show items with no data. */
   showEmpty?: boolean
-  /** Sort its items by label, or by a value field's values (`by`), ascending or descending; the cache's order without it. */
+  /**
+   * Sort its items by label, or by a value field's values (`by`), ascending or descending, every time the PivotTable is
+   * updated; the order of `items` without it. Excel keeps a sort only when it is automatic: a sort made once leaves the
+   * items in that order.
+   */
   sort?: { order: 'ascending' | 'descending'; by?: PivotSortBy }
-  /** Sort automatically every time the report is updated (true by default). */
-  autoSort?: boolean
   /** Include new items in a manual filter. */
   includeNewItems?: boolean
   /** Several items may be shown at once on the Filters area (Select Multiple Items). */

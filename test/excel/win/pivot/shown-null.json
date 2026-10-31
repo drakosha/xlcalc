@@ -1,0 +1,3002 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 25.5
+ },
+ "cases": [
+  {
+   "id": "amount-plain",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-dash",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "-"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-x",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "x"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-text-1",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "n/a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-text-1",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "n/a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-text-2",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "--"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-text-2",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "--"
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-text-3",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "table": {
+      "emptyText": " - "
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-text-3",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "emptyText": " - "
+     }
+    }
+   ]
+  },
+  {
+   "id": "price-text-4",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "0"
+     }
+    }
+   ]
+  },
+  {
+   "id": "amount-text-4",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "columns": [
+      "Product"
+     ]
+    },
+    {
+     "value": {
+      "field": "Amount"
+     }
+    },
+    {
+     "table": {
+      "emptyText": "0"
+     }
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "amount-plain": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 35b05aeaaf62aca1",
+  "price-dash": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fc8315b78ccbf850",
+  "amount-x": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 aa3b5df7ab7cd6a0",
+  "price-text-1": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4abe5e43321dfb4d",
+  "amount-text-1": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9203251c9953d97b",
+  "price-text-2": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 34b235b94dd3857a",
+  "amount-text-2": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 608789aee5028b0e",
+  "price-text-3": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 559cb23840002a3d",
+  "amount-text-3": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 f7022768d7ab99c8",
+  "price-text-4": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e43759057b84015a",
+  "amount-text-4": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 dbe6befc52982b85"
+ },
+ "answers": {
+  "amount-plain": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         null,
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         null,
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         null,
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         null,
+         -76.03,
+         null,
+         null,
+         null,
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "",
+         "-76.03",
+         "",
+         "",
+         "",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  },
+  "price-dash": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         0,
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         0,
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         0,
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         "Grand Total",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "0",
+         "42.49",
+         "42.25",
+         "41.22",
+         "12.69",
+         "138.65"
+        ],
+        [
+         "North",
+         "0",
+         "112.07",
+         "59.39",
+         "45.43",
+         "20.91",
+         "237.8"
+        ],
+        [
+         "South",
+         "0",
+         "127.41",
+         "70.96",
+         "107.19",
+         "42.84",
+         "348.4"
+        ],
+        [
+         "West",
+         "14.85",
+         "73.68",
+         "126.81",
+         "50.18",
+         "36.39",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "14.85",
+         "355.65",
+         "299.41",
+         "244.02",
+         "112.83",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "amount-x": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "x",
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         "x",
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         "x",
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         "x",
+         -76.03,
+         "x",
+         "x",
+         "x",
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "x",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "x",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "x",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "x",
+         "-76.03",
+         "x",
+         "x",
+         "x",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  },
+  "price-text-1": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "n/a",
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         "n/a",
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         "n/a",
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a"
+        ],
+        [
+         "Grand Total",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "n/a",
+         "42.49",
+         "42.25",
+         "41.22",
+         "12.69",
+         "138.65"
+        ],
+        [
+         "North",
+         "n/a",
+         "112.07",
+         "59.39",
+         "45.43",
+         "20.91",
+         "237.8"
+        ],
+        [
+         "South",
+         "n/a",
+         "127.41",
+         "70.96",
+         "107.19",
+         "42.84",
+         "348.4"
+        ],
+        [
+         "West",
+         "14.85",
+         "73.68",
+         "126.81",
+         "50.18",
+         "36.39",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a",
+         "n/a"
+        ],
+        [
+         "Grand Total",
+         "14.85",
+         "355.65",
+         "299.41",
+         "244.02",
+         "112.83",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "amount-text-1": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "n/a",
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         "n/a",
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         "n/a",
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         "n/a",
+         -76.03,
+         "n/a",
+         "n/a",
+         "n/a",
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "n/a",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "n/a",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "n/a",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "n/a",
+         "-76.03",
+         "n/a",
+         "n/a",
+         "n/a",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  },
+  "price-text-2": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "--",
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         "--",
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         "--",
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--"
+        ],
+        [
+         "Grand Total",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "--",
+         "42.49",
+         "42.25",
+         "41.22",
+         "12.69",
+         "138.65"
+        ],
+        [
+         "North",
+         "--",
+         "112.07",
+         "59.39",
+         "45.43",
+         "20.91",
+         "237.8"
+        ],
+        [
+         "South",
+         "--",
+         "127.41",
+         "70.96",
+         "107.19",
+         "42.84",
+         "348.4"
+        ],
+        [
+         "West",
+         "14.85",
+         "73.68",
+         "126.81",
+         "50.18",
+         "36.39",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--"
+        ],
+        [
+         "Grand Total",
+         "14.85",
+         "355.65",
+         "299.41",
+         "244.02",
+         "112.83",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "amount-text-2": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "--",
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         "--",
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         "--",
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         "--",
+         -76.03,
+         "--",
+         "--",
+         "--",
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "--",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "--",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "--",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "--",
+         "-76.03",
+         "--",
+         "--",
+         "--",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  },
+  "price-text-3": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         0,
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         0,
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         0,
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         "Grand Total",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "0",
+         "42.49",
+         "42.25",
+         "41.22",
+         "12.69",
+         "138.65"
+        ],
+        [
+         "North",
+         "0",
+         "112.07",
+         "59.39",
+         "45.43",
+         "20.91",
+         "237.8"
+        ],
+        [
+         "South",
+         "0",
+         "127.41",
+         "70.96",
+         "107.19",
+         "42.84",
+         "348.4"
+        ],
+        [
+         "West",
+         "14.85",
+         "73.68",
+         "126.81",
+         "50.18",
+         "36.39",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "14.85",
+         "355.65",
+         "299.41",
+         "244.02",
+         "112.83",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "amount-text-3": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         0,
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         0,
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         0,
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         0,
+         -76.03,
+         0,
+         0,
+         0,
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "0",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "0",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "0",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "0",
+         "-76.03",
+         "0",
+         "0",
+         "0",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  },
+  "price-text-4": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         0,
+         42.49,
+         42.25,
+         41.22,
+         12.69,
+         138.65
+        ],
+        [
+         "North",
+         0,
+         112.07000000000001,
+         59.38999999999999,
+         45.43,
+         20.91,
+         237.8
+        ],
+        [
+         "South",
+         0,
+         127.41000000000003,
+         70.96000000000001,
+         107.19,
+         42.84,
+         348.4000000000001
+        ],
+        [
+         "West",
+         14.85,
+         73.68,
+         126.81,
+         50.18,
+         36.39,
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         "Grand Total",
+         14.85,
+         355.65000000000003,
+         299.40999999999997,
+         244.02,
+         112.83,
+         1026.7600000000002
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "0",
+         "42.49",
+         "42.25",
+         "41.22",
+         "12.69",
+         "138.65"
+        ],
+        [
+         "North",
+         "0",
+         "112.07",
+         "59.39",
+         "45.43",
+         "20.91",
+         "237.8"
+        ],
+        [
+         "South",
+         "0",
+         "127.41",
+         "70.96",
+         "107.19",
+         "42.84",
+         "348.4"
+        ],
+        [
+         "West",
+         "14.85",
+         "73.68",
+         "126.81",
+         "50.18",
+         "36.39",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0",
+         "0"
+        ],
+        [
+         "Grand Total",
+         "14.85",
+         "355.65",
+         "299.41",
+         "244.02",
+         "112.83",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Price"
+     }
+    }
+   ]
+  },
+  "amount-text-4": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:G10",
+       "area": "A3:G10",
+       "body": "B5:G10",
+       "values": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         0,
+         935.19,
+         -69.19,
+         -61.98000000000002,
+         -3.02,
+         801
+        ],
+        [
+         "North",
+         0,
+         {
+          "error": "NA"
+         },
+         1451.8400000000001,
+         920.4200000000001,
+         1045.94,
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         0,
+         1928.77,
+         47.8,
+         {
+          "error": "DIV0"
+         },
+         623.11,
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         44.32,
+         120.22,
+         1375.28,
+         337.13,
+         151.32,
+         2028.2699999999998
+        ],
+        [
+         "(blank)",
+         0,
+         -76.03,
+         0,
+         0,
+         0,
+         -76.03
+        ],
+        [
+         "Grand Total",
+         44.32,
+         {
+          "error": "NA"
+         },
+         2805.73,
+         {
+          "error": "DIV0"
+         },
+         1817.3500000000001,
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Amount",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "100",
+         "Apple",
+         "Banana",
+         "Cherry",
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "0",
+         "935.19",
+         "-69.19",
+         "-61.98",
+         "-3.02",
+         "801"
+        ],
+        [
+         "North",
+         "0",
+         "#N/A",
+         "1451.84",
+         "920.42",
+         "1045.94",
+         "#N/A"
+        ],
+        [
+         "South",
+         "0",
+         "1928.77",
+         "47.8",
+         "#DIV/0!",
+         "623.11",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "44.32",
+         "120.22",
+         "1375.28",
+         "337.13",
+         "151.32",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "0",
+         "-76.03",
+         "0",
+         "0",
+         "0",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "44.32",
+         "#N/A",
+         "2805.73",
+         "#DIV/0!",
+         "1817.35",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 2": "Sum of Amount"
+     }
+    }
+   ]
+  }
+ }
+}
