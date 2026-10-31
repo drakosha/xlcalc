@@ -9,6 +9,11 @@ import { pivotCacheXml, pivotRecordsXml } from './pivot-cache.js'
 import { pivotTableXml, type PivotWriting } from './pivot.js'
 import type { CellFormats } from './styles.js'
 import { REL, relsXml as rels, TYPE } from './xml.js'
+import type { Issues } from '../issues.js'
+import { sheetKey } from '../../syntax/print.js'
+
+/** The file a source on a deleted sheet links to: Excel writes the workbook's own path, which a file written anew does not know. */
+const DELETED_SOURCE = 'book.xlsx'
 
 export interface PivotFile {
   name: string
@@ -37,7 +42,7 @@ export function pivotRules(sheet: SheetInput, name: string, priority: (i: number
 }
 
 /** The parts of the book's caches and PivotTables; `styles` holds the number formats and the differential formats they use. */
-export function pivotPackage(book: BookInput, styles: CellFormats, slicerIds: ReadonlySet<number> = new Set()): PivotPackage {
+export function pivotPackage(book: BookInput, styles: CellFormats, issues: Issues, slicerIds: ReadonlySet<number> = new Set()): PivotPackage {
   const out: PivotPackage = { files: [], contentTypes: [], caches: [], sheets: book.sheets.map(() => []) }
   const caches = book.pivotCaches ?? []
   if (!caches.length) return out
@@ -48,7 +53,11 @@ export function pivotPackage(book: BookInput, styles: CellFormats, slicerIds: Re
     const saved = c.records !== undefined && c.saveData !== false
     const own: [string, string, boolean?][] = []
     if (saved) own.push([`${REL}/pivotCacheRecords`, `pivotCacheRecords${n}.xml`])
-    const book_ = 'book' in c.source ? c.source.book : undefined
+    // a source on a sheet the workbook no longer has: a link to a file by its path, as Excel writes it after deleting the sheet
+    const src = c.source
+    const gone = src.type === 'range' && src.book === undefined && !book.sheets.some((s) => sheetKey(s.name) === sheetKey(src.sheet))
+    if (gone) issues.add('pivotTable', { key: 'pivotSourceLinked', sheet: src.sheet })
+    const book_ = gone ? DELETED_SOURCE : 'book' in src ? src.book : undefined
     if (book_ !== undefined) own.push([`${REL}/externalLinkPath`, book_, true])
     out.files.push({ name, text: pivotCacheXml(c, (f) => styles.numFmt(f.numberFormat), saved ? 'rId1' : undefined, book_ === undefined ? undefined : `rId${own.length}`, slicerIds.has(c.id) ? c.id : undefined) })
     out.contentTypes.push([`/${name}`, `${TYPE}.pivotCacheDefinition+xml`])

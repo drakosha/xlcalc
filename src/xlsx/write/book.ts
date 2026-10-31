@@ -205,7 +205,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
   const slicers = slicerPackage(book, issues)
-  const pivots = pivotPackage(book, styles, slicers.pivotCacheIds)
+  const pivots = pivotPackage(book, styles, issues, slicers.pivotCacheIds)
   let vml = false
   sheets.forEach((s, i) => {
     const sheetRels: [string, string, boolean?][] = [
