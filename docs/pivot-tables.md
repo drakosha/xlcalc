@@ -270,6 +270,8 @@ The 11 functions of a value field follow Excel's rules for blanks, text and erro
 
 A date in a value field is its serial number. A total whose cells hold several errors returns the first, in the order the cache lists the items. Subtotals and grand totals summarize the values under them, not the values shown: the grand total of an average is the average of every record. A field's subtotals by other functions (Field Settings, Subtotals, Custom) summarize the same values by each function.
 
+Source formula values and calculated fields keep their binary64 precision during refresh. The public result's 15-significant-digit rounding is applied after the pivot calculation. Totals follow Excel's accumulation order, including its record partitioning when filters remove records; Show Values As reads those same totals. The measured numeric rules and their exact comparisons are in [development.md](development.md#pivottables-refreshing-and-calculating).
+
 ### Filters
 
 Records count where every field lets them through:
@@ -286,7 +288,13 @@ A label or date filter and a value filter on one field both apply (Allow multipl
 
 ### Sorting
 
-A field placed on an axis lists its items ascending. Sorting by label puts the texts of a custom list first in the list's order (Sun…Sat, Sunday…Saturday, Jan…Dec, January…December, and the workbook's locale's, with Use Custom Lists when Sorting on), then numbers and dates, text in Excel's order, booleans, errors, and the blank last; descending turns the whole order round, the blank first. Sorting by a value field's values puts an empty value first going up and last going down, numbers by value, and errors last either way, at the grand total of the other axis or at the items it names; ties keep the order the PivotTable was last laid out in (Excel orders them by no rule found, and saves the order only in its layout), then under an item of a field before go by the items' values over all of them. The classic layout (fields dragged in the grid) keeps the row of the columns' area with no column field: the value field's name above it, `Total` over its values. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
+A new field lists its items ascending. Numbers and dates precede text, then booleans, errors and the blank. With Use Custom Lists when Sorting enabled, texts belonging to a common custom list use that list's order. Texts belonging to disjoint lists follow Excel's partition sort: comparing them is not a total ordering, so sorting the same field again can change their order. A label sort changes the field's `items`; reading an existing layout keeps the order saved there.
+
+Sorting by a value field puts empty values first going up and last going down, numbers by value, and errors last either way. Equal values are ordered by Excel's middle-pivot partitioning over the field's item order, independently of the last saved row or column layout. A preceding label sort can therefore change the order of equal values on a later value sort.
+
+`registerPivot(pivotEngine, { sortThreads: 2 })` selects the Excel ordering profile. The default is 2, as on the Windows reference machine. Above 512 items Excel sorts partitions and merges them; this can change ties. Set `sortThreads: 1` for one partition. The setting changes the ordering profile for subsequent pivot calculations, including in existing sessions and a pool's threads; it creates no worker threads. Recovery replays each completed operation with the profile that operation used.
+
+The classic layout (fields dragged in the grid) keeps the row of the columns' area with no column field: the value field's name above it, `Total` over its values. A field without a sort (sorted by hand, or with "Sort automatically every time the report is updated" off) keeps its items' order, new items after them.
 
 ### Show Values As
 
@@ -390,7 +398,7 @@ formulas), gpd-held-2 (61) and gpd-held-3 (31), predicted before they ran, 51, 5
 fitted. [Development](development.md#pivottables)
 has the details.
 
-Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, a calculated field's total within one part in 10¹⁴ (`test/pivot-excel.test.ts`), and the operations played over the rows give the same PivotTables.
+Excel for Windows grouped and calculated the PivotTables of the sets group (dates by every period and by numbers of days, times, numbers with Excel's and their own start and end, items by hand, ungrouping, refusals) and calc (calculated fields with functions, errors and division by zero, on rows, columns and subtotals; calculated items; both over two PivotTables of a cache): each PivotTable laid out again from the cache Excel saved and refreshed from its source gives the cells Excel showed, calculated-field totals included (`test/pivot-excel.test.ts` and the exact-number checks in `test/pivot-precision.test.ts`), and the operations played over the rows give the same PivotTables.
 
 The layout was compared with Excel for Windows 16.0 (en-US) on every book of the sets in `test/excel/win/pivot/` (`basic`, `layout`, `filter`, `sort`, `edit`, `refresh`, `calc`, `gpd-1`): each PivotTable laid out again from what Excel saved gives Excel's lines, place, values and number formats (`test/pivot-layout-books.test.ts`), and each entry of the set `edit` gives Excel's refusal or Excel's new definition (`test/pivot-entry.test.ts`).
 

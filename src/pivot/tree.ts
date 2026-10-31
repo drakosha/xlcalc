@@ -128,4 +128,3 @@ function withValues(tree: PivotNode[], at: number, count: number): PivotNode[] {
   if (at === 0) return Array.from({ length: count }, (_, v): PivotNode => ({ field: 'values', item: v, children: copied(tree) }))
   return tree.map((n) => ({ ...n, children: withValues(n.children, at - 1, count) }))
 }
-
