@@ -13,7 +13,9 @@ import { array, checkBoolean, checkString, integer, object, onlyKeys } from '../
 import { checkIsoDate } from '../input/pivot.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import { withField } from '../looks/sheet.js'
-import { formatAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
+import { entryAt, lines } from '../layout/spans.js'
 import { pivotArea } from '../pivot/area.js'
 import { pivotRefresh } from '../pivot/hook.js'
 import { groupedItems } from '../pivot/items.js'
@@ -120,11 +122,41 @@ function checkItems(v: unknown, path: string, n: number): NonNullable<SlicerCach
   return items
 }
 
-/** A new slicer's or timeline's place: right of the first PivotTable it filters, three columns and fourteen rows, as Excel puts one beside it. */
-function placeBeside(book: BookInput, r: PivotRef): DrawingPlace | undefined {
+/** The size Excel gives a new slicer and a new timeline, in EMU: 2 by 2.76 inches, 3.65 by 1.5 inches (the set slicer-objects). */
+const SIZE: Record<Kind, [width: number, height: number]> = { slicers: [1_828_800, 2_524_125], timelines: [3_333_750, 1_371_600] }
+
+/** EMU in a pixel and in a point; a column's pixels are 7 to a stored width's digit, 64 for the default width, as Excel for Windows draws Calibri 11. */
+const [PIXEL, POINT, COLUMN] = [9525, 12_700, 64]
+
+/** The line and offset in EMU where a length from the start of line `at` ends, by the lines' sizes. */
+function reach(at: number, length: number, size: (k: number) => number, last: number): [line: number, offset: number] {
+  let [k, left] = [at, length]
+  while (k < last && size(k) <= left) left -= size(k++)
+  return [k, left]
+}
+
+/**
+ * A new slicer's or timeline's place: from two columns right of the first PivotTable it filters, at its top row, and
+ * Excel's size for it (`SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
+ * window, and its Insert Slicer one after another there; the workbook has no window, so the place is the library's.
+ */
+function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): DrawingPlace | undefined {
   const p = book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.find((q) => caseKey(q.name) === caseKey(r.name))
   const x = p && pivotArea(p)
-  return x ? { from: formatAddress(x.r1, x.c2 + 2), to: formatAddress(x.r1 + 14, x.c2 + 5) } : undefined
+  if (!x) return undefined
+  const sheet = book.sheets[s]
+  const [cols, rows] = [lines(sheet.columns, 'c'), lines(sheet.rows, 'r')]
+  const col = (c: number) => {
+    const e = entryAt(cols, c)
+    return e?.hidden ? 0 : (e?.width === undefined ? COLUMN : Math.round(e.width * 7)) * PIXEL
+  }
+  const row = (k: number) => {
+    const e = entryAt(rows, k)
+    return e?.hidden ? 0 : (e?.height ?? DEFAULT_ROW_HEIGHT) * POINT
+  }
+  const [c2, dx] = reach(x.c2 + 2, SIZE[kind][0], col, MAX_COLS - 1)
+  const [r2, dy] = reach(x.r1, SIZE[kind][1], row, MAX_ROWS - 1)
+  return { from: formatAddress(x.r1, x.c2 + 2), to: formatAddress(r2, c2), ...(dx || dy ? { toOffset: [dx, dy] as [number, number] } : {}) }
 }
 
 /** The PivotTables laid out again from their cache, or marked `stale` without `xlcalc/pivot` when `changed`; as they are when nothing changed and the subpath is not loaded. */
@@ -177,7 +209,7 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
   }
   const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, kind, given.name, `op.${key}.name`)
   if (name === null) return refused(out, { key: 'slicerNameTaken', name: String(given.name) })
-  const place = given.place === undefined && cache.pivots.length ? placeBeside(out, cache.pivots[0]) : undefined
+  const place = given.place === undefined && cache.pivots.length ? placeBeside(out, kind, s, cache.pivots[0]) : undefined
   // Excel captions it by its field
   const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
   const sheets = [...out.sheets]

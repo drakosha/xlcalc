@@ -87,7 +87,7 @@ describe('slicers and timelines with xlcalc/pivot', () => {
       expect(s.getValues('P', 'A3:B8')).toEqual(ALL)
       expect(s.editStructure(REGION).ok).toBe(true)
       const b = s.getBook()
-      expect(b.sheets[1].slicers).toEqual([{ caption: 'Region', name: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G17' } }])
+      expect(b.sheets[1].slicers).toEqual([{ caption: 'Region', name: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G16', toOffset: [0, 47_625] } }])
       // East, North, South, West: in the slicer's order, as Excel saves them
       expect(b.slicerCaches![0].items).toEqual([{ item: 2 }, { item: 0 }, { item: 1 }, { item: 3 }])
       expect(s.editStructure(choose(0)).ok).toBe(true)
@@ -199,6 +199,24 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     expect(two.ok && two.book.slicerCaches!.length).toBe(1)
   })
 
+  it("places a new slicer and timeline right of the PivotTable at Excel's size for each over the sheet's columns and rows", () => {
+    const placed = (book: BookInput) => {
+      const r = editStructure(book, REGION)
+      const t = r.ok && editStructure(r.book, { op: 'addTimeline', sheet: 'P', timeline: {}, cache: { field: 'Date', pivots: [PT1] } })
+      if (!t || !t.ok) throw new Error('not added')
+      return [t.book.sheets[1].slicers![0].place, t.book.sheets[1].timelines![0].place]
+    }
+    // 2 by 2.76 inches over columns of 64 pixels and rows of 15 points; 3.65 by 1.5 inches
+    expect(placed(fresh())).toEqual([
+      { from: 'D3', to: 'G16', toOffset: [0, 47_625] },
+      { from: 'D3', to: 'I10', toOffset: [285_750, 38_100] },
+    ])
+    // E twenty digits wide (140 pixels), row 4 hidden, row 5 of 45 points
+    const b = fresh()
+    const wide = { ...b, sheets: b.sheets.map((x, i) => (i === 1 ? { ...x, columns: { E: { width: 20 } }, rows: { '4': { hidden: true }, '5': { height: 45 } } } : x)) }
+    expect(placed(wide)[0]).toEqual({ from: 'D3', to: 'E15', toOffset: [1_219_200, 47_625] })
+  })
+
   it('renames a slicer and a timeline as Excel does: any name but an empty one or one taken by either in any case, the caption kept', () => {
     const r = editStructure(fresh(), REGION)
     const t = r.ok && editStructure(r.book, { op: 'addTimeline', sheet: 'P', timeline: {}, cache: { field: 'Date', pivots: [PT1] } })
@@ -217,7 +235,7 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     // a slicer without a caption keeps the one it showed, its old name
     const bare = { ...t.book, sheets: t.book.sheets.map((sh, i) => (i === 1 ? { ...sh, slicers: sh.slicers!.map(({ caption: _, ...x }) => x) } : sh)) }
     const b = editStructure(bare, { op: 'editSlicer', slicer: 'Region', set: { name: 'R' } })
-    expect(b.ok && b.book.sheets[1].slicers).toEqual([{ name: 'R', caption: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G17' } }])
+    expect(b.ok && b.book.sheets[1].slicers).toEqual([{ name: 'R', caption: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G16', toOffset: [0, 47_625] } }])
   })
 
   it("a table's slicer is added over its cache, changed in its look and order, and deleted; its choice stays the table's AutoFilter", () => {
