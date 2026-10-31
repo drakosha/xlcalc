@@ -2,7 +2,7 @@
  * The engine's prediction of an alerts set (`alerts`, `alerts-held`), written before Excel's answers are read: each
  * case's pivot table laid out by the engine alone (`drive.ts`) up to its first `read`, then its one change made in a
  * session with `xlcalc/pivot` loaded as a host makes it: an operation of the structure through `editStructure`, text
- * typed into several cells through `fillCellText` (Ctrl+Enter), set through `setCells`, cleared through `clearCells`,
+ * typed or a value set into several cells through `fillCellText` (Ctrl+Enter), into one through `setCells`, cleared through `clearCells`,
  * pasted through `pasteText`. Each case gives the refusal's code, `reason` and message, the error an edit threw with its
  * `reason`, or the cells of every pivot table's area after it (keyed by name, as the harness reads them). Run: `npx tsx
  * bench/coverage/pivot/alerts-predict.ts <set>`; it writes `bench/coverage/pivot/<set>.predicted.json`. The comparison
@@ -64,6 +64,8 @@ async function changed(s: Session, o: PivotOp): Promise<AlertPrediction> {
       const to = o.to
       if (to === null) r = { ok: true, ...s.clearCells([{ sheet, range }], 'contents') }
       else if (typeof to === 'object' && 'typed' in to) r = s.fillCellText(sheet, range, to.typed)
+      // a value set over a range at once is an entry into a selection too (the macro recorder's Ctrl+Enter)
+      else if (range.includes(':') && typeof to !== 'object') r = s.fillCellText(sheet, range, String(to))
       else {
         r = { ok: true, ...s.setCells(rangeCells(range).map((cell) => ({ sheet, cell, input: typeof to === 'object' ? { formula: to.formula } : { value: to } }))) }
       }
@@ -84,16 +86,19 @@ function rangeCells(range: string): string[] {
   return Array.from({ length: (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) }, (_, k) => formatAddress(x.r1 + Math.floor(k / (x.c2 - x.c1 + 1)), x.c1 + (k % (x.c2 - x.c1 + 1))))
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+/** A case's change predicted: its pivot tables played up to its first `read`, then the operation after it in a session. */
+export function predictedAlert(c: PivotCase): Promise<AlertPrediction> {
   registerPivot(pivotEngine)
+  const k = c.ops.findIndex((o) => 'read' in o)
+  const book = drive({ ...c, ops: c.ops.slice(0, k) }).at(-1)!.book
+  return changed(createSession(book, { clock: { now: '2026-10-31T12:00:00Z', seed: 0 } }), c.ops[k + 1])
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
   const set = process.argv[2]
   const { buildPivotCases } = (await import(`./${set}.ts`)) as PivotSet
   const out: Record<string, AlertPrediction> = {}
-  for (const c of buildPivotCases() as PivotCase[]) {
-    const k = c.ops.findIndex((o) => 'read' in o)
-    const book = drive({ ...c, ops: c.ops.slice(0, k) }).at(-1)!.book
-    out[c.id] = await changed(createSession(book, { clock: { now: '2026-10-31T12:00:00Z', seed: 0 } }), c.ops[k + 1])
-  }
+  for (const c of buildPivotCases() as PivotCase[]) out[c.id] = await predictedAlert(c)
   writeFileSync(new URL(`${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
   console.log(`${Object.keys(out).length} cases, ${Object.values(out).filter((v) => !('pivots' in v)).length} refused`)
 }
