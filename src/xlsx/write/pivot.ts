@@ -9,7 +9,8 @@ import { valueFieldName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
 import { give, HEAD, MAIN, X14, X15 } from './xml.js'
-import { fieldIndex, pivotAreaXml, SUBTOTAL_ATTR } from './pivot-area.js'
+import { fieldIndex, pivotAreaXml } from './pivot-area.js'
+import { AXIS, SHOW_NAME, SUBTOTAL_ATTR } from '../pivot-names.js'
 
 /** What the part takes from the workbook's writing: a number format's id, a style's differential format, the rules of the PivotTable's conditional formats by priority. */
 export interface PivotWriting {
@@ -22,11 +23,8 @@ export interface PivotWriting {
   locale?: string
 }
 
-const AXIS = { rows: 'axisRow', columns: 'axisCol', pages: 'axisPage' } as const
-
 /** The value field Show Values As of Excel 2010 (`x14:dataField`), and the others' names in the file. */
 const SHOW_X14 = new Set(['percentOfParentRow', 'percentOfParentColumn', 'percentOfParent', 'percentOfRunningTotal', 'rankAscending', 'rankDescending'])
-const SHOW_NAME: Record<string, string> = { percentOfColumn: 'percentOfCol', percentOfParentColumn: 'percentOfParentCol' }
 
 /** The base item's previous and next (`xlPrevious`, `xlNext`). */
 const BASE_ITEM = { previous: 1048828, next: 1048829 } as const
@@ -46,7 +44,7 @@ function linesXml(tag: 'rowItems' | 'colItems', lines: PivotLine[] | undefined):
 
 /** Where a field lies: its axis, and whether it is summarized. */
 function placeOf(p: PivotTable) {
-  const axis = new Map<number, keyof typeof AXIS>()
+  const axis = new Map<number, 'rows' | 'columns' | 'pages'>()
   for (const f of p.rows ?? []) if (f !== 'values') axis.set(f, 'rows')
   for (const f of p.columns ?? []) if (f !== 'values') axis.set(f, 'columns')
   for (const f of p.pages ?? []) axis.set(f.field, 'pages')

@@ -3,16 +3,12 @@
  * sorting by a value: its kind and flags, and the items it picks on each field. The value fields' pseudo-field is -2,
  * which a reference's unsigned `field` writes as 4294967294.
  */
-import type { PivotArea, PivotAreaReference, PivotAxisField, PivotFunction } from '../../contract.js'
+import type { PivotArea, PivotAreaReference, PivotAxisField } from '../../contract.js'
+import { AXIS, SUBTOTAL_ATTR } from '../pivot-names.js'
 import { give } from './xml.js'
 
 /** A field of an area: a cache field's index, or -2 for the value fields. */
 export const fieldIndex = (f: PivotAxisField) => (f === 'values' ? -2 : f)
-
-const AXIS = { rows: 'axisRow', columns: 'axisCol', pages: 'axisPage', values: 'axisValues' } as const
-
-/** The attribute of a reference's subtotal by function (`sumSubtotal`), and the item type of a subtotal (`t="sum"`). */
-export const SUBTOTAL_ATTR: Record<PivotFunction, string> = { sum: 'sum', count: 'countA', average: 'avg', max: 'max', min: 'min', product: 'product', countNums: 'count', stdDev: 'stdDev', stdDevp: 'stdDevP', var: 'var', varp: 'varP' }
 
 function referenceXml(r: PivotAreaReference): string {
   const field = r.field === 'values' ? 4294967294 : r.field

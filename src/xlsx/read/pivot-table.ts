@@ -28,15 +28,16 @@ import { serialToUtcMs } from '../../model.js'
 import type { Dxf } from '../styles/dxf.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { attrText, take, values } from './pivot-cache.js'
+import { AXIS, inverse, SHOW_NAME, SUBTOTAL_ATTR } from '../pivot-names.js'
 
 /** The functions of subtotals by the names of the file's item types (`countA` counts every value, `count` numbers). */
-export const ITEM_FUNCTIONS: Record<string, PivotFunction> = { sum: 'sum', countA: 'count', avg: 'average', max: 'max', min: 'min', product: 'product', count: 'countNums', stdDev: 'stdDev', stdDevP: 'stdDevp', var: 'var', varP: 'varp' }
+const ITEM_FUNCTIONS = /* @__PURE__ */ inverse(SUBTOTAL_ATTR)
 
 /** Show Values As by the file's names, Excel 2010's in its extension (`pivotShowAs`) among them. */
-const SHOW_AS: Record<string, PivotShowAs> = { percentOfCol: 'percentOfColumn', percentOfParentCol: 'percentOfParentColumn' }
+const SHOW_AS = /* @__PURE__ */ inverse(SHOW_NAME)
 const showAs = (v: string): PivotShowAs => SHOW_AS[v] ?? (v as PivotShowAs)
 
-const AXES: Record<string, PivotArea['axis']> = { axisRow: 'rows', axisCol: 'columns', axisPage: 'pages', axisValues: 'values' }
+const AXES = /* @__PURE__ */ inverse(AXIS)
 
 /** Excel's base items before and after the one shown, `previous` and `next`. */
 const PREVIOUS = 1048828
