@@ -17,9 +17,20 @@ import type { ValuesIn } from '../structure/values.js'
 export type PivotRefresh = (book: BookInput, refs: PivotRef[] | undefined, values: ValuesIn, today: number, fromSource: boolean, blocked?: 'spill' | 'refuse', labelSort?: readonly number[]) => Applied
 
 let sortThreads = 2
+let callSortThreads: number | undefined
 
 /** Excel's sorting-thread profile for the registered engine. */
-export const pivotSortThreads = (): number => sortThreads
+export const pivotSortThreads = (): number => callSortThreads ?? sortThreads
+
+/** The registered default, independent of an operation being replayed. */
+export const registeredPivotSortThreads = (): number => sortThreads
+
+/** A worker call keeps its profile across yields; registration may still change the default for later calls. */
+export async function withPivotSortThreads<T>(threads: number, run: () => Promise<T>): Promise<T> {
+  const prior = callSortThreads
+  callSortThreads = threads
+  try { return await run() } finally { callSortThreads = prior }
+}
 
 /** Sets the sorting-thread profile, already checked by registerPivot. */
 export function setPivotSortThreads(n: number): void { sortThreads = n }

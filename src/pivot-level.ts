@@ -6,7 +6,7 @@
 import type { PivotEngine, PivotOptions } from './contract.js'
 import { object, onlyOptions } from './input/basic.js'
 import { InputError } from './input-error.js'
-import { pivotSortThreads, setPivotSortThreads, pivotRefresh, setPivotCacheEdit, setPivotCheck, setPivotEntry, setPivotRefresh, type PivotCacheEdit, type PivotCheck, type PivotEntryHook, type PivotRefresh } from './pivot/hook.js'
+import { registeredPivotSortThreads, setPivotSortThreads, pivotRefresh, setPivotCacheEdit, setPivotCheck, setPivotEntry, setPivotRefresh, type PivotCacheEdit, type PivotCheck, type PivotEntryHook, type PivotRefresh } from './pivot/hook.js'
 
 /** The engine's parts besides its kind, which the subpath gives and the contract does not show. */
 export interface PivotEngineParts extends PivotEngine {
@@ -19,7 +19,7 @@ export interface PivotEngineParts extends PivotEngine {
 const listeners = new Set<() => void>()
 
 /** The settings a pool sends to its threads. */
-export const pivotOptions = (): PivotOptions => ({ sortThreads: pivotSortThreads() })
+export const pivotOptions = (): PivotOptions => ({ sortThreads: registeredPivotSortThreads() })
 
 /** Whether the engine is loaded. */
 export const pivotLoaded = (): boolean => pivotRefresh() !== null
@@ -36,7 +36,7 @@ export function registerPivot(engine: PivotEngine, options?: PivotOptions): void
   onlyOptions(o, 'options', ['sortThreads'])
   const threads = o.sortThreads === undefined ? 2 : o.sortThreads
   if (typeof threads !== 'number' || !Number.isSafeInteger(threads) || threads < 1) throw new InputError('options.sortThreads', 'expected a positive integer')
-  if (pivotRefresh() === parts.refresh && pivotSortThreads() === threads) return
+  if (pivotRefresh() === parts.refresh && registeredPivotSortThreads() === threads) return
   setPivotSortThreads(threads)
   setPivotRefresh(parts.refresh)
   setPivotCheck(parts.check)

@@ -363,7 +363,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         r.revision = a.revision
         if (msg.seq !== undefined && msg.seq > r.seq) {
           r.seq = msg.seq
-          r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock })
+          r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock, ...(a.pivotSortThreads === undefined ? {} : { pivotSortThreads: a.pivotSortThreads }) })
           if (r.journal.length >= snapshotEvery && !r.snapshotting) {
             r.snapshotting = true
             // next on the thread, ahead of calls already waiting, so that pipelined calls do not grow the journal past it

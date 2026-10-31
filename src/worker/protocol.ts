@@ -20,6 +20,8 @@ export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChan
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
+  /** The pivot ordering profile actually used by this call. */
+  pivotSortThreads?: number
   seq: number
   op: Op
   args: unknown[]
@@ -95,6 +97,7 @@ export type FromThread = { task: number; ok: true; value: unknown } | { task: nu
 
 /** A call's value and the session's clock, history and revision after it. */
 export interface Answer {
+  pivotSortThreads?: number
   value: unknown
   clock: Clock
   history: SessionHistory

@@ -22,6 +22,7 @@ import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThrea
 import { LOCALE_MODULES } from '../locale/modules.js'
 import { setRegexLevel } from '../regex-level.js'
 import { registerPivot } from '../pivot-level.js'
+import { pivotSortThreads, withPivotSortThreads } from '../pivot/hook.js'
 import type { FunctionGroupName } from '../contract.js'
 import { GROUP_ARITY } from '../groups/manifest.js'
 import { GROUP_MODULES } from '../groups/modules.js'
@@ -114,6 +115,11 @@ function loadFunctions(names: FunctionGroupName[]) {
 
 /** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
 async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise<Answer> {
+  const profile = pivotSortThreads()
+  return withPivotSortThreads(profile, () => invokeInProfile(h, op, args, o, profile))
+}
+
+async function invokeInProfile(h: Held, op: Op, args: unknown[], o: CalcOptions, profile: number): Promise<Answer> {
   const s = h.s
   const n = EDITS[op]
   const eo = n === undefined ? o : { ...o, ...(args[n] as object | undefined) }
@@ -196,7 +202,7 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     default:
       value = await (s[op] as (...a: unknown[]) => Promise<unknown>)(...args.slice(0, n), eo)
   }
-  return { value, clock: s.clock, history: s.history, revision: s.revision }
+  return { value, clock: s.clock, history: s.history, revision: s.revision, pivotSortThreads: profile }
 }
 
 function heldOf(sid: number): Held {
@@ -288,7 +294,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
       try {
         for (const e of journal as Entry[]) {
           h.planned = e.clock
-          const a = await invoke(h, e.op, e.args, { signal })
+          const a = await withPivotSortThreads(e.pivotSortThreads ?? 2, () => invoke(h, e.op, e.args, { signal }))
           if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} used a different clock`)
           h.seq = e.seq
           h.last = a
