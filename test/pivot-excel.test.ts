@@ -33,21 +33,18 @@ const DIR = new URL('./excel/win/pivot/', import.meta.url)
 const CLOCK = { now: '2026-10-30', seed: 0 }
 
 /**
- * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. basic: empty cells with
- * "For empty cells show", which Excel shows as 0 (not measured further). sort: items of several custom lists at once,
- * which Excel orders by no order we found (`docs/development.md`). refresh: a refresh growing over cells or another
- * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it. layout: a field's subtotals by
- * several functions, which the reading of the file does not take yet.
+ * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
+ * custom lists at once, which Excel orders by no order we found (`docs/development.md`).
  */
 const KNOWN: Record<string, string[]> = {
   'layout-held': [],
   'filter-held': [],
   'sort-held': [],
-  basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
+  basic: [],
   filter: [],
   sort: ['months-down/0/saved', 'months-down/0/source'],
-  layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
-  refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
+  layout: [],
+  refresh: [],
 }
 
 const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld }

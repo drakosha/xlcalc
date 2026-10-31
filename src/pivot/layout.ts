@@ -219,8 +219,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     }
   })
 
-  // the text shown for an empty cell or an error, a number as a number (`0`), as an entry takes it
-  const typed = (text: string) => rules.numberOnly(text) ?? text
+  // the text shown for an empty cell or an error, a number as a number (`0`), as an entry takes it; a dash alone, the
+  // accounting format's zero, is 0 too (the set basic: `-` and ` - ` are 0, `--` and `n/a` text)
+  const typed = (text: string) => (text.trim() === '-' ? 0 : (rules.numberOnly(text) ?? text))
   // the values: each line with values against each column's, by the value field of either and a subtotal's function
   if (values.length && dataCols)
     rowLines.forEach((ra, i) => {
