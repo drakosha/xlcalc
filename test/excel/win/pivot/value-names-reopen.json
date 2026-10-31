@@ -1,0 +1,838 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 21
+ },
+ "cases": [
+  {
+   "id": "default",
+   "from": "value-names/default-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "own",
+   "from": "value-names/own-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "other-default-en",
+   "from": "value-names/other-default-en-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "sum-text-en",
+   "from": "value-names/sum-text-en-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "sum-text-ru",
+   "from": "value-names/sum-text-ru-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "named-back",
+   "from": "value-names/named-back-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  },
+  {
+   "id": "lower-case",
+   "from": "value-names/lower-case-1",
+   "ops": [
+    {
+     "setValue": 1,
+     "fn": "count"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "default": "e77cfa1f2de6fc47f0c5893e1ecb294406a77b4479152aceee2508b79a75c056 2b160af801e6005c",
+  "own": "8e2d890d8dcca359b10e9f7f5414a83ba15a54ed63fb0acadea9921d8845a8de 2b160af801e6005c",
+  "other-default-en": "f14dc2467984aa4f55e5214601c961272ff525d153e7df016320f7d5cdb6ac5a 2b160af801e6005c",
+  "sum-text-en": "d995960a8f6940fd1772e3b3c32b823597cb5f9bcddd20682124216972736638 2b160af801e6005c",
+  "sum-text-ru": "054d202e4d8e351380b35dbf4e2fa4bb1c40c63a9afa17340130aa4a9850036d 2b160af801e6005c",
+  "named-back": "143f0de37497b8f7d86096ec97048715268632a03696c5da5e7541a3248e7d6c 2b160af801e6005c",
+  "lower-case": "b02001b0d1737f4d37a724f1b672d22e8ea2e67dbafd7b3aa3b61800b48832ba 2b160af801e6005c"
+ },
+ "answers": {
+  "default": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "own": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "other-default-en": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "sum-text-en": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "sum-text-ru": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "named-back": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of Qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  },
+  "lower-case": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Count of qty"
+        ],
+        [
+         "East",
+         10
+        ],
+        [
+         "North",
+         14
+        ],
+        [
+         "South",
+         11
+        ],
+        [
+         "West",
+         12
+        ],
+        [
+         "(blank)",
+         1
+        ],
+        [
+         "Grand Total",
+         48
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Count of qty"
+        ],
+        [
+         "East",
+         "10"
+        ],
+        [
+         "North",
+         "14"
+        ],
+        [
+         "South",
+         "11"
+        ],
+        [
+         "West",
+         "12"
+        ],
+        [
+         "(blank)",
+         "1"
+        ],
+        [
+         "Grand Total",
+         "48"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
+      }
+     }
+    }
+   ]
+  }
+ }
+}
