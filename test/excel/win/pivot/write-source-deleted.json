@@ -1,0 +1,249 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 15.5
+ },
+ "cases": [
+  {
+   "id": "link",
+   "file": "bench/windows/out/pivot-ours/source-deleted/link.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "link": "16972e9f8d6c968063c82be17046b8fd771638f23e812b2098f472050680d1a5 581bb1faa69789f2"
+ },
+ "answers": {
+  "link": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         801
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         2028.27
+        ],
+        [
+         "(blank)",
+         -76.03
+        ],
+        [
+         "Grand Total",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         "801"
+        ],
+        [
+         "North",
+         "#N/A"
+        ],
+        [
+         "South",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         801
+        ],
+        [
+         "North",
+         {
+          "error": "NA"
+         }
+        ],
+        [
+         "South",
+         {
+          "error": "DIV0"
+         }
+        ],
+        [
+         "West",
+         2028.27
+        ],
+        [
+         "(blank)",
+         -76.03
+        ],
+        [
+         "Grand Total",
+         {
+          "error": "NA"
+         }
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         "801"
+        ],
+        [
+         "North",
+         "#N/A"
+        ],
+        [
+         "South",
+         "#DIV/0!"
+        ],
+        [
+         "West",
+         "2028.27"
+        ],
+        [
+         "(blank)",
+         "-76.03"
+        ],
+        [
+         "Grand Total",
+         "#N/A"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "errors": [
+      "op 1: -2146827284 Can't open PivotTable source file 'C:\\xlcalc\\work\\pivot-write-source-deleted-64466-1\\[book.xlsx]D'"
+     ]
+    }
+   ]
+  }
+ }
+}

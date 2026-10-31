@@ -266,6 +266,7 @@ class Kept {
         relative,
         change: () => (this.changed = true),
         fileSheet: (name) => this.id.source[book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))],
+        bookSheet: (k) => this.id.target.get(k),
       },
       setup.pivots,
     )

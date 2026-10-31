@@ -77,6 +77,8 @@ export interface PivotHost {
   change(): void
   /** The file's sheet of a sheet of the book, by its name. */
   fileSheet(name: string): number | undefined
+  /** The book's sheet of the file's sheet `k`, renamed or moved. */
+  bookSheet(k: number): number | undefined
 }
 
 /** A PivotTable without its place, which moves with its cells (written back by its carrier). */
@@ -281,8 +283,9 @@ export class KeptPivots {
     // a sheet's part where a slicer or timeline changed but for its place, which its frame's carrier writes back
     const unplaced = (list: { place?: unknown }[] | undefined) => JSON.stringify((list ?? []).map((x) => ({ ...x, place: undefined })))
     for (const [k, ss] of src.sheets.entries()) {
-      const [s0, s1] = [book0.sheets[k], book.sheets.find((x) => sheetKey(x.name) === sheetKey(book0.sheets[k].name))]
-      if (!s1) continue
+      const j = this.h.bookSheet(k)
+      if (j === undefined) continue
+      const [s0, s1] = [book0.sheets[k], book.sheets[j]]
       for (const [kind, rel, xml] of [['slicers', 'slicer', slicersPartXml], ['timelines', 'timeline', timelinesPartXml]] as const) {
         if (unplaced(s0[kind]) === unplaced(s1[kind])) continue
         const r = ss.rels.find((x) => x.kind === rel && !x.external)

@@ -47,6 +47,15 @@ describe('addPivotTable without xlcalc/pivot', () => {
     expect(two.ok && [two.book.sheets.map((s) => s.name), pivots(two.book)[0], two.book.pivotCaches!.length]).toMatchObject([['Data', 'New', 'P'], { name: 'PivotTable2', cache: 1, location: { range: 'A3:C20' } }, 1])
   })
 
+  it('takes a name over a table or a formula, as a refresh finds it', () => {
+    const named = (ref: string) => ({ ...data(), names: [{ name: 'Src', ref }] })
+    for (const ref of ['Sales[#All]', 'OFFSET(Data!$A$1,0,0,3,2)']) {
+      const r = editStructure(named(ref), add({ source: { type: 'name', name: 'Src' }, definition: { rows: [0] } }))
+      expect(r.ok && [r.book.pivotCaches![0].fields.map((f) => f.name), pivots(r.book)[0].rows], ref).toEqual([ref.startsWith('Sales') ? ['K', 'V'] : ['Region', 'Amount'], [0]])
+    }
+    expect(editStructure(data(), add({ source: { type: 'name', name: 'Nope' } }))).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining("isn't valid") })
+  })
+
   it('refuses a place over data, a table or a PivotTable, a name taken, an empty header; a wrong shape throws', () => {
     expect(editStructure(data(), add({ cell: 'G1' }))).toMatchObject({ ok: false, code: 'pivot', message: "there's already data in P!G1:I18, where the PivotTable PivotTable1 would be laid out" })
     expect(editStructure(data(), add({ sheet: 'Data', cell: 'E3' }))).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('the table Sales') })
@@ -147,6 +156,14 @@ describe('a slicer over a PivotTable whose sheet is deleted', () => {
 })
 
 describe('a stale cache in a file', () => {
+  it('whose source sheet was deleted is written with its source a link to a file by its path, as Excel writes it, and reported', async () => {
+    const r = editStructure(made(), { op: 'deleteSheet', sheet: 'Data' })
+    if (!r.ok) throw new Error(r.message)
+    const w = await writeXlsx({ book: r.book }, { values: 'omit' })
+    expect(w.issues).toEqual([expect.objectContaining({ code: 'pivotTable', message: expect.stringContaining("the sheet 'Data', which the workbook no longer has") })])
+    expect((await readXlsx(w.data)).book.pivotCaches?.[0].source).toEqual({ type: 'range', sheet: 'Data', range: 'A1:C4', book: 'book.xlsx' })
+  })
+
   it('is written to be refreshed on opening, and read back as such', async () => {
     const w = await writeXlsx({ book: made() }, { values: 'omit' })
     const r = await readXlsx(w.data)
