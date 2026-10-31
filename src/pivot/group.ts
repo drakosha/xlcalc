@@ -7,21 +7,15 @@
 import type { PivotCache, PivotCacheField, PivotFieldGroup, PivotValue } from '../contract.js'
 import { momentOf, ymd } from '../dates.js'
 import { generalText } from '../numfmt/general.js'
+import { groupWordsOf } from './captions.js'
 import { cacheDate, dateSerial, numberOf } from './values.js'
 
 type Range = NonNullable<PivotFieldGroup['range']>
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /** Days before each month in a leap year: a group by days lists every day of one, 29 February too. */
 const BEFORE = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
 
 const bound = (v: number | { date: string } | undefined, epoch: number): number => (v === undefined ? 0 : typeof v === 'number' ? v : dateSerial(v.date, epoch))
-
-/** A day as Excel's en-US short date (`1/31/2024`). */
-function dayText(serial: number): string {
-  const { y, m, d } = ymd(serial)
-  return `${m}/${d}/${y}`
-}
 
 /** A whole number of groups from a quotient that floating point may put a hair above it. */
 const groups = (span: number, interval: number) => Math.max(1, Math.ceil(Number((span / interval).toPrecision(12))))
@@ -71,12 +65,20 @@ export function rangePlace(range: Range, epoch: number): (v: PivotValue) => numb
   }
 }
 
-/** A range grouping's labels: the first group (`<start`, `(blank)` among numbers with a blank), those between, the last (`>end`). */
-export function rangeLabels(range: Range, blank: boolean, integer: boolean, epoch: number): string[] {
+/**
+ * A range grouping's labels in the workbook's language `locale` (`groupWordsOf`): the first group (`<start`, `(blank)`
+ * among numbers with a blank), those between, the last (`>end`).
+ */
+export function rangeLabels(range: Range, blank: boolean, integer: boolean, epoch: number, locale?: string): string[] {
   const [s, e] = [bound(range.start, epoch), bound(range.end, epoch)]
   const { count } = inner(range, s, e)
   const i = range.interval ?? 1
-  const g = (x: number) => generalText(Number(x.toPrecision(15)))
+  const w = groupWordsOf(locale)
+  const g = (x: number) => generalText(Number(x.toPrecision(15))).replace('.', w.decimal)
+  const dayText = (serial: number) => {
+    const { y, m, d } = ymd(serial)
+    return w.date(y, m, d)
+  }
   const at = (k: number): string => {
     switch (range.by) {
       case 'numbers': {
@@ -91,23 +93,23 @@ export function rangeLabels(range: Range, blank: boolean, integer: boolean, epoc
           return `${dayText(a)} - ${dayText(Math.min(a + i - 1, Math.floor(e)))}`
         }
         const m = BEFORE.findLastIndex((b) => b <= k)
-        return `${k - BEFORE[m] + 1}-${MONTHS[m]}`
+        return w.day(m + 1, k - BEFORE[m] + 1)
       }
       case 'months':
-        return MONTHS[k]
+        return w.months[k]
       case 'quarters':
-        return `Qtr${k + 1}`
+        return `${w.quarter}${k + 1}`
       case 'years':
         return String(ymd(s).y + k)
       case 'hours':
-        return `${k % 12 === 0 ? 12 : k % 12} ${k < 12 ? 'AM' : 'PM'}`
+        return w.hour(k)
       case 'minutes':
       case 'seconds':
         return `:${String(k).padStart(2, '0')}`
     }
   }
   // a blank shares the first group with the values before a start of one's own (the set group-held: `<10 or (blank)`)
-  const first = range.by === 'numbers' ? (blank ? (range.autoStart === false ? `<${g(s)} or (blank)` : '(blank)') : `<${g(s)}`) : `<${dayText(s)}`
+  const first = range.by === 'numbers' ? (blank ? (range.autoStart === false ? `<${g(s)} ${w.or} ${w.blank}` : w.blank) : `<${g(s)}`) : `<${dayText(s)}`
   const last = range.by === 'numbers' ? `>${g(s + groups(e - s, i) * i)}` : `>${dayText(e)}`
   return [first, ...Array.from({ length: count }, (_, k) => at(k)), last]
 }
@@ -139,9 +141,10 @@ const key = (v: PivotValue) => JSON.stringify(v)
  * The groups of a refreshed cache's fields: base and parent moved with their fields (`fieldMap`, old index to new), a
  * range's automatic start and end taken again from its base field's values (a last date of whole days a day on, as
  * Excel takes it) and its labels made again, groups by hand moved with their base field's items (`itemMaps`), an item
- * new to it a group of its own. Gives, for each grouped field, its old groups' new indexes by label.
+ * new to it a group of its own. Gives, for each grouped field, its old groups' new indexes by label. The labels are
+ * the workbook's language's, `locale`.
  */
-export function regroup(fields: PivotCacheField[], fieldMap: ReadonlyMap<number, number>, itemMaps: readonly (ReadonlyMap<number, number> | undefined)[], epoch: number): Map<number, Map<number, number>> {
+export function regroup(fields: PivotCacheField[], fieldMap: ReadonlyMap<number, number>, itemMaps: readonly (ReadonlyMap<number, number> | undefined)[], epoch: number, locale?: string): Map<number, Map<number, number>> {
   const out = new Map<number, Map<number, number>>()
   fields.forEach((f, n) => {
     const was = f.group
@@ -167,7 +170,7 @@ export function regroup(fields: PivotCacheField[], fieldMap: ReadonlyMap<number,
         range.end = typeof max === 'object' && max.date.endsWith('T00:00:00') ? { date: cacheDate(dateSerial(max.date, epoch) + 1, epoch) } : max
       }
       g.range = range
-      g.items = rangeLabels(range, facts.types.includes('blank'), facts.integer === true, epoch)
+      g.items = rangeLabels(range, facts.types.includes('blank'), facts.integer === true, epoch, locale)
       const place = new Map(g.items.map((v, i) => [key(v), i]))
       out.set(n, new Map(was.items.flatMap((v, i) => (place.has(key(v)) ? [[i, place.get(key(v))!]] : []))))
     } else if (g.discrete && g.items && base?.items) {

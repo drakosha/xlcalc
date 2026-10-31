@@ -4,14 +4,17 @@
  * `test/excel/win/pivot/[ru-RU/]`): each case played on the engine as `bench/coverage/pivot/value-names-predict.ts`
  * plays it, its function changed through `editPivotTable`; the cells of the pivot table's area after each phase are
  * Excel's. Excel names the field anew whatever its name: the old function's words of the workbook's language before the
- * rest become the new function's, any other name (its own, another language's default) the new default name.
+ * rest become the new function's, any other name (its own, another language's default) the new default name. The same
+ * way the set `period-names`: the fields a grouping of dates makes and its groups' labels in the workbook's language,
+ * as Excel's interface names them (`Years (Date)`, `Годы (Date)`; `Qtr1`, `Кв-л1`; `<1/1/2024`, `<01.01.2024`; `<10 or
+ * (blank)`, `<10 или (пусто)`).
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { predictedNames } from '../bench/coverage/pivot/value-names-predict.js'
 import type { PivotAnswer, PivotCase, PivotSet } from '../bench/coverage/pivot/cases.js'
 
-const SETS = ['value-names', 'value-names-reopen']
+const SETS = ['value-names', 'value-names-reopen', 'period-names']
 const LOCALES = [undefined, 'ru-RU']
 
 describe.each(SETS.flatMap((set) => LOCALES.map((locale) => [set, locale] as const)))('the value fields of the set %s (%s)', (set, locale) => {

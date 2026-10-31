@@ -98,9 +98,10 @@ const groupedBy = (tables: readonly PivotTable[]) =>
 /**
  * Refreshes `cache` from `source`, and the PivotTables over it: a field of a header gone leaves them, one of a new header
  * comes on no axis; an item gone from the source is kept as no longer there (`missing`) up to the cache's `retainItems`
- * (all by default, none at 0), new items come last. Fields a grouping or a calculation made are kept after the source's.
+ * (all by default, none at 0), new items come last. Fields a grouping or a calculation made are kept after the source's,
+ * a grouping's labels made again in the workbook's language `locale`.
  */
-export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], source: PivotSourceGrid, epoch = 0): { cache: PivotCache; tables: PivotTable[] } | RefreshRefusal {
+export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], source: PivotSourceGrid, epoch = 0, locale?: string): { cache: PivotCache; tables: PivotTable[] } | RefreshRefusal {
   const [headers = [], ...rows] = source.rows
   const names = namesOf(headers)
   if (!names) return 'field_name'
@@ -166,7 +167,7 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
   cache.fields.slice(sourceCount).forEach((_, i) => fieldMap.set(sourceCount + i, fields.length + i))
   fields.push(...cache.fields.slice(sourceCount))
   // groups follow their fields to their new places, and are made again over the values refreshed
-  const groupMaps = regroup(fields, fieldMap, itemMaps, epoch)
+  const groupMaps = regroup(fields, fieldMap, itemMaps, epoch, locale)
   groupMaps.forEach((m, f) => (itemMaps[f] = m))
   const { stale: _, ...rest } = cache
   const out: PivotCache = { ...rest, fields, records }

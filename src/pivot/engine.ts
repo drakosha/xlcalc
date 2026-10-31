@@ -68,7 +68,7 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
         if (!refs) continue
         return refused(book, grid === 'not_found' ? { key: 'pivotSourceGone', pivot: first } : { key: 'pivotSourceKept', pivot: first, why: grid === 'other_book' ? 'outside' : grid === 'not_refreshed' ? 'kind' : 'disabled' })
       }
-      const r = refreshCache(cache, tables, grid, epoch)
+      const r = refreshCache(cache, tables, grid, epoch, book.locale)
       if (typeof r === 'string') {
         if (refs) return refused(book, { key: 'pivotFieldName', pivot: first })
         continue
