@@ -193,7 +193,8 @@ describe('placePivots', () => {
     expect(sh.cells.A3).toEqual({ value: 'Row Labels' })
     expect(sh.cells.B5).toEqual({ value: 4, style: 0 })
     expect(placePivots(book({ B6: { value: 1, style: 0 } }), [{ sheet: 'P', table: t, laid: l }], 'refuse').ok).toBe(false)
-    expect(sh.cells.A6).toEqual({ value: 'Grand Total' })
+    // a compact form's row labels left aligned, as Excel keeps them (\`test/pivot-place-looks.test.ts\`)
+    expect([sh.cells.A6, r.book.styles]).toEqual([{ value: 'Grand Total', style: 0 }, [{ alignment: { horizontal: 'left' } }]])
     expect(sh.pivotTables![0]).toMatchObject({ rows: [3], location: { range: 'A3:B6' }, rowLines: l.rowLines })
   })
 

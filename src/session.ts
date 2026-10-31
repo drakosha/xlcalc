@@ -885,7 +885,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // does, in the same step (the paste set `fit`)
       const o = r.looked ? yield* fitted(next, pastedHeights(next, r.looked.s, r.looked.area), { ...out, moved }, steps, 'editStructure') : { ...out, moved }
       keep(() => (steps.length > 1 ? manyStep('editStructure', steps.map((f) => f())) : steps[0]()))
-      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, o) }
+      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, o), ...(r.stale ? { stale: r.stale } : {}) }
     },
     setStyles(styles: CellStyle[], eo?: EditOptions) {
       const s = st()

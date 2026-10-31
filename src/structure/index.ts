@@ -30,8 +30,7 @@ import { shift } from './shift.js'
 import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
-import { pivotCacheEdit, pivotRefresh, type PivotCacheOp } from '../pivot/hook.js'
-import { pivotRefs } from '../input/pivot-refs.js'
+import { pivotCacheEdit, type PivotCacheOp } from '../pivot/hook.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS } from './outline-command.js'
@@ -40,6 +39,8 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { carryPivots, pivotRefusal } from './pivots.js'
+import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
@@ -69,7 +70,7 @@ const FIELDS: Record<string, string[]> = {
   mergeCells: ['sheet', 'range', 'across', 'center'],
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
-  refreshPivots: ['pivots'],
+  ...PIVOT_FIELDS,
   groupPivotField: ['sheet', 'pivot', 'field', 'group'],
   ungroupPivotField: ['sheet', 'pivot', 'field', 'items'],
   renamePivotGroup: ['sheet', 'pivot', 'field', 'item', 'name'],
@@ -77,6 +78,9 @@ const FIELDS: Record<string, string[]> = {
   setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
   ...SLICER_FIELDS,
 }
+
+/** The operations on PivotTables, slicers and timelines, which place them themselves: the carriers of the others do not go through them. */
+const PIVOT_OPS = new Set([...Object.keys(PIVOT_FIELDS), ...Object.keys(SLICER_FIELDS), 'groupPivotField', 'ungroupPivotField', 'renamePivotGroup', 'setPivotCalculatedField', 'setPivotCalculatedItem'])
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
@@ -134,8 +138,13 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    const [r, loose] = withLooseLooks(() => applied(input, op, values, whole))
-    const out = r.ok ? linesMoved(input, r) : r
+    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
+    const carried = PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
+    const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
+    const refused = r.ok ? pivotRefusal(input, op) : null
+    if (refused) return refused
+    const both = r.ok ? linesMoved(input, r) : r
+    const out = both.ok && carried ? carried.after(both) : both
     // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
     return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
   })
@@ -270,12 +279,9 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'renamePivotTable':
     case 'movePivotTable':
     case 'deletePivotTable':
-    case 'refreshPivots': {
-      const refs = o.pivots === undefined ? undefined : pivotRefs(o.pivots, 'op.pivots')
-      const refresh = pivotRefresh()
-      r = refresh ? refresh(book, refs, values, values.today?.() ?? 0, true) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
+    case 'refreshPivots':
+      r = pivotOp(book, op as PivotOp, values)
       break
-    }
     case 'addSlicer':
     case 'editSlicer':
     case 'deleteSlicer':

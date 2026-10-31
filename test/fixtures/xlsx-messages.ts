@@ -130,6 +130,7 @@ export const KEPT_SAMPLES: { [K in keyof KeptMessageParams]: KeptMessageParams[K
   keptValidation: [{ sheet }],
   keptThreads: [{ sheet }],
   keptTableParts: [{ table: 'Sales', path: 'xl/tables/_rels/table1.xml.rels' }],
+  keptSlicers: [{}],
   keptLinkKind: [{ link: 2 }],
   keptLinks: [{}],
   keptNoCarrier: [{ name: '_xlcalc_keep_s1', sheet }],

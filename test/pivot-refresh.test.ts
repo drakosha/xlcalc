@@ -128,14 +128,14 @@ describe('refreshPivots', () => {
       await s.close()
     })
 
-  // registerPivot takes an entry into a PivotTable's cell too: an item's label typed anew is an edit of its definition (editPivotTable, which editStructure does not take yet)
+  // registerPivot takes an entry into a PivotTable's cell too: an item's label typed anew is an edit of its definition (editPivotTable)
   for (const [kind, calc] of [['a session', async () => null], ['the inline calculator', async () => createInlineCalc()], ['a pool', () => made({ threads: 1 })]] as const)
     it(`takes an entry into an item's label as editPivotTable in ${kind}`, async () => {
       const c = await calc()
       const s = c ? await c.createSession(BOOK) : createSession(BOOK)
       await s.editStructure(REFRESH)
-      await expect(Promise.resolve().then(() => s.setCellText('P', 'A4', 'Восток'))).rejects.toThrow(/editPivotTable/)
-      expect(await s.setCellText('P', 'A4', 'east')).toMatchObject({ ok: true, changes: [] })
+      expect(await s.setCellText('P', 'A4', 'Восток')).toMatchObject({ ok: true, changes: [{ sheet: 'P', cell: 'A4', value: 'Восток' }] })
+      expect(await s.setCellText('P', 'A4', 'восток')).toMatchObject({ ok: true, changes: [] })
       expect(await s.setCellText('P', 'B4', '3')).toMatchObject({ ok: false, code: 'pivot' })
       await s.close()
     })

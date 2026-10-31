@@ -2,14 +2,17 @@
  * PivotTables laid out written to their sheets as one step (a refresh of a cache shared by several): every new area
  * checked first, then the old areas cleared and the new cells written, the definitions with their new layout and place.
  */
-import type { BookInput, CellInput, PivotTable, SheetInput } from '../contract.js'
+import type { BookInput, AlignmentStyle, CellInput, PivotTable, SheetInput } from '../contract.js'
 import { CONTENT, holds } from '../array-areas.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
-import { cornersText, hasCell, meets, parseRange, type Rect } from '../structure/area.js'
+import { contains, cornersText, hasCell, meets, parseRange, type Rect } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
+import { internStyle } from '../style-table.js'
+import { withField } from '../looks/sheet.js'
+import { cellAlignment, labelMerges } from './looks.js'
 import { pivotArea } from './area.js'
 import type { PivotLaidOut } from './layout.js'
 
@@ -71,6 +74,14 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     return { ok: false, code: 'pivot', message: say(book.locale, { pivot: p.table.name, ...more } as never) }
   }
   const sheets = [...book.sheets]
+  let styles = book.styles ?? []
+  // the look Excel keeps in the cells of the area (`looks.ts`), over the cell's own style
+  const aligned = (c: CellInput, alignment: AlignmentStyle): CellInput => {
+    const base = c.style === undefined ? {} : styles[c.style]
+    const next = internStyle(styles, { ...base, alignment: { ...base.alignment, ...alignment } })
+    styles = next.styles
+    return { ...c, style: next.index }
+  }
   for (const p of steps) {
     const sheet = sheets[p.s]
     const cells: SheetInput['cells'] = { ...sheet.cells }
@@ -83,17 +94,23 @@ export function placePivots(book: BookInput, placed: Placement[], blocked: Block
     const laid: PivotLaidOut = p.spill ? { ...p.laid, location: { range: old, firstHeaderRow: 0, firstDataRow: 0, firstDataColumn: 0 }, cells: [{ ...parseAddress(old), error: 'SPILL' }] } : p.laid
     for (const c of laid.cells) {
       const addr = formatAddress(c.row, c.col)
-      const out: CellInput = { ...cells[addr] }
+      let out: CellInput = { ...cells[addr] }
       if (c.error) out.formula = ERROR_TEXT[c.error]
       else if (c.value !== undefined) out.value = c.value
       if (c.numberFormat !== undefined) out.numberFormat = c.numberFormat
+      const alignment = p.spill ? undefined : cellAlignment(p.table, laid, c)
+      if (alignment) out = aligned(out, alignment)
       cells[addr] = out
     }
     const pivotTables = [...(sheet.pivotTables ?? [])]
     pivotTables[p.at] = { ...p.table, location: laid.location, rowLines: laid.rowLines, columnLines: laid.columnLines }
-    sheets[p.s] = { ...sheet, cells, pivotTables }
+    // the merged labels: the old area's go with it, where its PivotTable merged them, the new ones are added
+    const was = sheet.pivotTables![p.at].mergeLabels && p.old ? sheet.merges?.filter((m) => !contains(p.old!, parseRange(m)!)) : sheet.merges
+    const merged = p.spill ? [] : labelMerges(p.table, laid).map(cornersText)
+    const merges = [...(was ?? []), ...merged]
+    sheets[p.s] = withField({ ...sheet, cells, pivotTables }, 'merges', merges.length ? merges : undefined)
   }
-  return { ok: true, book: { ...book, sheets }, geometry: [] }
+  return { ok: true, book: { ...book, sheets, ...(styles.length ? { styles } : {}) }, geometry: [] }
 }
 
 /** The cells of `x` among `cells`, with their addresses. */

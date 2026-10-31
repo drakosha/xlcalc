@@ -59,6 +59,7 @@ export const KEPT_EN_MESSAGES: { readonly [K in keyof KeptMessageParams]: (p: Ke
   keptValidation: (p) => `the data validation of '${p.sheet}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`,
   keptThreads: (p) => `the notes of '${p.sheet}' changed, and it has comment threads, which writeKept does not write`,
   keptTableParts: (p) => `the table ${p.table} was deleted, and it has parts the workbook does not hold (${p.path})`,
+  keptSlicers: () => 'slicers or timelines were added or deleted, which writeKept does not write yet',
   keptLinkKind: (p) => `the link [${p.link}] to another workbook changed, and its part is missing or is not a workbook's (DDE, OLE)`,
   keptLinks: () => "a link to another workbook was removed, moved or pointed at another file, which the file's formulas would read by another number",
   keptNoCarrier: (p) => `the workbook has no name ${p.name}, which tells what became of the sheet '${p.sheet}': ${OPEN_KEPT}`,

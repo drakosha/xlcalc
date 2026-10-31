@@ -54,7 +54,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   pivotOlap: () => "the OLAP part of a pivot cache (its hierarchies, measures and dimensions) is not in the model: its PivotTables' cells are read as stored",
   pivotChartFormats: () => "a PivotTable's chart formats are not in the model, nor are its PivotCharts",
   pivotUnread: (p) => `the file's PivotTables, slicers and timelines are left out, as the model cannot hold them (${p.detail}): their cells are read as stored`,
-  pivotNotWritten: () => "PivotTables, their caches, slicers and timelines are not written yet: the file holds the values of their cells alone, and a PivotTable's conditional formats are left out",
+  pivotNotWritten: () => 'slicers and timelines are not written yet: the file holds the PivotTables they filter without them',
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
   defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and measured as Calibri 11`,

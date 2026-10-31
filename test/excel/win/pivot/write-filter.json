@@ -1,0 +1,11409 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 16.1
+ },
+ "cases": [
+  {
+   "id": "hide-one",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-one.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hide-blank",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-blank.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hide-three",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-three.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hide-inner",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-inner.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hide-column",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-column.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hide-two-named",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hide-two-named.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-one",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-one.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-several",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-several.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-blank",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-blank.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-all",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-all.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-two",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-two.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "equals",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/equals.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "equals-case",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/equals-case.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "not-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/not-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "begins",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/begins.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "not-begins",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/not-begins.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "ends",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/ends.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "not-ends",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/not-ends.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "contains",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/contains.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "not-contains",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/not-contains.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "greater",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/greater.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "greater-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/greater-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "less",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/less.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "less-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/less-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "not-between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/not-between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "wildcard-star",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/wildcard-star.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "wildcard-mark",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/wildcard-mark.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "blank-label",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/blank-label.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "label-numbers",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/label-numbers.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "label-numbers-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/label-numbers-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-greater",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-greater.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-greater-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-greater-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-less",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-less.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-less-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-less-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-equals",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-equals.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-not-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-not-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "value-not-between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/value-not-between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "top-count",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/top-count.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "bottom-count",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/bottom-count.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "top-percent",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/top-percent.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "bottom-percent",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/bottom-percent.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "top-sum",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/top-sum.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "bottom-sum",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/bottom-sum.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "top-inner",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/top-inner.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "top-errors",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/top-errors.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-after",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-after.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-before-equal",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-before-equal.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-not-between",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-not-between.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-specific",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-specific.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-january",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-january.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "date-quarter-2",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/date-quarter-2.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "label-and-value",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/label-and-value.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "label-then-value",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/label-then-value.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "hidden-and-value",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/hidden-and-value.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "inner-label",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/inner-label.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "outer-value-inner-label",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/outer-value-inner-label.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "column-filter",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/column-filter.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  },
+  {
+   "id": "page-and-label",
+   "file": "bench/windows/out/pivot-ours/xlsx/filter/page-and-label.xlsx",
+   "ops": [
+    {
+     "read": true
+    },
+    {
+     "refresh": true
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "hide-one": "1365d4901171d5dfca7e0d82efc0890ecf15973f8c63008c1961ed04a9b648de 581bb1faa69789f2",
+  "hide-blank": "3b8d6adf66117599b6b2d94cfe874cb66f1adbac93e100afd37d4e85fc8a6355 581bb1faa69789f2",
+  "hide-three": "71925e9b19d05999505386414cfa4f736b23227a4fba3f0b6a16699645b62332 581bb1faa69789f2",
+  "hide-inner": "debeed644c8ddab3394c30a5630ddad303c7d81149582f195eb84fa9caf6e200 581bb1faa69789f2",
+  "hide-column": "ad895cac97242d31f69f2b5305061e17bd63b4fa21e339824e2970ac2d91de8a 581bb1faa69789f2",
+  "hide-two-named": "412ef46e1540d0eb801460b9456622de55b7cde27ad5933207906e2936c8edfa 581bb1faa69789f2",
+  "page-one": "30ae17398728901bd10204a1c88cc314920ea7eae3dfd9cc82d6e7a007b38724 581bb1faa69789f2",
+  "page-several": "8998f13379584a798379a5c5bc83f3069e51472647a1218befca0e345eb0c7dd 581bb1faa69789f2",
+  "page-blank": "2818cda9a2f0ee937b80133c1d1fd0a4ddc3453091c20ec3d27766261d0dfe01 581bb1faa69789f2",
+  "page-all": "6099e40a8c7b036f9bc461b7e20ecaffddd814623b781f76ff6e6b48b7db8537 581bb1faa69789f2",
+  "page-two": "d2c7c832282eb947cd39dae22534a91c4f5b5a817ae37a7659e683bf8967491d 581bb1faa69789f2",
+  "equals": "13ae36fea99cecabce904445d23de26c577bf587c4b6dce1fbdbaa2f7e0ff4e1 581bb1faa69789f2",
+  "equals-case": "1f223330ff0ca35f73c78ada500944de0602f50824e80a485aca0a2d3db35a1c 581bb1faa69789f2",
+  "not-equal": "c2d63deca6594def303f9d5e0699212a16b07e8fd8e539284e8a1ec2d2b84dc4 581bb1faa69789f2",
+  "begins": "0c1f2922523284268c1d0a34e789609e6095cd646480a7570e91b3426e54036e 581bb1faa69789f2",
+  "not-begins": "bfa5965d28fb4c742646c429892124e0c71e7d312e950ab20fd9da979c49a19a 581bb1faa69789f2",
+  "ends": "ed7bfe1f1ad5a81af320cdb032d0e4a13171f6ab3c77b5df127aaa32432fe782 581bb1faa69789f2",
+  "not-ends": "c18258c3814524abf101c91c9de953833b1ecaff349e79b9be4f130188134f17 581bb1faa69789f2",
+  "contains": "5fc7b2abf20ade84e50bc09c23d3e681771a842912ba602b5180831180a9110c 581bb1faa69789f2",
+  "not-contains": "b2563c6a8a5568a8b8492f3de4da483fe65ed9987662a61aeac7091eee263766 581bb1faa69789f2",
+  "greater": "f2080a8d0c8abe6dbc951f1f01c2e249cbd666ea00a700d2ff2aacbcc89b12b9 581bb1faa69789f2",
+  "greater-equal": "9531cb194c81ac38b3186f6340d0575869cdeab56be83cba1ea6482de3eb09b8 581bb1faa69789f2",
+  "less": "6ff50833bf060dd9931d2a5f259baa7dbf6c5ce22bd7514c5ba4b6b7e64b30c2 581bb1faa69789f2",
+  "less-equal": "8ec026b0d45aa7ebf72732f551d7acb118ead0a0a0642a13849d16b02d34ae7a 581bb1faa69789f2",
+  "between": "d6e510adc5950205e3ef825f037751169efdb0d453b7a6cbea93969db5af8ec4 581bb1faa69789f2",
+  "not-between": "ea71b4ed4b6fde118b6cd1346755401dc5b06f10866a31fa50e254902d697b1f 581bb1faa69789f2",
+  "wildcard-star": "19d7637b72d7cc48e8230f6e1453fc59770776e5f79235c9b948b4b26bf75519 581bb1faa69789f2",
+  "wildcard-mark": "73ffbcb3c286c46dee35ec753280b64c9b4a94aeea6558eac82850bdcb1ca1dc 581bb1faa69789f2",
+  "blank-label": "12be62180d871ba9d27ded89655dbc39af1818bc15ab781b4756e1be81e00c48 581bb1faa69789f2",
+  "label-numbers": "f378df7359a6fc388b3eac62c71c488e03cf45cd5916be290965666e77c8a988 581bb1faa69789f2",
+  "label-numbers-equal": "dd365db92645496edae0d0f092e7c8def04a445dff19550a0cc0f42d76506f0f 581bb1faa69789f2",
+  "value-greater": "1d3aeb6c9b264f063d7e2f067cc8513a0bc0079593955f8bede956f039e344b2 581bb1faa69789f2",
+  "value-greater-equal": "4defc10d84b88b08e3ebdf4730ab0c4ef14ca64d2e18fcf9b3a7428e8ac6d059 581bb1faa69789f2",
+  "value-less": "1c971c84d6de22b3e31f500842870cc1f95fb44ff9fe377ebe127af5983722cd 581bb1faa69789f2",
+  "value-less-equal": "956d30c4ba92a5ec29f2531118f1462a86859e66b93a7cc512546758ccbc6708 581bb1faa69789f2",
+  "value-equals": "240641e21fdd937a547d1006c742d61f0ffa5ae24f0baae110a7a3948a541dc9 581bb1faa69789f2",
+  "value-not-equal": "76a02773eea3fbc55b2ebc64c64d2eec43297a82fdcb93c5dc567321369469c0 581bb1faa69789f2",
+  "value-between": "925f67ca450c891f636f9bf920fccfbd81d377ea2dd82386f7899ec472a130bf 581bb1faa69789f2",
+  "value-not-between": "d10a6f570132fe8c8f7cdf62a100d0e8123b80eb51bad62b0a0605b1447d911f 581bb1faa69789f2",
+  "top-count": "b95f5a0b06ab381bcb69f07baee6bdf9ac2ab63d7c9df2e148733e6aa391a276 581bb1faa69789f2",
+  "bottom-count": "35493beaedbd245185b22fefc5ca2d3df145e420e50f9b4d812f7ad1f1bef35a 581bb1faa69789f2",
+  "top-percent": "ef8f8ea882151ad74071cc0b2b37a8401f1f2df722083cf3d5a9a3bff4f731b8 581bb1faa69789f2",
+  "bottom-percent": "4d5edcfede1b11cf67322303e5272b767cf98b023660923c95e0129a1c8c7cd5 581bb1faa69789f2",
+  "top-sum": "2f15317ae227eed3606bceebe42091ee49c740050b7eba4e74b57867f1d6c6f7 581bb1faa69789f2",
+  "bottom-sum": "ccf220cbeee12ab18bd1d76c7bc503a8bdebf92676cd803c96ea2253262c1a92 581bb1faa69789f2",
+  "top-inner": "b1c8afaf371b524a76c853be904eeab2dd39e21ba8a4bf2cc2229f00dd413686 581bb1faa69789f2",
+  "top-errors": "4dba21a001a3aed675dfb1f5c0c350a8283b6db7c49098fc6dc67322207e19c7 581bb1faa69789f2",
+  "date-after": "ddb2a7d185f5af0c03342e96fde9f3264c1faec1990cb45b86220710f5545e79 581bb1faa69789f2",
+  "date-before-equal": "67f45f74a66d010a8e2c450fcca5935778d7cb622af05ac0f18cf75f9d2bb3ea 581bb1faa69789f2",
+  "date-between": "24f6db020778d5a93b6f1b174eabab78bedf4e1ce7d5d103e0624598e3abb560 581bb1faa69789f2",
+  "date-not-between": "a15a984259f872fa8f3656c52fac465ef88d42316addc36c6f3370c458fa617d 581bb1faa69789f2",
+  "date-specific": "c7556b0d2b47ead0edc49847405cfd4402e42ae8dcdfd0293f4e5b083c877926 581bb1faa69789f2",
+  "date-january": "9018e28dc9eac441fee059287dcd3437e4303c4f99b388af7a5bab570206f72e 581bb1faa69789f2",
+  "date-quarter-2": "3d7352e9d3b33a0d5a38f136dcf583b95ca00c8e7e46a215c2406c88259c4568 581bb1faa69789f2",
+  "label-and-value": "56256ec4226013de58b8e3b91aeb2e68ca4f393d6a766ce38948d00b358cb3c3 581bb1faa69789f2",
+  "label-then-value": "509737f6071cec1de3b67b1bb6a509c0cca2d16821f84bb4e7f8954a0947033c 581bb1faa69789f2",
+  "hidden-and-value": "80e37c3981d2a5a168517b07caf288c682aaf7a56993fe1d67ac3e0c98cf691c 581bb1faa69789f2",
+  "inner-label": "2cc45c65a5a336e7ba9bff7efa6926116055792832c2fa4aeedf596353bdb569 581bb1faa69789f2",
+  "outer-value-inner-label": "ac51ce83532a31ba7dc0bbd8a401e1874e6fdea4d95e86b319dee61587d2ff6b 581bb1faa69789f2",
+  "column-filter": "ff20333ea2015d43b763ba5c00c6e70b645cc028df6bf559c1fd8a3e206b3880 581bb1faa69789f2",
+  "page-and-label": "d92e4b19a64be0983813ac3fba842b7c598b24eff6c71289b9c4749fe0d5119f 581bb1faa69789f2"
+ },
+ "answers": {
+  "hide-one": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hide-blank": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hide-three": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hide-inner": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         54.94
+        ],
+        [
+         "Banana",
+         42.25
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         12.69
+        ],
+        [
+         "North",
+         80.3
+        ],
+        [
+         "Banana",
+         59.38999999999999
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         20.91
+        ],
+        [
+         "South",
+         113.80000000000001
+        ],
+        [
+         "Banana",
+         70.96000000000001
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         42.84
+        ],
+        [
+         "West",
+         178.05
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Banana",
+         126.81
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         36.39
+        ],
+        [
+         "Grand Total",
+         427.09
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "54.94"
+        ],
+        [
+         "Banana",
+         "42.25"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "12.69"
+        ],
+        [
+         "North",
+         "80.3"
+        ],
+        [
+         "Banana",
+         "59.39"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "20.91"
+        ],
+        [
+         "South",
+         "113.8"
+        ],
+        [
+         "Banana",
+         "70.96"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "42.84"
+        ],
+        [
+         "West",
+         "178.05"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "36.39"
+        ],
+        [
+         "Grand Total",
+         "427.09"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         54.94
+        ],
+        [
+         "Banana",
+         42.25
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         12.69
+        ],
+        [
+         "North",
+         80.3
+        ],
+        [
+         "Banana",
+         59.38999999999999
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         20.91
+        ],
+        [
+         "South",
+         113.80000000000001
+        ],
+        [
+         "Banana",
+         70.96000000000001
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         42.84
+        ],
+        [
+         "West",
+         178.05
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Banana",
+         126.81
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         36.39
+        ],
+        [
+         "Grand Total",
+         427.09
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "54.94"
+        ],
+        [
+         "Banana",
+         "42.25"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "12.69"
+        ],
+        [
+         "North",
+         "80.3"
+        ],
+        [
+         "Banana",
+         "59.39"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "20.91"
+        ],
+        [
+         "South",
+         "113.8"
+        ],
+        [
+         "Banana",
+         "70.96"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "42.84"
+        ],
+        [
+         "West",
+         "178.05"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "36.39"
+        ],
+        [
+         "Grand Total",
+         "427.09"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hide-column": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:E10",
+       "area": "A3:E10",
+       "body": "B5:E10",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         10,
+         20,
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         14,
+         5,
+         7,
+         26
+        ],
+        [
+         "North",
+         19,
+         24,
+         null,
+         43
+        ],
+        [
+         "South",
+         11,
+         22,
+         null,
+         33
+        ],
+        [
+         "West",
+         20,
+         16,
+         null,
+         36
+        ],
+        [
+         "(blank)",
+         9,
+         null,
+         null,
+         9
+        ],
+        [
+         "Grand Total",
+         73,
+         67,
+         7,
+         147
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "10",
+         "20",
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "14",
+         "5",
+         "7",
+         "26"
+        ],
+        [
+         "North",
+         "19",
+         "24",
+         "",
+         "43"
+        ],
+        [
+         "South",
+         "11",
+         "22",
+         "",
+         "33"
+        ],
+        [
+         "West",
+         "20",
+         "16",
+         "",
+         "36"
+        ],
+        [
+         "(blank)",
+         "9",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "73",
+         "67",
+         "7",
+         "147"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:E10",
+       "area": "A3:E10",
+       "body": "B5:E10",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         10,
+         20,
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         14,
+         5,
+         7,
+         26
+        ],
+        [
+         "North",
+         19,
+         24,
+         null,
+         43
+        ],
+        [
+         "South",
+         11,
+         22,
+         null,
+         33
+        ],
+        [
+         "West",
+         20,
+         16,
+         null,
+         36
+        ],
+        [
+         "(blank)",
+         9,
+         null,
+         null,
+         9
+        ],
+        [
+         "Grand Total",
+         73,
+         67,
+         7,
+         147
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "10",
+         "20",
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "14",
+         "5",
+         "7",
+         "26"
+        ],
+        [
+         "North",
+         "19",
+         "24",
+         "",
+         "43"
+        ],
+        [
+         "South",
+         "11",
+         "22",
+         "",
+         "33"
+        ],
+        [
+         "West",
+         "20",
+         "16",
+         "",
+         "36"
+        ],
+        [
+         "(blank)",
+         "9",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "73",
+         "67",
+         "7",
+         "147"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hide-two-named": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:F10",
+       "area": "A3:F10",
+       "body": "B5:F10",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         10,
+         20,
+         30,
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         14,
+         5,
+         17,
+         7,
+         43
+        ],
+        [
+         "North",
+         19,
+         24,
+         13,
+         null,
+         56
+        ],
+        [
+         "South",
+         11,
+         22,
+         19,
+         null,
+         52
+        ],
+        [
+         "West",
+         20,
+         16,
+         16,
+         null,
+         52
+        ],
+        [
+         "(blank)",
+         9,
+         null,
+         null,
+         null,
+         9
+        ],
+        [
+         "Grand Total",
+         73,
+         67,
+         65,
+         7,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "10",
+         "20",
+         "30",
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "14",
+         "5",
+         "17",
+         "7",
+         "43"
+        ],
+        [
+         "North",
+         "19",
+         "24",
+         "13",
+         "",
+         "56"
+        ],
+        [
+         "South",
+         "11",
+         "22",
+         "19",
+         "",
+         "52"
+        ],
+        [
+         "West",
+         "20",
+         "16",
+         "16",
+         "",
+         "52"
+        ],
+        [
+         "(blank)",
+         "9",
+         "",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "73",
+         "67",
+         "65",
+         "7",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:F10",
+       "area": "A3:F10",
+       "body": "B5:F10",
+       "values": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         10,
+         20,
+         30,
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         14,
+         5,
+         17,
+         7,
+         43
+        ],
+        [
+         "North",
+         19,
+         24,
+         13,
+         null,
+         56
+        ],
+        [
+         "South",
+         11,
+         22,
+         19,
+         null,
+         52
+        ],
+        [
+         "West",
+         20,
+         16,
+         16,
+         null,
+         52
+        ],
+        [
+         "(blank)",
+         9,
+         null,
+         null,
+         null,
+         9
+        ],
+        [
+         "Grand Total",
+         73,
+         67,
+         65,
+         7,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty",
+         "Column Labels",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "10",
+         "20",
+         "30",
+         "20",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "14",
+         "5",
+         "17",
+         "7",
+         "43"
+        ],
+        [
+         "North",
+         "19",
+         "24",
+         "13",
+         "",
+         "56"
+        ],
+        [
+         "South",
+         "11",
+         "22",
+         "19",
+         "",
+         "52"
+        ],
+        [
+         "West",
+         "20",
+         "16",
+         "16",
+         "",
+         "52"
+        ],
+        [
+         "(blank)",
+         "9",
+         "",
+         "",
+         "",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "73",
+         "67",
+         "65",
+         "7",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-one": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "West"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         73.68
+        ],
+        [
+         "Banana",
+         126.80999999999999
+        ],
+        [
+         "Cherry",
+         50.18
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         36.39
+        ],
+        [
+         "Grand Total",
+         301.90999999999997
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "West"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "73.68"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Cherry",
+         "50.18"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "36.39"
+        ],
+        [
+         "Grand Total",
+         "301.91"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "West"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         73.68
+        ],
+        [
+         "Banana",
+         126.80999999999999
+        ],
+        [
+         "Cherry",
+         50.18
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         36.39
+        ],
+        [
+         "Grand Total",
+         301.90999999999997
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "West"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "73.68"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Cherry",
+         "50.18"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "36.39"
+        ],
+        [
+         "Grand Total",
+         "301.91"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-several": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "(Multiple Items)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         116.17
+        ],
+        [
+         "Banana",
+         169.06
+        ],
+        [
+         "Cherry",
+         91.4
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         49.08
+        ],
+        [
+         "Grand Total",
+         440.56
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(Multiple Items)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "116.17"
+        ],
+        [
+         "Banana",
+         "169.06"
+        ],
+        [
+         "Cherry",
+         "91.4"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "49.08"
+        ],
+        [
+         "Grand Total",
+         "440.56"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "(Multiple Items)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         116.17
+        ],
+        [
+         "Banana",
+         169.06
+        ],
+        [
+         "Cherry",
+         91.4
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         49.08
+        ],
+        [
+         "Grand Total",
+         440.56
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(Multiple Items)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "116.17"
+        ],
+        [
+         "Banana",
+         "169.06"
+        ],
+        [
+         "Cherry",
+         "91.4"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "49.08"
+        ],
+        [
+         "Grand Total",
+         "440.56"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-blank": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A1:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Region",
+         "(blank)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(blank)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A1:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Region",
+         "(blank)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(blank)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-all": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "(All)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         355.65000000000003
+        ],
+        [
+         "Banana",
+         299.40999999999997
+        ],
+        [
+         "Cherry",
+         244.01999999999998
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         112.83
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(All)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "355.65"
+        ],
+        [
+         "Banana",
+         "299.41"
+        ],
+        [
+         "Cherry",
+         "244.02"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "112.83"
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B9",
+       "area": "A1:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Region",
+         "(All)"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         14.85
+        ],
+        [
+         "Apple",
+         355.65000000000003
+        ],
+        [
+         "Banana",
+         299.40999999999997
+        ],
+        [
+         "Cherry",
+         244.01999999999998
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         112.83
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Region",
+         "(All)"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "100",
+         "14.85"
+        ],
+        [
+         "Apple",
+         "355.65"
+        ],
+        [
+         "Banana",
+         "299.41"
+        ],
+        [
+         "Cherry",
+         "244.02"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "112.83"
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-two": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A4:B9",
+       "area": "A1:B9",
+       "body": "B5:B9",
+       "values": [
+        [
+         "Flag",
+         "TRUE"
+        ],
+        [
+         "Region",
+         "North"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         52.300000000000004
+        ],
+        [
+         "Banana",
+         56.41
+        ],
+        [
+         "Cherry",
+         10.83
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         20.91
+        ],
+        [
+         "Grand Total",
+         140.45000000000002
+        ]
+       ],
+       "text": [
+        [
+         "Flag",
+         "TRUE"
+        ],
+        [
+         "Region",
+         "North"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         "52.3"
+        ],
+        [
+         "Banana",
+         "56.41"
+        ],
+        [
+         "Cherry",
+         "10.83"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "20.91"
+        ],
+        [
+         "Grand Total",
+         "140.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A4:B9",
+       "area": "A1:B9",
+       "body": "B5:B9",
+       "values": [
+        [
+         "Flag",
+         "TRUE"
+        ],
+        [
+         "Region",
+         "North"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         52.300000000000004
+        ],
+        [
+         "Banana",
+         56.41
+        ],
+        [
+         "Cherry",
+         10.83
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         20.91
+        ],
+        [
+         "Grand Total",
+         140.45000000000002
+        ]
+       ],
+       "text": [
+        [
+         "Flag",
+         "TRUE"
+        ],
+        [
+         "Region",
+         "North"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Apple",
+         "52.3"
+        ],
+        [
+         "Banana",
+         "56.41"
+        ],
+        [
+         "Cherry",
+         "10.83"
+        ],
+        [
+         "Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea",
+         "20.91"
+        ],
+        [
+         "Grand Total",
+         "140.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "equals": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "equals-case": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "not-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         788.9599999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "788.96"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         788.9599999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "788.96"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "begins": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "not-begins": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         678.3599999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "678.36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         678.3599999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "678.36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "ends": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "not-ends": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "contains": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "not-contains": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "greater": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "greater-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         888.1099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "888.11"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "less": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "less-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         724.8499999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "724.85"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         724.8499999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "724.85"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         376.44999999999993
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         376.44999999999993
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "not-between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "wildcard-star": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999995
+        ],
+        [
+         "Grand Total",
+         237.79999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "Grand Total",
+         "237.8"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "wildcard-mark": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         301.91
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "301.91"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         301.91
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "301.91"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "blank-label": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "label-numbers": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         30,
+         65
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Grand Total",
+         139
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "30",
+         "65"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "139"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         30,
+         65
+        ],
+        [
+         "Grand Total",
+         132
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "30",
+         "65"
+        ],
+        [
+         "Grand Total",
+         "132"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "label-numbers-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Grand Total",
+         74
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "74"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         20,
+         67
+        ],
+        [
+         "20",
+         7
+        ],
+        [
+         "Grand Total",
+         74
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "20",
+         "67"
+        ],
+        [
+         "20",
+         "7"
+        ],
+        [
+         "Grand Total",
+         "74"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-greater": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-greater-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-less": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-less-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-equals": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         348.4
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "348.4"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         348.4
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "348.4"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-not-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         678.36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "678.36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         678.36
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "678.36"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         539.71
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "539.71"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         539.71
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "539.71"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "value-not-between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         487.04999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "487.05"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         487.04999999999995
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "487.05"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "top-count": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "bottom-count": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         138.65
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "138.65"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         138.65
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "138.65"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "top-percent": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "bottom-percent": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "top-sum": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "Grand Total",
+         650.31
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "650.31"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "bottom-sum": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         376.45
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "376.45"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "top-inner": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B14",
+       "area": "A3:B14",
+       "body": "B4:B14",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         42.49
+        ],
+        [
+         "Apple",
+         42.49
+        ],
+        [
+         "North",
+         112.07000000000001
+        ],
+        [
+         "Apple",
+         112.07000000000001
+        ],
+        [
+         "South",
+         127.41000000000003
+        ],
+        [
+         "Apple",
+         127.41000000000003
+        ],
+        [
+         "West",
+         126.81
+        ],
+        [
+         "Banana",
+         126.81
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Apple",
+         null
+        ],
+        [
+         "Grand Total",
+         408.78000000000003
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "42.49"
+        ],
+        [
+         "Apple",
+         "42.49"
+        ],
+        [
+         "North",
+         "112.07"
+        ],
+        [
+         "Apple",
+         "112.07"
+        ],
+        [
+         "South",
+         "127.41"
+        ],
+        [
+         "Apple",
+         "127.41"
+        ],
+        [
+         "West",
+         "126.81"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Apple",
+         ""
+        ],
+        [
+         "Grand Total",
+         "408.78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B14",
+       "area": "A3:B14",
+       "body": "B4:B14",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         42.49
+        ],
+        [
+         "Apple",
+         42.49
+        ],
+        [
+         "North",
+         112.07000000000001
+        ],
+        [
+         "Apple",
+         112.07000000000001
+        ],
+        [
+         "South",
+         127.41000000000003
+        ],
+        [
+         "Apple",
+         127.41000000000003
+        ],
+        [
+         "West",
+         126.81
+        ],
+        [
+         "Banana",
+         126.81
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Apple",
+         null
+        ],
+        [
+         "Grand Total",
+         408.78000000000003
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "42.49"
+        ],
+        [
+         "Apple",
+         "42.49"
+        ],
+        [
+         "North",
+         "112.07"
+        ],
+        [
+         "Apple",
+         "112.07"
+        ],
+        [
+         "South",
+         "127.41"
+        ],
+        [
+         "Apple",
+         "127.41"
+        ],
+        [
+         "West",
+         "126.81"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Apple",
+         ""
+        ],
+        [
+         "Grand Total",
+         "408.78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "top-errors": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         801
+        ],
+        [
+         "West",
+         2028.27
+        ],
+        [
+         "Grand Total",
+         2829.27
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         "801"
+        ],
+        [
+         "West",
+         "2028.27"
+        ],
+        [
+         "Grand Total",
+         "2829.27"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         801
+        ],
+        [
+         "West",
+         2028.27
+        ],
+        [
+         "Grand Total",
+         2829.27
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Amount"
+        ],
+        [
+         "East",
+         "801"
+        ],
+        [
+         "West",
+         "2028.27"
+        ],
+        [
+         "Grand Total",
+         "2829.27"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-after": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "Grand Total",
+         111
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "2/8/2025",
+         "17"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "8/22/2025",
+         "16"
+        ],
+        [
+         "10/8/2025",
+         "20"
+        ],
+        [
+         "12/22/2025",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "111"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B10",
+       "area": "A3:B10",
+       "body": "B4:B10",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "Grand Total",
+         111
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "2/8/2025",
+         "17"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "8/22/2025",
+         "16"
+        ],
+        [
+         "10/8/2025",
+         "20"
+        ],
+        [
+         "12/22/2025",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "111"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-before-equal": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         "Grand Total",
+         43
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "3/15/2024",
+         "15"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "43"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         "Grand Total",
+         43
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "3/15/2024",
+         "15"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "Grand Total",
+         "43"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45488,
+         14
+        ],
+        [
+         45536,
+         21
+        ],
+        [
+         45611,
+         21
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         "Grand Total",
+         73
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7/15/2024",
+         "14"
+        ],
+        [
+         "9/1/2024",
+         "21"
+        ],
+        [
+         "11/15/2024",
+         "21"
+        ],
+        [
+         "2/8/2025",
+         "17"
+        ],
+        [
+         "Grand Total",
+         "73"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B8",
+       "area": "A3:B8",
+       "body": "B4:B8",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45488,
+         14
+        ],
+        [
+         45536,
+         21
+        ],
+        [
+         45611,
+         21
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         "Grand Total",
+         73
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "7/15/2024",
+         "14"
+        ],
+        [
+         "9/1/2024",
+         "21"
+        ],
+        [
+         "11/15/2024",
+         "21"
+        ],
+        [
+         "2/8/2025",
+         "17"
+        ],
+        [
+         "Grand Total",
+         "73"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-not-between": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B12",
+       "area": "A3:B12",
+       "body": "B4:B12",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "Grand Total",
+         137
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "3/15/2024",
+         "15"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "8/22/2025",
+         "16"
+        ],
+        [
+         "10/8/2025",
+         "20"
+        ],
+        [
+         "12/22/2025",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "137"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B12",
+       "area": "A3:B12",
+       "body": "B4:B12",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "Grand Total",
+         137
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "3/15/2024",
+         "15"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "8/22/2025",
+         "16"
+        ],
+        [
+         "10/8/2025",
+         "20"
+        ],
+        [
+         "12/22/2025",
+         "16"
+        ],
+        [
+         "Grand Total",
+         "137"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-specific": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         "Grand Total",
+         19
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "Grand Total",
+         "19"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         "Grand Total",
+         19
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "Grand Total",
+         "19"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-january": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         "Grand Total",
+         19
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "Grand Total",
+         "19"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B5",
+       "area": "A3:B5",
+       "body": "B4:B5",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         "Grand Total",
+         19
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "Grand Total",
+         "19"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "date-quarter-2": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         "Grand Total",
+         51
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "Grand Total",
+         "51"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B7",
+       "area": "A3:B7",
+       "body": "B4:B7",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         "Grand Total",
+         51
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "Grand Total",
+         "51"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "label-and-value": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "label-then-value": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "Grand Total",
+         586.1999999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "Grand Total",
+         "586.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "hidden-and-value": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         539.7099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "539.71"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A3:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "West",
+         301.90999999999997
+        ],
+        [
+         "Grand Total",
+         539.7099999999999
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "Grand Total",
+         "539.71"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "inner-label": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B12",
+       "area": "A3:B12",
+       "body": "B4:B12",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         42.25
+        ],
+        [
+         "Banana",
+         42.25
+        ],
+        [
+         "North",
+         59.38999999999999
+        ],
+        [
+         "Banana",
+         59.38999999999999
+        ],
+        [
+         "South",
+         70.96000000000001
+        ],
+        [
+         "Banana",
+         70.96000000000001
+        ],
+        [
+         "West",
+         126.80999999999999
+        ],
+        [
+         "Banana",
+         126.80999999999999
+        ],
+        [
+         "Grand Total",
+         299.40999999999997
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "42.25"
+        ],
+        [
+         "Banana",
+         "42.25"
+        ],
+        [
+         "North",
+         "59.39"
+        ],
+        [
+         "Banana",
+         "59.39"
+        ],
+        [
+         "South",
+         "70.96"
+        ],
+        [
+         "Banana",
+         "70.96"
+        ],
+        [
+         "West",
+         "126.81"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Grand Total",
+         "299.41"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B12",
+       "area": "A3:B12",
+       "body": "B4:B12",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         42.25
+        ],
+        [
+         "Banana",
+         42.25
+        ],
+        [
+         "North",
+         59.38999999999999
+        ],
+        [
+         "Banana",
+         59.38999999999999
+        ],
+        [
+         "South",
+         70.96000000000001
+        ],
+        [
+         "Banana",
+         70.96000000000001
+        ],
+        [
+         "West",
+         126.80999999999999
+        ],
+        [
+         "Banana",
+         126.80999999999999
+        ],
+        [
+         "Grand Total",
+         299.40999999999997
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "42.25"
+        ],
+        [
+         "Banana",
+         "42.25"
+        ],
+        [
+         "North",
+         "59.39"
+        ],
+        [
+         "Banana",
+         "59.39"
+        ],
+        [
+         "South",
+         "70.96"
+        ],
+        [
+         "Banana",
+         "70.96"
+        ],
+        [
+         "West",
+         "126.81"
+        ],
+        [
+         "Banana",
+         "126.81"
+        ],
+        [
+         "Grand Total",
+         "299.41"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "outer-value-inner-label": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "column-filter": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:D10",
+       "area": "A3:D10",
+       "body": "B5:D10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Apple",
+         "Banana",
+         "Grand Total"
+        ],
+        [
+         "East",
+         42.49,
+         42.25,
+         84.74000000000001
+        ],
+        [
+         "North",
+         112.07000000000001,
+         59.38999999999999,
+         171.46
+        ],
+        [
+         "South",
+         127.41000000000003,
+         70.96000000000001,
+         198.37000000000003
+        ],
+        [
+         "West",
+         73.68,
+         126.81,
+         200.49
+        ],
+        [
+         "(blank)",
+         null,
+         null,
+         null
+        ],
+        [
+         "Grand Total",
+         355.65000000000003,
+         299.40999999999997,
+         655.0600000000001
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Apple",
+         "Banana",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "42.49",
+         "42.25",
+         "84.74"
+        ],
+        [
+         "North",
+         "112.07",
+         "59.39",
+         "171.46"
+        ],
+        [
+         "South",
+         "127.41",
+         "70.96",
+         "198.37"
+        ],
+        [
+         "West",
+         "73.68",
+         "126.81",
+         "200.49"
+        ],
+        [
+         "(blank)",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Grand Total",
+         "355.65",
+         "299.41",
+         "655.06"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:D10",
+       "area": "A3:D10",
+       "body": "B5:D10",
+       "values": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Apple",
+         "Banana",
+         "Grand Total"
+        ],
+        [
+         "East",
+         42.49,
+         42.25,
+         84.74000000000001
+        ],
+        [
+         "North",
+         112.07000000000001,
+         59.38999999999999,
+         171.46
+        ],
+        [
+         "South",
+         127.41000000000003,
+         70.96000000000001,
+         198.37000000000003
+        ],
+        [
+         "West",
+         73.68,
+         126.81,
+         200.49
+        ],
+        [
+         "(blank)",
+         null,
+         null,
+         null
+        ],
+        [
+         "Grand Total",
+         355.65000000000003,
+         299.40999999999997,
+         655.0600000000001
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Price",
+         "Column Labels",
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Apple",
+         "Banana",
+         "Grand Total"
+        ],
+        [
+         "East",
+         "42.49",
+         "42.25",
+         "84.74"
+        ],
+        [
+         "North",
+         "112.07",
+         "59.39",
+         "171.46"
+        ],
+        [
+         "South",
+         "127.41",
+         "70.96",
+         "198.37"
+        ],
+        [
+         "West",
+         "73.68",
+         "126.81",
+         "200.49"
+        ],
+        [
+         "(blank)",
+         "",
+         "",
+         ""
+        ],
+        [
+         "Grand Total",
+         "355.65",
+         "299.41",
+         "655.06"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  },
+  "page-and-label": {
+   "phases": [
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A1:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Flag",
+         "FALSE"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         97.35000000000001
+        ],
+        [
+         "South",
+         111.85
+        ],
+        [
+         "Grand Total",
+         209.2
+        ]
+       ],
+       "text": [
+        [
+         "Flag",
+         "FALSE"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "97.35"
+        ],
+        [
+         "South",
+         "111.85"
+        ],
+        [
+         "Grand Total",
+         "209.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "pivots": {
+      "P!PT1": {
+       "table": "A3:B6",
+       "area": "A1:B6",
+       "body": "B4:B6",
+       "values": [
+        [
+         "Flag",
+         "FALSE"
+        ],
+        [
+         null,
+         null
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         97.35000000000001
+        ],
+        [
+         "South",
+         111.85
+        ],
+        [
+         "Grand Total",
+         209.2
+        ]
+       ],
+       "text": [
+        [
+         "Flag",
+         "FALSE"
+        ],
+        [
+         "",
+         ""
+        ],
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "North",
+         "97.35"
+        ],
+        [
+         "South",
+         "111.85"
+        ],
+        [
+         "Grand Total",
+         "209.2"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": true
+     }
+    }
+   ]
+  }
+ }
+}

@@ -469,6 +469,20 @@ describe('PivotTables', () => {
       }
     }
   })
+
+  it('an operation over a PivotTable refused', () => {
+    const add = (more: object): StructureOp => ({ op: 'addPivotTable', sheet: 'Свод', cell: 'H1', source: { type: 'range', sheet: 'Данные', range: 'A1:B2' }, ...more }) as StructureOp
+    const OPS: [StructureOp, EngineMessage][] = [
+      [{ op: 'insertRows', sheet: 'Свод', row: 4 }, { key: 'pivotCut', sheet: 'Свод', pivot: 'Сводная1' }],
+      [add({ name: 'сводная1' }), { key: 'pivotTableNameTaken', sheet: 'Свод', name: 'сводная1' }],
+      [{ op: 'renamePivotTable', sheet: 'Свод', pivot: 'Сводная1', name: '' }, { key: 'pivotNameEmpty' }],
+      [add({ source: { type: 'range', sheet: 'Данные', range: 'A1:B1' } }), { key: 'pivotSourceRows', source: "'Данные'!A1:B1" }],
+    ]
+    for (const [op, m] of OPS) {
+      reached.add(m.key)
+      for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) expect(message(editStructure(pivotBook(locale), op)), op.op).toBe(say(m))
+    }
+  })
 })
 
 it('the cases reach every message of the catalog but the rules of names and a group not loaded', () => {

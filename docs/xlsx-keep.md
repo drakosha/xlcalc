@@ -1,6 +1,6 @@
 # Writing over the original file
 
-`writeXlsx` writes a file anew from the workbook, so whatever the workbook cannot hold is gone from it: charts, pictures and shapes, pivot tables, sparklines, the page setup and print area, a protection's password, the theme, formatted runs of text, macros. The `xlcalc/xlsx/keep` subpath writes the workbook over the file it was read from instead. What the workbook changed is written; everything else stays as the file has it, byte for byte. A user who opens a report with a chart, changes one number and saves it gets the report back with its chart.
+`writeXlsx` writes a file anew from the workbook, so whatever the workbook cannot hold is gone from it: charts, pictures and shapes, sparklines, the page setup and print area, a protection's password, the theme, formatted runs of text, macros. The `xlcalc/xlsx/keep` subpath writes the workbook over the file it was read from instead. What the workbook changed is written; everything else stays as the file has it, byte for byte. A user who opens a report with a chart, changes one number and saves it gets the report back with its chart.
 
 ```js
 import { compute, createSession } from 'xlcalc'
@@ -38,6 +38,7 @@ A change the file cannot take without pointing a part at other cells is refused:
 | part | |
 |---|---|
 | a part the book did not change: charts, drawings, pictures, pivot tables and caches, the theme, `vbaProject.bin`, printer settings, custom XML, document properties | as the file has it, byte for byte (the archive's entry is copied, not compressed again) |
+| a PivotTable, a pivot cache, a slicer's or a timeline's cache, or a sheet's slicers or timelines the book changed, added or deleted | written again from the workbook through the file's relationships, a new one with parts of its own, a deleted one without its parts ([Writing PivotTables](pivot-tables.md#writing-pivottables)); slicers and timelines added or deleted are refused |
 | a sheet the book did not change | as the file has it |
 | a part written again whose text comes out as the file's | as the file has it, byte for byte; one that changed keeps the byte order mark the file put before `<?xml` |
 | a sheet the book changed | its rows, cells, columns, merged areas, conditional formats, data validation, hyperlinks, the tables' list, the panes and selection of its first view, written from the workbook, with the conditional formats the workbook does not read among its own ([Conditional formats the workbook does not read](#conditional-formats-the-workbook-does-not-read)); the other elements (page setup, protected ranges, the drawing, sparklines, printing options) stay in their place in the order of the schema, the references an operation of the structure moved written into them |
@@ -129,7 +130,8 @@ What cannot go as Excel would is refused: a pivot table's rules, which the pivot
 
 - a range moved over a drawing (its cells move and its lines do not), or a change that would cut a pivot table, which Excel refuses (`moved`); a part that moves in a way `writeKept` does not write (`moved`);
 - a drawing whose cells were deleted with all the rows below or the columns beside it; the source of a pivot cache on a sheet deleted (Excel links it to the file itself by its path, which `writeKept` does not know); some of the cells of a sparkline deleted (`deleted`);
-- a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from; a sheet or a table deleted with parts of its own the workbook does not have (a pivot table, a slicer) (`deleted`);
+- a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from; a sheet or a table deleted with parts of its own the workbook does not have (a pivot table the workbook did not read, a slicer) (`deleted`);
+- slicers or timelines added or deleted (`slicers`);
 - the cells of comment threads moved, or notes changed on a sheet with comment threads, which the workbook reads as notes (`threads`);
 - rows or columns inserted or deleted on a sheet with parts whose references are not read, or such a sheet renamed or deleted (`unread`);
 - the data validation of a sheet changed, by an edit or by rows and columns moving, where the file has rules of that sheet the workbook could not read (those `readXlsx` reports as `dataValidation` issues): written again from the workbook, they would be lost; the conditional formats of a sheet changed where the file has a rule of it that cannot go with them as Excel would ([Conditional formats the workbook does not read](#conditional-formats-the-workbook-does-not-read)) (`rules`);

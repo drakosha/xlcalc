@@ -217,6 +217,7 @@ export interface KeptMessageParams {
   keptValidation: { sheet: string }
   keptThreads: { sheet: string }
   keptTableParts: { table: string; path: string }
+  keptSlicers: object
   keptLinkKind: { link: number }
   keptLinks: object
   keptNoCarrier: { name: string; sheet: string }
@@ -383,6 +384,10 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   slicerField: { field: string }
   slicerNameTaken: { name: string }
   timelineField: { field: string }
+  pivotCut: { sheet: string; pivot: string }
+  pivotTableNameTaken: { sheet: string; name: string }
+  pivotNameEmpty: object
+  pivotSourceRows: { source: string }
   // typing into a cell
   headerFormula: { sheet: string; cell: string; table: string }
   validationError: object
@@ -411,6 +416,7 @@ export type EditKey =
   | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
   | 'pivotCantGroup' | 'pivotNotGrouped' | 'pivotGroupedItems' | 'pivotItemsAverage' | 'pivotFormulaRefs' | 'pivotFormulaBad' | 'pivotItemTaken'
   | 'slicerField' | 'slicerNameTaken' | 'timelineField'
+  | 'pivotCut' | 'pivotTableNameTaken' | 'pivotNameEmpty' | 'pivotSourceRows'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 
@@ -438,7 +444,7 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
 
 /** The keys of the messages of `writeKept`'s refusals, which a locale's `messages` holds too; their English text is the `./xlsx/keep` subpath's. */
 export const KEPT_MESSAGE_KEYS: Readonly<Record<keyof KeptMessageParams, 0>> = {
-  keptStrict: 0, keptSheetName: 0, keptFont: 0, keptValidation: 0, keptThreads: 0, keptTableParts: 0, keptLinkKind: 0, keptLinks: 0, keptNoCarrier: 0, keptLayout: 0,
+  keptStrict: 0, keptSheetName: 0, keptFont: 0, keptValidation: 0, keptThreads: 0, keptTableParts: 0, keptSlicers: 0, keptLinkKind: 0, keptLinks: 0, keptNoCarrier: 0, keptLayout: 0,
   keptNoCellCarrier: 0, keptNoPartCarrier: 0, keptUnread: 0, keptNamedSheet: 0, keptSheetParts: 0, keptSourceGone: 0, keptNoRef: 0, keptMovedSheet: 0,
   keptFirstCell: 0, keptTakenApart: 0, keptRulesPivot: 0, keptRulesPart: 0, keptRulesPrefixes: 0, keptRulesBar: 0, keptNamespace: 0, keptRelPrefix: 0,
   keptAlternate: 0, keptDrawingMoved: 0, keptDrawingDeleted: 0, keptCut: 0, keptCacheSheet: 0, keptSparkline: 0, keptWouldMove: 0,

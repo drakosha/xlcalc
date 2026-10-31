@@ -58,6 +58,7 @@ function tableProps(t: TableProps): Props {
   if (t.errorText !== undefined) p.push(['DisplayErrorString', true], ['ErrorString', t.errorText])
   if (t.emptyText !== undefined) p.push(['DisplayNullString', true], ['NullString', t.emptyText])
   if (t.multipleFilters !== undefined) p.push(['AllowMultipleFilters', t.multipleFilters])
+  if (t.mergeLabels !== undefined) p.push(['MergeLabels', t.mergeLabels])
   if (t.customLists !== undefined) p.push(['SortUsingCustomLists', t.customLists])
   if (t.valuesRow !== undefined) p.push(['ShowValuesRow', t.valuesRow])
   return p
