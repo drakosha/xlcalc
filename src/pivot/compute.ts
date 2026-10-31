@@ -10,7 +10,7 @@ import { Tally } from './aggregate.js'
 import { Batch, fieldFormulas, itemFormulas, prefetch, settled, sumsOf, withCalculatedItems } from './calculated.js'
 import { recordItems } from './group.js'
 import { groupedItems } from './items.js'
-import { byValue, itemPasses, valuesKept } from './filters.js'
+import { byValue, itemPasses, valuesKept, partitionRecords } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
 import type { PivotComputeOptions, PivotPageResult, PivotResult } from './result.js'
 import { branches, nodesOf, sortBranches, type Branch } from './tree.js'
@@ -115,13 +115,17 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const count = cache.records?.length ?? 0
 
   // the records every field's items let through
-  let alive: number[] = []
-  for (let r = 0; r < count; r++) if (shown.every((s, f) => !s || (at[f][r] >= 0 && s[at[f][r]]))) alive.push(r)
+  let alive = partitionRecords(count, shown.some(Boolean) ? r => shown.every((s, f) => !s || (at[f][r] >= 0 && s[at[f][r]])) : undefined)
 
+  let recordOrder: Int32Array | undefined
   const cacheItem = (f: number, p: number) => table.fields[f].items?.[p]?.item ?? p
   const addRecord = (t: Tally, m: number, r: number) => {
     const [n, filled, error] = readers[m](r)
-    t.add(n, filled, error, error ? [...rowFields.map(f => cacheItem(f, at[f][r])), ...colFields.map(f => cacheItem(f, at[f][r])), r] : undefined)
+    if (error && !recordOrder) {
+      recordOrder = new Int32Array(count)
+      alive.forEach((id, i) => (recordOrder![id] = i))
+    }
+    t.add(n, filled, error, error ? [...rowFields.map(f => cacheItem(f, at[f][r])), ...colFields.map(f => cacheItem(f, at[f][r])), recordOrder![r]] : undefined)
   }
   const tally = (rs: readonly number[], v: number) => {
     const t = new Tally()

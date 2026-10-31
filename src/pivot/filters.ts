@@ -167,3 +167,20 @@ export function valuesKept(f: PivotFilter, values: readonly CellValue[]): boolea
   }
   return kept
 }
+
+/** Records kept by a filter, partitioned from both ends as Excel does before grouping them. */
+export function partitionRecords(count: number, accepts?: (r: number) => boolean): number[] {
+  const records = Array.from({ length: count }, (_, r) => r)
+  if (!accepts) return records
+  let front = 0, back = count - 1
+  while (front <= back) {
+    if (accepts(records[front])) { front++; continue }
+    while (front < back && !accepts(records[back])) back--
+    if (front >= back) break
+    const t = records[front]
+    records[front++] = records[back]
+    records[back--] = t
+  }
+  records.length = front
+  return records
+}

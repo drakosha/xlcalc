@@ -6,6 +6,11 @@ import { buildPivotCases as numeric } from '../bench/coverage/pivot/numeric-orde
 import { buildPivotCases as showCases } from '../bench/coverage/pivot/show.js'
 import { buildPivotCases as calcCases } from '../bench/coverage/pivot/calc.js'
 import { buildPivotCases as calcHeld } from '../bench/coverage/pivot/calc-held.js'
+import { buildPivotCases as filtered } from '../bench/coverage/pivot/filter.js'
+import { buildPivotCases as filteredHeld } from '../bench/coverage/pivot/filter-held.js'
+import { buildPivotCases as showItems } from '../bench/coverage/pivot/show-items.js'
+import { buildPivotCases as numericHeld } from '../bench/coverage/pivot/numeric-held.js'
+import { buildPivotCases as numericHeldExact } from '../bench/coverage/pivot/numeric-held-exact.js'
 import { buildPivotCases as basicCases } from '../bench/coverage/pivot/basic.js'
 import type { PivotAnswer } from '../bench/coverage/pivot/cases.js'
 
@@ -16,7 +21,12 @@ for (const [set, cases] of [
   ['show', showCases().filter(c => ['normal', 'index', 'run-percent-region'].includes(c.id))],
   ['calc', calcCases()],
   ['calc-held', calcHeld()],
-  ['basic', basicCases().filter(c => c.id === 'price-product' || c.id === 'two-values-columns')],
+  ['basic', basicCases()],
+  ['filter', filtered()],
+  ['filter-held', filteredHeld()],
+  ['show-items', showItems()],
+  ['numeric-held', numericHeld()],
+  ['numeric-held-exact', numericHeldExact()],
 ] as const) {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, root), 'utf8')).answers as Record<string, PivotAnswer>
   for (const c of cases)
