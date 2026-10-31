@@ -87,7 +87,7 @@ describe('slicers and timelines with xlcalc/pivot', () => {
       expect(s.getValues('P', 'A3:B8')).toEqual(ALL)
       expect(s.editStructure(REGION).ok).toBe(true)
       const b = s.getBook()
-      expect(b.sheets[1].slicers).toEqual([{ caption: 'Region', name: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G17' } }])
+      expect(b.sheets[1].slicers).toEqual([{ caption: 'Region', name: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G16', toOffset: [0, 47_625] } }])
       // East, North, South, West: in the slicer's order, as Excel saves them
       expect(b.slicerCaches![0].items).toEqual([{ item: 2 }, { item: 0 }, { item: 1 }, { item: 3 }])
       expect(s.editStructure(choose(0)).ok).toBe(true)
@@ -188,7 +188,8 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     throws(choose(), 'op.cache.items: expected at least one item chosen')
     throws({ op: 'editSlicer', slicer: 'Region', cache: { items: [{ item: 9 }] } }, 'op.cache.items[0].item: expected an integer from 0 to 3, got 9')
     throws({ op: 'editSlicer', slicer: 'Nope' }, 'op.slicer: unknown slicer "Nope"')
-    throws({ op: 'editSlicer', slicer: 'Region', set: { name: 'X' } }, "op.set: a slicer's name and cache are not edited")
+    throws({ op: 'editSlicer', slicer: 'Region', set: { cache: 'X' } }, "op.set.cache: a slicer's cache is not edited")
+    throws({ op: 'editSlicer', slicer: 'Region', set: { name: '' } }, "op.set.name: expected a slicer's name, got an empty string")
     throws({ op: 'addSlicer', sheet: 'P', slicer: {}, cache: 'Slicer_Nope' }, 'op.cache: unknown slicer cache "Slicer_Nope"')
     throws({ op: 'editTimeline', timeline: 'Region' }, 'op.timeline: unknown timeline "Region"')
     // the new slicer named after its field again: Region 1
@@ -196,6 +197,45 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     expect(again.ok && again.book.sheets[1].slicers!.map((x) => x.name)).toEqual(['Region', 'Region 1'])
     const two = editStructure(again.ok ? again.book : b, { op: 'deleteSlicer', slicer: 'Region' })
     expect(two.ok && two.book.slicerCaches!.length).toBe(1)
+  })
+
+  it("places a new slicer and timeline right of the PivotTable at Excel's size for each over the sheet's columns and rows", () => {
+    const placed = (book: BookInput) => {
+      const r = editStructure(book, REGION)
+      const t = r.ok && editStructure(r.book, { op: 'addTimeline', sheet: 'P', timeline: {}, cache: { field: 'Date', pivots: [PT1] } })
+      if (!t || !t.ok) throw new Error('not added')
+      return [t.book.sheets[1].slicers![0].place, t.book.sheets[1].timelines![0].place]
+    }
+    // 2 by 2.76 inches over columns of 64 pixels and rows of 15 points; 3.65 by 1.5 inches
+    expect(placed(fresh())).toEqual([
+      { from: 'D3', to: 'G16', toOffset: [0, 47_625] },
+      { from: 'D3', to: 'I10', toOffset: [285_750, 38_100] },
+    ])
+    // E twenty digits wide (140 pixels), row 4 hidden, row 5 of 45 points
+    const b = fresh()
+    const wide = { ...b, sheets: b.sheets.map((x, i) => (i === 1 ? { ...x, columns: { E: { width: 20 } }, rows: { '4': { hidden: true }, '5': { height: 45 } } } : x)) }
+    expect(placed(wide)[0]).toEqual({ from: 'D3', to: 'E15', toOffset: [1_219_200, 47_625] })
+  })
+
+  it('renames a slicer and a timeline as Excel does: any name but an empty one or one taken by either in any case, the caption kept', () => {
+    const r = editStructure(fresh(), REGION)
+    const t = r.ok && editStructure(r.book, { op: 'addTimeline', sheet: 'P', timeline: {}, cache: { field: 'Date', pivots: [PT1] } })
+    if (!t || !t.ok) throw new Error('not added')
+    const renamed = (op: StructureOp) => {
+      const x = editStructure(t.book, op)
+      return x.ok ? [...x.book.sheets[1].slicers!, ...x.book.sheets[1].timelines!].map((y) => [y.name, y.caption, y.cache]) : x.message
+    }
+    // Excel takes a space, a cell's address, its cache's name and 256 characters (the set slicer-objects)
+    for (const name of [' ', 'A1', 'Slicer_Region', 'L'.repeat(256), "A/B [x]*?:'"]) expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name } })).toEqual([[name, 'Region', 'Slicer_Region'], ['Date', 'Date', 'NativeTimeline_Date']])
+    expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name: 'DATE' } })).toBe('the name "DATE" is already used by a slicer or a timeline')
+    expect(renamed({ op: 'editTimeline', timeline: 'Date', set: { name: 'region' } })).toBe('the name "region" is already used by a slicer or a timeline')
+    expect(renamed({ op: 'editTimeline', timeline: 'Date', set: { name: 'Dates', caption: 'When' } })).toEqual([['Region', 'Region', 'Slicer_Region'], ['Dates', 'When', 'NativeTimeline_Date']])
+    // its own name in another case
+    expect(renamed({ op: 'editSlicer', slicer: 'Region', set: { name: 'REGION' } })).toEqual([['REGION', 'Region', 'Slicer_Region'], ['Date', 'Date', 'NativeTimeline_Date']])
+    // a slicer without a caption keeps the one it showed, its old name
+    const bare = { ...t.book, sheets: t.book.sheets.map((sh, i) => (i === 1 ? { ...sh, slicers: sh.slicers!.map(({ caption: _, ...x }) => x) } : sh)) }
+    const b = editStructure(bare, { op: 'editSlicer', slicer: 'Region', set: { name: 'R' } })
+    expect(b.ok && b.book.sheets[1].slicers).toEqual([{ name: 'R', caption: 'Region', cache: 'Slicer_Region', place: { from: 'D3', to: 'G16', toOffset: [0, 47_625] } }])
   })
 
   it("a table's slicer is added over its cache, changed in its look and order, and deleted; its choice stays the table's AutoFilter", () => {

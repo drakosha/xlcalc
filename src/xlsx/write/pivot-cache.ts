@@ -8,6 +8,7 @@ import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
 import { counted, countedIf, give, HEAD, MAIN, REL, X14 } from './xml.js'
 import { pivotAreaXml } from './pivot-area.js'
+import { fileDate } from '../pivot-dates.js'
 
 /** A cache value as an item or a record holds it: `m` missing, `n` number, `s` text, `b` boolean, `e` error, `d` date. */
 export function valueXml(v: PivotValue, more = ''): string {
@@ -16,7 +17,7 @@ export function valueXml(v: PivotValue, more = ''): string {
   if (typeof v === 'string') return `<s v="${escapeAttr(v)}"${more}/>`
   if (typeof v === 'boolean') return `<b v="${v ? 1 : 0}"${more}/>`
   if ('error' in v) return `<e v="${ERROR_TEXT[v.error]}"${more}/>`
-  return `<d v="${v.date}"${more}/>`
+  return `<d v="${fileDate(v.date)}"${more}/>`
 }
 
 type Kind = 'blank' | 'number' | 'string' | 'boolean' | 'error' | 'date'
@@ -56,7 +57,7 @@ function sharedItems(f: PivotCacheField, column: PivotValue[]): string {
   if (number) a += ' containsNumber="1"'
   if (number && integer) a += ' containsInteger="1"'
   if (number && min !== undefined) a += ` minValue="${min}" maxValue="${max}"`
-  if (date && minDate !== undefined) a += ` minDate="${minDate}" maxDate="${maxDate}"`
+  if (date && minDate !== undefined) a += ` minDate="${fileDate(String(minDate))}" maxDate="${fileDate(String(maxDate))}"`
   if (longText) a += ' longText="1"'
   if (!f.items) return `<sharedItems${a}/>`
   const unused = new Set(f.unused ?? [])
@@ -64,7 +65,7 @@ function sharedItems(f: PivotCacheField, column: PivotValue[]): string {
 }
 
 /** A number or date of a group's range: `startNum` or `startDate`. */
-const rangeValue = (name: 'start' | 'end', v: number | { date: string } | undefined) => (v === undefined ? '' : typeof v === 'number' ? ` ${name}Num="${v}"` : ` ${name}Date="${v.date}"`)
+const rangeValue = (name: 'start' | 'end', v: number | { date: string } | undefined) => (v === undefined ? '' : typeof v === 'number' ? ` ${name}Num="${v}"` : ` ${name}Date="${fileDate(v.date)}"`)
 
 /** A field's `fieldGroup`: its parent and base, the range of dates or numbers, the manual groups, the groups' labels. */
 function fieldGroupXml(g: PivotFieldGroup): string {

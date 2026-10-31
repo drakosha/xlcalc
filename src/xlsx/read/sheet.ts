@@ -30,6 +30,7 @@ import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
 import { readSheetView } from '../view.js'
 import { readProtection } from '../protection.js'
+import { framesOnly } from './slicers.js'
 import { colorOf } from '../styles/color.js'
 
 export interface SheetSource {
@@ -50,6 +51,8 @@ export interface SheetSource {
   formulas: FormulaOptions
   /** The scopes of its PivotTables' conditional formats, by priority. */
   pivotRules: Map<number, PivotRuleScope>
+  /** Its drawing part, when it has one. */
+  drawing?: string
 }
 
 export interface SheetRead {
@@ -277,7 +280,8 @@ function autoFilter(tail: string, sheet: SheetInput, issues: Issues): AutoFilter
 function features(head: string, tail: string, src: SheetSource, issues: Issues) {
   const outside = head + tail
   const where = { sheet: src.name }
-  for (const [local, code, message] of FEATURES) if (has(outside, local)) issues.add(code, message, where)
+  // a drawing of slicers and timelines alone is theirs (`readSheetPivots`)
+  for (const [local, code, message] of FEATURES) if (has(outside, local) && !(local === 'drawing' && framesOnly(src.drawing))) issues.add(code, message, where)
   // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
   const fp = attrsAt(head, 'sheetFormatPr')
   const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84

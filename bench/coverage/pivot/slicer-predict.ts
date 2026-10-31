@@ -65,14 +65,15 @@ function changed(book: BookInput, name: string, f: (p: NonNullable<BookInput['sh
 }
 
 /** The operations a session plays after the PivotTables are made: slicers, timelines, their choices and settings, the phases' ends. */
-const slicing = (o: PivotOp) => 'slicer' in o || 'select' in o || 'timeline' in o || 'read' in o || 'deleteSlicer' in o || 'slicerSettings' in o || 'link' in o
+const slicing = (o: PivotOp) =>
+  'slicer' in o || 'select' in o || 'timeline' in o || 'read' in o || 'deleteSlicer' in o || 'slicerSettings' in o || 'link' in o || 'slicerGet' in o || 'slicerSet' in o || 'timelineSet' in o || 'protect' in o || 'unprotect' in o
 
 /**
  * The book of a case before its slicers: the PivotTables and fields its first operations make, over a book of `basic`
  * for the rows of `sales`, or played on the engine alone (`drive.ts`) for other rows; the page field, its item and the
  * hidden items put in the model.
  */
-async function start(c: PivotCase): Promise<{ book: BookInput; rest: PivotOp[] }> {
+export async function start(c: PivotCase): Promise<{ book: BookInput; rest: PivotOp[] }> {
   const dates = 'rows' in c.ops[0] && c.ops[0].rows[0] === 'Date'
   const own = (o: PivotOp) => 'pages' in o || 'page' in o || 'hide' in o
   let book = c.data ? drive({ ...c, ops: c.ops.filter((o) => !slicing(o) && !own(o)) }).at(-1)!.book : await load(dates ? 'date-rows' : 'price-sum')

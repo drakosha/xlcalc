@@ -1,0 +1,368 @@
+{
+ "rename": {
+  "op 4": {
+   "Name": "Regions",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-taken": {
+  "op 4": {
+   "refused": "taken"
+  },
+  "op 5": {
+   "Name": "Slicer_Product",
+   "Caption": "Product",
+   "SlicerCache.Name": "Slicer_Product",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 6": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-case": {
+  "op 4": {
+   "refused": "taken"
+  },
+  "op 5": {
+   "Name": "Slicer_Product",
+   "Caption": "Product",
+   "SlicerCache.Name": "Slicer_Product",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-timeline": {
+  "op 4": {
+   "refused": "taken"
+  },
+  "op 5": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 7": {
+   "Name": "Dates",
+   "Caption": "Date",
+   "SlicerCache.Name": "NativeTimeline_Date",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-empty": {
+  "op 3": {
+   "refused": "empty"
+  },
+  "op 4": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 5": {
+   "refused": "empty"
+  },
+  "op 6": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 7": {
+   "refused": "unknown"
+  }
+ },
+ "rename-long": {
+  "op 4": {
+   "Name": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 5": {
+   "refused": "long"
+  },
+  "op 6": {
+   "Name": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 7": {
+   "refused": "unknown"
+  }
+ },
+ "rename-chars": {
+  "op 4": {
+   "Name": "A/B [x]*?:'",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-cache": {
+  "op 6": {
+   "Name": "Slicer_Region",
+   "Caption": "Product",
+   "SlicerCache.Name": "Slicer_Product",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 8": {
+   "Name": "Slicer_Product",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-caption": {
+  "op 5": {
+   "Name": "Regions",
+   "Caption": "Pick a region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "rename-range-name": {
+  "op 4": {
+   "Name": "A1",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  },
+  "op 6": {
+   "Name": "Total",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "locked-off": {
+  "op 6": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": false,
+   "DisableMoveResizeUI": false
+  },
+  "op 7": {
+   "Name": "Timeline_Date",
+   "Caption": "Date",
+   "SlicerCache.Name": "NativeTimeline_Date",
+   "Locked": false,
+   "DisableMoveResizeUI": false
+  }
+ },
+ "move-off": {
+  "op 6": {
+   "Name": "Slicer_Region",
+   "Caption": "Region",
+   "SlicerCache.Name": "Slicer_Region",
+   "Locked": true,
+   "DisableMoveResizeUI": true
+  },
+  "op 7": {
+   "Name": "Timeline_Date",
+   "Caption": "Date",
+   "SlicerCache.Name": "NativeTimeline_Date",
+   "Locked": true,
+   "DisableMoveResizeUI": true
+  }
+ },
+ "place-one": {
+  "op 3": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  }
+ },
+ "place-timeline": {
+  "op 3": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  }
+ },
+ "place-three": {
+  "op 3": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 5": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 7": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  }
+ },
+ "place-mixed": {
+  "op 3": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 5": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 7": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 9": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  }
+ },
+ "place-other-sheet": {
+  "op 3": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 5": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  },
+  "op 7": {
+   "Top": null,
+   "Left": null,
+   "Width": null,
+   "Height": null,
+   "Shape.TopLeftCell.Row": null,
+   "Shape.TopLeftCell.Column": null,
+   "Shape.BottomRightCell.Row": null,
+   "Shape.BottomRightCell.Column": null,
+   "place": {
+    "from": "D3",
+    "to": "G17"
+   }
+  }
+ }
+}

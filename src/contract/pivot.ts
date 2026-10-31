@@ -488,7 +488,10 @@ export interface Slicer {
   rowHeight?: number
   /** The first item shown, by its index. */
   startItem?: number
+  /** Locked (Format Slicer, Properties): a protected sheet moves and sizes it only with Edit objects allowed; true by default. */
   locked?: boolean
+  /** Disable resizing and moving (Format Slicer, Position and Layout): false by default. */
+  positionLocked?: boolean
 }
 
 /** A timeline's level: years, quarters, months, days. */
@@ -526,6 +529,8 @@ export interface Timeline {
   scrollPosition?: string
   /** `TimeSlicerStyleLight1` and the others. */
   style?: string
+  /** Locked, as a slicer's: true by default. */
+  locked?: boolean
 }
 
 /**
@@ -603,14 +608,14 @@ export type PivotTablePatch = { [K in Exclude<keyof PivotTable, 'name' | 'cache'
 /** An edit of a PivotTable's field (`PivotTablePatch.fields`): the index of its cache field, and its fields set as in `PivotTablePatch`. */
 export type PivotFieldPatch = { field: number } & { [K in keyof PivotField]?: PivotField[K] | null }
 
-/** The fields of a slicer an edit sets (`editSlicer`), as in `PivotTablePatch`. */
-export type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null }
+/** The fields of a slicer an edit sets (`editSlicer`), as in `PivotTablePatch`; a `name` renames it, as Slicer Settings' Name does. */
+export type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null } & { name?: string }
 
 /** The fields of a slicer's cache an edit sets (`editSlicer`): the PivotTables it filters, the items chosen, their order and display. */
 export type SlicerCachePatch = { [K in 'pivots' | 'items' | 'sort' | 'customListSort' | 'noData' | 'showMissing']?: SlicerCache[K] | null }
 
-/** The fields of a timeline an edit sets (`editTimeline`), as in `PivotTablePatch`. */
-export type TimelinePatch = { [K in Exclude<keyof Timeline, 'name' | 'cache'>]?: Timeline[K] | null }
+/** The fields of a timeline an edit sets (`editTimeline`), as in `PivotTablePatch`; a `name` renames it. */
+export type TimelinePatch = { [K in Exclude<keyof Timeline, 'name' | 'cache'>]?: Timeline[K] | null } & { name?: string }
 
 /** The fields of a timeline's cache an edit sets (`editTimeline`): the PivotTables it filters and the dates chosen. */
 export type TimelineCachePatch = { [K in 'pivots' | 'selection']?: TimelineCache[K] | null }

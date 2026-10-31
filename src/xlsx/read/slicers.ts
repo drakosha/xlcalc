@@ -1,7 +1,7 @@
 /**
  * Slicers (Excel 2010's x14 parts) and timelines (Excel 2013's x15 parts): the workbook's caches with the field, the
  * PivotTables they filter by sheet and name, the items chosen and the dates; a sheet's slicers and timelines with their
- * captions, styles and places, which the sheet's drawing holds by name.
+ * captions, styles, and places and locks, which the sheet's drawing holds by name.
  */
 import type { DrawingPlace, PivotRef, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { formatAddress } from '../../model.js'
@@ -66,12 +66,27 @@ export function readTimelineCache(xml: string, ctx: SlicerContext): TimelineCach
   return c
 }
 
-/** The places of a drawing's frames by the name of the slicer or timeline each shows. */
-export function drawingPlaces(xml: string | undefined): Map<string, DrawingPlace> {
-  const out = new Map<string, DrawingPlace>()
+/** A frame of a slicer (`sle:slicer`) or a timeline (`tsle:timeslicer`) in an anchor's body, as Excel puts each in `mc:AlternateContent`. */
+const frameOf = (body: string) => element(body, 'slicer') ?? element(body, 'timeslicer')
+
+/** A drawing that shows only slicers and timelines: every anchor a frame of one, which the model holds; false without the drawing. */
+export function framesOnly(xml: string | undefined): boolean {
+  if (xml === undefined) return false
+  return ['twoCellAnchor', 'oneCellAnchor', 'absoluteAnchor'].every((local) => elements(xml, local).every((a) => frameOf(a.body ?? '') !== undefined))
+}
+
+/** A frame of a drawing: its place, and false when it is not locked (`clientData fLocksWithSheet="0"`, `Slicer.Locked` off). */
+export interface DrawnFrame {
+  place: DrawingPlace
+  locked?: false
+}
+
+/** The frames of a drawing by the name of the slicer or timeline each shows. */
+export function drawnFrames(xml: string | undefined): Map<string, DrawnFrame> {
+  const out = new Map<string, DrawnFrame>()
   for (const anchor of elements(xml ?? '', 'twoCellAnchor')) {
     const body = anchor.body ?? ''
-    const shown = element(body, 'slicer') ?? element(body, 'timeslicer')
+    const shown = frameOf(body)
     if (!shown) continue
     const corner = (local: string): [string, [number, number]] => {
       const b = element(body, local)?.body ?? ''
@@ -83,26 +98,27 @@ export function drawingPlaces(xml: string | undefined): Map<string, DrawingPlace
     const place: DrawingPlace = { from, to }
     if (fromOffset[0] || fromOffset[1]) place.fromOffset = fromOffset
     if (toOffset[0] || toOffset[1]) place.toOffset = toOffset
-    out.set(attrText(attributes(shown.attrs).name), place)
+    const free = !flag(attributes(element(body, 'clientData')?.attrs ?? '').fLocksWithSheet, true)
+    out.set(attrText(attributes(shown.attrs).name), free ? { place, locked: false } : { place })
   }
   return out
 }
 
-export function readSlicers(xml: string, places: Map<string, DrawingPlace>): Slicer[] {
-  return elements(xml, 'slicer').map((e) => {
-    const a = attributes(e.attrs)
-    const s = take<Slicer>({ name: '', cache: '' }, a, 'name cache caption showCaption:t style columnCount=columns:n rowHeight:n startItem:p lockedPosition=locked:f')
-    const place = places.get(s.name)
-    return place ? { ...s, place } : s
-  })
+/** A slicer or a timeline with its frame's place and lock. */
+function framed<T extends { name: string; place?: DrawingPlace; locked?: boolean }>(x: T, frames: Map<string, DrawnFrame>): T {
+  const f = frames.get(x.name)
+  return f ? { ...x, place: f.place, ...(f.locked === false ? { locked: false } : {}) } : x
 }
 
-export function readTimelines(xml: string, places: Map<string, DrawingPlace>): Timeline[] {
+export function readSlicers(xml: string, frames: Map<string, DrawnFrame>): Slicer[] {
+  return elements(xml, 'slicer').map((e) => framed(take<Slicer>({ name: '', cache: '' }, attributes(e.attrs), 'name cache caption showCaption:t style columnCount=columns:n rowHeight:n startItem:p lockedPosition=positionLocked:f'), frames))
+}
+
+export function readTimelines(xml: string, frames: Map<string, DrawnFrame>): Timeline[] {
   return elements(xml, 'timeline').map((e) => {
     const a = attributes(e.attrs)
     const t = take<Timeline>({ name: '', cache: '' }, a, 'name cache caption showHeader:t showSelectionLabel:t showTimeLevel=showLevel:t showHorizontalScrollbar=showScrollbar:t scrollPosition style')
     for (const k of ['level', 'selectionLevel'] as const) if (a[k] !== undefined) t[k] = LEVELS[Number(a[k])] ?? 'months'
-    const place = places.get(t.name)
-    return place ? { ...t, place } : t
+    return framed(t, frames)
   })
 }

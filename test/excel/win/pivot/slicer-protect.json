@@ -1,0 +1,1721 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 24.7
+ },
+ "cases": [
+  {
+   "id": "no-objects-no-pivots-locked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "protect": "P",
+     "objects": false,
+     "pivots": false
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "no-objects-no-pivots-unlocked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "protect": "P",
+     "objects": false,
+     "pivots": false
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "no-objects-pivots-locked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "protect": "P",
+     "objects": false,
+     "pivots": true
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "no-objects-pivots-unlocked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "protect": "P",
+     "objects": false,
+     "pivots": true
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "objects-no-pivots-locked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "protect": "P",
+     "objects": true,
+     "pivots": false
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "objects-no-pivots-unlocked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "protect": "P",
+     "objects": true,
+     "pivots": false
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "objects-pivots-locked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "protect": "P",
+     "objects": true,
+     "pivots": true
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  },
+  {
+   "id": "objects-pivots-unlocked",
+   "ops": [
+    {
+     "rows": [
+      "Region"
+     ]
+    },
+    {
+     "value": {
+      "field": "Price"
+     }
+    },
+    {
+     "slicer": "Region",
+     "name": "Slicer_Region"
+    },
+    {
+     "timeline": "Date",
+     "name": "Timeline_Date"
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Locked",
+     "to": false
+    },
+    {
+     "protect": "P",
+     "objects": true,
+     "pivots": true
+    },
+    {
+     "select": "Slicer_Region",
+     "items": [
+      "West"
+     ]
+    },
+    {
+     "timelineSet": "Timeline_Date",
+     "from": 45352,
+     "to": 45657
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Top",
+     "to": 30
+    },
+    {
+     "slicerSet": "Slicer_Region",
+     "prop": "Width",
+     "to": 180
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Top",
+     "to": 250
+    },
+    {
+     "slicerSet": "Timeline_Date",
+     "prop": "Width",
+     "to": 300
+    },
+    {
+     "slicerGet": "Slicer_Region",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "slicerGet": "Timeline_Date",
+     "get": [
+      "Top",
+      "Width"
+     ]
+    },
+    {
+     "unprotect": "P"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "no-objects-no-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9eeaa3ff4b1130c9",
+  "no-objects-no-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cdc88256fab56fb7",
+  "no-objects-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 edbb4b1ce117eb1d",
+  "no-objects-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7de08389dfe3f1b6",
+  "objects-no-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cdcc08d01a5d3e32",
+  "objects-no-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 98f05f9df96fceca",
+  "objects-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2d4968e3e320290e",
+  "objects-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ae9344bc889fd865"
+ },
+ "answers": {
+  "no-objects-no-pivots-locked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 11": [
+       [
+        10,
+        150
+       ],
+       []
+      ],
+      "op 12": [
+       [
+        10,
+        150
+       ],
+       []
+      ]
+     },
+     "errors": [
+      "op 5: -2146827284 Cannot edit PivotTable on protected sheet.",
+      "op 6: -2146233087 Exception calling \"InvokeMember\" with \"5\" argument(s): \"Cannot edit PivotTable on protected sheet.\"",
+      "op 7: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 8: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 9: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 10: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password."
+     ],
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "error": "-2146233087 You cannot call a method on a null-valued expression."
+      }
+     }
+    }
+   ]
+  },
+  "no-objects-no-pivots-unlocked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 13": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 14": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "errors": [
+      "op 7: -2146827284 Cannot edit PivotTable on protected sheet.",
+      "op 8: -2146233087 Exception calling \"InvokeMember\" with \"5\" argument(s): \"Cannot edit PivotTable on protected sheet.\""
+     ],
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "error": "-2146233087 You cannot call a method on a null-valued expression."
+      }
+     }
+    }
+   ]
+  },
+  "no-objects-pivots-locked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 6": {
+       "e": 0
+      },
+      "op 11": [
+       [
+        10,
+        150
+       ],
+       []
+      ],
+      "op 12": [
+       [
+        10,
+        150
+       ],
+       []
+      ]
+     },
+     "errors": [
+      "op 7: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 8: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 9: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password.",
+      "op 10: -2147024809 You cannot use this command on a protected sheet. To use this command, you must first unprotect the sheet (Review tab, Protect group, Unprotect Sheet button). You may be prompted for a password."
+     ],
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "timeline": [
+        45352,
+        45657,
+        2
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "no-objects-pivots-unlocked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 8": {
+       "e": 0
+      },
+      "op 13": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 14": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "timeline": [
+        45352,
+        45657,
+        2
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "objects-no-pivots-locked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 11": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 12": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "errors": [
+      "op 5: -2146827284 Cannot edit PivotTable on protected sheet.",
+      "op 6: -2146233087 Exception calling \"InvokeMember\" with \"5\" argument(s): \"Cannot edit PivotTable on protected sheet.\""
+     ],
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "error": "-2146233087 You cannot call a method on a null-valued expression."
+      }
+     }
+    }
+   ]
+  },
+  "objects-no-pivots-unlocked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B9",
+       "area": "A3:B9",
+       "body": "B4:B9",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         138.65
+        ],
+        [
+         "North",
+         237.79999999999998
+        ],
+        [
+         "South",
+         348.4
+        ],
+        [
+         "West",
+         301.91
+        ],
+        [
+         "(blank)",
+         null
+        ],
+        [
+         "Grand Total",
+         1026.76
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "East",
+         "138.65"
+        ],
+        [
+         "North",
+         "237.8"
+        ],
+        [
+         "South",
+         "348.4"
+        ],
+        [
+         "West",
+         "301.91"
+        ],
+        [
+         "(blank)",
+         ""
+        ],
+        [
+         "Grand Total",
+         "1026.76"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 13": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 14": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "errors": [
+      "op 7: -2146827284 Cannot edit PivotTable on protected sheet.",
+      "op 8: -2146233087 Exception calling \"InvokeMember\" with \"5\" argument(s): \"Cannot edit PivotTable on protected sheet.\""
+     ],
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        true,
+        true
+       ],
+       [
+        "North",
+        true,
+        true
+       ],
+       [
+        "South",
+        true,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "error": "-2146233087 You cannot call a method on a null-valued expression."
+      }
+     }
+    }
+   ]
+  },
+  "objects-pivots-locked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 6": {
+       "e": 0
+      },
+      "op 11": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 12": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "timeline": [
+        45352,
+        45657,
+        2
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "objects-pivots-unlocked": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B4",
+       "area": "A3:B4",
+       "body": "B4",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         null
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Price"
+        ],
+        [
+         "Grand Total",
+         ""
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Price",
+      "op 2": "Slicer_Region",
+      "op 3": "Timeline_Date",
+      "op 8": {
+       "e": 0
+      },
+      "op 13": [
+       [
+        30,
+        180
+       ],
+       []
+      ],
+      "op 14": [
+       [
+        250,
+        300
+       ],
+       []
+      ]
+     },
+     "slicers": {
+      "Slicer_Region": [
+       [
+        "East",
+        false,
+        true
+       ],
+       [
+        "North",
+        false,
+        true
+       ],
+       [
+        "South",
+        false,
+        true
+       ],
+       [
+        "West",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        false,
+        false
+       ]
+      ],
+      "Timeline_Date": {
+       "timeline": [
+        45352,
+        45657,
+        2
+       ]
+      }
+     }
+    }
+   ]
+  }
+ }
+}

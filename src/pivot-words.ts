@@ -1,6 +1,7 @@
 /**
  * The functions' words of a PivotTable in the workbook's language, which name a value field (`Sum of Amount`, `Сумма по
- * полю Amount`) and a subtotal: in the root, as an edit of a PivotTable names its value fields without `xlcalc/pivot`.
+ * полю Amount`) and a subtotal, and a blank item: in the root, as an edit of a PivotTable names its value fields and a
+ * slicer labels its items without `xlcalc/pivot`.
  */
 import type { PivotFunction } from './contract.js'
 
@@ -21,3 +22,6 @@ export const RU_FUNCTIONS: Record<PivotFunction, string> = {
 
 /** A value field's name by its function and its source field's name, in the workbook's language (en-US's for a locale without its own). */
 export const valueFieldName = (fn: PivotFunction, field: string, locale?: string) => (locale === 'ru-RU' ? `${RU_FUNCTIONS[fn]} по полю ${field}` : `${EN_FUNCTIONS[fn]} of ${field}`)
+
+/** A blank item's label in the workbook's language: `(blank)`, `(пусто)` in ru-RU. */
+export const blankWord = (locale?: string) => (locale === 'ru-RU' ? '(пусто)' : '(blank)')

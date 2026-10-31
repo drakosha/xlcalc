@@ -101,4 +101,41 @@ describe('writeKept over a file with a PivotTable', () => {
     const back = (await readXlsx(out.data)).book
     expect([back.slicerCaches, back.sheets.find((x) => x.name === 'Renamed')?.slicers?.[0].caption]).toEqual([book.slicerCaches, 'Regions'])
   })
+
+  it("writes a slicer's and a timeline's Locked and a slicer's Disable resizing and moving as Excel saved them, a renamed one's anchor again, the others byte for byte", async () => {
+    // Excel set Locked off on both (locked-off) and Disable resizing and moving on the slicer (move-off), the set slicer-objects
+    const unlocked = new Uint8Array(readFileSync('test/excel/win/pivot/slicer-objects/locked-off.xlsx'))
+    const fixed = new Uint8Array(readFileSync('test/excel/win/pivot/slicer-objects/move-off.xlsx'))
+    const own = (b: BookInput) => b.sheets.flatMap((x) => [...(x.slicers ?? []), ...(x.timelines ?? [])]).map((x) => [x.name, x.locked, 'positionLocked' in x ? x.positionLocked : 'none'])
+    expect(own((await readXlsx(unlocked)).book)).toEqual([['Slicer_Region', false, 'none'], ['Timeline_Date', false, 'none']])
+    expect(own((await readXlsx(fixed)).book)).toEqual([['Slicer_Region', undefined, true], ['Timeline_Date', undefined, 'none']])
+    for (const data of [unlocked, fixed]) expect((await writeKept(data, { book: (await openKept(data)).book })).data).toEqual(data)
+    // the slicer with both, Locked off and Disable resizing and moving on; the timeline renamed with neither
+    const s = createSession((await openKept(fixed)).book)
+    expect(s.editStructure({ op: 'editSlicer', slicer: 'Slicer_Region', set: { locked: false } }).ok).toBe(true)
+    expect(s.editStructure({ op: 'editTimeline', timeline: 'Timeline_Date', set: { name: 'Dates' } }).ok).toBe(true)
+    const out = await writeKept(fixed, s.getSnapshot())
+    expect(own((await readXlsx(out.data)).book)).toEqual([['Slicer_Region', false, true], ['Dates', undefined, 'none']])
+    const drawing = (await partsOf(out.data)).get('xl/drawings/drawing1.xml')!
+    expect(drawing.match(/<xdr:clientData[^>]*>/g)).toEqual(['<xdr:clientData fLocksWithSheet="0"/>', '<xdr:clientData/>'])
+    expect(drawing).toContain('<a:graphicFrameLocks noMove="1" noResize="1"/>')
+    expect(drawing).toContain('<tsle:timeslicer name="Dates"/>')
+    // a change of the timeline alone leaves the slicer's anchor as the file has it
+    const t = createSession((await openKept(fixed)).book)
+    t.editStructure({ op: 'editTimeline', timeline: 'Timeline_Date', set: { locked: false } })
+    const one = (await partsOf((await writeKept(fixed, t.getSnapshot())).data)).get('xl/drawings/drawing1.xml')!
+    const slicerAnchor = (x: string) => /<xdr:twoCellAnchor\b(?:(?!<\/xdr:twoCellAnchor>)[\s\S])*?sle:slicer[\s\S]*?<\/xdr:twoCellAnchor>/.exec(x)![0]
+    expect(slicerAnchor(one)).toBe(slicerAnchor((await partsOf(fixed)).get('xl/drawings/drawing1.xml')!))
+  })
+
+  it('Excel for Windows opened the files writeXlsx and writeKept wrote with these locks, read them as written and saved them so (the set slicer-locks)', async () => {
+    const answers = (JSON.parse(readFileSync('test/excel/win/pivot/slicer-locks.json', 'utf8')) as { answers: Record<string, { phases: { results?: Record<string, [unknown[], unknown]> }[] }> }).answers
+    const WRITTEN = [['Slicer_Region', false, true], ['Products', true, false], ['Timeline_Date', false, null], ['Timeline_When', true, null]]
+    for (const how of ['xlsx', 'kept']) {
+      expect([how, Object.values(answers[how].phases.at(-1)!.results!).map((x) => x[0])]).toEqual([how, WRITTEN])
+      const saved = (await readXlsx(readFileSync(`test/excel/win/pivot/slicer-locks/${how}.xlsx`))).book
+      const own = saved.sheets.flatMap((x) => [...(x.slicers ?? []).map((y) => [y.name, y.locked !== false, !!y.positionLocked]), ...(x.timelines ?? []).map((y) => [y.name, y.locked !== false, null])])
+      expect([how, own.sort()]).toEqual([how, [...WRITTEN].sort()])
+    }
+  })
 })

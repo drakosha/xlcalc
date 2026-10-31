@@ -156,8 +156,48 @@ export function blankColumns2(): SourceColumn[] {
   return names.map((name, j) => ({ name, values: rows.map((r) => (r[j] === undefined ? undefined : { value: r[j] as string | number | boolean })) }))
 }
 
+/**
+ * The rows of `labels`, made by hand for the captions of a slicer's items: N (whole numbers to sum), Text (with an empty
+ * cell), Money (`$#,##0.00`), Pct (`0.0%`), Plain (General numbers: fractions, large and small, negative), Thou
+ * (`#,##0`), Day (dates in the short date, built-in 14), Long (dates in `d mmmm yyyy`), Time (times of day in `h:mm`),
+ * When (dates with times in the short date and time, built-in 22), Clock (times of day without a date among dates with
+ * times and a date alone, in `h:mm`), Flag (booleans), Err (errors among numbers), Mixed (numbers and text).
+ */
+export function labelColumns(): SourceColumn[] {
+  const d = (y: number, m: number, day: number, h = 0, min = 0) => serial(y, m, day, h, min)
+  const cols: [string, (CellInput | undefined)[]][] = [
+    ['N', [1, 2, 3, 4, 5, 6, 7, 8].map((value) => ({ value }))],
+    ['Text', ['North', 'south', undefined, 'East', 'North', 'West', 'Zeta', 'east'].map((value) => (value === undefined ? undefined : { value }))],
+    ['Money', [1234.5, -20, 0, 1234.5, 99.999, 1e6, 0.5, -0.25].map((value) => ({ value, numberFormat: '$#,##0.00' }))],
+    ['Pct', [0.125, 0.5, 1, -0.05, 0.3333, 0.125, 2, 0].map((value) => ({ value, numberFormat: '0.0%' }))],
+    ['Plain', [1.5, 1234567.891, 0.000012, -2, 1 / 3, 1e20, 123456789012, 1.5].map((value) => ({ value }))],
+    ['Thou', [1234, 1234567, -987, 0, 1234, 12.6, 5, 999999].map((value) => ({ value, numberFormat: '#,##0' }))],
+    ['Day', [d(2024, 1, 15), d(2024, 3, 5), d(2025, 12, 31), undefined, d(2024, 1, 15), d(2025, 2, 1), d(2024, 11, 9), d(2025, 7, 4)].map((value) => (value === undefined ? undefined : { value, numberFormat: 14 }))],
+    ['Long', [d(2024, 1, 15), d(2024, 3, 5), d(2025, 12, 31), d(2024, 5, 1), d(2024, 1, 15), d(2025, 2, 1), d(2024, 11, 9), d(2025, 7, 4)].map((value) => ({ value, numberFormat: 'd mmmm yyyy' }))],
+    ['Time', [0.25, 0.5, 0.75, 0.0625, 0.25, 0.999, 0.5, 13.5 / 24].map((value) => ({ value, numberFormat: 'h:mm' }))],
+    ['When', [d(2024, 1, 15, 9, 30), d(2024, 3, 5, 18, 0), d(2025, 12, 31, 23, 59), d(2024, 1, 15), d(2024, 1, 15, 9, 30), d(2025, 2, 1, 0, 1), d(2024, 11, 9, 12), d(2025, 7, 4, 7, 5)].map((value) => ({ value, numberFormat: 22 }))],
+    ['Clock', [0.354, d(2024, 1, 15, 9, 30), 0.5, d(2024, 1, 15), 0.354, d(2025, 2, 1, 18), 0, 0.75].map((value) => ({ value, numberFormat: 'h:mm' }))],
+    ['Flag', [true, false, true, true, false, true, false, true].map((value) => ({ value }))],
+    ['Err', [{ value: 1 }, { formula: 'NA()' }, { formula: '1/0' }, { value: 2 }, { formula: 'NA()' }, { value: 1 }, { formula: 'SQRT(-1)' }, undefined]],
+    ['Mixed', [{ value: 10 }, { value: 'ten' }, { value: 2.5 }, { value: '10' }, { value: 10 }, { value: true }, { value: 'Ten' }, undefined]],
+  ]
+  return cols.map(([name, values]) => ({ name, values }))
+}
+
+/**
+ * The rows of `errors`, made by hand for the order of errors among a field's items: N (whole numbers to sum), and Err
+ * with each of Excel's seven classic errors once, out of their order, among numbers, text, a boolean and a blank.
+ */
+export function errorColumns(): SourceColumn[] {
+  const errs: (CellInput | undefined)[] = [{ formula: '#VALUE!' }, { value: 2 }, { formula: '#N/A' }, { formula: '#NULL!' }, { value: 'x' }, { formula: '#NUM!' }, { formula: '#REF!' }, undefined, { formula: '#DIV/0!' }, { value: true }, { formula: '#NAME?' }, { value: 1 }]
+  return [
+    { name: 'N', values: errs.map((_, k) => ({ value: k + 1 })) },
+    { name: 'Err', values: errs },
+  ]
+}
+
 /** The data sets by name. */
-export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2, kinds: kindColumns, kinds2: kindColumns2 }
+export const DATA: Record<string, () => SourceColumn[]> = { ...ORDER_DATA, 'filter-numeric': () => filterOrderColumns(), 'filter-errors': () => filterOrderColumns(true), 'numeric-order': numericOrderColumns, 'numeric-held': () => numericOrderColumns(0xbb67ae85), sales: salesColumns, stock: () => variantColumns(STOCK), shapes: shapeColumns, blanks: blankColumns, blanks2: blankColumns2, kinds: kindColumns, kinds2: kindColumns2, labels: labelColumns, errors: errorColumns }
 
 /** The range the columns take on `D`, from A1 with the header row (`A1:J49`). */
 export const sourceRange = (cols: SourceColumn[]): string => `A1:${formatAddress(cols[0].values.length, cols.length - 1)}`

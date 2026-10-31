@@ -1,0 +1,936 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 21.6
+ },
+ "cases": [
+  {
+   "id": "plain",
+   "data": "errors",
+   "ops": [
+    {
+     "rows": [
+      "Err"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    }
+   ]
+  },
+  {
+   "id": "up",
+   "data": "errors",
+   "ops": [
+    {
+     "rows": [
+      "Err"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "sort": "Err",
+     "order": "ascending"
+    }
+   ]
+  },
+  {
+   "id": "down",
+   "data": "errors",
+   "ops": [
+    {
+     "rows": [
+      "Err"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "sort": "Err",
+     "order": "descending"
+    }
+   ]
+  },
+  {
+   "id": "slicer",
+   "data": "errors",
+   "ops": [
+    {
+     "rows": [
+      "Err"
+     ]
+    },
+    {
+     "value": {
+      "field": "N"
+     }
+    },
+    {
+     "slicer": "Err",
+     "name": "Slicer_Err"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "plain": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 6d50f3f3bae25a59",
+  "up": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 bc40ce873b30f818",
+  "down": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 77f7b0f99b2cc901",
+  "slicer": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 837907f19c7f315a"
+ },
+ "answers": {
+  "plain": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         1,
+         12
+        ],
+        [
+         2,
+         2
+        ],
+        [
+         "x",
+         5
+        ],
+        [
+         "TRUE",
+         10
+        ],
+        [
+         "#N/A",
+         3
+        ],
+        [
+         "#NUM!",
+         6
+        ],
+        [
+         "#NAME?",
+         11
+        ],
+        [
+         "#REF!",
+         7
+        ],
+        [
+         "#VALUE!",
+         1
+        ],
+        [
+         "#DIV/0!",
+         9
+        ],
+        [
+         "#NULL!",
+         4
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Grand Total",
+         78
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1",
+         "12"
+        ],
+        [
+         "2",
+         "2"
+        ],
+        [
+         "x",
+         "5"
+        ],
+        [
+         "TRUE",
+         "10"
+        ],
+        [
+         "#N/A",
+         "3"
+        ],
+        [
+         "#NUM!",
+         "6"
+        ],
+        [
+         "#NAME?",
+         "11"
+        ],
+        [
+         "#REF!",
+         "7"
+        ],
+        [
+         "#VALUE!",
+         "1"
+        ],
+        [
+         "#DIV/0!",
+         "9"
+        ],
+        [
+         "#NULL!",
+         "4"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Grand Total",
+         "78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A16",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of N"
+     }
+    }
+   ]
+  },
+  "up": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         1,
+         12
+        ],
+        [
+         2,
+         2
+        ],
+        [
+         "x",
+         5
+        ],
+        [
+         "TRUE",
+         10
+        ],
+        [
+         "#N/A",
+         3
+        ],
+        [
+         "#NUM!",
+         6
+        ],
+        [
+         "#NAME?",
+         11
+        ],
+        [
+         "#REF!",
+         7
+        ],
+        [
+         "#VALUE!",
+         1
+        ],
+        [
+         "#DIV/0!",
+         9
+        ],
+        [
+         "#NULL!",
+         4
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Grand Total",
+         78
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1",
+         "12"
+        ],
+        [
+         "2",
+         "2"
+        ],
+        [
+         "x",
+         "5"
+        ],
+        [
+         "TRUE",
+         "10"
+        ],
+        [
+         "#N/A",
+         "3"
+        ],
+        [
+         "#NUM!",
+         "6"
+        ],
+        [
+         "#NAME?",
+         "11"
+        ],
+        [
+         "#REF!",
+         "7"
+        ],
+        [
+         "#VALUE!",
+         "1"
+        ],
+        [
+         "#DIV/0!",
+         "9"
+        ],
+        [
+         "#NULL!",
+         "4"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Grand Total",
+         "78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A16",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of N"
+     }
+    }
+   ]
+  },
+  "down": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "#NULL!",
+         4
+        ],
+        [
+         "#DIV/0!",
+         9
+        ],
+        [
+         "#VALUE!",
+         1
+        ],
+        [
+         "#REF!",
+         7
+        ],
+        [
+         "#NAME?",
+         11
+        ],
+        [
+         "#NUM!",
+         6
+        ],
+        [
+         "#N/A",
+         3
+        ],
+        [
+         "TRUE",
+         10
+        ],
+        [
+         "x",
+         5
+        ],
+        [
+         2,
+         2
+        ],
+        [
+         1,
+         12
+        ],
+        [
+         "Grand Total",
+         78
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "#NULL!",
+         "4"
+        ],
+        [
+         "#DIV/0!",
+         "9"
+        ],
+        [
+         "#VALUE!",
+         "1"
+        ],
+        [
+         "#REF!",
+         "7"
+        ],
+        [
+         "#NAME?",
+         "11"
+        ],
+        [
+         "#NUM!",
+         "6"
+        ],
+        [
+         "#N/A",
+         "3"
+        ],
+        [
+         "TRUE",
+         "10"
+        ],
+        [
+         "x",
+         "5"
+        ],
+        [
+         "2",
+         "2"
+        ],
+        [
+         "1",
+         "12"
+        ],
+        [
+         "Grand Total",
+         "78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A16",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of N"
+     }
+    }
+   ]
+  },
+  "slicer": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B16",
+       "area": "A3:B16",
+       "body": "B4:B16",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         1,
+         12
+        ],
+        [
+         2,
+         2
+        ],
+        [
+         "x",
+         5
+        ],
+        [
+         "TRUE",
+         10
+        ],
+        [
+         "#N/A",
+         3
+        ],
+        [
+         "#NUM!",
+         6
+        ],
+        [
+         "#NAME?",
+         11
+        ],
+        [
+         "#REF!",
+         7
+        ],
+        [
+         "#VALUE!",
+         1
+        ],
+        [
+         "#DIV/0!",
+         9
+        ],
+        [
+         "#NULL!",
+         4
+        ],
+        [
+         "(blank)",
+         8
+        ],
+        [
+         "Grand Total",
+         78
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of N"
+        ],
+        [
+         "1",
+         "12"
+        ],
+        [
+         "2",
+         "2"
+        ],
+        [
+         "x",
+         "5"
+        ],
+        [
+         "TRUE",
+         "10"
+        ],
+        [
+         "#N/A",
+         "3"
+        ],
+        [
+         "#NUM!",
+         "6"
+        ],
+        [
+         "#NAME?",
+         "11"
+        ],
+        [
+         "#REF!",
+         "7"
+        ],
+        [
+         "#VALUE!",
+         "1"
+        ],
+        [
+         "#DIV/0!",
+         "9"
+        ],
+        [
+         "#NULL!",
+         "4"
+        ],
+        [
+         "(blank)",
+         "8"
+        ],
+        [
+         "Grand Total",
+         "78"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A16",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of N",
+      "op 2": "Slicer_Err"
+     },
+     "slicers": {
+      "Slicer_Err": [
+       [
+        "1",
+        true,
+        true
+       ],
+       [
+        "2",
+        true,
+        true
+       ],
+       [
+        "x",
+        true,
+        true
+       ],
+       [
+        "TRUE",
+        true,
+        true
+       ],
+       [
+        "#N/A",
+        true,
+        true
+       ],
+       [
+        "#NUM!",
+        true,
+        true
+       ],
+       [
+        "#NAME?",
+        true,
+        true
+       ],
+       [
+        "#REF!",
+        true,
+        true
+       ],
+       [
+        "#VALUE!",
+        true,
+        true
+       ],
+       [
+        "#DIV/0!",
+        true,
+        true
+       ],
+       [
+        "#NULL!",
+        true,
+        true
+       ],
+       [
+        "(blank)",
+        true,
+        true
+       ]
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

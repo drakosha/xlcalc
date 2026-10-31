@@ -18,7 +18,7 @@ import type { Archive } from '../zip/read.js'
 import { relsOf, type Rel } from './package.js'
 import { readPivotCache } from './pivot-cache.js'
 import { readPivotTable } from './pivot-table.js'
-import { drawingPlaces, readSlicerCache, readSlicers, readTimelineCache, readTimelines } from './slicers.js'
+import { drawnFrames, readSlicerCache, readSlicers, readTimelineCache, readTimelines } from './slicers.js'
 
 /** The parts of the workbook's PivotTables, read once for its sheets: the caches by id, number formats, differential formats. */
 export interface PivotBook {
@@ -77,7 +77,7 @@ export async function readPivotCaches(archive: Archive, wb: string, rels: Rel[],
 export const pivotTableParts = (archive: Archive, sheetRels: Rel[]): Promise<(string | undefined)[]> => Promise.all(sheetRels.filter((x) => x.kind === 'pivotTable' && !x.external).map((r) => archive.text(r.target)))
 
 /** A sheet's PivotTables (from the texts of its parts), slicers and timelines, set on `sheet`. */
-export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheetRels: Rel[], parts: (string | undefined)[], book: PivotBook, issues: Issues) {
+export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheetRels: Rel[], parts: (string | undefined)[], drawing: string | undefined, book: PivotBook, issues: Issues) {
   const where = { sheet: sheet.name }
   for (const xml of parts) {
     const id = Number(attrsAt(xml ?? '', 'pivotTableDefinition').cacheId)
@@ -91,12 +91,11 @@ export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheet
   }
   const slicers = sheetRels.filter((x) => (x.kind === 'slicer' || x.kind === 'timeline') && !x.external)
   if (!slicers.length) return
-  const drawing = sheetRels.find((x) => x.kind === 'drawing' && !x.external)
-  const places = drawingPlaces(drawing && (await archive.text(drawing.target)))
+  const frames = drawnFrames(drawing)
   for (const r of slicers) {
     const xml = (await archive.text(r.target)) ?? ''
-    if (r.kind === 'slicer') (sheet.slicers ??= []).push(...readSlicers(xml, places))
-    else (sheet.timelines ??= []).push(...readTimelines(xml, places))
+    if (r.kind === 'slicer') (sheet.slicers ??= []).push(...readSlicers(xml, frames))
+    else (sheet.timelines ??= []).push(...readTimelines(xml, frames))
   }
 }
 

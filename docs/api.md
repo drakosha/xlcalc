@@ -1450,10 +1450,11 @@ interface BookInput {
 
 ### `BookLayout`
 
-A workbook without the cells of its sheets ([`Session.getLayout`](#session)): its styles, names and settings, and each sheet's layout.
+A workbook without the cells of its sheets ([`Session.getLayout`](#session)): its styles, names and settings, and each sheet's
+layout; its slicers' caches with each item's label.
 
 ```ts
-type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
+type BookLayout = Omit<Book, 'sheets' | 'slicerCaches'> & { sheets: SheetLayout[]; slicerCaches?: SlicerCacheLayout[] }
 ```
 
 ### `BookSnapshot`
@@ -5677,7 +5678,10 @@ interface Slicer {
   rowHeight?: number
   /** The first item shown, by its index. */
   startItem?: number
+  /** Locked (Format Slicer, Properties): a protected sheet moves and sizes it only with Edit objects allowed; true by default. */
   locked?: boolean
+  /** Disable resizing and moving (Format Slicer, Position and Layout): false by default. */
+  positionLocked?: boolean
 }
 ```
 
@@ -5709,6 +5713,14 @@ interface SlicerCache {
 }
 ```
 
+### `SlicerCacheLayout`
+
+A slicer's cache as [`Session.getLayout`](#session) gives it: its items with their labels.
+
+```ts
+type SlicerCacheLayout = Omit<SlicerCache, 'items'> & { items?: SlicerItemLayout[] }
+```
+
 ### `SlicerCachePatch`
 
 The fields of a slicer's cache an edit sets (`editSlicer`): the PivotTables it filters, the items chosen, their order and display.
@@ -5717,12 +5729,23 @@ The fields of a slicer's cache an edit sets (`editSlicer`): the PivotTables it f
 type SlicerCachePatch = { [K in 'pivots' | 'items' | 'sort' | 'customListSort' | 'noData' | 'showMissing']?: SlicerCache[K] | null }
 ```
 
-### `SlicerPatch`
+### `SlicerItemLayout`
 
-The fields of a slicer an edit sets (`editSlicer`), as in [`PivotTablePatch`](#pivottablepatch).
+A slicer's item with its label, the text of its button as Excel shows it in the workbook's locale: the item's value
+in its field's number format, a date in the short date (and time), `(blank)` (`(пусто)` in ru-RU), the locale's words
+for a boolean and an error, a group's name. It is worked out from the pivot cache on each call and is not part of the
+workbook: empty when the pivot cache does not hold the item.
 
 ```ts
-type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null }
+type SlicerItemLayout = NonNullable<SlicerCache['items']>[number] & { label: string }
+```
+
+### `SlicerPatch`
+
+The fields of a slicer an edit sets (`editSlicer`), as in [`PivotTablePatch`](#pivottablepatch); a `name` renames it, as Slicer Settings' Name does.
+
+```ts
+type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null } & { name?: string }
 ```
 
 ### `SpecialCells`
@@ -5961,13 +5984,13 @@ type StructureOp =
    * (`Region`, `Region 1`…) without `slicer.name`, and a new cache's `Slicer_Region`.
    */
   | { op: 'addSlicer'; sheet: string; slicer: Omit<Slicer, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
-  /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its look and place. */
+  /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its name, look and place. */
   | { op: 'editSlicer'; slicer: string; set?: SlicerPatch; cache?: SlicerCachePatch }
   /** Deletes the slicer; its cache goes with its last slicer. */
   | { op: 'deleteSlicer'; slicer: string }
   /** Excel's Insert Timeline, as `addSlicer`, of a date field. */
   | { op: 'addTimeline'; sheet: string; timeline: Omit<Timeline, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
-  /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its level, look and place. */
+  /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its name, level, look and place. */
   | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }
   /** Deletes the timeline; its cache goes with its last timeline. */
   | { op: 'deleteTimeline'; timeline: string }
@@ -6193,6 +6216,8 @@ interface Timeline {
   scrollPosition?: string
   /** `TimeSlicerStyleLight1` and the others. */
   style?: string
+  /** Locked, as a slicer's: true by default. */
+  locked?: boolean
 }
 ```
 
@@ -6232,10 +6257,10 @@ type TimelineLevel = 'years' | 'quarters' | 'months' | 'days'
 
 ### `TimelinePatch`
 
-The fields of a timeline an edit sets (`editTimeline`), as in [`PivotTablePatch`](#pivottablepatch).
+The fields of a timeline an edit sets (`editTimeline`), as in [`PivotTablePatch`](#pivottablepatch); a `name` renames it.
 
 ```ts
-type TimelinePatch = { [K in Exclude<keyof Timeline, 'name' | 'cache'>]?: Timeline[K] | null }
+type TimelinePatch = { [K in Exclude<keyof Timeline, 'name' | 'cache'>]?: Timeline[K] | null } & { name?: string }
 ```
 
 ### `TimePeriodFormat`
