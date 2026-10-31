@@ -193,10 +193,11 @@ export type StructureOp =
   /**
    * Excel's Insert Calculated Field: the cache's calculated field `name`, a formula over fields by name as Excel's dialog
    * takes it (`=Amount/Qty`, `='Unit Price'*Qty`), added, or its formula changed when the cache has it (Modify); a null
-   * `formula` deletes it, and it leaves every PivotTable of the cache. Adding does not place it on Values
-   * (`editPivotTable` does).
+   * `formula` deletes it, and it leaves every PivotTable of the cache. Added with `values`, it goes on the Values of
+   * the PivotTable `pivot`, last, with Sum and the name Excel's dialog gives it (`Sum of Unit`), in the same step;
+   * without, it is placed by `editPivotTable`, as Excel's object model adds it.
    */
-  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null }
+  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null; values?: boolean }
   /**
    * Excel's Insert Calculated Item of the field `field`: the item `name`, a formula over the field's items as Excel's
    * dialog takes it (`=East+West`, `='North'*2`), added on every PivotTable of the cache, or its formula changed when
