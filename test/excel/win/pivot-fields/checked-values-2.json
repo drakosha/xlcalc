@@ -1,0 +1,190 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 126
+ },
+ "cases": [
+  {
+   "id": "Text",
+   "fields": [
+    {
+     "name": "Text",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Years",
+   "fields": [
+    {
+     "name": "Years",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Bool",
+   "fields": [
+    {
+     "name": "Bool",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Err",
+   "fields": [
+    {
+     "name": "Err",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "Blank",
+   "fields": [
+    {
+     "name": "Blank",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "NumDate",
+   "fields": [
+    {
+     "name": "NumDate",
+     "to": "values"
+    }
+   ]
+  },
+  {
+   "id": "dates-columns",
+   "fields": [
+    {
+     "name": "Years",
+     "to": "columns"
+    }
+   ]
+  },
+  {
+   "id": "month-columns",
+   "fields": [
+    {
+     "name": "OneMonth",
+     "to": "columns"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "Text": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Text",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "Years": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Years",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "Bool": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Bool",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "Err": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Err",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "Blank": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "Blank",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "NumDate": {
+   "rows": [],
+   "columns": [],
+   "values": [
+    {
+     "field": "NumDate",
+     "function": "count"
+    }
+   ],
+   "groups": []
+  },
+  "dates-columns": {
+   "rows": [],
+   "columns": [
+    "Years (Years)",
+    "Quarters (Years)",
+    "Months (Years)",
+    "Years"
+   ],
+   "values": [],
+   "groups": [
+    {
+     "field": "Months (Years)",
+     "base": "Years",
+     "by": "months"
+    },
+    {
+     "field": "Quarters (Years)",
+     "base": "Years",
+     "by": "quarters"
+    },
+    {
+     "field": "Years (Years)",
+     "base": "Years",
+     "by": "years"
+    }
+   ]
+  },
+  "month-columns": {
+   "rows": [],
+   "columns": [
+    "OneMonth"
+   ],
+   "values": [],
+   "groups": []
+  }
+ }
+}
