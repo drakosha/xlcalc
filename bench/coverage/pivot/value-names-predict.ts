@@ -1,5 +1,5 @@
 /**
- * The engine's prediction of the sets `value-names` and `value-names-reopen` in a language, written before Excel's
+ * The engine's prediction of the sets `value-names`, `value-names-reopen` and `period-names` in a language, written before Excel's
  * answers are read: each case played on the engine alone (`drive.ts`), from the rows or from the book `value-names`
  * saved, read; for each phase the cells of `PT1`'s area. Run: `npx tsx bench/coverage/pivot/value-names-predict.ts <set> [ru-RU]`; it writes
  * `bench/coverage/pivot/<set>[.ru-RU].predicted.json`. The comparison with Excel: `test/pivot-value-names.test.ts`.
