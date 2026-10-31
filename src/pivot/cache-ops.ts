@@ -23,7 +23,7 @@ import { groupedItems } from './items.js'
 import type { PivotCacheEdit, PivotCacheOp } from './hook.js'
 import { itemKey } from './items.js'
 import { cacheDate, dateSerial, itemText, numberOf } from './values.js'
-import { valueFieldName } from '../pivot-words.js'
+import { defaultValueName } from '../pivot-words.js'
 import { placedValues } from '../structure/pivot-values.js'
 
 /** A refusal's message, thrown out of an operation. */
@@ -324,7 +324,7 @@ function calculatedField(w: Work, name: unknown, formula: unknown, values: unkno
 function onValues(w: Work, f: number) {
   const t = w.tables[w.own]
   const list = t.values ?? []
-  const base = valueFieldName('sum', w.cache.fields[f].name, w.locale)
+  const base = defaultValueName('sum', w.cache.fields[f].name, w.locale)
   const taken = new Set(list.map((d) => caseKey(d.name ?? '')))
   let name = base
   for (let k = 2; taken.has(caseKey(name)); k++) name = `${base}${k}`

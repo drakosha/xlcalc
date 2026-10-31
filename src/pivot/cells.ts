@@ -3,7 +3,7 @@
  * workbook's model alone (its place, its saved lines, its fields and value fields): no engine, so that a host's sheet
  * knows its menus and filter buttons without loading `xlcalc/pivot`.
  */
-import type { BookInput, PivotAxisField, PivotCell, PivotCells, PivotItemRef, PivotTable } from '../contract.js'
+import type { PivotAxisField, PivotCell, PivotCells, PivotItemRef, PivotTable, SheetInput } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkString, object } from '../input/basic.js'
@@ -12,7 +12,8 @@ import { hasCell, parseRange } from '../structure/area.js'
 import { pivotParts } from './area.js'
 import { pivotFrame, placeParts, savedLines, type LineView } from './frame.js'
 
-type Sheets = Pick<BookInput, 'sheets'>
+/** A workbook or `getLayout()`'s, of which the PivotTables are read. */
+type Sheets = { sheets: readonly Pick<SheetInput, 'name' | 'pivotTables'>[] }
 
 /** The path of a line's items up to its field `k`, the value fields left out (`value` names them). */
 const pathOf = (fields: readonly PivotAxisField[], line: LineView | undefined, k = (line?.items.length ?? 0) - 1): PivotItemRef[] =>

@@ -5,7 +5,7 @@
  * and its filters. Its cells are the sheet's.
  */
 import type { ConditionalStyle, NumberFormat, PivotArea, PivotCache, PivotDataField, PivotField, PivotFilter, PivotLayout, PivotLine, PivotTable } from '../../contract.js'
-import { valueFieldName } from '../../pivot-words.js'
+import { defaultValueName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
 import { counted, countedIf, give, HEAD, MAIN, X14, X15 } from './xml.js'
@@ -92,7 +92,7 @@ function dataFieldXml(d: PivotDataField, c: PivotCache, w: PivotWriting): string
   const show = d.showAs ?? 'normal'
   const x14 = SHOW_X14.has(show)
   const base = d.baseItem === undefined ? 0 : typeof d.baseItem === 'number' ? d.baseItem : BASE_ITEM[d.baseItem]
-  const name = d.name ?? valueFieldName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', w.locale)
+  const name = d.name ?? defaultValueName(d.function ?? 'sum', c.fields[d.field]?.name ?? '', w.locale)
   const a =
     ` name="${escapeAttr(name)}" fld="${d.field}"` +
     (d.function && d.function !== 'sum' ? ` subtotal="${d.function}"` : '') +
