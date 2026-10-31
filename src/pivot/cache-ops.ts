@@ -24,6 +24,7 @@ import type { PivotCacheEdit, PivotCacheOp } from './hook.js'
 import { itemKey } from './items.js'
 import { cacheDate, dateSerial, itemText, numberOf } from './values.js'
 import { valueFieldName } from '../pivot-words.js'
+import { placedValues } from '../structure/pivot-values.js'
 
 /** A refusal's message, thrown out of an operation. */
 class Refused extends Error {
@@ -319,7 +320,7 @@ function calculatedField(w: Work, name: unknown, formula: unknown, values: unkno
   }
 }
 
-/** The field `f` on the Values of the PivotTable the operation names, last, with Sum and its default name made unique. */
+/** The field `f` on the Values of the PivotTable the operation names, last, with Sum and its default name made unique, Σ Values placed. */
 function onValues(w: Work, f: number) {
   const t = w.tables[w.own]
   const list = t.values ?? []
@@ -327,7 +328,8 @@ function onValues(w: Work, f: number) {
   const taken = new Set(list.map((d) => caseKey(d.name ?? '')))
   let name = base
   for (let k = 2; taken.has(caseKey(name)); k++) name = `${base}${k}`
-  w.tables[w.own] = { ...t, values: [...list, { field: f, name }] }
+  // a second value field brings Σ Values onto the columns, where Excel's dialog puts it
+  w.tables[w.own] = placedValues({ ...t, values: [...list, { field: f, name }] })
 }
 
 const AVERAGES = ['average', 'stdDev', 'stdDevp', 'var', 'varp']

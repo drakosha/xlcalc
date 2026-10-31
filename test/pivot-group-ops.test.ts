@@ -152,6 +152,8 @@ describe('calculated fields and items', () => {
     const before = pt().map((t) => t.values)
     expect(s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'Unit price', formula: '=Price/Qty', values: true }).ok).toBe(true)
     expect(pt()[0].values).toEqual([{ field: 2 }, { field: 4, name: 'Sum of Unit price' }])
+    // Σ Values on the columns, alone there, as Excel's dialog puts it
+    expect(pt()[0].columns).toEqual(['values'])
     // the other PivotTable of the cache does not take it
     expect(pt()[1].values).toEqual(before[1])
     expect(s.getValues('P', 'C3:C4')).toEqual([['Sum of Unit price'], [10]])
@@ -162,6 +164,10 @@ describe('calculated fields and items', () => {
     s.undo()
     expect([pt()[0].values, s.getBook().pivotCaches![0].fields.length]).toEqual([before[0], 4])
     expect(() => s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'U', formula: '=Qty', values: 1 as never })).toThrow('op.values')
+    // over a PivotTable without value fields, its one value field, with no Σ Values
+    expect(s.editStructure({ op: 'editPivotTable', ...P, set: { values: null } }).ok).toBe(true)
+    expect(s.editStructure({ op: 'setPivotCalculatedField', ...P, name: 'Twice', formula: '=Qty*2', values: true }).ok).toBe(true)
+    expect([pt()[0].values, pt()[0].columns ?? []]).toEqual([[{ field: 4, name: 'Sum of Twice' }], []])
     s.close()
   })
 
