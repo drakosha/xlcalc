@@ -14,6 +14,8 @@ import type { PivotCase, PivotOp, PivotPhase, PivotSet } from '../bench/coverage
 import * as filter from '../bench/coverage/pivot/filter.js'
 import * as layout from '../bench/coverage/pivot/layout.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
+import * as show from '../bench/coverage/pivot/show.js'
+import * as showItems from '../bench/coverage/pivot/show-items.js'
 import * as sort from '../bench/coverage/pivot/sort.js'
 import type { BookInput, CellValue, PivotRef } from '../src/contract.js'
 import { createState } from '../src/engine.js'
@@ -42,9 +44,11 @@ const KNOWN: Record<string, string[]> = {
   sort: ['months-down/0/saved', 'months-down/0/source'],
   layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
   refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
+  show: [],
+  'show-items': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, show, 'show-items': showItems }
 
 /** The values of `range` on `sheet` as its cells hold them. */
 function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
@@ -61,6 +65,20 @@ function shown(book: BookInput, sheet: string, range: string): CellValue[][] {
 }
 
 const rounded = (g: CellValue[][]) => g.map((r) => r.map((v) => (typeof v === 'number' ? Number(v.toPrecision(15)) : v)))
+
+/**
+ * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums
+ * whose last bit Excel's order of adding sets (`docs/limitations.md`), which a share carries into its 15th digit.
+ */
+const TOLERANCE: Record<string, number> = { show: 1e-14, 'show-items': 1e-14 }
+
+/** The cells alike: the same values, numbers to 15 significant digits or within `tolerance` of each other. */
+const alike = (got: CellValue[][], want: CellValue[][], tolerance: number) =>
+  got.length === want.length &&
+  got.every((r, i) => r.length === want[i].length && r.every((v, j) => {
+    const w = want[i][j]
+    return JSON.stringify(v) === JSON.stringify(w) || (typeof v === 'number' && typeof w === 'number' && Math.abs(v - w) <= tolerance * Math.abs(w))
+  }))
 
 /** A case's operations by phase: each `read` ends one. */
 function phases(c: PivotCase): PivotOp[][] {
@@ -93,7 +111,7 @@ const book = async (set: string, id: string, k: number, last: number) => {
 }
 
 /** A book's PivotTables refreshed or laid out again, each against the phase's answer. */
-function compared(at: string, b: BookInput, refs: PivotRef[] | undefined, fromSource: boolean, want: PivotPhase): string[] {
+function compared(at: string, b: BookInput, refs: PivotRef[] | undefined, fromSource: boolean, want: PivotPhase, tolerance: number): string[] {
   const values = stateValues(createState(b, clockOptions(CLOCK)))
   const r = refreshPivots(b, refs, values, values.today!(), fromSource)
   const excelRefused = (want.errors ?? []).length > 0
@@ -102,13 +120,14 @@ function compared(at: string, b: BookInput, refs: PivotRef[] | undefined, fromSo
   return Object.entries(want.pivots).flatMap(([name, area]) => {
     if ('error' in area) return []
     const got = rounded(shown(r.book, 'P', area.area))
-    return JSON.stringify(got) === JSON.stringify(rounded(area.values)) ? [] : [`${at} ${name}: ${JSON.stringify(got)} for ${JSON.stringify(area.values)}`]
+    return alike(got, rounded(area.values), tolerance) ? [] : [`${at} ${name}: ${JSON.stringify(got)} for ${JSON.stringify(area.values)}`]
   })
 }
 
 async function differences(set: string): Promise<string[]> {
   const answers = JSON.parse(readFileSync(new URL(`${set}.json`, DIR), 'utf8')) as { answers: Record<string, { phases: PivotPhase[] }> }
   const cases = SETS[set].buildPivotCases()
+  const tolerance = TOLERANCE[set] ?? 0
   const out: string[] = []
   for (const c of cases) {
     const answer = answers.answers[c.id]
@@ -118,14 +137,14 @@ async function differences(set: string): Promise<string[]> {
       const last = answer.phases.length - 1
       const b = await book(set, c.id, k, last)
       if (!b) continue
-      out.push(...compared(`${c.id}/${k}/saved`, b, undefined, false, { ...want, errors: [] }))
-      if (k === 0 && !c.from && !c.file && fresh(ops[0])) out.push(...compared(`${c.id}/0/source`, b, undefined, true, { ...want, errors: [] }))
+      out.push(...compared(`${c.id}/${k}/saved`, b, undefined, false, { ...want, errors: [] }, tolerance))
+      if (k === 0 && !c.from && !c.file && fresh(ops[0])) out.push(...compared(`${c.id}/0/source`, b, undefined, true, { ...want, errors: [] }, tolerance))
       const refs = k > 0 ? refreshed(ops[k]) : null
       const prev = refs && (await book(set, c.id, k - 1, last))
       if (!prev) continue
       // the PivotTables and caches of the phase before, over the source as this phase's book holds it
       const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? prev.sheets.find((x) => x.name === 'P')! : s)), pivotCaches: prev.pivotCaches }
-      out.push(...compared(`${c.id}/${k}/refresh`, source, refs === 'all' ? undefined : refs!, true, want))
+      out.push(...compared(`${c.id}/${k}/refresh`, source, refs === 'all' ? undefined : refs!, true, want, tolerance))
     }
   }
   return out.sort()
