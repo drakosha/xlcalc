@@ -71,7 +71,8 @@ A sheet renamed in a session renames it in the sources of the caches and in the 
 the items the pairs name:
 
 - `pivot_table` is a reference to any cell of the PivotTable, its Filters area too, or a range whose top left cell is
-  one; a cell outside every PivotTable is `#REF!`.
+  one; without a Filters area, the cell just above its top left cell is the PivotTable's too (`A2` of a PivotTable at
+  `A3`, not `B2` or `A1`). A cell outside every PivotTable is `#REF!`.
 - `data_field` is the value field's name (`Sum of Price`) or its source field's (`Price`), in any case. Given as a
   reference to a cell holding the name, it is `#REF!`, as in Excel; text a formula makes (`TEXT(A1,"0")`) is taken.
 - A field is named by its name in the PivotTable, the source's where it has none of its own (a field renamed `Area` is

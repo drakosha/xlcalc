@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type CellValue } from '../src/index.js'
 import { buildPivotCases } from '../bench/coverage/pivot/gpd-1.js'
 import { buildPivotCases as heldCases } from '../bench/coverage/pivot/gpd-held.js'
+import { buildPivotCases as held2Cases } from '../bench/coverage/pivot/gpd-held-2.js'
 import { predictCase } from '../bench/coverage/pivot/gpd-predict.js'
 import type { PivotAnswer, PivotCase } from '../bench/coverage/pivot/cases.js'
 
@@ -26,7 +27,7 @@ async function compared(set: string, cases: PivotCase[]): Promise<[string[], num
   let n = 0
   for (const c of cases) {
     if (c.ops.some((o) => 'external' in o)) continue
-    const got = await predictCase(c)
+    const got = await predictCase(c, set)
     for (const [cell, v] of Object.entries(all[c.id].phases[0].cells ?? {})) {
       if (REFUSED.has(`${c.id} ${cell}`)) continue
       n++
@@ -43,6 +44,10 @@ describe('GETPIVOTDATA against Excel for Windows: the set gpd-1', () => {
 
   it('the held-out set gpd-held, fitted after its run (51 of 55 predicted: an inner field without the one between, subtotals of several functions, a field by its own name alone)', async () => {
     expect(await compared('gpd-held', heldCases())).toEqual([[], 54])
+  }, 60_000)
+
+  it('the held-out set gpd-held-2 over the PivotTables its cases built, fitted after its run (57 of 61 predicted: the cell above the top left of a PivotTable without a Filters area)', async () => {
+    expect(await compared('gpd-held-2', held2Cases())).toEqual([[], 61])
   }, 60_000)
 
   it('over a PivotTable of another workbook: #REF! computed without it, the value the file stores when opened again', () => {
