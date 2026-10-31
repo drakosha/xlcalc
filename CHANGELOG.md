@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.71.3 (2026-10-31)
+
+Fixed:
+
+- A call stopped by its deadline or its signal while it takes the answers of `externals.resolve` that arrived (`settleConnections`, `refreshConnections`, or an edit that takes them on its way) keeps the session as it was: the cells wait again (`#BUSY!`), and the next call takes the answers whole, with all their changes, without asking the host again. A stopped `refreshConnections` keeps the old answers. Before, such a call left part of the cells computed and the next calls returned no changes.
+- A preview (`previewChanges`, `previewCellText` and the other previews) takes no answer that arrived: before, it took them silently, and the next `settleConnections` returned no changes.
+- PivotTables sort equal values by a value field, and items of several custom lists by label, in Excel's order: each value sort starts again from the field's items, and more than 512 items are sorted in two halves, as Excel for Windows does. Before, ties kept the last layout's order and the lists among themselves were ordered otherwise than Excel.
+- PivotTable totals are added in Excel's order and come out as Excel's to the last bit, with filters too; calculated fields keep full precision between their formulas. A share of a total (Show Values As) or a calculated field over it no longer differs from Excel in its 15th digit.
+- Refreshing a large PivotTable with many equal values is faster (no comparison of every pair of equal items).
+
 ## 0.71.2 (2026-10-31)
 
 Fixed:
@@ -27,7 +37,7 @@ Added:
 Changed:
 
 - Breaking: `StructureRefusal`, `CellTextRefusal` and `PasteTextRefusal` gain the code `pivot`; `writeKept` refuses with `slicers` where slicers or timelines were added or deleted. `setCells` and the other edits that throw refuse a cell of a PivotTable's area with an `InputError`.
-- What the model does not hold of a PivotTable is reported by the issues `pivotTable` and `pivotUnread`; the source of a cache whose sheet was deleted is written as Excel writes it, a link to the workbook's own file, and reported (`pivotSourceLinked`).
+- What the model does not hold of a PivotTable is reported by the issue `pivotTable`; the source of a cache whose sheet was deleted is written as Excel writes it, a link to the workbook's own file, and reported by the same issue.
 - The bundle of `xlcalc/xlsx/keep` is under 400 KB minified, up from 340 KB, and `compute` of `xlcalc/core` under 325 KB, up from 320 KB; `xlcalc/pivot` adds under 80 KB to the root.
 
 Checked against Excel for Windows 16.0 on 25 sets of PivotTables Excel built and saved (and in ru-RU, and on Excel for Mac for the display), the engine's answers committed before each set ran; [docs/pivot-tables.md](docs/pivot-tables.md) has the rules and the known differences.
