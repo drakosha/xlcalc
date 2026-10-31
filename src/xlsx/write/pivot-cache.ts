@@ -6,7 +6,7 @@
 import type { PivotCache, PivotCacheField, PivotFieldGroup, PivotValue } from '../../contract.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
-import { HEAD, MAIN } from './xml.js'
+import { give, HEAD, MAIN } from './xml.js'
 import { pivotAreaXml } from './pivot-area.js'
 
 export const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
@@ -74,12 +74,11 @@ function fieldGroupXml(g: PivotFieldGroup): string {
   let x = ''
   if (g.range) {
     const r = g.range
-    const auto = (k: 'autoStart' | 'autoEnd') => (r[k] === false ? ` ${k}="0"` : '')
-    x += `<rangePr${auto('autoStart')}${auto('autoEnd')}${r.by === 'numbers' ? '' : ` groupBy="${r.by}"`}${rangeValue('start', r.start)}${rangeValue('end', r.end)}${r.interval === undefined ? '' : ` groupInterval="${r.interval}"`}/>`
+    x += `<rangePr${give(r, 'autoStart:t autoEnd:t')}${r.by === 'numbers' ? '' : ` groupBy="${r.by}"`}${rangeValue('start', r.start)}${rangeValue('end', r.end)}${give(r, 'groupInterval=interval:n')}/>`
   }
   if (g.discrete) x += `<discretePr count="${g.discrete.length}">${g.discrete.map((i) => `<x v="${i}"/>`).join('')}</discretePr>`
   if (g.items) x += `<groupItems count="${g.items.length}">${g.items.map((v) => valueXml(v)).join('')}</groupItems>`
-  return `<fieldGroup${g.parent === undefined ? '' : ` par="${g.parent}"`}${g.base === undefined ? '' : ` base="${g.base}"`}>${x}</fieldGroup>`
+  return `<fieldGroup${give(g, 'par=parent:n base:n')}>${x}</fieldGroup>`
 }
 
 /** The source as `cacheSource`; `link` is the relationship id of another workbook's path, or of the workbook itself for a source whose sheet is gone. */
@@ -118,10 +117,9 @@ export function pivotCacheXml(c: PivotCache, numFmt: (f: PivotCacheField) => num
   const attrs =
     (saved ? ` r:id="${records}"` : ' saveData="0"') +
     (c.refreshOnLoad || c.stale ? ' refreshOnLoad="1"' : '') +
-    (c.enableRefresh === false ? ' enableRefresh="0"' : '') +
-    ' createdVersion="8" refreshedVersion="8" minRefreshableVersion="3"' +
+    give(c, 'enableRefresh:t createdVersion="8" refreshedVersion="8" minRefreshableVersion="3"') +
     (saved ? ` recordCount="${c.records!.length}"` : '') +
-    (c.retainItems === undefined ? '' : ` missingItemsLimit="${c.retainItems}"`)
+    give(c, 'missingItemsLimit=retainItems:n')
   const ext = `<extLst><ext uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}" xmlns:x14="${X14}"><x14:pivotCacheDefinition${x14 === undefined ? '' : ` pivotCacheId="${x14}"`}/></ext></extLst>`
   return `${HEAD}<pivotCacheDefinition xmlns="${MAIN}" xmlns:r="${REL}"${attrs}>${sourceXml(c, link)}<cacheFields count="${fields.length}">${fields.join('')}</cacheFields>${calculated}${ext}</pivotCacheDefinition>`
 }

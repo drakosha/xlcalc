@@ -8,7 +8,7 @@ import type { ConditionalStyle, NumberFormat, PivotArea, PivotCache, PivotDataFi
 import { valueFieldName } from '../../pivot-words.js'
 import { dateToSerial } from '../../date-serial.js'
 import { escapeAttr } from '../xml/text.js'
-import { HEAD, MAIN } from './xml.js'
+import { give, HEAD, MAIN } from './xml.js'
 import { X14 } from './pivot-cache.js'
 import { fieldIndex, pivotAreaXml, SUBTOTAL_ATTR } from './pivot-area.js'
 
@@ -62,19 +62,14 @@ function fieldXml(f: PivotField, i: number, p: PivotTable, place: ReturnType<typ
   const subs = f.subtotals
   const own = subs !== undefined && subs.length > 0
   const sort = f.sort
-  let a = ''
-  if (f.name !== undefined) a += ` name="${escapeAttr(f.name)}"`
+  let a = give(f, 'name')
   if (axis) a += ` axis="${AXIS[axis]}"`
   if (place.data.has(i)) a += ' dataField="1"'
   if (f.numberFormat !== undefined) a += ` numFmtId="${w.numFmt(f.numberFormat)}"`
   a += formAttrs(f.layout ?? p.layout ?? 'compact')
-  if (f.subtotalTop === false) a += ' subtotalTop="0"'
+  a += give(f, 'subtotalTop:t')
   if (f.showEmpty !== true) a += ' showAll="0"'
-  if (f.subtotalCaption !== undefined) a += ` subtotalCaption="${escapeAttr(f.subtotalCaption)}"`
-  if (f.blankLine) a += ' insertBlankRow="1"'
-  if (f.pageBreak) a += ' insertPageBreak="1"'
-  if (f.multipleItems) a += ' multipleItemSelectionAllowed="1"'
-  if (f.includeNewItems) a += ' includeNewItemsInFilter="1"'
+  a += give(f, 'subtotalCaption insertBlankRow=blankLine:f insertPageBreak=pageBreak:f multipleItemSelectionAllowed=multipleItems:f includeNewItemsInFilter=includeNewItems:f')
   // a field filtered by a value field's values (a value filter, Top 10)
   if (p.filters?.some((x) => x.field === i && x.value !== undefined)) a += ' measureFilter="1"'
   if (sort) a += ` sortType="${sort.order}"`
@@ -144,14 +139,7 @@ function filterXml(f: PivotFilter, id: number, w: PivotWriting): string {
   const label = f.type.startsWith('caption')
   // a label filter keeps its text; a date filter's dates are in its condition alone
   const s = (k: number) => (f.args?.[k] === undefined || !label ? '' : ` stringValue${k + 1}="${escapeAttr(String(f.args[k]))}"`)
-  const a =
-    ` fld="${f.field}"` +
-    (f.value === undefined ? '' : ` iMeasureFld="${f.value}"`) +
-    ` type="${f.type}" evalOrder="${f.order ?? -1}" id="${id}"` +
-    (f.name === undefined ? '' : ` name="${escapeAttr(f.name)}"`) +
-    (f.description === undefined ? '' : ` description="${escapeAttr(f.description)}"`) +
-    s(0) +
-    s(1)
+  const a = give(f, 'fld=field:n iMeasureFld=value:n type') + ` evalOrder="${f.order ?? -1}" id="${id}"` + give(f, 'name description') + s(0) + s(1)
   // a date filter of whole days, as a timeline sets it (Excel 2013's)
   const whole = f.wholeDays ? '<extLst><ext uri="{0605FD5F-26C8-4aeb-8148-2DB25E43C511}" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main"><x15:pivotFilter useWholeDay="1"/></ext></extLst>' : ''
   return `<filter${a}><autoFilter ref="A1"><filterColumn colId="0">${conditionXml(f, w)}</filterColumn></autoFilter>${whole}</filter>`
@@ -162,41 +150,23 @@ export function pivotTableXml(p: PivotTable, c: PivotCache, w: PivotWriting): st
   const layout = p.layout ?? 'compact'
   const place = placeOf(p)
   const cap = p.captions ?? {}
-  const off = (name: string, v: boolean | undefined) => (v === false ? ` ${name}="0"` : '')
-  const on = (name: string, v: boolean | undefined) => (v ? ` ${name}="1"` : '')
   const a =
-    ` name="${escapeAttr(p.name)}" cacheId="${p.cache}"` +
-    (p.valuesOnRows ? ' dataOnRows="1"' : '') +
-    (p.valuesPosition === undefined ? '' : ` dataPosition="${p.valuesPosition}"`) +
-    ' applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1"' +
-    ` dataCaption="${escapeAttr(cap.values ?? 'Values')}"` +
-    (cap.grandTotal === undefined ? '' : ` grandTotalCaption="${escapeAttr(cap.grandTotal)}"`) +
-    (p.errors?.show ? ` showError="1"${p.errors.text === undefined ? '' : ` errorCaption="${escapeAttr(p.errors.text)}"`}` : '') +
-    (p.empty?.show === false ? ' showMissing="0"' : p.empty?.text !== undefined ? ` missingCaption="${escapeAttr(p.empty.text)}"` : '') +
-    ' updatedVersion="8" minRefreshableVersion="3"' +
-    off('showDrill', p.showDrill) +
-    off('enableDrill', p.enableDrill) +
+    give(p, 'name cacheId=cache:n dataOnRows=valuesOnRows:f dataPosition=valuesPosition:n applyNumberFormats="0" applyBorderFormats="0" applyFontFormats="0" applyPatternFormats="0" applyAlignmentFormats="0" applyWidthHeightFormats="1"') +
+    give({ ...cap, values: cap.values ?? 'Values' }, 'dataCaption=values grandTotalCaption=grandTotal') +
+    (p.errors?.show ? ` showError="1"${give(p.errors, 'errorCaption=text')}` : '') +
+    (p.empty?.show === false ? ' showMissing="0"' : give(p.empty ?? {}, 'missingCaption=text')) +
+    give(p, 'updatedVersion="8" minRefreshableVersion="3" showDrill:t enableDrill:t') +
     (p.autofitColumns === false ? '' : ' useAutoFormatting="1"') +
-    off('preserveFormatting', p.preserveFormatting) +
-    ' itemPrintTitles="1" createdVersion="8"' +
-    ` indent="${p.indent ?? 1}"` +
-    off('showHeaders', p.fieldHeaders) +
+    give(p, `preserveFormatting:t itemPrintTitles="1" createdVersion="8" indent="${p.indent ?? 1}" showHeaders=fieldHeaders:t`) +
     (layout === 'compact' ? '' : ' compact="0" compactData="0"') +
-    (p.classicLayout ? ' gridDropZones="1"' : '') +
+    give(p, 'gridDropZones=classicLayout:f') +
     (layout === 'tabular' ? '' : ' outline="1" outlineData="1"') +
-    on('mergeItem', p.mergeLabels) +
-    on('subtotalHiddenItems', p.subtotalHiddenItems) +
-    on('asteriskTotals', p.asteriskTotals) +
-    off('customListSort', p.customListSort) +
-    off('rowGrandTotals', p.grandTotals?.rows) +
-    off('colGrandTotals', p.grandTotals?.columns) +
-    (p.pagesWrap ? ` pageWrap="${p.pagesWrap}"` : '') +
-    on('pageOverThenDown', p.pagesAcrossFirst) +
-    (cap.rowHeader === undefined ? '' : ` rowHeaderCaption="${escapeAttr(cap.rowHeader)}"`) +
-    (cap.columnHeader === undefined ? '' : ` colHeaderCaption="${escapeAttr(cap.columnHeader)}"`) +
-    ` multipleFieldFilters="${p.multipleFieldFilters ? 1 : 0}"`
-  const loc = p.location
-  const location = `<location ref="${loc.range}" firstHeaderRow="${loc.firstHeaderRow}" firstDataRow="${loc.firstDataRow}" firstDataCol="${loc.firstDataColumn}"${loc.pageRows ? ` rowPageCount="${loc.pageRows}"` : ''}${loc.pageColumns ? ` colPageCount="${loc.pageColumns}"` : ''}/>`
+    give(p, 'mergeItem=mergeLabels:f subtotalHiddenItems:f asteriskTotals:f customListSort:t') +
+    give(p.grandTotals ?? {}, 'rowGrandTotals=rows:t colGrandTotals=columns:t') +
+    give(p, 'pageWrap=pagesWrap:p pageOverThenDown=pagesAcrossFirst:f') +
+    give(cap, 'rowHeaderCaption=rowHeader colHeaderCaption=columnHeader') +
+    give(p, 'multipleFieldFilters:b')
+  const location = `<location${give(p.location, 'ref=range:n firstHeaderRow:n firstDataRow:n firstDataCol=firstDataColumn:n rowPageCount=pageRows:p colPageCount=pageColumns:p')}/>`
   const fields = `<pivotFields count="${p.fields.length}">${p.fields.map((f, i) => fieldXml(f, i, p, place, w)).join('')}</pivotFields>`
   const axisFields = (tag: string, list: PivotTable['rows']) => (list?.length ? `<${tag} count="${list.length}">${list.map((f) => `<field x="${fieldIndex(f)}"/>`).join('')}</${tag}>` : '')
   const pages = p.pages?.length ? `<pageFields count="${p.pages.length}">${p.pages.map((g) => `<pageField fld="${g.field}"${g.item === undefined ? '' : ` item="${g.item}"`} hier="-1"/>`).join('')}</pageFields>` : ''
@@ -216,10 +186,10 @@ export function pivotTableXml(p: PivotTable, c: PivotCache, w: PivotWriting): st
         .join('')}</conditionalFormats>`
     : ''
   const st = p.style
-  const style = st ? `<pivotTableStyleInfo${st.name === undefined ? '' : ` name="${escapeAttr(st.name)}"`} showRowHeaders="${st.rowHeaders ? 1 : 0}" showColHeaders="${st.columnHeaders ? 1 : 0}" showRowStripes="${st.rowStripes ? 1 : 0}" showColStripes="${st.columnStripes ? 1 : 0}" showLastColumn="${st.lastColumn ? 1 : 0}"/>` : ''
+  const style = st ? `<pivotTableStyleInfo${give(st, 'name showRowHeaders=rowHeaders:b showColHeaders=columnHeaders:b showRowStripes=rowStripes:b showColStripes=columnStripes:b showLastColumn=lastColumn:b')}/>` : ''
   const filters = p.filters?.length ? `<filters count="${p.filters.length}">${p.filters.map((f, i) => filterXml(f, i + 1, w)).join('')}</filters>` : ''
   // Excel 2010's settings: the Values row hidden (Excel shows it without the flag), Repeat All Item Labels, the alt text
-  const x14 = (p.valuesRow ? '' : ' hideValuesRow="1"') + (p.repeatLabels ? ' fillDownLabelsDefault="1"' : '') + (p.altText?.title === undefined ? '' : ` altText="${escapeAttr(p.altText.title)}"`) + (p.altText?.description === undefined ? '' : ` altTextSummary="${escapeAttr(p.altText.description)}"`)
+  const x14 = (p.valuesRow ? '' : ' hideValuesRow="1"') + give(p, 'fillDownLabelsDefault=repeatLabels:f') + give(p.altText ?? {}, 'altText=title altTextSummary=description')
   const alt = x14 ? `<ext uri="{962EF5D1-5CA2-4c93-8EF4-DBF5C05439D2}" xmlns:x14="${X14}"><x14:pivotTableDefinition${x14}/></ext>` : ''
   const body = `${location}${fields}${axisFields('rowFields', p.rows)}${linesXml('rowItems', p.rowLines)}${axisFields('colFields', p.columns)}${linesXml('colItems', p.columnLines)}${pages}${data}${formats}${rules}${style}${filters}${alt ? `<extLst>${alt}</extLst>` : ''}`
   return `${HEAD}<pivotTableDefinition xmlns="${MAIN}"${a}>${body}</pivotTableDefinition>`

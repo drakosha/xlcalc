@@ -10,6 +10,27 @@ export const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
 
 export { MAX_TEXT } from '../../model.js'
 
+/**
+ * Attributes of `o` by a table of entries `attr=key:kind` in their order, as `take` reads them: `s` text (the default),
+ * `n` a number where given, `p` a number above 0, `t` a flag true by default, written `0` where false, `f` a flag false
+ * by default, written `1` where true, `b` a flag written always; an entry with its value (`attr="v"`) as it is.
+ */
+export function give(o: object, spec: string): string {
+  let out = ''
+  for (const e of spec.split(' ')) {
+    if (e.includes('"')) {
+      out += ` ${e}`
+      continue
+    }
+    const [name, kind = 's'] = e.split(':')
+    const [attr, key = attr] = name.split('=')
+    const v = (o as Record<string, unknown>)[key]
+    if (kind === 'b') out += ` ${attr}="${v ? 1 : 0}"`
+    else if (kind === 't' ? v === false : kind === 'f' || kind === 'p' ? v : v !== undefined) out += ` ${attr}="${kind === 't' ? 0 : kind === 'f' ? 1 : kind === 's' ? escapeAttr(v as string) : v}"`
+  }
+  return out
+}
+
 /** Text cut to Excel's limit `max`, reported as `textLength` when it was longer; a character of two code units is not split. */
 export function clip(text: string, max: number, issues: Issues, message: XlsxMessage, where: Where): string {
   if (text.length <= max) return text

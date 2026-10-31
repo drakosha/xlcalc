@@ -10,7 +10,7 @@ import { sheetKey } from '../../syntax/print.js'
 import { parseAddress } from '../../model.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr } from '../xml/text.js'
-import { HEAD, MAIN } from './xml.js'
+import { give, HEAD, MAIN } from './xml.js'
 import { X14 } from './pivot-cache.js'
 
 const X15 = 'http://schemas.microsoft.com/office/spreadsheetml/2010/11/main'
@@ -49,7 +49,7 @@ export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tab
   const items = (c.items ?? []).map((x) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
   const nd = c.noData ?? {}
   const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
-  const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${c.customListSort === false ? ' customListSort="0"' : ''}${c.showMissing === false ? ' showMissing="0"' : ''}${cross}`
+  const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, 'customListSort:t showMissing:t')}${cross}`
   const hide = nd.hide ? `<extLst><x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext></extLst>` : ''
   return `${HEAD}<slicerCacheDefinition xmlns="${X14}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}><items count="${items.length}">${items.join('')}</items></tabular></data>${hide}</slicerCacheDefinition>`
 }
@@ -72,22 +72,19 @@ export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId =
   return `${HEAD}<timelineCacheDefinition xmlns="${X15}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x" xmlns:x="${MAIN}" name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}${state}</timelineCacheDefinition>`
 }
 
-const bool = (name: string, v: boolean | undefined, dflt: boolean) => (v === undefined || v === dflt ? '' : ` ${name}="${v ? 1 : 0}"`)
+/** A slicer's or a timeline's style where it has one: none for an empty name. */
+const styleOf = (style: string | undefined) => (style ? ` style="${escapeAttr(style)}"` : '')
 
 export function slicerXml(s: Slicer): string {
-  return `<slicer name="${escapeAttr(s.name)}" cache="${escapeAttr(s.cache)}" caption="${escapeAttr(s.caption ?? s.name)}"${s.startItem ? ` startItem="${s.startItem}"` : ''}${s.columns ? ` columnCount="${s.columns}"` : ''}${bool('showCaption', s.showCaption, true)}${s.style ? ` style="${escapeAttr(s.style)}"` : ''}${bool('lockedPosition', s.locked, false)} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
+  return `<slicer${give({ ...s, caption: s.caption ?? s.name }, 'name cache caption startItem:p columnCount=columns:p showCaption:t')}${styleOf(s.style)}${give(s, 'lockedPosition=locked:f')} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
 }
 
 export function timelineXml(t: Timeline): string {
   const a =
-    ` name="${escapeAttr(t.name)}" cache="${escapeAttr(t.cache)}" caption="${escapeAttr(t.caption ?? t.name)}"` +
-    bool('showHeader', t.showHeader, true) +
-    bool('showSelectionLabel', t.showSelectionLabel, true) +
-    bool('showTimeLevel', t.showLevel, true) +
-    bool('showHorizontalScrollbar', t.showScrollbar, false) +
+    give({ ...t, caption: t.caption ?? t.name }, 'name cache caption showHeader:t showSelectionLabel:t showTimeLevel=showLevel:t showHorizontalScrollbar=showScrollbar:f') +
     ` level="${LEVEL[t.level ?? 'months']}" selectionLevel="${LEVEL[t.selectionLevel ?? 'years']}"` +
     (t.scrollPosition ? ` scrollPosition="${isoTime(t.scrollPosition)}"` : '') +
-    (t.style ? ` style="${escapeAttr(t.style)}"` : '')
+    styleOf(t.style)
   return `<timeline${a}/>`
 }
 
