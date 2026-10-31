@@ -6,6 +6,7 @@ import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
 import type { CellValue, ErrorCode, PivotCache, PivotFunction, PivotTable, PivotValue } from '../contract.js'
 import { Tally } from './aggregate.js'
+import { Batch, fieldFormulas, itemFormulas, prefetch, settled, sumsOf, withCalculatedItems } from './calculated.js'
 import { groupedItems, recordItems } from './group.js'
 import { byValue, itemPasses, valuesKept } from './filters.js'
 import { axesOf, prepared } from './prepare.js'
@@ -62,6 +63,10 @@ function valueReader(cache: PivotCache, field: number, epoch: number): (r: numbe
 
 const key = (path: readonly number[]) => path.join(',')
 
+/** A value as a tally takes a record's. */
+const asRecord = (v: CellValue): [n: number | undefined, filled: boolean, error?: ErrorCode] =>
+  v === null ? [undefined, false] : typeof v === 'object' ? [undefined, true, v.error] : [typeof v === 'number' ? v : undefined, true]
+
 /** Calculates a PivotTable over its cache's records. */
 export function computePivot(given: PivotTable, givenCache: PivotCache, options: PivotComputeOptions = {}): PivotResult {
   const epoch = options.date1904 ? EPOCH_1904 : 0
@@ -73,8 +78,13 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const colFields = axes.columns.filter((f): f is number => f !== 'values')
   const values = table.values ?? []
   const fns = values.map((v) => v.function ?? 'sum')
-  // a calculated field is no record's value: its formula is to be calculated over the sums of the fields it names at each cell
-  const readers = values.map((v) => valueReader(cache, v.field, epoch))
+  // a calculated field is no record's value: its formula is calculated over the sums of the fields it names at each cell,
+  // which are measures after the value fields' (`sums`)
+  const formulas = fieldFormulas(cache)
+  const sums = sumsOf(values.flatMap((v) => (formulas.has(v.field) ? [v.field] : [])), formulas)
+  const sumAt = new Map(sums.map((f, i) => [f, values.length + i]))
+  const measures = [...values.map((v) => v.field), ...sums]
+  const readers = measures.map((f) => valueReader(cache, f, epoch))
   const at = itemIndexes(table, cache, epoch)
   const shown = shownItems(table, cache, today, epoch)
   const count = cache.records?.length ?? 0
@@ -116,12 +126,17 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   for (const r of alive) {
     const k = `${key(rowFields.map((f) => at[f][r]))}|${key(colFields.map((f) => at[f][r]))}`
     let cell = leaves.get(k)
-    if (!cell) leaves.set(k, (cell = values.map(() => new Tally())))
-    for (let v = 0; v < values.length; v++) cell[v].add(...readers[v](r))
+    if (!cell) leaves.set(k, (cell = measures.map(() => new Tally())))
+    for (let m = 0; m < measures.length; m++) cell[m].add(...readers[m](r))
   }
   const sorting = { table, cache, shown, epoch, lists }
   const rowRoot = branches(sorting, at, alive, rowFields)
   const colRoot = branches(sorting, at, alive, colFields)
+  const calcItems = itemFormulas(table, cache, epoch)
+  withCalculatedItems(rowRoot, rowFields, calcItems, shown)
+  withCalculatedItems(colRoot, colFields, calcItems, shown)
+  const calculated = (f: number, p: number) => calcItems.get(f)?.get(p)
+  const batch = new Batch()
   // a total is made of the cells under it in the cache's order of their items, down the rows first, then across the
   // columns, as Excel adds them (the set basic: a product's grand total)
   const cacheOrder = (f: number, b: Branch) => [...b.next.keys()].sort((x, y) => (table.fields[f].items?.[x]?.item ?? x) - (table.fields[f].items?.[y]?.item ?? y))
@@ -136,13 +151,22 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
       const down = rows.length < rowFields.length
       const b = down ? rb : cb
       out = null
-      for (const p of cacheOrder(down ? rowFields[rows.length] : colFields[cols.length], b)) {
+      const f = down ? rowFields[rows.length] : colFields[cols.length]
+      for (const p of cacheOrder(f, b)) {
         const n = b.next.get(p)!
         if (!n.data) continue
-        const t = down ? cell([...rows, p], n, cols, cb) : cell(rows, rb, [...cols, p], n)
+        const [r, c] = down ? [[...rows, p], cols] : [rows, [...cols, p]]
+        if (calculated(f, p)) {
+          // a calculated item counts in the totals over it as one value more
+          const got = measures.map((_, m) => measure(r, c, m, m < values.length ? fns[m] : 'sum'))
+          out ??= measures.map(() => new Tally())
+          out.forEach((x, m) => x.add(...asRecord(got[m])))
+          continue
+        }
+        const t = down ? cell(r, n, c, cb) : cell(r, rb, c, n)
         if (!t) continue
-        out ??= values.map(() => new Tally())
-        out.forEach((x, v) => x.merge(t[v]))
+        out ??= measures.map(() => new Tally())
+        out.forEach((x, m) => x.merge(t[m]))
       }
     }
     memo.set(k, out)
@@ -152,12 +176,40 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     const [rb, cb] = [walk(rowRoot, rows), walk(colRoot, columns)]
     return rb?.data && cb?.data ? cell(rows, rb, columns, cb) : null
   }
-  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue => reach(rows, columns)?.[v]?.value(fn ?? fns[v]) ?? null
-  const hasData = (rows: readonly number[], columns: readonly number[]) => reach(rows, columns) !== null
+  // the first calculated item of a path: its axis, level and formula
+  const calcAt = (rows: readonly number[], columns: readonly number[]) => {
+    for (const [path, fields] of [[rows, rowFields], [columns, colFields]] as const)
+      for (let k = 0; k < path.length; k++) {
+        const t = calculated(fields[k], path[k])
+        if (t) return { rows: path === rows, k, t }
+      }
+    return null
+  }
+  const reached = (rows: readonly number[], columns: readonly number[]) => !!(walk(rowRoot, rows)?.data && walk(colRoot, columns)?.data)
+  /** A measure's value at the paths: a value field's by `fn`, a calculated field's formula, a calculated item's. */
+  const measure = (rows: readonly number[], columns: readonly number[], m: number, fn: PivotFunction): CellValue => {
+    const field = measures[m]
+    if (formulas.has(field)) return fieldValue(rows, columns, field)
+    const c = calcAt(rows, columns)
+    if (!c) return reach(rows, columns)?.[m]?.value(fn) ?? null
+    if (!reached(rows, columns)) return null
+    const swap = (q: number) => (c.rows ? [rows.map((p, k) => (k === c.k ? q : p)), columns] : [rows, columns.map((p, k) => (k === c.k ? q : p))]) as [number[], number[]]
+    return batch.get(c.t.text, c.t.args.map((q) => measure(...swap(q), m, fn)))
+  }
+  /** A field's value at a cell: its sum, or a calculated field's formula over the values of the fields it names. */
+  const fieldValue = (rows: readonly number[], columns: readonly number[], field: number): CellValue => {
+    const t = formulas.get(field)
+    if (!t) return measure(rows, columns, sumAt.get(field)!, 'sum')
+    if (!reached(rows, columns) || (!calcAt(rows, columns) && !reach(rows, columns))) return null
+    return batch.get(t.text, t.args.map((f) => fieldValue(rows, columns, f) ?? null))
+  }
+  const value = (rows: readonly number[], columns: readonly number[], v: number, fn?: PivotFunction): CellValue => settled(batch, () => measure(rows, columns, v, fn ?? fns[v]))
+  const hasData = (rows: readonly number[], columns: readonly number[]) => (calcAt(rows, columns) ? reached(rows, columns) : reach(rows, columns) !== null)
   // sorting by values reads them in the order before; the cells are made again in the order shown
   sortBranches(sorting, rowRoot, rowFields, colFields, true, value)
   sortBranches(sorting, colRoot, colFields, rowFields, false, value)
   memo = new Map()
+  if (formulas.size || calcItems.size) prefetch(batch, rowRoot, colRoot, values.length, (r, c, v) => measure(r, c, v, fns[v]))
   const pages = (table.pages ?? []).map((p): PivotPageResult => {
     const all = (table.fields[p.field].items ?? []).map((_, i) => i)
     const items = p.item !== undefined ? [p.item] : all.filter((i) => !table.fields[p.field].items![i].hidden)

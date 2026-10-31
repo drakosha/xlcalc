@@ -135,10 +135,12 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
     const items: PivotValue[] = []
     const unused: number[] = []
     const map = new Map<number, number>()
+    // a calculated item is in no record, and stays
+    const calculated = new Set((cache.calculatedItems ?? []).flatMap((x) => (x.field === was ? [x.item] : [])))
     before.forEach((v, i) => {
       const k = itemKey(v)
       if (keys.has(k)) return
-      const there = present.has(k)
+      const there = present.has(k) || calculated.has(i)
       if (!there && retained >= limit) return
       if (!there) {
         retained++
@@ -146,7 +148,7 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
       }
       keys.set(k, items.length)
       map.set(i, items.length)
-      items.push(there ? present.get(k)! : v)
+      items.push(present.get(k) ?? v)
     })
     values.forEach((v, i) => {
       const k = itemKey(v)
@@ -170,6 +172,12 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
   groupMaps.forEach((m, f) => (itemMaps[f] = m))
   const { stale: _, ...rest } = cache
   const out: PivotCache = { ...rest, fields, records }
+  const calculatedItems = cache.calculatedItems?.flatMap((x) => {
+    const field = fieldMap.get(x.field)
+    const item = field === undefined ? undefined : itemMaps[field]?.get(x.item)
+    return item === undefined ? [] : [{ ...x, field: field!, item }]
+  })
+  if (calculatedItems) out.calculatedItems = calculatedItems
   return { cache: out, tables: tables.map((t) => moved(t, fields, fieldMap, itemMaps)) }
 }
 
