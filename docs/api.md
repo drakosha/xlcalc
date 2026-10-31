@@ -580,6 +580,23 @@ is left unchanged; spans that the patch cuts through are split, and lines left w
 new map; the given one is not modified. The map is checked as a workbook's would be: an object for each span of the
 axis, with no two spans overlapping.
 
+### <a id="xlcalc-pivotcellat"></a>`pivotCellAt`
+
+```ts
+function pivotCellAt(book: Sheets, sheet: string, cell: string): PivotCell | null
+```
+
+What the cell `cell` of `sheet` is in the PivotTable whose cells hold it ([`pivotCells`](#xlcalc-pivotcells)); null in no PivotTable.
+
+### <a id="xlcalc-pivotcells"></a>`pivotCells`
+
+```ts
+function pivotCells(book: Sheets, sheet: string, pivot: string): PivotCells | null
+```
+
+What every cell of the PivotTable `pivot` on `sheet` is, by address, its Filters area included, and the cells with
+Excel's filter buttons; null when the sheet has no such PivotTable. `book` is a workbook or `getLayout()`'s.
+
 ### <a id="xlcalc-pivotinputerror"></a>`PivotInputError`
 
 ```ts
@@ -665,6 +682,16 @@ function registerRegex(l: RegexLevel): void
 Loads a level of `xlcalc/regex` for match mode 3 of `XLOOKUP` and `XMATCH` in the calculations from now on, a pool's
 threads too: `import { pcreEngine } from 'xlcalc/regex'`, then `registerRegex(pcreEngine)` (or [`pcreSyntax`](#xlcalcregex-pcresyntax)). The
 last one registered is used.
+
+### <a id="xlcalc-renamedvaluefield"></a>`renamedValueField`
+
+```ts
+function renamedValueField(name: string | null | undefined, from: PivotFunction, to: PivotFunction, field: string, locale?: string): string
+```
+
+The name Excel gives a value field named `name` when its function changes from `from` to `to`, its source field being
+`field`, in the workbook's language `locale`: what Value Field Settings shows as soon as a function is chosen, and what
+`editPivotTable` names the field (made unique there among the others when it is the default name).
 
 ### <a id="xlcalc-samename"></a>`sameName`
 
@@ -824,7 +851,7 @@ layout; with `appearance`, its conditional formats calculated over the result's 
 
 ## xlcalc/core
 
-Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`PivotInputError`](#xlcalc-pivotinputerror), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
+Described under an entry above: [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`PivotInputError`](#xlcalc-pivotinputerror), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`renamedValueField`](#xlcalc-renamedvaluefield), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
 
 ### <a id="xlcalccore-registerfunctions"></a>`registerFunctions`
 
@@ -892,7 +919,7 @@ Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLette
 
 ## xlcalc/text
 
-Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`valueComparator`](#xlcalc-valuecomparator).
+Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`renamedValueField`](#xlcalc-renamedvaluefield), [`scanReferences`](#xlcalc-scanreferences), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`valueComparator`](#xlcalc-valuecomparator).
 
 ## xlcalc/entry
 
@@ -4187,6 +4214,41 @@ interface PivotCaptions {
 }
 ```
 
+### `PivotCell`
+
+What a cell of a PivotTable is, as Excel's `Range.PivotCell` tells it ([`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells)): `kind` a value
+with its totals (`value`), an item's label (`item`), a subtotal's (`subtotal`), a grand total's (`grand`), a value
+field's name (`valueName`), a field's name or the header of the rows or columns (`field`), the value fields' own
+field (`valuesField`, Σ Values), a report filter's item (`pageItem`) or none of them (`blank`). `field` is the field of
+the label, header or filter, `item` its item, `value` the value field of a value, total or name; a value or a label
+has its line's path of items on the rows and on the columns. `button` marks a cell with Excel's filter button.
+
+```ts
+interface PivotCell {
+  /** The PivotTable's name. */
+  pivot: string
+  kind: 'value' | 'item' | 'subtotal' | 'grand' | 'valueName' | 'field' | 'valuesField' | 'pageItem' | 'blank'
+  axis?: 'rows' | 'columns' | 'pages'
+  field?: PivotAxisField
+  item?: number
+  value?: number
+  rowItems?: PivotItemRef[]
+  columnItems?: PivotItemRef[]
+  button?: true
+}
+```
+
+### `PivotCells`
+
+Every cell of a PivotTable's area ([`pivotCells`](#xlcalc-pivotcells)): what each is, by address, and the cells with Excel's filter buttons.
+
+```ts
+interface PivotCells {
+  cells: Record<string, PivotCell>
+  buttons: string[]
+}
+```
+
 ### `PivotDataField`
 
 A field on the Values area (xlsx `dataField`).
@@ -4432,6 +4494,17 @@ type PivotGrouping =
   | { by: 'dates'; periods: Exclude<PivotGroupBy, 'numbers'>[]; days?: number; start?: string; end?: string }
   | { by: 'numbers'; interval: number; start?: number; end?: number }
   | { by: 'items'; items: number[] }
+```
+
+### `PivotItemRef`
+
+An item of a PivotTable's field on a path ([`PivotCell.rowItems`](#pivotcell)): the field (`values` for a value field) and its item's index in the field's `items` (in `values`).
+
+```ts
+interface PivotItemRef {
+  field: PivotAxisField
+  item: number
+}
 ```
 
 ### `PivotLayout`
@@ -5968,10 +6041,11 @@ type StructureOp =
   /**
    * Excel's Insert Calculated Field: the cache's calculated field `name`, a formula over fields by name as Excel's dialog
    * takes it (`=Amount/Qty`, `='Unit Price'*Qty`), added, or its formula changed when the cache has it (Modify); a null
-   * `formula` deletes it, and it leaves every PivotTable of the cache. Adding does not place it on Values
-   * (`editPivotTable` does).
+   * `formula` deletes it, and it leaves every PivotTable of the cache. Added with `values`, it goes on the Values of
+   * the PivotTable `pivot`, last, with Sum and the name Excel's dialog gives it (`Sum of Unit`), in the same step;
+   * without, it is placed by `editPivotTable`, as Excel's object model adds it.
    */
-  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null }
+  | { op: 'setPivotCalculatedField'; sheet: string; pivot: string; name: string; formula: string | null; values?: boolean }
   /**
    * Excel's Insert Calculated Item of the field `field`: the item `name`, a formula over the field's items as Excel's
    * dialog takes it (`=East+West`, `='North'*2`), added on every PivotTable of the cache, or its formula changed when
