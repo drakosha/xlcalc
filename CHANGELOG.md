@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.74.0 (2026-10-31)
+
+Added:
+
+- `pivotBlankLabel(locale?)`, the word of a blank item as a PivotTable and a slicer show it (`(blank)`, `(пусто)`), and `DEFAULT_SLICER_SIZE` and `DEFAULT_TIMELINE_SIZE`, the size in EMU `addSlicer` and `addTimeline` give an object placed without one, from the root and `xlcalc/text`.
+- `axis` on the `PivotCell` of `Row Labels` (`rows`) and `Column Labels` (`columns`): the axis their filter button filters.
+- With `xlcalc/pivot` loaded, a PivotTable of two value fields or more given without Σ Values on its axes (a host's workbook, a snapshot saved before 0.72) is taken in with it where adding the second value field puts it, so `getBook` shows it and `writeXlsx` writes it as Excel requires.
+
+Changed:
+
+- Breaking: `PivotCell.button` and `PivotCells.buttons` are where Excel draws a filter button: a report filter's on its item (it was on the filter's name), and none on a single value field's name at the corner beside the row fields, which Excel draws without one. `writeXlsx` and `writeKept` still mark the cells Excel's file marks.
+- Breaking: `renamedValueField` takes its locale as the other functions of `xlcalc/text` do, the tag of a loaded locale or a locale object: `'ru'`, `'RU-ru'` or a locale not loaded is an `InputError` (it gave the en-US name).
+- A grouping names its fields and labels its groups in the workbook's language, as Excel does in ru-RU: `Годы (Date)`, `Кварталы (Date)`, `Кв-л1`, `янв`, `01.янв`, `<01.01.2024`, `1,03-3,53`, `<10 или (пусто)`; `groupDates`, `groupPivotField` and a refresh alike.
+- An empty name of a slicer or a timeline in `addSlicer`, `addTimeline`, `editSlicer` and `editTimeline` is refused (`pivot`), as a name another one has is, not an `InputError`.
+
+Fixed:
+
+- Whole numbers grouped by a fraction end each group at the next one's start (`2-3.5`), as Excel does; by a whole interval they still end one below it.
+
 ## 0.73.1 (2026-10-31)
 
 Fixed:
