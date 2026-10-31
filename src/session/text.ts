@@ -89,7 +89,8 @@ export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'heade
  * paste of several cells' text), the PivotTable they affect (the set alerts); null when it takes them.
  */
 export function pivotRefusal(s: EngineState, edits: CellReplace[], together = false): (Refusal<'pivot'> & CellRef & { reason: 'part' | 'affect' }) | null {
-  const part = pivotPart(s, edits)
+  // a paste over its cells affects it even where it writes what they hold (the set alerts)
+  const part = pivotPart(s, edits, together)
   if (!part) return null
   const { sheet, cell, pivot } = part
   return { ok: false, code: 'pivot', message: sayPivot(s.input.locale, { key: together ? 'pivotAffect' : 'pivotPart', sheet, cell, pivot }), reason: together ? 'affect' : 'part', sheet, cell }

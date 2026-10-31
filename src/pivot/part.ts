@@ -17,13 +17,13 @@ export const PIVOT_REASONS: Partial<Record<string, PivotRefusalReason>> = { pivo
 /** The input changes the cell's content: its value, formula or array. */
 const changes = (old: CellInput | undefined, input: CellInput | null) => CONTENT.some((k) => JSON.stringify(old?.[k]) !== JSON.stringify(input?.[k]))
 
-/** The first edit of a cell of a PivotTable's area that changes its content: the sheet, the cell, the PivotTable and the input; null when none does. */
-export function pivotPart(state: EngineState, edits: CellReplace[]): { sheet: string; cell: string; pivot: string; table: PivotTable; input: CellInput | null } | null {
+/** The first edit of a cell of a PivotTable's area that changes its content (`same`: any edit there): the sheet, the cell, the PivotTable and the input; null when none does. */
+export function pivotPart(state: EngineState, edits: CellReplace[], same = false): { sheet: string; cell: string; pivot: string; table: PivotTable; input: CellInput | null } | null {
   const sheets = state.input.sheets
   if (!sheets.some((s) => s.pivotTables?.length)) return null
   for (const e of edits) {
     const sh = sheets[sheetIndexOf(state, e.sheet) ?? -1]
-    if (!sh?.pivotTables?.length || !changes(sh.cells[e.cell], e.input)) continue
+    if (!sh?.pivotTables?.length || (!same && !changes(sh.cells[e.cell], e.input))) continue
     const { row, col } = parseAddress(e.cell)
     const t = sh.pivotTables.find((p) => pivotParts(p).some((x) => hasCell(x, row, col)))
     if (t) return { sheet: sh.name, cell: e.cell, pivot: t.name, table: t, input: e.input }
