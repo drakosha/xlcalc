@@ -6,7 +6,7 @@
  */
 import type { BookInput, PivotCache, PivotFilter, PivotRef, PivotTable, SlicerCache, TimelineCache, TimelineLevel } from '../contract.js'
 import { caseKey } from '../collate.js'
-import { withListed } from '../pivot/items.js'
+import { groupedItems, withListed } from '../pivot/items.js'
 import { sheetKey } from '../syntax.js'
 
 /** The index of a cache's field by its name, −1 for none. */
@@ -54,7 +54,7 @@ export function itemsShown(book: BookInput, ref: PivotRef, f: number, n: number)
 export function withSlicerChoice(book: BookInput, sc: SlicerCache, refs: readonly PivotRef[] = sc.pivots): BookInput {
   const at = slicerField(book, sc)
   if (!at || !refs.length) return book
-  const n = at.cache.fields[at.field].items?.length ?? 0
+  const n = groupedItems(at.cache.fields[at.field])?.length ?? 0
   const off = new Set((sc.items ?? []).flatMap((x) => (x.selected === false ? [x.item] : [])))
   return withPivots(
     at.book,

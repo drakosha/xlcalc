@@ -30,7 +30,7 @@ import { shift } from './shift.js'
 import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
-import { pivotRefresh } from '../pivot/hook.js'
+import { pivotCacheEdit, pivotRefresh, type PivotCacheOp } from '../pivot/hook.js'
 import { pivotRefs } from '../input/pivot-refs.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
@@ -70,6 +70,11 @@ const FIELDS: Record<string, string[]> = {
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
   refreshPivots: ['pivots'],
+  groupPivotField: ['sheet', 'pivot', 'field', 'group'],
+  ungroupPivotField: ['sheet', 'pivot', 'field', 'items'],
+  renamePivotGroup: ['sheet', 'pivot', 'field', 'item', 'name'],
+  setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula'],
+  setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
   ...SLICER_FIELDS,
 }
 
@@ -283,8 +288,11 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'ungroupPivotField':
     case 'renamePivotGroup':
     case 'setPivotCalculatedField':
-    case 'setPivotCalculatedItem':
-      throw new InputError('op.op', `${o.op} is not supported yet`)
+    case 'setPivotCalculatedItem': {
+      const edit = pivotCacheEdit()
+      r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: say(book.locale, { key: 'pivotNotLoaded' }) }
+      break
+    }
   }
   return r
 }

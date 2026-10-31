@@ -16,6 +16,7 @@ import { withField } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { pivotArea } from '../pivot/area.js'
 import { pivotRefresh } from '../pivot/hook.js'
+import { groupedItems } from '../pivot/items.js'
 import type { Applied } from './geometry.js'
 import { checkedPivots, patched, relaid } from './pivots.js'
 import { sheetIndex } from './rewrite.js'
@@ -139,7 +140,7 @@ function newCache(book: BookInput, kind: Kind, v: unknown): { book: BookInput; c
     return { book, cache: { name, field: fieldName, pivots: refs, cache: id, ...(bounds ? { bounds } : {}) } }
   }
   const at = slicerField(book, { field: fieldName, cache: id })!
-  const items = itemsShown(at.book, refs[0], at.field, at.cache.fields[at.field].items?.length ?? 0)
+  const items = itemsShown(at.book, refs[0], at.field, groupedItems(at.cache.fields[at.field])?.length ?? 0)
   const cache: SlicerCache = { name, field: fieldName, pivots: refs, cache: id, ...(items.length ? { items } : {}) }
   return { book: at.book, cache }
 }
@@ -209,7 +210,7 @@ function edit(book: BookInput, kind: Kind, o: Record<string, unknown>, values: V
   if (kind === 'slicers' && patch.items != null) {
     const at = slicerField(out, c as SlicerCache)
     out = at?.book ?? out
-    checkItems(patch.items, 'op.cache.items', at?.cache.fields[at.field].items?.length ?? 0)
+    checkItems(patch.items, 'op.cache.items', groupedItems(at?.cache.fields[at.field])?.length ?? 0)
   }
   if (kind === 'timelines' && patch.selection != null) {
     const sel = object(patch.selection, 'op.cache.selection', 'dates such as { start: "2024-01-01T00:00:00", end: "2024-12-31T00:00:00" }')

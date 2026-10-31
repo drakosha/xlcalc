@@ -373,6 +373,13 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pivotFormula: { sheet: string; cell: string; pivot: string }
   pivotNameTaken: { name: string }
   pivotNotItem: { item: string }
+  pivotCantGroup: object
+  pivotNotGrouped: { field: string }
+  pivotGroupedItems: object
+  pivotItemsAverage: object
+  pivotFormulaRefs: object
+  pivotFormulaBad: { formula: string }
+  pivotItemTaken: { item: string }
   slicerField: { field: string }
   slicerNameTaken: { name: string }
   timelineField: { field: string }
@@ -402,6 +409,7 @@ export type EditKey =
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
   | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
   | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotClear' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
+  | 'pivotCantGroup' | 'pivotNotGrouped' | 'pivotGroupedItems' | 'pivotItemsAverage' | 'pivotFormulaRefs' | 'pivotFormulaBad' | 'pivotItemTaken'
   | 'slicerField' | 'slicerNameTaken' | 'timelineField'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'

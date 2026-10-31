@@ -12,6 +12,7 @@ import { caseKey } from '../../collate.js'
 import type { NumberFormat, PivotAxisField, PivotCache, PivotLine, PivotTable, PivotValue } from '../../contract.js'
 import { dateToSerial } from '../../model.js'
 import { itemFormat } from '../../pivot-format.js'
+import { groupedItems } from '../../pivot/items.js'
 import { parseRange } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, Rng, type V } from '../../values.js'
@@ -62,7 +63,7 @@ function cellOf(v: PivotValue, epoch: number): V {
 }
 
 /** The values of a cache field's items, or of its groups' where it is grouped. */
-const itemsOf = (c: PivotCache, f: number): PivotValue[] => c.fields[f]?.group?.items ?? c.fields[f]?.items ?? []
+const itemsOf = (c: PivotCache, f: number): PivotValue[] => groupedItems(c.fields[f]) ?? []
 
 /**
  * Whether an argument names an item: text by the item's label alone (in any case; `(blank)` a blank item, a number or a

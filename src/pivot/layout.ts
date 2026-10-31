@@ -11,6 +11,7 @@ import { formatAddress, parseAddress } from '../model.js'
 import { cornersText, type Rect } from '../structure/area.js'
 import { pivotArea } from './area.js'
 import { wordsOf } from './captions.js'
+import { groupedItems } from './items.js'
 import { itemFormat } from '../pivot-format.js'
 import { axisLines, formOf, hasItems, type AxisLine } from './layout-lines.js'
 import type { PivotResult } from './result.js'
@@ -75,7 +76,7 @@ export function labeler(table: PivotTable, cache: PivotCache, book: Pick<BookInp
     if (f === 'values') return { value: valueName(item) }
     const fi = table.fields[f]?.items?.[item]
     const cf = cache.fields[f]
-    const v = fi?.item === undefined ? undefined : (cf?.group?.items ?? cf?.items)?.[fi.item]
+    const v = fi?.item === undefined ? undefined : groupedItems(cf)?.[fi.item]
     const numberFormat = typeof v === 'number' || (typeof v === 'object' && v !== null && 'date' in v) ? (table.fields[f]?.numberFormat ?? itemFormat(cache, f, v)) : undefined
     // a caption keeps the item's format (the set edit-held: a date item named `first`)
     if (fi?.caption !== undefined) return numberFormat === undefined ? { value: fi.caption } : { value: fi.caption, numberFormat }

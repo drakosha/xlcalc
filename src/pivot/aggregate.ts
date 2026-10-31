@@ -20,12 +20,15 @@ export class Tally {
   max = -Infinity
   error?: ErrorCode
 
+  /** `lastError`: the last error is the answer, as a calculated field takes a field's sum; the first without it. */
+  constructor(private readonly lastError = false) {}
+
   /** A record's value: a number (a date's serial), other non-blank, an error, or blank (`filled` false). */
   add(n: number | undefined, filled: boolean, error?: ErrorCode): void {
     if (!filled) return
     this.filled++
     if (error) {
-      this.error ??= error
+      this.error = this.lastError ? error : (this.error ?? error)
       return
     }
     if (n === undefined) return
@@ -40,7 +43,7 @@ export class Tally {
   /** Takes in the tally of a cell under this one. */
   merge(t: Tally): void {
     this.filled += t.filled
-    this.error ??= t.error
+    this.error = this.lastError ? (t.error ?? this.error) : (this.error ?? t.error)
     if (!t.numbers) return
     this.numbers += t.numbers
     this.sum += t.sum

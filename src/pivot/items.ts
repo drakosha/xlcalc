@@ -19,6 +19,9 @@ export function itemKey(v: PivotValue): string {
   return 'error' in v ? `e${v.error}` : `d${v.date}`
 }
 
+/** The values of a cache field's items, or of its groups' where it is grouped. */
+export const groupedItems = (f: PivotCacheField | undefined): PivotValue[] | undefined => f?.group?.items ?? f?.items
+
 /** A field's values listed as items in the order they first come, the records (copies the caller owns) turned to their indexes. */
 export function listedItems(field: PivotCacheField, records: PivotValue[][], at: number): PivotCacheField {
   const items: PivotValue[] = []
@@ -37,9 +40,10 @@ export function listedItems(field: PivotCacheField, records: PivotValue[][], at:
   return { ...field, items }
 }
 
-/** The cache with the fields `fields` listed as items, its records copied when one is listed anew; the cache itself when all are. */
+/** The cache with the fields `fields` listed as items (or groups), its records copied when one is listed anew; the cache itself when all are. */
 export function withListed(cache: PivotCache, fields: Iterable<number>): PivotCache {
-  const unlisted = [...fields].filter((f) => cache.fields[f] && !cache.fields[f].items)
+  // a field grouping made lists its groups (`group.items`), and has no values of its own to list
+  const unlisted = [...fields].filter((f) => cache.fields[f] && !groupedItems(cache.fields[f]))
   if (!unlisted.length) return cache
   const records = (cache.records ?? []).map((r) => r.slice())
   const out = cache.fields.slice()
