@@ -117,26 +117,26 @@ function frameXml(name: string, place: DrawingPlace, id: number, timeline: boole
 /** The parts of the book's slicers and timelines over PivotTables; `issues` takes the slicers of tables, left out. */
 export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
   const out: SlicerPackage = { files: [], contentTypes: [], caches: [], sheets: book.sheets.map(() => ({})), pivotCacheIds: new Set() }
+  // a part `xl/${path}${n}.xml` of its content type; its target from a sheet's part
+  const add = (path: string, n: number, text: string, type: string) => {
+    const name = `xl/${path}${n}.xml`
+    out.files.push({ name, text })
+    out.contentTypes.push([`/${name}`, type])
+    return `../${path}${n}.xml`
+  }
+  const caches = <C extends { cache?: number }>(kind: 'slicerCache' | 'timelineCache', list: C[], xml: (book: BookInput, c: C) => string) =>
+    list.forEach((c, k) => {
+      out.caches.push({ kind, target: add(`${kind}s/${kind}`, k + 1, xml(book, c), TYPES[kind]).slice(3) })
+      out.pivotCacheIds.add(c.cache!)
+    })
   const pivotCaches = (book.slicerCaches ?? []).filter((c) => {
     if (c.cache !== undefined) return true
     issues.add('pivotTable', { key: 'pivotNotWritten' })
     return false
   })
   const written = new Set(pivotCaches.map((c) => caseKey(c.name)))
-  pivotCaches.forEach((c, k) => {
-    const name = `xl/slicerCaches/slicerCache${k + 1}.xml`
-    out.files.push({ name, text: slicerCacheXml(book, c) })
-    out.contentTypes.push([`/${name}`, TYPES.slicerCache])
-    out.caches.push({ kind: 'slicerCache', target: `slicerCaches/slicerCache${k + 1}.xml` })
-    out.pivotCacheIds.add(c.cache!)
-  })
-  ;(book.timelineCaches ?? []).forEach((c, k) => {
-    const name = `xl/timelineCaches/timelineCache${k + 1}.xml`
-    out.files.push({ name, text: timelineCacheXml(book, c) })
-    out.contentTypes.push([`/${name}`, TYPES.timelineCache])
-    out.caches.push({ kind: 'timelineCache', target: `timelineCaches/timelineCache${k + 1}.xml` })
-    out.pivotCacheIds.add(c.cache)
-  })
+  caches('slicerCache', pivotCaches, slicerCacheXml)
+  caches('timelineCache', book.timelineCaches ?? [], timelineCacheXml)
   let drawings = 0
   let [slicerParts, timelineParts] = [0, 0]
   book.sheets.forEach((s, i) => {
@@ -146,24 +146,9 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     const sheet = out.sheets[i]
     let id = 1
     const frames = [...timelines.map((t) => (t.place ? frameXml(t.name, t.place, ++id, true) : '')), ...slicers.map((x) => (x.place ? frameXml(x.name, x.place, ++id, false) : ''))].join('')
-    if (frames) {
-      const name = `xl/drawings/drawing${++drawings}.xml`
-      out.files.push({ name, text: `${HEAD}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">${frames}</xdr:wsDr>` })
-      out.contentTypes.push([`/${name}`, DRAWING_TYPE])
-      sheet.drawing = `../drawings/drawing${drawings}.xml`
-    }
-    if (slicers.length) {
-      const name = `xl/slicers/slicer${++slicerParts}.xml`
-      out.files.push({ name, text: slicersPartXml(slicers) })
-      out.contentTypes.push([`/${name}`, TYPES.slicer])
-      sheet.slicers = `../slicers/slicer${slicerParts}.xml`
-    }
-    if (timelines.length) {
-      const name = `xl/timelines/timeline${++timelineParts}.xml`
-      out.files.push({ name, text: timelinesPartXml(timelines) })
-      out.contentTypes.push([`/${name}`, TYPES.timeline])
-      sheet.timelines = `../timelines/timeline${timelineParts}.xml`
-    }
+    if (frames) sheet.drawing = add('drawings/drawing', ++drawings, `${HEAD}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">${frames}</xdr:wsDr>`, DRAWING_TYPE)
+    if (slicers.length) sheet.slicers = add('slicers/slicer', ++slicerParts, slicersPartXml(slicers), TYPES.slicer)
+    if (timelines.length) sheet.timelines = add('timelines/timeline', ++timelineParts, timelinesPartXml(timelines), TYPES.timeline)
   })
   return out
 }
