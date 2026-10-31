@@ -10,7 +10,7 @@ export const PIVOT_MESSAGES: PivotMessages = {
   pivotSourceKept: (p) => `the PivotTable ${p.pivot} keeps the data it has: ${p.why === 'outside' ? 'its source is in another workbook' : p.why === 'kind' ? 'its source is a consolidation, an external connection, the data model or scenarios, which are not refreshed' : 'its cache does not allow refreshing'}`,
   pivotSourceGone: (p) => `the source of the PivotTable ${p.pivot} is not in the workbook (Reference isn't valid)`,
   pivotFieldName: (p) => `the PivotTable field name is not valid: the source of ${p.pivot} must be a list with a label at the top of every column`,
-  pivotNotLoaded: () => "PivotTables are laid out by xlcalc/pivot, which is not loaded: registerPivot(pivotEngine) loads it",
+  pivotNotLoaded: () => "The PivotTable engine is not loaded: registerPivot(pivotEngine) loads it",
   pivotOverData: (p) => `there's already data in ${p.sheet}!${p.range}, where the PivotTable ${p.pivot} would be laid out`,
   pivotOverPivot: (p) => `the PivotTable ${p.pivot} would overlap the PivotTable ${p.other} (a PivotTable report cannot overlap another PivotTable report)`,
   pivotOverTable: (p) => `the PivotTable ${p.pivot} would overlap the table ${p.table}`,

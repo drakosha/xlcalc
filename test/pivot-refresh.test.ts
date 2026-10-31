@@ -50,7 +50,7 @@ const REFRESH = { op: 'refreshPivots' } as const
 describe('refreshPivots', () => {
   it('is refused without xlcalc/pivot, and registerPivot takes its engine alone', () => {
     const r = editStructure(BOOK, REFRESH)
-    expect(r).toEqual({ ok: false, code: 'pivot', message: 'PivotTables are laid out by xlcalc/pivot, which is not loaded: registerPivot(pivotEngine) loads it' })
+    expect(r).toEqual({ ok: false, code: 'pivot', message: 'The PivotTable engine is not loaded: registerPivot(pivotEngine) loads it' })
     expect(() => registerPivot({ kind: 'xlcalc-pivot' } as never)).toThrow(new InputError('engine', "expected pivotEngine of 'xlcalc/pivot'"))
     registerPivot(pivotEngine)
   })
