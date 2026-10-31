@@ -228,14 +228,18 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   // the values: each line with values against each column's, by the value field of either and a subtotal's function
   if (values.length && dataCols)
     rowLines.forEach((ra, i) => {
-      if (ra.kind === 'item' || ra.kind === 'blank') return
+      if (ra.kind === 'blank') return
       columnLines.forEach((ca, j) => {
         const v = ra.value ?? ca.value ?? 0
-        const fn = ra.fn ?? ca.fn
-        const x = shown(ra.path, ca.path, v, fn)
         const numberFormat = values[v].numberFormat ?? (PERCENT.has(values[v].showAs ?? 'normal') ? 10 : undefined)
         const row = top + height + i
         const col = left + width + j
+        // an item's line over its group shows no value, but the format of the first value field (the set show-items)
+        if (ra.kind === 'item') {
+          if (numberFormat !== undefined) put(row, col, { value: undefined, numberFormat })
+          return
+        }
+        const x = shown(ra.path, ca.path, v, ra.fn ?? ca.fn)
         const cell: Label = { value: undefined }
         if (numberFormat !== undefined) cell.numberFormat = numberFormat
         if (x === null) {
