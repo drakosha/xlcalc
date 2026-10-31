@@ -8,7 +8,7 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 115.5
+  "seconds": 34.3
  },
  "cases": [
   {
@@ -2040,7 +2040,7 @@
       }
      },
      "errors": [
-      "op 5: -2146233087 Exception setting \"CutCopyMode\": \"Cannot convert value \"False\" to type \"Microsoft.Office.Interop.Excel.XlCutCopyMode\". Error: \"Invalid cast from 'System.Boolean' to 'Microsoft.Office.Interop.Excel.XlCutCopyMode'.\"\""
+      "op 5: -2146827284 We can't make this change for the selected cells because it will affect a PivotTable. Use the field list to change the report. If you are trying to insert or delete cells, move the PivotTable and try again."
      ],
      "cells": {
       "P!A1": "Flag",
@@ -3164,7 +3164,7 @@
       }
      },
      "errors": [
-      "op 5: -2146233087 Exception setting \"CutCopyMode\": \"Cannot convert value \"False\" to type \"Microsoft.Office.Interop.Excel.XlCutCopyMode\". Error: \"Invalid cast from 'System.Boolean' to 'Microsoft.Office.Interop.Excel.XlCutCopyMode'.\"\""
+      "op 5: -2146827284 We can't make this change for the selected cells because it will affect a PivotTable. Use the field list to change the report. If you are trying to insert or delete cells, move the PivotTable and try again."
      ],
      "cells": {
       "P!A1": "Flag",
@@ -4288,7 +4288,7 @@
       }
      },
      "errors": [
-      "op 5: -2146233087 Exception setting \"CutCopyMode\": \"Cannot convert value \"False\" to type \"Microsoft.Office.Interop.Excel.XlCutCopyMode\". Error: \"Invalid cast from 'System.Boolean' to 'Microsoft.Office.Interop.Excel.XlCutCopyMode'.\"\""
+      "op 5: -2146827284 We can't make this change for the selected cells because it will affect a PivotTable. Use the field list to change the report. If you are trying to insert or delete cells, move the PivotTable and try again."
      ],
      "cells": {
       "P!A1": "Flag",
@@ -5411,9 +5411,6 @@
        "columns": ""
       }
      },
-     "errors": [
-      "op 5: -2146233087 Exception setting \"CutCopyMode\": \"Cannot convert value \"False\" to type \"Microsoft.Office.Interop.Excel.XlCutCopyMode\". Error: \"Invalid cast from 'System.Boolean' to 'Microsoft.Office.Interop.Excel.XlCutCopyMode'.\"\""
-     ],
      "cells": {
       "P!A1": "Flag",
       "P!B1": "(All)",
@@ -6535,9 +6532,6 @@
        "columns": ""
       }
      },
-     "errors": [
-      "op 5: -2146233087 Exception setting \"CutCopyMode\": \"Cannot convert value \"False\" to type \"Microsoft.Office.Interop.Excel.XlCutCopyMode\". Error: \"Invalid cast from 'System.Boolean' to 'Microsoft.Office.Interop.Excel.XlCutCopyMode'.\"\""
-     ],
      "cells": {
       "P!A1": "Flag",
       "P!B1": "(All)",
