@@ -3,7 +3,7 @@
 # lists books beside it, each with its source (R1C1 text on D) and the fields to place in turn, by name. Each book is
 # opened, a PivotTable made at P!A3 over the source through the object model, its cell selected so that Excel shows the
 # list, and each field's box in the list checked by UI Automation (its Toggle pattern), or, for one to the columns
-# (`to`), the field dragged with the mouse to the list's Columns area; then the book saved. No call of the object
+# (`to`) or to Values, the field dragged with the mouse to that area of the list; then the book saved. No call of the object
 # model is made while a window of Excel's other than the list is open (a modal window blocks every call): such a window
 # is read and closed with Escape, and the book's step fails; a book with `answer` has it answered (`yes` with Return,
 # `no` with Escape) and goes on, its boxes clicked with the mouse then, so that no call waits on the window. Before the
@@ -70,24 +70,30 @@ function FieldBox($name, $seconds) {
   } while ((Get-Date) -lt $until)
   throw "no box of the field $name in the field list"
 }
-# the field dragged with the left button from its name, right of its box, to the list's Columns area
-function ToColumns($box) {
+# the cursor moved as the mouse moves it (absolute input, so that a drag sees the moves)
+function MoveTo($x, $y) {
+  $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+  [XlScreen.Win]::mouse_event(0x8001, [uint32]($x * 65535 / $b.Width), [uint32]($y * 65535 / $b.Height), 0, [UIntPtr]::Zero)
+}
+# the field dragged with the left button from its name, right of its box, to the list's area `area` (Columns, Values)
+function ToArea($box, $area) {
   $pane = [System.Windows.Automation.ControlType]::Pane
-  $zone = @(Named @('Columns') | Where-Object { $_.Current.ControlType -eq $pane }) | Select-Object -First 1
-  if (-not $zone) { throw 'no Columns area in the field list' }
+  $zone = @(Named @($area) | Where-Object { $_.Current.ControlType -eq $pane }) | Select-Object -First 1
+  if (-not $zone) { throw "no $area area in the field list" }
   $a = $box.Current.BoundingRectangle
   $b = $zone.Current.BoundingRectangle
   $x0 = [int]($a.X + $a.Width + 30); $y0 = [int]($a.Y + $a.Height / 2)
   $x1 = [int]($b.X + $b.Width / 2); $y1 = [int]($b.Y + $b.Height / 2)
-  [void][XlScreen.Win]::SetCursorPos($x0, $y0)
+  MoveTo $x0 $y0
   Start-Sleep -Milliseconds 300
   [XlScreen.Win]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
-  for ($k = 1; $k -le 20; $k++) {
-    [void][XlScreen.Win]::SetCursorPos([int]($x0 + ($x1 - $x0) * $k / 20), [int]($y0 + ($y1 - $y0) * $k / 20))
-    Start-Sleep -Milliseconds 50
-  }
   Start-Sleep -Milliseconds 300
+  # past the distance that starts a drag, then on to the area
+  for ($k = 1; $k -le 5; $k++) { MoveTo ($x0 + 2 * $k) ($y0 + 2 * $k); Start-Sleep -Milliseconds 60 }
+  for ($k = 1; $k -le 30; $k++) { MoveTo ([int]($x0 + ($x1 - $x0) * $k / 30)) ([int]($y0 + ($y1 - $y0) * $k / 30)); Start-Sleep -Milliseconds 40 }
+  Start-Sleep -Milliseconds 500
   [XlScreen.Win]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
+  Start-Sleep -Milliseconds 500
 }
 function Describe($e) {
   $r = $e.Current.BoundingRectangle
@@ -138,7 +144,7 @@ try {
         foreach ($f in @($b.fields)) {
           Front $xl.Hwnd
           $box = FieldBox ([string]$f.name) 15
-          if ($f.to -eq 'columns') { ToColumns $box } elseif ($b.answer) { Click $box } else { $box.GetCurrentPattern($Toggle).Toggle() }
+          if ($f.to) { ToArea $box $(if ($f.to -eq 'columns') { 'Columns' } else { 'Values' }) } elseif ($b.answer) { Click $box } else { $box.GetCurrentPattern($Toggle).Toggle() }
           Start-Sleep 3
           if ($b.answer) { [void](Closed $(if ($b.answer -eq 'yes') { '{ENTER}' } else { '{ESC}' })) }
           elseif (Closed) { throw "a window came after placing $($f.name)" }

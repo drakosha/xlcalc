@@ -24,6 +24,7 @@ import { pivotOp } from '../../../src/structure/pivot-ops.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { pivotArea } from '../../../src/pivot/area.js'
 import { formatAddress, parseAddress } from '../../../src/model.js'
+import { suggestPivotField } from '../../../src/pivot-suggest.js'
 import { patched } from '../../../src/structure/pivots.js'
 import type { PivotCase, PivotOp } from './cases.js'
 import { DATA, sourceBook, sourceRange } from './data.js'
@@ -177,6 +178,14 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       if (v.item === '(previous)' || v.item === '(next)') d.baseItem = v.item === '(previous)' ? 'previous' : 'next'
       else if (v.item !== undefined && d.baseField !== undefined && itemAt(tableOf(pt), d.baseField, v.item) >= 0) d.baseItem = itemAt(tableOf(pt), d.baseField, v.item)
       setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), d] }))
+      return laid(k)
+    }
+    if ('valueDefault' in op) {
+      // Sum where the field list's box would put the field on Values, Count otherwise
+      const f = fieldOf(op.valueDefault)
+      const s = suggestPivotField(book.pivotCaches![0], f)
+      const fn = s.axis === 'values' ? s.function : 'count'
+      setTable(pt, (t) => placedValues({ ...t, values: [...(t.values ?? []), { field: f, name: wordsOf(undefined).valueName(fn, book.pivotCaches![0].fields[f].name), ...(fn === 'sum' ? {} : { function: fn }) }] }))
       return laid(k)
     }
     if ('dropValue' in op) {

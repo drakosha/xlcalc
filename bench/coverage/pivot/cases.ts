@@ -117,6 +117,8 @@ export type PivotOp = (
   | { pages: string[] }
   | { move: string; to: Axis; position?: number }
   | { value: ValueField }
+  /** A data field added without a function (`AddDataField` with the field alone): the function Excel gives it. */
+  | { valueDefault: string }
   /** A data field by its caption taken off Values (`DataFields(caption).Orientation` hidden). */
   | { dropValue: string }
   /** Fields placed by `PivotTable.AddFields` (added to those there), or a field's `CubeField` given an orientation. */

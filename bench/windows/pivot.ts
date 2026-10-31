@@ -139,7 +139,8 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
       if (v.base !== undefined) props.push(['BaseField', v.base])
       if (v.item !== undefined) props.push(['BaseItem', v.item])
       add(role, { ...at, op: 'data', field: v.field, caption: v.caption ?? null, fn: FN[v.fn ?? 'sum'], props })
-    } else if ('dropValue' in o) add(role, set('data', [['Orientation', AXIS.hidden]], { field: o.dropValue }))
+    } else if ('valueDefault' in o) add(role, { ...at, op: 'dataDefault', field: o.valueDefault })
+    else if ('dropValue' in o) add(role, set('data', [['Orientation', AXIS.hidden]], { field: o.dropValue }))
     else if ('addFields' in o) add(role, call('table', 'AddFields', [o.addFields.rows ?? null, o.addFields.columns ?? null, null, true]))
     else if ('cubeField' in o) add(role, set('cubeField', [['Orientation', AXIS[o.to]]], { field: o.cubeField }))
     else if ('cellFormat' in o) {

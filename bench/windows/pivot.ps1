@@ -145,6 +145,12 @@ function Pivot($xl, $wb, $s) {
         foreach ($p in $s.props) { $df.([string]$p[0]) = PArg $p[1] }
         Str ([string]$df.Caption)
       }
+      # a data field with the field alone, the function Excel gives it: its caption and XlConsolidationFunction
+      'dataDefault' {
+        $pt = PTable $wb $s
+        $df = $pt.AddDataField($pt.PivotFields([string]$s.field))
+        List @((Str ([string]$df.Caption)), (Cell ([double]$df.Function)))
+      }
       # properties set in order on the step's target
       'set' {
         $o = POn $wb $s
