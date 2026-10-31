@@ -66,7 +66,11 @@ const fresh = (ops: PivotOp[]) => ops.findLastIndex((o) => 'edit' in o) < ops.fi
 /** The book saved at the end of phase `k` of `last`: a copy `<case>-<k + 1>.xlsx`, the last one the case's own. */
 async function book(set: string, id: string, k: number, last: number): Promise<BookInput | null> {
   const file = new URL(`${set}/${id}${k < last ? `-${k + 1}` : ''}.xlsx`, DIR)
-  return existsSync(file) ? (await readXlsx(readFileSync(file))).book : null
+  if (!existsSync(file)) return null
+  const read = (await readXlsx(readFileSync(file))).book
+  // a set of Excel ru-RU (`ru-RU/basic`): its workbooks in ru-RU
+  const locale = /^([a-z]{2}-[A-Z]{2})\//.exec(set)?.[1]
+  return locale ? { ...read, locale } : read
 }
 
 /** A book's PivotTables refreshed (`fromSource`) or laid out again. */

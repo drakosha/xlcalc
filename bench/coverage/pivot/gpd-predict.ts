@@ -20,9 +20,12 @@ const ROOT = new URL('../../../', import.meta.url)
  * builds its PivotTable (`gpdOver`), the book Excel saved for it in the set (`set`), its formulas computed anew, the
  * values it stores for them not read; null for one over another book.
  */
-export async function pivotGpdBook(c: PivotCase, set?: string): Promise<BookInput | null> {
+export async function pivotGpdBook(c: PivotCase, set?: string, locale?: string): Promise<BookInput | null> {
   if (c.ops.some((o) => 'external' in o) || (!c.from && !set)) return null
-  const book = (await readXlsx(readFileSync(new URL(`test/excel/win/pivot/${c.from ?? `${set}/${c.id}`}.xlsx`, ROOT)))).book
+  // a set of Excel ru-RU reads the books of its own run (`ru-RU/basic/…`), in ru-RU
+  const dir = locale ? `${locale}/` : ''
+  const read = (await readXlsx(readFileSync(new URL(`test/excel/win/pivot/${dir}${c.from ?? `${set}/${c.id}`}.xlsx`, ROOT)))).book
+  const book = locale ? { ...read, locale } : read
   for (const o of c.ops) {
     if (!('edit' in o)) continue
     const [sheet, cell] = o.edit.split('!')
@@ -63,8 +66,8 @@ export function watched(c: PivotCase): string[] {
 }
 
 /** The engine's values of a case's watched cells. */
-export async function predictCase(c: PivotCase, set?: string): Promise<Record<string, CellValue>> {
-  const book = await pivotGpdBook(c, set)
+export async function predictCase(c: PivotCase, set?: string, locale?: string): Promise<Record<string, CellValue>> {
+  const book = await pivotGpdBook(c, set, locale)
   if (!book) return {}
   const r = compute(book)
   const out: Record<string, CellValue> = {}

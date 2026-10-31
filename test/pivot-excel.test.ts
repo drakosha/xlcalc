@@ -21,6 +21,8 @@ import * as groupHeld from '../bench/coverage/pivot/group-held.js'
 import * as layout from '../bench/coverage/pivot/layout.js'
 import * as layoutHeld from '../bench/coverage/pivot/layout-held.js'
 import { replays, rounded, shown } from '../bench/coverage/pivot/phases.js'
+// the sets of Excel ru-RU lay out in ru-RU
+import './locales.js'
 import * as refresh from '../bench/coverage/pivot/refresh.js'
 import * as show from '../bench/coverage/pivot/show.js'
 import * as slicer from '../bench/coverage/pivot/slicer.js'
@@ -54,9 +56,11 @@ const KNOWN: Record<string, string[]> = {
   'show-items': [],
   slicer: [],
   'slicer-held': [],
+  'ru-RU/basic': [],
+  'ru-RU/layout': [],
 }
 
-const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld }
+const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld, show, 'show-items': showItems, 'show-held': showHeld, 'group-held': groupHeld, 'calc-held': calcHeld, slicer, 'slicer-held': slicerHeld, 'ru-RU/basic': basic, 'ru-RU/layout': layout }
 
 /**
  * The relative difference a set's numbers may have beyond their 15 significant digits: Show Values As divides by sums,
