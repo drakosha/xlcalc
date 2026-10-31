@@ -1,0 +1,1506 @@
+{
+ "page-field": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A1:B9",
+     "values": [
+      [
+       "Product",
+       "(Multiple Items)"
+      ],
+      [
+       null,
+       null
+      ],
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       17
+      ],
+      [
+       "east",
+       33
+      ],
+      [
+       "North",
+       23
+      ],
+      [
+       "South",
+       15
+      ],
+      [
+       "West",
+       42
+      ],
+      [
+       "Grand Total",
+       130
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Product": [
+     [
+      "7",
+      false,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      true,
+      true
+     ],
+     [
+      "Pear",
+      true,
+      true
+     ],
+     [
+      "Plum",
+      false,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "page-field-one": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A1:B10",
+     "values": [
+      [
+       "Product",
+       "Plum"
+      ],
+      [
+       null,
+       null
+      ],
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       14
+      ],
+      [
+       "east",
+       5
+      ],
+      [
+       "North",
+       1
+      ],
+      [
+       "South",
+       11
+      ],
+      [
+       "West",
+       27
+      ],
+      [
+       "(blank)",
+       4
+      ],
+      [
+       "Grand Total",
+       62
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Product": [
+     [
+      "7",
+      false,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      false,
+      true
+     ],
+     [
+      "Pear",
+      false,
+      true
+     ],
+     [
+      "Plum",
+      true,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "off-axes": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B8",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       12
+      ],
+      [
+       "east",
+       12
+      ],
+      [
+       "South",
+       11
+      ],
+      [
+       "West",
+       36
+      ],
+      [
+       "Grand Total",
+       71
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Code": [
+     [
+      "5",
+      false,
+      true
+     ],
+     [
+      "15",
+      false,
+      true
+     ],
+     [
+      "25",
+      true,
+      true
+     ],
+     [
+      "35",
+      false,
+      true
+     ],
+     [
+      "15",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "off-axes-text-number": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       9
+      ],
+      [
+       "east",
+       10
+      ],
+      [
+       "North",
+       11
+      ],
+      [
+       "South",
+       17
+      ],
+      [
+       "West",
+       19
+      ],
+      [
+       "Grand Total",
+       66
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Code": [
+     [
+      "5",
+      false,
+      true
+     ],
+     [
+      "15",
+      true,
+      true
+     ],
+     [
+      "25",
+      false,
+      true
+     ],
+     [
+      "35",
+      false,
+      true
+     ],
+     [
+      "15",
+      true,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "two-pivots": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       10
+      ],
+      [
+       "east",
+       18
+      ],
+      [
+       "North",
+       11
+      ],
+      [
+       "South",
+       28
+      ],
+      [
+       "West",
+       25
+      ],
+      [
+       "Grand Total",
+       92
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F8",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "Apple",
+       28.29
+      ],
+      [
+       "Fig",
+       87.72999999999999
+      ],
+      [
+       "Pear",
+       130.2
+      ],
+      [
+       "Plum",
+       78.89999999999999
+      ],
+      [
+       "Grand Total",
+       325.11999999999995
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Flag": [
+     [
+      "FALSE",
+      true,
+      true
+     ],
+     [
+      "TRUE",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "two-slicers-cross": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "West",
+       5
+      ],
+      [
+       "Grand Total",
+       5
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "7",
+       null
+      ],
+      [
+       "Grand Total",
+       null
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "West",
+      true,
+      true
+     ],
+     [
+      "Central",
+      true,
+      false
+     ],
+     [
+      "east",
+      true,
+      false
+     ],
+     [
+      "North",
+      true,
+      false
+     ],
+     [
+      "South",
+      true,
+      false
+     ],
+     [
+      "(blank)",
+      true,
+      false
+     ]
+    ],
+    "Slicer_Product": [
+     [
+      "7",
+      true,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      false,
+      true
+     ],
+     [
+      "Pear",
+      false,
+      true
+     ],
+     [
+      "Plum",
+      false,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "sort-descending": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B6",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "east",
+       65
+      ],
+      [
+       "North",
+       27
+      ],
+      [
+       "Grand Total",
+       92
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "(blank)",
+      false,
+      true
+     ],
+     [
+      "West",
+      false,
+      true
+     ],
+     [
+      "South",
+      false,
+      true
+     ],
+     [
+      "North",
+      true,
+      true
+     ],
+     [
+      "east",
+      true,
+      true
+     ],
+     [
+      "Central",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "sort-source": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B10",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       42
+      ],
+      [
+       "east",
+       65
+      ],
+      [
+       "North",
+       27
+      ],
+      [
+       "South",
+       54
+      ],
+      [
+       "West",
+       98
+      ],
+      [
+       "(blank)",
+       4
+      ],
+      [
+       "Grand Total",
+       290
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Product": [
+     [
+      "7",
+      true,
+      true
+     ],
+     [
+      "Apple",
+      true,
+      true
+     ],
+     [
+      "Fig",
+      true,
+      true
+     ],
+     [
+      "Pear",
+      true,
+      true
+     ],
+     [
+      "Plum",
+      true,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      true,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "no-data-hidden": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "West",
+       5
+      ],
+      [
+       "Grand Total",
+       5
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "West",
+      true,
+      true
+     ],
+     [
+      "Central",
+      true,
+      false
+     ],
+     [
+      "east",
+      true,
+      false
+     ],
+     [
+      "North",
+      true,
+      false
+     ],
+     [
+      "South",
+      true,
+      false
+     ],
+     [
+      "(blank)",
+      true,
+      false
+     ]
+    ],
+    "Slicer_Product": [
+     [
+      "7",
+      true,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      false,
+      true
+     ],
+     [
+      "Pear",
+      false,
+      true
+     ],
+     [
+      "Plum",
+      false,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "no-data-none": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "West",
+       5
+      ],
+      [
+       "Grand Total",
+       5
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      true,
+      false
+     ],
+     [
+      "east",
+      true,
+      false
+     ],
+     [
+      "North",
+      true,
+      false
+     ],
+     [
+      "South",
+      true,
+      false
+     ],
+     [
+      "West",
+      true,
+      true
+     ],
+     [
+      "(blank)",
+      true,
+      false
+     ]
+    ],
+    "Slicer_Product": [
+     [
+      "7",
+      true,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      false,
+      true
+     ],
+     [
+      "Pear",
+      false,
+      true
+     ],
+     [
+      "Plum",
+      false,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "no-data-dimmed": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "West",
+       5
+      ],
+      [
+       "Grand Total",
+       5
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      true,
+      false
+     ],
+     [
+      "east",
+      true,
+      false
+     ],
+     [
+      "North",
+      true,
+      false
+     ],
+     [
+      "South",
+      true,
+      false
+     ],
+     [
+      "West",
+      true,
+      true
+     ],
+     [
+      "(blank)",
+      true,
+      false
+     ]
+    ],
+    "Slicer_Product": [
+     [
+      "7",
+      true,
+      true
+     ],
+     [
+      "Apple",
+      false,
+      true
+     ],
+     [
+      "Fig",
+      false,
+      true
+     ],
+     [
+      "Pear",
+      false,
+      true
+     ],
+     [
+      "Plum",
+      false,
+      true
+     ],
+     [
+      "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "connect": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "South",
+       54
+      ],
+      [
+       "Grand Total",
+       54
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F10",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "7",
+       null
+      ],
+      [
+       "Apple",
+       185.06
+      ],
+      [
+       "Fig",
+       244.48999999999998
+      ],
+      [
+       "Pear",
+       217.14000000000001
+      ],
+      [
+       "Plum",
+       244.61
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       78.19999999999999
+      ],
+      [
+       "Grand Total",
+       969.5000000000001
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      false,
+      true
+     ],
+     [
+      "east",
+      false,
+      true
+     ],
+     [
+      "North",
+      false,
+      true
+     ],
+     [
+      "South",
+      true,
+      true
+     ],
+     [
+      "West",
+      false,
+      true
+     ],
+     [
+      "(blank)",
+      false,
+      true
+     ]
+    ]
+   }
+  },
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "South",
+       54
+      ],
+      [
+       "Grand Total",
+       54
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "Apple",
+       42.769999999999996
+      ],
+      [
+       "Fig",
+       4.32
+      ],
+      [
+       "Pear",
+       46.85
+      ],
+      [
+       "Plum",
+       45.99
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       58.65
+      ],
+      [
+       "Grand Total",
+       198.58
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      false,
+      true
+     ],
+     [
+      "east",
+      false,
+      true
+     ],
+     [
+      "North",
+      false,
+      true
+     ],
+     [
+      "South",
+      true,
+      true
+     ],
+     [
+      "West",
+      false,
+      true
+     ],
+     [
+      "(blank)",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "disconnect": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "South",
+       54
+      ],
+      [
+       "Grand Total",
+       54
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "Apple",
+       42.769999999999996
+      ],
+      [
+       "Fig",
+       4.32
+      ],
+      [
+       "Pear",
+       46.85
+      ],
+      [
+       "Plum",
+       45.99
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       58.65
+      ],
+      [
+       "Grand Total",
+       198.58
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      false,
+      true
+     ],
+     [
+      "east",
+      false,
+      true
+     ],
+     [
+      "North",
+      false,
+      true
+     ],
+     [
+      "South",
+      true,
+      true
+     ],
+     [
+      "West",
+      false,
+      true
+     ],
+     [
+      "(blank)",
+      false,
+      true
+     ]
+    ]
+   }
+  },
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "South",
+       54
+      ],
+      [
+       "Grand Total",
+       54
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "Apple",
+       42.769999999999996
+      ],
+      [
+       "Fig",
+       4.32
+      ],
+      [
+       "Pear",
+       46.85
+      ],
+      [
+       "Plum",
+       45.99
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       58.65
+      ],
+      [
+       "Grand Total",
+       198.58
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      false,
+      true
+     ],
+     [
+      "east",
+      false,
+      true
+     ],
+     [
+      "North",
+      false,
+      true
+     ],
+     [
+      "South",
+      true,
+      true
+     ],
+     [
+      "West",
+      false,
+      true
+     ],
+     [
+      "(blank)",
+      false,
+      true
+     ]
+    ]
+   }
+  },
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "West",
+       98
+      ],
+      [
+       "Grand Total",
+       98
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F9",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "Apple",
+       42.769999999999996
+      ],
+      [
+       "Fig",
+       4.32
+      ],
+      [
+       "Pear",
+       46.85
+      ],
+      [
+       "Plum",
+       45.99
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       58.65
+      ],
+      [
+       "Grand Total",
+       198.58
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Slicer_Region": [
+     [
+      "Central",
+      false,
+      true
+     ],
+     [
+      "east",
+      false,
+      true
+     ],
+     [
+      "North",
+      false,
+      true
+     ],
+     [
+      "South",
+      false,
+      true
+     ],
+     [
+      "West",
+      true,
+      true
+     ],
+     [
+      "(blank)",
+      false,
+      true
+     ]
+    ]
+   }
+  }
+ ],
+ "timeline-years": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B10",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       17
+      ],
+      [
+       "east",
+       32
+      ],
+      [
+       "North",
+       27
+      ],
+      [
+       "South",
+       27
+      ],
+      [
+       "West",
+       41
+      ],
+      [
+       "(blank)",
+       4
+      ],
+      [
+       "Grand Total",
+       148
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Timeline_Date": {
+     "timeline": [
+      45658,
+      46022,
+      0
+     ]
+    }
+   }
+  }
+ ],
+ "timeline-months-two": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B8",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       "Central",
+       16
+      ],
+      [
+       "east",
+       18
+      ],
+      [
+       "South",
+       12
+      ],
+      [
+       "West",
+       32
+      ],
+      [
+       "Grand Total",
+       78
+      ]
+     ]
+    },
+    "PT2": {
+     "area": "E3:F10",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Price"
+      ],
+      [
+       "7",
+       null
+      ],
+      [
+       "Apple",
+       57.89
+      ],
+      [
+       "Fig",
+       86.08000000000001
+      ],
+      [
+       "Pear",
+       55.52
+      ],
+      [
+       "Plum",
+       15.459999999999999
+      ],
+      [
+       "Quince preserved in a syrup of honey and lemon peel, sold by the jar at the market on Saturdays",
+       12.01
+      ],
+      [
+       "Grand Total",
+       226.96
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Timeline_Date": {
+     "timeline": [
+      45323,
+      45535,
+      2
+     ]
+    }
+   }
+  }
+ ],
+ "timeline-one-day": [
+  {
+   "pivots": {
+    "PT1": {
+     "area": "A3:B5",
+     "values": [
+      [
+       "Row Labels",
+       "Sum of Qty"
+      ],
+      [
+       45769,
+       24
+      ],
+      [
+       "Grand Total",
+       24
+      ]
+     ]
+    }
+   },
+   "slicers": {
+    "Timeline_Date": {
+     "timeline": [
+      45769,
+      45769,
+      3
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -6,7 +6,8 @@
  * harness reads them (name, selected, has data, in the slicer's order) or a timeline's dates and level. Run:
  * `npx tsx bench/coverage/pivot/slicer-predict.ts <set> <out.json>`. `slicer.predicted.json` is the prediction made before the
  * answers were read: 31 of 38 held, the 7 others a blank region whose one record has no price, which Excel tells has no
- * data. `slicer-delete.predicted.json` likewise for that set's cases a session takes. The comparison with Excel:
+ * data. `slicer-delete.predicted.json` likewise for that set's cases a session takes; `slicer-held.predicted.json`
+ * for the held-out set over the rows of `stock`, its PivotTables played on the engine alone (`drive.ts`). The comparison with Excel:
  * `test/pivot-slicers-excel.test.ts`.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -22,6 +23,7 @@ import { fieldIndex } from '../../../src/structure/slicer-choice.js'
 import { ERROR_CODE } from '../../../src/syntax/errors.js'
 import { readXlsx } from '../../../src/xlsx.js'
 import type { PivotCase, PivotOp, PivotPhase, PivotSet, SlicerItem } from './cases.js'
+import { drive } from './drive.js'
 
 const ROOT = new URL('../../../', import.meta.url)
 const LEVELS = ['years', 'quarters', 'months', 'days'] as const
@@ -62,30 +64,46 @@ function changed(book: BookInput, name: string, f: (p: NonNullable<BookInput['sh
   return r.book
 }
 
-/** The book of a case before its slicers: the PivotTables and fields its first operations make. */
+/** The operations a session plays after the PivotTables are made: slicers, timelines, their choices and settings, the phases' ends. */
+const slicing = (o: PivotOp) => 'slicer' in o || 'select' in o || 'timeline' in o || 'read' in o || 'deleteSlicer' in o || 'slicerSettings' in o || 'link' in o
+
+/**
+ * The book of a case before its slicers: the PivotTables and fields its first operations make, over a book of `basic`
+ * for the rows of `sales`, or played on the engine alone (`drive.ts`) for other rows; the page field, its item and the
+ * hidden items put in the model.
+ */
 async function start(c: PivotCase): Promise<{ book: BookInput; rest: PivotOp[] }> {
   const dates = 'rows' in c.ops[0] && c.ops[0].rows[0] === 'Date'
-  let book = await load(dates ? 'date-rows' : 'price-sum')
+  const own = (o: PivotOp) => 'pages' in o || 'page' in o || 'hide' in o
+  let book = c.data ? drive({ ...c, ops: c.ops.filter((o) => !slicing(o) && !own(o)) }).at(-1)!.book : await load(dates ? 'date-rows' : 'price-sum')
   const cache = () => book.pivotCaches![0]
   const at = (field: string) => fieldIndex(cache(), field)
+  /** The field listed in the cache and on PT1 in Excel's order of a field placed: ascending. */
+  const listedOn = (f: number) => {
+    book = { ...book, pivotCaches: [withListed(cache(), [f])] }
+    const values = cache().fields[f].items!
+    return values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], false, null))
+  }
   const rest: PivotOp[] = []
   for (const o of c.ops) {
-    if ('create' in o)
-      book = changed(book, o.create, (p, b) => ({ name: o.create, cache: p.cache, location: { range: `${o.at.split('!')[1]}:${o.at.split('!')[1]}`, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: b.pivotCaches![0].fields.map(() => ({})) }), true)
-    else if ('rows' in o && o.pt) book = changed(book, o.pt, (p) => ({ ...p, rows: o.rows.map(at) }))
-    else if ('value' in o && o.pt) book = changed(book, o.pt, (p) => ({ ...p, values: [{ field: at(o.value.field), name: `Sum of ${o.value.field}` }] }))
+    if (slicing(o)) rest.push(o)
     else if ('hide' in o) {
       const f = at(o.hide)
       book = changed(book, 'PT1', (p) => ({ ...p, fields: p.fields.map((pf, i) => (i !== f ? pf : { ...pf, items: pf.items!.map((x) => (o.items.includes(itemText(cache().fields[f].items![x.item!])) ? { ...x, hidden: true } : x)) })) }))
+    } else if ('pages' in o) {
+      const fs = o.pages.map(at)
+      const orders = fs.map(listedOn)
+      book = changed(book, 'PT1', (p) => ({ ...p, pages: fs.map((field) => ({ field })), fields: p.fields.map((pf, i) => (fs.includes(i) ? { ...pf, items: orders[fs.indexOf(i)].map((k) => ({ item: k })) } : pf)) }))
     } else if ('page' in o) {
       const f = at(o.page)
-      const listed = withListed(cache(), [f])
-      book = { ...book, pivotCaches: [listed] }
-      const values = listed.fields[f].items!
-      const order = values.map((_, k) => k).sort((a, b) => labelOrder(values[a], values[b], false, null))
-      const item = order.findIndex((k) => itemText(values[k]) === (o.items as string[])[0])
-      book = changed(book, 'PT1', (p) => ({ ...p, pages: [{ field: f, item }], fields: p.fields.map((pf, i) => (i !== f ? pf : { ...pf, items: order.map((k) => ({ item: k })) })) }))
-    } else if ('slicer' in o || 'select' in o || 'timeline' in o || 'read' in o || 'deleteSlicer' in o) rest.push(o)
+      const order = listedOn(f)
+      const item = order.findIndex((k) => itemText(cache().fields[f].items![k]) === (o.items as string[])[0])
+      book = changed(book, 'PT1', (p) => ({ ...p, pages: [...(p.pages ?? []).filter((x) => x.field !== f), { field: f, item }], fields: p.fields.map((pf, i) => (i !== f ? pf : { ...pf, items: order.map((k) => ({ item: k })) })) }))
+    } else if (c.data) continue
+    else if ('create' in o)
+      book = changed(book, o.create, (p, b) => ({ name: o.create, cache: p.cache, location: { range: `${o.at.split('!')[1]}:${o.at.split('!')[1]}`, firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: b.pivotCaches![0].fields.map(() => ({})) }), true)
+    else if ('rows' in o && o.pt) book = changed(book, o.pt, (p) => ({ ...p, rows: o.rows.map(at) }))
+    else if ('value' in o && o.pt) book = changed(book, o.pt, (p) => ({ ...p, values: [{ field: at(o.value.field), name: `Sum of ${o.value.field}` }] }))
   }
   return { book, rest }
 }
@@ -125,7 +143,8 @@ export async function predict(c: PivotCase): Promise<PredictedPhase[]> {
   for (const o of rest) {
     if ('read' in o) read()
     else if ('slicer' in o || 'timeline' in o) {
-      const pivots: PivotRef[] = ['PT1', ...('pivots' in o ? (o.pivots ?? []) : [])].map((name) => ({ sheet: 'P', name }))
+      // Excel's SlicerCaches.Add2 over the operation's PivotTable, then the others named
+      const pivots: PivotRef[] = [o.pt ?? 'PT1', ...('pivots' in o ? (o.pivots ?? []) : [])].map((name) => ({ sheet: 'P', name }))
       if ('slicer' in o) edit({ op: 'addSlicer', sheet: 'P', slicer: { name: o.name }, cache: { field: o.slicer, pivots } })
       else {
         edit({ op: 'addTimeline', sheet: 'P', timeline: { name: o.name, ...(o.level ? { level: o.level } : {}) }, cache: { field: o.timeline, pivots } })
@@ -135,6 +154,18 @@ export async function predict(c: PivotCase): Promise<PredictedPhase[]> {
       // SlicerCache.Delete: every slicer or timeline of the cache
       const b = s.getBook()
       for (const sh of b.sheets) for (const kind of ['slicers', 'timelines'] as const) for (const x of sh[kind] ?? []) if (x.cache === o.deleteSlicer || x.name === o.deleteSlicer) edit(kind === 'slicers' ? { op: 'deleteSlicer', slicer: x.name } : { op: 'deleteTimeline', timeline: x.name })
+    } else if ('slicerSettings' in o) {
+      // Excel's order of the data source has no word in the cache: taken as ascending
+      const noData = { none: { mark: false }, last: {}, dimmed: { last: false }, hidden: { hide: true } } as const
+      edit({ op: 'editSlicer', slicer: o.slicerSettings, cache: { ...(o.order && o.order !== 'source' ? { sort: o.order } : {}), ...(o.noData ? { noData: noData[o.noData] } : {}) } })
+    } else if ('link' in o) {
+      const b = s.getBook()
+      const timeline = b.sheets.some((sh) => sh.timelines?.some((t) => t.name === o.link))
+      const own = timeline ? b.sheets.flatMap((sh) => sh.timelines ?? []).find((t) => t.name === o.link)! : b.sheets.flatMap((sh) => sh.slicers ?? []).find((t) => t.name === o.link)!
+      const was = (timeline ? b.timelineCaches : b.slicerCaches)!.find((x) => x.name === own.cache)!.pivots
+      const ref = { sheet: 'P', name: o.pivot }
+      const pivots = o.off ? was.filter((r) => r.name !== o.pivot) : [...was, ref]
+      edit(timeline ? { op: 'editTimeline', timeline: o.link, cache: { pivots } } : { op: 'editSlicer', slicer: o.link, cache: { pivots } })
     } else if ('select' in o) {
       const b = s.getBook()
       const sc = b.slicerCaches!.find((x) => x.name === o.select)!
