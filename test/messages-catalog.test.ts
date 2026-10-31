@@ -140,6 +140,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   pivotItemTaken: [{ item: 'Group1' }],
   slicerField: [{ field: 'Region' }],
   slicerNameTaken: [{ name: 'Region' }],
+  slicerNameEmpty: [{}],
   timelineField: [{ field: 'Region' }],
   pivotCut: [{ sheet: 'P', pivot: 'PT1' }],
   pivotTableNameTaken: [{ sheet: 'P', name: 'PT1' }],

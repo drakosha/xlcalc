@@ -387,6 +387,12 @@ const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMes
     { op: 'addSlicer', sheet: 'Свод', slicer: { name: 'n' }, cache: { field: 'Регион', pivots: [{ sheet: 'Свод', name: 'Сводная1' }] } },
     { key: 'slicerNameTaken', name: 'n' },
   ],
+  [
+    'a slicer of an empty name',
+    (l) => pivotBook(l),
+    { op: 'addSlicer', sheet: 'Свод', slicer: { name: '' }, cache: { field: 'Регион', pivots: [{ sheet: 'Свод', name: 'Сводная1' }] } },
+    { key: 'slicerNameEmpty' },
+  ],
   ['a calculated item named as an item', (l) => pivotBook(l), { op: 'setPivotCalculatedItem', sheet: 'Свод', pivot: 'Сводная1', field: 0, name: 'A', formula: '=a*2' }, { key: 'pivotItemTaken', item: 'A' }],
 ]
 

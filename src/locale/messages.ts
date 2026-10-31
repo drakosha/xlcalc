@@ -381,6 +381,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pivotItemTaken: { item: string }
   slicerField: { field: string }
   slicerNameTaken: { name: string }
+  slicerNameEmpty: object
   timelineField: { field: string }
   pivotCut: { sheet: string; pivot: string }
   pivotTableNameTaken: { sheet: string; name: string }
@@ -419,7 +420,7 @@ export type PivotEditKey =
   | 'pivotUnknown' | 'pivotSourceKept' | 'pivotSourceGone' | 'pivotFieldName' | 'pivotNotLoaded'
   | 'pivotOverData' | 'pivotOverPivot' | 'pivotOverTable' | 'pivotPart' | 'pivotAffect' | 'pivotFormula' | 'pivotNameTaken' | 'pivotNotItem'
   | 'pivotCantGroup' | 'pivotNotGrouped' | 'pivotGroupedItems' | 'pivotItemsAverage' | 'pivotFormulaRefs' | 'pivotFormulaBad' | 'pivotItemTaken'
-  | 'slicerField' | 'slicerNameTaken' | 'timelineField'
+  | 'slicerField' | 'slicerNameTaken' | 'slicerNameEmpty' | 'timelineField'
   | 'pivotCut' | 'pivotTableNameTaken' | 'pivotNameEmpty' | 'pivotSourceRows'
 
 /** The keys of the engine's other messages: of formula text, names, input and outlines. */
