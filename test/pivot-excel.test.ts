@@ -25,25 +25,23 @@ import * as sortHeld from '../bench/coverage/pivot/sort-held.js'
 const DIR = new URL('./excel/win/pivot/', import.meta.url)
 
 /**
- * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. basic: empty cells with
- * "For empty cells show", which Excel shows as 0 (not measured further). sort: items of several custom lists at once,
- * which Excel orders by no order we found (`docs/development.md`). refresh: a refresh growing over cells or another
- * PivotTable, which Excel lays out as one cell of #SPILL! where the placement refuses it. layout: a field's subtotals by
- * several functions, which the reading of the file does not take yet. calc: a calculated field's grand total in the 15th
- * significant digit (Excel's sums of 48 rows of cents add in an order we did not find: 4.77562790697674 where the rows
- * in any order of their items give 4.77562790697675), and Show Values As over a calculated field, which is `pivot/show`'s.
+ * The cases of a set whose PivotTables differ from Excel's, by set, as `<case>/<phase>/<how>`. sort: items of several
+ * custom lists at once, which Excel orders by no order we found (`docs/development.md`). calc: a calculated field's
+ * grand total in the 15th significant digit (Excel adds the sums of a total in an order we did not find: 4.77562790697674
+ * where the rows in any order of their items give 4.77562790697675), and Show Values As over a calculated field, which
+ * is `pivot/show`'s.
  */
 const KNOWN: Record<string, string[]> = {
   'layout-held': [],
   'filter-held': [],
   'sort-held': [],
-  basic: ['shown-errors/0/saved', 'shown-errors/0/source'],
+  basic: [],
   filter: [],
   group: [],
   calc: [...['ratio-price', 'ratio-tabular', 'ratio-columns', 'over-another', 'percent-of-total'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`])],
   sort: ['months-down/0/saved', 'months-down/0/source'],
-  layout: ['subtotals-columns', 'subtotals-inner', 'subtotals-three-compact', 'subtotals-three'].flatMap((c) => [`${c}/0/saved`, `${c}/0/source`]),
-  refresh: ['over-values/1/saved', 'over-values/1/refresh', 'two-overlap/1/saved', 'two-overlap/1/refresh', 'two-overlap-all/1/saved', 'two-overlap-all/1/refresh'],
+  layout: [],
+  refresh: [],
 }
 
 const SETS: Record<string, PivotSet> = { basic, filter, sort, refresh, layout, group, calc, 'layout-held': layoutHeld, 'filter-held': filterHeld, 'sort-held': sortHeld }

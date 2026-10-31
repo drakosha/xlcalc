@@ -60,6 +60,26 @@ describe('GETPIVOTDATA', () => {
     expect(values(swapped)).toEqual([120, 60])
   })
 
+  it("a collapsed item's line holds its total, in the tabular form too, where the inner field shows no line under it", () => {
+    const f = ['GETPIVOTDATA("Amount",Pivot!A3,"Region","South")', 'GETPIVOTDATA("Amount",Pivot!A3,"Region","South","Month","Jan")']
+    const collapsed = withFormulas(f, (x) => {
+      const t = x.sheets[1].pivotTables![0]
+      t.rows = [0, 2]
+      t.layout = 'tabular'
+      t.fields[0].items = t.fields[0].items!.map((i) => ({ ...i, collapsed: true }))
+      t.fields[2] = { items: [{ item: 0 }, { item: 1 }] }
+    })
+    expect(values(collapsed)).toEqual([80, REF])
+    // not collapsed, the tabular form shows no subtotal on the item's line
+    const shown = withFormulas(f, (x) => {
+      const t = x.sheets[1].pivotTables![0]
+      t.rows = [0, 2]
+      t.layout = 'tabular'
+      t.fields[2] = { items: [{ item: 0 }, { item: 1 }] }
+    })
+    expect(values(shown)).toEqual([REF, REF])
+  })
+
   it('a field of the Filters area by the item it shows, its cells part of the PivotTable', () => {
     const page = (item?: number) =>
       withFormulas(['GETPIVOTDATA("Amount",Pivot!A1,"Month","Jan")', 'GETPIVOTDATA("Amount",Pivot!B1)'], (x) => {

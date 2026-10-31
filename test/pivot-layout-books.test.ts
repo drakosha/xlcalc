@@ -86,7 +86,9 @@ describe.each(SETS)('the layout of the PivotTables of set %s', (set) => {
         }
         const want = shown.values.map((row, i) => row.map((v, j) => (typeof v === 'number' && typeof got[i][j] === 'number' && Math.abs(v - (got[i][j] as number)) < 1e-9 ? got[i][j] : v)))
         expect(got).toEqual(want)
-        expect(formats).toEqual(shown.formats)
+        // a format as the file stores it escapes its literal characters (`yyyy\-mm\-dd`), as COM gives it not
+        const unescaped = (g: string[][]) => g.map((r) => r.map((f) => f.replace(/\\(.)/g, '$1')))
+        expect(unescaped(formats)).toEqual(unescaped(shown.formats))
         expect(laid.cells.every((c) => c.row >= a.row && c.row <= (b ?? a).row && c.col >= a.col && c.col <= (b ?? a).col)).toBe(true)
       }
     expect(seen).toBeGreaterThan(0)

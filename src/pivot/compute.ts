@@ -98,8 +98,11 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     for (const r of rs) t.add(...readers[v](r))
     return t
   }
-  // value filters and Top 10, field by field down the rows then the columns: each item against the others under the same items before it
-  for (const fields of [rowFields, colFields]) {
+  // value filters and Top 10, field by field down the rows then the columns: each item against the others under the same
+  // items before it; an axis shows the items its own filters leave, the values are of the records both leave (the set
+  // filter-held: rows all filtered out by value, the columns' items still shown)
+  const shownBy = { rows: alive, columns: alive }
+  for (const [fields, axis] of [[rowFields, 'rows'], [colFields, 'columns']] as const) {
     fields.forEach((f, level) => {
       for (const flt of (table.filters ?? []).filter((x) => x.field === f && byValue(x))) {
         const groups = new Map<string, Map<number, number[]>>()
@@ -112,11 +115,13 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
         const v = flt.value ?? 0
         const out = new Set<number>()
         for (const items of groups.values()) {
-          const list = [...items]
+          const list = [...items].sort(([x], [y]) => x - y)
           const kept = valuesKept(flt, list.map(([, rs]) => (values[v] ? tally(rs, v).value(fns[v]) : null)))
           list.forEach(([, rs], i) => !kept[i] && rs.forEach((r) => out.add(r)))
         }
-        if (out.size) alive = alive.filter((r) => !out.has(r))
+        if (!out.size) continue
+        alive = alive.filter((r) => !out.has(r))
+        shownBy[axis] = shownBy[axis].filter((r) => !out.has(r))
       }
     })
   }
@@ -130,8 +135,8 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     for (let m = 0; m < measures.length; m++) cell[m].add(...readers[m](r))
   }
   const sorting = { table, cache, shown, epoch, lists }
-  const rowRoot = branches(sorting, at, alive, rowFields)
-  const colRoot = branches(sorting, at, alive, colFields)
+  const rowRoot = branches(sorting, at, shownBy.rows, rowFields)
+  const colRoot = branches(sorting, at, shownBy.columns, colFields)
   const calcItems = itemFormulas(table, cache, epoch)
   withCalculatedItems(rowRoot, rowFields, calcItems, shown)
   withCalculatedItems(colRoot, colFields, calcItems, shown)
@@ -209,8 +214,11 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
     fn !== undefined && formulas.has(measures[v]) ? null : settled(batch, () => measure(rows, columns, v, fn ?? fns[v]))
   const hasData = (rows: readonly number[], columns: readonly number[]) => (calcAt(rows, columns) ? reached(rows, columns) : reach(rows, columns) !== null)
   // sorting by values reads them in the order before; the cells are made again in the order shown
-  sortBranches(sorting, rowRoot, rowFields, colFields, true, value)
-  sortBranches(sorting, colRoot, colFields, rowFields, false, value)
+  // an item's value over every item of the fields before it on its axis, at the other axis's path `other`
+  const alone = (f: number, item: number, other: number[], v: number, otherFields: readonly number[]): CellValue =>
+    values[v] ? tally(alive.filter((r) => at[f][r] === item && other.every((p, k) => at[otherFields[k]][r] === p)), v).value(fns[v]) : null
+  sortBranches(sorting, rowRoot, rowFields, colFields, true, value, (f, p, o, v) => alone(f, p, o, v, colFields))
+  sortBranches(sorting, colRoot, colFields, rowFields, false, value, (f, p, o, v) => alone(f, p, o, v, rowFields))
   memo = new Map()
   if (formulas.size || calcItems.size) prefetch(batch, rowRoot, colRoot, values.length, (r, c, v) => measure(r, c, v, fns[v]))
   const pages = (table.pages ?? []).map((p): PivotPageResult => {
