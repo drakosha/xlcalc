@@ -86,7 +86,7 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
     if (level === real.length) return
     const f = real[level]
     const pf = s.table.fields[f]
-    const sort = pf.autoSort === false ? undefined : pf.sort
+    const sort = pf.sort
     if (sort?.by) {
       const at = otherPath(other, sort.by.at)
       const v = sort.by.value
