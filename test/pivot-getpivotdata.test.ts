@@ -80,6 +80,15 @@ describe('GETPIVOTDATA', () => {
     expect(values(shown)).toEqual([REF, REF])
   })
 
+  it('items whose labels differ in case alone: the one spelled as the argument, else the first', () => {
+    const f = ['GETPIVOTDATA("Amount",Pivot!A3,"Region","West")', 'GETPIVOTDATA("Amount",Pivot!A3,"Region","north")', 'GETPIVOTDATA("Amount",Pivot!A3,"Region","WEST")']
+    // the cache keeps "west" beside "West", as a cache from another source may
+    const b = withFormulas(f, (x) => {
+      x.pivotCaches![0].fields[0].items = ['North', 'South', 'west', 'West']
+    })
+    expect(values(b)).toEqual([120, 60, 100])
+  })
+
   it('a field of the Filters area by the item it shows, its cells part of the PivotTable', () => {
     const page = (item?: number) =>
       withFormulas(['GETPIVOTDATA("Amount",Pivot!A1,"Month","Jan")', 'GETPIVOTDATA("Amount",Pivot!B1)'], (x) => {
