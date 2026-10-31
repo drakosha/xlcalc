@@ -91,7 +91,10 @@ function itemsNamed(cx: Cx, t: PivotTable, c: PivotCache, f: number, arg: V): Se
     if (v !== undefined && names(cx, arg, cellOf(v, cx.rules.epoch), it.caption, itemFormat(c, f, v))) found.push([k, typeof v === 'string'])
   })
   const text = typeof arg === 'string' && found.some(([, x]) => x)
-  return new Set(found.flatMap(([k, x]) => (!text || x ? [k] : [])))
+  const kept = found.filter(([, x]) => !text || x)
+  // items whose labels differ in case alone (a cache that keeps both): the one spelled as the argument where there is one
+  const spelled = kept.filter(([k]) => typeof arg === 'string' && values[t.fields[f].items![k].item!] === arg)
+  return new Set((spelled.length ? spelled : kept).map(([k]) => k))
 }
 
 /** A field by its name in the PivotTable, the source's where it has none of its own, in any case (the set gpd-held). */
@@ -124,7 +127,9 @@ function slotOf(list: (Slot | null)[], wanted: Map<number, Set<number>>, own: (f
   const at = (keep: (x: Slot) => boolean) => list.flatMap((x, k) => (x && keep(x) ? [k] : []))
   const exact = at((x) => fits(x, true))
   const lines = exact.filter((k) => !list[k]!.header)
-  if (exact.length) return lines.length > 1 ? -1 : (lines[0] ?? exact[0])
+  // lines of the same items are a field's subtotals of several functions; of other items, the first is taken
+  const same = (a: Slot, b: Slot) => a.items.size === b.items.size && [...a.items].every(([f, i]) => b.items.get(f) === i)
+  if (exact.length) return lines.length > 1 && same(list[lines[0]]!, list[lines[1]]!) ? -1 : (lines[0] ?? exact[0])
   const more = at((x) => fits(x, false))
   const fewest = Math.min(...more.map((k) => list[k]!.items.size))
   const least = more.filter((k) => list[k]!.items.size === fewest)
