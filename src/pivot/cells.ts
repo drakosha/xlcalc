@@ -23,9 +23,10 @@ function cellsOf(t: PivotTable): PivotCells {
   const cells: Record<string, PivotCell> = {}
   const buttons: string[] = []
   const put = (row: number, col: number, c: Omit<PivotCell, 'pivot'>) => (cells[formatAddress(row, col)] = { pivot: t.name, ...c })
-  for (const x of pivotParts(t)) for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) put(r, c, { kind: 'blank' })
   const x = parseRange(t.location.range)
   if (!x) return { cells, buttons }
+  // the table's cells; of the Filters area only its fields' names and items, the cells between them none of its own
+  for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) put(r, c, { kind: 'blank' })
   const rowFields = t.rows ?? []
   const colFields = t.columns ?? []
   const values = t.values ?? []
@@ -43,12 +44,18 @@ function cellsOf(t: PivotTable): PivotCells {
     if (part.kind === 'page') put(row, col, { kind: 'pageItem', axis, field: part.field })
     else if (part.kind === 'field') put(row, col, part.field === 'values' ? { kind: 'valuesField', axis, field: 'values' } : { kind: 'field', axis, field: part.field })
     else if (part.kind === 'value') put(row, col, part.total ? { kind: 'grand', axis: 'columns' } : { kind: 'valueName', value: part.value })
-    // Excel's filter buttons: the headers of the rows and columns and the report filters' items
-    if (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'page' || (part.kind === 'field' && part.field !== 'values' && at.page === undefined)) buttons.push(formatAddress(row, col))
+    // Excel's buttons (`pivotButton`): the fields' names and the headers of the rows and columns, the report filters' names
+    if (part.kind === 'rowHeader' || part.kind === 'columnHeader' || part.kind === 'field') buttons.push(formatAddress(row, col))
   })
   if (laid) {
-    // a single value field's name at the corner over column labels, whether a row field shows it there or not
-    if (captionRow && values.length === 1) put(top, left, { kind: 'valueName', value: 0 })
+    // a single value field's name at the corner over column labels, whether a row field shows it there or not, with a
+    // button beside row fields; with no field on columns and the value fields on the rows, the head of their column is the
+    // grand total's
+    if (captionRow && values.length === 1) {
+      put(top, left, { kind: 'valueName', value: 0 })
+      if (rowFields.length) buttons.push(formatAddress(top, left))
+    }
+    if (!colFields.length && rowFields.includes('values')) put(top + height - 1, left + width, { kind: 'grand', axis: 'columns' })
     const one = values.length ? (rowFields.includes('values') || colFields.includes('values') ? undefined : 0) : undefined
     // every cell of a line's labels is of its item on the field of that row or column the line reaches, else of the
     // line's own; a total's cells are the total's, a blank line's blank
@@ -91,8 +98,9 @@ function cellsOf(t: PivotTable): PivotCells {
       })
     })
   }
-  for (const a of buttons) cells[a] = { ...cells[a], button: true }
-  return { cells, buttons }
+  const unique = [...new Set(buttons)]
+  for (const a of unique) cells[a] = { ...cells[a], button: true }
+  return { cells, buttons: unique }
 }
 
 /** The sheet of `book` by its name, compared as Excel compares names. */
