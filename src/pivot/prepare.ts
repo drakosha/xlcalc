@@ -58,7 +58,8 @@ export function prepared(table: PivotTable, cache: PivotCache, epoch: number, li
     if (!added.length) return pf
     // groups of a range keep their order, from the first to the last
     if (!pf.items?.length && !out.fields[i].group?.range) added.sort((a, b) => labelOrder(items[a], items[b], false, table.customListSort !== false ? lists : null, epoch) || a - b)
-    return { ...pf, items: [...(pf.items ?? []), ...added.map((item) => ({ item }))] }
+    const calculated = new Set((out.calculatedItems ?? []).flatMap((c) => (c.field === i ? [c.item] : [])))
+    return { ...pf, items: [...(pf.items ?? []), ...added.map((item) => (calculated.has(item) ? { item, calculated: true } : { item }))] }
   })
   return { table: { ...table, fields }, cache: out }
 }

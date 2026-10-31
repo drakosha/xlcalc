@@ -359,6 +359,28 @@ const REFRESHES: [string, (locale?: string) => BookInput, PivotRef[], EngineMess
   ['an empty header', (l) => pivotBook(l, undefined, ''), [{ sheet: 'Свод', name: 'Сводная1' }], { key: 'pivotFieldName', pivot: 'Сводная1' }],
 ]
 
+/** A book of `pivotBook` with a calculated item `b` of Регион, and the value field by `fn`. */
+const withItem = (locale?: string, fn?: 'average'): BookInput => {
+  const b = pivotBook(locale)
+  const [t] = b.sheets[1].pivotTables!
+  return {
+    ...b,
+    sheets: [b.sheets[0], { ...b.sheets[1], pivotTables: [{ ...t, ...(fn ? { values: [{ field: 1, name: 'Average of N', function: fn }] } : {}) }] }],
+    pivotCaches: [{ ...b.pivotCaches![0], fields: [{ name: 'Регион', items: ['a', 'b'] }, { name: 'N' }], ...(fn ? {} : { calculatedItems: [{ field: 0, item: 1, formula: 'Регион[a]*2' }] }) }],
+  }
+}
+
+/** An operation on the PivotTable's cache refused: the book, the operation, the message. */
+const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMessage][] = [
+  ['text grouped as dates', (l) => pivotBook(l), { op: 'groupPivotField', sheet: 'Свод', pivot: 'Сводная1', field: 0, group: { by: 'dates', periods: ['months'] } }, { key: 'pivotCantGroup' }],
+  ['a field not grouped ungrouped', (l) => pivotBook(l), { op: 'ungroupPivotField', sheet: 'Свод', pivot: 'Сводная1', field: 0 }, { key: 'pivotNotGrouped', field: 'Регион' }],
+  ['a field of calculated items grouped', (l) => withItem(l), { op: 'groupPivotField', sheet: 'Свод', pivot: 'Сводная1', field: 0, group: { by: 'items', items: [0] } }, { key: 'pivotGroupedItems' }],
+  ['a calculated item beside an average', (l) => withItem(l, 'average'), { op: 'setPivotCalculatedItem', sheet: 'Свод', pivot: 'Сводная1', field: 0, name: 'c', formula: '=a*2' }, { key: 'pivotItemsAverage' }],
+  ['a calculated field over a cell', (l) => pivotBook(l), { op: 'setPivotCalculatedField', sheet: 'Свод', pivot: 'Сводная1', name: 'X', formula: '=A1*2' }, { key: 'pivotFormulaRefs' }],
+  ['a calculated field that does not read', (l) => pivotBook(l), { op: 'setPivotCalculatedField', sheet: 'Свод', pivot: 'Сводная1', name: 'X', formula: '=N/' }, { key: 'pivotFormulaBad', formula: '=N/' }],
+  ['a calculated item named as an item', (l) => pivotBook(l), { op: 'setPivotCalculatedItem', sheet: 'Свод', pivot: 'Сводная1', field: 0, name: 'A', formula: '=a*2' }, { key: 'pivotItemTaken', item: 'A' }],
+]
+
 /** Text typed into a cell of the PivotTable, refused by `setCellText` (or `setCells`, which throws): the cell, the input, the message. */
 const ENTRIES: [string, CellInput | null, EngineMessage][] = [
   ['B4', { value: 3 }, { key: 'pivotPart', sheet: 'Свод', cell: 'B4', pivot: 'Сводная1' }],
@@ -394,6 +416,19 @@ describe('PivotTables', () => {
       for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
         const s = await open(book(locale), {})
         expect(message(await s.editStructure(refresh(refs))), what).toBe(say(m))
+        await s.close()
+      }
+    }
+  }, 60_000)
+
+  it.each(KINDS)('an operation on its cache refused: %s', async (kind) => {
+    registerPivot(pivotEngine)
+    const open = await opener(kind)
+    for (const [what, book, op, m] of CACHE_OPS) {
+      reached.add(m.key)
+      for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+        const s = await open(book(locale), {})
+        expect(message(await s.editStructure(op)), what).toBe(say(m))
         await s.close()
       }
     }
