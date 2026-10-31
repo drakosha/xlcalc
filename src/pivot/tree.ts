@@ -6,8 +6,6 @@ import type { CellValue, ErrorCode, PivotAxisField, PivotCache, PivotTable } fro
 import { ERROR_TYPE } from '../error-type.js'
 import { sortOrder } from '../sort-order.js'
 import type { PivotNode } from './result.js'
-import { groupedItems } from './items.js'
-import { labelOrder } from './values.js'
 import { sortPivotItems } from './sort.js'
 
 /** An item of an axis and the items of the next field under it, in the order shown (`order`); `data`: some record reaches it. */
@@ -99,13 +97,6 @@ export function sortBranches(s: Sorting, root: Branch, real: readonly number[], 
         const c = valueOrder(val.get(x)!, val.get(y)!, desc)
         return c > 0 || (desc && c === 0)
       }, s.sortThreads)
-    } else if (sort) {
-      const cached = groupedItems(s.cache.fields[f]) ?? []
-      const item = (p: number) => {
-        const i = pf.items?.[p]?.item
-        return i === undefined ? null : (cached[i] ?? null)
-      }
-      b.order.sort((x, y) => labelOrder(item(x), item(y), sort.order === 'descending', s.table.customListSort !== false ? s.lists : null, s.epoch) || x - y)
     }
     for (const p of b.order) walk(b.next.get(p)!, level + 1, [...path, p])
   }

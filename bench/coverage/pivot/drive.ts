@@ -60,7 +60,7 @@ export function drive(c: PivotCase): DrivenPhase[] {
     if (r.ok) book = r.book
     else errors.push(`op ${k}: ${r.message}`)
   }
-  const laid = (k: number, fromSource = false) => take(k, refreshPivots(book, undefined, valuesOf(book), 0, fromSource))
+  const laid = (k: number, fromSource = false, labelSort?: number[]) => take(k, refreshPivots(book, labelSort ? [{ sheet: 'P', name: 'PT1' }] : undefined, valuesOf(book), 0, fromSource, 'spill', labelSort))
   const cacheOp = (k: number, op: PivotCacheOp) => {
     try {
       take(k, editPivotCache(book, op, valuesOf(book), 0))
@@ -137,7 +137,7 @@ export function drive(c: PivotCase): DrivenPhase[] {
         fields[f] = { ...fields[f], sort: { order: op.order as 'ascending' | 'descending', ...(v === undefined ? {} : { by: { value: v } }) } }
         return { ...t, fields }
       })
-      return laid(k)
+      return laid(k, false, op.by === undefined ? [f] : undefined)
     }
     if ('table' in op && Object.keys(op.table).every((k) => k === 'customLists')) {
       setTable(pt, (t) => ({ ...t, customListSort: op.table.customLists }))

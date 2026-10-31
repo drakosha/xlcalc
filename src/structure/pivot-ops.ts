@@ -264,7 +264,8 @@ function editPivotTable(book: BookInput, o: Record<string, unknown>, values: Val
   }
   if (o.set !== undefined) next = withDefinition(next, c, o.set, 'op.set', book.locale)
   const out = checkedPivots({ ...withPivot(book, s, k, next), pivotCaches: caches }, 'op')
-  return relaid(out, [{ sheet: book.sheets[s].name, name: p.name }], values, o.source !== undefined)
+  const labelSort = ((o.set as PivotTablePatch | undefined)?.fields ?? []).filter(f => f.sort && !f.sort.by).map(f => f.field)
+  return relaid(out, [{ sheet: book.sheets[s].name, name: p.name }], values, o.source !== undefined, [], 'spill', labelSort)
 }
 
 /** The slicers' and timelines' caches naming the PivotTable `from` by `to`. */

@@ -126,32 +126,15 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
       values.forEach((v, i) => (records[i][c] = v))
       return field
     }
-    // the items it had, in their order, those still in the source first kept, then the new ones as they come
+    // Cache indexes follow the refreshed source; a PivotTable's own item order is moved by identity below.
     const keys = new Map<string, number>()
     const before = prior?.items ?? []
-    // each value's first spelling in the source, which an item still there takes (`north` once `North` is gone)
-    const present = new Map<string, PivotValue>()
-    for (const v of values) if (!present.has(itemKey(v))) present.set(itemKey(v), v)
-    const limit = cache.retainItems ?? Infinity
+    const used = was !== undefined && tables.some(t => t.fields[was]?.items?.length)
+    const limit = used ? cache.retainItems ?? Infinity : 0
     let retained = 0
     const items: PivotValue[] = []
     const unused: number[] = []
     const map = new Map<number, number>()
-    // a calculated item is in no record, and stays
-    const calculated = new Set((cache.calculatedItems ?? []).flatMap((x) => (x.field === was ? [x.item] : [])))
-    before.forEach((v, i) => {
-      const k = itemKey(v)
-      if (keys.has(k)) return
-      const there = present.has(k) || calculated.has(i)
-      if (!there && retained >= limit) return
-      if (!there) {
-        retained++
-        unused.push(items.length)
-      }
-      keys.set(k, items.length)
-      map.set(i, items.length)
-      items.push(present.get(k) ?? v)
-    })
     values.forEach((v, i) => {
       const k = itemKey(v)
       let at = keys.get(k)
@@ -160,6 +143,19 @@ export function refreshCache(cache: PivotCache, tables: readonly PivotTable[], s
         items.push(v)
       }
       records[i][c] = at
+    })
+    const calculated = new Set((cache.calculatedItems ?? []).flatMap((x) => (x.field === was ? [x.item] : [])))
+    before.forEach((v, i) => {
+      const k = itemKey(v)
+      let at = keys.get(k)
+      if (at === undefined) {
+        if (!calculated.has(i) && retained >= limit) return
+        at = items.length
+        keys.set(k, at)
+        items.push(v)
+        if (!calculated.has(i)) { retained++; unused.push(at) }
+      }
+      map.set(i, at)
     })
     itemMaps[c] = map
     field.items = items

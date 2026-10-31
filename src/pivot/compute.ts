@@ -5,6 +5,7 @@
 import { EPOCH_1904 } from '../dates.js'
 import { listsOf } from '../locale/lists.js'
 import type { CellValue, ErrorCode, PivotCache, PivotFunction, PivotTable, PivotValue } from '../contract.js'
+import { orderedLabels } from './label-sort.js'
 import { Tally } from './aggregate.js'
 import { Batch, fieldFormulas, itemFormulas, prefetch, settled, sumsOf, withCalculatedItems } from './calculated.js'
 import { recordItems } from './group.js'
@@ -92,7 +93,10 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   const epoch = options.date1904 ? EPOCH_1904 : 0
   const today = options.today ?? 0
   const lists = options.lists ?? listsOf({})
-  const { table, cache } = prepared(given, givenCache, epoch, lists)
+  const ready = prepared(given, givenCache, epoch, lists, options.sortThreads ?? 2)
+  const cache = ready.cache
+  const ordered = orderedLabels(ready.table, cache, options.sortLabels ?? true, lists, epoch, options.sortThreads ?? 2)
+  const table = ordered.table
   const axes = axesOf(table)
   const rowFields = axes.rows.filter((f): f is number => f !== 'values')
   const colFields = axes.columns.filter((f): f is number => f !== 'values')
@@ -245,6 +249,7 @@ export function computePivot(given: PivotTable, givenCache: PivotCache, options:
   })
   return {
     table,
+    itemOrder: ordered.maps,
     cache,
     rows: { fields: axes.rows, items: nodesOf(rowRoot, axes.rows, values.length) },
     columns: { fields: axes.columns, items: nodesOf(colRoot, axes.columns, values.length) },

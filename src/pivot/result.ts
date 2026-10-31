@@ -1,3 +1,4 @@
+import type { ItemOrder } from './label-sort.js'
 /**
  * What a PivotTable's calculation gives its layout: the items shown on each axis as a tree in the order shown, the
  * value of any cell of the cube by the items of the rows and of the columns, and the items shown on the Filters area.
@@ -41,6 +42,8 @@ export interface PivotPageResult {
  * the empty path the grand total.
  */
 export interface PivotResult {
+  /** Item references moved by a label sort. */
+  itemOrder?: ItemOrder
   /** The PivotTable with its fields' items as the cache lists them now (new items in, items gone out). */
   table: PivotTable
   /** The cache it was calculated from, refreshed when the calculation refreshed it. */
@@ -60,6 +63,8 @@ export interface PivotResult {
 
 /** What a calculation takes besides the PivotTable and its cache. */
 export interface PivotComputeOptions {
+  /** Label sorts requested now; false preserves the order saved in field items. */
+  sortLabels?: boolean | readonly number[]
   /** Excel's sorting-thread profile, 2 by default; 1 keeps a sort in one partition. */
   sortThreads?: number
   /** Today as a serial number, the session's clock (as `TODAY`), for the date filters relative to it. */
