@@ -37,6 +37,8 @@ export function buildPivotCases(): PivotCase[] {
     { id: 'items-two', ops: [{ rows: ['Region'] }, { value: { field: 'Price' } }, { groupItems: 'Region', items: ['East', 'West'] }, { groupItems: 'Region', items: ['North', 'South'] }] },
     { id: 'items-blank', ops: [{ rows: ['Region'] }, { value: { field: 'Price' } }, { groupItems: 'Region', items: ['(blank)', 'North'] }] },
     { id: 'items-columns', ops: [{ rows: ['Region'] }, { columns: ['Product'] }, { value: { field: 'Price' } }, { groupItems: 'Product', items: ['Apple', 'Banana'] }] },
+    // the label of a group typed over: the name of the group in the cache, or a caption of this pivot table alone (PT2 shares the cache)
+    { id: 'items-renamed-shared', ops: [{ rows: ['Region'] }, { value: { field: 'Price' } }, { create: 'PT2', at: 'P!E3' }, { rows: ['Region'], pt: 'PT2' }, { value: { field: 'Qty' }, pt: 'PT2' }, { groupItems: 'Region', items: ['East', 'West'] }, { read: true }, { edit: 'P!A4', to: 'Coast' }, { read: true }, { move: 'Region2', to: 'row', pt: 'PT2', position: 1 }] },
     { id: 'items-tabular', ops: [{ rows: ['Region'] }, { value: { field: 'Price' } }, { layout: 'tabular' }, { groupItems: 'Region', items: ['East', 'South'] }] },
     { id: 'columns-months', ops: [{ rows: ['Region'] }, { columns: ['Date'] }, { value: { field: 'Qty' } }, { group: 'Date', periods: ['quarters', 'years'] }] },
     { id: 'ungroup', ops: [...dates, { group: 'Date', periods: ['months', 'years'] }, { read: true }, { ungroup: 'Date' }] },

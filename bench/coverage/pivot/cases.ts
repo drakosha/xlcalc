@@ -62,6 +62,8 @@ export interface TableProps {
   emptyText?: string
   /** Several filters on one field (a label filter and a value filter). */
   multipleFilters?: boolean
+  /** The row naming the data fields (`Values`) shown, as by default. */
+  valuesRow?: boolean
   /** Items sorted by Excel's custom lists (the month and day names), as by default. */
   customLists?: boolean
 }
@@ -133,6 +135,8 @@ export type PivotOp = (
   /** Excel's grouping of a field of dates or numbers: start and end (Excel's own where left out), an interval, the periods. */
   | { group: string; start?: FilterValue; end?: FilterValue; by?: number; periods?: Period[] }
   | { groupItems: string; items: string[] }
+  /** Items collapsed (`ShowDetail` false), or every item of the field; `expand` shows them again. */
+  | { collapse: string; items: string[] | 'all'; expand?: boolean }
   | { ungroup: string }
   /** A slicer on a field, on the sheet `P`, over the pivot tables named besides `pt`. */
   | { slicer: string; name: string; pivots?: string[] }
