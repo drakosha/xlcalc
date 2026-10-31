@@ -8,7 +8,7 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 50.5
+  "seconds": 19.1
  },
  "cases": [
   {
@@ -320,6 +320,72 @@
      "by": 2.5
     }
    ]
+  },
+  {
+   "id": "price-start-blank",
+   "ops": [
+    {
+     "edit": "D!E14",
+     "to": 3
+    },
+    {
+     "refresh": true
+    },
+    {
+     "rows": [
+      "Price"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Price",
+     "start": 10,
+     "end": 40,
+     "by": 5
+    }
+   ]
+  },
+  {
+   "id": "refresh-new-date",
+   "ops": [
+    {
+     "rows": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    },
+    {
+     "layout": "tabular"
+    },
+    {
+     "group": "Date",
+     "periods": [
+      "months",
+      "years"
+     ]
+    },
+    {
+     "read": true
+    },
+    {
+     "edit": "D!C2",
+     "to": 46056
+    },
+    {
+     "refresh": true
+    }
+   ]
   }
  ],
  "sent": {
@@ -334,7 +400,9 @@
   "times-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8f7a21df26a67d84",
   "days-7": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 aecc1f66468d4184",
   "start-end": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0fe0d677533abe37",
-  "price-half": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b3737fc542ea6ef3"
+  "price-half": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b3737fc542ea6ef3",
+  "price-start-blank": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7216f98faabebdaf",
+  "refresh-new-date": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 129200bb2de176ab"
  },
  "answers": {
   "years": {
@@ -8554,6 +8622,756 @@
      "results": {
       "op 1": true,
       "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "price-start-blank": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B11",
+       "area": "A3:B11",
+       "body": "B4:B11",
+       "values": [
+        [
+         "Price",
+         "Sum of Qty"
+        ],
+        [
+         "<10 or (blank)",
+         72
+        ],
+        [
+         "10-15",
+         19
+        ],
+        [
+         "20-25",
+         9
+        ],
+        [
+         "25-30",
+         22
+        ],
+        [
+         "30-35",
+         17
+        ],
+        [
+         "35-40",
+         37
+        ],
+        [
+         ">40",
+         36
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Price",
+         "Sum of Qty"
+        ],
+        [
+         "<10 or (blank)",
+         "72"
+        ],
+        [
+         "10-15",
+         "19"
+        ],
+        [
+         "20-25",
+         "9"
+        ],
+        [
+         "25-30",
+         "22"
+        ],
+        [
+         "30-35",
+         "17"
+        ],
+        [
+         "35-40",
+         "37"
+        ],
+        [
+         ">40",
+         "36"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": true,
+      "op 3": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "refresh-new-date": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C20",
+       "area": "A3:C20",
+       "body": "C4:C20",
+       "values": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         2
+        ],
+        [
+         "<1/1/2024 Total",
+         null,
+         2
+        ],
+        [
+         "2024",
+         "Jan",
+         19
+        ],
+        [
+         null,
+         "Mar",
+         15
+        ],
+        [
+         null,
+         "May",
+         9
+        ],
+        [
+         null,
+         "Jul",
+         14
+        ],
+        [
+         null,
+         "Sep",
+         21
+        ],
+        [
+         null,
+         "Nov",
+         21
+        ],
+        [
+         "2024 Total",
+         null,
+         99
+        ],
+        [
+         "2025",
+         "Feb",
+         17
+        ],
+        [
+         null,
+         "Apr",
+         20
+        ],
+        [
+         null,
+         "Jun",
+         22
+        ],
+        [
+         null,
+         "Aug",
+         16
+        ],
+        [
+         null,
+         "Oct",
+         20
+        ],
+        [
+         null,
+         "Dec",
+         16
+        ],
+        [
+         "2025 Total",
+         null,
+         111
+        ],
+        [
+         "Grand Total",
+         null,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "<1/1/2024 Total",
+         "",
+         "2"
+        ],
+        [
+         "2024",
+         "Jan",
+         "19"
+        ],
+        [
+         "",
+         "Mar",
+         "15"
+        ],
+        [
+         "",
+         "May",
+         "9"
+        ],
+        [
+         "",
+         "Jul",
+         "14"
+        ],
+        [
+         "",
+         "Sep",
+         "21"
+        ],
+        [
+         "",
+         "Nov",
+         "21"
+        ],
+        [
+         "2024 Total",
+         "",
+         "99"
+        ],
+        [
+         "2025",
+         "Feb",
+         "17"
+        ],
+        [
+         "",
+         "Apr",
+         "20"
+        ],
+        [
+         "",
+         "Jun",
+         "22"
+        ],
+        [
+         "",
+         "Aug",
+         "16"
+        ],
+        [
+         "",
+         "Oct",
+         "20"
+        ],
+        [
+         "",
+         "Dec",
+         "16"
+        ],
+        [
+         "2025 Total",
+         "",
+         "111"
+        ],
+        [
+         "Grand Total",
+         "",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:B20",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    },
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:C22",
+       "area": "A3:C22",
+       "body": "C4:C22",
+       "values": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         2
+        ],
+        [
+         "<1/1/2024 Total",
+         null,
+         2
+        ],
+        [
+         "2024",
+         "Jan",
+         15
+        ],
+        [
+         null,
+         "Mar",
+         15
+        ],
+        [
+         null,
+         "May",
+         9
+        ],
+        [
+         null,
+         "Jul",
+         14
+        ],
+        [
+         null,
+         "Sep",
+         21
+        ],
+        [
+         null,
+         "Nov",
+         21
+        ],
+        [
+         "2024 Total",
+         null,
+         95
+        ],
+        [
+         "2025",
+         "Feb",
+         17
+        ],
+        [
+         null,
+         "Apr",
+         20
+        ],
+        [
+         null,
+         "Jun",
+         22
+        ],
+        [
+         null,
+         "Aug",
+         16
+        ],
+        [
+         null,
+         "Oct",
+         20
+        ],
+        [
+         null,
+         "Dec",
+         16
+        ],
+        [
+         "2025 Total",
+         null,
+         111
+        ],
+        [
+         "2026",
+         "Feb",
+         4
+        ],
+        [
+         "2026 Total",
+         null,
+         4
+        ],
+        [
+         "Grand Total",
+         null,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Years (Date)",
+         "Months (Date)",
+         "Sum of Qty"
+        ],
+        [
+         "<1/1/2024",
+         "<1/1/2024",
+         "2"
+        ],
+        [
+         "<1/1/2024 Total",
+         "",
+         "2"
+        ],
+        [
+         "2024",
+         "Jan",
+         "15"
+        ],
+        [
+         "",
+         "Mar",
+         "15"
+        ],
+        [
+         "",
+         "May",
+         "9"
+        ],
+        [
+         "",
+         "Jul",
+         "14"
+        ],
+        [
+         "",
+         "Sep",
+         "21"
+        ],
+        [
+         "",
+         "Nov",
+         "21"
+        ],
+        [
+         "2024 Total",
+         "",
+         "95"
+        ],
+        [
+         "2025",
+         "Feb",
+         "17"
+        ],
+        [
+         "",
+         "Apr",
+         "20"
+        ],
+        [
+         "",
+         "Jun",
+         "22"
+        ],
+        [
+         "",
+         "Aug",
+         "16"
+        ],
+        [
+         "",
+         "Oct",
+         "20"
+        ],
+        [
+         "",
+         "Dec",
+         "16"
+        ],
+        [
+         "2025 Total",
+         "",
+         "111"
+        ],
+        [
+         "2026",
+         "Feb",
+         "4"
+        ],
+        [
+         "2026 Total",
+         "",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General"
+        ]
+       ],
+       "page": "",
+       "rows": "A3:B22",
+       "columns": ""
+      }
+     },
+     "results": {
+      "op 6": true
      }
     }
    ]
