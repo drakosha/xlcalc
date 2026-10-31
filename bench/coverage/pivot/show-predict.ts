@@ -19,7 +19,7 @@ import { stateValues } from '../../../src/structure/values.js'
 import { ERROR_CODE } from '../../../src/syntax/errors.js'
 import { readXlsx } from '../../../src/xlsx.js'
 import type { PivotCase, PivotSet, ShowAs } from './cases.js'
-import { salesColumns, sourceBook, sourceRange } from './data.js'
+import { DATA, sourceBook, sourceRange } from './data.js'
 
 const ROOT = new URL('../../../', import.meta.url)
 
@@ -54,12 +54,14 @@ const SHOW: Partial<Record<ShowAs, PivotShowAs>> = { percentOfCol: 'percentOfCol
 const FILTERS: Record<string, PivotFilter['type']> = { TopCount: 'count', CaptionDoesNotEqual: 'captionNotEqual' }
 
 /**
- * A case's PivotTable built from its operations over the rows of `sales` as a range, as the harness has Excel build it:
+ * A case's PivotTable built from its operations over its rows (`sales` by default) as a range, as the harness has Excel build it:
  * the fields placed and the value fields added, refreshed once for the items, then the items hidden or shown on the
  * Filters area, the base items, filters and sorts set by the items' and value fields' names.
  */
-function modelOf(c: PivotCase): BookInput {
-  const cols = salesColumns()
+function modelOf(c: PivotCase): BookInput | string {
+  // grouping is not calculated by the engine yet: such a case is left unpredicted
+  if (c.ops.some((o) => 'group' in o)) return 'not predicted: the engine does not group yet'
+  const cols = DATA[c.data ?? 'sales']()
   const names = cols.map((x) => x.name)
   const at = (name: string) => names.indexOf(name)
   const table: PivotTable = { name: 'PT1', cache: 1, location: { range: 'A3', firstHeaderRow: 1, firstDataRow: 1, firstDataColumn: 1 }, fields: names.map(() => ({})) }
@@ -69,6 +71,7 @@ function modelOf(c: PivotCase): BookInput {
     else if ('columns' in o) table.columns = [...(table.columns ?? []), ...o.columns.map(at)]
     else if ('pages' in o) table.pages = [...(table.pages ?? []), ...o.pages.map((f) => ({ field: at(f) }))]
     else if ('valuesOn' in o) table.valuesOnRows = o.valuesOn === 'row'
+    else if ('layout' in o) table.layout = o.layout
     else if ('props' in o && o.props.showAllItems) table.fields[at(o.field)].showEmpty = true
     else if ('value' in o) {
       const v = o.value
@@ -128,7 +131,8 @@ const prediction: Record<string, unknown> = {}
 for (const c of buildPivotCases()) {
   const file = new URL(`test/excel/win/pivot/${set}/${c.id}.xlsx`, ROOT)
   if (!existsSync(file)) {
-    prediction[c.id] = laidOut(modelOf(c), false)
+    const model = modelOf(c)
+    prediction[c.id] = typeof model === 'string' ? model : laidOut(model, false)
     continue
   }
   const { book } = await readXlsx(readFileSync(file))
