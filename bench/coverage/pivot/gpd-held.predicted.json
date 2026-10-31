@@ -1,0 +1,123 @@
+{
+ "tabular": {
+  "G!A1": 1026.76,
+  "G!A2": 348.4,
+  "G!A3": 107.19,
+  "G!A4": 126.81,
+  "G!A5": 1026.76
+ },
+ "three": {
+  "G!A1": 12,
+  "G!A2": 5,
+  "G!A3": 7,
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": {
+   "error": "REF"
+  }
+ },
+ "subtotals-functions": {
+  "G!A1": 138.65,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": {
+   "error": "REF"
+  },
+  "G!A5": 1026.76
+ },
+ "no-subtotals": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": 36,
+  "G!A3": 212
+ },
+ "no-grand": {
+  "G!A1": {
+   "error": "REF"
+  },
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 100.03
+ },
+ "captions": {
+  "G!A1": 1026.76,
+  "G!A2": 348.4,
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": {
+   "error": "REF"
+  }
+ },
+ "caption-field": {
+  "G!A1": 237.8,
+  "G!A2": 237.8,
+  "G!A3": {
+   "error": "REF"
+  }
+ },
+ "two-values-tabular": {
+  "G!A1": 4.3,
+  "G!A2": 4,
+  "G!A3": 4.41666666666667,
+  "G!A4": {
+   "error": "REF"
+  }
+ },
+ "pages-two": {
+  "G!A1": 140.45,
+  "G!A2": 140.45,
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 52.3
+ },
+ "page-several": {
+  "G!A1": 440.56,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": 116.17
+ },
+ "hidden": {
+  "G!A1": 888.11,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": 301.91
+ },
+ "top": {
+  "G!A1": 650.31,
+  "G!A2": {
+   "error": "REF"
+  },
+  "G!A3": 348.4
+ },
+ "dates-filtered": {
+  "G!A1": 73,
+  "G!A2": 21,
+  "G!A3": {
+   "error": "REF"
+  },
+  "G!A4": 21
+ },
+ "sorted": {
+  "G!A1": 348.4,
+  "G!A2": 1026.76
+ },
+ "manual": {
+  "G!A1": 0,
+  "G!A2": 138.65,
+  "G!A3": 1026.76
+ }
+}

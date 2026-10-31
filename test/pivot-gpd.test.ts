@@ -9,26 +9,40 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type CellValue } from '../src/index.js'
 import { buildPivotCases } from '../bench/coverage/pivot/gpd-1.js'
+import { buildPivotCases as heldCases } from '../bench/coverage/pivot/gpd-held.js'
 import { predictCase } from '../bench/coverage/pivot/gpd-predict.js'
-import type { PivotAnswer } from '../bench/coverage/pivot/cases.js'
+import type { PivotAnswer, PivotCase } from '../bench/coverage/pivot/cases.js'
 
 const answers = (JSON.parse(readFileSync(new URL('./excel/win/pivot/gpd-1.json', import.meta.url), 'utf8')) as { answers: Record<string, PivotAnswer> }).answers
 const near = (a: CellValue, b: CellValue) => (typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b)) : JSON.stringify(a) === JSON.stringify(b))
 
+/** Formulas Excel did not take as they were typed (an odd number of pairs, `0x800A03EC`), whose cells are left empty. */
+const REFUSED = new Set(['subtotals-functions G!A2'])
+
+/** Each formula of a set over a PivotTable of its book against Excel's value: the cells that differ, and the count. */
+async function compared(set: string, cases: PivotCase[]): Promise<[string[], number]> {
+  const all = (JSON.parse(readFileSync(new URL(`./excel/win/pivot/${set}.json`, import.meta.url), 'utf8')) as { answers: Record<string, PivotAnswer> }).answers
+  const bad: string[] = []
+  let n = 0
+  for (const c of cases) {
+    if (c.ops.some((o) => 'external' in o)) continue
+    const got = await predictCase(c)
+    for (const [cell, v] of Object.entries(all[c.id].phases[0].cells ?? {})) {
+      if (REFUSED.has(`${c.id} ${cell}`)) continue
+      n++
+      if (!near(got[cell], v)) bad.push(`${c.id} ${cell}: ${JSON.stringify(got[cell])} vs ${JSON.stringify(v)}`)
+    }
+  }
+  return [bad, n]
+}
+
 describe('GETPIVOTDATA against Excel for Windows: the set gpd-1', () => {
   it('every formula over a PivotTable of the book', async () => {
-    const bad: string[] = []
-    let n = 0
-    for (const c of buildPivotCases()) {
-      if (c.ops.some((o) => 'external' in o)) continue
-      const got = await predictCase(c)
-      for (const [cell, v] of Object.entries(answers[c.id].phases[0].cells ?? {})) {
-        n++
-        if (!near(got[cell], v)) bad.push(`${c.id} ${cell}: ${JSON.stringify(got[cell])} vs ${JSON.stringify(v)}`)
-      }
-    }
-    expect(bad).toEqual([])
-    expect(n).toBe(101)
+    expect(await compared('gpd-1', buildPivotCases())).toEqual([[], 101])
+  }, 60_000)
+
+  it('the held-out set gpd-held, fitted after its run (51 of 55 predicted: an inner field without the one between, subtotals of several functions, a field by its own name alone)', async () => {
+    expect(await compared('gpd-held', heldCases())).toEqual([[], 54])
   }, 60_000)
 
   it('over a PivotTable of another workbook: #REF! computed without it, the value the file stores when opened again', () => {
