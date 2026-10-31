@@ -136,7 +136,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     level.push(shared ? level[k - 1] + 1 : 0)
   })
   const colItems = hasItems(colFields)
-  const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems ? 1 : 0
+  // column items alone take a column of labels for the value field's name; without a value field none (checked-values-2)
+  const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems && values.length ? 1 : 0
   // the classic layout keeps the row of the columns' drop zone with no column field: the value field's name over it, `Total`
   // over its values (the set corpus-shapes)
   const classic = table.classicLayout === true && !colItems && values.length > 0
