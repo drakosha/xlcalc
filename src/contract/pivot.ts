@@ -212,10 +212,12 @@ export interface PivotField {
   pageBreak?: boolean
   /** Show items with no data. */
   showEmpty?: boolean
-  /** Sort its items by label, or by a value field's values (`by`), ascending or descending; the cache's order without it. */
+  /**
+   * Sort its items by label, or by a value field's values (`by`), ascending or descending, every time the PivotTable is
+   * updated; the order of `items` without it. Excel keeps a sort only when it is automatic: a sort made once leaves the
+   * items in that order.
+   */
   sort?: { order: 'ascending' | 'descending'; by?: PivotSortBy }
-  /** Sort automatically every time the report is updated (true by default). */
-  autoSort?: boolean
   /** Include new items in a manual filter. */
   includeNewItems?: boolean
   /** Several items may be shown at once on the Filters area (Select Multiple Items). */
