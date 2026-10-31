@@ -12,7 +12,7 @@ import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptio
 import { operationsPlan } from './session/operations.js'
 import { checkCopyOptions, copyText } from './session/clipboard.js'
 import { checkValuesOptions, valuesIn } from './session/values.js'
-import type { CellValue, CopyTextOptions, Refusal, StructureRefusal, ValuesOptions } from './contract.js'
+import type { CellValue, CopyTextOptions, StructureRefused, ValuesOptions } from './contract.js'
 import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { ANSWER_ROUNDS, tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
@@ -22,7 +22,7 @@ import { applyAnswers, applyClock, applyEdits, applyHidden, applyLooks, applyMer
 import { Outside } from './outside.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
-import { InputError } from './input-error.js'
+import { InputError, PivotInputError } from './input-error.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { functionsVersion } from './groups/state.js'
@@ -538,7 +538,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * definition it makes through the session's `editStructure`, nothing for its same name, or the refusal; null without
    * the subpath or for a cell of no PivotTable.
    */
-  function* enterPivot(session: SessionSteps, sheet: string, cell: string, input: CellInput | null): Steps<{ ok: true; result: EditResult } | Refusal<StructureRefusal> | null> {
+  function* enterPivot(session: SessionSteps, sheet: string, cell: string, input: CellInput | null): Steps<{ ok: true; result: EditResult } | StructureRefused | null> {
     const s = yield* ready()
     const entry = pivotEntryHook()?.(s.input, sheet, cell, input) ?? null
     if (!entry || !entry.ok) return entry
@@ -688,8 +688,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       const taken = resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s)), s.input.locale)))
       // one cell of a PivotTable set names its part, as an entry there does in Excel
-      const entered = taken.length === 1 && pivotPart(s, taken) ? yield* enterPivot(this, taken[0].sheet, taken[0].cell, taken[0].input) : null
-      if (entered && !entered.ok) throw new InputError('edits', entered.message)
+      const part = taken.length === 1 ? pivotPart(s, taken) : null
+      const entered = part ? yield* enterPivot(this, taken[0].sheet, taken[0].cell, taken[0].input) : null
+      if (entered && !entered.ok) throw entered.reason ? new PivotInputError('edits', entered.message, entered.reason, part!.sheet, part!.cell) : new InputError('edits', entered.message)
       if (entered) return entered.result
       checkPivotEdits(s, taken)
       const [next, out, back] = yield* writeCells(s, taken, 'setCells')
@@ -731,7 +732,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!typed.ok && typed.refusal.code === 'pivot') {
         // a formula into a PivotTable's label is refused there; text names its part
         const entered = yield* enterPivot(this, sheet, cell, text.startsWith('=') ? { formula: text.slice(1) } : { value: text })
-        if (entered) return entered.ok ? { ok: true as const, ...entered.result } : { ok: false as const, code: 'pivot' as const, message: entered.message }
+        if (entered) return entered.ok ? { ok: true as const, ...entered.result } : { ok: false as const, code: 'pivot' as const, message: entered.message, ...(entered.reason ? { reason: entered.reason } : {}) }
       }
       if (!typed.ok) return typed.refusal
       const refused = yield* invalid(s, opts, typed.cells)

@@ -117,19 +117,27 @@ describe('editPivotTable, renamePivotTable, movePivotTable, deletePivotTable wit
 
 describe('operations of the structure over a PivotTable', () => {
   const op = (o: StructureOp) => editStructure(made(), o)
-  const at = (r: ReturnType<typeof op>) => (r.ok ? r.book.sheets.map((s) => (s.pivotTables ?? []).map((p: PivotTable) => p.location.range)) : r.code)
+  // where it is, or the refusal's code and Excel's alert
+  const at = (r: ReturnType<typeof op>) => (r.ok ? r.book.sheets.map((s) => (s.pivotTables ?? []).map((p: PivotTable) => p.location.range)) : [r.code, r.reason])
   it.each<[string, StructureOp, unknown]>([
     ['rows inserted above move it', { op: 'insertRows', sheet: 'P', row: 1, count: 2 }, [[], ['A5:C22']]],
-    ['rows inserted into it are refused', { op: 'insertRows', sheet: 'P', row: 5 }, 'pivot'],
+    ['rows inserted into it are refused', { op: 'insertRows', sheet: 'P', row: 5 }, ['pivot', 'affect']],
     ['columns deleted before it move it', { op: 'insertColumns', sheet: 'P', column: 'A' }, [[], ['B3:D20']]],
     ['its rows deleted all delete it', { op: 'deleteRows', sheet: 'P', row: 2, count: 30 }, [[], []]],
-    ['part of its rows deleted is refused', { op: 'deleteRows', sheet: 'P', row: 4 }, 'pivot'],
+    ['part of its rows deleted is refused', { op: 'deleteRows', sheet: 'P', row: 4 }, ['pivot', 'affect']],
     ['all its cells cut move it', { op: 'moveRange', from: { sheet: 'P', range: 'A3:C20' }, to: { sheet: 'Data', cell: 'K1' } }, [['K1:M18'], []]],
-    ['part of its cells cut is refused', { op: 'moveRange', from: { sheet: 'P', range: 'A3:B9' }, to: { sheet: 'P', cell: 'K1' } }, 'pivot'],
-    ['a paste onto it is refused', { op: 'copyRange', from: { sheet: 'P', range: 'H1' }, to: { sheet: 'P', range: 'B5' } }, 'pivot'],
-    ['a merge over it is refused', { op: 'mergeCells', sheet: 'P', range: 'C20:D21' }, 'pivot'],
+    ['part of its cells cut is refused', { op: 'moveRange', from: { sheet: 'P', range: 'A3:B9' }, to: { sheet: 'P', cell: 'K1' } }, ['pivot', 'affect']],
+    ['cells cut onto it are refused', { op: 'moveRange', from: { sheet: 'P', range: 'H1' }, to: { sheet: 'P', cell: 'B5' } }, ['pivot', 'part']],
+    ['a paste onto it is refused', { op: 'copyRange', from: { sheet: 'P', range: 'H1' }, to: { sheet: 'P', range: 'B5' } }, ['pivot', 'part']],
+    ['a merge over it is refused', { op: 'mergeCells', sheet: 'P', range: 'C20:D21' }, ['pivot', 'part']],
+    ['a table over it is refused, by an alert of its own', { op: 'addTable', sheet: 'P', table: { name: 'T', range: 'C20:D21', columns: [{ name: 'a' }, { name: 'b' }] } }, ['pivot', undefined]],
     ['its sheet deleted deletes it', { op: 'deleteSheet', sheet: 'P' }, [[]]],
   ])('%s', (_, o, want) => expect(at(op(o))).toEqual(want))
+
+  it('moves its areas with it', () => {
+    const r = op({ op: 'insertRows', sheet: 'P', row: 1, count: 2 })
+    expect(r.ok && r.book.sheets[1].pivotTables![0].location.areas).toEqual({ table: 'A5:C22' })
+  })
 
   it('moves its source with the source cells, keeps it when they or their sheet are deleted, renames its sheet', () => {
     const src = (o: StructureOp) => {

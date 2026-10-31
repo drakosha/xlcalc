@@ -6,18 +6,19 @@
  * over a Filters area's item shows that item. The entry becomes an edit of the PivotTable's definition
  * (`editPivotTable`); a value, an empty cell, a cleared label, a formula and a name already taken are refused.
  */
-import type { BookInput, CellInput, PivotAxisField, PivotFieldPatch, PivotTable, PivotTablePatch, Refusal, StructureOp } from '../contract.js'
+import type { BookInput, CellInput, PivotAxisField, PivotFieldPatch, PivotRefusalReason, PivotTable, PivotTablePatch, Refusal, StructureOp } from '../contract.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import type { EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { hasCell } from '../structure/area.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { pivotParts } from './area.js'
+import { PIVOT_REASONS } from './part.js'
 import { labeler, layoutPivot } from './layout.js'
 import { savedResult } from './saved.js'
 
 /** What an entry into a PivotTable's cell does: an edit of its definition, nothing (the same name), or Excel's refusal; null for a cell of no PivotTable. */
-export type PivotEntry = { ok: true; op: StructureOp | null } | Refusal<'pivot'>
+export type PivotEntry = { ok: true; op: StructureOp | null } | (Refusal<'pivot'> & { reason?: PivotRefusalReason })
 
 const same = (a: string, b: string) => a.toLocaleLowerCase() === b.toLocaleLowerCase()
 
@@ -30,7 +31,10 @@ export function pivotEntry(book: BookInput, sheet: string, cell: string, input: 
   const cache = table && book.pivotCaches?.find((c) => c.id === table.cache)
   if (!table || !cache) return null
   const where = { sheet: sh.name, cell, pivot: table.name }
-  const refuse = (m: EngineMessage): PivotEntry => ({ ok: false, code: 'pivot', message: sayPivot(book.locale, m) })
+  const refuse = (m: EngineMessage): PivotEntry => {
+    const reason = PIVOT_REASONS[m.key]
+    return { ok: false, code: 'pivot', message: sayPivot(book.locale, m), ...(reason ? { reason } : {}) }
+  }
   const part = layoutPivot(savedResult(table, cache), book).cells.find((c) => formatAddress(c.row, c.col) === cell)?.part
   if (!part) return refuse({ key: 'pivotPart', ...where })
   if (input?.formula !== undefined) return refuse({ key: 'pivotFormula', ...where })

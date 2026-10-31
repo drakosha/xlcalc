@@ -1,11 +1,12 @@
 /**
  * A session refuses an entry into a PivotTable's area, as Excel refuses one: `setCells`, `replaceCells`, `clearCells`
- * and `applyChanges` throw `InputError`, `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` answer `pivot`,
+ * and `applyChanges` throw `PivotInputError`, `setCellText`, `setCellTexts`, `fillCellText` and `pasteText` answer `pivot`,
+ * each with Excel's alert (`reason`: a value or a paste changes a part, a cleared cell affects it, a formula over a label),
  * the Filters area too (not the blank row under it); a cell's style and number format may change, and a cell outside the area takes anything. In
  * every kind of session and both execution modes; nothing is written, so there is no step to undo.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { InputError, type BookInput, type PivotTable } from '../src/index.js'
+import { InputError, PivotInputError, type BookInput, type PivotTable } from '../src/index.js'
 import { pivotEntry } from '../src/pivot/entry.js'
 import { setPivotEntry, setPivotRefresh } from '../src/pivot/hook.js'
 import { refreshPivots } from '../src/pivot/engine.js'
@@ -39,22 +40,34 @@ const book = (): BookInput => ({
   pivotCaches: [{ id: 1, source: { type: 'range', sheet: 'Data', range: 'A1:C2' }, fields: [{ name: 'K', items: ['a'] }, { name: 'N' }, { name: 'M', items: ['x'] }], records: [[0, 2, 0]] }],
 })
 
-const refusal = { ok: false, code: 'pivot', message: "P!B4 is part of the PivotTable PT: we can't change this part of the PivotTable" }
+const refusal = { ok: false, code: 'pivot', message: "P!B4 is part of the PivotTable PT: we can't change this part of the PivotTable", reason: 'part' }
+
+/** The error an edit throws over a PivotTable's cell: a `PivotInputError`, an `InputError` too, with Excel's alert and the cell. */
+async function thrown(p: Promise<unknown>, reason: string, cell: string) {
+  const e = await p.then(() => null, (x: unknown) => x)
+  expect(e).toBeInstanceOf(PivotInputError)
+  expect(e).toBeInstanceOf(InputError)
+  expect(e).toMatchObject({ name: 'PivotInputError', path: 'edits', reason, sheet: 'P', cell })
+}
 
 describe.each(KINDS)('an entry into a PivotTable in %s', (kind) => {
   it.each(['closures', 'eval'] as const)('is refused, the Filters area too; looks may change, cells outside take anything (execution %s)', async (execution) => {
     const s = await (await opener(kind))(book(), { clock, execution })
-    await expect(s.setCells([{ sheet: 'P', cell: 'B4', input: { value: 3 } }])).rejects.toThrow(InputError)
+    await thrown(s.setCells([{ sheet: 'P', cell: 'B4', input: { value: 3 } }]), 'part', 'B4')
     await expect(s.setCells([{ sheet: 'P', cell: 'B1', input: null }])).rejects.toThrow(/part of the PivotTable PT/)
-    await expect(s.replaceCells([{ sheet: 'P', cell: 'A5', input: { value: 'All' } }])).rejects.toThrow(InputError)
-    await expect(s.clearCells([{ sheet: 'P', range: 'A4:C4' }], 'contents')).rejects.toThrow(InputError)
-    await expect(s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'P', cell: 'A4', input: { formula: '1+1' } }] }])).rejects.toThrow(InputError)
+    await thrown(s.setCells([{ sheet: 'P', cell: 'B1', input: null }]), 'affect', 'B1')
+    await thrown(s.setCells([{ sheet: 'p', cell: 'C4', input: { value: 1 } }, { sheet: 'p', cell: 'B4', input: { formula: '1' } }]), 'part', 'B4')
+    await thrown(s.replaceCells([{ sheet: 'P', cell: 'A5', input: { value: 'All' } }]), 'part', 'A5')
+    await thrown(s.clearCells([{ sheet: 'P', range: 'A4:C4' }], 'contents'), 'affect', 'A4')
+    await thrown(s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'P', cell: 'A4', input: { formula: '1+1' } }] }]), 'formula', 'A4')
+    await thrown(s.validateEntry('P', 'B4', { value: 1 }), 'part', 'B4')
     expect(await s.setCellText('P', 'B4', '3')).toMatchObject(refusal)
     expect(await s.previewCellText('P', 'B4', '3')).toMatchObject(refusal)
     expect(await s.pasteText('P', 'A4', '1\t2')).toMatchObject({ ...refusal, sheet: 'P', cell: 'A4', message: expect.stringContaining('P!A4') })
+    expect(await s.previewPasteText('P', 'B4', '1')).toMatchObject({ ...refusal, sheet: 'P', cell: 'B4' })
     expect(await s.fillCellText('P', 'C4:C5', '1')).toMatchObject({ ok: true })
-    expect(await s.fillCellText('P', 'B5:C5', '1')).toMatchObject({ ok: false, code: 'pivot' })
-    expect(await s.setCellTexts([{ sheet: 'P', cell: 'C1', text: 'x' }, { sheet: 'P', cell: 'A3', text: 'x' }])).toMatchObject({ ok: false, code: 'pivot' })
+    expect(await s.fillCellText('P', 'B5:C5', '1')).toMatchObject({ ok: false, code: 'pivot', reason: 'part' })
+    expect(await s.setCellTexts([{ sheet: 'P', cell: 'C1', text: 'x' }, { sheet: 'P', cell: 'A3', text: 'x' }])).toMatchObject({ ok: false, code: 'pivot', reason: 'part' })
     // a look, and a cell beyond the area
     await s.setCells([{ sheet: 'P', cell: 'B4', input: { numberFormat: '0.00' } }, { sheet: 'P', cell: 'D4', input: { value: 1 } }])
     await s.clearCells([{ sheet: 'P', range: 'B4' }], 'formats')
@@ -74,10 +87,17 @@ describe.each(KINDS.slice(0, 2))('an entry into a PivotTable with xlcalc/pivot i
       const s = await (await opener(kind))(book(), { clock })
       expect(await s.setCellText('P', 'B4', '3')).toMatchObject(refusal)
       expect(await s.setCellText('P', 'A4', 'A')).toMatchObject({ ok: true, changes: [] })
-      expect(await s.setCellText('P', 'B3', 'n')).toMatchObject({ ok: false, code: 'pivot', message: 'PivotTable field name already exists: "n"' })
-      expect(await s.setCellText('P', 'A4', '=1')).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('cannot enter a formula') })
+      const taken = await s.setCellText('P', 'B3', 'n')
+      expect(taken).toMatchObject({ ok: false, code: 'pivot', message: 'PivotTable field name already exists: "n"' })
+      expect(taken).not.toHaveProperty('reason')
+      expect(await s.setCellText('P', 'A4', '=1')).toMatchObject({ ok: false, code: 'pivot', message: expect.stringContaining('cannot enter a formula'), reason: 'formula' })
       await expect(s.setCells([{ sheet: 'P', cell: 'A4', input: null }])).rejects.toThrow(/affect a PivotTable/)
-      await expect(s.setCells([{ sheet: 'P', cell: 'B1', input: { value: 'b' } }])).rejects.toThrow('"b" is not an item of this field')
+      await thrown(s.setCells([{ sheet: 'P', cell: 'A4', input: null }]), 'affect', 'A4')
+      await thrown(s.setCells([{ sheet: 'P', cell: 'A4', input: { formula: '1' } }]), 'formula', 'A4')
+      const item = await s.setCells([{ sheet: 'P', cell: 'B1', input: { value: 'b' } }]).then(() => null, (e: unknown) => e)
+      expect(item).toBeInstanceOf(InputError)
+      expect(item).not.toBeInstanceOf(PivotInputError)
+      expect((item as Error).message).toContain('"b" is not an item of this field')
       // a new name is an edit of the definition, which the session makes with editPivotTable: the item's caption, laid out again
       expect(await s.setCellText('P', 'A4', 'z')).toMatchObject({ ok: true })
       expect(await s.getValues('P', 'A3:B5')).toEqual([['Row Labels', 'Sum of N'], ['z', 2], ['Grand Total', 2]])

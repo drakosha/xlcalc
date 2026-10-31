@@ -452,7 +452,7 @@ describe('PivotTables', () => {
         reached.add(m.key)
         await expect(s.setCells([{ sheet: 'Свод', cell, input }]), `${cell} ${JSON.stringify(input)}`).rejects.toThrow(say(m))
       }
-      expect(await s.setCellText('Свод', 'B4', '3')).toEqual({ ok: false, code: 'pivot', message: say(ENTRIES[0][2]) })
+      expect(await s.setCellText('Свод', 'B4', '3')).toEqual({ ok: false, code: 'pivot', message: say(ENTRIES[0][2]), reason: 'part' })
       await s.close()
     }
   }, 60_000)
