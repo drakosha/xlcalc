@@ -129,8 +129,12 @@ async function differences(set: string): Promise<string[]> {
       const refs = k > 0 ? refreshed(ops[k]) : null
       const prev = refs && (await book(set, c.id, k - 1, last))
       if (!prev) continue
-      // the PivotTables and caches of the phase before, over the source as this phase's book holds it
-      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? prev.sheets.find((x) => x.name === 'P')! : s)), pivotCaches: prev.pivotCaches }
+      // the PivotTables and caches of the phase before, over the source as this phase's book holds it, with the phase's
+      // edits of the PivotTables' sheet (a cell in the way cleared)
+      const pivots = prev.sheets.find((x) => x.name === 'P')!
+      const cells = { ...pivots.cells }
+      for (const op of ops[k]) if ('edit' in op && op.edit.startsWith('P!')) op.to === null ? delete cells[op.edit.slice(2)] : (cells[op.edit.slice(2)] = typeof op.to === 'object' ? ('formula' in op.to ? { formula: op.to.formula } : { value: op.to.typed }) : { value: op.to })
+      const source = { ...b, sheets: b.sheets.map((s) => (s.name === 'P' ? { ...pivots, cells } : s)), pivotCaches: prev.pivotCaches }
       out.push(...compared(`${c.id}/${k}/refresh`, source, refs === 'all' ? undefined : refs!, true, want))
     }
   }
