@@ -1,6 +1,9 @@
-/** A PivotTable's cells on its sheet: its range and, above it, its Filters area. */
-import type { PivotTable } from '../contract.js'
-import { parseRange, type Rect } from '../structure/area.js'
+/** A PivotTable's cells on its sheet: its range and, above it, its Filters area; its areas as a host reads them. */
+import type { BookInput, PivotAreas, PivotTable, SheetInput } from '../contract.js'
+import { parseRange, rectText, type Rect } from '../structure/area.js'
+
+/** The width of the Filters area past its first column: each line of filters two cells wide and one apart (`pageColumns`). */
+const pageWidth = (t: Pick<PivotTable, 'location'>) => 3 * Math.max(1, t.location.pageColumns ?? 1) - 2
 
 /**
  * The rectangle of a PivotTable's cells: its range, and the rows of its Filters area above it with the blank row between
@@ -11,8 +14,14 @@ export function pivotArea(t: Pick<PivotTable, 'location'>): Rect | null {
   if (!x) return null
   const rows = t.location.pageRows ?? 0
   if (!rows) return x
-  const wide = 3 * Math.max(1, t.location.pageColumns ?? 1) - 2
-  return { r1: Math.max(0, x.r1 - rows - 1), c1: x.c1, r2: x.r2, c2: Math.max(x.c2, x.c1 + wide) }
+  return { r1: Math.max(0, x.r1 - rows - 1), c1: x.c1, r2: x.r2, c2: Math.max(x.c2, x.c1 + pageWidth(t)) }
+}
+
+/** The Filters area as wide as its filters, without the blank row under it; null without one. */
+function pageArea(t: Pick<PivotTable, 'location'>, x: Rect): Rect | null {
+  const rows = t.location.pageRows ?? 0
+  const r1 = Math.max(0, x.r1 - rows - 1)
+  return rows && r1 <= x.r1 - 2 ? { r1, r2: x.r1 - 2, c1: x.c1, c2: x.c1 + pageWidth(t) } : null
 }
 
 /**
@@ -20,9 +29,64 @@ export function pivotArea(t: Pick<PivotTable, 'location'>): Rect | null {
  * filters, not the blank row between them nor the cells beside the filters, which hold anything as in Excel.
  */
 export function pivotParts(t: Pick<PivotTable, 'location'>): Rect[] {
-  const whole = pivotArea(t)
   const x = parseRange(t.location.range)
-  if (!whole || !x) return []
-  const wide = 3 * Math.max(1, t.location.pageColumns ?? 1) - 2
-  return whole.r1 < x.r1 - 1 ? [x, { r1: whole.r1, r2: x.r1 - 2, c1: x.c1, c2: x.c1 + wide }] : [x]
+  if (!x) return []
+  const page = pageArea(t, x)
+  return page ? [x, page] : [x]
+}
+
+type Placed = Pick<PivotTable, 'location' | 'rows' | 'columns' | 'values' | 'rowLines' | 'columnLines'>
+
+/**
+ * A PivotTable's areas (`PivotLocation.areas`) from its place and saved layout, as Excel gives them (the set areas): the
+ * table, its Filters area and its values (`DataBodyRange`, there without a value field too: below the header rows and
+ * right of the labels, or the last row or column where there is none); once laid out with a field, the header rows
+ * above the values and the labels of its rows left of them when it has fields on rows. One not laid out (no saved
+ * lines), shrunk to its top-left cell (`#SPILL!`) or with no field at all has no headers or labels.
+ */
+export function pivotAreas(t: Placed): PivotAreas {
+  const { range, firstDataRow: dr, firstDataColumn: dc } = t.location
+  const x = parseRange(range)
+  if (!x) return { table: range, data: range }
+  const top = x.r1 + dr
+  const left = x.c1 + dc
+  const page = pageArea(t, x)
+  const out: Omit<PivotAreas, 'data'> = { ...(page ? { page: rectText(page) } : {}), table: range }
+  const empty = !t.rows?.length && !t.columns?.length && !t.values?.length
+  if (t.rowLines && dr > 0 && !empty) {
+    // the header rows are the whole table where no line of values is under them (column fields alone)
+    out.columnHeaders = rectText({ ...x, r2: Math.min(x.r2, top - 1) })
+    // without a field on rows, the column left of the values holds a value field's name alone (Excel's RowRange is none)
+    if (dc > 0 && t.rows?.length && top <= x.r2) out.rowLabels = rectText({ ...x, r1: top, c2: Math.min(x.c2, left - 1) })
+  }
+  return { ...out, data: rectText({ ...x, r1: Math.min(top, x.r2), c1: Math.min(left, x.c2) }) }
+}
+
+const sameAreas = (a: PivotAreas | undefined, b: PivotAreas) => a !== undefined && a.table === b.table && a.page === b.page && a.columnHeaders === b.columnHeaders && a.rowLabels === b.rowLabels && a.data === b.data && Object.keys(a).length === Object.keys(b).length
+
+/** The PivotTable with its areas worked out again from its place; the same object when they are already so. */
+export function withAreas<T extends Placed>(t: T): T {
+  const areas = pivotAreas(t)
+  return sameAreas(t.location.areas, areas) ? t : { ...t, location: { ...t.location, areas } }
+}
+
+/** The sheet with its PivotTables' areas worked out again; the same object when none changes. */
+const placedSheet = (s: SheetInput): SheetInput => {
+  const list = s.pivotTables?.map(withAreas)
+  return list && list.some((t, k) => t !== s.pivotTables![k]) ? { ...s, pivotTables: list } : s
+}
+
+/**
+ * The book with the areas of its PivotTables worked out from their places, as the library gives every PivotTable out
+ * and takes none from its input; the same object when none changes. `before` names the book whose sheets are known to
+ * be so already: a sheet whose PivotTables are its own is not looked at.
+ */
+export function placedPivots<B extends BookInput>(book: B, before?: BookInput): B {
+  let sheets: SheetInput[] | undefined
+  book.sheets.forEach((s, i) => {
+    if (!s.pivotTables || (before && before.sheets.some((o) => o.pivotTables === s.pivotTables))) return
+    const placed = placedSheet(s)
+    if (placed !== s) (sheets ??= book.sheets.slice())[i] = placed
+  })
+  return sheets ? { ...book, sheets } : book
 }

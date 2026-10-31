@@ -1,0 +1,666 @@
+{
+ "compact": {
+  "PT1": {
+   "table": "A3:B9",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A9",
+   "data": "B4:B9"
+  }
+ },
+ "compact-two-rows": {
+  "PT1": {
+   "table": "A3:B27",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A27",
+   "data": "B4:B27"
+  }
+ },
+ "compact-columns": {
+  "PT1": {
+   "table": "A3:D10",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A10",
+   "data": "B5:D10"
+  }
+ },
+ "compact-two-columns": {
+  "PT1": {
+   "table": "A3:H11",
+   "columnHeaders": "A3:H5",
+   "rowLabels": "A6:A11",
+   "data": "B6:H11"
+  }
+ },
+ "outline": {
+  "PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "outline-columns": {
+  "PT1": {
+   "table": "A3:E28",
+   "columnHeaders": "A3:E4",
+   "rowLabels": "A5:B28",
+   "data": "C5:E28"
+  }
+ },
+ "tabular": {
+  "PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "tabular-columns": {
+  "PT1": {
+   "table": "A3:H29",
+   "columnHeaders": "A3:H5",
+   "rowLabels": "A6:B29",
+   "data": "C6:H29"
+  }
+ },
+ "two-values": {
+  "PT1": {
+   "table": "A3:C9",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:A9",
+   "data": "B4:C9"
+  }
+ },
+ "two-values-rows": {
+  "PT1": {
+   "table": "A3:C9",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:A9",
+   "data": "B4:C9"
+  }
+ },
+ "no-rows": {
+  "PT1": {
+   "table": "A3:D5",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5",
+   "data": "B5:D5"
+  }
+ },
+ "no-rows-two-values": {
+  "PT1": {
+   "table": "A3:G6",
+   "columnHeaders": "A3:G5",
+   "rowLabels": "A6",
+   "data": "B6:G6"
+  }
+ },
+ "value-alone": {
+  "PT1": {
+   "table": "A3:A4",
+   "columnHeaders": "A3",
+   "data": "A4"
+  }
+ },
+ "values-alone": {
+  "PT1": {
+   "table": "A3:B4",
+   "columnHeaders": "A3:B3",
+   "data": "A4:B4"
+  }
+ },
+ "rows-alone": {
+  "PT1": {
+   "table": "A3:A9",
+   "columnHeaders": "A3",
+   "rowLabels": "A4:A9"
+  }
+ },
+ "rows-columns-no-value": {
+  "PT1": {
+   "table": "A3:D10",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A10"
+  }
+ },
+ "columns-alone": {
+  "PT1": {
+   "table": "A3:D5",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5"
+  }
+ },
+ "empty": {
+  "PT1": {
+   "table": "A3:C20"
+  }
+ },
+ "page": {
+  "PT1": {
+   "table": "A3:B9",
+   "page": "A1:B1",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A9",
+   "data": "B4:B9"
+  }
+ },
+ "pages-three": {
+  "PT1": {
+   "table": "A5:B11",
+   "page": "A1:B3",
+   "columnHeaders": "A5:B5",
+   "rowLabels": "A6:A11",
+   "data": "B6:B11"
+  }
+ },
+ "pages-wrap": {
+  "PT1": {
+   "table": "A5:B11",
+   "page": "A2:E3",
+   "columnHeaders": "A5:B5",
+   "rowLabels": "A6:A11",
+   "data": "B6:B11"
+  }
+ },
+ "pages-across": {
+  "PT1": {
+   "table": "A5:B11",
+   "page": "A3:H3",
+   "columnHeaders": "A5:B5",
+   "rowLabels": "A6:A11",
+   "data": "B6:B11"
+  }
+ },
+ "pages-across-wrap": {
+  "PT1": {
+   "table": "A5:B11",
+   "page": "A2:E3",
+   "columnHeaders": "A5:B5",
+   "rowLabels": "A6:A11",
+   "data": "B6:B11"
+  }
+ },
+ "page-alone": {
+  "PT1": {
+   "table": "A3:C20",
+   "page": "A1:B1"
+  }
+ },
+ "page-value-alone": {
+  "PT1": {
+   "table": "A3:A4",
+   "page": "A1:B1",
+   "columnHeaders": "A3",
+   "data": "A4"
+  }
+ },
+ "page-tabular-columns": {
+  "PT1": {
+   "table": "A3:E28",
+   "page": "A1:B1",
+   "columnHeaders": "A3:E4",
+   "rowLabels": "A5:B28",
+   "data": "C5:E28"
+  }
+ },
+ "no-grand": {
+  "PT1": {
+   "table": "A3:C9",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:A9",
+   "data": "B5:C9"
+  }
+ },
+ "classic": {
+  "PT1": {
+   "table": "A3:B10",
+   "columnHeaders": "A3:B4",
+   "rowLabels": "A5:A10",
+   "data": "B5:B10"
+  }
+ },
+ "saved-layout-blank-compact": {
+  "P!PT1": {
+   "table": "A3:B32",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A32",
+   "data": "B4:B32"
+  }
+ },
+ "saved-layout-blank-tabular": {
+  "P!PT1": {
+   "table": "A3:D46",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C46",
+   "data": "D4:D46"
+  }
+ },
+ "saved-layout-bottom-compact": {
+  "P!PT1": {
+   "table": "A3:B46",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A46",
+   "data": "B4:B46"
+  }
+ },
+ "saved-layout-bottom-outline": {
+  "P!PT1": {
+   "table": "A3:D46",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C46",
+   "data": "D4:D46"
+  }
+ },
+ "saved-layout-bottom-tabular": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-captions-tabular": {
+  "P!PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "saved-layout-captions": {
+  "P!PT1": {
+   "table": "A3:D10",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A10",
+   "data": "B5:D10"
+  }
+ },
+ "saved-layout-empty-text": {
+  "P!PT1": {
+   "table": "A3:E28",
+   "columnHeaders": "A3:E4",
+   "rowLabels": "A5:B28",
+   "data": "C5:E28"
+  }
+ },
+ "saved-layout-form-per-field": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-no-column-grand": {
+  "P!PT1": {
+   "table": "A3:D9",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A9",
+   "data": "B5:D9"
+  }
+ },
+ "saved-layout-no-grand-rows-only": {
+  "P!PT1": {
+   "table": "A3:B26",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A26",
+   "data": "B4:B26"
+  }
+ },
+ "saved-layout-no-grand": {
+  "P!PT1": {
+   "table": "A3:C9",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:A9",
+   "data": "B5:C9"
+  }
+ },
+ "saved-layout-no-row-grand": {
+  "P!PT1": {
+   "table": "A3:C10",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:A10",
+   "data": "B5:C10"
+  }
+ },
+ "saved-layout-no-subtotals-compact": {
+  "P!PT1": {
+   "table": "A3:B32",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A32",
+   "data": "B4:B32"
+  }
+ },
+ "saved-layout-no-subtotals-outline": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-no-subtotals-tabular": {
+  "P!PT1": {
+   "table": "A3:D27",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C27",
+   "data": "D4:D27"
+  }
+ },
+ "saved-layout-page-tabular": {
+  "P!PT1": {
+   "table": "A4:C28",
+   "page": "A1:B2",
+   "columnHeaders": "A4:C4",
+   "rowLabels": "A5:B28",
+   "data": "C5:C28"
+  }
+ },
+ "saved-layout-phases": {
+  "P!PT1": {
+   "table": "A3:G5",
+   "columnHeaders": "A3:G4",
+   "rowLabels": "A5",
+   "data": "B5:G5"
+  }
+ },
+ "saved-layout-repeat-compact": {
+  "P!PT1": {
+   "table": "A3:B32",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A32",
+   "data": "B4:B32"
+  }
+ },
+ "saved-layout-repeat-field": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-repeat-outline": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-repeat-tabular": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-subtotals-columns": {
+  "P!PT1": {
+   "table": "A3:J11",
+   "columnHeaders": "A3:J5",
+   "rowLabels": "A6:A11",
+   "data": "B6:J11"
+  }
+ },
+ "saved-layout-subtotals-inner": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-subtotals-three-compact": {
+  "P!PT1": {
+   "table": "A3:B37",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A37",
+   "data": "B4:B37"
+  }
+ },
+ "saved-layout-subtotals-three": {
+  "P!PT1": {
+   "table": "A3:C37",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B37",
+   "data": "C4:C37"
+  }
+ },
+ "saved-layout-three-compact": {
+  "P!PT1": {
+   "table": "A3:B32",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A32",
+   "data": "B4:B32"
+  }
+ },
+ "saved-layout-three-outline": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-three-tabular": {
+  "P!PT1": {
+   "table": "A3:D32",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C32",
+   "data": "D4:D32"
+  }
+ },
+ "saved-layout-top-outline": {
+  "P!PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "saved-layout-two-columns-tabular": {
+  "P!PT1": {
+   "table": "A3:G19",
+   "columnHeaders": "A3:G4",
+   "rowLabels": "A5:B19",
+   "data": "C5:G19"
+  }
+ },
+ "saved-layout-two-columns": {
+  "P!PT1": {
+   "table": "A3:H11",
+   "columnHeaders": "A3:H5",
+   "rowLabels": "A6:A11",
+   "data": "B6:H11"
+  }
+ },
+ "saved-layout-two-compact": {
+  "P!PT1": {
+   "table": "A3:B27",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A27",
+   "data": "B4:B27"
+  }
+ },
+ "saved-layout-two-outline": {
+  "P!PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "saved-layout-two-tabular": {
+  "P!PT1": {
+   "table": "A3:C27",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:B27",
+   "data": "C4:C27"
+  }
+ },
+ "saved-layout-two-values-rows-outline": {
+  "P!PT1": {
+   "table": "A3:D47",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:C47",
+   "data": "D4:D47"
+  }
+ },
+ "saved-layout-two-values-tabular": {
+  "P!PT1": {
+   "table": "A3:D18",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:B18",
+   "data": "C4:D18"
+  }
+ },
+ "saved-corpus-shapes-classic-columns": {
+  "P!PT1": {
+   "table": "A3:E11",
+   "columnHeaders": "A3:E4",
+   "rowLabels": "A5:A11",
+   "data": "B5:E11"
+  }
+ },
+ "saved-corpus-shapes-classic-no-subtotals": {
+  "P!PT1": {
+   "table": "A3:C14",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:B14",
+   "data": "C5:C14"
+  }
+ },
+ "saved-corpus-shapes-classic-page": {
+  "P!PT1": {
+   "table": "A3:B11",
+   "page": "A1:B1",
+   "columnHeaders": "A3:B4",
+   "rowLabels": "A5:A11",
+   "data": "B5:B11"
+  }
+ },
+ "saved-corpus-shapes-classic-tabular": {
+  "P!PT1": {
+   "table": "A3:C20",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:B20",
+   "data": "C5:C20"
+  }
+ },
+ "saved-corpus-shapes-classic-two-values": {
+  "P!PT1": {
+   "table": "A3:C11",
+   "columnHeaders": "A3:C4",
+   "rowLabels": "A5:A11",
+   "data": "B5:C11"
+  }
+ },
+ "saved-corpus-shapes-hidden-column-row-no-grand": {
+  "P!PT1": {
+   "table": "A3:D8",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A8",
+   "data": "B5:D8"
+  }
+ },
+ "saved-corpus-shapes-hidden-column-row": {
+  "P!PT1": {
+   "table": "A3:D9",
+   "columnHeaders": "A3:D4",
+   "rowLabels": "A5:A9",
+   "data": "B5:D9"
+  }
+ },
+ "saved-corpus-shapes-hidden-row-column": {
+  "P!PT1": {
+   "table": "A3:F7",
+   "columnHeaders": "A3:F4",
+   "rowLabels": "A5:A7",
+   "data": "B5:F7"
+  }
+ },
+ "saved-corpus-shapes-page-one-of-several": {
+  "P!PT1": {
+   "table": "A3:B5",
+   "page": "A1:B1",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A5",
+   "data": "B4:B5"
+  }
+ },
+ "saved-corpus-shapes-page-one-text-of-several": {
+  "P!PT1": {
+   "table": "A3:B8",
+   "page": "A1:B1",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A8",
+   "data": "B4:B8"
+  }
+ },
+ "saved-corpus-shapes-ties-after-value-filter": {
+  "P!PT1": {
+   "table": "A3:B17",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A17",
+   "data": "B4:B17"
+  }
+ },
+ "saved-corpus-shapes-ties-both-down": {
+  "P!PT1": {
+   "table": "A3:B19",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A19",
+   "data": "B4:B19"
+  }
+ },
+ "saved-corpus-shapes-ties-count-down": {
+  "P!PT1": {
+   "table": "A3:C10",
+   "columnHeaders": "A3:C3",
+   "rowLabels": "A4:A10",
+   "data": "B4:C10"
+  }
+ },
+ "saved-corpus-shapes-ties-down": {
+  "P!PT1": {
+   "table": "A3:B10",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A10",
+   "data": "B4:B10"
+  }
+ },
+ "saved-corpus-shapes-ties-inner-down": {
+  "P!PT1": {
+   "table": "A3:B16",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A16",
+   "data": "B4:B16"
+  }
+ },
+ "saved-corpus-shapes-ties-inner-up": {
+  "P!PT1": {
+   "table": "A3:B16",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A16",
+   "data": "B4:B16"
+  }
+ },
+ "saved-corpus-shapes-ties-second-value": {
+  "P!PT1": {
+   "table": "A3:D10",
+   "columnHeaders": "A3:D3",
+   "rowLabels": "A4:A10",
+   "data": "B4:D10"
+  }
+ },
+ "saved-corpus-shapes-ties-up": {
+  "P!PT1": {
+   "table": "A3:B10",
+   "columnHeaders": "A3:B3",
+   "rowLabels": "A4:A10",
+   "data": "B4:B10"
+  }
+ }
+}

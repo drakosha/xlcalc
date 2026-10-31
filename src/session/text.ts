@@ -5,7 +5,7 @@
  * take the text, the width its column takes as Excel widens it for a typed number, and the rule of data validation the
  * value breaks.
  */
-import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
+import type { CellInput, CellRef, CellReplace, CellTextRefusal, CellTextRefused, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
 import type { FormatAt } from '../entry/formula.js'
@@ -84,16 +84,24 @@ export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'heade
   return table ? { ok: false, code: 'header', message: sayPivot(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null
 }
 
-/** Why Excel would not take the edits: they change a cell of a PivotTable's area; null when it takes them. */
-export function pivotRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'pivot'> & CellRef) | null {
-  const part = pivotPart(s, edits)
-  return part && { ok: false, code: 'pivot', message: sayPivot(s.input.locale, { key: 'pivotPart', ...part }), sheet: part.sheet, cell: part.cell }
+/**
+ * Why Excel would not take the edits: they change a cell of a PivotTable's area, a part of it, or, written together (a
+ * paste of several cells' text), the PivotTable they affect (the set alerts); null when it takes them.
+ */
+export function pivotRefusal(s: EngineState, edits: CellReplace[], together = false): (Refusal<'pivot'> & CellRef & { reason: 'part' | 'affect' }) | null {
+  // a paste over its cells affects it even where it writes what they hold (the set alerts)
+  const part = pivotPart(s, edits, together)
+  if (!part) return null
+  const { sheet, cell, pivot } = part
+  return { ok: false, code: 'pivot', message: sayPivot(s.input.locale, { key: together ? 'pivotAffect' : 'pivotPart', sheet, cell, pivot }), reason: together ? 'affect' : 'part', sheet, cell }
 }
 
-/** Why Excel would not take an entry into the cell alone: it changes part of an array formula or a PivotTable's cell, or puts a formula into a table's header cell; null when it takes it. */
-export function textRefusal(s: EngineState, edit: CellReplace): Refusal<CellTextRefusal> | null {
-  const part = arrayRefusal(s, [edit]) ?? pivotRefusal(s, [edit])
-  return part ? { ok: false, code: part.code, message: part.message } : headerRefusal(s, edit)
+/** Why Excel would not take an entry into the cell (`together`: one of several written at once): it changes part of an array formula or a PivotTable's cell, or puts a formula into a table's header cell; null when it takes it. */
+export function textRefusal(s: EngineState, edit: CellReplace, together = false): CellTextRefused | null {
+  const part = arrayRefusal(s, [edit]) ?? pivotRefusal(s, [edit], together)
+  if (!part) return headerRefusal(s, edit)
+  const { sheet: _, cell: __, ...refusal } = part
+  return refusal
 }
 
 /**

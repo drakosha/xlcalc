@@ -9,7 +9,7 @@ import { epochOf } from '../dates.js'
 import { displayRules } from '../locale/rules.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { cornersText, type Rect } from '../structure/area.js'
-import { pivotArea } from './area.js'
+import { pivotArea, pivotAreas } from './area.js'
 import { wordsOf } from './captions.js'
 import { groupedItems } from './items.js'
 import { itemFormat } from '../pivot-format.js'
@@ -136,8 +136,9 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     level.push(shared ? level[k - 1] + 1 : 0)
   })
   const colItems = hasItems(colFields)
-  // column items alone take a column of labels for the value field's name; without a value field none (checked-values-2)
-  const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems && values.length ? 1 : 0
+  // without a field on rows, a column of its own holds the name of a single value field under column labels (the set areas:
+  // none for several value fields, whose names head their columns, nor for none)
+  const width = rowFields.length ? labelCol[rowFields.length - 1] + 1 : colItems && values.length === 1 ? 1 : 0
   // the classic layout keeps the row of the columns' drop zone with no column field: the value field's name over it, `Total`
   // over its values (the set corpus-shapes)
   const classic = table.classicLayout === true && !colItems && values.length > 0
@@ -157,7 +158,8 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
   const at = parseAddress(table.location.range.split(':')[0])
   const top = pageRows ? Math.max(at.row, pageRows + 1) : at.row
   const left = at.col
-  const rows = empty ? EMPTY_ROWS : height + rowLines.length
+  // with no field on rows and no value field, only the column labels: no line of values under them (the set areas)
+  const rows = empty ? EMPTY_ROWS : height + (rowFields.length || values.length ? rowLines.length : 0)
   const range: Rect = { r1: top, c1: left, r2: top + rows - 1, c2: left + Math.max(width + dataCols, 1) - 1 }
   const location: PivotLocation = {
     range: cornersText(range),
@@ -179,6 +181,7 @@ export function layoutPivot(result: PivotResult, book: Pick<BookInput, 'locale' 
     cells.set(formatAddress(row, col), cell)
   }
   const out: PivotLaidOut = { location, rowLines: rowLines.map((a) => a.line), columnLines: columnLines.map((a) => a.line), area: pivotArea({ location })!, cells: [] }
+  location.areas = pivotAreas({ ...table, location, rowLines: out.rowLines, columnLines: out.columnLines })
   if (empty) return out
 
   pages.forEach((p, k) => {

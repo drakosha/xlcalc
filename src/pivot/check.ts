@@ -174,13 +174,15 @@ const FILTERS = [
 ]
 
 const SHOW_AS = ['normal', 'percentOfTotal', 'percentOfColumn', 'percentOfRow', 'percent', 'percentOfParentRow', 'percentOfParentColumn', 'percentOfParent', 'difference', 'percentDiff', 'runTotal', 'percentOfRunningTotal', 'rankAscending', 'rankDescending', 'index']
+/** A field the library works out again from the others, whatever the input holds (`PivotLocation.areas`). */
+const IGNORED: Check = () => undefined
 const line = shape({ type: oneOf(['subtotal', ...FUNCTIONS, 'grand', 'blank']), repeat: count, items: list(index), value: index }, ['items'], 'a line')
 
 const pivot = shape(
   {
     name: text,
     cache: index,
-    location: shape({ range, firstHeaderRow: count, firstDataRow: count, firstDataColumn: count, pageRows: count, pageColumns: count }, ['range', 'firstHeaderRow', 'firstDataRow', 'firstDataColumn'], 'a place'),
+    location: shape({ range, firstHeaderRow: count, firstDataRow: count, firstDataColumn: count, pageRows: count, pageColumns: count, areas: IGNORED }, ['range', 'firstHeaderRow', 'firstDataRow', 'firstDataColumn'], 'a place'),
     fields: list(field),
     rows: list(axisField),
     columns: list(axisField),

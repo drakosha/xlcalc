@@ -1,7 +1,7 @@
 /** Structure operations (`editStructure`) and their answers, and a sheet's outline groups and commands over its rows and columns (`outlineGroups`, `outlineEdit`). */
 import type { CellRef, LineSpan, RangeRef, Refusal } from './values.js'
 import type { Book, ColumnInput, RowInput, TableInput } from './book.js'
-import type { PivotGrouping, PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
+import type { PivotGrouping, PivotRefusalReason, PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
 import type { EditResult } from './edits.js'
 
 /**
@@ -307,7 +307,10 @@ export type StructureResult =
       stale?: PivotRef[]
     }
   /** A rejection: its code, and a message in the language of the workbook's locale (English for en-US). */
-  | Refusal<StructureRefusal>
+  | StructureRefused
+
+/** An operation `editStructure` rejected: its code and message; over a PivotTable's cells, Excel's alert (`reason`). */
+export type StructureRefused = Refusal<StructureRefusal> & { reason?: PivotRefusalReason }
 
 /**
  * `Session.editStructure`: the edit's result and where the cells went, without the workbook (`getBook()` returns it),
@@ -324,4 +327,4 @@ export type SessionStructureResult =
       /** As `StructureResult.stale`. */
       stale?: PivotRef[]
     })
-  | Refusal<StructureRefusal>
+  | StructureRefused

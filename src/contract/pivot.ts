@@ -301,6 +301,30 @@ export interface PivotLocation {
   firstDataColumn: number
   pageRows?: number
   pageColumns?: number
+  /** Its areas as ranges, worked out from the fields above on every PivotTable the library gives; ignored on input. */
+  areas?: PivotAreas
+}
+
+/**
+ * A PivotTable's areas on its sheet, in A1 (`A3:D10`, a cell alone `A4`): what a host selects, outlines or tests a cell
+ * against without working them out from the place. One not laid out (added without `xlcalc/pivot`), shrunk to its
+ * top-left cell (`#SPILL!`) or with no field at all has its table, Filters area and values alone.
+ */
+export interface PivotAreas {
+  /** The Filters area above the table, as wide as its filters, without the blank row under it (Excel's `PageRange`). */
+  page?: string
+  /** The table without its Filters area, `range` (Excel's `TableRange1`). */
+  table: string
+  /** The table's rows above its values: the value fields' and the column fields' headers and the columns' labels. */
+  columnHeaders?: string
+  /** The labels of the rows left of the values, down to the grand total. */
+  rowLabels?: string
+  /**
+   * The values with their totals (Excel's `DataBodyRange`). Without a value field, as Excel gives it: the cells under the
+   * header rows right of the labels, which are the labels themselves with no field on columns and the columns' labels
+   * with no field on rows.
+   */
+  data: string
 }
 
 /** A PivotTable's look, as Excel's PivotTable Style Options. */
@@ -399,6 +423,16 @@ export interface PivotCalculatedItem {
   /** Its formula over the field's items (`North+South`), as the file stores it. */
   formula: string
 }
+
+/**
+ * Which of Excel's alerts refuses a change of a PivotTable's cells, on a refusal with the code `pivot` (absent on its
+ * other refusals: a name taken, an item not of the field, a refresh that cannot be made, a table over it): `part` "We
+ * can't change this part of the PivotTable." (a value or text typed over its cells); `formula` "Cannot enter a formula
+ * for an item or field name in a PivotTable report." (a formula over a label); `affect` "We can't make this change for
+ * the selected cells because it will affect a PivotTable…" (a cell cleared, a paste, a copy, a cut, a fill or a merge
+ * onto it, rows or columns inserted or deleted through it, part of it moved, texts typed into several of its cells).
+ */
+export type PivotRefusalReason = 'part' | 'formula' | 'affect'
 
 /** A PivotTable by its sheet and name, as a slicer or a timeline names it. */
 export interface PivotRef {

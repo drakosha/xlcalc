@@ -394,7 +394,7 @@ const CACHE_OPS: [string, (locale?: string) => BookInput, StructureOp, EngineMes
 const ENTRIES: [string, CellInput | null, EngineMessage][] = [
   ['B4', { value: 3 }, { key: 'pivotPart', sheet: 'Свод', cell: 'B4', pivot: 'Сводная1' }],
   ['A4', { formula: '1' }, { key: 'pivotFormula', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
-  ['A4', null, { key: 'pivotClear', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
+  ['A4', null, { key: 'pivotAffect', sheet: 'Свод', cell: 'A4', pivot: 'Сводная1' }],
   ['B3', { value: 'n' }, { key: 'pivotNameTaken', name: 'n' }],
   ['B1', { value: 'b' }, { key: 'pivotNotItem', item: 'b' }],
 ]
@@ -452,7 +452,7 @@ describe('PivotTables', () => {
         reached.add(m.key)
         await expect(s.setCells([{ sheet: 'Свод', cell, input }]), `${cell} ${JSON.stringify(input)}`).rejects.toThrow(say(m))
       }
-      expect(await s.setCellText('Свод', 'B4', '3')).toEqual({ ok: false, code: 'pivot', message: say(ENTRIES[0][2]) })
+      expect(await s.setCellText('Свод', 'B4', '3')).toEqual({ ok: false, code: 'pivot', message: say(ENTRIES[0][2]), reason: 'part' })
       await s.close()
     }
   }, 60_000)

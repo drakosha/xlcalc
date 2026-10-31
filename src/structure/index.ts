@@ -39,6 +39,7 @@ import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
+import { placedPivots } from '../pivot/area.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
@@ -138,15 +139,19 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names
-    const carried = PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
+    // PivotTables, their sources and the slicers' anchors go through the operation on hidden names; a fill's own copies
+    // carry none of their own, as the fill's names would go with theirs
+    const carried = whole || PIVOT_OPS.has((op as { op?: string })?.op ?? '') ? null : carryPivots(input)
     const [r, loose] = withLooseLooks(() => applied(carried?.book ?? input, op, values, whole))
     const refused = r.ok ? pivotRefusal(input, op) : null
     if (refused) return refused
     const both = r.ok ? linesMoved(input, r) : r
     const out = both.ok && carried ? carried.after(both) : both
+    if (!out.ok) return out
+    // the PivotTables it moved or laid out with their areas from their new places
+    const book2 = placedPivots(out.book, input)
     // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
-    return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
+    return { ...out, book: loose.size ? { ...book2, sheets: book2.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } : book2 }
   })
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {

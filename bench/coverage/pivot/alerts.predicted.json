@@ -1,0 +1,475 @@
+{
+ "insert-row-inside": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "delete-row-inside": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "insert-column-inside": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "delete-column-inside": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "insert-row-under-filters": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "insert-row-above": {
+  "pivots": {
+   "PT1": [
+    [
+     "Product",
+     "(All)",
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Sum of Qty",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     12,
+     31,
+     43
+    ],
+    [
+     "North",
+     24,
+     32,
+     56
+    ],
+    [
+     "South",
+     22,
+     30,
+     52
+    ],
+    [
+     "West",
+     16,
+     36,
+     52
+    ],
+    [
+     "(blank)",
+     null,
+     9,
+     9
+    ],
+    [
+     "Grand Total",
+     74,
+     138,
+     212
+    ]
+   ]
+  }
+ },
+ "copy-onto-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "copy-onto-label": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "copy-onto-filter": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "copy-over-edge": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "copy-out-of-it": {
+  "pivots": {
+   "PT1": [
+    [
+     "Product",
+     "(All)",
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Sum of Qty",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     12,
+     31,
+     43
+    ],
+    [
+     "North",
+     24,
+     32,
+     56
+    ],
+    [
+     "South",
+     22,
+     30,
+     52
+    ],
+    [
+     "West",
+     16,
+     36,
+     52
+    ],
+    [
+     "(blank)",
+     null,
+     9,
+     9
+    ],
+    [
+     "Grand Total",
+     74,
+     138,
+     212
+    ]
+   ]
+  }
+ },
+ "cut-onto-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "cut-part-of-it": {
+  "refused": {
+   "code": "pivot",
+   "reason": "affect",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "cut-all-of-it": {
+  "pivots": {
+   "PT1": [
+    [
+     "Product",
+     "(All)",
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Sum of Qty",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     12,
+     31,
+     43
+    ],
+    [
+     "North",
+     24,
+     32,
+     56
+    ],
+    [
+     "South",
+     22,
+     30,
+     52
+    ],
+    [
+     "West",
+     16,
+     36,
+     52
+    ],
+    [
+     "(blank)",
+     null,
+     9,
+     9
+    ],
+    [
+     "Grand Total",
+     74,
+     138,
+     212
+    ]
+   ]
+  }
+ },
+ "fill-down": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "merge": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "table": {
+  "refused": {
+   "code": "pivot",
+   "message": "the operation would change part of the PivotTable PT1 on 'P' (Excel moves or deletes a PivotTable whole)"
+  }
+ },
+ "typed-labels": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "typed-labels-same": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A6 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "typed-label-and-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "typed-values": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!B5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "typed-formula-labels": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "set-labels": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "part",
+   "message": "edits: P!A5 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "set-values": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "part",
+   "message": "edits: P!B5 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "cleared-labels": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "affect",
+   "message": "edits: P!A5 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "cleared-values": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "affect",
+   "message": "edits: P!B5 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "cleared-all": {
+  "threw": {
+   "name": "PivotInputError",
+   "reason": "affect",
+   "message": "edits: P!A1 is part of the PivotTable PT1: Excel does not let an entry change a PivotTable's cells"
+  }
+ },
+ "paste-label": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "paste-labels": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "paste-labels-same": {
+  "pivots": {
+   "PT1": [
+    [
+     "Product",
+     "(All)",
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Sum of Qty",
+     "Column Labels",
+     null,
+     null
+    ],
+    [
+     "Row Labels",
+     "FALSE",
+     "TRUE",
+     "Grand Total"
+    ],
+    [
+     "East",
+     12,
+     31,
+     43
+    ],
+    [
+     "North",
+     24,
+     32,
+     56
+    ],
+    [
+     "South",
+     22,
+     30,
+     52
+    ],
+    [
+     "West",
+     16,
+     36,
+     52
+    ],
+    [
+     "(blank)",
+     null,
+     9,
+     9
+    ],
+    [
+     "Grand Total",
+     74,
+     138,
+     212
+    ]
+   ]
+  }
+ },
+ "paste-labels-swapped": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "paste-values": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!B5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "paste-label-and-value": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A5 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ },
+ "paste-header": {
+  "refused": {
+   "code": "pivot",
+   "reason": "part",
+   "message": "P!A4 is part of the PivotTable PT1: we can't change this part of the PivotTable"
+  }
+ }
+}

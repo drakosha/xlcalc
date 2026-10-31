@@ -34,6 +34,16 @@ const CLOCK = clockOptions({ now: '2026-10-30', seed: 0 })
 const SHOW: Record<string, PivotShowAs> = { percentOfCol: 'percentOfColumn', percentOfParentCol: 'percentOfParentColumn' }
 const valuesOf = (b: BookInput) => stateValues(createState(b, CLOCK))
 
+/** The settings of a `table` operation the engine takes, each set on the PivotTable. */
+const TABLE_PROPS: Record<string, (t: PivotTable, v: never) => PivotTable> = {
+  customLists: (t, v: boolean) => ({ ...t, customListSort: v }),
+  pagesWrap: (t, v: number) => ({ ...t, pagesWrap: v }),
+  pagesAcross: (t, v: boolean) => ({ ...t, pagesAcrossFirst: v }),
+  rowGrand: (t, v: boolean) => ({ ...t, grandTotals: { ...t.grandTotals, rows: v } }),
+  columnGrand: (t, v: boolean) => ({ ...t, grandTotals: { ...t.grandTotals, columns: v } }),
+  classic: (t, v: boolean) => ({ ...t, classicLayout: v }),
+}
+
 /** A phase played: each PivotTable's area by its name, and the operations refused (`op <index>: <message>`). */
 export interface DrivenPhase {
   pivots: Record<string, { area: string } | { error: string }>
@@ -226,8 +236,8 @@ export function drive(c: PivotCase, saved?: BookInput): DrivenPhase[] {
       })
       return laid(k, false, op.by === undefined ? [f] : undefined)
     }
-    if ('table' in op && Object.keys(op.table).every((k) => k === 'customLists')) {
-      setTable(pt, (t) => ({ ...t, customListSort: op.table.customLists }))
+    if ('table' in op && Object.keys(op.table).every((k) => k in TABLE_PROPS)) {
+      setTable(pt, (t) => Object.entries(op.table).reduce((x, [k, v]) => TABLE_PROPS[k](x, v as never), t))
       return laid(k)
     }
     if ('group' in op) {

@@ -29,10 +29,12 @@ const full = (b: BookInput) => {
 }
 
 describe('PivotTables in the workbook', () => {
-  it('a workbook with a PivotTable, its cache and a slicer is taken whole, and goes through a session unchanged', () => {
+  it('a workbook with a PivotTable, its cache and a slicer is taken whole, and goes through a session unchanged but for the areas worked out', () => {
     expect(() => compute(pivotBook())).not.toThrow()
     const s = createSession(pivotBook())
-    expect(s.getBook()).toEqual(pivotBook())
+    const want = pivotBook()
+    want.sheets[1].pivotTables![0].location.areas = { table: 'A3:B8', columnHeaders: 'A3:B3', rowLabels: 'A4:A8', data: 'B4:B8' }
+    expect(s.getBook()).toEqual(want)
   })
 
   it('the core refuses what it reads and what does not refer: a cache it does not have, fields not one for each of the cache, names twice, a slicer of another cache', () => {
