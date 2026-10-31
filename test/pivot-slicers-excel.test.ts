@@ -12,6 +12,12 @@ import type { PivotPhase } from '../bench/coverage/pivot/cases.js'
 import { predict, predicted } from '../bench/coverage/pivot/slicer-predict.js'
 import * as slicer from '../bench/coverage/pivot/slicer.js'
 import * as slicerDelete from '../bench/coverage/pivot/slicer-delete.js'
+import * as slicerFile from '../bench/coverage/pivot/slicer-file.js'
+import { createState } from '../src/engine.js'
+import { formatAddress } from '../src/model.js'
+import { clockOptions } from '../src/result.js'
+import { parseRange } from '../src/structure/area.js'
+import { stateValues } from '../src/structure/values.js'
 import { registerPivot, type BookInput } from '../src/index.js'
 import { refreshPivots } from '../src/pivot/engine.js'
 import { pivotEngine } from '../src/pivot/index.js'
@@ -23,6 +29,13 @@ const answersOf = (set: string) => (JSON.parse(readFileSync(new URL(`${set}.json
 const SETS = { slicer, 'slicer-delete': slicerDelete }
 
 const rounded = (v: unknown): unknown => (typeof v === 'number' ? Number(v.toPrecision(15)) : Array.isArray(v) ? v.map(rounded) : v)
+
+/** The values of P's cells in `range`. */
+function shown(book: BookInput, range: string): unknown[][] {
+  const x = parseRange(range.replace(/\$/g, ''))!
+  const cells = book.sheets.find((s) => s.name === 'P')!.cells
+  return Array.from({ length: x.r2 - x.r1 + 1 }, (_, r) => Array.from({ length: x.c2 - x.c1 + 1 }, (_, c) => cells[formatAddress(x.r1 + r, x.c1 + c)]?.value ?? null))
+}
 
 const books = async () => Promise.all(['slicer', 'slicer-delete'].flatMap((set) => readdirSync(new URL(`${set}/`, DIR)).map(async (f) => [`${set}/${f}`, (await readXlsx(readFileSync(new URL(`${set}/${f}`, DIR)))).book] as const)))
 
@@ -47,6 +60,21 @@ describe('slicers and timelines against Excel for Windows', () => {
         })
       })
   }
+
+  it('slicer-file: a deleted timeline\'s filter left in the file filters no more, opened or refreshed; a deleted slicer\'s hidden items do', async () => {
+    const answers = answersOf('slicer-file')
+    for (const c of slicerFile.buildPivotCases()) {
+      const b = (await readXlsx(readFileSync(new URL(`../${c.file}`, import.meta.url)))).book
+      const values = stateValues(createState(b, clockOptions({ now: '2026-10-31', seed: 0 })))
+      for (const [k, fromSource] of [[0, false], [1, true]] as const) {
+        const r = refreshPivots(b, [{ sheet: 'P', name: 'PT1' }], values, values.today!(), fromSource)
+        if (!r.ok) throw new Error(r.message)
+        const want = answers[c.id].phases[k].pivots['P!PT1']
+        if ('error' in want) throw new Error(want.error)
+        expect(rounded(shown(r.book, want.area)), `${c.id}/${k}`).toEqual(rounded(want.values))
+      }
+    }
+  })
 
   it("each book holds the choice as the session writes it, and its slicers' items as laid out again", async () => {
     for (const [file, book] of await books()) {

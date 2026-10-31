@@ -16,7 +16,7 @@ import { refreshCache } from './refresh.js'
 import { layoutPivot } from './layout.js'
 import { placePivots, type Placement } from './place.js'
 import { fieldIndex, sameRef, timelineBounds } from '../structure/slicer-choice.js'
-import { slicerItems } from './slicers.js'
+import { liveFilters, slicerItems } from './slicers.js'
 import { sourceGrid } from './source.js'
 
 /** A PivotTable calculated: its sheet and name, and the calculation's PivotTable and cache. */
@@ -75,9 +75,10 @@ export const refreshPivots: PivotRefresh = (book, refs, values: ValuesIn, today,
       tables = r.tables
     } else if (!cache.records) continue
     over.forEach((spot, k) => {
-      const result = computePivot(tables[k], next, options)
+      const ref = { sheet: book.sheets[spot.s].name, name: spot.table.name }
+      const result = computePivot(liveFilters(tables[k], ref, book.timelineCaches, next.fields), next, options)
       next = result.cache
-      results.push({ ref: { sheet: book.sheets[spot.s].name, name: spot.table.name }, table: result.table, cache: result.cache })
+      results.push({ ref, table: result.table, cache: result.cache })
       placed.push({ sheet: book.sheets[spot.s].name, table: { ...result.table, name: spot.table.name }, laid: layoutPivot(result, book) })
     })
     newCaches.set(id, next)

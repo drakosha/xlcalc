@@ -3,8 +3,9 @@
  * PivotTable it filters, marked when no record has them under the other fields' filters, in its order (by label, the
  * custom lists first, ascending by default) with the items with data first unless its cache says otherwise.
  */
-import type { PivotCache, PivotTable, SlicerCache } from '../contract.js'
-import { fieldIndex } from '../structure/slicer-choice.js'
+import type { PivotCache, PivotRef, PivotTable, SlicerCache, TimelineCache } from '../contract.js'
+import { caseKey } from '../collate.js'
+import { fieldIndex, sameRef } from '../structure/slicer-choice.js'
 import { itemsWithData } from './compute.js'
 import type { PivotComputeOptions } from './result.js'
 import { labelOrder } from './values.js'
@@ -25,4 +26,19 @@ export function slicerItems(sc: SlicerCache, results: readonly { table: PivotTab
   // Excel's default: the items with data at the top
   if (sc.noData?.mark !== false && sc.noData?.last !== false) order.sort((a, b) => Number(!data.has(a)) - Number(!data.has(b)))
   return { ...sc, items: order.map((item) => ({ item, ...(hidden.has(item) ? { selected: false } : {}), ...(data.has(item) ? {} : { noData: true }) })) }
+}
+
+/**
+ * A PivotTable's filters without those of a field on no axis that no timeline over it names: such a filter is a deleted
+ * timeline's, which the file keeps and Excel no longer applies, also on a refresh (the set slicer-file). Excel filters
+ * by label or date only a field on rows or columns, and a timeline's field anywhere.
+ */
+export function liveFilters(table: PivotTable, ref: PivotRef, timelines: readonly TimelineCache[] | undefined, fields: readonly { name: string }[]): PivotTable {
+  if (!table.filters?.length) return table
+  const placed = new Set<number | 'values'>([...(table.rows ?? []), ...(table.columns ?? []), ...(table.pages ?? []).map((p) => p.field)])
+  const named = new Set((timelines ?? []).filter((t) => t.pivots.some((r) => sameRef(r, ref))).map((t) => caseKey(t.field)))
+  const filters = table.filters.filter((f) => placed.has(f.field) || named.has(caseKey(fields[f.field]?.name ?? '')))
+  if (filters.length === table.filters.length) return table
+  const { filters: _, ...rest } = table
+  return filters.length ? { ...rest, filters } : rest
 }
