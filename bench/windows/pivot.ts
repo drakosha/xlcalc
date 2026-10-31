@@ -201,6 +201,11 @@ export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Pl
     else if ('resize' in o) add(role, { do: 'pivot', op: 'resize', table: o.resize, range: o.range })
     else if ('struct' in o) add(role, { do: 'struct', op: o.struct, sheet: o.sheet ?? 'P', range: o.range, target: o.target ?? 'P', to: o.to })
     else if ('paste' in o) add(role, { do: 'paste', sheet: 'P', at: o.at, text: o.paste })
+    else if ('copyPaste' in o) add(role, { do: 'pivot', op: 'copyPaste', from: o.copyPaste, at: o.at })
+    else if ('clear' in o) {
+      const [sheet, range] = o.clear.split('!')
+      add(role, { do: 'clear', sheet, range, what: o.what })
+    }
     else if ('external' in o) add({ external: Object.keys(o.cells) }, { do: 'pivot', op: 'external', source: Buffer.from(book(o.external)).toString('base64'), cells: o.cells })
   })
   phase(true)

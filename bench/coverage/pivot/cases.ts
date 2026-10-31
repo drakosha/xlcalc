@@ -179,6 +179,10 @@ export type PivotOp = (
   | { struct: 'insertRows' | 'deleteRows' | 'insertColumns' | 'deleteColumns' | 'copyRange' | 'moveRange' | 'fillDown' | 'mergeCells' | 'addTable'; range?: string; to?: string; target?: string; sheet?: string }
   /** Text put on the clipboard and pasted at a cell of `P` (`Set-Clipboard`, `Worksheet.Paste`). */
   | { paste: string; at: string }
+  /** A range copied (`Range.Copy`, `D!A2`) and pasted at a cell of `P` with it selected (`Worksheet.Paste`), as Ctrl+C and Ctrl+V. */
+  | { copyPaste: string; at: string }
+  /** A range cleared (`P!A1:D10`, areas apart by commas): everything (`Range.Clear`) or its formats (`ClearFormats`). */
+  | { clear: string; what: 'all' | 'formats' }
   /** The end of a phase: each pivot table read, the cells watched, a copy of the book saved. */
   | { read: true }
   /**
