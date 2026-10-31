@@ -1,0 +1,1324 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-31",
+  "seconds": 20.9
+ },
+ "cases": [
+  {
+   "id": "orientation-columns",
+   "ops": [
+    {
+     "columns": [
+      "Date"
+     ]
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "add-fields-rows",
+   "ops": [
+    {
+     "addFields": {
+      "rows": [
+       "Date"
+      ]
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "add-fields-columns",
+   "ops": [
+    {
+     "addFields": {
+      "columns": [
+       "Date"
+      ]
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "add-fields-times",
+   "ops": [
+    {
+     "addFields": {
+      "rows": [
+       "When"
+      ]
+     }
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  },
+  {
+   "id": "cube-field-rows",
+   "ops": [
+    {
+     "cubeField": "Date",
+     "to": "row"
+    },
+    {
+     "value": {
+      "field": "Qty"
+     }
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "orientation-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ea2e5fefa67d6c6c",
+  "add-fields-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7849b4dd93320578",
+  "add-fields-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b92aa2b8751e9108",
+  "add-fields-times": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2bf67d03fa1a10d2",
+  "cube-field-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a5e11cb973797354"
+ },
+ "answers": {
+  "orientation-columns": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:O5",
+       "area": "A3:O5",
+       "body": "B5:O5",
+       "values": [
+        [
+         null,
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         null,
+         45292,
+         45366,
+         45413,
+         45488,
+         45536,
+         45611,
+         45696,
+         45769,
+         45816,
+         45891,
+         45938,
+         46013,
+         "(blank)",
+         "Grand Total"
+        ],
+        [
+         "Sum of Qty",
+         19,
+         15,
+         9,
+         14,
+         21,
+         21,
+         17,
+         20,
+         22,
+         16,
+         20,
+         16,
+         2,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "",
+         "1/1/2024",
+         "3/15/2024",
+         "5/1/2024",
+         "7/15/2024",
+         "9/1/2024",
+         "11/15/2024",
+         "2/8/2025",
+         "4/22/2025",
+         "6/8/2025",
+         "8/22/2025",
+         "10/8/2025",
+         "12/22/2025",
+         "(blank)",
+         "Grand Total"
+        ],
+        [
+         "Sum of Qty",
+         "19",
+         "15",
+         "9",
+         "14",
+         "21",
+         "21",
+         "17",
+         "20",
+         "22",
+         "16",
+         "20",
+         "16",
+         "2",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "add-fields-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B17",
+       "area": "A3:B17",
+       "body": "B4:B17",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45292,
+         19
+        ],
+        [
+         45366,
+         15
+        ],
+        [
+         45413,
+         9
+        ],
+        [
+         45488,
+         14
+        ],
+        [
+         45536,
+         21
+        ],
+        [
+         45611,
+         21
+        ],
+        [
+         45696,
+         17
+        ],
+        [
+         45769,
+         20
+        ],
+        [
+         45816,
+         22
+        ],
+        [
+         45891,
+         16
+        ],
+        [
+         45938,
+         20
+        ],
+        [
+         46013,
+         16
+        ],
+        [
+         "(blank)",
+         2
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "1/1/2024",
+         "19"
+        ],
+        [
+         "3/15/2024",
+         "15"
+        ],
+        [
+         "5/1/2024",
+         "9"
+        ],
+        [
+         "7/15/2024",
+         "14"
+        ],
+        [
+         "9/1/2024",
+         "21"
+        ],
+        [
+         "11/15/2024",
+         "21"
+        ],
+        [
+         "2/8/2025",
+         "17"
+        ],
+        [
+         "4/22/2025",
+         "20"
+        ],
+        [
+         "6/8/2025",
+         "22"
+        ],
+        [
+         "8/22/2025",
+         "16"
+        ],
+        [
+         "10/8/2025",
+         "20"
+        ],
+        [
+         "12/22/2025",
+         "16"
+        ],
+        [
+         "(blank)",
+         "2"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "m/d/yyyy",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": true,
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "add-fields-columns": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:O5",
+       "area": "A3:O5",
+       "body": "B5:O5",
+       "values": [
+        [
+         null,
+         "Column Labels",
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null,
+         null
+        ],
+        [
+         null,
+         45292,
+         45366,
+         45413,
+         45488,
+         45536,
+         45611,
+         45696,
+         45769,
+         45816,
+         45891,
+         45938,
+         46013,
+         "(blank)",
+         "Grand Total"
+        ],
+        [
+         "Sum of Qty",
+         19,
+         15,
+         9,
+         14,
+         21,
+         21,
+         17,
+         20,
+         22,
+         16,
+         20,
+         16,
+         2,
+         212
+        ]
+       ],
+       "text": [
+        [
+         "",
+         "Column Labels",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        [
+         "",
+         "1/1/2024",
+         "3/15/2024",
+         "5/1/2024",
+         "7/15/2024",
+         "9/1/2024",
+         "11/15/2024",
+         "2/8/2025",
+         "4/22/2025",
+         "6/8/2025",
+         "8/22/2025",
+         "10/8/2025",
+         "12/22/2025",
+         "(blank)",
+         "Grand Total"
+        ],
+        [
+         "Sum of Qty",
+         "19",
+         "15",
+         "9",
+         "14",
+         "21",
+         "21",
+         "17",
+         "20",
+         "22",
+         "16",
+         "20",
+         "16",
+         "2",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "m/d/yyyy",
+         "General",
+         "General"
+        ],
+        [
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": true,
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "add-fields-times": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:B52",
+       "area": "A3:B52",
+       "body": "B4:B52",
+       "values": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         45658,
+         4
+        ],
+        [
+         45658.135416666664,
+         3
+        ],
+        [
+         45658.270833333336,
+         1
+        ],
+        [
+         45658.40625,
+         5
+        ],
+        [
+         45659.2625,
+         2
+        ],
+        [
+         45659.39791666667,
+         3
+        ],
+        [
+         45659.53333333333,
+         2
+        ],
+        [
+         45660.525,
+         9
+        ],
+        [
+         45660.660416666666,
+         6
+        ],
+        [
+         45660.754166666666,
+         4
+        ],
+        [
+         45661.652083333334,
+         8
+        ],
+        [
+         45661.7875,
+         7
+        ],
+        [
+         45661.88125,
+         3
+        ],
+        [
+         45662.00833333333,
+         4
+        ],
+        [
+         45662.14375,
+         3
+        ],
+        [
+         45662.91458333333,
+         9
+        ],
+        [
+         45689.09027777778,
+         4
+        ],
+        [
+         45689.225694444445,
+         6
+        ],
+        [
+         45689.36111111111,
+         5
+        ],
+        [
+         45690.217361111114,
+         3
+        ],
+        [
+         45690.35277777778,
+         8
+        ],
+        [
+         45690.48819444444,
+         3
+        ],
+        [
+         45690.623611111114,
+         1
+        ],
+        [
+         45691.47986111111,
+         1
+        ],
+        [
+         45691.615277777775,
+         7
+        ],
+        [
+         45691.709027777775,
+         9
+        ],
+        [
+         45692.74236111111,
+         4
+        ],
+        [
+         45692.83611111111,
+         2
+        ],
+        [
+         45692.97152777778,
+         7
+        ],
+        [
+         45693.09861111111,
+         3
+        ],
+        [
+         45693.86944444444,
+         6
+        ],
+        [
+         45693.96319444444,
+         5
+        ],
+        [
+         45717.04513888889,
+         9
+        ],
+        [
+         45717.180555555555,
+         2
+        ],
+        [
+         45717.31597222222,
+         9
+        ],
+        [
+         45718.30763888889,
+         4
+        ],
+        [
+         45718.44305555556,
+         7
+        ],
+        [
+         45718.57847222222,
+         1
+        ],
+        [
+         45719.43472222222,
+         7
+        ],
+        [
+         45719.57013888889,
+         2
+        ],
+        [
+         45719.705555555556,
+         2
+        ],
+        [
+         45719.799305555556,
+         2
+        ],
+        [
+         45720.697222222225,
+         4
+        ],
+        [
+         45720.83263888889,
+         1
+        ],
+        [
+         45720.92638888889,
+         3
+        ],
+        [
+         45721.05347222222,
+         7
+        ],
+        [
+         45721.188888888886,
+         1
+        ],
+        [
+         45721.91805555556,
+         4
+        ],
+        [
+         "Grand Total",
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Row Labels",
+         "Sum of Qty"
+        ],
+        [
+         "2025-01-01 00:00",
+         "4"
+        ],
+        [
+         "2025-01-01 03:15",
+         "3"
+        ],
+        [
+         "2025-01-01 06:30",
+         "1"
+        ],
+        [
+         "2025-01-01 09:45",
+         "5"
+        ],
+        [
+         "2025-01-02 06:18",
+         "2"
+        ],
+        [
+         "2025-01-02 09:33",
+         "3"
+        ],
+        [
+         "2025-01-02 12:48",
+         "2"
+        ],
+        [
+         "2025-01-03 12:36",
+         "9"
+        ],
+        [
+         "2025-01-03 15:51",
+         "6"
+        ],
+        [
+         "2025-01-03 18:06",
+         "4"
+        ],
+        [
+         "2025-01-04 15:39",
+         "8"
+        ],
+        [
+         "2025-01-04 18:54",
+         "7"
+        ],
+        [
+         "2025-01-04 21:09",
+         "3"
+        ],
+        [
+         "2025-01-05 00:12",
+         "4"
+        ],
+        [
+         "2025-01-05 03:27",
+         "3"
+        ],
+        [
+         "2025-01-05 21:57",
+         "9"
+        ],
+        [
+         "2025-02-01 02:10",
+         "4"
+        ],
+        [
+         "2025-02-01 05:25",
+         "6"
+        ],
+        [
+         "2025-02-01 08:40",
+         "5"
+        ],
+        [
+         "2025-02-02 05:13",
+         "3"
+        ],
+        [
+         "2025-02-02 08:28",
+         "8"
+        ],
+        [
+         "2025-02-02 11:43",
+         "3"
+        ],
+        [
+         "2025-02-02 14:58",
+         "1"
+        ],
+        [
+         "2025-02-03 11:31",
+         "1"
+        ],
+        [
+         "2025-02-03 14:46",
+         "7"
+        ],
+        [
+         "2025-02-03 17:01",
+         "9"
+        ],
+        [
+         "2025-02-04 17:49",
+         "4"
+        ],
+        [
+         "2025-02-04 20:04",
+         "2"
+        ],
+        [
+         "2025-02-04 23:19",
+         "7"
+        ],
+        [
+         "2025-02-05 02:22",
+         "3"
+        ],
+        [
+         "2025-02-05 20:52",
+         "6"
+        ],
+        [
+         "2025-02-05 23:07",
+         "5"
+        ],
+        [
+         "2025-03-01 01:05",
+         "9"
+        ],
+        [
+         "2025-03-01 04:20",
+         "2"
+        ],
+        [
+         "2025-03-01 07:35",
+         "9"
+        ],
+        [
+         "2025-03-02 07:23",
+         "4"
+        ],
+        [
+         "2025-03-02 10:38",
+         "7"
+        ],
+        [
+         "2025-03-02 13:53",
+         "1"
+        ],
+        [
+         "2025-03-03 10:26",
+         "7"
+        ],
+        [
+         "2025-03-03 13:41",
+         "2"
+        ],
+        [
+         "2025-03-03 16:56",
+         "2"
+        ],
+        [
+         "2025-03-03 19:11",
+         "2"
+        ],
+        [
+         "2025-03-04 16:44",
+         "4"
+        ],
+        [
+         "2025-03-04 19:59",
+         "1"
+        ],
+        [
+         "2025-03-04 22:14",
+         "3"
+        ],
+        [
+         "2025-03-05 01:17",
+         "7"
+        ],
+        [
+         "2025-03-05 04:32",
+         "1"
+        ],
+        [
+         "2025-03-05 22:02",
+         "4"
+        ],
+        [
+         "Grand Total",
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ],
+        [
+         "yyyy-mm-dd hh:mm",
+         "General"
+        ]
+       ]
+      }
+     },
+     "results": {
+      "op 0": true,
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  },
+  "cube-field-rows": {
+   "phases": [
+    {
+     "pivots": {
+      "PT1": {
+       "table": "A3:A4",
+       "area": "A3:A4",
+       "body": "A4",
+       "values": [
+        [
+         "Sum of Qty"
+        ],
+        [
+         212
+        ]
+       ],
+       "text": [
+        [
+         "Sum of Qty"
+        ],
+        [
+         "212"
+        ]
+       ],
+       "formats": [
+        [
+         "General"
+        ],
+        [
+         "General"
+        ]
+       ]
+      }
+     },
+     "errors": [
+      "op 0: -2146233087 The property 'Orientation' cannot be found on this object. Verify that the property exists and can be set."
+     ],
+     "results": {
+      "op 1": "Sum of Qty"
+     }
+    }
+   ]
+  }
+ }
+}

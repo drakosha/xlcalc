@@ -1,0 +1,120 @@
+{
+ "value-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A25": "\"x\""
+  },
+  "merges": [],
+  "tables": []
+ },
+ "value-no": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A25": "\"x\""
+  },
+  "merges": [],
+  "tables": []
+ },
+ "formula-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A26": "=1+1"
+  },
+  "merges": [],
+  "tables": []
+ },
+ "value-format-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A27": "5 | 0.000"
+  },
+  "merges": [],
+  "tables": []
+ },
+ "format-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3:A27",
+  "cells": {
+   "A21": "\"Apple\"",
+   "A22": "\"Banana\"",
+   "A23": "\"Cherry\"",
+   "A24": "\"Dragonfruit from the far southern orchards, packed in wooden crates of twelve and shipped by sea\"",
+   "A25": "\"(blank)\"",
+   "A26": "\"Apple\"",
+   "A27": "\"Grand Total\""
+  },
+  "merges": [],
+  "tables": []
+ },
+ "merged-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A26": "\"m\""
+  },
+  "merges": [
+   "A26:B26"
+  ],
+  "tables": []
+ },
+ "table-yes": {
+  "rows": [
+   "Region",
+   "Product"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [],
+  "range": "A3",
+  "cells": {
+   "A22": "\"H1\"",
+   "B22": "\"H2\"",
+   "A23": "1",
+   "B23": "2"
+  },
+  "merges": [],
+  "tables": [
+   "A22:B23"
+  ]
+ }
+}

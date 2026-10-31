@@ -1,0 +1,342 @@
+{
+ "Num": {
+  "rows": [],
+  "columns": [],
+  "values": [
+   {
+    "field": "Num",
+    "function": "sum"
+   }
+  ],
+  "groups": []
+ },
+ "NumBlank": {
+  "rows": [],
+  "columns": [],
+  "values": [
+   {
+    "field": "NumBlank",
+    "function": "count"
+   }
+  ],
+  "groups": []
+ },
+ "NumText": {
+  "rows": [
+   "NumText"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "NumBool": {
+  "rows": [
+   "NumBool"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "NumErr": {
+  "rows": [
+   "NumErr"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "NumDate": {
+  "rows": [
+   "NumDate"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "Blank": {
+  "rows": [
+   "Blank"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "Text": {
+  "rows": [
+   "Text"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "Bool": {
+  "rows": [
+   "Bool"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "Err": {
+  "rows": [
+   "Err"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "NumAsText": {
+  "rows": [
+   "NumAsText"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "Times": {
+  "rows": [
+   "Months (Times)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (Times)",
+    "base": "Times",
+    "by": "months"
+   }
+  ]
+ },
+ "Years": {
+  "rows": [
+   "Years (Years)",
+   "Quarters (Years)",
+   "Months (Years)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (Years)",
+    "base": "Years",
+    "by": "years"
+   }
+  ]
+ },
+ "OneYear": {
+  "rows": [
+   "Months (OneYear)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ },
+ "OneMonth": {
+  "rows": [
+   "Months (OneMonth)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (OneMonth)",
+    "base": "OneMonth",
+    "by": "months"
+   }
+  ]
+ },
+ "OneDay": {
+  "rows": [
+   "Months (OneDay)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (OneDay)",
+    "base": "OneDay",
+    "by": "months"
+   }
+  ]
+ },
+ "DateBlank": {
+  "rows": [
+   "Years (DateBlank)",
+   "Quarters (DateBlank)",
+   "Months (DateBlank)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (DateBlank)",
+    "base": "DateBlank",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (DateBlank)",
+    "base": "DateBlank",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (DateBlank)",
+    "base": "DateBlank",
+    "by": "years"
+   }
+  ]
+ },
+ "DateText": {
+  "rows": [
+   "DateText"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": []
+ },
+ "two-numbers": {
+  "rows": [],
+  "columns": [
+   "Σ"
+  ],
+  "values": [
+   {
+    "field": "Num",
+    "function": "sum"
+   },
+   {
+    "field": "NumBlank",
+    "function": "count"
+   }
+  ],
+  "groups": []
+ },
+ "two-dates": {
+  "rows": [
+   "Years (Years)",
+   "Quarters (Years)",
+   "Months (Years)",
+   "Months (OneYear)"
+  ],
+  "columns": [],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (Years)",
+    "base": "Years",
+    "by": "years"
+   },
+   {
+    "field": "Months (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ },
+ "number-then-dates": {
+  "rows": [
+   "Years (Years)",
+   "Quarters (Years)",
+   "Months (Years)"
+  ],
+  "columns": [],
+  "values": [
+   {
+    "field": "Num",
+    "function": "sum"
+   }
+  ],
+  "groups": [
+   {
+    "field": "Months (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (Years)",
+    "base": "Years",
+    "by": "years"
+   }
+  ]
+ },
+ "dates-columns": {
+  "rows": [],
+  "columns": [
+   "Years (Years)",
+   "Quarters (Years)",
+   "Months (Years)"
+  ],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (Years)",
+    "base": "Years",
+    "by": "months"
+   },
+   {
+    "field": "Quarters (Years)",
+    "base": "Years",
+    "by": "quarters"
+   },
+   {
+    "field": "Years (Years)",
+    "base": "Years",
+    "by": "years"
+   }
+  ]
+ },
+ "text-then-dates-columns": {
+  "rows": [
+   "Text"
+  ],
+  "columns": [
+   "Months (OneYear)"
+  ],
+  "values": [],
+  "groups": [
+   {
+    "field": "Months (OneYear)",
+    "base": "OneYear",
+    "by": "months"
+   }
+  ]
+ },
+ "number-columns": {
+  "rows": [],
+  "columns": [
+   "Num"
+  ],
+  "values": [],
+  "groups": []
+ }
+}
