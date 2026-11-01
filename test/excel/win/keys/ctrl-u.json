@@ -1,0 +1,55 @@
+{
+ "meta": {
+  "version": "16.0 build 20430",
+  "platform": "Windows",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US",
+  "date": "2026-11-01",
+  "how": "bench/windows/ctrl-u.ps1 as a task on the screen of the machine's user: a new workbook, each cell given its underline through Font.Underline, selected, Excel in front, Ctrl+U typed twice by its virtual keys, Font.Underline read after each; then a double-underlined cell (active) and a single one selected together and Ctrl+U typed once",
+  "underline": {
+   "-4142": "none",
+   "2": "single",
+   "-4119": "double",
+   "4": "single accounting",
+   "5": "double accounting"
+  }
+ },
+ "answers": [
+  [
+   "none",
+   -4142,
+   2,
+   -4142
+  ],
+  [
+   "single",
+   2,
+   -4142,
+   2
+  ],
+  [
+   "double",
+   -4119,
+   2,
+   -4142
+  ],
+  [
+   "single accounting",
+   4,
+   -4142,
+   2
+  ],
+  [
+   "double accounting",
+   5,
+   2,
+   -4142
+  ],
+  [
+   "double B12 and single B13 together",
+   "B12 -4119, B13 2",
+   "B12 2, B13 2",
+   ""
+  ]
+ ]
+}
