@@ -71,6 +71,18 @@ console.log(stale, session.revision) // → stale_revision 3
 
 `patchCells(patches)` sets the `style`, `numberFormat`, `meta`, `note` or `link` of a `cell` or a `range` (`B2:D9`, entire columns `B:D`, entire rows `2:5`; null removes the field) and keeps values and formulas without having to be given them. On a cell in the range of a legacy array formula or of a spill it leaves the array as it is, a cell left with nothing is removed, and it does not recalculate anything. A style given by its fields is applied on top of the style each cell displays (its own, otherwise its row's, otherwise its column's), as Excel formats a selection: `{ font: { bold: true } }` makes an italic cell bold and italic, null removes a field (`{ fill: null }`), and equal styles share one entry in the workbook's `styles`, found or added (the result's `styles` is then the new table). A style given by its index replaces the cell's style. An empty cell of a rectangle gets a cell with the formatting, up to 1,048,576 cells (one column's worth; more throws an `InputError`). Entire rows and columns are formatted as Excel formats them: the lines' own style and number format, the cells in them that have formatting of their own, and the cells where they cross a formatted line of the other direction, which get the two combined.
 
+Excel's Ctrl+U is a host's to implement with `patchCells`, since the package has no command for keys: it sets a single underline unless the active cell's underline is single, which it removes; a double underline becomes single. A host gives the result to the whole selection, as Excel does: a double-underlined active cell and a single-underlined one selected together both become single.
+
+| the active cell's underline | after Ctrl+U | after it again |
+|---|---|---|
+| none | single | none |
+| single | none | single |
+| double | single | none |
+| single accounting | none | single |
+| double accounting | single | none |
+
+The accounting underlines are read from a file as their plain kinds (`underline: 'single'` and `'double'`, with the loss reported), so a host sees a single or double underline there. Checked in Excel 16.0 for Windows in en-US (`test/excel/win/keys/ctrl-u.json`).
+
 Besides `revision` and `changes`, a result has `layout`, the sheets whose layout changed (rows and columns, merged areas, tables, rules), so that a grid can call `getLayout()` again; `styles`; `moved`, after a structure operation and its undo; and `repaint`, the ranges of conditional formats whose cells may display differently after a value or a rule changed. An edit made against a revision other than the session's (`baseRevision`, taken from a result, `session.revision` or a viewport's `getViewport(…).revision`) changes nothing and throws `CalcError` with the code `stale_revision`, so a host does not apply an edit on top of one it has not seen. Each call is one undo step. [docs/edits.md](edits.md) has the rules and how they were verified against Excel.
 
 ## Editing a cell

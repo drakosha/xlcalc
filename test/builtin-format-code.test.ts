@@ -3,7 +3,7 @@
  * (the same text for every value), undefined for a number that is no built-in format's; its input checks.
  */
 import { describe, expect, it } from 'vitest'
-import { builtinFormatCode, displayValue, InputError, LOCALES } from '../src/index.js'
+import { builtinFormatCode, displayValue, InputError, LOCALES, numberFormatCategory } from '../src/index.js'
 import './locales.js'
 
 const VALUES = [0, 1234.567, -1234.5, 0.25, 46096.75, -0.5, 'text']
@@ -13,6 +13,17 @@ describe('builtinFormatCode', () => {
     expect([builtinFormatCode(0), builtinFormatCode(14), builtinFormatCode(14, 'en-US'), builtinFormatCode(14, 'ru-RU')]).toEqual(['General', 'm/d/yyyy', 'm/d/yyyy', 'dd.mm.yyyy'])
     expect([builtinFormatCode(7, 'ru-RU'), builtinFormatCode(22, 'ru-RU'), builtinFormatCode(49, 'ru-RU')]).toEqual(['#,##0.00 "₽";-#,##0.00 "₽"', 'dd.mm.yyyy h:mm', '@'])
     expect(builtinFormatCode(9, 'ru-RU')).toBe('0%')
+  })
+
+  it("gives en-US's money as Excel keeps it in a file, the dollar quoted: the code is the built-in format's category and Excel takes it back as the built-in", () => {
+    // written bare, `$` is a literal in a file's code: Excel names such a code Custom and saves it as a format of its own (test/excel/win/ribbon/ribbon-builtin-codes.json)
+    expect([5, 6, 7, 8, 42, 44].map((id) => builtinFormatCode(id))).toEqual([
+      '"$"#,##0_);("$"#,##0)', '"$"#,##0_);[Red]("$"#,##0)', '"$"#,##0.00_);("$"#,##0.00)', '"$"#,##0.00_);[Red]("$"#,##0.00)',
+      '_("$"* #,##0_);_("$"* (#,##0);_("$"* "-"_);_(@_)', '_("$"* #,##0.00_);_("$"* (#,##0.00);_("$"* "-"??_);_(@_)',
+    ])
+    for (let id = 0; id < 50; id++) expect(numberFormatCategory(builtinFormatCode(id)!), String(id)).toEqual(numberFormatCategory(id))
+    // ru-RU's money by its own codes too; its fractions and short date written as codes are none of Format Cells' formats there (test/format-category.test.ts)
+    for (const id of [5, 6, 7, 8, 41, 42, 43, 44]) expect(numberFormatCategory(builtinFormatCode(id, 'ru-RU')!, 'ru-RU'), `ru-RU ${id}`).toEqual(numberFormatCategory(id, 'ru-RU'))
   })
 
   it('undefined for a number that is no built-in numberFormat: a built-in format is one it has a code for', () => {

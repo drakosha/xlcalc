@@ -119,19 +119,18 @@ const currency = (s: string, bracketed: boolean) => {
   return new RegExp(String.raw`^(${p})(?:;\[Red\]\\-\1|_\);(?:\[Red\])?\\\(\1\\\))?$`, 'i')
 }
 
-/** Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`; with a bracketed one, also Excel for Mac's forms with minus signs, the symbol before or after. */
-const accounting = (s: string, minus: boolean) => {
-  const paren = String.raw`_\((${s})\* (${MONEY_NUM})_\);_\(\1\* \\\(\2\\\);_\(\1\* "-"\?*_\);_\(@_\)`
-  if (!minus) return new RegExp(`^${paren}$`)
-  const before = String.raw`_-(${s})\* (${MONEY_NUM})_ ;_-\3\* \\-\4\\ ;_-\3\* "-"\?*_ ;_-@_ `
-  const after = String.raw`_-\* (${MONEY_NUM})\\ (${s})_-;\\-\* \5\\ \6_-;_-\* "-"\?*\\ \6_-;_-@_-`
-  return new RegExp(`^(?:${paren}|${before}|${after})$`)
-}
+/** Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`. */
+const accounting = (s: string) => new RegExp(String.raw`^_\((${s})\* (${MONEY_NUM})_\);_\(\1\* \\\(\2\\\);_\(\1\* "-"\?*_\);_\(@_\)$`)
 
 const BRACKET_CURRENCY = currency(BRACKET, true)
-const BRACKET_ACCOUNTING = accounting(`${BRACKET}(?:\\\\ )?`, true)
+/**
+ * Accounting with a bracketed symbol, which Excel for Windows names by the first section alone, whatever follows: the
+ * symbol before the fill between paddings (`_(S* #,##0.00_)`, the menu's `_-S* #,##0.00_ `, en-GB's `_-S* #,##0.00_-`,
+ * zh-CN's `_ S* #,##0.00_ `) or after the digits (`_-* #,##0.00 S_-`).
+ */
+const BRACKET_ACCOUNTING = new RegExp(String.raw`^(?:_[(\- ]${BRACKET}(?:\\ )?\* ${MONEY_NUM}_[)\- ]|_-\* ${MONEY_NUM}\\ ${BRACKET}_-)(?:;.*)?$`)
 const EN_CURRENCY = currency('"\\$"', false)
-const EN_ACCOUNTING = accounting('(?:"\\$")?', false)
+const EN_ACCOUNTING = accounting('(?:"\\$")?')
 /** Negatives with a minus, in red or not, as a locale other than en-US writes them. */
 const MINUS = String.raw`;(?:\[Red\])?\\-\1`
 const BRACKET_MINUS = new RegExp(String.raw`^(${BRACKET}(?:\\ )?${MONEY_NUM}|${MONEY_NUM}\\ ${BRACKET})${MINUS}$`, 'i')
@@ -164,8 +163,8 @@ function dateOrTime(section: string): FormatCategory | undefined {
   return /[dy]/i.test(bare) || !/[hs]|AM\/PM|A\/P/i.test(bare) ? 'date' : 'time'
 }
 
-/** en-US's code of each built-in format as Excel keeps it, the dollar of its money quoted. */
-const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(BUILTIN_MONEY.has(id) ? code.replace(/\$/g, '"$"') : code))
+/** en-US's code of each built-in format as Excel keeps it. */
+const EN_KEPT = EN_BUILTIN.map(canonical)
 
 /**
  * A built-in format's category in a locale other than en-US, as Excel for Windows shows it by the locale's own code

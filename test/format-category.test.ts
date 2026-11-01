@@ -91,7 +91,7 @@ describe('numberFormatChoices', () => {
       { key: 'general', name: 'General', format: 0, code: 'General' },
       { key: 'number', name: 'Number', format: 2, code: '0.00' },
       { key: 'currency', name: 'Currency', format: '"$"#,##0.00', code: '"$"#,##0.00' },
-      { key: 'accounting', name: 'Accounting', format: 44, code: '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)' },
+      { key: 'accounting', name: 'Accounting', format: 44, code: '_("$"* #,##0.00_);_("$"* (#,##0.00);_("$"* "-"??_);_(@_)' },
       { key: 'shortDate', name: 'Short Date', format: 14, code: 'm/d/yyyy' },
       { key: 'longDate', name: 'Long Date', format: '[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy', code: '[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy' },
       { key: 'time', name: 'Time', format: '[$-F400]h:mm:ss\\ AM/PM', code: '[$-F400]h:mm:ss\\ AM/PM' },

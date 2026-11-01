@@ -30,6 +30,27 @@ export interface FormatChoice {
   code: string
 }
 
+/**
+ * A currency's item of the Accounting Number Format menu (`$` on Excel's Home tab), in menu order (`accountingFormats`):
+ * the currency's ISO code, the item's name in the menu (`£ English (United Kingdom)`), and the accounting format it
+ * applies, as Excel writes it to a file.
+ */
+export interface AccountingItem {
+  currency: string
+  name: string
+  code: string
+}
+
+/**
+ * The Accounting Number Format button in a locale (`accountingFormats`): what its left part applies, the built-in format
+ * 44 with its code in the locale, and the currency items of its menu in order (the last item, More Accounting Formats,
+ * opens a dialog and is not one of them).
+ */
+export interface AccountingFormats {
+  left: { format: number; code: string }
+  items: AccountingItem[]
+}
+
 /** A color, `#RRGGBB`. */
 export type Color = string
 
