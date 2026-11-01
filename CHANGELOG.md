@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.74.1 (2026-11-01)
+
+Fixed:
+
+- `pivotCells` and `pivotCellAt` give a row field's name in a column of its own beside `Row Labels` of a compact PivotTable (after a field in tabular or outline form) its `axis` (`rows`) and `field`, as Excel's `Range.PivotCell` tells it; the cell, `blank` with a filter button, named neither, so a host could not tell which field the button filters.
+
 ## 0.74.0 (2026-10-31)
 
 Added:
