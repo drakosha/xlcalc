@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.75.0 (2026-11-01)
+
+Added:
+
+- `accountingFormats(locale?)`, from the root and `xlcalc/text`: what Excel for Windows' Accounting Number Format button applies in a locale, its left part (the built-in format 44 and its code) and its menu's items in their order, each with its currency, its label in the workbook's language and its code: in en-US `$ £ € ¥ CHF`, in ru-RU `₽ £ € ¥ CHF`. The ru-RU menu is Excel's with a Russian interface and regional format; the en-US one is inferred from Excel's with an English interface, whose menu adds the currency of Office's editing language (`docs/formats.md`).
+
+Changed:
+
+- Breaking: `builtinFormatCode` in en-US gives the built-in money formats 5, 6, 7, 8, 42 and 44 as Excel keeps them in a file, the dollar sign quoted (`_("$"* #,##0.00_);…`, was `_($* #,##0.00_);…`), and so do `getViewport`'s `numberFormat` of such a cell and the Accounting item of `numberFormatChoices`. The display is the same. A file's own format with the dollar bare is, to Excel, a literal dollar of a custom format, which it saves under its own number; quoted, Excel takes it for the built-in format.
+- `numberFormatCategory` names a code with a bracketed currency symbol (`[$£-809]`, `[$€-2]`, `[$¥-804]`) Accounting when its first section has the form of an item of the Accounting menu, whatever its other sections, as Excel for Windows names it in en-US and ru-RU; the codes of the menu's items and the built-in formats' codes of en-US are Accounting and Currency.
+
+Fixed:
+
+- A word of formula text (a function's name, LET's names) with a letter beyond the BMP whose upper case is two letters keeps that letter as it is, as a letter inside the BMP does (`ß`): with Unicode 18 (Node 26.13) U+1DF95's upper case is `SS`, and it compared equal to `SS`.
+
 ## 0.74.1 (2026-11-01)
 
 Fixed:
