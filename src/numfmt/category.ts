@@ -119,13 +119,19 @@ const currency = (s: string, bracketed: boolean) => {
   return new RegExp(String.raw`^(${p})(?:;\[Red\]\\-\1|_\);(?:\[Red\])?\\\(\1\\\))?$`, 'i')
 }
 
-/** Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`; with a bracketed one, also Excel for Mac's forms with minus signs, the symbol before or after. */
+/**
+ * Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`;
+ * with a bracketed one, also the forms with minus signs of the Accounting Number Format menu: the symbol before
+ * (`_-S* #,##0.00_ ;_-S* -#,##0.00 ;…`, en-GB's `_-S* #,##0.00_-;-S* #,##0.00_-;…`, zh-CN's `_ S* #,##0.00_ ;_ S* -#,##0.00_ ;…`) or after.
+ */
 const accounting = (s: string, minus: boolean) => {
   const paren = String.raw`_\((${s})\* (${MONEY_NUM})_\);_\(\1\* \\\(\2\\\);_\(\1\* "-"\?*_\);_\(@_\)`
   if (!minus) return new RegExp(`^${paren}$`)
   const before = String.raw`_-(${s})\* (${MONEY_NUM})_ ;_-\3\* \\-\4\\ ;_-\3\* "-"\?*_ ;_-@_ `
   const after = String.raw`_-\* (${MONEY_NUM})\\ (${s})_-;\\-\* \5\\ \6_-;_-\* "-"\?*\\ \6_-;_-@_-`
-  return new RegExp(`^(?:${paren}|${before}|${after})$`)
+  const gb = String.raw`_-(${s})\* (${MONEY_NUM})_-;\\-\7\* \8_-;_-\7\* "-"\?*_-;_-@_-`
+  const cn = String.raw`_ (${s})\* (${MONEY_NUM})_ ;_ \9\* \\-\10_ ;_ \9\* "-"\?*_ ;_ @_ `
+  return new RegExp(`^(?:${paren}|${before}|${after}|${gb}|${cn})$`)
 }
 
 const BRACKET_CURRENCY = currency(BRACKET, true)
