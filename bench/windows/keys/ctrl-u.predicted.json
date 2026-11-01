@@ -1,0 +1,12 @@
+{
+ "now": "2026-11-01",
+ "note": "Ctrl+U as the Underline button's left part showing Underline: single on any cell not single-underlined, none on a single one",
+ "answers": [
+  ["none", -4142, 2, -4142],
+  ["single", 2, -4142, 2],
+  ["double", -4119, 2, -4142],
+  ["single accounting", 4, 2, -4142],
+  ["double accounting", 5, 2, -4142],
+  ["double B12 and single B13 together", "B12 -4119, B13 2", "B12 2, B13 2", ""]
+ ]
+}
