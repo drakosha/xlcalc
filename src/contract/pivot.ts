@@ -341,8 +341,8 @@ export interface PivotItemRef {
  * the label, header or filter, `item` its item, `value` the value field of a value, total or name; a value or a label
  * has its line's path of items on the rows and on the columns. `button` marks a cell where Excel draws a filter button:
  * a report filter's item (`(All)`), not its name; Row Labels and Column Labels, which are `blank` with the `axis` whose
- * fields their button filters; a field's name in the outline and tabular forms. A single value field's name at the
- * corner has none.
+ * fields their button filters; a field's name in the outline and tabular forms, `blank` with its `axis` and `field` in a
+ * column of its own beside Row Labels. A single value field's name at the corner has none.
  */
 export interface PivotCell {
   /** The PivotTable's name. */
