@@ -21,10 +21,10 @@ const FEATURES =
   "Excel for Windows names a code with a bracketed symbol by what its section holds rather than by Format Cells' forms: the first section that has digits decides (#,##0.00;… is Number whatever follows, a section of text alone is skipped), and a bracketed symbol with a fill is Accounting with any paddings, fill character, digits, colour or condition, the symbol after the digits with no space too; numberFormatCategory takes the forms of the Accounting Number Format menu, from their first section, and names these Custom"
 
 /** The cells where the function knowingly names another category than Excel for Windows, by `<tag>:<set>:<case>:<cell>`, with the reason. */
-const KNOWN: Record<string, string> = Object.fromEntries(
-  [...['B2', 'B6', 'B7', 'B13', 'B15', 'B16', 'B17', 'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24'].map((x) => `held-1:${x}`), 'held-2:B4', 'held-2:B6'].map((k) => [`ru-RU:ribbon-ru-held:${k}`, LISTS]),
-  ...['en-US', 'ru-RU'].flatMap((tag) => ['B1', 'B2', 'B3', 'B8', 'B9', 'B10', 'B11', 'B12', 'B13', 'B15'].map((x) => [`${tag}:ribbon-accounting-held-3:held-1:${x}`, FEATURES])),
-)
+const KNOWN: Record<string, string> = Object.fromEntries([
+  ...[...['B2', 'B6', 'B7', 'B13', 'B15', 'B16', 'B17', 'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24'].map((x) => `held-1:${x}`), 'held-2:B4', 'held-2:B6'].map((k) => [`ru-RU:ribbon-ru-held:${k}`, LISTS] as const),
+  ...['en-US', 'ru-RU'].flatMap((tag) => ['B1', 'B2', 'B3', 'B8', 'B9', 'B10', 'B11', 'B12', 'B13', 'B15'].map((x) => [`${tag}:ribbon-accounting-held-3:held-1:${x}`, FEATURES] as const)),
+])
 
 /** How many cells of each set's prediction Excel for Windows confirmed, by `<tag>:<set>`. */
 const CONFIRMED: Record<string, number> = { 'ru-RU:ribbon': 318, 'ru-RU:ribbon-ru-held': 29, 'en-US:ribbon-accounting': 21, 'ru-RU:ribbon-accounting': 21, 'en-US:ribbon-accounting-held': 20, 'ru-RU:ribbon-accounting-held': 20, 'en-US:ribbon-builtin-codes': 22, 'ru-RU:ribbon-builtin-codes': 22, 'en-US:ribbon-accounting-held-2': 9, 'ru-RU:ribbon-accounting-held-2': 9, 'en-US:ribbon-accounting-held-3': 7, 'ru-RU:ribbon-accounting-held-3': 7 }
