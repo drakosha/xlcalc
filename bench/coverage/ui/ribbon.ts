@@ -10,9 +10,8 @@
  * cells of another format already (does the item's code depend on it). Both locales run the same cases.
  */
 import type { CellInput } from '../../../src/contract.js'
-import { EN_BUILTIN } from '../../../src/numfmt/builtin.js'
 import { ruRU } from '../../../src/locales/ru-RU.js'
-import { collector, type UiCase } from './cases.js'
+import { collector, EN_TYPED, type UiCase } from './cases.js'
 
 /** A case's cells at most: each takes a selection and a read of the box, under the step's time for a case. */
 const PER_CASE = 25
@@ -57,10 +56,10 @@ const SPECIAL = ['00000', '00000-0000', '[<=9999999]###-####;(###) ###-####', '0
 const OTHER = ['[Color10]0.00', '[>=100]0.00;[Red]0.00', '[<0]"neg";"pos"', '0.00;[Red]-0.00;"zero"', '[Red][<0]0.00;0.00', '[>100][Red]0;0', '"text"', '0" pcs"', '"$"0.00']
 
 /** ru-RU's codes of the built-in formats that are not en-US's, once each. */
-const RU_CODES = [...new Set(Object.values(ruRU.regional!.builtin))].filter((code) => !EN_BUILTIN.includes(code))
+const RU_CODES = [...new Set(Object.values(ruRU.regional!.builtin))].filter((code) => !EN_TYPED.includes(code))
 
 /** The variants, each once and none a built-in format's en-US code (the cases by number and code have those). */
-const VARIANTS = [...new Set([...NUMBER, ...PERCENT, ...FRACTION, ...SCIENTIFIC, ...TEXT, ...CURRENCY, ...ACCOUNTING, ...DATE, ...TIME, ...SPECIAL, ...OTHER])].filter((code) => !EN_BUILTIN.includes(code))
+const VARIANTS = [...new Set([...NUMBER, ...PERCENT, ...FRACTION, ...SCIENTIFIC, ...TEXT, ...CURRENCY, ...ACCOUNTING, ...DATE, ...TIME, ...SPECIAL, ...OTHER])].filter((code) => !EN_TYPED.includes(code))
 
 /** Formats on other values than 1.5: text, a blank, a negative number, a date. */
 const ON_VALUES = ['0.00', '$#,##0.00', 'm/d/yy', 'h:mm', '0%', '@', 'General', '0.000']
@@ -97,8 +96,8 @@ export function buildUiCases(): UiCase[] {
       add(group, { cells, act: { do: 'ribbon', cells: Object.keys(cells) }, ...(own ? { own: Object.keys(cells) } : {}) })
     }
   }
-  boxes('builtin', EN_BUILTIN.map((_, id) => ({ value: 1.5, numberFormat: id })))
-  boxes('code', EN_BUILTIN.map((code) => ({ value: 1.5, numberFormat: code })), true)
+  boxes('builtin', EN_TYPED.map((_, id) => ({ value: 1.5, numberFormat: id })))
+  boxes('code', EN_TYPED.map((code) => ({ value: 1.5, numberFormat: code })), true)
   boxes('ru-code', RU_CODES.map((code) => ({ value: 1.5, numberFormat: code })), true)
   boxes('variant', VARIANTS.map((code) => ({ value: 1.5, numberFormat: code })))
   boxes('value', ON_VALUES.flatMap((code) => VALUES.map((value) => ({ ...(value === undefined ? {} : { value }), numberFormat: code }))))

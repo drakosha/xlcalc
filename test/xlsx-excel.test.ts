@@ -219,6 +219,8 @@ describe.skipIf(!existsSync(new URL('formats.json', dir)))('xlsx built-in number
     // what Excel for Windows reports for the formats 0 to 49 (its short date is m/d/yyyy, the Mac's m/d/yy)
     const win = JSON.parse(readFileSync(new URL('../win/display/builtin.json', dir), 'utf8')) as { cases: { id: string; numFmtId: number }[]; answers: Record<string, { code: string }> }
     const windows = Object.fromEntries(win.cases.map((c) => [String(c.numFmtId), win.answers[c.id].code]))
-    expect({ ...BUILTIN }).toEqual(Object.fromEntries(Object.entries(stored).map(([id, code]) => [id, Number(id) <= 49 ? windows[id] : code])))
+    // Excel's NumberFormat gives a code in the syntax it is typed in, the money formats' dollar bare; the package keeps them as a file does, quoted
+    const typed = Object.fromEntries(Object.entries(BUILTIN).map(([id, code]) => [id, code.replace(/"\$"/g, '$')]))
+    expect(typed).toEqual(Object.fromEntries(Object.entries(stored).map(([id, code]) => [id, Number(id) <= 49 ? windows[id] : code])))
   })
 })

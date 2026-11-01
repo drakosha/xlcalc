@@ -10,9 +10,17 @@
  */
 import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation, NumberFormat } from '../../../src/contract.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
+import { EN_BUILTIN } from '../../../src/numfmt/builtin.js'
 import { numberFormatCategory, numberFormatChoices, stepDecimals } from '../../../src/text.js'
 import type { Session } from '../../../src/contract.js'
 import { groupCollector } from '../collect.js'
+
+/**
+ * en-US's codes of the built-in formats as Excel's `NumberFormat` gives them in en-US, the syntax a code is typed in:
+ * the money formats' dollar bare (`$#,##0_);($#,##0)`), where the package and a file quote it. The sets measured with
+ * these codes keep them.
+ */
+export const EN_TYPED: readonly string[] = EN_BUILTIN.map((code) => code.replace(/"\$"/g, '$'))
 
 export type UiAction =
   /** The formula bar of each cell, selected and then in editing (F2). */

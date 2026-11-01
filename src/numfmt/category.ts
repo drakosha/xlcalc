@@ -163,8 +163,8 @@ function dateOrTime(section: string): FormatCategory | undefined {
   return /[dy]/i.test(bare) || !/[hs]|AM\/PM|A\/P/i.test(bare) ? 'date' : 'time'
 }
 
-/** en-US's code of each built-in format as Excel keeps it, the dollar of its money quoted. */
-const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(BUILTIN_MONEY.has(id) ? code.replace(/\$/g, '"$"') : code))
+/** en-US's code of each built-in format as Excel keeps it. */
+const EN_KEPT = EN_BUILTIN.map(canonical)
 
 /**
  * A built-in format's category in a locale other than en-US, as Excel for Windows shows it by the locale's own code
