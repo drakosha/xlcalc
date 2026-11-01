@@ -77,7 +77,7 @@ What each cell of a PivotTable is comes with `pivotCells(book, sheet, pivot)` an
 | `valueName` | A value field's name, at the corner over column labels, over its values or as an item of Σ Values. |
 | `field`, `valuesField` | A field's name over its labels or in the Filters area, and Σ Values' (`Values` in outline and tabular forms). |
 | `pageItem` | A report filter's item. |
-| `blank` | Any other cell of the area, `Row Labels` and `Column Labels` too: they name no field, and have the `axis` whose fields their button filters (`rows`, `columns`). |
+| `blank` | Any other cell of the area, `Row Labels` and `Column Labels` too: they name no field, and have the `axis` whose fields their button filters (`rows`, `columns`). In a compact PivotTable a row field's name in a column of its own beside `Row Labels` (after a field in tabular or outline form) is `blank` too, with `axis` `rows` and its `field`, as Excel's `Range.PivotCell` tells it. |
 
 `button` marks the cells where Excel draws a filter button (`buttons` lists them): the fields' names over their labels, `Row Labels` and `Column Labels`, and a report filter's item (`(All)` in B1 beside `Product` in A1), not its name. A single value field's name at the corner has none. The file marks other cells (`pivotButton` on their cell format): a report filter's name in place of its item, and the value field's name at the corner beside row fields, which Excel draws without a button. `writeXlsx` and `writeKept` mark the cells Excel's file marks: Excel opening a file without them draws no button until the PivotTable is refreshed. The blank row under the Filters area and the cells between its filters are of no PivotTable (`pivotCellAt` gives null), as in Excel.
 

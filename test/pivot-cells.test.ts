@@ -186,4 +186,15 @@ describe('the filter buttons Excel draws', () => {
     expect(Object.keys(got.cells).filter((a) => got.cells[a].button).sort()).toEqual(DRAWN[id])
     for (const [a, axis] of Object.entries(AXES[id] ?? {})) expect(got.cells[a]).toEqual({ pivot: 'PT1', kind: 'blank', axis, button: true })
   })
+
+  // Excel's PivotCell gives these cells blank of the field they name (the set cells-held)
+  it("gives a row field's name in a column of its own beside Row Labels of a compact PivotTable its axis and field", async () => {
+    const book = (await readXlsx(readFileSync(new URL('excel/win/pivot/cells-held/layout-form-per-field.xlsx', import.meta.url)))).book
+    const got = pivotCells(book, 'P', 'PT1')!
+    const field = (name: string) => book.pivotCaches![0].fields.findIndex((f) => f.name === name)
+    expect([got.cells.B3, got.cells.C3]).toEqual([
+      { pivot: 'PT1', kind: 'blank', axis: 'rows', field: field('Flag'), button: true },
+      { pivot: 'PT1', kind: 'blank', axis: 'rows', field: field('Code'), button: true },
+    ])
+  })
 })

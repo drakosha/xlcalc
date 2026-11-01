@@ -66,8 +66,8 @@ function cellsOf(t: PivotTable): PivotCells & { marked: string[] } {
     const axis = at.page !== undefined ? 'pages' : part.kind === 'field' && colFields.includes(part.field) ? 'columns' : 'rows'
     if (part.kind === 'page') put(row, col, { kind: 'pageItem', axis, field: part.field })
     else if (part.kind === 'rowHeader' || part.kind === 'columnHeader') put(row, col, { kind: 'blank', axis: part.kind === 'rowHeader' ? 'rows' : 'columns' })
-    // in a compact PivotTable the names of fields in columns of their own beside Row Labels name none (the set cells-held)
-    else if (part.kind === 'field' && at.page === undefined && compact && axis === 'rows') put(row, col, { kind: 'blank' })
+    // in a compact PivotTable the names of fields in columns of their own beside Row Labels are blank, of their field (the set cells-held)
+    else if (part.kind === 'field' && at.page === undefined && compact && axis === 'rows') put(row, col, { kind: 'blank', axis, field: part.field })
     else if (part.kind === 'field') put(row, col, part.field === 'values' ? { kind: 'valuesField', axis, field: 'values' } : { kind: 'field', axis, field: part.field })
     else if (part.kind === 'value') put(row, col, part.total ? { kind: 'grand', axis: 'columns' } : { kind: 'valueName', value: part.value })
     // Excel's buttons: the fields' names and the headers of the rows and columns; a report filter's drawn on its item, right of its name
