@@ -617,6 +617,13 @@ export const ruRU: Locale = {
       categories: { general: 'Общий', number: 'Числовой', currency: 'Денежный', accounting: 'Финансовый', date: 'Дата', time: 'Время', percentage: 'Процентный', fraction: 'Дробный', scientific: 'Экспоненциальный', text: 'Текстовый', special: 'Дополнительный', custom: '(все форматы)' },
       choices: { general: 'Общий', number: 'Числовой', currency: 'Денежный', accounting: 'Финансовый', shortDate: 'Краткий формат даты', longDate: 'Длинный формат даты', time: 'Время', percentage: 'Процентный', fraction: 'Дробный', scientific: 'Экспоненциальный', text: 'Текстовый' },
       currency: '#,##0.00\\ "₽"',
+      accounting: [
+        { currency: 'RUB', symbol: '[$₽-419]', form: 'after', name: '₽ русский' },
+        { currency: 'GBP', symbol: '[$£-809]', form: 'gb', name: '£ английский (Соединенное Королевство)' },
+        { currency: 'EUR', symbol: '[$€-2] ', form: 'gb', name: '€ Евро (€ 123)' },
+        { currency: 'CNY', symbol: '[$¥-804]', form: 'cn', name: '¥ Китайский, упрощенное письмо (континентальный Китай)' },
+        { currency: 'CHF', symbol: '[$CHF-100C]', form: 'after', name: 'CHF французский (Швейцария)' },
+      ],
     },
   },
   messages: MESSAGES,

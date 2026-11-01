@@ -21,6 +21,7 @@ import { textOrder } from './collate.js'
 import { optionalLocale } from './locale/load.js'
 import { charsOfPoints, columnPoints, MAX_POINTS, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
+import * as accounting from './numfmt/accounting.js'
 import * as category from './numfmt/category.js'
 import * as decimals from './numfmt/decimals.js'
 import * as point from './point.js'
@@ -42,6 +43,7 @@ export const callAt = /* @__PURE__ */ strict(call.callAt)
 export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
+export const accountingFormats = /* @__PURE__ */ strict(accounting.accountingFormats)
 export const suggestPivotField = /* @__PURE__ */ strict(pivotSuggest.suggestPivotField)
 export const pivotCells = /* @__PURE__ */ strict(pivotView.pivotCells)
 export const pivotCellAt = /* @__PURE__ */ strict(pivotView.pivotCellAt)

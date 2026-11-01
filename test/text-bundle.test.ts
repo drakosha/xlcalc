@@ -19,12 +19,13 @@ describe('text without the engine', () => {
   it('the bundle holds the modules of formula text alone, under 65 KB', async () => {
     const { code, used } = await bundle()
     // wildcards: the lexer takes the escape of a regular expression's characters from it;
-    // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections;
+    // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections; numfmt/accounting the Accounting menu;
     // decimals, general, glyphs and functions/common (its rounding): Increase and Decrease Decimal, by what General shows in a column
-    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'drawing-size', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
+    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'drawing-size', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/accounting', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
     // 46.1 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10); 51.8 with stepDecimals;
     // 54.5 with suggestPivotField; 63.0 (64,486 bytes) with pivotCells, pivotCellAt and renamedValueField (31.10); 64.1
-    // (65,614 bytes) with pivotBlankLabel, the sizes of a new slicer and timeline and the buttons where Excel draws them
+    // (65,614 bytes) with pivotBlankLabel, the sizes of a new slicer and timeline and the buttons where Excel draws them;
+    // 64.8 (66,380 bytes) with accountingFormats
     expect(code.length).toBeLessThan(65 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)

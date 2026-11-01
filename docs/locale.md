@@ -253,7 +253,7 @@ The formula text: the tag, the separators, the words for TRUE and FALSE, error l
 | `builtin` | the built-in formats the locale displays its own way, as en-US codes | 14 is `dd.mm.yyyy` |
 | `codePage` | the Windows code page of CHAR and CODE: the name of its published table and its characters | `windows-1251` |
 | `columnWord` | the word in a new table column's name | `Столбец`, which gives `Столбец1` |
-| `formats` (optional) | the names in the ribbon's Number Format box and its list's items, and the code its Currency item writes; en-US's if omitted | `Числовой`, `(все форматы)`, `#,##0.00\ "₽"` |
+| `formats` (optional) | the names in the ribbon's Number Format box and its list's items, the code its Currency item writes, and the Accounting Number Format menu's currencies (`accounting`: ISO code, symbol, form, name); en-US's if omitted | `Числовой`, `(все форматы)`, `#,##0.00\ "₽"`, `{ currency: 'RUB', symbol: '[$₽-419]', form: 'after', name: '₽ русский' }` |
 
 Two kinds of data matter to workbooks in every locale, so they live in the core rather than in the module, and an en-US workbook displays the same whether the locale is loaded or not. The widths of the letters of the locale's script in Calibri 11, for what a cell displays at its column's width, go into `src/numfmt/glyphs.ts`, next to the Latin letters and ru-RU's Cyrillic ones: text in any script may appear in any workbook, and a character that no table covers counts as a digit. The month and day names that the locale's code produces in a format (`[$-419]mmmm`) go into `src/locale/lcid.ts`, which `rules.ts` reads for the code, and the module takes them from there (`...RU_NAMES` in ru-RU's `regional`).
 

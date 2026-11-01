@@ -17,6 +17,21 @@ export interface FormatNames {
   readonly categories: Readonly<Record<FormatCategory, string>>
   readonly choices: Readonly<Record<FormatChoiceKey, string>>
   readonly currency: string
+  /** The Accounting Number Format menu's currencies in order (`accountingFormats`); en-US's without them. */
+  readonly accounting?: readonly AccountingCurrency[]
+}
+
+/**
+ * A currency of the Accounting Number Format menu: its ISO code, its symbol as the code writes it (`[$£-809]`, `[$€-2] `
+ * with the space Excel puts before the fill), the form of its code, and the item's name in the locale's language.
+ * The forms, with 2 decimals: `paren` `_(S* #,##0.00_);_(S* (#,##0.00);…`, `gb` `_-S* #,##0.00_-;-S* #,##0.00_-;…`,
+ * `cn` `_ S* #,##0.00_ ;_ S* -#,##0.00_ ;…`, `after` `_-* #,##0.00 S_-;-* #,##0.00 S_-;…`.
+ */
+export interface AccountingCurrency {
+  readonly currency: string
+  readonly symbol: string
+  readonly form: 'paren' | 'gb' | 'cn' | 'after'
+  readonly name: string
 }
 
 /** The order of day, month and year in date text (`dates.ts`). */

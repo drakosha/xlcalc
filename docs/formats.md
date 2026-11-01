@@ -131,7 +131,7 @@ The rules follow Excel's, as verified in Excel for Mac and Windows: a formula is
 - `display: false` returns values only and spends nothing on formatting.
 - `displayValue(value, { numberFormat, locale, width, dateSystem })` formats a single value without a workbook, for example a cell being edited. It accepts a value as results give it: a number, text, a boolean, `null` or `{ error }`. Without `width`, the width is unlimited: General keeps the digits it displays in a wide column, no number turns into `#`, and a fill (`*x`) has no column to fill and is dropped, as in `TEXT`. With a width, it returns what a cell of that column displays; Excel's default column is `width: 8.83203125`.
 - `builtinFormatCode(id, locale)` returns the code a built-in format stands for in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd.mm.yyyy`), and undefined for a number that is not a built-in format: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
-- `numberFormatCategory(format, locale)` returns the category of a format as the ribbon's Number Format box shows it, and `numberFormatChoices(locale)` returns the items of that box's list ([The ribbon's Number Format box](#the-ribbons-number-format-box)).
+- `numberFormatCategory(format, locale)` returns the category of a format as the ribbon's Number Format box shows it, and `numberFormatChoices(locale)` returns the items of that box's list ([The ribbon's Number Format box](#the-ribbons-number-format-box)); `accountingFormats(locale)` returns the Accounting Number Format button's left part and menu ([Increase Decimal, Decrease Decimal, Comma Style and Accounting](#increase-decimal-decrease-decimal-comma-style-and-accounting)).
 - `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` produce the widths Excel gives columns with AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)); `fitRows(book, result, sheet, rows)` and `{ sheet, rows, fit: true }` produce the heights of rows ([Fitting rows](#fitting-rows)).
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
@@ -422,6 +422,18 @@ console.log(stepDecimals(undefined, 1.5, 1), stepDecimals('#,##0.00', 1.5, -1), 
 - A General cell of a number takes the decimals its column shows, one more or one less: 1.5 becomes `0.00` or `0`, 1/3 in a standard column (`0.333333`) becomes `0.0000000`, in a column of 20 characters (`0.333333333`) `0.0000000000`. A fraction the column shows as a whole number counts its own decimals (12345678.9 shows `12345679` and becomes `0.00` or `0`), a number shown in scientific notation keeps it (`1E+20` becomes `0.0E+00`), and one shown as `#` becomes scientific. With no decimal to take away (5, `1E+20`), or a value that is no number (text, a boolean, a blank), the format stays General.
 - A code takes a decimal more or less in each section of digits, a copy of its last decimal (`#.##` becomes `#.###`, `0.00%` `0.000%`, `0.00E+00` `0.000E+00`); a section without a point gets `.0`, and the last decimal goes with its point. A section of `?` alone, accounting's zero (`"-"??`), stays, and so do the sections of dates, times, fractions and text. There is no limit of 30 decimals: Excel gives 31.
 - When nothing changes, the format given is returned, a built-in format's number included.
+
+The Accounting Number Format button (`$`) has a left part, which applies 44, and a menu of currencies. `accountingFormats(locale?)` in `xlcalc/text` returns both for a host that draws the button: `left` is `{ format: 44, code }` with 44's code in the locale, and `items` the menu's currencies in order, each with its ISO code, its name in the workbook's language and the accounting format it applies, as Excel writes it to a file. The menu starts with the locale's own currency, then £, €, ¥ and CHF; Excel for Windows also adds the currency of its interface's language and of Office's preferred editing language when they differ from the regional format's, which a locale here does not have. ru-RU's menu is as Excel showed it with a Russian interface and format; en-US's is Excel's with an English interface and format, without the ruble that a Russian editing language added there.
+
+```js
+import { accountingFormats } from 'xlcalc/text'
+
+const { left, items } = accountingFormats()
+console.log(left.format, items.map((i) => i.currency).join(' '), items[1].name, items[1].code)
+// → 44 USD GBP EUR CNY CHF £ English (United Kingdom) _-[$£-809]* #,##0.00_-;-[$£-809]* #,##0.00_-;_-[$£-809]* "-"??_-;_-@_-
+```
+
+An item's code depends on the regional format: € is `_([$€-2] * #,##0.00_);…` in en-US and `_-[$€-2] * #,##0.00_-;…` in ru-RU. Every code of the menu is Accounting in `numberFormatCategory`, as Excel's box names it.
 
 Comma Style applies the built-in format 43 and Accounting Number Format 44, which display by the workbook's locale (`_(* #,##0.00_)…` and `_("$"* #,##0.00_)…` in en-US); a host passes 43 or 44 to `patchCells`. Excel for Mac in en-US saves both as codes of the file's own, which read back as the same formats.
 
