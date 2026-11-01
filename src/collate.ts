@@ -49,11 +49,12 @@ export const caseKey = (s: string): string => APART.test(s) ? s.replace(/[^ıſ]
  */
 export function wordKey(s: string): string {
   const up = s.toUpperCase()
-  if (up.length === s.length && !APART.test(s)) return up
+  // a letter beyond the BMP is two units, as its upper case of two letters may be (U+1DF95 is SS)
+  if (up.length === s.length && !/[ıſ\ud800-\udfff]/.test(s)) return up
   let out = ''
   for (const ch of s) {
     const u = APART.test(ch) ? ch : ch.toUpperCase()
-    out += u.length === ch.length ? u : ch
+    out += [...u].length === 1 ? u : ch
   }
   return out
 }
