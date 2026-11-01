@@ -23,7 +23,7 @@ const KNOWN: Record<string, string> = Object.fromEntries(
 )
 
 /** How many cells of each set's prediction Excel for Windows confirmed, by `<tag>:<set>`. */
-const CONFIRMED: Record<string, number> = { 'ru-RU:ribbon': 318, 'ru-RU:ribbon-ru-held': 29, 'en-US:ribbon-accounting': 21, 'ru-RU:ribbon-accounting': 21 }
+const CONFIRMED: Record<string, number> = { 'ru-RU:ribbon': 318, 'ru-RU:ribbon-ru-held': 29, 'en-US:ribbon-accounting': 21, 'ru-RU:ribbon-accounting': 21, 'en-US:ribbon-accounting-held': 20, 'ru-RU:ribbon-accounting-held': 20, 'en-US:ribbon-builtin-codes': 22, 'ru-RU:ribbon-builtin-codes': 22 }
 
 /** How many cells of the set `ribbon` Excel for Mac and for Windows name alike, by tag. */
 const MAC_SAME: Record<string, number> = { 'ru-RU': 266 }
