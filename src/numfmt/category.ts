@@ -119,28 +119,18 @@ const currency = (s: string, bracketed: boolean) => {
   return new RegExp(String.raw`^(${p})(?:;\[Red\]\\-\1|_\);(?:\[Red\])?\\\(\1\\\))?$`, 'i')
 }
 
-/**
- * Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`;
- * with a bracketed one, also the forms with minus signs of the Accounting Number Format menu: the symbol before
- * (`_-S* #,##0.00_ ;_-S* -#,##0.00 ;…`, en-GB's `_-S* #,##0.00_-;-S* #,##0.00_-;…`, zh-CN's `_ S* #,##0.00_ ;_ S* -#,##0.00_ ;…`) or after,
- * and a bracketed one's zero and text sections may be left out (Excel for Windows names the first two alone Accounting).
- */
-const accounting = (s: string, bracketed: boolean) => {
-  // a form's positive and negative sections, then its zero and text sections
-  const form = (head: string, zero: string, text: string) => `${head}${bracketed ? `(?:;${zero}(?:;${text})?)?` : `;${zero};${text}`}`
-  const paren = form(String.raw`_\((${s})\* (${MONEY_NUM})_\);_\(\1\* \\\(\2\\\)`, String.raw`_\(\1\* "-"\?*_\)`, String.raw`_\(@_\)`)
-  if (!bracketed) return new RegExp(`^${paren}$`)
-  const before = form(String.raw`_-(${s})\* (${MONEY_NUM})_ ;_-\3\* \\-\4\\ `, String.raw`_-\3\* "-"\?*_ `, '_-@_ ')
-  const after = form(String.raw`_-\* (${MONEY_NUM})\\ (${s})_-;\\-\* \5\\ \6_-`, String.raw`_-\* "-"\?*\\ \6_-`, '_-@_-')
-  const gb = form(String.raw`_-(${s})\* (${MONEY_NUM})_-;\\-\7\* \8_-`, String.raw`_-\7\* "-"\?*_-`, '_-@_-')
-  const cn = form(String.raw`_ (${s})\* (${MONEY_NUM})_ ;_ \9\* \\-\10_ `, String.raw`_ \9\* "-"\?*_ `, '_ @_ ')
-  return new RegExp(`^(?:${paren}|${before}|${after}|${gb}|${cn})$`)
-}
+/** Accounting with the symbol `s` before the fill (or none): `_(S* #,##0.00_);_(S* \(#,##0.00\);_(S* "-"??_);_(@_)`. */
+const accounting = (s: string) => new RegExp(String.raw`^_\((${s})\* (${MONEY_NUM})_\);_\(\1\* \\\(\2\\\);_\(\1\* "-"\?*_\);_\(@_\)$`)
 
 const BRACKET_CURRENCY = currency(BRACKET, true)
-const BRACKET_ACCOUNTING = accounting(`${BRACKET}(?:\\\\ )?`, true)
+/**
+ * Accounting with a bracketed symbol, which Excel for Windows names by the first section alone, whatever follows: the
+ * symbol before the fill between paddings (`_(S* #,##0.00_)`, the menu's `_-S* #,##0.00_ `, en-GB's `_-S* #,##0.00_-`,
+ * zh-CN's `_ S* #,##0.00_ `) or after the digits (`_-* #,##0.00 S_-`).
+ */
+const BRACKET_ACCOUNTING = new RegExp(String.raw`^(?:_[(\- ]${BRACKET}(?:\\ )?\* ${MONEY_NUM}_[)\- ]|_-\* ${MONEY_NUM}\\ ${BRACKET}_-)(?:;.*)?$`)
 const EN_CURRENCY = currency('"\\$"', false)
-const EN_ACCOUNTING = accounting('(?:"\\$")?', false)
+const EN_ACCOUNTING = accounting('(?:"\\$")?')
 /** Negatives with a minus, in red or not, as a locale other than en-US writes them. */
 const MINUS = String.raw`;(?:\[Red\])?\\-\1`
 const BRACKET_MINUS = new RegExp(String.raw`^(${BRACKET}(?:\\ )?${MONEY_NUM}|${MONEY_NUM}\\ ${BRACKET})${MINUS}$`, 'i')
