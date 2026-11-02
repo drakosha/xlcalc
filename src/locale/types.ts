@@ -3,7 +3,7 @@
  * book computes in its rules of computation and its messages. Stored formulas stay invariant, as in xlsx (English
  * function names, `,` between arguments, `.` as the decimal separator); a locale changes how formulas are typed and
  * shown, and a book's values as Excel's regional settings do. en-US is built in, the package's other locales are
- * modules (`xlcalc/locales/ru-RU`) that `registerLocale` loads; formula text in another language is another object
+ * modules (`xlcalc/locales/ru-RU`) that importing loads; formula text in another language is another object
  * of this shape, which `toLocal` and `toInvariant` take without loading it.
  */
 import type { Messages } from './messages.js'

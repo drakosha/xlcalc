@@ -208,13 +208,11 @@ The README shows the same with a thread pool; [Asynchronous and threaded computa
 
 ## Locales
 
-A locale is Excel's language and regional settings, and it has two roles. A workbook calculates and displays values according to its `locale`, as Excel does on a machine with those settings: which text is recognized as a number or a date, how numbers and booleans are converted to text, and how number formats display values. A locale is also the language in which formulas are entered and displayed (`=ОКРУГЛ(A1*1,2;0)` in ru-RU). Whatever its locale, a workbook stores formulas as xlsx files do, with English function names, `,` between arguments and `.` as the decimal point. The package includes en-US, which is built in, and ru-RU, a separate module that `registerLocale` loads once, so a bundle without ru-RU workbooks does not include it.
+A locale is Excel's language and regional settings, and it has two roles. A workbook calculates and displays values according to its `locale`, as Excel does on a machine with those settings: which text is recognized as a number or a date, how numbers and booleans are converted to text, and how number formats display values. A locale is also the language in which formulas are entered and displayed (`=ОКРУГЛ(A1*1,2;0)` in ru-RU). Whatever its locale, a workbook stores formulas as xlsx files do, with English function names, `,` between arguments and `.` as the decimal point. The package includes en-US, which is built in, and ru-RU, a separate module that importing loads, so a bundle without ru-RU workbooks does not include it.
 
 ```js
-import { compute, createSession, registerLocale, toInvariant, toLocal } from 'xlcalc'
+import { compute, createSession, toInvariant, toLocal } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
-
-registerLocale(ruRU) // once, before any ru-RU workbook is calculated
 
 // the same cells under each locale's rules
 const sheet = {
@@ -254,10 +252,9 @@ Single calls, each with the result it prints.
 ### Enter text in a cell as Excel parses it, in ru-RU
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: {} }] })
 session.setCellText('S', 'A1', '15.03.2026')
 session.setCellText('S', 'A2', '1 234,5')
@@ -267,10 +264,9 @@ console.log(Object.values(session.getCells('S', 'A1:A2')).map((c) => [c.value, c
 ### Paste text from the clipboard
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { B2: { value: 'old' } } }] })
 const pasted = session.pasteText('S', 'A1', "15.03.2026\t1 234,5\t=B1*2\r\n'007\r\n")
 console.log(pasted.range, pasted.changes.map((c) => `${c.cell} ${c.text}`)) // → A1:C3 [ 'A1 #########', 'B1 1 234,50', "A2 '007", 'B2 ', 'C1 2469' ]

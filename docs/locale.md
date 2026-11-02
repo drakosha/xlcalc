@@ -4,14 +4,13 @@ Excel depends on its language and regional settings in two ways. It displays and
 
 ## In short
 
-Workbooks store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are entered and displayed, as Excel displays them in another language, and how a workbook calculates, as Excel calculates with those regional settings. en-US is built in. ru-RU (Excel with the Russian interface) is a separate module, which a bundle includes only when it is imported: `registerLocale` loads it, once, for workbooks in ru-RU and for its tag.
+Workbooks store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are entered and displayed, as Excel displays them in another language, and how a workbook calculates, as Excel calculates with those regional settings. en-US is built in. ru-RU (Excel with the Russian interface) is a separate module, which a bundle includes only when it is imported, and importing it loads it, for workbooks in ru-RU and for its tag in every call.
 
 ```js
-import { LOCALES, registerLocale, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
+import { LOCALES, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU).formula) // → ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)
-registerLocale(ruRU)
 console.log(LOCALES.get('ru-RU') === ruRU, [...LOCALES.keys()]) // → true [ 'en-US', 'ru-RU' ]
 console.log(toInvariant('=СУММ(A1:A3;1,5)', 'ru-RU').formula) // → SUM(A1:A3,1.5)
 const bad = validateLocalFormula('=СУММ(A1;1.5)', 'ru-RU')
@@ -19,7 +18,7 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здес�
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
-A host that knows a locale only by its tag, from a file or a user's choice, loads it with `loadLocale` from `xlcalc/locales`, which imports the package's module of that tag and loads it as `registerLocale` does, for every call that takes a loaded locale, a pool's threads included. It is a subpath of its own, without the engine, so the bundles of the root and of `xlcalc/xlsx` carry no locale module but en-US; where a bundler splits, the module comes as a chunk of its own, only when it is loaded. A locale loaded already comes back without importing its module again, and a tag that is not one of the package's locales is an `InputError`:
+A host that knows a locale only by its tag, from a file or a user's choice, loads it with `loadLocale` from `xlcalc/locales`, which imports the package's module of that tag, and so loads it, for every call that takes a loaded locale, a pool's threads included. It is a subpath of its own, without the engine, so the bundles of the root and of `xlcalc/xlsx` carry no locale module but en-US; where a bundler splits, the module comes as a chunk of its own, only when it is loaded. A locale loaded already comes back without importing its module again, and a tag that is not one of the package's locales is an `InputError`:
 
 ```js
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
@@ -38,7 +37,7 @@ import { compute } from 'xlcalc'
 try {
   compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
 } catch (e) {
-  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)
+  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)
 }
 ```
 
@@ -49,10 +48,9 @@ The ru-RU data come from Excel itself. `bench/locale/snapshot.ts` opens workbook
 A workbook is calculated in its own locale, `BookInput.locale` (the tag of a loaded locale: `'en-US'` by default, or `'ru-RU'` once loaded), as Excel calculates with those regional settings, whoever opens the workbook; a viewer still sees the formulas in their own language through `toLocal`. The locale affects how text is parsed as a number, a date or a boolean, how numbers and booleans are converted to text, the format codes of `TEXT` and what cells display, `DOLLAR` and `FIXED`, error texts, the words and numbers in criteria, and text sort order:
 
 ```js
-import { compute, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { compute } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' }, A4: { formula: 'DOLLAR(-1234.567)' }, A5: { formula: 'VALUE("1.5")' } }
 const r = compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells }] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
 const v = r.sheets[0].cells
@@ -65,10 +63,9 @@ In ru-RU, as Excel 16.113 for Mac calculates with the Russian interface and loca
 Messages for users are in the workbook's locale too: why a typed formula does not parse (`parseEntry`, and `toLocal`, `toInvariant` and `validateLocalFormula` in their locale), why a structure operation is rejected, and the text of `explain`, whose numbers, formulas, booleans and errors are written as the locale writes them, and its references as Excel writes them (`План!B1`). Codes, positions and the fields of `explain`'s tree stay unchanged, so a program reads them the same way in every locale.
 
 ```js
-import { createSession, parseEntry, registerLocale, editStructure } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession, parseEntry, editStructure } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 400 }, B1: { formula: 'ROUND(A1*1.2,0)' } } }] }
 console.log(createSession(book).explain('План', 'B1').text)
 // → План!B1 = 480  ← ОКРУГЛ(A1*1,2;0)
@@ -81,20 +78,20 @@ console.log(editStructure(book, { op: 'deleteSheet', sheet: 'План' }).messag
 
 ## Loading a locale
 
-en-US is built in. ru-RU is a separate module, `xlcalc/locales/ru-RU`, so a bundle that has no ru-RU workbook does not carry its 52 KB of formula text, rules and messages. A host imports it and loads it once, before a workbook in that locale is calculated:
+en-US is built in. ru-RU is a separate module, `xlcalc/locales/ru-RU`, so a bundle that has no ru-RU workbook does not carry its 52 KB of formula text, rules and messages. A host imports it before a workbook in that locale is calculated, and the import loads it, in the copy of the package the module is bundled with: a bundle whose main part and a chunk of ru-RU share `xlcalc/text` takes the tag `'ru-RU'` in every call once the chunk has come.
 
 ```js
-import { compute, LOCALES, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { compute, LOCALES } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { formula: 'VALUE("1,5")' } } }] }
 console.log(compute(book).sheets[0].cells.A1.value, [...LOCALES.keys()])
 // → 1.5 [ 'en-US', 'ru-RU' ]
 ```
 
-- `LOCALES` lists the loaded locales by tag: `en-US`, then each registered locale.
-- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
+- `LOCALES` lists the loaded locales by tag: `en-US`, then each imported or registered locale.
+- `registerLocale` loads a locale of a host's own (another tag, or ru-RU with messages of its own: a copy of the module's ru-RU replaces it). The module's own object again does nothing. The package lists its locale modules in `sideEffects`, so a bundler keeps a bare `import 'xlcalc/locales/ru-RU'`.
+- A workbook's `locale` is the tag of a loaded locale. A workbook in a locale that is not loaded causes an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)`. So does a tag passed to a function that accepts a locale. Any other tag gets a message listing the loaded ones, and naming the intended tag when only its case differs (`ru-ru`): tags are compared as written.
 - Every function that accepts a locale accepts the tag of a loaded locale or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. An object needs no loading there, since no workbook is calculated: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
 - Importing the module has no effect by itself, so a bundler leaves it out of a bundle that does not use it. Loading the same object again does nothing; another object with an already loaded tag causes an `InputError`, as does a locale without the rules a workbook calculates by.
 - `readXlsx` keeps a file's locale (`ru-RU`) as it reads it, loaded or not; calculating or writing the workbook requires the locale to be loaded.

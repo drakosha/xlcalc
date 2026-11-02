@@ -1,8 +1,10 @@
 /**
- * The loaded locales by BCP 47 tag: en-US, built in, and those `registerLocale` loaded (`load.ts`). A book's `locale`
+ * The loaded locales by BCP 47 tag: en-US, built in, the package's modules imported (`imported.ts`) and those
+ * `registerLocale` loaded (`load.ts`). A book's `locale`
  * names one of them; a locale object given where no book is needed works without loading.
  */
 import { EN_US } from '../locales/en-US.js'
+import { takeImported } from './imported.js'
 import type { Locale } from './types.js'
 
 /** The locale of a book without one: Excel en-US. */
@@ -28,7 +30,10 @@ export function addLocale(locale: Locale): void {
   for (const f of listeners) f(locale)
 }
 
-/** The locales `registerLocale` loaded, in the order they were loaded and without en-US, which is built in (the pool sends a thread only those). */
+// a package module's locale, as the module is imported, unless a locale of its tag is loaded
+takeImported((locale) => loaded.has(locale.tag) || addLocale(locale))
+
+/** The locales imported or registered, in the order they were loaded and without en-US, which is built in (the pool sends a thread only those). */
 export const addedLocales = (): readonly Locale[] => [...added.values()]
 
 /** Hears every locale loaded from now on; the answer stops it. */

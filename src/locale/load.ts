@@ -11,6 +11,7 @@ import { PIVOT_MESSAGES } from './pivot-messages.js'
 import { CSV_MESSAGE_KEYS, KEPT_MESSAGE_KEYS, XLSX_MESSAGE_KEYS } from './messages.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { TABLE_ITEMS } from '../syntax/table.js'
+import { imported } from './imported.js'
 import { addLocale, DEFAULT_LOCALE, LOCALES, PACKAGE_LOCALES } from './registry.js'
 import type { RegionalData } from './rules/data.js'
 import type { Locale } from './types.js'
@@ -99,9 +100,9 @@ function checkLocaleObject(locale: unknown, path: string): Locale {
 /** A package's locale by name, as its module exports it (`ruRU`). */
 const nameOf = (tag: string) => tag.replace('-', '')
 
-/** How the root loads a package's locale: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)`, or `loadLocale('ru-RU')` of `xlcalc/locales`. */
+/** How a host loads a package's locale: `import { ruRU } from 'xlcalc/locales/ru-RU'`, which loads it, or `loadLocale('ru-RU')` of `xlcalc/locales`. */
 function howToLoad(tag: string): string {
-  return `import { ${nameOf(tag)} } from 'xlcalc/locales/${tag}' and call registerLocale(${nameOf(tag)}), or await loadLocale('${tag}') from 'xlcalc/locales'`
+  return `import { ${nameOf(tag)} } from 'xlcalc/locales/${tag}', or await loadLocale('${tag}') from 'xlcalc/locales'`
 }
 
 /**
@@ -139,15 +140,16 @@ export const optionalLocale = (v: unknown, path: string): Locale | undefined => 
 
 /**
  * Loads a locale for workbooks in that locale (`BookInput.locale`) and for its tag wherever a locale is accepted: one
- * of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading
- * the same object again does nothing; a different object with an already loaded tag throws an `InputError`. A pool's
- * threads load it too.
+ * of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, which importing loads already, so the
+ * call is needed only for a locale of a host's own). Loading the same object again does nothing; a different object with
+ * an already loaded tag throws an `InputError`, unless a module loaded it on being imported: a host's copy of ru-RU
+ * replaces the module's. A pool's threads load it too.
  */
 export function registerLocale(locale: Locale): void {
   const l = checkLocaleObject(locale, 'locale')
   const had = LOCALES.get(l.tag)
   if (had === l) return
-  if (had) throw new InputError('locale.tag', `the locale ${l.tag} is already loaded${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
+  if (had && !imported.has(had)) throw new InputError('locale.tag', `the locale ${l.tag} is already loaded${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
   // a loaded locale is a workbook's, which is calculated by its rules: they are required
   if (l.regional === undefined) checkRegional(l.regional, 'locale.regional')
   if (l.messages !== undefined) {

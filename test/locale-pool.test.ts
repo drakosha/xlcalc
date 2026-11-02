@@ -7,15 +7,14 @@
  * ru-RU is loaded a pool refuses a ru-RU book as the same thread does. The file does not import `locales.ts`.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, createSession, registerLocale, type BookInput, type Calc } from '../src/index.js'
-import { ruRU } from '../src/locales/ru-RU.js'
+import { compute, InputError, createSession, registerLocale, type BookInput, type Calc, type Locale } from '../src/index.js'
 import { sentLocale } from '../src/worker/protocol.js'
 import { closedAfter, inside } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' } }
 const book = (locale: string): BookInput => ({ locale, sheets: [{ name: 'S', cells }] })
-const HINT = "book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
+const HINT = "book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
 
 const { open, keep, made } = closedAfter()
 
@@ -33,20 +32,25 @@ async function threaded(calc: Calc, b: BookInput, execution: 'closures' | 'eval'
   return { hash: (await s.getResult()).hash, explain: (await s.explain('S', 'A1')).text, local, refusal: await s.editStructure({ op: 'deleteSheet', sheet: 'S' }) }
 }
 
-describe('locales in a pool', () => {
-  it('a locale is plain data but its messages: a structured clone carries what the pool sends', () => {
-    expect(() => structuredClone(ruRU)).toThrow()
-    const sent = sentLocale(ruRU)
-    expect(sent.messages).toBeUndefined()
-    expect(structuredClone(sent)).toEqual(sent)
-  })
+/** ru-RU, imported after a pool refuses it. */
+let ruRU: Locale
 
+describe('locales in a pool', () => {
   it('a pool started before ru-RU is loaded refuses a ru-RU book as the same thread does', async () => {
     const calc = await made({ threads: 2 })
     const e = await calc.compute(book('ru-RU'), { clock }).catch((x: unknown) => x)
     expect(e).toBeInstanceOf(InputError)
     expect((e as InputError).message).toBe(HINT)
     await expect(calc.createSession(book('ru-RU'), { clock })).rejects.toThrow(HINT)
+  })
+
+  it('a locale is plain data but its messages: a structured clone carries what the pool sends', async () => {
+    // importing the module loads ru-RU, after the refusals before it
+    ruRU = (await import('../src/locales/ru-RU.js')).ruRU
+    expect(() => structuredClone(ruRU)).toThrow()
+    const sent = sentLocale(ruRU)
+    expect(sent.messages).toBeUndefined()
+    expect(structuredClone(sent)).toEqual(sent)
   })
 
   describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {

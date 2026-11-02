@@ -95,11 +95,10 @@ console.log(readCsv(text, { formulas: true, codesAsText: true }).book.sheets[0].
 `delimiter` is the locale's list separator by default (`'locale'`), as Excel writes; `locale` is the workbook's unless given. `encoding` is `utf-8` by default, with its byte order mark, as Excel's CSV UTF-8; `utf-16le`, also with its mark; or `ansi`, the locale's Windows code page, as Excel's plain CSV, where a character the code page lacks is written as `?` with an issue. `bom: false` leaves the mark out. Writing a workbook of several sheets reports the others, which the file cannot hold.
 
 ```js
-import { compute, registerLocale } from 'xlcalc'
+import { compute } from 'xlcalc'
 import { writeCsv } from 'xlcalc/csv'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'Лист', cells: { B2: { value: 1234.5, numberFormat: 4 }, C2: { formula: 'B2>1000' }, B3: { value: 'а;б' } } }] }
 const csv = writeCsv({ book, result: compute(book) })
 console.log(JSON.stringify(csv.text), csv.data.length) // → "1 234,50;ИСТИНА\r\n\"а;б\";" 34

@@ -1,7 +1,7 @@
 /**
  * `loadLocale(tag)`: one of the package's locales loaded by its tag, its module imported as a thread of the pool
- * imports it (`modules.ts`) and loaded as `registerLocale` loads it, so a pool sends it to its threads. It needs
- * neither the engine nor the checks of `registerLocale`, the package's modules being its own: the subpath `xlcalc/locales`
+ * imports it (`modules.ts`), which loads it, so a pool sends it to its threads. It needs neither the engine nor the
+ * checks of `registerLocale`, the package's modules being its own: the subpath `xlcalc/locales`
  * gives it, so that no other bundle takes the modules it imports.
  */
 import { InputError } from '../input-error.js'
@@ -11,8 +11,8 @@ import { addLocale, LOCALES, PACKAGE_LOCALES } from './registry.js'
 import type { Locale } from './types.js'
 
 /**
- * Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
- * `registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+ * Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` does: a
+ * workbook in that locale is taken from then on, and a pool's threads load it too. A locale
  * loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
  * `InputError` (tags are compared as written).
  */

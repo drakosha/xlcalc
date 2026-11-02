@@ -3,7 +3,7 @@
  * the tokenizer, the translation of a locale's formula text, the check of its functions' arguments and the category of a
  * number format's code, where the field list puts a field, what each cell of a PivotTable is and a value field's name
  * by its function (no parser, formatting, computation or PivotTable engine), en-US's messages alone of the locales' data,
- * stays under 65 KB, and runs in an empty `node:vm`
+ * stays under 70 KB, and runs in an empty `node:vm`
  * context with ru-RU given as an object, or the part of it a formula's text needs. It holds no `xlcalc`, which a host
  * looks for in its bundle as the sign of the engine: a tag not loaded asks for the locale as an object, and only the root
  * names the module to import and `registerLocale`.
@@ -16,17 +16,18 @@ import { ruRU } from '../src/locales/ru-RU.js'
 const bundle = () => browserBundle('text.js', 'TEXT')
 
 describe('text without the engine', () => {
-  it('the bundle holds the modules of formula text alone, under 65 KB', async () => {
+  it('the bundle holds the modules of formula text alone, under 70 KB', async () => {
     const { code, used } = await bundle()
     // wildcards: the lexer takes the escape of a regular expression's characters from it;
     // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections; numfmt/accounting the Accounting menu;
     // decimals, general, glyphs and functions/common (its rounding): Increase and Decrease Decimal, by what General shows in a column
-    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'drawing-size', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/accounting', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
+    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'delimited', 'drawing-size', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'functions/common', 'input', 'input-error', 'input/basic', 'input/styles', 'layout/spans', 'locale/english', 'locale/imported', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/accounting', 'numfmt/builtin', 'numfmt/category', 'numfmt/decimals', 'numfmt/general', 'numfmt/glyphs', 'numfmt/parse', 'pivot-suggest', 'pivot-words', 'pivot/area', 'pivot/cells', 'pivot/frame', 'pivot/layout-lines', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'structure/area', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text', 'wildcards'])
     // 46.1 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10); 51.8 with stepDecimals;
     // 54.5 with suggestPivotField; 63.0 (64,486 bytes) with pivotCells, pivotCellAt and renamedValueField (31.10); 64.1
     // (65,614 bytes) with pivotBlankLabel, the sizes of a new slicer and timeline and the buttons where Excel draws them;
-    // 64.8 (66,380 bytes) with accountingFormats
-    expect(code.length).toBeLessThan(65 * 1024)
+    // 64.8 (66,380 bytes) with accountingFormats; 65.0 (66,561 bytes) with the locales a module loads on being imported,
+    // the limit raised to 70 KB (Mikhail, 02.11)
+    expect(code.length).toBeLessThan(70 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
 

@@ -1,22 +1,22 @@
 /**
- * Locales as modules: en-US is built in, ru-RU is the module `xlcalc/locales/ru-RU`, which `registerLocale` loads. Not
+ * Locales as modules: en-US is built in, ru-RU is the module `xlcalc/locales/ru-RU`, which importing loads. Not
  * loaded, a ru-RU book is an `InputError` that names the module, in every caller that takes a book, and so is the tag
- * wherever a locale is taken; a locale object works without loading where no book is needed; an en-US book shows what
- * it showed (ru-RU's month names under `[$-419]`, the widths of Cyrillic letters); a file's ru-RU locale is read as
- * data. Loaded, a ru-RU book computes as before in both execution modes. The package's lists of its locales agree.
- * The file loads nothing before its part on `registerLocale`: it does not import `locales.ts`.
+ * wherever a locale is taken; an en-US book shows what it showed (ru-RU's month names under `[$-419]`, the widths of
+ * Cyrillic letters); a file's ru-RU locale is read as data. Imported, ru-RU is loaded and a ru-RU book computes as
+ * before in both execution modes; a locale object works without loading where no book is needed; a host's copy of
+ * ru-RU replaces the module's own. The package's lists of its locales agree. The file imports the module only after
+ * its part without it, and not `locales.ts`.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, createSession, parseEntry, registerLocale, editStructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
-import { ruRU } from '../src/locales/ru-RU.js'
 import { LOCALE_MODULES } from '../src/locale/modules.js'
 import { writeXlsx } from '../src/xlsx.js'
 import { read } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
-const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
+const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)"
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { value: 46096, numberFormat: 14 }, B1: { value: 'Итого' } }
 const ruBook: BookInput = { locale: 'ru-RU', sheets: [{ name: 'S', cells, columns: { A: { width: 12 } } }] }
 const enBook: BookInput = { sheets: [{ name: 'S', cells }] }
@@ -75,24 +75,6 @@ describe('without ru-RU loaded', () => {
     for (const [path, call] of calls) expect(refusal(call)).toMatchObject({ path, message: `${path}: ${HINT}` })
   })
 
-  it('a locale object works without loading where no book is needed', () => {
-    expect(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU)).toEqual({ ok: true, formula: 'ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)' })
-    expect(toInvariant('=СУММ(A1:A3;1,5)', ruRU)).toEqual({ ok: true, formula: 'SUM(A1:A3,1.5)' })
-    expect(validateLocalFormula('=СУММ(A1;1.5)', ruRU)).toEqual({ ok: false, code: 'syntax', message: 'Здесь не может стоять «.»', at: 10 })
-    expect(parseEntry('1 234,5', { locale: ruRU })).toEqual({ ok: true, input: { value: 1234.5, numberFormat: 4 } })
-    expect(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: ruRU })).toMatchObject({ ok: false, message: 'Функция ОКРУГЛ принимает 2 аргумента, а указано 3' })
-    expect(displayValue(0.4567, { numberFormat: '0.0%', locale: ruRU })).toEqual({ text: '45,7%' })
-    expect(displayValue(46096, { numberFormat: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
-    expect(entryWidth(1234567890, { locale: ruRU })).toBe(11.1640625)
-    expect(builtinFormatCode(14, ruRU)).toBe('dd/mm/yyyy')
-    expect([errorText('DIV0', ruRU), entryText(1.5, { locale: ruRU }), needsApostrophe('1,5', { locale: ruRU })]).toEqual(['#ДЕЛ/0!', '1,5', true])
-    expect(scanReferences('=СУММ(B2:B9;C1)', { locale: ruRU }).map((r) => r.text)).toEqual(['B2:B9', 'C1'])
-    expect(validateSheetName('Итоги/2025', { locale: ruRU })).toMatchObject({ ok: false, message: 'Имя листа не может содержать «/» (Excel запрещает : \\ / ? * [ ])' })
-    expect([validateName('ложь', { locale: ruRU }).ok, validateName('ложь').ok]).toEqual([false, true])
-    expect(validateNames([{ name: 'ИСТИНА', ref: '1' }], { sheets: ['S'], locale: ruRU })).toMatchObject([{ name: 'ИСТИНА', dropped: true }])
-    expect([...LOCALES.keys()]).toEqual(['en-US'])
-  })
-
   it("an en-US book shows what it showed: ru-RU's month names under [$-419], the widths of Cyrillic letters", () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TEXT(45688,"[$-419]mmmm")' }, A2: { value: 45688, numberFormat: '[$-419]d mmm yyyy' }, B1: { value: 'Итого' }, C1: { value: 'Ж' } }, columns: { A: { width: 16 } } }] }
     const r = compute(book, { clock })
@@ -112,15 +94,41 @@ describe('without ru-RU loaded', () => {
   })
 })
 
-describe('registerLocale', () => {
-  it('loads ru-RU: LOCALES has it, and its tag is taken wherever a locale is', () => {
-    registerLocale(ruRU)
+/** The module's locale, imported after the part without it. */
+let ruRU: Locale
+
+describe('importing the module xlcalc/locales/ru-RU', () => {
+  it('loads ru-RU: LOCALES has it, and its tag is taken wherever a locale is, with no call', async () => {
+    ruRU = (await import('../src/locales/ru-RU.js')).ruRU
     expect([...LOCALES.keys()]).toEqual(['en-US', 'ru-RU'])
     expect(LOCALES.get('ru-RU')).toBe(ruRU)
     expect(toLocal('SUM(A1,1.5)', 'ru-RU')).toEqual({ ok: true, formula: 'СУММ(A1;1,5)' })
     expect(parseEntry('1 234,5', { locale: 'ru-RU' })).toEqual({ ok: true, input: { value: 1234.5, numberFormat: 4 } })
+    expect(() => registerLocale(ruRU)).not.toThrow()
   })
 
+  it('a locale object works without loading where no book is needed', () => {
+    // a copy under a tag not loaded
+    const own = { ...ruRU, tag: 'xx-YY' }
+    expect(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', own)).toEqual({ ok: true, formula: 'ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)' })
+    expect(toInvariant('=СУММ(A1:A3;1,5)', own)).toEqual({ ok: true, formula: 'SUM(A1:A3,1.5)' })
+    expect(validateLocalFormula('=СУММ(A1;1.5)', own)).toEqual({ ok: false, code: 'syntax', message: 'Здесь не может стоять «.»', at: 10 })
+    expect(parseEntry('1 234,5', { locale: own })).toEqual({ ok: true, input: { value: 1234.5, numberFormat: 4 } })
+    expect(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: own })).toMatchObject({ ok: false, message: 'Функция ОКРУГЛ принимает 2 аргумента, а указано 3' })
+    expect(displayValue(0.4567, { numberFormat: '0.0%', locale: own })).toEqual({ text: '45,7%' })
+    expect(displayValue(46096, { numberFormat: 14, locale: own, width: 12 })).toEqual({ text: '15.03.2026' })
+    expect(entryWidth(1234567890, { locale: own })).toBe(11.1640625)
+    expect(builtinFormatCode(14, own)).toBe('dd/mm/yyyy')
+    expect([errorText('DIV0', own), entryText(1.5, { locale: own }), needsApostrophe('1,5', { locale: own })]).toEqual(['#ДЕЛ/0!', '1,5', true])
+    expect(scanReferences('=СУММ(B2:B9;C1)', { locale: own }).map((r) => r.text)).toEqual(['B2:B9', 'C1'])
+    expect(validateSheetName('Итоги/2025', { locale: own })).toMatchObject({ ok: false, message: 'Имя листа не может содержать «/» (Excel запрещает : \\ / ? * [ ])' })
+    expect([validateName('ложь', { locale: own }).ok, validateName('ложь').ok]).toEqual([false, true])
+    expect(validateNames([{ name: 'ИСТИНА', ref: '1' }], { sheets: ['S'], locale: own })).toMatchObject([{ name: 'ИСТИНА', dropped: true }])
+    expect([...LOCALES.keys()]).toEqual(['en-US', 'ru-RU'])
+  })
+})
+
+describe('registerLocale', () => {
   describe.each(['closures', 'eval'] as const)('a ru-RU book computes as before, execution %s', (execution) => {
     it('in compute, a session and the same thread alike', async () => {
       const r = compute(ruBook, { clock, execution })
@@ -138,10 +146,15 @@ describe('registerLocale', () => {
     })
   })
 
-  it('loading the same object again does nothing; another object of a loaded tag, en-US, or a locale a book cannot compute in is an InputError', () => {
+  it("loading the same object again does nothing; a host's copy replaces the module's own; another object of a tag a call loaded, en-US, or a locale a book cannot compute in is an InputError", () => {
     expect(() => registerLocale(ruRU)).not.toThrow()
     const bad = (locale: unknown) => refusal(() => registerLocale(locale as Locale)).message
+    const copy = { ...ruRU }
+    registerLocale(copy)
+    expect(LOCALES.get('ru-RU')).toBe(copy)
+    expect(compute(ruBook, { clock }).sheets[0].cells.A1.value).toBe(1236)
     expect(bad({ ...ruRU })).toBe('locale.tag: the locale ru-RU is already loaded, as another object')
+    expect(bad(ruRU)).toBe('locale.tag: the locale ru-RU is already loaded, as another object')
     expect(bad({ ...enUS })).toBe('locale.tag: the locale en-US is already loaded: it is built in')
     expect(bad({ ...ruRU, tag: 'xx-XX', regional: undefined })).toMatch(/^locale\.regional: expected the rules a workbook is calculated by/)
     expect(bad({ ...ruRU, tag: 'xx-XX', regional: { ...ruRU.regional, columnWord: undefined } })).toBe('locale.regional.columnWord: expected a value')

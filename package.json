@@ -120,7 +120,9 @@
     "CHANGELOG.md",
     "THIRD_PARTY.md"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/locales/ru-RU.js"
+  ],
   "publishConfig": {
     "access": "public"
   },

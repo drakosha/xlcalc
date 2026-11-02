@@ -7,10 +7,9 @@ What a grid reads from a session to draw a sheet: a viewport of cells with their
 A grid draws a viewport of a sheet with `getViewport(sheet, range, opts?)`. A single call returns the cells with their formatting resolved, the sizes of the viewport's rows and columns, the merged areas and tables that overlap it, the frozen panes and where the sheet's data ends.
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({
   locale: 'ru-RU',
   styles: [{ font: { bold: true } }],
