@@ -21,6 +21,17 @@ export interface DisplayOptions {
 }
 
 /**
+ * Options of `numberFormatSamples`: the workbook's locale and date system. The samples depend on neither the cell's
+ * format nor its column's width, as in Excel.
+ */
+export interface FormatSampleOptions {
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not; en-US without one. */
+  locale?: string | Locale
+  /** The date system used to display dates, as in `BookInput.dateSystem`; 1900 without it. */
+  dateSystem?: DateSystem
+}
+
+/**
  * Options of `entryWidth`: the format used to display the value (the cell's format after the entry), the workbook's
  * locale and date system, and the `width` (the default without one) and `bestFit` of the column typed into. A cell
  * whose text is turned (`AlignmentStyle.rotation`) widens no column, so a host does not call it for one.
