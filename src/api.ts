@@ -64,7 +64,7 @@ export const validateLocalFormula = /* @__PURE__ */ strict(/* @__PURE__ */ withD
 export const registerLocale = /* @__PURE__ */ strict(load.registerLocale)
 export const registerRegex = /* @__PURE__ */ strict(regexLevels.registerRegex)
 export const registerPivot = /* @__PURE__ */ strict(pivotLevel.registerPivot)
-// a locale not loaded is refused with the module to import, where registerLocale is at hand
+// a locale not loaded is refused with the module to import
 load.rootLoaded()
 export const editStructure = /* @__PURE__ */ strict(structure.editStructure)
 export const copyFormula = /* @__PURE__ */ strict(copy.copyFormula)

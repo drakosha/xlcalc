@@ -9,7 +9,6 @@ import { describe, expect, it } from 'vitest'
 import { compute, InputError, LOCALES, type BookInput } from '../src/index.js'
 import { loadLocale } from '../src/locales.js'
 import * as xlsx from '../src/xlsx.js'
-import { ruRU } from '../src/locales/ru-RU.js'
 import { closedAfter } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
@@ -20,8 +19,9 @@ const { made } = closedAfter()
 describe('loadLocale', () => {
   it("loads a package's locale by its tag, for workbooks, files and a pool's threads, once", async () => {
     const pool = await made({ threads: 1 })
-    expect(() => compute(book, { clock })).toThrow("book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)")
+    expect(() => compute(book, { clock })).toThrow("book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)")
     const [a, b] = await Promise.all([loadLocale('ru-RU'), loadLocale('ru-RU')])
+    const { ruRU } = await import('../src/locales/ru-RU.js')
     expect([a, b, LOCALES.get('ru-RU')]).toEqual([ruRU, ruRU, ruRU])
     expect(a).toBe(b)
     expect(await loadLocale('ru-RU')).toBe(a)

@@ -29,7 +29,7 @@ describe('bundle size', () => {
     expect(bytes).toBeLessThan(395 * 1024)
   }, 60_000)
 
-  it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation', async () => {
+  it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation, nor the registry its import loads it into', async () => {
     const root = (await minified(`export * from ${lib('index.js')}`)).used
     expect(locales(root)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     expect(locales((await minified(`export * from ${lib('xlsx.js')}`)).used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
@@ -41,7 +41,7 @@ describe('bundle size', () => {
     expect(locales(csv)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     expect(csv.filter((f) => !/functions\/common\.(ts|js)$/.test(f) && /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
     const ru = await minified(`export * from ${lib('locales/ru-RU.js')}`)
-    expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
+    expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/imported\.(ts|js)$/), expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
   }, 60_000)
 
   it("the light entry takes none of the groups' modules, its compute under 325 KB; the groups take the core's", async () => {

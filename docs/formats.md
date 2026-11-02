@@ -9,10 +9,9 @@ The rules below were verified in Excel 16.113 for Mac, en-US and ru-RU.
 Besides its `value`, a result gives each cell the `text` Excel displays in it (VBA's `Range.Text`) and the `color` of its format section. The format is the cell's own `numberFormat`, otherwise its row's, otherwise its column's: an Excel format code as an xlsx file stores it (`#,##0.00`, `d mmmm yyyy`, `[Blue]0;[Red]-0`), displayed in the workbook's locale. The width is the column's (`columns: { A: { width: 16 } }`, as xlsx stores it; Excel's default if none is set), or that of a merged area's columns: General drops decimals or switches to scientific notation to fit, a number that still does not fit displays `#` across the column, and text is never truncated (it overflows into the next cells). The value stays a number whatever the text displays, and the text is not part of the values hash.
 
 ```js
-import { compute, displayValue, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { compute, displayValue } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const book = {
   sheets: [{
     name: 'S',
@@ -69,10 +68,9 @@ console.log(name, format) // → Денежный #,##0.00\ "₽"
 Excel widens columns automatically in two situations, and the engine produces the same widths. AutoFit (a double click on a column's border) sets a column to the width of its widest cell: `fitColumns(book, result, sheet, columns)` calculates the widths for a calculated workbook, and the layout edit `{ sheet, columns, fit: true }` applies them in a session ([Layout](grid.md#layout)). And a number typed into a column whose width was not set manually widens it until the number is fully displayed: `entryWidth(value, opts)` returns that width for the value that typed text produces, for a host to set with `bestFit: true`. A width Excel fitted (`ColumnInput.bestFit`) widens again as numbers are typed; one set manually stays.
 
 ```js
-import { compute, entryWidth, fitColumns, parseEntry, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { compute, entryWidth, fitColumns, parseEntry } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const book = {
   locale: 'ru-RU',
   sheets: [{ name: 'S', cells: { A1: { value: 'Итого' }, B1: { value: 1234567.5, numberFormat: '#,##0.00' }, C1: { value: 46096, numberFormat: 14 } } }],

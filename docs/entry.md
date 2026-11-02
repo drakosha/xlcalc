@@ -3,10 +3,9 @@
 `parseEntry(text, opts)` parses what a user typed into a cell the way Excel parses it in the workbook's locale, and returns the cell's new input: a number, a date or a time with the number format Excel sets for it, a boolean, an error, text, or a formula in its stored form. An interface that edits a sheet calls it on the text of its cell editor and passes the input to `setCells`, or calls a session's `setCellText`, which does both. It needs no workbook, runs on the same thread whatever calculates the workbook, and returns immediately.
 
 ```js
-import { parseEntry, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { parseEntry } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const now = '2026-10-10T12:00:00Z'
 console.log(parseEntry('1 234,5', { locale: 'ru-RU' }).input) // → { value: 1234.5, numberFormat: 4 }
 console.log(parseEntry('15.3', { locale: 'ru-RU', now }).input) // → { value: 46096, numberFormat: 16 }
@@ -60,10 +59,9 @@ session.close()
 A session accepts typed text into a cell itself: `setCellText(sheet, cell, text, opts?)` parses it as `parseEntry` does, in the workbook's locale and date system, with the session's clock and the number format the cell displays (its own, otherwise its row's or column's, which the cell does not take as its own), keeps the rest of the cell, and widens the column in the same undo step as Excel does, unless `widen: false` is passed; `previewCellText` returns the same and changes nothing.
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({
   locale: 'ru-RU',
   styles: [{ font: { bold: true } }],
@@ -103,10 +101,9 @@ console.log(many.code, many.cell, session.revision) // → validation A3 1
 `setCellTexts(entries, opts?)` accepts several texts typed at once: each `{ sheet, cell, text }` is parsed as `setCellText` would parse it in its cell, in order, and all are written with one recalculation, one revision and one undo step. A cell given twice keeps the later text, parsed with the number format the earlier one gave it. A column widens once, to the largest width that any one of the texts typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not allow are returned with their alerts (`validations`). A text that `setCellText` would reject rejects the whole call, with its `sheet` and `cell`, and nothing is written; with `refuseInvalid`, so does the cell whose value breaks the strictest rule once all the texts are written (stop before warning before information, and the first cell with that style). `previewCellTexts` returns each cell's input and value, the widths and the alerts, and changes nothing.
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({
   locale: 'ru-RU',
   sheets: [{ name: 'S', cells: { A1: { value: 'Item' } }, validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }] }],
@@ -141,10 +138,9 @@ Pasting and Control+Return parse text differently from typing, and have their ow
 `fillCellText(sheet, range, text, opts?)` enters text into every cell of a range, like Control+Return: it parses the text once in the active cell (the range's top-left cell, or `active`), and every cell gets what the active cell contains afterwards, a formula adjusted as copying it from the active cell would adjust it (`copyFormula`), plus the active cell's number format if it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`, or with `refuseInvalid` a rejection before anything is written). Both are one undo step, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as verified in Excel, are in [docs/entry.md](entry.md#a-paste-and-controlreturn).
 
 ```js
-import { createSession, parseClipboard, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession, parseClipboard } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({
   locale: 'ru-RU',
   sheets: [{
@@ -185,10 +181,9 @@ The options:
 `session.setCellText(sheet, cell, text)` does this in a session: it parses the text in the workbook's locale and date system, with the session's clock and the number format the cell displays (its own, otherwise its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and returns the data validation rule the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` returns the same without writing anything, and `setCellTexts` accepts several texts at once, each parsed as if typed into its own cell, in one undo step. `pasteText` pastes text from the clipboard and `fillCellText` enters text into a selection with Control+Return, each parsing the text as Excel does in that case ([A paste and Control+Return](#a-paste-and-controlreturn)).
 
 ```js
-import { createSession, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { createSession } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1, numberFormat: '0.00', meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] })
 console.log(session.setCellText('S', 'A1', '1 234,5').changes)
 // → [
@@ -312,10 +307,9 @@ Excel closes what a typed formula leaves open when Return enters it, or asks fir
 - Text pasted from the clipboard is not closed: a formula that does not parse is pasted as text.
 
 ```js
-import { parseEntry, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
+import { parseEntry } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
-registerLocale(ruRU)
 console.log(parseEntry('=СУММ(1;2', { locale: 'ru-RU' }).input) // → { formula: 'SUM(1,2)' }
 const asked = parseEntry('=(1+2')
 console.log(asked.ok, asked.code, asked.correction) // → false syntax =(1+2)
@@ -409,10 +403,8 @@ Tested on the Mac keyboard in Excel 16 for Mac, en-US and ru-RU: six sets, each 
 `entryText(value, opts)` works in the opposite direction: it returns the text a cell opens with in edit mode, as Excel's formula bar shows the value the cell contains, so that the editor shows what Excel shows and the value parses back from it as edited in place (`parseEntry(text, { cell, inPlace: true })`): a percentage cell's `12.5%` is 0.125 again, while a negative one, `-5%`, becomes the formula `=-5%%`, as Excel's editor reads it. `needsApostrophe(text, opts)` tells whether text typed into the cell would be parsed as something other than itself.
 
 ```js
-import { entryText, needsApostrophe, registerLocale } from 'xlcalc'
-import { ruRU } from 'xlcalc/locales/ru-RU'
-
-registerLocale(ruRU)
+import { entryText, needsApostrophe } from 'xlcalc'
+import 'xlcalc/locales/ru-RU'
 
 console.log(entryText(1234.5), entryText(1e20), entryText(1e21), entryText(0.0000001)) // → 1234.5 100000000000000000000 1E+21 0.0000001
 console.log(entryText(0.125, { numberFormat: '0.0%' }), entryText(45688.75, { numberFormat: 22 }), entryText(0.75, { numberFormat: 'h:mm', locale: 'ru-RU' }))

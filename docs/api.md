@@ -695,9 +695,10 @@ function registerLocale(locale: Locale): void
 ```
 
 Loads a locale for workbooks in that locale ([`BookInput.locale`](#bookinput)) and for its tag wherever a locale is accepted: one
-of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading
-the same object again does nothing; a different object with an already loaded tag throws an [`InputError`](#xlcalc-inputerror). A pool's
-threads load it too.
+of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, which importing loads already, so the
+call is needed only for a locale of a host's own). Loading the same object again does nothing; a different object with
+an already loaded tag throws an [`InputError`](#xlcalc-inputerror), unless a module loaded it on being imported: a host's copy of ru-RU
+replaces the module's. A pool's threads load it too.
 
 ### <a id="xlcalc-registerpivot"></a>`registerPivot`
 
@@ -1119,8 +1120,8 @@ const ruRUFunctionText: Required<Pick<Locale, "argumentWords" | "functionText">>
 function loadLocale(tag: string): Promise<Locale>
 ```
 
-Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` and
-`registerLocale(ruRU)` do: a workbook in that locale is taken from then on, and a pool's threads load it too. A locale
+Loads one of the package's locales by its tag (`'ru-RU'`), as `import { ruRU } from 'xlcalc/locales/ru-RU'` does: a
+workbook in that locale is taken from then on, and a pool's threads load it too. A locale
 loaded already is given back without importing its module again; a tag that is not one of the package's locales is an
 [`InputError`](#xlcalc-inputerror) (tags are compared as written).
 
@@ -1132,7 +1133,7 @@ loaded already is given back without importing its module again; a tag that is n
 const ruRU: Locale
 ```
 
-ru-RU, for [`registerLocale`](#xlcalc-registerlocale), or to pass as is to [`toLocal`](#xlcalc-tolocal) and the other functions that work without a workbook.
+ru-RU, loaded by importing this module, and to pass as is to [`toLocal`](#xlcalc-tolocal) and the other functions that take a locale object.
 
 ## xlcalc/regex
 
@@ -1486,7 +1487,7 @@ interface BookInput {
   styles?: CellStyle[]
   /**
    * The locale the workbook is calculated in: the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; the
-   * package's other locales are loaded with `registerLocale`). It changes calculated values as Excel's regional settings
+   * package's other locales are loaded by importing their modules). It changes calculated values as Excel's regional settings
    * do (text parsed as a number or a date, numbers and booleans converted to text, `TEXT` format codes, currency), but
    * not the formula text: formulas stay invariant, and `toLocal` displays them in a locale. A tag that is not loaded
    * throws an `InputError` that names the module to import.
@@ -5033,7 +5034,7 @@ Options of [`readXlsx`](#xlcalcxlsx-readxlsx).
 ```ts
 interface ReadXlsxOptions {
   /**
-   * The language of the issue messages: a loaded locale's tag (`'ru-RU'` once `registerLocale(ruRU)` has run) or a
+   * The language of the issue messages: a loaded locale's tag (`'ru-RU'` once `xlcalc/locales/ru-RU` is imported) or a
    * locale object (`ruRU`), en-US by default. An issue's code and other fields are the same in every language. A file
    * does not say what language its reader uses, so the host passes the locale the user chose.
    */

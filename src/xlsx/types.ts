@@ -143,7 +143,7 @@ export interface XlsxSnapshot {
 /** Options of `readXlsx`. */
 export interface ReadXlsxOptions {
   /**
-   * The language of the issue messages: a loaded locale's tag (`'ru-RU'` once `registerLocale(ruRU)` has run) or a
+   * The language of the issue messages: a loaded locale's tag (`'ru-RU'` once `xlcalc/locales/ru-RU` is imported) or a
    * locale object (`ruRU`), en-US by default. An issue's code and other fields are the same in every language. A file
    * does not say what language its reader uses, so the host passes the locale the user chose.
    */

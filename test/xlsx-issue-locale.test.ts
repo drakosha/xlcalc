@@ -7,11 +7,11 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { registerLocale } from '../src/index.js'
-import { ruRU } from '../src/locales/ru-RU.js'
 import { readXlsx, writeXlsx, type XlsxIssue } from '../src/xlsx.js'
 import type { XlsxMessage } from '../src/xlsx/issues.js'
 import { issueText } from '../src/xlsx/messages.js'
 import { pack, parts } from './xlsx-fixtures.js'
+import type { Locale } from '../src/index.js'
 
 /** An issue without its message: what is the same in every language. */
 const place = ({ message: _, ...rest }: XlsxIssue) => rest
@@ -110,14 +110,19 @@ const WRITTEN = {
   names: [{ name: 'rate', ref: '1+' }],
 }
 
+/** ru-RU, imported after the refusals of its tag. */
+let ruRU: Locale
+
 describe('the issues of a file read, in the language of opts.locale', () => {
   it('a locale object needs no loading; the tag of a locale not loaded, an unknown option and options that are no object are refused', async () => {
     const data = await LOSSES
-    expect((await readXlsx(data, { locale: ruRU })).issues.find((i) => i.code === 'richText')?.message).toBe('Форматированный текст прочитан как простой')
-    await expect(readXlsx(data, { locale: 'ru-RU' })).rejects.toThrow("opts.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU), or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)")
+    await expect(readXlsx(data, { locale: 'ru-RU' })).rejects.toThrow("opts.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU', or await loadLocale('ru-RU') from 'xlcalc/locales' (loaded: en-US)")
     await expect(readXlsx(data, { lang: 'ru-RU' } as never)).rejects.toThrow('opts: unknown field "lang" (expected locale, limits)')
     await expect(readXlsx(data, 'ru-RU' as never)).rejects.toThrow("opts: expected options such as { locale: 'ru-RU' }, got the string \"ru-RU\"")
     await expect(writeXlsx({ book: WRITTEN }, { locale: 'ru-RU' })).rejects.toThrow('opts.locale: the locale ru-RU is not loaded')
+    // importing the module loads ru-RU; a copy of it, under a tag not loaded, needs no loading
+    ruRU = (await import('../src/locales/ru-RU.js')).ruRU
+    expect((await readXlsx(data, { locale: { ...ruRU, tag: 'xx-YY' } })).issues.find((i) => i.code === 'richText')?.message).toBe('Форматированный текст прочитан как простой')
     registerLocale(ruRU)
   })
 

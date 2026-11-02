@@ -422,7 +422,7 @@ export interface BookInput {
   styles?: CellStyle[]
   /**
    * The locale the workbook is calculated in: the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; the
-   * package's other locales are loaded with `registerLocale`). It changes calculated values as Excel's regional settings
+   * package's other locales are loaded by importing their modules). It changes calculated values as Excel's regional settings
    * do (text parsed as a number or a date, numbers and booleans converted to text, `TEXT` format codes, currency), but
    * not the formula text: formulas stay invariant, and `toLocal` displays them in a locale. A tag that is not loaded
    * throws an `InputError` that names the module to import.

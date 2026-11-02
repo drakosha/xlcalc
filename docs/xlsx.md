@@ -66,11 +66,9 @@ A comment thread, as Excel 365 creates them, is read as a note: its first author
 An issue's `message` is for users, in English by default. The `opts.locale` of either function writes it in another language: the tag of a loaded locale or a locale object, as other functions accept a locale. The code, sheet, cells and name of an issue stay the same, so a program reads them the same way in every language.
 
 ```js
-import { registerLocale } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
 
-registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
 const { data, issues } = await writeXlsx({ book }, { locale: 'ru-RU' })
 console.log(issues[0].code, issues[0].message) // → noCachedValues Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла
@@ -321,7 +319,7 @@ Gridlines and other view settings outside `SheetView` are not reported. A page s
 
 ### The language of the messages
 
-An issue's `message` is in English by default. `readXlsx(data, { locale })` and `writeXlsx(snapshot, { locale })` write it in the language of a locale: the tag of a loaded locale (`'ru-RU'` once `registerLocale(ruRU)` has run) or a locale object (`ruRU`), which needs no loading. A locale object without messages of its own uses those of the loaded locale with its tag, otherwise English. The code, sheet, cells and name are the same in every language, and so are the issues and their order.
+An issue's `message` is in English by default. `readXlsx(data, { locale })` and `writeXlsx(snapshot, { locale })` write it in the language of a locale: the tag of a loaded locale (`'ru-RU'` once `xlcalc/locales/ru-RU` is imported) or a locale object (`ruRU`), which needs no loading. A locale object without messages of its own uses those of the loaded locale with its tag, otherwise English. The code, sheet, cells and name are the same in every language, and so are the issues and their order.
 
 | code | en-US | ru-RU |
 |---|---|---|
