@@ -10,7 +10,6 @@
  * cells of another format already (does the item's code depend on it). Both locales run the same cases.
  */
 import type { CellInput } from '../../../src/contract.js'
-import { ruRU } from '../../../src/locales/ru-RU.js'
 import { collector, EN_TYPED, type UiCase } from './cases.js'
 
 /** A case's cells at most: each takes a selection and a read of the box, under the step's time for a case. */
@@ -55,8 +54,15 @@ const TIME = [
 const SPECIAL = ['00000', '00000-0000', '[<=9999999]###-####;(###) ###-####', '000-00-0000', '000000']
 const OTHER = ['[Color10]0.00', '[>=100]0.00;[Red]0.00', '[<0]"neg";"pos"', '0.00;[Red]-0.00;"zero"', '[Red][<0]0.00;0.00', '[>100][Red]0;0', '"text"', '0" pcs"', '"$"0.00']
 
-/** ru-RU's codes of the built-in formats that are not en-US's, once each. */
-const RU_CODES = [...new Set(Object.values(ruRU.regional!.builtin))].filter((code) => !EN_TYPED.includes(code))
+/**
+ * ru-RU's codes of the built-in formats that were not en-US's when the set ran, once each: the short date with dots,
+ * as the table wrote it then (it gives `dd/mm/yyyy` since, the code Excel saves as 14), the fractions en-US's.
+ */
+const RU_CODES = [
+  '#,##0 "₽";-#,##0 "₽"', '#,##0 "₽";[Red]-#,##0 "₽"', '#,##0.00 "₽";-#,##0.00 "₽"', '#,##0.00 "₽";[Red]-#,##0.00 "₽"', 'dd.mm.yyyy', 'dd.mmm.yy', 'dd.mmm',
+  'mmm.yy', 'dd.mm.yyyy h:mm', '#,##0;-#,##0', '#,##0;[Red]-#,##0', '#,##0.00;-#,##0.00', '#,##0.00;[Red]-#,##0.00', '_-* #,##0_-;-* #,##0_-;_-* "-"_-;_-@_-',
+  '_-* #,##0 "₽"_-;-* #,##0 "₽"_-;_-* "-" "₽"_-;_-@_-', '_-* #,##0.00_-;-* #,##0.00_-;_-* "-"??_-;_-@_-', '_-* #,##0.00 "₽"_-;-* #,##0.00 "₽"_-;_-* "-"?? "₽"_-;_-@_-',
+]
 
 /** The variants, each once and none a built-in format's en-US code (the cases by number and code have those). */
 const VARIANTS = [...new Set([...NUMBER, ...PERCENT, ...FRACTION, ...SCIENTIFIC, ...TEXT, ...CURRENCY, ...ACCOUNTING, ...DATE, ...TIME, ...SPECIAL, ...OTHER])].filter((code) => !EN_TYPED.includes(code))

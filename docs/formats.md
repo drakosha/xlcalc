@@ -44,7 +44,7 @@ A format can also be the number of one of Excel's built-in formats, from 0 to 49
 import { builtinFormatCode } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 
-console.log(builtinFormatCode(14), builtinFormatCode(14, ruRU), builtinFormatCode(7, ruRU)) // → m/d/yyyy dd.mm.yyyy #,##0.00 "₽";-#,##0.00 "₽"
+console.log(builtinFormatCode(14), builtinFormatCode(14, ruRU), builtinFormatCode(7, ruRU)) // → m/d/yyyy dd/mm/yyyy #,##0.00 "₽";-#,##0.00 "₽"
 console.log(builtinFormatCode(3), builtinFormatCode(50), builtinFormatCode(164) !== undefined) // → #,##0 undefined false
 ```
 
@@ -130,7 +130,7 @@ The rules follow Excel's, as verified in Excel for Mac and Windows: a formula is
 - `compute(book, { display })` and `createSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or color changed while their value did not: a new `numberFormat` through `setCells`, a width, a row or column format or a merged area through `setLayout`, or a moved cell through `editStructure`.
 - `display: false` returns values only and spends nothing on formatting.
 - `displayValue(value, { numberFormat, locale, width, dateSystem })` formats a single value without a workbook, for example a cell being edited. It accepts a value as results give it: a number, text, a boolean, `null` or `{ error }`. Without `width`, the width is unlimited: General keeps the digits it displays in a wide column, no number turns into `#`, and a fill (`*x`) has no column to fill and is dropped, as in `TEXT`. With a width, it returns what a cell of that column displays; Excel's default column is `width: 8.83203125`.
-- `builtinFormatCode(id, locale)` returns the code a built-in format stands for in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd.mm.yyyy`), and undefined for a number that is not a built-in format: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
+- `builtinFormatCode(id, locale)` returns the code a built-in format stands for in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd/mm/yyyy`, which displays `31.01.2025`), and undefined for a number that is not a built-in format: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
 - `numberFormatCategory(format, locale)` returns the category of a format as the ribbon's Number Format box shows it, and `numberFormatChoices(locale)` returns the items of that box's list ([The ribbon's Number Format box](#the-ribbons-number-format-box)); `accountingFormats(locale)` returns the Accounting Number Format button's left part and menu ([Increase Decimal, Decrease Decimal, Comma Style and Accounting](#increase-decimal-decrease-decimal-comma-style-and-accounting)).
 - `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` produce the widths Excel gives columns with AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)); `fitRows(book, result, sheet, rows)` and `{ sheet, rows, fit: true }` produce the heights of rows ([Fitting rows](#fitting-rows)).
 
@@ -215,19 +215,19 @@ An xlsx file stores some formats by number only, without a code. A format here c
 | 0, 23 to 26 | `General` | `General` |
 | 1 to 4 | `0`, `0.00`, `#,##0`, `#,##0.00` | the same |
 | 5 to 8 | `"$"#,##0_);("$"#,##0)` and similar | `#,##0 "₽";-#,##0 "₽"` and similar |
-| 9 to 13 | `0%`, `0.00%`, `0.00E+00`, `# ?/?`, `# ??/??` | the same |
-| 14, 27 to 31, 36 | `m/d/yyyy` | `dd.mm.yyyy` |
+| 9 to 13 | `0%`, `0.00%`, `0.00E+00`, `# ?/?`, `# ??/??` | the same, the fractions' space quoted: `#" "?/?`, `#" "??/??` |
+| 14, 27 to 31, 36 | `m/d/yyyy` | `dd/mm/yyyy` |
 | 15, 16, 17 | `d-mmm-yy`, `d-mmm`, `mmm-yy` | `dd.mmm.yy`, `dd.mmm`, `mmm.yy` |
 | 18, 19 | `h:mm AM/PM`, `h:mm:ss AM/PM` | the same |
 | 20, 21, 32 to 35 | `h:mm`, `h:mm:ss` | the same |
-| 22 | `m/d/yyyy h:mm` | `dd.mm.yyyy h:mm` |
+| 22 | `m/d/yyyy h:mm` | `dd/mm/yyyy h:mm` |
 | 37 to 40 | `#,##0_);(#,##0)` and similar | `#,##0;-#,##0` and similar |
 | 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
 | 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
 
 In en-US, 14 displays 2025-01-31 as `1/31/2025`, and 38 displays −1234.5 as `(1,235)` in red. In ru-RU they display `31.01.2025` and `-1 235`, and 20 displays 6 in the morning as `6:00`. A result keeps the number in `numberFormat`. `src/numfmt/builtin.ts` has the en-US codes, and the ru-RU locale file (`src/locales/ru-RU.ts`) the ru-RU ones; `builtinFormatCode` returns them, and a value is displayed the same with the code as with the number in both locales (`test/builtin-format-code.test.ts`).
 
-The codes are those Excel for Windows displays. Excel for Mac displays the en-US short date as `m/d/yy` (`1/31/25`) and the ru-RU times with a leading zero (`06:00`); the engine follows Windows there.
+The codes are those Excel for Windows keeps in a file for the built-ins and takes back as them: en-US's money with the dollar sign quoted, ru-RU's short date with `/`, the locale's separator, and its fractions with the space quoted. Written otherwise, as `dd.mm.yyyy` or `# ?/?` in ru-RU, a code displays the same but is a format of the workbook's own, Custom in the ribbon's box. Excel for Mac displays the en-US short date as `m/d/yy` (`1/31/25`) and the ru-RU times with a leading zero (`06:00`); the engine follows Windows there.
 
 A format written as a code is always displayed as written, including the order of its parts: `numberFormat: 'm/d/yy'` displays `1.31.25` in ru-RU, since an unquoted `/` is the locale's date separator ([Dates and times](#dates-and-times)), and `m\/d\/yy` displays `1/31/25`.
 

@@ -1,8 +1,8 @@
 /**
- * The code of one of Excel's built-in number formats as Excel shows it in a locale (`builtinFormatCode`): a cell's
- * `numberFormat: 14` is the short date, `m/d/yyyy` in en-US and `dd.mm.yyyy` in ru-RU. The codes are the tables the engine
- * shows the formats by (`numfmt/builtin.ts`, a locale's `builtin`, through `builtinIn`), in en-US syntax as a cell's
- * `numberFormat` takes a code.
+ * The code of one of Excel's built-in number formats in a locale (`builtinFormatCode`): a cell's `numberFormat: 14` is
+ * the short date, `m/d/yyyy` in en-US and `dd/mm/yyyy` in ru-RU (displayed `31.01.2025`). The codes are the tables the
+ * engine shows the formats by (`numfmt/builtin.ts`, a locale's `builtin`, through `builtinIn`), in en-US syntax as a
+ * file stores a code and a cell's `numberFormat` takes it, the codes Excel saves as those built-ins.
  */
 import { InputError, what } from './input-error.js'
 import { optionalLocale } from './locale/load.js'

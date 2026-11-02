@@ -1,7 +1,7 @@
 /**
  * A number format as a code beside the format (`numberFormatCode`): on a cell of `getCells` and `getCell` with a format of
  * its own, and on a change whose format changed to one (`setCells`, `patchCells`, `setCellText`, an undo), a built-in
- * format by the code of the book's locale as the window gives it (14 is `dd.mm.yyyy` in ru-RU, `m/d/yyyy` in en-US), a
+ * format by the code of the book's locale as the window gives it (14 is `dd/mm/yyyy` in ru-RU, shown `ДД.ММ.ГГГГ`, `m/d/yyyy` in en-US), a
  * code as it is; none for a format removed or one the cell shows from its line, without the display too. In a synchronous
  * session, in the same thread and in a thread, with closures and eval.
  */
@@ -22,7 +22,7 @@ describe.each(['closures', 'eval'] as const)("a number format's code, execution 
   describe.each(KINDS)('%s', (kind) => {
     it("on a cell's own format, as the window gives it, in the book's locale", async () => {
       const open = await opener(kind)
-      for (const [locale, date] of [['ru-RU', 'dd.mm.yyyy'], [undefined, 'm/d/yyyy']] as const) {
+      for (const [locale, date] of [['ru-RU', 'dd/mm/yyyy'], [undefined, 'm/d/yyyy']] as const) {
         const s = await open(book(locale), { clock: CLOCK, execution })
         const cells = await s.getCells('S', 'A1:D1')
         expect([cells.A1.numberFormatCode, cells.B1.numberFormatCode, cells.C1.numberFormatCode, cells.D1.numberFormatCode]).toEqual([date, '0.0%', undefined, undefined])
@@ -43,10 +43,10 @@ describe.each(['closures', 'eval'] as const)("a number format's code, execution 
         const patched = await s.patchCells([{ sheet: 'S', cell: 'A1', set: { numberFormat: null } }])
         expect(patched.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['A1', null, undefined]])
         const back = await s.undo()
-        expect(back!.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['A1', 14, 'dd.mm.yyyy']])
+        expect(back!.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['A1', 14, 'dd/mm/yyyy']])
         // the date widens column A: A1, a date too, shows it instead of ###; its format did not change
         const typed = await s.setCellText('S', 'A3', '15.03.2026')
-        expect(typed.ok && typed.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['A3', 14, 'dd.mm.yyyy'], ...(display ? [['A1', undefined, undefined]] : [])])
+        expect(typed.ok && typed.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['A3', 14, 'dd/mm/yyyy'], ...(display ? [['A1', undefined, undefined]] : [])])
         // a value typed into a cell that shows its column's format takes no format of its own, and no code
         const line = await s.setCellText('S', 'D2', '5')
         expect(line.ok && line.changes.map((c) => [c.cell, c.numberFormat, c.numberFormatCode])).toEqual([['D2', undefined, undefined]])

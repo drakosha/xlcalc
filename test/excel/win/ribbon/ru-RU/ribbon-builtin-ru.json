@@ -1,0 +1,216 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "box": "Числовой формат",
+  "date": "2026-11-02",
+  "seconds": 37.3
+ },
+ "cases": [
+  {
+   "id": "builtin-1",
+   "cells": {
+    "B1": {
+     "value": 45688.75,
+     "numberFormat": 12
+    },
+    "B2": {
+     "value": 45688.75,
+     "numberFormat": 13
+    },
+    "B3": {
+     "value": 45688.75,
+     "numberFormat": 14
+    },
+    "B4": {
+     "value": 45688.75,
+     "numberFormat": 22
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4"
+    ]
+   }
+  },
+  {
+   "id": "code-1",
+   "cells": {
+    "B1": {
+     "value": 45688.75,
+     "numberFormat": "dd/mm/yyyy"
+    },
+    "B2": {
+     "value": 45688.75,
+     "numberFormat": "#\" \"?/?"
+    },
+    "B3": {
+     "value": 45688.75,
+     "numberFormat": "#\" \"??/??"
+    },
+    "B4": {
+     "value": 45688.75,
+     "numberFormat": "dd/mm/yyyy h:mm"
+    },
+    "B5": {
+     "value": 45688.75,
+     "numberFormat": "dd.mm.yyyy"
+    },
+    "B6": {
+     "value": 45688.75,
+     "numberFormat": "# ?/?"
+    },
+    "B7": {
+     "value": 45688.75,
+     "numberFormat": "# ??/??"
+    },
+    "B8": {
+     "value": 45688.75,
+     "numberFormat": "dd.mm.yyyy h:mm"
+    },
+    "B9": {
+     "value": 45688.75,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B10": {
+     "value": 45688.75,
+     "numberFormat": "m/d/yyyy h:mm"
+    },
+    "B11": {
+     "value": 45688.75,
+     "numberFormat": "dd/mm/yy"
+    },
+    "B12": {
+     "value": 45688.75,
+     "numberFormat": "d/m/yyyy"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12"
+   ]
+  }
+ ],
+ "answers": {
+  "builtin-1": {
+   "B1": {
+    "box": "Дробный",
+    "code": "# ?/?",
+    "local": "#\" \"?/?"
+   },
+   "B2": {
+    "box": "Дробный",
+    "code": "# ??/??",
+    "local": "#\" \"??/??"
+   },
+   "B3": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy h:mm",
+    "local": "ДД.ММ.ГГГГ ч:мм"
+   }
+  },
+  "code-1": {
+   "B1": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B2": {
+    "box": "Дробный",
+    "code": "# ?/?",
+    "local": "#\" \"?/?"
+   },
+   "B3": {
+    "box": "Дробный",
+    "code": "# ??/??",
+    "local": "#\" \"??/??"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy h:mm",
+    "local": "ДД.ММ.ГГГГ ч:мм"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yyyy",
+    "local": "ДД\\.ММ\\.ГГГГ"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "# ?/?",
+    "local": "#\\ ?/?"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "# ??/??",
+    "local": "#\\ ??/??"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yyyy h:mm",
+    "local": "ДД\\.ММ\\.ГГГГ ч:мм"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy h:mm",
+    "local": "М.Д.ГГГГ ч:мм"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "dd/mm/yy",
+    "local": "ДД.ММ.ГГ"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "d/m/yyyy",
+    "local": "Д.М.ГГГГ"
+   }
+  }
+ }
+}

@@ -84,7 +84,7 @@ describe('without ru-RU loaded', () => {
     expect(displayValue(0.4567, { numberFormat: '0.0%', locale: ruRU })).toEqual({ text: '45,7%' })
     expect(displayValue(46096, { numberFormat: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
     expect(entryWidth(1234567890, { locale: ruRU })).toBe(11.1640625)
-    expect(builtinFormatCode(14, ruRU)).toBe('dd.mm.yyyy')
+    expect(builtinFormatCode(14, ruRU)).toBe('dd/mm/yyyy')
     expect([errorText('DIV0', ruRU), entryText(1.5, { locale: ruRU }), needsApostrophe('1,5', { locale: ruRU })]).toEqual(['#ДЕЛ/0!', '1,5', true])
     expect(scanReferences('=СУММ(B2:B9;C1)', { locale: ruRU }).map((r) => r.text)).toEqual(['B2:B9', 'C1'])
     expect(validateSheetName('Итоги/2025', { locale: ruRU })).toMatchObject({ ok: false, message: 'Имя листа не может содержать «/» (Excel запрещает : \\ / ? * [ ])' })
