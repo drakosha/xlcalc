@@ -8,7 +8,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Locale } from '../locale/types.js'
-import { BUILTIN_MONEY, builtinIn, EN_BUILTIN, enCode, EN_CODES, isBuiltin } from '../numfmt.js'
+import { BUILTIN_MONEY, builtinIn, EN_BUILTIN, enCode, EN_CODES, isBuiltin, REGIONAL } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
 
@@ -39,13 +39,14 @@ const familyOf = (form: Form): Family | undefined => (form === 'plain' || form =
 /**
  * The number of the built-in format a cell's format is in a locale: its number, or the first whose code it is in en-US
  * and in the locale alike (`h:mm` is 20 in both, `m/d/yyyy` is 14 in en-US only, as Excel ru-RU keeps `dd.mm.yyyy` a
- * format of the book's own); undefined for a format of the book's own.
+ * format of the book's own), or in en-US for one a file stores by number in every locale (`# ?/?` is 12, which ru-RU
+ * writes `#" "?/?`); undefined for a format of the book's own.
  */
 export function builtinOf(format: NumberFormat, locale: Locale): number | undefined {
   if (typeof format === 'number') return format
   if (format.toLowerCase() === 'general') return 0
   const code = builtinIn(locale)
-  for (let id = 0; isBuiltin(id); id++) if (!BUILTIN_MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
+  for (let id = 0; isBuiltin(id); id++) if (!BUILTIN_MONEY.has(id) && EN_BUILTIN[id] === format && (code(id) === format || !REGIONAL.has(id))) return id
   return undefined
 }
 

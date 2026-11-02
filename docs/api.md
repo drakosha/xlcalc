@@ -2234,7 +2234,7 @@ interface CellView extends CellResult {
   appearance?: ConditionalAppearance
   /** On the top-left cell of a legacy array formula, its range (`CellInput.array`); `spill` is also that range. */
   array?: string
-  /** `numberFormat` as a format code, as `ViewportCell.numberFormat` returns it: a built-in format as its code in the workbook's locale (14 is `dd.mm.yyyy` in ru-RU). */
+  /** `numberFormat` as a format code, as `ViewportCell.numberFormat` returns it: a built-in format as its code in the workbook's locale (14 is `dd/mm/yyyy` in ru-RU). */
   numberFormatCode?: string
 }
 ```
@@ -3953,7 +3953,7 @@ interface NamesContext {
 
 A number format: a format code as stored in an xlsx file, or the number of one of Excel's built-in formats, 0 to
 49, which is how a file stores the format of a cell that has no code of its own (`numFmtId`). Excel displays some
-built-in formats according to the locale: 14 is the locale's short date (`m/d/yyyy` in en-US, `dd.mm.yyyy` in
+built-in formats according to the locale: 14 is the locale's short date (`m/d/yyyy` in en-US, `dd/mm/yyyy` in
 ru-RU), 5 to 8 and 37 to 44 its currency and number formats, 15 to 22 its other date and time formats. A format code
 is displayed as written, regardless of the locale.
 
@@ -6674,7 +6674,7 @@ interface ViewportCell extends Partial<CellDisplay> {
    * be a style of the cell's own (`Session.patchCells`).
    */
   effectiveStyle?: number
-  /** The number format the cell is displayed in, as a format code: its own, or else its row's, or else its column's; a built-in format as its code in the workbook's locale (14 is `dd.mm.yyyy` in ru-RU). */
+  /** The number format the cell is displayed in, as a format code: its own, or else its row's, or else its column's; a built-in format as its code in the workbook's locale (14 is `dd/mm/yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
   numberFormatSource?: 'cell' | 'row' | 'column'

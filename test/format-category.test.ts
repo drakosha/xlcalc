@@ -102,7 +102,7 @@ describe('numberFormatChoices', () => {
     ])
     const ru = numberFormatChoices('ru-RU')
     expect(ru.map((c) => c.name)).toEqual(['Общий', 'Числовой', 'Денежный', 'Финансовый', 'Краткий формат даты', 'Длинный формат даты', 'Время', 'Процентный', 'Дробный', 'Экспоненциальный', 'Текстовый'])
-    expect([ru[2].format, ru[3].code, ru[4].code]).toEqual(['#,##0.00\\ "₽"', '_-* #,##0.00 "₽"_-;-* #,##0.00 "₽"_-;_-* "-"?? "₽"_-;_-@_-', 'dd.mm.yyyy'])
+    expect([ru[2].format, ru[3].code, ru[4].code]).toEqual(['#,##0.00\\ "₽"', '_-* #,##0.00 "₽"_-;-* #,##0.00 "₽"_-;_-* "-"?? "₽"_-;_-@_-', 'dd/mm/yyyy'])
   })
 
   it("each item's format is in the box's category of the item, in en-US and ru-RU", () => {

@@ -629,10 +629,17 @@ export const ruRU: Locale = {
   messages: MESSAGES,
 }
 
-/** ru-RU's codes of built-in formats, as en-US codes: the ruble after the amount, a minus for negatives, hours without a leading zero (Windows's `ч:мм`). */
+/**
+ * ru-RU's codes of built-in formats, as en-US codes in a file's syntax: the ruble after the amount, a minus for
+ * negatives, hours without a leading zero (Windows's `ч:мм`), the short date with `/` for the locale's separator and a
+ * fraction's space quoted, the codes Excel for Windows saves as these built-ins (`ДД.ММ.ГГГГ`, `# ?/?`); written with
+ * dots or a bare space they are formats of a book's own (`test/excel/win/ribbon/ru-RU/ribbon-builtin-ru.json`).
+ */
 function builtinRu(): Record<number, string> {
-  const [date, time, rub] = ['dd.mm.yyyy', 'h:mm:ss', '"₽"']
+  const [date, time, rub] = ['dd/mm/yyyy', 'h:mm:ss', '"₽"']
   const out: Record<number, string> = {
+    12: '#" "?/?',
+    13: '#" "??/??',
     5: `#,##0 ${rub};-#,##0 ${rub}`,
     6: `#,##0 ${rub};[Red]-#,##0 ${rub}`,
     7: `#,##0.00 ${rub};-#,##0.00 ${rub}`,

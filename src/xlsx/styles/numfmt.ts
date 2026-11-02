@@ -7,16 +7,12 @@
  * what `numberFormat` says in every locale.
  */
 import { EN_BUILTIN, isBuiltin } from '../../numfmt/builtin.js'
+import { REGIONAL } from '../../numfmt/regional.js'
 
 /** The codes of the built-in formats 1 to 58 in en-US: Excel for Windows's to 49 (`numfmt/builtin.ts`), Excel for Mac's from 50. */
 export const BUILTIN: Readonly<Record<number, string>> = Object.fromEntries(
   Array.from({ length: 58 }, (_, i) => i + 1).map((id) => [id, isBuiltin(id) ? EN_BUILTIN[id] : 'm/d/yy']),
 )
-
-const span = (lo: number, hi: number) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i)
-
-/** The built-in formats Excel shows by the regional settings: money, dates and times, negatives in parentheses. */
-const REGIONAL: ReadonlySet<number> = new Set([...span(5, 8), ...span(14, 44), ...span(50, 58)])
 
 /** Built-in ids by code, for the formats a file can store by number in every locale. */
 export const BUILTIN_ID: ReadonlyMap<string, number> = new Map(

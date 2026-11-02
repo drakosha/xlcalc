@@ -250,7 +250,7 @@ The formula text: the tag, the separators, the words for TRUE and FALSE, error l
 | `dateSeparator` | what `/` in a cell's date format displays | `.`: `dd/mm/yyyy` displays `31.01.2025` |
 | `lcid`, `longDate`, `longTime`, `longMonths` | the locale code (`[$-419]`), and the long date and time (`[$-F800]`, `[$-F400]`) | `пятница, 31 января 2025 г.` |
 | `collation` | the `Intl.Collator` tag that orders text | `en-US`: Latin before Cyrillic, as Excel for Windows sorts |
-| `builtin` | the built-in formats the locale displays its own way, as en-US codes | 14 is `dd.mm.yyyy` |
+| `builtin` | the built-in formats the locale displays its own way, as en-US codes | 14 is `dd/mm/yyyy` (displayed `31.01.2025`) |
 | `codePage` | the Windows code page of CHAR and CODE: the name of its published table and its characters | `windows-1251` |
 | `columnWord` | the word in a new table column's name | `Столбец`, which gives `Столбец1` |
 | `formats` (optional) | the names in the ribbon's Number Format box and its list's items, the code its Currency item writes, and the Accounting Number Format menu's currencies (`accounting`: ISO code, symbol, form, name); en-US's if omitted | `Числовой`, `(все форматы)`, `#,##0.00\ "₽"`, `{ currency: 'RUB', symbol: '[$₽-419]', form: 'after', name: '₽ русский' }` |
