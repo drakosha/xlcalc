@@ -36,10 +36,10 @@ export const withFormats = (shown: Shown, f: (x: NumberFormat) => NumberFormat):
   )
 
 /**
- * A book as Excel ru-RU saves it, which is not the paste: a code that shows as one of its built-in formats saved as
- * that format (`dd/mm/yyyy`, shown `dd.mm.yyyy`, as format 14); both sides by the code ru-RU shows, a date's `/` as `.`.
+ * A book as Excel ru-RU saves it, which is not the paste: a code that is one of its built-in formats saved as that
+ * format (`dd/mm/yyyy` as format 14); both sides by the code as a file keeps it, as `builtinFormatCode` gives it.
  */
-export const asRu = (shown: Shown): Shown => withFormats(shown, (x) => (typeof x === 'number' ? builtinIn('ru-RU')(x) : /[dmy]/i.test(x) ? x.replaceAll('/', '.') : x))
+export const asRu = (shown: Shown): Shown => withFormats(shown, (x) => (typeof x === 'number' ? builtinIn('ru-RU')(x) : x))
 
 /** The paste sets with answers of Excel ru-RU. */
 export const PASTE_RU_SETS = ['ru-ops']
