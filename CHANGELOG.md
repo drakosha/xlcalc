@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.77.0 (2026-11-02)
+
+Changed:
+
+- Importing a package's locale module loads its locale: `import 'xlcalc/locales/ru-RU'` (or `import { ruRU } from …`) is enough for books in ru-RU and for the tag `'ru-RU'` in every call that takes a locale, in the copy of the package the module is bundled with, so a host's main bundle and a chunk of ru-RU that share `xlcalc/text` take the tag once the chunk has come. `registerLocale` is for a host's own locale: another tag, or a copy of ru-RU (with messages of its own), which replaces the module's. `registerLocale(ruRU)` after the import does nothing, as before. The module is listed in `sideEffects`, so a bundler keeps a bare import. The hint of a locale not loaded names the import alone.
+- The size limits of `xlcalc/text` and `xlcalc/xlsx/keep` are 70 KB and 410 KB minified (they were 65 and 400).
+
 ## 0.76.1 (2026-11-02)
 
 Fixed:
