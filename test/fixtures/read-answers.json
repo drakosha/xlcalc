@@ -10113,7 +10113,7 @@
    ],
    [
     "getCell A3",
-    "{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "getCell B3",
@@ -10593,11 +10593,11 @@
    ],
    [
     "getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"A3\":{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"A3\":{\"value\":46089,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
    ],
    [
     "A3 cleared, D2 and Z5 written: readCells [\"A1:L12\"] undefined",
@@ -10825,7 +10825,7 @@
    ],
    [
     "A3 cleared, D2 and Z5 written: getCell A3",
-    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "A3 cleared, D2 and Z5 written: getCell B3",
@@ -11305,11 +11305,11 @@
    ],
    [
     "A3 cleared, D2 and Z5 written: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "A3 cleared, D2 and Z5 written: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"A2\":{\"value\":1235.5,\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
    ],
    [
     "A2:A4 contents cleared: readCells [\"A1:L12\"] undefined",
@@ -11533,7 +11533,7 @@
    ],
    [
     "A2:A4 contents cleared: getCell A3",
-    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "A2:A4 contents cleared: getCell B3",
@@ -12013,11 +12013,11 @@
    ],
    [
     "A2:A4 contents cleared: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "A2:A4 contents cleared: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
    ],
    [
     "a look written on I1: readCells [\"A1:L12\"] undefined",
@@ -12245,7 +12245,7 @@
    ],
    [
     "a look written on I1: getCell A3",
-    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "a look written on I1: getCell B3",
@@ -12725,11 +12725,11 @@
    ],
    [
     "a look written on I1: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "a look written on I1: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
    ],
    [
     "two rows inserted before row 2: readCells [\"A1:L12\"] undefined",
@@ -13097,7 +13097,7 @@
    ],
    [
     "two rows inserted before row 2: getCell A5",
-    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "two rows inserted before row 2: getCell B5",
@@ -13481,7 +13481,7 @@
    ],
    [
     "two rows inserted before row 2: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"A2\":{\"value\":null,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I2\":{\"value\":null,\"style\":0},\"A3\":{\"value\":null,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I3\":{\"value\":null,\"style\":0},\"B4\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D4\":{\"value\":7},\"E4\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A5\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B5\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E5\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A6\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":1,\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"A2\":{\"value\":null,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"C2\":{\"value\":3,\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I2\":{\"value\":null,\"style\":0},\"A3\":{\"value\":null,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I3\":{\"value\":null,\"style\":0},\"B4\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D4\":{\"value\":7},\"E4\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A5\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B5\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E5\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A6\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "two rows inserted before row 2: getCells [A1:C3, B2:D4]",
@@ -13713,7 +13713,7 @@
    ],
    [
     "undone: getCell A3",
-    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "undone: getCell B3",
@@ -14193,11 +14193,11 @@
    ],
    [
     "undone: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"style\":0},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"E2\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "undone: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7},\"A3\":{\"value\":null,\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"formula\":\"A1/0\"}}"
    ]
   ],
   "true": [
@@ -14435,7 +14435,7 @@
    ],
    [
     "getCell A3",
-    "{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "getCell B3",
@@ -14915,11 +14915,11 @@
    ],
    [
     "getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"text\":\"2\",\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"text\":\"50%\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"text\":\"2\",\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"text\":\"50%\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"A3\":{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"A3\":{\"value\":46089,\"text\":\"#########\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
    ],
    [
     "A3 cleared, D2 and Z5 written: readCells [\"A1:L12\"] undefined",
@@ -15147,7 +15147,7 @@
    ],
    [
     "A3 cleared, D2 and Z5 written: getCell A3",
-    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "A3 cleared, D2 and Z5 written: getCell B3",
@@ -15627,11 +15627,11 @@
    ],
    [
     "A3 cleared, D2 and Z5 written: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"text\":\"50%\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":0.5,\"text\":\"50%\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "A3 cleared, D2 and Z5 written: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"A2\":{\"value\":1235.5,\"text\":\"1235,5\",\"formula\":\"SUM(A1,1)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
    ],
    [
     "A2:A4 contents cleared: readCells [\"A1:L12\"] undefined",
@@ -15855,7 +15855,7 @@
    ],
    [
     "A2:A4 contents cleared: getCell A3",
-    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "A2:A4 contents cleared: getCell B3",
@@ -16335,11 +16335,11 @@
    ],
    [
     "A2:A4 contents cleared: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "A2:A4 contents cleared: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
    ],
    [
     "a look written on I1: readCells [\"A1:L12\"] undefined",
@@ -16567,7 +16567,7 @@
    ],
    [
     "a look written on I1: getCell A3",
-    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "a look written on I1: getCell B3",
@@ -17047,11 +17047,11 @@
    ],
    [
     "a look written on I1: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "a look written on I1: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
    ],
    [
     "two rows inserted before row 2: readCells [\"A1:L12\"] undefined",
@@ -17419,7 +17419,7 @@
    ],
    [
     "two rows inserted before row 2: getCell A5",
-    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "two rows inserted before row 2: getCell B5",
@@ -17803,7 +17803,7 @@
    ],
    [
     "two rows inserted before row 2: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"text\":\"2\",\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"A2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I2\":{\"value\":null,\"text\":\"\",\"style\":0},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I3\":{\"value\":null,\"text\":\"\",\"style\":0},\"B4\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D4\":{\"value\":7,\"text\":\"7\"},\"E4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A5\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B5\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E5\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A6\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":1,\"text\":\"1\",\"formula\":\"SEQUENCE(2,2)\",\"spill\":\"C1:D2\"},\"D1\":{\"value\":2,\"text\":\"2\",\"spillOf\":\"C1\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"A2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"C2\":{\"value\":3,\"text\":\"3\",\"spillOf\":\"C1\"},\"D2\":{\"value\":4,\"text\":\"4\",\"spillOf\":\"C1\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I2\":{\"value\":null,\"text\":\"\",\"style\":0},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I3\":{\"value\":null,\"text\":\"\",\"style\":0},\"B4\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D4\":{\"value\":7,\"text\":\"7\"},\"E4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A5\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B5\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E5\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A6\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "two rows inserted before row 2: getCells [A1:C3, B2:D4]",
@@ -18035,7 +18035,7 @@
    ],
    [
     "undone: getCell A3",
-    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"}"
+    "{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"}"
    ],
    [
     "undone: getCell B3",
@@ -18515,11 +18515,11 @@
    ],
    [
     "undone: getCells A1:L12",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"E1\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"I1\":{\"value\":null,\"text\":\"\",\"style\":0},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"E2\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"},\"E3\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0.0\",\"numberFormatCode\":\"0.0\"},\"A4\":{\"value\":null,\"text\":\"\",\"numberFormat\":\"0%\",\"numberFormatCode\":\"0%\"}}"
    ],
    [
     "undone: getCells [A1:C3, B2:D4]",
-    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd.mm.yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
+    "{\"A1\":{\"value\":1234.5,\"text\":\"1 234,50\",\"numberFormat\":\"#,##0.00\",\"numberFormatCode\":\"#,##0.00\"},\"B1\":{\"value\":\"текст\",\"text\":\"текст\"},\"C1\":{\"value\":{\"error\":\"SPILL\"},\"text\":\"#SPILL!\",\"formula\":\"SEQUENCE(2,2)\"},\"B2\":{\"value\":true,\"text\":\"ИСТИНА\",\"formula\":\"IF(A1>1,TRUE,FALSE)\"},\"D2\":{\"value\":7,\"text\":\"7\"},\"A3\":{\"value\":null,\"text\":\"\",\"numberFormat\":14,\"numberFormatCode\":\"dd/mm/yyyy\"},\"B3\":{\"value\":{\"error\":\"DIV0\"},\"text\":\"#ДЕЛ/0!\",\"formula\":\"A1/0\"}}"
    ]
   ]
  }
