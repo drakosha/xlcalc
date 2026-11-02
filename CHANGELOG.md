@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.76.0 (2026-11-02)
+
+Changed:
+
+- Breaking: `builtinFormatCode` in ru-RU gives the short date and the fractions as Excel keeps them in a file: 14, 27 to 31 and 36 `dd/mm/yyyy` (was `dd.mm.yyyy`), 22 `dd/mm/yyyy h:mm` (was `dd.mm.yyyy h:mm`), 12 `#" "?/?` and 13 `#" "??/??` (were `# ?/?` and `# ??/??`). Excel saves these codes as the built-in formats; the old ones were formats of a workbook's own, `(все форматы)` on the ribbon. The display is the same (`31.01.2025`). `getViewport`, `numberFormatChoices` (Short Date, Fraction) and the session's `numberFormatCode` give the new codes, and `numberFormatCategory` gives every built-in format's code the category of its number, in en-US and ru-RU.
+
 ## 0.75.0 (2026-11-01)
 
 Added:
