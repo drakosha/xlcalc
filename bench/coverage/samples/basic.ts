@@ -25,7 +25,7 @@ export function buildSampleCases(): SampleCase[] {
     { id: 'text-digits', value: '123' },
     { id: 'long-text', value: 'A text longer than the list is wide, to see whether a sample is cut' },
     { id: 'true', value: true },
-    { id: 'error', value: { error: 'DIV0' } },
+    { id: 'error', value: { error: 'DIV0' }, formula: '1/0' },
     { id: 'empty', value: null },
     { id: 'empty-formatted', value: null, numberFormat: '0.00' },
     { id: 'decimals-3', value: 1234.5, numberFormat: '0.000' },

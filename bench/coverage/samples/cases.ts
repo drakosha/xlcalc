@@ -4,12 +4,16 @@
  * its own (`width`, the default without one), with its value and number format, in a book of the case's date system;
  * a set lists its cases (`bench/coverage/samples/<set>.ts`).
  */
-import type { BookInput, CellValue, DateSystem, NumberFormat } from '../../../src/contract.js'
+import type { BookInput, CellValue, NumberFormat } from '../../../src/contract.js'
 import { colLetters } from '../../../src/a1.js'
+
+type DateSystem = NonNullable<BookInput['dateSystem']>
 
 export interface SampleCase {
   id: string
+  /** The cell's value; an error comes from `formula`. */
   value: CellValue
+  formula?: string
   numberFormat?: NumberFormat
   /** The column's width (`ColumnInput.width`); Excel's default without it. */
   width?: number
@@ -28,7 +32,8 @@ export function sampleBook(cases: readonly SampleCase[]): BookInput {
   const cells: BookInput['sheets'][number]['cells'] = {}
   const columns: NonNullable<BookInput['sheets'][number]['columns']> = {}
   cases.forEach((c, i) => {
-    if (c.value !== null || c.numberFormat !== undefined) cells[sampleAddress(i)] = { ...(c.value !== null ? { value: c.value } : {}), ...(c.numberFormat !== undefined ? { numberFormat: c.numberFormat } : {}) }
+    const value = c.formula !== undefined ? { formula: c.formula } : c.value !== null && typeof c.value !== 'object' ? { value: c.value } : {}
+    if (c.value !== null || c.numberFormat !== undefined) cells[sampleAddress(i)] = { ...value, ...(c.numberFormat !== undefined ? { numberFormat: c.numberFormat } : {}) }
     if (c.width !== undefined) columns[colLetters(i + 2)] = { width: c.width }
   })
   return { ...(cases[0]?.dateSystem ? { dateSystem: cases[0].dateSystem } : {}), sheets: [{ name: 'S', cells, columns }] }
