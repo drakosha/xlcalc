@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.76.1 (2026-11-02)
+
+Fixed:
+
+- `readCsv` on Node 20 reads a file in the locale's code page by the code page's table, as `writeCsv` writes it: Node 20's `TextDecoder` reads windows-1252 as Latin-1, so `€`, `™` and the other characters of bytes 0x80 to 0x9F came as control characters (U+0080, U+0099).
+
 ## 0.76.0 (2026-11-02)
 
 Changed:
