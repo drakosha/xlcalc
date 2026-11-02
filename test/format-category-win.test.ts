@@ -31,7 +31,7 @@ const KNOWN: Record<string, string> = Object.fromEntries([
 ])
 
 /** How many cells of each set's prediction Excel for Windows confirmed, by `<tag>:<set>`. */
-const CONFIRMED: Record<string, number> = { 'en-US:ribbon': 337, 'ru-RU:ribbon': 318, 'ru-RU:ribbon-ru-held': 29, 'en-US:ribbon-accounting': 21, 'ru-RU:ribbon-accounting': 21, 'en-US:ribbon-accounting-held': 20, 'ru-RU:ribbon-accounting-held': 20, 'en-US:ribbon-builtin-codes': 22, 'ru-RU:ribbon-builtin-codes': 22, 'en-US:ribbon-accounting-held-2': 9, 'ru-RU:ribbon-accounting-held-2': 9, 'en-US:ribbon-accounting-held-3': 7, 'ru-RU:ribbon-accounting-held-3': 7 }
+const CONFIRMED: Record<string, number> = { 'en-US:ribbon': 337, 'ru-RU:ribbon': 318, 'ru-RU:ribbon-ru-held': 29, 'ru-RU:ribbon-builtin-ru': 16, 'en-US:ribbon-accounting': 21, 'ru-RU:ribbon-accounting': 21, 'en-US:ribbon-accounting-held': 20, 'ru-RU:ribbon-accounting-held': 20, 'en-US:ribbon-builtin-codes': 22, 'ru-RU:ribbon-builtin-codes': 22, 'en-US:ribbon-accounting-held-2': 9, 'ru-RU:ribbon-accounting-held-2': 9, 'en-US:ribbon-accounting-held-3': 7, 'ru-RU:ribbon-accounting-held-3': 7 }
 
 /** How many cells of the set `ribbon` Excel for Mac and for Windows name alike, by tag. */
 const MAC_SAME: Record<string, number> = { 'en-US': 330, 'ru-RU': 266 }
