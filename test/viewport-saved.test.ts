@@ -88,7 +88,7 @@ describe('a window over a saved book and its result', () => {
     // a date that its column is too narrow for, as Excel shows it
     expect(saved.result.sheets[0].cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 14 })
     const v = viewportOf(saved, 'Данные', 'A1:L8', ALL)
-    expect(v.cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'cell', editText: '15.03.2026' })
+    expect(v.cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 'dd/mm/yyyy', numberFormatSource: 'cell', editText: '15.03.2026' })
     // a rule's appearance is not in a result: the cell as the result has it, and with `appearance` the rule's
     expect(v.cells.C3).toEqual({ value: 20, text: '20', editText: '20' })
     expect(viewportOf(saved, 'Данные', 'C3', { appearance: true }).cells.C3).toEqual({ value: 20, text: '20', appearance: { style: { fill: { color: '#FFC7CE' } } } })

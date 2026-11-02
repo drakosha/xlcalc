@@ -118,7 +118,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
         B3: { value: null, text: '', numberFormat: '0%', numberFormatSource: 'row' },
         C3: { value: null, text: '', effectiveStyle: 0, numberFormat: '0%', numberFormatSource: 'row' },
         B4: { value: null, text: '', effectiveStyle: 0, numberFormat: '0.00', numberFormatSource: 'column' },
-        D2: { value: null, text: '', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'column' },
+        D2: { value: null, text: '', numberFormat: 'dd/mm/yyyy', numberFormatSource: 'column' },
       }
       const v = await s.getViewport('S', 'A1:D4')
       expect(v.cells).toMatchObject(want)
@@ -135,7 +135,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
     it("built-in formats as the codes of the book's locale; without the display, no text", async () => {
       const open = await opener(kind)
       const ru = await open(lines('ru-RU'), { clock: CLOCK, execution })
-      expect((await ru.getViewport('S', 'E1')).cells.E1).toEqual({ value: 46096, text: '15.03.2026', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'cell' })
+      expect((await ru.getViewport('S', 'E1')).cells.E1).toEqual({ value: 46096, text: '15.03.2026', numberFormat: 'dd/mm/yyyy', numberFormatSource: 'cell' })
       const bare = await open(lines(), { clock: CLOCK, execution, display: false })
       expect((await bare.getViewport('S', 'C3:D3')).cells).toEqual({ C3: { value: null, effectiveStyle: 0 }, D3: { value: 5, effectiveStyle: 0, numberFormat: '0.000', numberFormatSource: 'column' } })
       await ru.close()
