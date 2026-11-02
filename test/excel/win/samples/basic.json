@@ -1,0 +1,1800 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "box": "Number Format",
+  "screen": "{Width=1920, Height=1200}",
+  "date": "2026-11-02",
+  "seconds": 125.4
+ },
+ "cases": [
+  {
+   "id": "fraction",
+   "value": 1234.5
+  },
+  {
+   "id": "integer",
+   "value": 42
+  },
+  {
+   "id": "negative",
+   "value": -1234.5
+  },
+  {
+   "id": "zero",
+   "value": 0
+  },
+  {
+   "id": "huge",
+   "value": 123456789000000000000
+  },
+  {
+   "id": "tiny",
+   "value": 0.000012345
+  },
+  {
+   "id": "long-digits",
+   "value": 3.14159265358979
+  },
+  {
+   "id": "negative-small",
+   "value": -0.5
+  },
+  {
+   "id": "past-calendar",
+   "value": 3000000
+  },
+  {
+   "id": "date",
+   "value": 46000,
+   "numberFormat": 14
+  },
+  {
+   "id": "date-time",
+   "value": 46000.75,
+   "numberFormat": 22
+  },
+  {
+   "id": "time",
+   "value": 0.6,
+   "numberFormat": 21
+  },
+  {
+   "id": "percent",
+   "value": 0.25,
+   "numberFormat": 9
+  },
+  {
+   "id": "text",
+   "value": "East"
+  },
+  {
+   "id": "text-digits",
+   "value": "123"
+  },
+  {
+   "id": "long-text",
+   "value": "A text longer than the list is wide, to see whether a sample is cut"
+  },
+  {
+   "id": "true",
+   "value": true
+  },
+  {
+   "id": "error",
+   "value": {
+    "error": "DIV0"
+   },
+   "formula": "1/0"
+  },
+  {
+   "id": "empty",
+   "value": null
+  },
+  {
+   "id": "empty-formatted",
+   "value": null,
+   "numberFormat": "0.00"
+  },
+  {
+   "id": "decimals-3",
+   "value": 1234.5,
+   "numberFormat": "0.000"
+  },
+  {
+   "id": "currency-cell",
+   "value": 1234.5,
+   "numberFormat": 7
+  },
+  {
+   "id": "custom-cell",
+   "value": 1234.5,
+   "numberFormat": "\"x\"0.0\"y\""
+  },
+  {
+   "id": "text-format-number",
+   "value": 1234.5,
+   "numberFormat": 49
+  },
+  {
+   "id": "text-format-text",
+   "value": "East",
+   "numberFormat": 49
+  },
+  {
+   "id": "percent-format-text",
+   "value": "East",
+   "numberFormat": 10
+  },
+  {
+   "id": "narrow",
+   "value": 1234.5,
+   "width": 2
+  },
+  {
+   "id": "narrow-general",
+   "value": 123456789012,
+   "width": 4
+  },
+  {
+   "id": "wide",
+   "value": 1234.5,
+   "width": 40
+  },
+  {
+   "id": "wide-general",
+   "value": 123456789012,
+   "width": 40
+  },
+  {
+   "id": "date-1904",
+   "value": 46000,
+   "numberFormat": 14,
+   "dateSystem": 1904
+  },
+  {
+   "id": "negative-1904",
+   "value": -1234.5,
+   "dateSystem": 1904
+  }
+ ],
+ "answers": {
+  "fraction": {
+   "box": "General",
+   "text": "1234.5",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "integer": {
+   "box": "General",
+   "text": "42",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "42.00"
+    ],
+    [
+     "Currency",
+     "$42.00"
+    ],
+    [
+     "Accounting",
+     " $42.00 "
+    ],
+    [
+     "Short Date",
+     "2/11/1900"
+    ],
+    [
+     "Long Date",
+     "Saturday, February 11, 1900"
+    ],
+    [
+     "Time",
+     "12:00:00 AM"
+    ],
+    [
+     "Percentage",
+     "4200.00%"
+    ],
+    [
+     "Fraction",
+     "42    "
+    ],
+    [
+     "Scientific",
+     "4.20E+01"
+    ],
+    [
+     "Text",
+     "42"
+    ]
+   ]
+  },
+  "negative": {
+   "box": "General",
+   "text": "-1234.5",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "-1234.50"
+    ],
+    [
+     "Currency",
+     "-$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $(1,234.50)"
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "-123450.00%"
+    ],
+    [
+     "Fraction",
+     "-1234 1/2"
+    ],
+    [
+     "Scientific",
+     "-1.23E+03"
+    ],
+    [
+     "Text",
+     "-1234.5"
+    ]
+   ]
+  },
+  "zero": {
+   "box": "General",
+   "text": "0",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "0.00"
+    ],
+    [
+     "Currency",
+     "$0.00"
+    ],
+    [
+     "Accounting",
+     " $-   "
+    ],
+    [
+     "Short Date",
+     "1/0/1900"
+    ],
+    [
+     "Long Date",
+     "Saturday, January 0, 1900"
+    ],
+    [
+     "Time",
+     "12:00:00 AM"
+    ],
+    [
+     "Percentage",
+     "0.00%"
+    ],
+    [
+     "Fraction",
+     "0    "
+    ],
+    [
+     "Scientific",
+     "0.00E+00"
+    ],
+    [
+     "Text",
+     "0"
+    ]
+   ]
+  },
+  "huge": {
+   "box": "General",
+   "text": "1.23E+20",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "123456789000000000000.00"
+    ],
+    [
+     "Currency",
+     "$123,456,789,000,000,000,000.00"
+    ],
+    [
+     "Accounting",
+     " $123,456,789,000,000,000,000.00 "
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "12345678900000000000000.00%"
+    ],
+    [
+     "Fraction",
+     "123456789000000000000    "
+    ],
+    [
+     "Scientific",
+     "1.23E+20"
+    ],
+    [
+     "Text",
+     "1.23457E+20"
+    ]
+   ]
+  },
+  "tiny": {
+   "box": "General",
+   "text": "1.23E-05",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "0.00"
+    ],
+    [
+     "Currency",
+     "$0.00"
+    ],
+    [
+     "Accounting",
+     " $0.00 "
+    ],
+    [
+     "Short Date",
+     "1/0/1900"
+    ],
+    [
+     "Long Date",
+     "Saturday, January 0, 1900"
+    ],
+    [
+     "Time",
+     "12:00:01 AM"
+    ],
+    [
+     "Percentage",
+     "0.00%"
+    ],
+    [
+     "Fraction",
+     "0    "
+    ],
+    [
+     "Scientific",
+     "1.23E-05"
+    ],
+    [
+     "Text",
+     "0.000012345"
+    ]
+   ]
+  },
+  "long-digits": {
+   "box": "General",
+   "text": "3.141593",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "3.14"
+    ],
+    [
+     "Currency",
+     "$3.14"
+    ],
+    [
+     "Accounting",
+     " $3.14 "
+    ],
+    [
+     "Short Date",
+     "1/3/1900"
+    ],
+    [
+     "Long Date",
+     "Tuesday, January 3, 1900"
+    ],
+    [
+     "Time",
+     "3:23:54 AM"
+    ],
+    [
+     "Percentage",
+     "314.16%"
+    ],
+    [
+     "Fraction",
+     "3 1/7"
+    ],
+    [
+     "Scientific",
+     "3.14E+00"
+    ],
+    [
+     "Text",
+     "3.141592654"
+    ]
+   ]
+  },
+  "negative-small": {
+   "box": "General",
+   "text": "-0.5",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "-0.50"
+    ],
+    [
+     "Currency",
+     "-$0.50"
+    ],
+    [
+     "Accounting",
+     " $(0.50)"
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "-50.00%"
+    ],
+    [
+     "Fraction",
+     "- 1/2"
+    ],
+    [
+     "Scientific",
+     "-5.00E-01"
+    ],
+    [
+     "Text",
+     "-0.5"
+    ]
+   ]
+  },
+  "past-calendar": {
+   "box": "General",
+   "text": "3000000",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "3000000.00"
+    ],
+    [
+     "Currency",
+     "$3,000,000.00"
+    ],
+    [
+     "Accounting",
+     " $3,000,000.00 "
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "300000000.00%"
+    ],
+    [
+     "Fraction",
+     "3000000    "
+    ],
+    [
+     "Scientific",
+     "3.00E+06"
+    ],
+    [
+     "Text",
+     "3000000"
+    ]
+   ]
+  },
+  "date": {
+   "box": "Date",
+   "text": "########",
+   "code": "m/d/yyyy",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "46000.00"
+    ],
+    [
+     "Currency",
+     "$46,000.00"
+    ],
+    [
+     "Accounting",
+     " $46,000.00 "
+    ],
+    [
+     "Short Date",
+     "12/9/2025"
+    ],
+    [
+     "Long Date",
+     "Tuesday, December 9, 2025"
+    ],
+    [
+     "Time",
+     "12:00:00 AM"
+    ],
+    [
+     "Percentage",
+     "4600000.00%"
+    ],
+    [
+     "Fraction",
+     "46000    "
+    ],
+    [
+     "Scientific",
+     "4.60E+04"
+    ],
+    [
+     "Text",
+     "46000"
+    ]
+   ]
+  },
+  "date-time": {
+   "box": "Custom",
+   "text": "########",
+   "code": "m/d/yyyy h:mm",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "46000.75"
+    ],
+    [
+     "Currency",
+     "$46,000.75"
+    ],
+    [
+     "Accounting",
+     " $46,000.75 "
+    ],
+    [
+     "Short Date",
+     "12/9/2025"
+    ],
+    [
+     "Long Date",
+     "Tuesday, December 9, 2025"
+    ],
+    [
+     "Time",
+     "6:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "4600075.00%"
+    ],
+    [
+     "Fraction",
+     "46000 3/4"
+    ],
+    [
+     "Scientific",
+     "4.60E+04"
+    ],
+    [
+     "Text",
+     "46000.75"
+    ]
+   ]
+  },
+  "time": {
+   "box": "Custom",
+   "text": "14:24:00",
+   "code": "h:mm:ss",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "0.60"
+    ],
+    [
+     "Currency",
+     "$0.60"
+    ],
+    [
+     "Accounting",
+     " $0.60 "
+    ],
+    [
+     "Short Date",
+     "1/0/1900"
+    ],
+    [
+     "Long Date",
+     "Saturday, January 0, 1900"
+    ],
+    [
+     "Time",
+     "2:24:00 PM"
+    ],
+    [
+     "Percentage",
+     "60.00%"
+    ],
+    [
+     "Fraction",
+     " 3/5"
+    ],
+    [
+     "Scientific",
+     "6.00E-01"
+    ],
+    [
+     "Text",
+     "0.6"
+    ]
+   ]
+  },
+  "percent": {
+   "box": "Percentage",
+   "text": "25%",
+   "code": "0%",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "0.25"
+    ],
+    [
+     "Currency",
+     "$0.25"
+    ],
+    [
+     "Accounting",
+     " $0.25 "
+    ],
+    [
+     "Short Date",
+     "1/0/1900"
+    ],
+    [
+     "Long Date",
+     "Saturday, January 0, 1900"
+    ],
+    [
+     "Time",
+     "6:00:00 AM"
+    ],
+    [
+     "Percentage",
+     "25.00%"
+    ],
+    [
+     "Fraction",
+     " 1/4"
+    ],
+    [
+     "Scientific",
+     "2.50E-01"
+    ],
+    [
+     "Text",
+     "0.25"
+    ]
+   ]
+  },
+  "text": {
+   "box": "General",
+   "text": "East",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "East"
+    ],
+    [
+     "Currency",
+     "East"
+    ],
+    [
+     "Accounting",
+     " East "
+    ],
+    [
+     "Short Date",
+     "East"
+    ],
+    [
+     "Long Date",
+     "East"
+    ],
+    [
+     "Time",
+     "East"
+    ],
+    [
+     "Percentage",
+     "East"
+    ],
+    [
+     "Fraction",
+     "East"
+    ],
+    [
+     "Scientific",
+     "East"
+    ],
+    [
+     "Text",
+     "East"
+    ]
+   ]
+  },
+  "text-digits": {
+   "box": "General",
+   "text": "123",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "123"
+    ],
+    [
+     "Currency",
+     "123"
+    ],
+    [
+     "Accounting",
+     " 123 "
+    ],
+    [
+     "Short Date",
+     "123"
+    ],
+    [
+     "Long Date",
+     "123"
+    ],
+    [
+     "Time",
+     "123"
+    ],
+    [
+     "Percentage",
+     "123"
+    ],
+    [
+     "Fraction",
+     "123"
+    ],
+    [
+     "Scientific",
+     "123"
+    ],
+    [
+     "Text",
+     "123"
+    ]
+   ]
+  },
+  "long-text": {
+   "box": "General",
+   "text": "A text longer than the list is wide, to see whether a sample is cut",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Currency",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Accounting",
+     " A text longer than the list is wide, to see wheth..."
+    ],
+    [
+     "Short Date",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Long Date",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Time",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Percentage",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Fraction",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Scientific",
+     "A text longer than the list is wide, to see whethe..."
+    ],
+    [
+     "Text",
+     "A text longer than the list is wide, to see whethe..."
+    ]
+   ]
+  },
+  "true": {
+   "box": "General",
+   "text": "TRUE",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "TRUE"
+    ],
+    [
+     "Currency",
+     "TRUE"
+    ],
+    [
+     "Accounting",
+     " TRUE "
+    ],
+    [
+     "Short Date",
+     "TRUE"
+    ],
+    [
+     "Long Date",
+     "TRUE"
+    ],
+    [
+     "Time",
+     "TRUE"
+    ],
+    [
+     "Percentage",
+     "TRUE"
+    ],
+    [
+     "Fraction",
+     "TRUE"
+    ],
+    [
+     "Scientific",
+     "TRUE"
+    ],
+    [
+     "Text",
+     "TRUE"
+    ]
+   ]
+  },
+  "error": {
+   "box": "General",
+   "text": "#DIV/0!",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "#DIV/0!"
+    ],
+    [
+     "Currency",
+     "#DIV/0!"
+    ],
+    [
+     "Accounting",
+     "#DIV/0!"
+    ],
+    [
+     "Short Date",
+     "#DIV/0!"
+    ],
+    [
+     "Long Date",
+     "#DIV/0!"
+    ],
+    [
+     "Time",
+     "#DIV/0!"
+    ],
+    [
+     "Percentage",
+     "#DIV/0!"
+    ],
+    [
+     "Fraction",
+     "#DIV/0!"
+    ],
+    [
+     "Scientific",
+     "#DIV/0!"
+    ],
+    [
+     "Text",
+     "#DIV/0!"
+    ]
+   ]
+  },
+  "empty": {
+   "box": "General",
+   "text": "",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     ""
+    ],
+    [
+     "Currency",
+     ""
+    ],
+    [
+     "Accounting",
+     ""
+    ],
+    [
+     "Short Date",
+     ""
+    ],
+    [
+     "Long Date",
+     ""
+    ],
+    [
+     "Time",
+     ""
+    ],
+    [
+     "Percentage",
+     ""
+    ],
+    [
+     "Fraction",
+     ""
+    ],
+    [
+     "Scientific",
+     ""
+    ],
+    [
+     "Text",
+     ""
+    ]
+   ]
+  },
+  "empty-formatted": {
+   "box": "Number",
+   "text": "",
+   "code": "0.00",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     ""
+    ],
+    [
+     "Currency",
+     ""
+    ],
+    [
+     "Accounting",
+     ""
+    ],
+    [
+     "Short Date",
+     ""
+    ],
+    [
+     "Long Date",
+     ""
+    ],
+    [
+     "Time",
+     ""
+    ],
+    [
+     "Percentage",
+     ""
+    ],
+    [
+     "Fraction",
+     ""
+    ],
+    [
+     "Scientific",
+     ""
+    ],
+    [
+     "Text",
+     ""
+    ]
+   ]
+  },
+  "decimals-3": {
+   "box": "Number",
+   "text": "1234.500",
+   "code": "0.000",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "currency-cell": {
+   "box": "Currency",
+   "text": "########",
+   "code": "$#,##0.00_);($#,##0.00)",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "custom-cell": {
+   "box": "Custom",
+   "text": "x1234.5y",
+   "code": "\"x\"0.0\"y\"",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "text-format-number": {
+   "box": "Text",
+   "text": "1234.5",
+   "code": "@",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "text-format-text": {
+   "box": "Text",
+   "text": "East",
+   "code": "@",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "East"
+    ],
+    [
+     "Currency",
+     "East"
+    ],
+    [
+     "Accounting",
+     " East "
+    ],
+    [
+     "Short Date",
+     "East"
+    ],
+    [
+     "Long Date",
+     "East"
+    ],
+    [
+     "Time",
+     "East"
+    ],
+    [
+     "Percentage",
+     "East"
+    ],
+    [
+     "Fraction",
+     "East"
+    ],
+    [
+     "Scientific",
+     "East"
+    ],
+    [
+     "Text",
+     "East"
+    ]
+   ]
+  },
+  "percent-format-text": {
+   "box": "Percentage",
+   "text": "East",
+   "code": "0.00%",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "East"
+    ],
+    [
+     "Currency",
+     "East"
+    ],
+    [
+     "Accounting",
+     " East "
+    ],
+    [
+     "Short Date",
+     "East"
+    ],
+    [
+     "Long Date",
+     "East"
+    ],
+    [
+     "Time",
+     "East"
+    ],
+    [
+     "Percentage",
+     "East"
+    ],
+    [
+     "Fraction",
+     "East"
+    ],
+    [
+     "Scientific",
+     "East"
+    ],
+    [
+     "Text",
+     "East"
+    ]
+   ]
+  },
+  "narrow": {
+   "box": "General",
+   "text": "#",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "narrow-general": {
+   "box": "General",
+   "text": "###",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "123456789012.00"
+    ],
+    [
+     "Currency",
+     "$123,456,789,012.00"
+    ],
+    [
+     "Accounting",
+     " $123,456,789,012.00 "
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "12345678901200.00%"
+    ],
+    [
+     "Fraction",
+     "123456789012    "
+    ],
+    [
+     "Scientific",
+     "1.23E+11"
+    ],
+    [
+     "Text",
+     "1.23457E+11"
+    ]
+   ]
+  },
+  "wide": {
+   "box": "General",
+   "text": "1234.5",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "1234.50"
+    ],
+    [
+     "Currency",
+     "$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $1,234.50 "
+    ],
+    [
+     "Short Date",
+     "5/18/1903"
+    ],
+    [
+     "Long Date",
+     "Monday, May 18, 1903"
+    ],
+    [
+     "Time",
+     "12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "123450.00%"
+    ],
+    [
+     "Fraction",
+     "1234 1/2"
+    ],
+    [
+     "Scientific",
+     "1.23E+03"
+    ],
+    [
+     "Text",
+     "1234.5"
+    ]
+   ]
+  },
+  "wide-general": {
+   "box": "General",
+   "text": "1.23457E+11",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "123456789012.00"
+    ],
+    [
+     "Currency",
+     "$123,456,789,012.00"
+    ],
+    [
+     "Accounting",
+     " $123,456,789,012.00 "
+    ],
+    [
+     "Short Date",
+     "##########"
+    ],
+    [
+     "Long Date",
+     "##########"
+    ],
+    [
+     "Time",
+     "##########"
+    ],
+    [
+     "Percentage",
+     "12345678901200.00%"
+    ],
+    [
+     "Fraction",
+     "123456789012    "
+    ],
+    [
+     "Scientific",
+     "1.23E+11"
+    ],
+    [
+     "Text",
+     "1.23457E+11"
+    ]
+   ]
+  },
+  "date-1904": {
+   "box": "Date",
+   "text": "########",
+   "code": "m/d/yyyy",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "46000.00"
+    ],
+    [
+     "Currency",
+     "$46,000.00"
+    ],
+    [
+     "Accounting",
+     " $46,000.00 "
+    ],
+    [
+     "Short Date",
+     "12/10/2029"
+    ],
+    [
+     "Long Date",
+     "Monday, December 10, 2029"
+    ],
+    [
+     "Time",
+     "12:00:00 AM"
+    ],
+    [
+     "Percentage",
+     "4600000.00%"
+    ],
+    [
+     "Fraction",
+     "46000    "
+    ],
+    [
+     "Scientific",
+     "4.60E+04"
+    ],
+    [
+     "Text",
+     "46000"
+    ]
+   ]
+  },
+  "negative-1904": {
+   "box": "General",
+   "text": "-1234.5",
+   "code": "General",
+   "items": [
+    [
+     "General",
+     "No specific format"
+    ],
+    [
+     "Number",
+     "-1234.50"
+    ],
+    [
+     "Currency",
+     "-$1,234.50"
+    ],
+    [
+     "Accounting",
+     " $(1,234.50)"
+    ],
+    [
+     "Short Date",
+     "-5/19/1907"
+    ],
+    [
+     "Long Date",
+     "-Sunday, May 19, 1907"
+    ],
+    [
+     "Time",
+     "-12:00:00 PM"
+    ],
+    [
+     "Percentage",
+     "-123450.00%"
+    ],
+    [
+     "Fraction",
+     "-1234 1/2"
+    ],
+    [
+     "Scientific",
+     "-1.23E+03"
+    ],
+    [
+     "Text",
+     "-1234.5"
+    ]
+   ]
+  }
+ }
+}

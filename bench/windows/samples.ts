@@ -41,7 +41,7 @@ export async function stepSamples(set: string, tag: Tag, e: WinEnv): Promise<voi
   const dir = mkdtempSync(join(tmpdir(), 'xlwin-samples-'))
   const job = []
   for (const [i, part] of books.entries()) {
-    const { data, issues } = await writeXlsx({ book: sampleBook(part) })
+    const { data, issues } = await writeXlsx({ book: sampleBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`samples ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(join(dir, `b${i}.xlsx`), data)
     job.push({ file: `b${i}.xlsx`, cells: part.map((_, k) => sampleAddress(k)) })
