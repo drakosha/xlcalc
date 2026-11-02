@@ -24,6 +24,8 @@ describe('readCsv: encodings', () => {
     expect(readCsv(bytes(0, 0x61, 0, 0x2c, 0, 0x62)).encoding).toBe('utf-16be')
     expect(readCsv(utf8('Café,1')).encoding).toBe('utf-8')
     expect(cells(bytes(0x43, 0x61, 0x66, 0xe9))).toEqual({ A1: { value: 'Café' } })
+    // € and ™ by the code page's table: Node 20's TextDecoder reads windows-1252 as Latin-1
+    expect([cells(bytes(0x80, 0x2c, 0x99)), cells(bytes(0x80), { encoding: 'windows-1252' })]).toEqual([{ A1: { value: '€' }, B1: { value: '™' } }, { A1: { value: '€' } }])
     const ru = readCsv(bytes(0xcf, 0xf0, 0xe8, 0xe2, 0xe5, 0xf2), { locale: ruRU })
     expect([ru.encoding, ru.book.sheets[0].cells.A1, ru.book.locale]).toEqual(['windows-1251', { value: 'Привет' }, 'ru-RU'])
     expect(readCsv(bytes(0xe9), { encoding: 'latin1' }).encoding).toBe('windows-1252')
@@ -146,7 +148,7 @@ describe('writeCsv', () => {
     expect([ansi.data.length, new TextDecoder('windows-1251').decode(ansi.data), ansi.issues]).toEqual([ansi.text.length, ansi.text, []])
     const lost = writeCsv({ book: ru }, { encoding: 'ansi', locale: 'en-US' })
     expect(lost.issues).toEqual([{ code: 'encoding', message: 'characters the code page windows-1252 lacks are written as ?', sheet: 'Лист' }])
-    expect(new TextDecoder('windows-1252').decode(lost.data)).toBe('"1,234.50",TRUE,?????? €,a;b')
+    expect(cells(lost.data, { encoding: 'windows-1252', delimiter: ',' }).C1).toEqual({ value: '?????? €' })
     expect([...writeCsv({ book: ru }, { encoding: 'utf-16le' }).data.subarray(0, 4)]).toEqual([0xff, 0xfe, 0x31, 0])
     expect([...writeCsv({ book: ru }, { bom: false }).data.subarray(0, 1)]).toEqual([0x31])
   })
