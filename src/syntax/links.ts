@@ -180,14 +180,14 @@ export function linksIn(formula: string): number[] {
 /**
  * The links with every sheet of the books numbered `ks` marked as Excel marks them when a formula referring to a closed
  * book is entered (`refreshError`: it cannot read the book, and a cell the stored values do not hold is `#REF!` since);
- * the same array when nothing changes.
+ * a book the host holds open (`open`) is read and not marked; the same array when nothing changes.
  */
 export function markedLinks(books: ExternalBook[] | undefined, ks: Iterable<number>): ExternalBook[] | undefined {
   if (!books) return books
   let out: ExternalBook[] | undefined
   for (const k of ks) {
     const b = (out ?? books)[k - 1]
-    if (!b || b.sheets.every((s) => s.refreshError)) continue
+    if (!b || b.open || b.sheets.every((s) => s.refreshError)) continue
     out ??= [...books]
     out[k - 1] = { ...b, sheets: b.sheets.map((s) => (s.refreshError ? s : { ...s, refreshError: true })) }
   }

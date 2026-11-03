@@ -220,6 +220,16 @@ describe('xlsx links: writing', () => {
     expect(await Promise.all([1, 2].map(async (n) => /Target="([^"]*)"/.exec(await part(data, `xl/externalLinks/_rels/externalLink${n}.xml.rels`))![1]))).toEqual(['Отчет%202025.xlsm', 'P&amp;L%202025.xlsx'])
   })
 
+  it('a link the host holds open is written as Excel saves a book it read: its values without the mark, a sheet without values as an empty one; read back closed', async () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: "'[1]Data'!Z99" } } }], externalBooks: [{ target: 'Other.xlsx', sheets: [{ name: 'Data', cells: { H1: 10 } }, { name: 'Empty' }], open: true }] }
+    const { data } = await writeXlsx({ book })
+    expect(await part(data, 'xl/externalLinks/externalLink1.xml')).toContain('<sheetDataSet><sheetData sheetId="0"><row r="1"><cell r="H1"><v>10</v></cell></row></sheetData><sheetData sheetId="1"/></sheetDataSet>')
+    const back = await readXlsx(data)
+    expect(back.book.externalBooks).toEqual([{ target: 'Other.xlsx', sheets: [{ name: 'Data', cells: { H1: 10 } }, { name: 'Empty', cells: {} }] }])
+    // as Excel computes the file: the cell the link does not hold is blank
+    expect(compute(back.book).sheets[0].cells.A1.value).toBe(0)
+  })
+
   it("#SPILL! and #CALC! stored as #VALUE!, which Excel shows for them there; the engine's #CYCLE! as 0, reported", async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {} }], externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: { error: 'SPILL' }, A2: { error: 'CALC' }, A3: { error: 'CYCLE' }, A4: { error: 'NA' } } }] }] }
     const { data, issues } = await writeXlsx({ book })

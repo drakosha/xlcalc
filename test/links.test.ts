@@ -129,6 +129,10 @@ describe('a book’s links', () => {
     expect([lost.sheets[0].cells.A1.value, lost.diagnostics.filter((d) => d.kind === 'name')]).toEqual([{ error: 'REF' }, []])
     const marked = LINKS.map((b, i) => (i ? b : { ...b, sheets: b.sheets.map((s) => ({ ...s, refreshError: true as const })) }))
     expect(values(book({ A1: "'[1]Sheet1'!A9", A2: "SUM('[1]Sheet1'!A:A)", A3: "'[1]Sheet1'!A1", A4: "MATCH(3,'[1]Sheet1'!A:A,0)" }, { externalBooks: marked }))).toEqual({ A1: { error: 'REF' }, A2: { error: 'REF' }, A3: 1, A4: 3 })
+    // a book the host holds open: a cell it does not hold is blank, and a sheet without values is an empty one
+    const open = LINKS.map((b): ExternalBook => ({ ...b, open: true }))
+    expect(values(book({ A1: "'[1]Sheet1'!A9", A2: "SUM('[1]Sheet1'!A:A)", A3: "'[2]Gone'!A1", A4: "ISBLANK('[2]Gone'!A1)" }, { externalBooks: open }))).toEqual({ A1: 0, A2: 6, A3: 0, A4: true })
+    expect(inputHash(book({}, { externalBooks: open }))).not.toBe(inputHash(book({})))
   })
 
   it('a position that takes an open book’s reference is #VALUE! over a link, directly, through a name or a LET name', () => {

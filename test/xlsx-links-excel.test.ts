@@ -84,8 +84,11 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
           expect(fileName(b.target), b.target).toBe(fileName(link.target))
           // Excel keeps the sheets in order and may add one a formula names
           expect(b.sheets.slice(0, link.sheets.length).map((s) => s.name)).toEqual(link.sheets.map((s) => s.name))
+          // a book Excel read beside (open-held): the values it read of it, without the mark
+          const read = c.ops?.flatMap((o) => (o.op === 'source' && o.target === link.target ? [o.sheets] : []))[0]
           link.sheets.forEach((s, k) => {
-            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(kept(s.cells?.[addr]))
+            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(kept(s.cells && addr in s.cells ? s.cells[addr] : read?.[s.name]?.[addr]))
+            if (read) expect(b.sheets[k].refreshError).toBeUndefined()
           })
           expect((b.names ?? []).map((n) => n.name)).toEqual((link.names ?? []).map((n) => n.name))
         })

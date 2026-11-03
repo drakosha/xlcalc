@@ -316,7 +316,7 @@ const STORED_SHEET = 'such as { name: "Sheet1", cells: { B1: { value: 2 } } }'
 /**
  * Other workbooks a book links to (`BookInput.externalBooks`): each a target, its sheets by name with their stored values
  * by address (a number, text, a boolean, an error, null for a cell stored empty) and the mark of a failed update, its
- * names with what they refer to and the index of the sheet of a sheet's name. Without `values` the stored values are
+ * names with what they refer to and the index of the sheet of a sheet's name, and whether the host holds it open. Without `values` the stored values are
  * not read, only that a sheet's `cells` is an object: the options of the calls that show, read or check formula text
  * use the links' targets, sheets and names alone (the package's own calls over a checked book skip the check).
  */
@@ -324,15 +324,16 @@ export function checkExternalBooks(v: unknown, path: string, values = true): Ext
   return array(v, path, `an array of linked workbooks ${LINKED}`).map((b, i) => {
     const p = `${path}[${i}]`
     const book = object(b, p, `a linked workbook ${LINKED}`)
-    onlyKeys(book, p, ['target', 'sheets', 'names'])
+    onlyKeys(book, p, ['target', 'sheets', 'names', 'open'])
     checkString(book.target, `${p}.target`)
+    if (book.open !== undefined && book.open !== true) throw new InputError(`${p}.open`, `expected true, got ${what(book.open)}`)
     const sheets = array(book.sheets, `${p}.sheets`, `an array of sheets ${LINKED_SHEET}`)
     sheets.forEach((s, j) => {
       const sp = `${p}.sheets[${j}]`
       const sheet = object(s, sp, `a sheet ${LINKED_SHEET}`)
       onlyKeys(sheet, sp, ['name', 'cells', 'refreshError'])
       checkString(sheet.name, `${sp}.name`)
-      if (sheet.refreshError !== undefined && sheet.refreshError !== true) throw new InputError(`${sp}.refreshError`, `expected true, got ${what(sheet.refreshError)}`)
+      if (sheet.refreshError !== undefined && (sheet.refreshError !== true || book.open)) throw new InputError(`${sp}.refreshError`, book.open ? 'a linked workbook held open is read: none of its sheets has refreshError' : `expected true, got ${what(sheet.refreshError)}`)
       if (sheet.cells === undefined) return
       const cells = object(sheet.cells, `${sp}.cells`, 'an object of stored values by address such as { A1: 5 }')
       if (values)
