@@ -79,7 +79,7 @@ function rowBook(cases: Probe[], rows: Record<string, number>, sheets?: SheetCel
   return book
 }
 
-for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls']) {
+for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls', 'index-held']) {
   const set = load<Stored>(name)
   const sheets = ((await import(`../bench/coverage/legacy/${name}.ts`)) as { SHEETS?: SheetCells }).SHEETS
 
@@ -109,18 +109,20 @@ for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-c
 }
 
 describe('the text Excel shows predicted before Excel ran: the predictions Excel did not confirm are the ones in MISSED', async () => {
-  for (const name of ['index-calls', 'offset-calls']) {
+  for (const name of ['index-calls', 'offset-calls', 'index-held']) {
     const { PREDICTED_SHOWN, MISSED } = (await import(`../bench/coverage/legacy/${name}.ts`)) as { PREDICTED_SHOWN: Readonly<Record<string, string>>; MISSED: readonly string[] }
     const set = load<Stored>(name)
     it(name, () => expect(set.cases.filter((c) => canon(set.formulas[c.id]) !== PREDICTED_SHOWN[c.id]).map((c) => c.id)).toEqual([...MISSED]))
   }
-  const { SHOWN, MISSED } = await import('../bench/coverage/spill/legacy-index.js')
-  const answers = Object.values((JSON.parse(readFileSync(new URL('./excel/spill/legacy-index.json', import.meta.url), 'utf8')) as { answers: Record<string, { formulas2: Record<string, string> }> }).answers)
-  it('legacy-index (spill)', () => expect(Object.keys(SHOWN).filter((at) => canon(answers.find((a) => at in a.formulas2)!.formulas2[at]) !== SHOWN[at])).toEqual([...MISSED]))
+  for (const name of ['legacy-index', 'legacy-index-held']) {
+    const { SHOWN, MISSED } = (await import(`../bench/coverage/spill/${name}.ts`)) as { SHOWN: Readonly<Record<string, string>>; MISSED: readonly string[] }
+    const answers = Object.values((JSON.parse(readFileSync(new URL(`./excel/spill/${name}.json`, import.meta.url), 'utf8')) as { answers: Record<string, { formulas2: Record<string, string> }> }).answers)
+    it(`${name} (spill)`, () => expect(Object.keys(SHOWN).filter((at) => canon(answers.find((a) => at in a.formulas2)!.formulas2[at]) !== SHOWN[at])).toEqual([...MISSED]))
+  }
 })
 
 describe('formulas of the old kind in spill books: fromLegacy gives the text Excel shows, with the book\'s names', async () => {
-  for (const name of ['legacy', 'legacy-held', 'legacy-index']) {
+  for (const name of ['legacy', 'legacy-held', 'legacy-index', 'legacy-index-held']) {
     const { buildSpillCases } = (await import(`../bench/coverage/spill/${name}.ts`)) as { buildSpillCases: () => SpillCase[] }
     const stored = JSON.parse(readFileSync(new URL(`./excel/spill/${name}.json`, import.meta.url), 'utf8')) as { answers: Record<string, { formulas2?: Record<string, string> }> }
     it(name, () => {

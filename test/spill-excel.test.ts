@@ -53,7 +53,7 @@ for (const set of SETS) {
 }
 
 describe('held-out spill cases: the engine gives the answer predicted before Excel ran', async () => {
-  for (const set of ['held', 'names-held', 'legacy-held', 'cse-held', 'at-held', 'cube-held']) {
+  for (const set of ['held', 'names-held', 'legacy-held', 'cse-held', 'at-held', 'cube-held', 'legacy-index-held']) {
     const held = ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()
     for (const c of held) it(`${set}: ${c.id}`, () => expect(differences(c, { values: c.predicted!, formulas: {} }, computed(c))).toEqual([]))
   }

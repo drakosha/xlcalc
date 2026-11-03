@@ -127,9 +127,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
       return one ? 'one' : ref ? 'range' : 'array'
     }
     case 'OFFSET': {
-      // one cell when the height and the width are each the literal 1, or left out over one cell; the shifts do not matter
-      const cell = args[0].kind === 'one' || size(nodes[0])?.join() === '1,1'
-      const one = (n: Ast | undefined) => (n === undefined ? cell : n.k === 'num' && n.v === 1)
+      // one cell when the height and the width are each the literal 1, or left out from a cell (`B1:B1` is a range); the shifts do not matter
+      const one = (n: Ast | undefined) => (n === undefined ? args[0].kind === 'one' : n.k === 'num' && n.v === 1)
       return one(nodes[3]) && one(nodes[4]) ? 'one' : 'range'
     }
     case 'VLOOKUP':
@@ -229,8 +228,9 @@ function converter(names: Names) {
         return { ast: n, kind: 'one' }
     }
   }
-  // a name gives what its formula gives, computed as an array as Excel computes a name; Excel takes only a literal, a
-  // cell or another name for one value (`1+1`, `(2)`, `ABS(-2)` get `@`), and only a literal from 1 for INDEX's place
+  // a name gives what its formula gives, computed as an array as Excel computes a name; Excel takes only a literal or a
+  // cell for one value, any other formula as a reference (`1+1`, `(2)`, `ABS(-2)`, another name get `@`, but not in N),
+  // and only a literal from 1 for INDEX's place
   const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Omit<Out, 'ast'> => {
     const sheet = n.sheet ?? scope
     const def = names(n.name, sheet)
@@ -243,9 +243,9 @@ function converter(names: Names) {
     const kind = node(def.ast, 'A', 'a', undefined).kind
     locals = outer
     reading.delete(key)
-    const k = def.ast.k
-    if (k === 'num' || k === 'str' || k === 'bool' || k === 'err') return { kind: 'one', ...(counting(def.ast) ? { pos: true as const } : {}) }
-    return { kind: kind === 'rowcol' || (kind === 'one' && k !== 'ref' && k !== 'name') ? 'array' : kind }
+    const lit = def.ast.k === 'un' && def.ast.op === '-' ? def.ast.a : def.ast
+    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def.ast) ? { pos: true as const } : {}) }
+    return { kind: kind === 'rowcol' ? 'array' : kind === 'one' && def.ast.k !== 'ref' ? 'range' : kind }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
