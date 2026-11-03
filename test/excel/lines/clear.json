@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 97.7
+  "seconds": 97.7,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 12 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "book": {
@@ -389,18 +390,18 @@
  ],
  "session": true,
  "sent": {
-  "contents-B2-C3": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-B2-C3": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "all-B2-C3": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-B2-D2": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-F3-F4": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "all-F3-F4": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "contents-F-F": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-F-F": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "all-F-F": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-8-8": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "all-8-8": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34",
-  "formats-then-typed": "bbbb3db95bfb76f248d2e533f798d916750877c03c7adfc661d0b04ed8975e34"
+  "contents-B2-C3": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-B2-C3": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "all-B2-C3": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-B2-D2": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-F3-F4": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "all-F3-F4": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "contents-F-F": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-F-F": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "all-F-F": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-8-8": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "all-8-8": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc",
+  "formats-then-typed": "22a9e567c3a0156ca856d9addbcffa73a20d4d5f6534a098cd59b0ff0c7656dc"
  },
  "answers": {
   "contents-B2-C3": {

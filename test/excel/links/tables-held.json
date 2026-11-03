@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 4.9
+  "seconds": 4.9,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 4 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -282,15 +283,15 @@
   }
  ],
  "sent": {
-  "this-row": "9bd2b98b8fd07a8cd79e6038f8e57cd60da8c77b5c92d660bdc236d53f5160c7",
-  "column": "f6e5fa7572f420c2a8db8384a7704847611e2d088952340c5216c9d87ade606a",
-  "bang": "42c1ef8a55276ab912794d3733dbd655f0497cca0306dd6a3f848b346a8ba61b",
-  "named": "2d8a53733955e1e8156e6f59ead8385f8ea9ddae202167e712114381aa3b411c"
+  "this-row": "99c61cabe56771d86e25c2357db7d9910954bfdc5de8ed25557c8912e546032f",
+  "column": "b9ebd86a169e3e4d109402708e9f6dacac6524f5eb8b700f0911f9f9c0e553ec",
+  "bang": "2ce28f97913a481336fc1d9091e451758bc9ad246a55367a2d51f59335721794",
+  "named": "47007698eb09c86ed2741acfd77cae7d1a830e1537ce75f579944dbd45f1bff6"
  },
  "answers": {
   "this-row": {
    "sources": "",
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820",
    "reads": [
     {
      "values": {
@@ -358,7 +359,7 @@
   },
   "column": {
    "sources": "",
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820",
    "reads": [
     {
      "values": {
@@ -440,9 +441,9 @@
   },
   "bang": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820",
    "reads": [
     {
      "values": {
@@ -460,14 +461,14 @@
       }
      },
      "formulas": {
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]"
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]"
      },
      "local": {
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]"
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]"
      },
      "shown": {
       "S!A2": "#REF!",
@@ -491,14 +492,14 @@
       }
      },
      "formulas": {
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]"
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]"
      },
      "local": {
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326/Book2.xlsx'!Таблица[@Столбец]"
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820/Book2.xlsx'!Таблица[@Столбец]"
      },
      "shown": {
       "S!A2": "#REF!",
@@ -510,7 +511,7 @@
   },
   "named": {
    "sources": "",
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-76326",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-18820",
    "reads": [
     {
      "values": {

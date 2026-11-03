@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.1
+  "seconds": 2.1,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -45,14 +46,14 @@
   }
  ],
  "sent": {
-  "one-cell": "a923407d184510c11a697ce6e0c023a7a4651ea151e61fa8c883ee7d3cca1da1"
+  "one-cell": "fe6307fdad6d1b182587ecc6078a7a69db8fc6af9ac1321232c22ef0e2c9c529"
  },
  "answers": {
   "one-cell": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973",
    "reads": [
     {
      "values": {
@@ -66,10 +67,10 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973/[Book2.xlsx]Sheet1'!A1+1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973/[Book2.xlsx]Sheet1'!A1+1"
      },
      "shown": {
       "S!A1": "6",
@@ -88,10 +89,10 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973/[Book2.xlsx]Sheet1'!A1+1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-17973/[Book2.xlsx]Sheet1'!A1+1"
      },
      "shown": {
       "S!A1": "6",

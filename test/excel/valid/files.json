@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US",
-  "seconds": 85.8
+  "seconds": 85.8,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "rules": {
@@ -1810,13 +1811,13 @@
  ],
  "window": "A1:P20",
  "sent": {
-  "rules": "6be0eecc9cbf02eda5b20bfe5e4655c594f0045b3f302f8a2588fcc0ef246d77",
+  "rules": "7280a4515f479ba4d0c4125d459293cffb9794ed14185e278ac7310cfd2bfb63",
   "outline": "552580611288cc80ce7c90a79f2308ef8a221b11578bb07ca863d42975b72500",
   "long": "04f6a292093a7963bc2fe08ade02f5a486257b30075166d8b94d109ae7b9f637",
-  "after-insert": "0146b211a5dda1596f15db078520d893d3e23235271055e86a0b333eafb657cb",
-  "after-delete": "63c545ad86bc6625b44ed6b221b07b7d5ca47f22f92defb3495692f2644ecc43",
-  "after-move": "eb43a20a6dd98e91b46b6e2be2f4d9e686c3f6f12cd38b8b9d0a9645a188d8cc",
-  "after-copy": "86550b046ad1c3112678bbae4f3565bc6cf4ae82c88ffdc7d674111f48fd11e1",
+  "after-insert": "18a6ba1af53777d7d0ad3846872999e842a428f531e768a1b1711a4eea807ed9",
+  "after-delete": "7edc54aa3c7dac1619bad070d2307490d7ada515efba975f1a24675f3a37e827",
+  "after-move": "588bf36da7c04da8751665bd569d3dfa08ec936778ec8234d9f8be20725855a0",
+  "after-copy": "643c18f7873536667bd44bafc40d5bd0683cc2ae572b0a8ba4a587c2724a1734",
   "after-outline": "c9e5741accb75ca4d0c2d37f3f1410866f67741d8ef97eb8986a38f9edc0c113"
  },
  "answers": {

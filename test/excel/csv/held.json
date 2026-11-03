@@ -3,7 +3,8 @@
   "version": "16.114.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "date": "2026-10-29",
-  "seconds": 17
+  "seconds": 17,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -206,7 +207,7 @@
   "formulas": "9099a2b39b83a421a3a30aff2aa606469a5b09753e5f97cac7db983010da8187",
   "ragged": "43cc725eeaa71347d75b60a5d473085b96e17ae9e7955c040d8ed069bddbe9dc",
   "w-formats": "50e176901a98bfc3590f75a505cc4900d8e97167bc15c704e3147fa8622577fe",
-  "w-formulas": "a529f4d388120d18e75ae8e320c5039411210261800b6dfc53cfe696ce003cb6",
+  "w-formulas": "ac105022bd02afb3883acef34eea49f9e356529c59c73d1407f444f8204634df",
   "w-hidden": "33a061c03d0012781a598403a0c8b0ff6a12afc374eb22a8d2e266cc9eaf22de",
   "w-formatted-first": "39a649abe4cd7f1f8d0a93670c022c9acee851adb1c9cd6b712c92048bdba69e",
   "w-long-text": "ac6a97143190220bf7dd6ec72fadee0659ef17a71b1fb75941e5c1303828a137"

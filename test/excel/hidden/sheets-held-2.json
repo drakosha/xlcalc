@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 28
+  "seconds": 28,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 11 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "two": {
@@ -370,17 +371,17 @@
   ]
  },
  "sent": {
-  "move-before-two": "6841833853d002da9a9ae5f25c55666b028149f55dff2f91b9286b52ca013478",
-  "move-next-visible": "6841833853d002da9a9ae5f25c55666b028149f55dff2f91b9286b52ca013478",
-  "move-before-second": "6841833853d002da9a9ae5f25c55666b028149f55dff2f91b9286b52ca013478",
-  "move-hidden-before-hidden": "6841833853d002da9a9ae5f25c55666b028149f55dff2f91b9286b52ca013478",
-  "move-before-very": "37a261b06c83d7fd3bd03e00dd2918d791aa572f75a96ca69aa9e98a112fffcd",
-  "move-hidden-first": "3efc7b3a5bf1b0145830f4e4f90e9d80e77e5d65c7e50b0ed4aff3333c0b4391",
-  "move-before-hidden-last": "5e111592f630be129df4e99abb2eabfa08ce75e20ee066c09432c86339bb5a88",
-  "move-end-after-very": "0f8d07e4b9eb04d5c20e46cf4080f99766f47e4ece63e2b2dabba9677b564b23",
-  "insert-before-second": "6841833853d002da9a9ae5f25c55666b028149f55dff2f91b9286b52ca013478",
-  "insert-before-very": "37a261b06c83d7fd3bd03e00dd2918d791aa572f75a96ca69aa9e98a112fffcd",
-  "insert-end-after-very": "0f8d07e4b9eb04d5c20e46cf4080f99766f47e4ece63e2b2dabba9677b564b23"
+  "move-before-two": "c0c5ce307b0a77ba574b2bb42e471c8a3ad0607334930da3febb548fa78ca413",
+  "move-next-visible": "c0c5ce307b0a77ba574b2bb42e471c8a3ad0607334930da3febb548fa78ca413",
+  "move-before-second": "c0c5ce307b0a77ba574b2bb42e471c8a3ad0607334930da3febb548fa78ca413",
+  "move-hidden-before-hidden": "c0c5ce307b0a77ba574b2bb42e471c8a3ad0607334930da3febb548fa78ca413",
+  "move-before-very": "c1c45c4932d450d6855b930663b0c186ad30868dccdac3a2785f63ca1d645c2c",
+  "move-hidden-first": "e803f1767001bbc9210de9e4720512a3d55600d3c4a66d1431fbd141f4b11550",
+  "move-before-hidden-last": "94ef041bc5066554e37affc82053658430e5a56c692ed2ff573dba6e983a8daf",
+  "move-end-after-very": "31be1e703ea69b9d44884e224b98a4790b1d294a143ad7c586eed715e38c85df",
+  "insert-before-second": "c0c5ce307b0a77ba574b2bb42e471c8a3ad0607334930da3febb548fa78ca413",
+  "insert-before-very": "c1c45c4932d450d6855b930663b0c186ad30868dccdac3a2785f63ca1d645c2c",
+  "insert-end-after-very": "31be1e703ea69b9d44884e224b98a4790b1d294a143ad7c586eed715e38c85df"
  },
  "answers": {
   "move-before-two": {

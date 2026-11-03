@@ -2,8 +2,9 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "day": "2026-10-10",
-  "seconds": 29
+  "day": "2026-11-03",
+  "seconds": 29,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but for TODAY(), which the day of this run gives; the books recorded with numberFormat for format"
  },
  "books": {
   "kinds": {
@@ -2649,7 +2650,7 @@
        ],
        "text": "q",
        "style": {
-        "format": "0.0"
+        "numberFormat": "0.0"
        }
       },
       {
@@ -2681,7 +2682,7 @@
         "D1:D13"
        ],
        "style": {
-        "format": 10
+        "numberFormat": 10
        }
       },
       {
@@ -2728,7 +2729,7 @@
         "F1:F13"
        ],
        "style": {
-        "format": "#,##0.00 \"kg\""
+        "numberFormat": "#,##0.00 \"kg\""
        }
       },
       {
@@ -3491,7 +3492,7 @@
        ],
        "text": "q",
        "style": {
-        "format": "0.0"
+        "numberFormat": "0.0"
        }
       },
       {
@@ -3523,7 +3524,7 @@
         "C1:C11"
        ],
        "style": {
-        "format": 10
+        "numberFormat": 10
        }
       },
       {
@@ -3570,7 +3571,7 @@
         "E1:E11"
        ],
        "style": {
-        "format": "#,##0.00 \"kg\""
+        "numberFormat": "#,##0.00 \"kg\""
        }
       },
       {
@@ -4371,7 +4372,7 @@
        ],
        "text": "q",
        "style": {
-        "format": "0.0"
+        "numberFormat": "0.0"
        }
       },
       {
@@ -4403,7 +4404,7 @@
         "D1:D11"
        ],
        "style": {
-        "format": 10
+        "numberFormat": 10
        }
       },
       {
@@ -4450,7 +4451,7 @@
         "F1:F11"
        ],
        "style": {
-        "format": "#,##0.00 \"kg\""
+        "numberFormat": "#,##0.00 \"kg\""
        }
       },
       {
@@ -5291,7 +5292,7 @@
        ],
        "text": "q",
        "style": {
-        "format": "0.0"
+        "numberFormat": "0.0"
        }
       },
       {
@@ -5323,7 +5324,7 @@
         "D1:D11"
        ],
        "style": {
-        "format": 10
+        "numberFormat": 10
        }
       },
       {
@@ -5370,7 +5371,7 @@
         "F1:F11"
        ],
        "style": {
-        "format": "#,##0.00 \"kg\""
+        "numberFormat": "#,##0.00 \"kg\""
        }
       },
       {
@@ -5673,12 +5674,12 @@
   }
  ],
  "sent": {
-  "kinds": "3d265957db33cbcac5ad6a5f27e38310767db7e0f845981a983a87803b74eca1",
+  "kinds": "d6ad2432cea9146257f5756a665cc876750d5e81bbfeaa577141a2064324ec20",
   "wide": "71a1e5b0d49d66680444d7afa99018bcacaa70587ae344fd1f1a0ad9ebcb17cf",
-  "kinds-insert-row": "5d174225dedbd002cf2f3c51150b398ea6ed5b544a73d705dbf9508c7974c918",
-  "kinds-delete-col": "76fa434c1d834a35623afd193108d6001b39729040d6f056cb799f491ce70024",
-  "kinds-move": "71d172cd813f5816a43d65d8818d65dd91b8073429dfb1b9ab567ee51efa5e50",
-  "kinds-rename": "c953b4435712321d7ec121c5055403d45c020592e19700e3c1ac434ad0bba62e"
+  "kinds-insert-row": "27c99c17b36d374307102388a797f80af68d371db109250622847e5a74a73c79",
+  "kinds-delete-col": "5c4a0cd750949ae76e9802dee67a752d12b20668b4d4687f391e87196c405a5b",
+  "kinds-move": "a6e62494b3374b0b61decbd321022fc7e5feccb989549e07701135413ad0ebdc",
+  "kinds-rename": "4a8706bd54acc34cf3aa5d607f56980bea15f8dd7c8144c0f32afcdb4162d75d"
  },
  "answers": {
   "kinds": {
@@ -5707,7 +5708,7 @@
      },
      "D1": {
       "text": "#########",
-      "fill": "#FFEB9C",
+      "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
@@ -5756,7 +5757,7 @@
      },
      "D2": {
       "text": "#########",
-      "fill": "#FFEB9C",
+      "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
@@ -6628,7 +6629,7 @@
      },
      "C1": {
       "text": "#########",
-      "fill": "#FFEB9C",
+      "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
@@ -6649,7 +6650,7 @@
      },
      "C2": {
       "text": "#########",
-      "fill": "#FFEB9C",
+      "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
