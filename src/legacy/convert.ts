@@ -15,7 +15,6 @@
  */
 import type { NameInput } from '../contract.js'
 import { canonical, FormulaError, isRefOp, parse, type Ast } from '../syntax.js'
-import { caseKey } from '../collate.js'
 import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
@@ -153,9 +152,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
 type Names = (name: string, sheet: string | undefined) => { ast: Ast } | undefined
 
 function converter(names: Names) {
-  // the kind of each LET name, by slot; the names being read; the number of `@` put in
-  let locals: Kind[] = []
-  const reading = new Set<string>()
+  // the kind of each LET name, by slot; the number of `@` put in
+  const locals: Kind[] = []
   let added = 0
   const go = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
     const o = node(n, where, slot, scope)
@@ -228,24 +226,14 @@ function converter(names: Names) {
         return { ast: n, kind: 'one' }
     }
   }
-  // a name gives what its formula gives, computed as an array as Excel computes a name; Excel takes only a literal or a
-  // cell for one value, any other formula as a reference (`1+1`, `(2)`, `ABS(-2)`, another name get `@`, but not in N),
-  // and only a literal from 1 for INDEX's place
+  // a name: Excel takes a literal or a cell for one value (a whole number from 1 for INDEX's place, as the literal), any
+  // other formula for a reference whatever it computes (`1+1`, `(2)`, ABS(-2), an array, another name get `@`, not in N)
   const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Omit<Out, 'ast'> => {
-    const sheet = n.sheet ?? scope
-    const def = names(n.name, sheet)
-    const key = `${sheet ?? ''}!${caseKey(n.name)}`
-    if (!def || reading.has(key)) return { kind: 'one' }
-    reading.add(key)
-    const outer = locals
-    locals = []
-    // a name's formula sees the global names
-    const kind = node(def.ast, 'A', 'a', undefined).kind
-    locals = outer
-    reading.delete(key)
-    const lit = def.ast.k === 'un' && def.ast.op === '-' ? def.ast.a : def.ast
-    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def.ast) ? { pos: true as const } : {}) }
-    return { kind: kind === 'rowcol' ? 'array' : kind === 'one' && def.ast.k !== 'ref' ? 'range' : kind }
+    const def = names(n.name, n.sheet ?? scope)?.ast
+    if (!def) return { kind: 'one' }
+    const lit = def.k === 'un' && def.op === '-' ? def.a : def
+    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def) ? { pos: true as const } : {}) }
+    return { kind: def.k === 'ref' && def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
