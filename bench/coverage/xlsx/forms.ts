@@ -14,7 +14,7 @@ import { legacyConverter } from '../../../src/legacy/convert.js'
 import { rectCells, parseRange } from '../../../src/structure/area.js'
 import { copyFormula } from '../../../src/structure/copy.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
-import { oldKind } from '../../../src/xlsx/keep/kind.js'
+import { oldKind } from '../../../src/xlsx/write/kind.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
 import { attributes } from '../../../src/xlsx/xml/scan.js'
 import { readText } from '../../../src/xlsx/xml/text.js'
@@ -135,7 +135,7 @@ export async function predictShown(saved: Uint8Array): Promise<Record<string, Re
 }
 
 /**
- * The forms predicted before Excel ran, by the rule `writeKept` writes a formula by (`keep/kind.ts`): a formula that
+ * The forms predicted before Excel ran, by the rule `writeKept` writes a formula by (`write/kind.ts` as it was then): a formula that
  * spills is a dynamic array over its spill; else of the old kind where reading it back as one gives the formula (`@`
  * taken out of its text), a dynamic array where not. A shared formula's copies of the old kind without their text.
  */

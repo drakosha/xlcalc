@@ -55,7 +55,7 @@ describe('writeXlsx with a snapshot', () => {
     const { data, issues } = await writeXlsx({ book, result: without(['B1', 'E1']) }, { values: 'preserve' })
     expect(codes(issues)).toEqual(['noCachedValues B1 E1'])
     expect(issues[0].message).toBe('a formula without a value in the result is written without one: Excel calculates it when it opens the file')
-    expect(await part(data, 'xl/worksheets/sheet1.xml')).toContain('<c r="B1" cm="1"><f t="array" ref="B1">SUM(A1:A2)</f></c>')
+    expect(await part(data, 'xl/worksheets/sheet1.xml')).toContain('<c r="B1"><f>SUM(A1:A2)</f></c>')
     expect(storedValues(await readXlsx(data))).toEqual({ C1: 1, C2: 2, D1: 1200, D2: 800 })
     const values = await writeXlsx({ book, result: without(['B1']) }, { mode: 'values', values: 'preserve' })
     expect(codes(values.issues)).toEqual(['noCachedValues B1'])

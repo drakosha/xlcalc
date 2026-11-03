@@ -42,7 +42,7 @@ const book: BookInput = {
 }
 
 describe('xlsx writer', () => {
-  it('writes formulas as dynamic array formulas in the file spelling, with their values and spills', async () => {
+  it('writes formulas in the file spelling, of the old kind where that loses nothing, else as dynamic arrays, with their values and spills', async () => {
     const result = compute(book, { clock })
     const { data, issues } = await writeXlsx({ book, result })
     expect(issues).toEqual([])
@@ -50,8 +50,8 @@ describe('xlsx writer', () => {
     expect(sheet).toContain('<c r="B1" cm="1"><f t="array" ref="B1:B3">_xlfn.SEQUENCE(3)</f><v>1</v></c>')
     expect(sheet).toContain('<c r="B2"><v>2</v></c>')
     expect(sheet).toContain('<f t="array" ref="C1:C3">_xlfn.ANCHORARRAY(B1)*2</f>')
-    expect(sheet).toContain('<f t="array" ref="D1">_xlfn.XLOOKUP(2.5,A1:A2,A1:A2)</f>')
-    expect(sheet).toContain('<f t="array" ref="E1">_xlfn.LET(_xlpm.x,A1,_xlpm.x+1)</f>')
+    expect(sheet).toContain('<c r="D1"><f>_xlfn.XLOOKUP(2.5,A1:A2,A1:A2)</f>')
+    expect(sheet).toContain('<c r="E1"><f>_xlfn.LET(_xlpm.x,A1,_xlpm.x+1)</f>')
     expect(sheet).toMatch(/<c r="F1" t="e" vm="\d" cm="1"><f t="array" ref="F1">_xlfn._xlws.FILTER\(A1:A2,A1:A2&gt;5\)<\/f><v>#VALUE!<\/v><\/c>/)
     expect(sheet).toMatch(/<c r="G1" t="e" vm="\d" cm="1">/)
     expect(await part(data, 'xl/workbook.xml')).toContain('<definedName name="rate">\'Data\'!$A$1</definedName><definedName name="here" localSheetId="1">\'It\'\'s\'!$A$1</definedName></definedNames><calcPr fullCalcOnLoad="1"/>')

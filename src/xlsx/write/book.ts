@@ -1,7 +1,7 @@
 /**
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
  * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
- * hyperlinks, styles, shared strings, the dynamic array metadata when there are formulas, the date system and iterative
+ * hyperlinks, styles, shared strings, the dynamic array metadata when there are dynamic array formulas, the date system and iterative
  * calculation, the links to other workbooks with the values stored of them (`links.ts`), and the book's locale as a
  * custom document property (xlsx has no place for it). A formula file asks Excel to compute the book on opening, so
  * Excel shows its own values over the ones written, whichever values it stores.
@@ -37,6 +37,7 @@ import { RICH_TYPE } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseRange } from '../../structure/area.js'
 import { areaText, sheetPrefix } from '../keep/refs.js'
+import { oldKinds, type OldKinds } from './kind.js'
 
 
 export const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
@@ -137,6 +138,8 @@ export interface BookWriting {
   epoch: number
   /** The cells of a sheet its file marks with a PivotTable's filter button (`pivotButtonsMarked`), by row and column (`row * MAX_COLS + col`). */
   buttons(sheet: number): ReadonlySet<number> | undefined
+  /** The form of the old kind of the book's formulas (`kind.ts`). */
+  oldKind: OldKinds
 }
 
 export function bookWriting(book: BookInput): BookWriting {
@@ -153,6 +156,7 @@ export function bookWriting(book: BookInput): BookWriting {
     active: activeSheetIndex(book),
     epoch: epochOf(book.dateSystem),
     buttons: (i) => pivotButtons(book, i),
+    oldKind: oldKinds(book.names),
   }
 }
 
@@ -205,6 +209,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       mode,
       result: cells?.[i],
       shapes,
+      oldKind: bw.oldKind,
       keys: keys[i],
       ...(resultKeys ? { resultKeys: resultKeys[i] } : {}),
       richError,
@@ -219,8 +224,9 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
     return w
   })
-  const dynamic = sheets.some((s) => s.formulas)
-  if (dynamic && unasked) issues.add('noCachedValues', { key: 'noResult' })
+  const dynamic = sheets.some((s) => s.dynamic)
+  const formulas = sheets.some((s) => s.formulas)
+  if (formulas && unasked) issues.add('noCachedValues', { key: 'noResult' })
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
@@ -287,7 +293,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   })
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
-  const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
+  const calc = `<calcPr${formulas ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
   files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}${wbExt ? `<extLst>${wbExt}</extLst>` : ''}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })

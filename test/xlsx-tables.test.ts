@@ -47,7 +47,7 @@ describe('tables in xlsx', () => {
     expect(await text(data, 'xl/tables/table2.xml')).toContain('headerRowCount="0"')
     const s1 = await text(data, 'xl/worksheets/sheet1.xml')
     expect(s1).toContain('<f>SUBTOTAL(109,Sales[Qty])</f>')
-    expect(s1).toContain('<f t="array" ref="D3">Sales[[#This Row],[Qty]]*Sales[[#This Row],[@at]]</f>')
+    expect(s1).toContain('<f>Sales[[#This Row],[Qty]]*Sales[[#This Row],[@at]]</f>')
     expect(await text(data, 'xl/workbook.xml')).toContain('<definedName name="qty">Sales[Qty]</definedName>')
     const read = await readXlsx(data)
     expect(read.issues).toEqual([])
