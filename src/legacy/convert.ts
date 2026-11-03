@@ -109,6 +109,9 @@ const wider = (a: Kind, b: Kind): Kind => (a === 'range' || b === 'range' ? 'ran
 /** A whole number literal from 1 to 65535 (Excel's two-byte integer, 65536 is not one): INDEX's place that leaves one cell. */
 const counting = (n: Ast) => n.k === 'num' && Number.isInteger(n.v) && n.v >= 1 && n.v <= 65535
 
+/** `pos` of an `Out` where `yes`. */
+const placed = (yes: boolean | undefined): Pick<Out, 'pos'> => (yes ? { pos: true } : {})
+
 /** The size of a literal reference: rows and columns, or null for anything else. */
 function size(n: Ast): [number, number] | null {
   if (n.k === 'paren') return size(n.a)
@@ -180,12 +183,12 @@ function converter(names: Names) {
       case 'name':
         return { ast: n, ...nameKind(n, scope) }
       case 'num':
-        return { ast: n, kind: 'one', ...(counting(n) ? { pos: true as const } : {}) }
+        return { ast: n, kind: 'one', ...placed(counting(n)) }
       case 'un':
       case 'pct': {
         const a = go(n.a, where, 'v', scope)
         // Excel reads `+2` as the literal 2 (`+MATCH(…)` is not MATCH)
-        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array', ...(n.k === 'un' && n.op === '+' && counting(n.a) ? { pos: true as const } : {}) }
+        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array', ...placed(n.k === 'un' && n.op === '+' && counting(n.a)) }
       }
       case 'bin': {
         // the reference operators take references whole and answer one
@@ -201,7 +204,7 @@ function converter(names: Names) {
       // `(@A1:A3)`: the operand in its place gets `@`
       case 'paren': {
         const a = go(n.a, where, slot, scope)
-        return { ast: { ...n, a: a.ast }, kind: a.kind, ...(a.pos ? { pos: true as const } : {}) }
+        return { ast: { ...n, a: a.ast }, kind: a.kind, ...placed(a.pos) }
       }
       case 'fn': {
         const args = n.args.map((a, i) => {
@@ -209,7 +212,7 @@ function converter(names: Names) {
           return go(a, w, s, scope)
         })
         // Excel knows MATCH's answer for a place, and no other call's (XMATCH, ROWS, COUNT are not)
-        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args), ...(n.name === 'MATCH' ? { pos: true as const } : {}) }
+        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args), ...placed(n.name === 'MATCH') }
       }
       case 'let': {
         // the values and the calculation are references or arrays, as an argument of IF is
@@ -235,10 +238,10 @@ function converter(names: Names) {
     const def = names(n.name, n.sheet ?? scope)?.ast
     if (!def) return { kind: 'one' }
     const lit = def.k === 'un' && def.op === '-' ? def.a : def
-    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def) ? { pos: true as const } : {}) }
+    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...placed(counting(def)) }
     if (def.k === 'ref') return { kind: def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
     // a range of the reference operators (`'S'!B1:'S'!B8`) is a formula too
-    return { kind: 'range', ...(def.k === 'ref3d' ? {} : { named: true as const }) }
+    return { kind: 'range', ...(def.k === 'ref3d' ? {} : { named: true }) }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
