@@ -13,6 +13,8 @@ permissions:
 jobs:
   test:
     name: test (Node ${{ matrix.node }})
+    # a tag's run only packs, as in .gitlab-ci.yml: the tagged commit was tested when master was pushed
+    if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
