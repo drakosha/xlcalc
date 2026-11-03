@@ -624,6 +624,23 @@ function Step($xl, $wb, $s) {
     }
     # the calculation option Excel took from the book it opened first (XlCalculation: -4105 automatic, -4135 manual, 2 semiautomatic)
     'calcMode' { Cell ([double]$xl.Calculation) }
+    # a linked book (an xlsx in base64) written beside the book as file, opened read-only or left on the disk; then
+    # closed and removed (bench/windows/links.ts)
+    'source' {
+      try {
+        $f = Join-Path $dir $s.file
+        [IO.File]::WriteAllBytes($f, [Convert]::FromBase64String($s.data))
+        if ($s.open) { [void]$xl.Workbooks.Open($f, 0, $true) }
+        'null'
+      } catch { Err $_ }
+    }
+    'dropSource' {
+      try {
+        foreach ($o in @($xl.Workbooks)) { if ($o.Name -eq $s.file) { $o.Close($false) } }
+        Remove-Item -Force (Join-Path $dir $s.file)
+        'null'
+      } catch { Err $_ }
+    }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }

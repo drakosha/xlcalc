@@ -9,6 +9,7 @@ import { cellsOf, eachRectCell, refusedOf } from '../coverage/case-book.js'
 import { linksSet } from '../coverage/links.js'
 import type { LinksAnswer, LinksCase, LinksOp, LinksRead } from '../coverage/links/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
+import { writeXlsx } from '../../src/xlsx.js'
 import { fileJobs } from './books.js'
 import { valOf, winFile, type WinCell } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
@@ -16,8 +17,18 @@ import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 /** One read: each rectangle's values, then its cells' shown text and formulas. */
 const readSteps = (c: LinksCase): Step[] => c.read.flatMap((g) => [{ do: 'values', sheet: g.sheet, range: g.range }, { do: 'cells', sheet: g.sheet, cells: cellsOf(g.range).addrs }])
 
-/** An operation as a step of `xl.ps1` (`Struct`): a fill down or a copy on the case's sheet, rows inserted, the sheet renamed. */
-function opStep(o: LinksOp): Step {
+/**
+ * An operation as a step of `xl.ps1`: a fill down or a copy on the case's sheet, rows inserted, the sheet renamed
+ * (`Struct`); a formula typed (`Formula2`); the linked book written beside this one, as `writeXlsx` writes its values,
+ * opened read-only or left on the disk, and closed and removed.
+ */
+async function opStep(o: LinksOp): Promise<Step> {
+  if (o.op === 'enter') return { do: 'set', sheet: o.sheet, cell: o.cell, kind: 'f2', value: o.formula }
+  if (o.op === 'source') {
+    const sheets = Object.entries(o.sheets).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, value]) => [a, { value }])) }))
+    return { do: 'source', file: o.target, open: o.open, data: Buffer.from((await writeXlsx({ book: { sheets } })).data).toString('base64') }
+  }
+  if (o.op === 'dropSource') return { do: 'dropSource', file: o.target }
   if (o.op === 'fillDown') return { do: 'struct', op: 'fillDown', target: o.sheet, to: o.to }
   if (o.op === 'copyRange') return { do: 'struct', op: 'copyRange', sheet: o.sheet, range: o.range, target: o.sheet, to: o.to }
   if (o.op === 'insertRows') return { do: 'struct', op: 'insertRows', sheet: o.sheet, range: o.range }
@@ -46,12 +57,23 @@ export async function stepLinks(set: string, tag: Tag, e: WinEnv): Promise<void>
   const store = fileAnswers<LinksCase, LinksAnswer>(winFile(`links/${set}.json`), built.cases, sent)
   const t0 = Date.now()
   const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
+  // each case's operations as steps, and the books it put beside this one and left there, closed and removed after the save
+  const ops = new Map<string, Step[]>()
+  for (const c of store.todo) {
+    const own = c.ops ?? []
+    const left = own.flatMap((o) => (o.op === 'source' && !own.some((d) => d.op === 'dropSource' && d.target === o.target) ? [{ do: 'dropSource', file: o.target }] : []))
+    ops.set(c.id, [...(await Promise.all(own.map(opStep))), ...left])
+  }
   await fileJobs(
     `links ${set}`,
     `links-${set}`,
     store,
     files,
-    (c) => [{ do: 'links' }, ...readSteps(c), ...(c.ops ?? []).map(opStep), { do: 'full' }, ...readSteps(c), { do: 'saveAs' }],
+    (c) => {
+      const steps = ops.get(c.id)!
+      const m = (c.ops ?? []).length
+      return [{ do: 'links' }, ...readSteps(c), ...steps.slice(0, m), { do: 'full' }, ...readSteps(c), { do: 'saveAs' }, ...steps.slice(m)]
+    },
     (c, a) => {
       const [folder, sources] = a.answers[0] as [string, string[]]
       const n = c.read.length * 2

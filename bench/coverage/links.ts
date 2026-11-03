@@ -46,8 +46,11 @@ function readOf(c: LinksCase, snap: unknown[][]): LinksRead {
   return { values, formulas, local, shown }
 }
 
-/** An operation as a line of the script's argument: op, sheet, range, to. */
-const opLine = (o: LinksOp) => [o.op, o.sheet, 'range' in o ? o.range : '', 'to' in o ? o.to : ''].join('\t')
+/** An operation as a line of the script's argument: op, sheet, range, to; the operations of Windows alone are refused. */
+function opLine(o: LinksOp): string {
+  if (o.op === 'enter' || o.op === 'source' || o.op === 'dropSource') throw new Error(`links: ${o.op} runs on Windows alone`)
+  return [o.op, o.sheet, 'range' in o ? o.range : '', 'to' in o ? o.to : ''].join('\t')
+}
 
 async function runCase(c: LinksCase, data: Uint8Array): Promise<{ answer: LinksAnswer; saved: Uint8Array } | { rejected: string }> {
   const at = mirrorRanges(c.read)
