@@ -487,6 +487,12 @@ export interface ExternalBook {
   sheets: ExternalSheet[]
   /** Its defined names that the workbook's formulas use: workbook-level ones, or ones local to one of its sheets. */
   names?: ExternalName[]
+  /**
+   * The host holds the workbook open, having read it, as Excel reads a linked workbook that is open: a cell missing from
+   * the stored values is blank, a sheet without `cells` is an empty sheet, and entering a formula that refers to it sets
+   * no `refreshError`, which its sheets must not have. A file stores no such flag: it gets the values without the marker.
+   */
+  open?: true
 }
 
 /** A sheet of an external workbook and the values stored from it. */
