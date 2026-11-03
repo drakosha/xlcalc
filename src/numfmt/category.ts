@@ -10,41 +10,15 @@
  * Excel for Mac in a locale other than en-US compares the code, kept in en-US syntax, with its formats in the locale's
  * (`0,00`), so it shows Custom for nearly every code: the package follows Excel for Windows there.
  */
-import type { FormatCategory, FormatChoice, FormatChoiceKey, NumberFormat, NumberFormatCategory } from '../contract.js'
+import type { FormatCategory, NumberFormat, NumberFormatCategory } from '../contract.js'
 import { checkFormat } from '../input/styles.js'
 import { optionalLocale } from '../locale/load.js'
-import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'
 import { BUILTIN_MONEY, builtinIn, EN_BUILTIN } from './builtin.js'
+import { LONG_DATE, LONG_TIME, namesOf } from './choices.js'
 import { splitSections } from './parse.js'
 
-/** en-US's names of the box's categories and the list's items, and the code of its Currency item. */
-const EN_NAMES: FormatNames = {
-  categories: { general: 'General', number: 'Number', currency: 'Currency', accounting: 'Accounting', date: 'Date', time: 'Time', percentage: 'Percentage', fraction: 'Fraction', scientific: 'Scientific', text: 'Text', special: 'Special', custom: 'Custom' },
-  choices: { general: 'General', number: 'Number', currency: 'Currency', accounting: 'Accounting', shortDate: 'Short Date', longDate: 'Long Date', time: 'Time', percentage: 'Percentage', fraction: 'Fraction', scientific: 'Scientific', text: 'Text' },
-  currency: '"$"#,##0.00',
-}
-
-/** The system's long date and time, as Excel keeps them (`[$-x-sysdate]` reads as F800). */
-const LONG_DATE = '[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy'
-const LONG_TIME = '[$-F400]h:mm:ss\\ AM/PM'
-
-/** The list's items in its order, each with what it applies: a built-in format by number, or a code (the Currency item's is the locale's). */
-const CHOICES: readonly [FormatChoiceKey, NumberFormat | undefined][] = [
-  ['general', 0],
-  ['number', 2],
-  ['currency', undefined],
-  ['accounting', 44],
-  ['shortDate', 14],
-  ['longDate', LONG_DATE],
-  ['time', LONG_TIME],
-  ['percentage', 10],
-  ['fraction', 12],
-  ['scientific', 11],
-  ['text', 49],
-]
-
-const namesOf = (loc: Locale | undefined): FormatNames => loc?.regional?.formats ?? EN_NAMES
+export { numberFormatChoices } from './choices.js'
 
 /**
  * The category of a number format in `locale` (a loaded locale's tag or a locale object; en-US without one), as the
@@ -58,14 +32,6 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
   if (!loc?.regional) category = categoryOf(typeof format === 'string' ? canonical(format) : EN_KEPT[format], '', undefined)
   else category = typeof format === 'number' ? builtinCategory(format) : categoryOf(canonical(format), builtinIn(loc)(14), loc)
   return { category, name: namesOf(loc).categories[category] }
-}
-
-/** The items of the Number Format list in `locale`, in list order: each item's key, name, the format it applies and that format's code in the locale. */
-export function numberFormatChoices(locale?: string | Locale): FormatChoice[] {
-  const loc = optionalLocale(locale, 'locale')
-  const names = namesOf(loc)
-  const codes = builtinIn(loc)
-  return CHOICES.map(([key, format = names.currency]) => ({ key, name: names.choices[key], format, code: typeof format === 'number' ? codes(format) : format }))
 }
 
 /** A date or time letter outside quotes and escapes: `y m d h s`. */

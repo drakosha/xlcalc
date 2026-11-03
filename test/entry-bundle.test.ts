@@ -1,8 +1,9 @@
 /**
  * The `./entry` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
  * the reading of typed text, the parser and the check of a formula's calls by the functions' declared arguments
- * (`function-arity.ts`), and the formatting of a value for editing, but no function's implementation, no compiler and
- * no computation; it stays under 115 KB, and runs in an empty `node:vm` context with ru-RU given as an object.
+ * (`function-arity.ts`), and the formatting of a value for editing and for the Number Format list's samples, but no
+ * function's implementation, no compiler and no computation; it stays under 115 KB, and runs in an empty `node:vm`
+ * context with ru-RU given as an object.
  */
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
@@ -28,6 +29,7 @@ describe('typed entry without the engine', () => {
     expect(out(`ENTRY.parseEntry('1 234,5', { locale: ruRU }).input`)).toEqual({ value: 1234.5, numberFormat: 4 })
     expect(out(`ENTRY.parseEntry('=СУММ(A1;2', { locale: ruRU }).input`)).toEqual({ formula: 'SUM(A1,2)' })
     expect(out(`ENTRY.parseEntry('=ОКРУГЛ(1,5)', { locale: ruRU }).message`)).toBe('Функция ОКРУГЛ принимает 2 аргумента, а указано 1')
+    expect(out(`ENTRY.numberFormatSamples(1234.5, { locale: ruRU }).map((s) => s.sample)`)).toEqual(['Формат не указан', '1234,50', '1 234,50 ₽', ' 1 234,50 ₽ ', '18.05.1903', 'понедельник, 18 мая 1903 г.', '12:00:00', '123450,00%', '1234 1/2', '1,23E+03', '1234,5'])
     expect(out(`[ENTRY.entryText(0.125, { numberFormat: '0%', locale: ruRU }), ENTRY.entryText(46096, { numberFormat: 14, locale: ruRU }), ENTRY.needsApostrophe('007'), ENTRY.needsApostrophe('abc')]`)).toEqual(['12,5%', '15.03.2026', true, false])
   }, 60_000)
 })
