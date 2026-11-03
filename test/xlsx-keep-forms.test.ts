@@ -1,7 +1,8 @@
 /**
  * `xlcalc/xlsx/keep` writes a cell in the oldest form that loses nothing: a formula the move of rows only readdressed,
  * or one a host typed, goes as a formula of the old kind (`<f>`) where Excel reads that as the workbook computes it, and
- * as a dynamic array (`cm`, the XLDAPR metadata) only where it spills or the old kind would compute it otherwise.
+ * as a dynamic array (`cm`, the XLDAPR metadata) only where it spills or the old kind would compute it otherwise. A row or
+ * a cell written again keeps the extensions the file gives it (`<extLst>`), a cell's moving with it as Excel moves them.
  */
 import { describe, expect, it } from 'vitest'
 import { createSession, type BookInput } from '../src/index.js'
@@ -73,5 +74,27 @@ describe('writeKept: formulas in the oldest form that loses nothing', () => {
     const parts = await written(data, (s) => s.editStructure({ op: 'insertRows', sheet: 'Лист1', row: 2 }))
     expect(cellOf(parts.get('xl/worksheets/sheet2.xml'), 'F1')).toBe(`<c r="F1" cm="1"><f t="array" ref="F1:F4">'Лист1'!A1:A4*10</f><v>10</v></c>`)
     expect(parts.get('xl/metadata.xml')).toBe((await partsOf(data)).get('xl/metadata.xml'))
+  })
+})
+
+describe('writeKept: the extensions of rows and cells', () => {
+  /** Row 1 and cell A2 with extensions of their own, as Excel 16.114 opened and saved them: the cell's moved with it, the row's dropped. */
+  const extended = () =>
+    withParts(
+      { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 5 } } }] },
+      { edit: { 'xl/worksheets/sheet1.xml': (x) => x.replace('<c r="A1"><v>1</v></c>', '$&<extLst><ext uri="{x}"/></extLst>').replace('<v>5</v></c>', '<v>5</v><extLst><ext uri="{y}"/></extLst></c>') } },
+    )
+  const sheet = async (edit: (s: ReturnType<typeof createSession>) => void) => (await written(await extended(), edit)).get('xl/worksheets/sheet1.xml')!
+
+  it("a row written again keeps its extensions, a cell whose value changed its own", async () => {
+    const xml = await sheet((s) => s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 2 } }, { sheet: 'S', cell: 'A2', input: { value: 6 } }]))
+    expect(xml).toContain('<row r="1"><c r="A1"><v>1</v></c><c r="B1"><v>2</v></c><extLst><ext uri="{x}"/></extLst></row>')
+    expect(xml).toContain('<c r="A2"><v>6</v><extLst><ext uri="{y}"/></extLst></c>')
+  })
+
+  it("a cell's extensions move with it as rows are inserted above it", async () => {
+    const xml = await sheet((s) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 }))
+    expect(cellOf(xml, 'A3')).toBe('<c r="A3"><v>5</v><extLst><ext uri="{y}"/></extLst></c>')
+    expect(cellOf(xml, 'A2')).toBe('<c r="A2"><v>1</v></c>')
   })
 })

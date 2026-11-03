@@ -197,12 +197,19 @@ function srcCells(xml: string, row: SrcRow): Map<number, Src> | null {
   return out
 }
 
-/** A file's cell with a new value (`g`'s) and cell format `s`, its formula element and other attributes as the file has them. */
+/** The extensions of an element (`<extLst>`, its last child) whose body lies from `open` to its closing tag before `end`, empty for none. */
+function extOf(xml: string, open: number, end: number): string {
+  if (xml.lastIndexOf('extLst>', end) < open) return ''
+  const last = childrenOf(xml, { qname: '', local: '', start: open, open, end }).at(-1)
+  return last?.local === 'extLst' ? xml.slice(last.start, last.end) : ''
+}
+
+/** A file's cell with a new value (`g`'s) and cell format `s`, its formula element, extensions and other attributes as the file has them. */
 function patched(src: Src, g: Gen, s: number): string {
   const tag = src.text.slice(0, tagEnd(src.text, 0))
   const open = opening(setAttrs(tag, { s: s ? String(s) : null, t: g.t || null, vm: g.vm ?? null }))
   const name = /^<([\w.:-]+)/.exec(tag)![1]
-  return `${open}${src.f ?? ''}${g.value}</${name}>`
+  return `${open}${src.f ?? ''}${g.value}${extOf(src.text, tag.length, src.text.length)}</${name}>`
 }
 
 /** A cell the writer wrote, a formula that does not spill as one of the old kind where that loses nothing (`kind.ts`). */
@@ -437,6 +444,8 @@ function rowXml(s: SrcRow | undefined, a: RowWritten | undefined, b: RowWritten 
     tag = `<${name} r="${r}"${attrs}${rest}>`
   }
   const name = /^<([\w.:-]+)/.exec(tag)![1]
+  // the row's extensions where it stays (Excel drops them when it saves the file)
+  if (s && !x.lines) body += extOf(x.xml, s.bodyStart, s.end)
   return body ? `${opening(tag)}${body}</${name}>` : closing(tag)
 }
 
