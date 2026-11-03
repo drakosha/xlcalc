@@ -3645,7 +3645,7 @@ gave the workbook is gone; `unread`, a sheet whose rows, columns or name changed
 does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
 part would move or be cut by the change, which writeKept does not write; `links`, a link to another workbook was
 removed, moved or pointed at another file, or one of a kind other than a workbook (DDE, OLE) changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
-the data validation of a sheet changed and the file has rules of it the workbook could not read (its [`readXlsx`](#xlcalcxlsx-readxlsx) issues
+the data validation of a sheet changed, by an edit or by its rows or columns moving, and the file has rules of it the workbook could not read (its [`readXlsx`](#xlcalcxlsx-readxlsx) issues
 `dataValidation`), which writing them again would lose, or its conditional formats changed and the file has rules of
 it that cannot go with them as Excel would (a pivot table's, one read over part of its ranges, one whose formulas
 would need making for a new first cell); `layout`, the workbook's carriers were laid out by another version of
