@@ -5,9 +5,9 @@
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
-  "system": "ru-RU (code page 1251)",
+  "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 24.1
+  "seconds": 20.5
  },
  "cases": [
   {
@@ -704,7 +704,7 @@
   "cache": "9026dfc14c8cca4c22769751fc998feffe64fbfd5b331559f3db0ec5478061bb",
   "refresh-error": "28a40af6f64692aadba993872da4b00a52676ede5b078c13dbe2fca045bcc631",
   "two-links": "41f48131a64c9c5e5b682cb286465bb350c1329a271f7a08e16cd3363576e9c7",
-  "targets": "8ce564a20f9579b4a107fcfd6bd88d4365eb4a74b13757d577b92bbd0cf1fdf1",
+  "targets": "188fe5638922e6ca8c74927d4e551f517ca474ef9bdc3cb164a1620cacc766d4",
   "stored-empty": "f4ffe38d615ad7083f33675a44d6888dd2d5272ddd01a35576e8eb2fbaa32a4b",
   "errors": "078d032b4deee87bfb13c7fd7c6bed8203fcd9fcdd78c62e59f78ed0f60724ff",
   "placeholder": "9e706e8481bdb7073e260ea212b6bdc95b29a350b7e99c7dab8a7c5f7c99664f"
@@ -1507,14 +1507,14 @@
   },
   "targets": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-written-92624-1\\Book2.xlsx",
     "C:\\xlcalc\\work\\data\\Book3.xlsx",
     "C:\\data\\Book4.xlsx",
     "C:\\Users\\x\\data\\Book5.xlsx",
     "https://example.com/share/Book6.xlsx",
-    "C:\\xlcalc\\work\\links-written-57669-1\\Sub Folder\\Книга 7.xlsx"
+    "C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\Книга 7.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-92624-1",
    "reads": [
     {
      "values": {
@@ -1544,20 +1544,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1596,20 +1596,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
