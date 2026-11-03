@@ -4,12 +4,8 @@
  * an array, and as INDEX's array. The text Excel shows is the converter's (`SHOWN`), the values the engine's
  * (`predicted`), both committed before Excel ran.
  */
-import { one, type CellSpec, type SpillCase } from './cases.js'
+import { legacyNames } from './legacy-names.js'
 import PREDICTED from './legacy-index-held-3.predicted.json' with { type: 'json' }
-import { fromLegacy } from '../../../src/xlsx.js'
-import type { Val } from '../formulajs.js'
-
-const DATA: Record<string, CellSpec> = Object.fromEntries([4, 8, 15, 16, 23, 42, -3.5, 10.25].map((v, i) => [`B${i + 1}`, v]))
 
 const NAMES = Object.entries({
   s_arr: '{4,5,6}',
@@ -34,23 +30,7 @@ const FORMULAS: Record<string, string> = {
   H12: '=SUMPRODUCT(s_x3)',
 }
 
-const at = Object.keys(FORMULAS)
-
-export function buildSpillCases(): SpillCase[] {
-  return [
-    one('names', 'names of arrays and expressions over ranges as references, in formulas of the old kind', { ...DATA, ...FORMULAS }, at, {
-      book: { sheets: [], names: NAMES },
-      legacy: at.map((a) => `S!${a}`),
-      predicted: PREDICTED.names as Record<string, Val>,
-    }),
-  ]
-}
-
-/** The text Excel 365 was predicted to show for each formula (canonical, without `=`), committed before Excel ran. */
-export const SHOWN: Readonly<Record<string, string>> = PREDICTED.shown
+export const { buildSpillCases, SHOWN, converted } = legacyNames('names of arrays and expressions over ranges as references, in formulas of the old kind', NAMES, FORMULAS, PREDICTED)
 
 /** The predictions Excel did not confirm: INDEX takes a name of a formula that is not a reference as an array, so with one place it gets `@`. */
 export const MISSED: readonly string[] = ['S!H2', 'S!H3', 'S!H10']
-
-/** The converter's text of each formula, written into the prediction. */
-export const converted = () => Object.fromEntries(at.map((a) => [`S!${a}`, fromLegacy(FORMULAS[a].slice(1), { names: NAMES, sheet: 'S' })]))
