@@ -4,7 +4,7 @@
  * added. A style by its fields goes over the style a cell shows, its own or else its row's or column's, as Excel formats
  * a cell over its look. Whole rows and columns are formatted as Excel formats them (`docs/edits.md`): the lines' own
  * styles and formats, the cells of theirs with one of their own, and the cells where they cross a line of the other
- * direction with one, which Excel gives the two merged; an empty cell of a rectangle gets a cell of its own.
+ * direction with one, which Excel gives the two merged; an empty cell of a rectangle gets the look, held in the sheet's looks.
  */
 import type { CellInput, CellReplace, CellStyle, ColumnInput, LayoutEdit, LinePatch, RowInput, SheetInput, StylePatch } from '../contract.js'
 import type { EngineState } from '../engine.js'
