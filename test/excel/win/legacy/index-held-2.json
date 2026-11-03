@@ -1,0 +1,201 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.1,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "held#1",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:B1,0,0,1,1)"
+  },
+  {
+   "id": "held#2",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:B1,1,0,1)"
+  },
+  {
+   "id": "held#3",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:C1,1,0,,1)"
+  },
+  {
+   "id": "held#4",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET((D!B1),1,0,1)"
+  },
+  {
+   "id": "held#5",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,1,0,,)"
+  },
+  {
+   "id": "held#6",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!$B$1,MATCH(8,D!B1:B8,0),0)"
+  },
+  {
+   "id": "held#7",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,1,0,1,1)&OFFSET(D!B1:B3,1,0)"
+  },
+  {
+   "id": "held#8",
+   "group": "held",
+   "fn": "ABS",
+   "formula": "ABS(OFFSET(D!B1:B3,1,0,1,1))"
+  },
+  {
+   "id": "held#9",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))*INDEX(D!C1:C8,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "held#10",
+   "group": "held",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0))"
+  },
+  {
+   "id": "held#11",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MIN(MATCH(8,D!B1:B8,0),2),1)"
+  },
+  {
+   "id": "held#12",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,(((MATCH(8,D!B1:B8,0)))))"
+  },
+  {
+   "id": "held#13",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B:C,MATCH(8,D!B1:B8,0),2)"
+  },
+  {
+   "id": "held#14",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,{4,8,15},0))"
+  },
+  {
+   "id": "held#15",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,-1))"
+  }
+ ],
+ "values": {
+  "held#1": {
+   "t": "n",
+   "v": 4
+  },
+  "held#2": {
+   "t": "n",
+   "v": 8
+  },
+  "held#3": {
+   "t": "n",
+   "v": 8
+  },
+  "held#4": {
+   "t": "n",
+   "v": 8
+  },
+  "held#5": {
+   "t": "n",
+   "v": 8
+  },
+  "held#6": {
+   "t": "n",
+   "v": 15
+  },
+  "held#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#8": {
+   "t": "n",
+   "v": 8
+  },
+  "held#9": {
+   "t": "n",
+   "v": 56
+  },
+  "held#10": {
+   "t": "n",
+   "v": 15
+  },
+  "held#11": {
+   "t": "n",
+   "v": 8
+  },
+  "held#12": {
+   "t": "n",
+   "v": 2
+  },
+  "held#13": {
+   "t": "n",
+   "v": 7
+  },
+  "held#14": {
+   "t": "n",
+   "v": 8
+  },
+  "held#15": {
+   "t": "e",
+   "v": "NA"
+  }
+ },
+ "formulas": {
+  "held#1": "=OFFSET(D!B1:B1,0,0,1,1)",
+  "held#2": "=@OFFSET(D!B1:B1,1,0,1)",
+  "held#3": "=@OFFSET(D!B1:C1,1,0,,1)",
+  "held#4": "=OFFSET((D!B1),1,0,1)",
+  "held#5": "=@OFFSET(D!B1,1,0,,)",
+  "held#6": "=OFFSET(D!$B$1,MATCH(8,D!B1:B8,0),0)",
+  "held#7": "=OFFSET(D!B1,1,0,1,1)&@OFFSET(D!B1:B3,1,0)",
+  "held#8": "=ABS(OFFSET(D!B1:B3,1,0,1,1))",
+  "held#9": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))*INDEX(D!C1:C8,MATCH(8,D!B1:B8,0))",
+  "held#10": "=SUMPRODUCT(INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0))",
+  "held#11": "=@INDEX(D!B1:C3,MIN(MATCH(8,D!B1:B8,0),2),1)",
+  "held#12": "=INDEX(D!B1:C3,1,(((MATCH(8,D!B1:B8,0)))))",
+  "held#13": "=INDEX(D!B:C,MATCH(8,D!B1:B8,0),2)",
+  "held#14": "=INDEX(D!B1:B8,MATCH(8,{4,8,15},0))",
+  "held#15": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,-1))"
+ },
+ "rows": {
+  "held#1": 1,
+  "held#2": 2,
+  "held#3": 3,
+  "held#4": 4,
+  "held#5": 5,
+  "held#6": 6,
+  "held#7": 7,
+  "held#8": 8,
+  "held#9": 9,
+  "held#10": 10,
+  "held#11": 11,
+  "held#12": 12,
+  "held#13": 13,
+  "held#14": 14,
+  "held#15": 15
+ }
+}

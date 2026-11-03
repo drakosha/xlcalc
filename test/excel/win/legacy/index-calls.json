@@ -1,0 +1,2637 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.8,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "column#1",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "column#2",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(2.5,D!L1:L6,1))"
+  },
+  {
+   "id": "column#3",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(2.5,D!L1:L6))"
+  },
+  {
+   "id": "column#4",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(7,{9,7,5},-1))"
+  },
+  {
+   "id": "column#5",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,_xlfn.XMATCH(8,D!B1:B8))"
+  },
+  {
+   "id": "column#6",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,ROW(D!A2))"
+  },
+  {
+   "id": "column#7",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,ROW())"
+  },
+  {
+   "id": "column#8",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COLUMN(D!B1))"
+  },
+  {
+   "id": "column#9",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COLUMN())"
+  },
+  {
+   "id": "column#10",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,ROWS(D!B1:B2))"
+  },
+  {
+   "id": "column#11",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COLUMNS(D!B1:C1))"
+  },
+  {
+   "id": "column#12",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COUNT(D!B1:B2))"
+  },
+  {
+   "id": "column#13",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COUNTA(D!B1:B2))"
+  },
+  {
+   "id": "column#14",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,COUNTIF(D!B1:B8,\">20\"))"
+  },
+  {
+   "id": "column#15",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,INT(2.5))"
+  },
+  {
+   "id": "column#16",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,ROUND(2.4,0))"
+  },
+  {
+   "id": "column#17",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MAX(1,2))"
+  },
+  {
+   "id": "column#18",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MIN(2,3))"
+  },
+  {
+   "id": "column#19",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,ABS(-2))"
+  },
+  {
+   "id": "column#20",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,LEN(\"ab\"))"
+  },
+  {
+   "id": "column#21",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,IF(D!A4,2,1))"
+  },
+  {
+   "id": "column#22",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,CHOOSE(1,2,3))"
+  },
+  {
+   "id": "column#23",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,VALUE(\"2\"))"
+  },
+  {
+   "id": "column#24",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,--\"2\")"
+  },
+  {
+   "id": "column#25",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))"
+  },
+  {
+   "id": "column#26",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(15,D!B1:B8,0)-1)"
+  },
+  {
+   "id": "column#27",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(16,D!B1:B8,0)/2)"
+  },
+  {
+   "id": "column#28",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,IFERROR(MATCH(8,D!B1:B8,0),1))"
+  },
+  {
+   "id": "column#29",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,SUM(1,1))"
+  },
+  {
+   "id": "column#30",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,FIND(\"b\",\"ab\"))"
+  },
+  {
+   "id": "column#31",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,SEARCH(\"b\",\"ab\"))"
+  },
+  {
+   "id": "column#32",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MONTH(\"2025-02-01\"))"
+  },
+  {
+   "id": "column#33",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,AREAS(D!B1))"
+  },
+  {
+   "id": "column#34",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,FACT(2))"
+  },
+  {
+   "id": "column#35",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,(MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "column#36",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(D!B1:B3,D!B1:B8,0))"
+  },
+  {
+   "id": "column#37",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,INDEX(D!L1:L6,2))"
+  },
+  {
+   "id": "column#38",
+   "group": "column",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,SUMPRODUCT((D!B1:B8>20)*1))"
+  },
+  {
+   "id": "row#1",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1)"
+  },
+  {
+   "id": "row#2",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(2.5,D!L1:L6,1),1)"
+  },
+  {
+   "id": "row#3",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(2.5,D!L1:L6),1)"
+  },
+  {
+   "id": "row#4",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(7,{9,7,5},-1),1)"
+  },
+  {
+   "id": "row#5",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,_xlfn.XMATCH(8,D!B1:B8),1)"
+  },
+  {
+   "id": "row#6",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROW(D!A2),1)"
+  },
+  {
+   "id": "row#7",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROW(),1)"
+  },
+  {
+   "id": "row#8",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMN(D!B1),1)"
+  },
+  {
+   "id": "row#9",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMN(),1)"
+  },
+  {
+   "id": "row#10",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROWS(D!B1:B2),1)"
+  },
+  {
+   "id": "row#11",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMNS(D!B1:C1),1)"
+  },
+  {
+   "id": "row#12",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNT(D!B1:B2),1)"
+  },
+  {
+   "id": "row#13",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNTA(D!B1:B2),1)"
+  },
+  {
+   "id": "row#14",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNTIF(D!B1:B8,\">20\"),1)"
+  },
+  {
+   "id": "row#15",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,INT(2.5),1)"
+  },
+  {
+   "id": "row#16",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROUND(2.4,0),1)"
+  },
+  {
+   "id": "row#17",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MAX(1,2),1)"
+  },
+  {
+   "id": "row#18",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MIN(2,3),1)"
+  },
+  {
+   "id": "row#19",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ABS(-2),1)"
+  },
+  {
+   "id": "row#20",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,LEN(\"ab\"),1)"
+  },
+  {
+   "id": "row#21",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,IF(D!A4,2,1),1)"
+  },
+  {
+   "id": "row#22",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,CHOOSE(1,2,3),1)"
+  },
+  {
+   "id": "row#23",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,VALUE(\"2\"),1)"
+  },
+  {
+   "id": "row#24",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,--\"2\",1)"
+  },
+  {
+   "id": "row#25",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0),1)"
+  },
+  {
+   "id": "row#26",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(15,D!B1:B8,0)-1,1)"
+  },
+  {
+   "id": "row#27",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(16,D!B1:B8,0)/2,1)"
+  },
+  {
+   "id": "row#28",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,IFERROR(MATCH(8,D!B1:B8,0),1),1)"
+  },
+  {
+   "id": "row#29",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SUM(1,1),1)"
+  },
+  {
+   "id": "row#30",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,FIND(\"b\",\"ab\"),1)"
+  },
+  {
+   "id": "row#31",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SEARCH(\"b\",\"ab\"),1)"
+  },
+  {
+   "id": "row#32",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MONTH(\"2025-02-01\"),1)"
+  },
+  {
+   "id": "row#33",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,AREAS(D!B1),1)"
+  },
+  {
+   "id": "row#34",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,FACT(2),1)"
+  },
+  {
+   "id": "row#35",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,(MATCH(8,D!B1:B8,0)),1)"
+  },
+  {
+   "id": "row#36",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(D!B1:B3,D!B1:B8,0),1)"
+  },
+  {
+   "id": "row#37",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,INDEX(D!L1:L6,2),1)"
+  },
+  {
+   "id": "row#38",
+   "group": "row",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SUMPRODUCT((D!B1:B8>20)*1),1)"
+  },
+  {
+   "id": "col#1",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "col#2",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(2.5,D!L1:L6,1))"
+  },
+  {
+   "id": "col#3",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(2.5,D!L1:L6))"
+  },
+  {
+   "id": "col#4",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(7,{9,7,5},-1))"
+  },
+  {
+   "id": "col#5",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,_xlfn.XMATCH(8,D!B1:B8))"
+  },
+  {
+   "id": "col#6",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,ROW(D!A2))"
+  },
+  {
+   "id": "col#7",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,ROW())"
+  },
+  {
+   "id": "col#8",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COLUMN(D!B1))"
+  },
+  {
+   "id": "col#9",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COLUMN())"
+  },
+  {
+   "id": "col#10",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,ROWS(D!B1:B2))"
+  },
+  {
+   "id": "col#11",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COLUMNS(D!B1:C1))"
+  },
+  {
+   "id": "col#12",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COUNT(D!B1:B2))"
+  },
+  {
+   "id": "col#13",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COUNTA(D!B1:B2))"
+  },
+  {
+   "id": "col#14",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,COUNTIF(D!B1:B8,\">20\"))"
+  },
+  {
+   "id": "col#15",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,INT(2.5))"
+  },
+  {
+   "id": "col#16",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,ROUND(2.4,0))"
+  },
+  {
+   "id": "col#17",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MAX(1,2))"
+  },
+  {
+   "id": "col#18",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MIN(2,3))"
+  },
+  {
+   "id": "col#19",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,ABS(-2))"
+  },
+  {
+   "id": "col#20",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,LEN(\"ab\"))"
+  },
+  {
+   "id": "col#21",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,IF(D!A4,2,1))"
+  },
+  {
+   "id": "col#22",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,CHOOSE(1,2,3))"
+  },
+  {
+   "id": "col#23",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,VALUE(\"2\"))"
+  },
+  {
+   "id": "col#24",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,--\"2\")"
+  },
+  {
+   "id": "col#25",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))"
+  },
+  {
+   "id": "col#26",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(15,D!B1:B8,0)-1)"
+  },
+  {
+   "id": "col#27",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(16,D!B1:B8,0)/2)"
+  },
+  {
+   "id": "col#28",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,IFERROR(MATCH(8,D!B1:B8,0),1))"
+  },
+  {
+   "id": "col#29",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,SUM(1,1))"
+  },
+  {
+   "id": "col#30",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,FIND(\"b\",\"ab\"))"
+  },
+  {
+   "id": "col#31",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,SEARCH(\"b\",\"ab\"))"
+  },
+  {
+   "id": "col#32",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MONTH(\"2025-02-01\"))"
+  },
+  {
+   "id": "col#33",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,AREAS(D!B1))"
+  },
+  {
+   "id": "col#34",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,FACT(2))"
+  },
+  {
+   "id": "col#35",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,(MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "col#36",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,MATCH(D!B1:B3,D!B1:B8,0))"
+  },
+  {
+   "id": "col#37",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,INDEX(D!L1:L6,2))"
+  },
+  {
+   "id": "col#38",
+   "group": "col",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,SUMPRODUCT((D!B1:B8>20)*1))"
+  },
+  {
+   "id": "alone#1",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "alone#2",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(2.5,D!L1:L6,1))"
+  },
+  {
+   "id": "alone#3",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(2.5,D!L1:L6))"
+  },
+  {
+   "id": "alone#4",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(7,{9,7,5},-1))"
+  },
+  {
+   "id": "alone#5",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,_xlfn.XMATCH(8,D!B1:B8))"
+  },
+  {
+   "id": "alone#6",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROW(D!A2))"
+  },
+  {
+   "id": "alone#7",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROW())"
+  },
+  {
+   "id": "alone#8",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMN(D!B1))"
+  },
+  {
+   "id": "alone#9",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMN())"
+  },
+  {
+   "id": "alone#10",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROWS(D!B1:B2))"
+  },
+  {
+   "id": "alone#11",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COLUMNS(D!B1:C1))"
+  },
+  {
+   "id": "alone#12",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNT(D!B1:B2))"
+  },
+  {
+   "id": "alone#13",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNTA(D!B1:B2))"
+  },
+  {
+   "id": "alone#14",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,COUNTIF(D!B1:B8,\">20\"))"
+  },
+  {
+   "id": "alone#15",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,INT(2.5))"
+  },
+  {
+   "id": "alone#16",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ROUND(2.4,0))"
+  },
+  {
+   "id": "alone#17",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MAX(1,2))"
+  },
+  {
+   "id": "alone#18",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MIN(2,3))"
+  },
+  {
+   "id": "alone#19",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,ABS(-2))"
+  },
+  {
+   "id": "alone#20",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,LEN(\"ab\"))"
+  },
+  {
+   "id": "alone#21",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,IF(D!A4,2,1))"
+  },
+  {
+   "id": "alone#22",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,CHOOSE(1,2,3))"
+  },
+  {
+   "id": "alone#23",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,VALUE(\"2\"))"
+  },
+  {
+   "id": "alone#24",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,--\"2\")"
+  },
+  {
+   "id": "alone#25",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))"
+  },
+  {
+   "id": "alone#26",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(15,D!B1:B8,0)-1)"
+  },
+  {
+   "id": "alone#27",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(16,D!B1:B8,0)/2)"
+  },
+  {
+   "id": "alone#28",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,IFERROR(MATCH(8,D!B1:B8,0),1))"
+  },
+  {
+   "id": "alone#29",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SUM(1,1))"
+  },
+  {
+   "id": "alone#30",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,FIND(\"b\",\"ab\"))"
+  },
+  {
+   "id": "alone#31",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SEARCH(\"b\",\"ab\"))"
+  },
+  {
+   "id": "alone#32",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MONTH(\"2025-02-01\"))"
+  },
+  {
+   "id": "alone#33",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,AREAS(D!B1))"
+  },
+  {
+   "id": "alone#34",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,FACT(2))"
+  },
+  {
+   "id": "alone#35",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,(MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "alone#36",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(D!B1:B3,D!B1:B8,0))"
+  },
+  {
+   "id": "alone#37",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,INDEX(D!L1:L6,2))"
+  },
+  {
+   "id": "alone#38",
+   "group": "alone",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,SUMPRODUCT((D!B1:B8>20)*1))"
+  },
+  {
+   "id": "across#1",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "across#2",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(2.5,D!L1:L6,1))"
+  },
+  {
+   "id": "across#3",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(2.5,D!L1:L6))"
+  },
+  {
+   "id": "across#4",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(7,{9,7,5},-1))"
+  },
+  {
+   "id": "across#5",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,_xlfn.XMATCH(8,D!B1:B8))"
+  },
+  {
+   "id": "across#6",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,ROW(D!A2))"
+  },
+  {
+   "id": "across#7",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,ROW())"
+  },
+  {
+   "id": "across#8",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COLUMN(D!B1))"
+  },
+  {
+   "id": "across#9",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COLUMN())"
+  },
+  {
+   "id": "across#10",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,ROWS(D!B1:B2))"
+  },
+  {
+   "id": "across#11",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COLUMNS(D!B1:C1))"
+  },
+  {
+   "id": "across#12",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COUNT(D!B1:B2))"
+  },
+  {
+   "id": "across#13",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COUNTA(D!B1:B2))"
+  },
+  {
+   "id": "across#14",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,COUNTIF(D!B1:B8,\">20\"))"
+  },
+  {
+   "id": "across#15",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,INT(2.5))"
+  },
+  {
+   "id": "across#16",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,ROUND(2.4,0))"
+  },
+  {
+   "id": "across#17",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MAX(1,2))"
+  },
+  {
+   "id": "across#18",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MIN(2,3))"
+  },
+  {
+   "id": "across#19",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,ABS(-2))"
+  },
+  {
+   "id": "across#20",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,LEN(\"ab\"))"
+  },
+  {
+   "id": "across#21",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,IF(D!A4,2,1))"
+  },
+  {
+   "id": "across#22",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,CHOOSE(1,2,3))"
+  },
+  {
+   "id": "across#23",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,VALUE(\"2\"))"
+  },
+  {
+   "id": "across#24",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,--\"2\")"
+  },
+  {
+   "id": "across#25",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))"
+  },
+  {
+   "id": "across#26",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(15,D!B1:B8,0)-1)"
+  },
+  {
+   "id": "across#27",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(16,D!B1:B8,0)/2)"
+  },
+  {
+   "id": "across#28",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,IFERROR(MATCH(8,D!B1:B8,0),1))"
+  },
+  {
+   "id": "across#29",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,SUM(1,1))"
+  },
+  {
+   "id": "across#30",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,FIND(\"b\",\"ab\"))"
+  },
+  {
+   "id": "across#31",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,SEARCH(\"b\",\"ab\"))"
+  },
+  {
+   "id": "across#32",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MONTH(\"2025-02-01\"))"
+  },
+  {
+   "id": "across#33",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,AREAS(D!B1))"
+  },
+  {
+   "id": "across#34",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,FACT(2))"
+  },
+  {
+   "id": "across#35",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,(MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "across#36",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,MATCH(D!B1:B3,D!B1:B8,0))"
+  },
+  {
+   "id": "across#37",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,INDEX(D!L1:L6,2))"
+  },
+  {
+   "id": "across#38",
+   "group": "across",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:D1,SUMPRODUCT((D!B1:B8>20)*1))"
+  },
+  {
+   "id": "form#1",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),MATCH(7,D!C1:C8,0))"
+  },
+  {
+   "id": "form#2",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B:B,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#3",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!1:1,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#4",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX({1;2;3},MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#5",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX({1,2;3,4},MATCH(8,D!B1:B8,0),1)"
+  },
+  {
+   "id": "form#6",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX({1,2,3},MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#7",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1,1)"
+  },
+  {
+   "id": "form#8",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0)"
+  },
+  {
+   "id": "form#9",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,0,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#10",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),)"
+  },
+  {
+   "id": "form#11",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))+1"
+  },
+  {
+   "id": "form#12",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "SUM(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "form#13",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "SUM(D!B1:INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "form#14",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))&\"\""
+  },
+  {
+   "id": "form#15",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),D!A12)"
+  },
+  {
+   "id": "form#16",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,D!A12,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#17",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),2.5)"
+  },
+  {
+   "id": "form#18",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "OFFSET(D!B1,MATCH(8,D!B1:B8,0)-1,0)"
+  },
+  {
+   "id": "form#19",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "OFFSET(D!B1,1,0)"
+  },
+  {
+   "id": "form#20",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "OFFSET(D!B1,0,0,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#21",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "OFFSET(D!B1:B3,MATCH(8,D!B1:B8,0)-1,0)"
+  },
+  {
+   "id": "form#22",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "OFFSET(D!B1,MATCH(8,D!B1:B8,0),0,1,1)"
+  },
+  {
+   "id": "form#23",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDIRECT(\"D!B\"&MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#24",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDIRECT(\"D!B2\")"
+  },
+  {
+   "id": "form#25",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "INDIRECT(\"D!B1:B\"&MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "form#26",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "CHOOSE(MATCH(8,D!B1:B8,0),D!B1,D!C1)"
+  },
+  {
+   "id": "form#27",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "CHOOSE(MATCH(8,D!B1:B8,0),D!B1:B3,D!C1:C3)"
+  },
+  {
+   "id": "form#28",
+   "group": "form",
+   "fn": "INDEX",
+   "formula": "CHOOSE(MATCH(8,D!B1:B8,0),1,2)"
+  }
+ ],
+ "values": {
+  "column#1": {
+   "t": "n",
+   "v": 8
+  },
+  "column#2": {
+   "t": "n",
+   "v": 8
+  },
+  "column#3": {
+   "t": "n",
+   "v": 8
+  },
+  "column#4": {
+   "t": "n",
+   "v": 8
+  },
+  "column#5": {
+   "t": "n",
+   "v": 8
+  },
+  "column#6": {
+   "t": "n",
+   "v": 8
+  },
+  "column#7": {
+   "t": "n",
+   "v": -3.5
+  },
+  "column#8": {
+   "t": "n",
+   "v": 8
+  },
+  "column#9": {
+   "t": "n",
+   "v": 4
+  },
+  "column#10": {
+   "t": "n",
+   "v": 8
+  },
+  "column#11": {
+   "t": "n",
+   "v": 8
+  },
+  "column#12": {
+   "t": "n",
+   "v": 8
+  },
+  "column#13": {
+   "t": "n",
+   "v": 8
+  },
+  "column#14": {
+   "t": "n",
+   "v": 8
+  },
+  "column#15": {
+   "t": "n",
+   "v": 8
+  },
+  "column#16": {
+   "t": "n",
+   "v": 8
+  },
+  "column#17": {
+   "t": "n",
+   "v": 8
+  },
+  "column#18": {
+   "t": "n",
+   "v": 8
+  },
+  "column#19": {
+   "t": "n",
+   "v": 8
+  },
+  "column#20": {
+   "t": "n",
+   "v": 8
+  },
+  "column#21": {
+   "t": "n",
+   "v": 8
+  },
+  "column#22": {
+   "t": "n",
+   "v": 8
+  },
+  "column#23": {
+   "t": "n",
+   "v": 8
+  },
+  "column#24": {
+   "t": "n",
+   "v": 8
+  },
+  "column#25": {
+   "t": "n",
+   "v": 8
+  },
+  "column#26": {
+   "t": "n",
+   "v": 8
+  },
+  "column#27": {
+   "t": "n",
+   "v": 8
+  },
+  "column#28": {
+   "t": "n",
+   "v": 8
+  },
+  "column#29": {
+   "t": "n",
+   "v": 8
+  },
+  "column#30": {
+   "t": "n",
+   "v": 8
+  },
+  "column#31": {
+   "t": "n",
+   "v": 8
+  },
+  "column#32": {
+   "t": "n",
+   "v": 8
+  },
+  "column#33": {
+   "t": "n",
+   "v": 4
+  },
+  "column#34": {
+   "t": "n",
+   "v": 8
+  },
+  "column#35": {
+   "t": "n",
+   "v": 8
+  },
+  "column#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "column#37": {
+   "t": "n",
+   "v": 8
+  },
+  "column#38": {
+   "t": "n",
+   "v": 8
+  },
+  "row#1": {
+   "t": "n",
+   "v": 8
+  },
+  "row#2": {
+   "t": "n",
+   "v": 8
+  },
+  "row#3": {
+   "t": "n",
+   "v": 8
+  },
+  "row#4": {
+   "t": "n",
+   "v": 8
+  },
+  "row#5": {
+   "t": "n",
+   "v": 8
+  },
+  "row#6": {
+   "t": "n",
+   "v": 8
+  },
+  "row#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "row#8": {
+   "t": "n",
+   "v": 8
+  },
+  "row#9": {
+   "t": "n",
+   "v": 4
+  },
+  "row#10": {
+   "t": "n",
+   "v": 8
+  },
+  "row#11": {
+   "t": "n",
+   "v": 8
+  },
+  "row#12": {
+   "t": "n",
+   "v": 8
+  },
+  "row#13": {
+   "t": "n",
+   "v": 8
+  },
+  "row#14": {
+   "t": "n",
+   "v": 8
+  },
+  "row#15": {
+   "t": "n",
+   "v": 8
+  },
+  "row#16": {
+   "t": "n",
+   "v": 8
+  },
+  "row#17": {
+   "t": "n",
+   "v": 8
+  },
+  "row#18": {
+   "t": "n",
+   "v": 8
+  },
+  "row#19": {
+   "t": "n",
+   "v": 8
+  },
+  "row#20": {
+   "t": "n",
+   "v": 8
+  },
+  "row#21": {
+   "t": "n",
+   "v": 8
+  },
+  "row#22": {
+   "t": "n",
+   "v": 8
+  },
+  "row#23": {
+   "t": "n",
+   "v": 8
+  },
+  "row#24": {
+   "t": "n",
+   "v": 8
+  },
+  "row#25": {
+   "t": "n",
+   "v": 8
+  },
+  "row#26": {
+   "t": "n",
+   "v": 8
+  },
+  "row#27": {
+   "t": "n",
+   "v": 8
+  },
+  "row#28": {
+   "t": "n",
+   "v": 8
+  },
+  "row#29": {
+   "t": "n",
+   "v": 8
+  },
+  "row#30": {
+   "t": "n",
+   "v": 8
+  },
+  "row#31": {
+   "t": "n",
+   "v": 8
+  },
+  "row#32": {
+   "t": "n",
+   "v": 8
+  },
+  "row#33": {
+   "t": "n",
+   "v": 4
+  },
+  "row#34": {
+   "t": "n",
+   "v": 8
+  },
+  "row#35": {
+   "t": "n",
+   "v": 8
+  },
+  "row#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "row#37": {
+   "t": "n",
+   "v": 8
+  },
+  "row#38": {
+   "t": "n",
+   "v": 8
+  },
+  "col#1": {
+   "t": "n",
+   "v": 2
+  },
+  "col#2": {
+   "t": "n",
+   "v": 2
+  },
+  "col#3": {
+   "t": "n",
+   "v": 2
+  },
+  "col#4": {
+   "t": "n",
+   "v": 2
+  },
+  "col#5": {
+   "t": "n",
+   "v": 2
+  },
+  "col#6": {
+   "t": "n",
+   "v": 2
+  },
+  "col#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "col#8": {
+   "t": "n",
+   "v": 2
+  },
+  "col#9": {
+   "t": "n",
+   "v": 4
+  },
+  "col#10": {
+   "t": "n",
+   "v": 2
+  },
+  "col#11": {
+   "t": "n",
+   "v": 2
+  },
+  "col#12": {
+   "t": "n",
+   "v": 2
+  },
+  "col#13": {
+   "t": "n",
+   "v": 2
+  },
+  "col#14": {
+   "t": "n",
+   "v": 2
+  },
+  "col#15": {
+   "t": "n",
+   "v": 2
+  },
+  "col#16": {
+   "t": "n",
+   "v": 2
+  },
+  "col#17": {
+   "t": "n",
+   "v": 2
+  },
+  "col#18": {
+   "t": "n",
+   "v": 2
+  },
+  "col#19": {
+   "t": "n",
+   "v": 2
+  },
+  "col#20": {
+   "t": "n",
+   "v": 2
+  },
+  "col#21": {
+   "t": "n",
+   "v": 2
+  },
+  "col#22": {
+   "t": "n",
+   "v": 2
+  },
+  "col#23": {
+   "t": "n",
+   "v": 2
+  },
+  "col#24": {
+   "t": "n",
+   "v": 2
+  },
+  "col#25": {
+   "t": "n",
+   "v": 2
+  },
+  "col#26": {
+   "t": "n",
+   "v": 2
+  },
+  "col#27": {
+   "t": "n",
+   "v": 2
+  },
+  "col#28": {
+   "t": "n",
+   "v": 2
+  },
+  "col#29": {
+   "t": "n",
+   "v": 2
+  },
+  "col#30": {
+   "t": "n",
+   "v": 2
+  },
+  "col#31": {
+   "t": "n",
+   "v": 2
+  },
+  "col#32": {
+   "t": "n",
+   "v": 2
+  },
+  "col#33": {
+   "t": "n",
+   "v": 4
+  },
+  "col#34": {
+   "t": "n",
+   "v": 2
+  },
+  "col#35": {
+   "t": "n",
+   "v": 2
+  },
+  "col#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "col#37": {
+   "t": "n",
+   "v": 2
+  },
+  "col#38": {
+   "t": "n",
+   "v": 2
+  },
+  "alone#1": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#2": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#3": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#4": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#5": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#9": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#10": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#11": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#12": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#13": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#14": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#15": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#16": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#17": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#18": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#19": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#20": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#21": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#22": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#23": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#24": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#25": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#26": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#27": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#28": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#29": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#30": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#31": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#32": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#33": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#34": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#35": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "alone#37": {
+   "t": "e",
+   "v": "REF"
+  },
+  "alone#38": {
+   "t": "e",
+   "v": "REF"
+  },
+  "across#1": {
+   "t": "n",
+   "v": 2
+  },
+  "across#2": {
+   "t": "n",
+   "v": 2
+  },
+  "across#3": {
+   "t": "n",
+   "v": 2
+  },
+  "across#4": {
+   "t": "n",
+   "v": 2
+  },
+  "across#5": {
+   "t": "n",
+   "v": 2
+  },
+  "across#6": {
+   "t": "n",
+   "v": 2
+  },
+  "across#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "across#8": {
+   "t": "n",
+   "v": 2
+  },
+  "across#9": {
+   "t": "n",
+   "v": 4
+  },
+  "across#10": {
+   "t": "n",
+   "v": 2
+  },
+  "across#11": {
+   "t": "n",
+   "v": 2
+  },
+  "across#12": {
+   "t": "n",
+   "v": 2
+  },
+  "across#13": {
+   "t": "n",
+   "v": 2
+  },
+  "across#14": {
+   "t": "n",
+   "v": 2
+  },
+  "across#15": {
+   "t": "n",
+   "v": 2
+  },
+  "across#16": {
+   "t": "n",
+   "v": 2
+  },
+  "across#17": {
+   "t": "n",
+   "v": 2
+  },
+  "across#18": {
+   "t": "n",
+   "v": 2
+  },
+  "across#19": {
+   "t": "n",
+   "v": 2
+  },
+  "across#20": {
+   "t": "n",
+   "v": 2
+  },
+  "across#21": {
+   "t": "n",
+   "v": 2
+  },
+  "across#22": {
+   "t": "n",
+   "v": 2
+  },
+  "across#23": {
+   "t": "n",
+   "v": 2
+  },
+  "across#24": {
+   "t": "n",
+   "v": 2
+  },
+  "across#25": {
+   "t": "n",
+   "v": 2
+  },
+  "across#26": {
+   "t": "n",
+   "v": 2
+  },
+  "across#27": {
+   "t": "n",
+   "v": 2
+  },
+  "across#28": {
+   "t": "n",
+   "v": 2
+  },
+  "across#29": {
+   "t": "n",
+   "v": 2
+  },
+  "across#30": {
+   "t": "n",
+   "v": 2
+  },
+  "across#31": {
+   "t": "n",
+   "v": 2
+  },
+  "across#32": {
+   "t": "n",
+   "v": 2
+  },
+  "across#33": {
+   "t": "n",
+   "v": 4
+  },
+  "across#34": {
+   "t": "n",
+   "v": 2
+  },
+  "across#35": {
+   "t": "n",
+   "v": 2
+  },
+  "across#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "across#37": {
+   "t": "n",
+   "v": 2
+  },
+  "across#38": {
+   "t": "n",
+   "v": 2
+  },
+  "form#1": {
+   "t": "n",
+   "v": 7
+  },
+  "form#2": {
+   "t": "n",
+   "v": 8
+  },
+  "form#3": {
+   "t": "n",
+   "v": 4
+  },
+  "form#4": {
+   "t": "n",
+   "v": 2
+  },
+  "form#5": {
+   "t": "n",
+   "v": 3
+  },
+  "form#6": {
+   "t": "n",
+   "v": 2
+  },
+  "form#7": {
+   "t": "n",
+   "v": 8
+  },
+  "form#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#11": {
+   "t": "n",
+   "v": 9
+  },
+  "form#12": {
+   "t": "n",
+   "v": 8
+  },
+  "form#13": {
+   "t": "n",
+   "v": 12
+  },
+  "form#14": {
+   "t": "s",
+   "v": "8"
+  },
+  "form#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#17": {
+   "t": "n",
+   "v": 7
+  },
+  "form#18": {
+   "t": "n",
+   "v": 8
+  },
+  "form#19": {
+   "t": "n",
+   "v": 8
+  },
+  "form#20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#21": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#22": {
+   "t": "n",
+   "v": 15
+  },
+  "form#23": {
+   "t": "n",
+   "v": 8
+  },
+  "form#24": {
+   "t": "n",
+   "v": 8
+  },
+  "form#25": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#26": {
+   "t": "n",
+   "v": 2
+  },
+  "form#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "form#28": {
+   "t": "n",
+   "v": 2
+  }
+ },
+ "formulas": {
+  "column#1": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))",
+  "column#2": "=INDEX(D!B1:B8,MATCH(2.5,D!L1:L6,1))",
+  "column#3": "=INDEX(D!B1:B8,MATCH(2.5,D!L1:L6))",
+  "column#4": "=INDEX(D!B1:B8,MATCH(7,{9,7,5},-1))",
+  "column#5": "=@INDEX(D!B1:B8,XMATCH(8,D!B1:B8))",
+  "column#6": "=@INDEX(D!B1:B8,ROW(D!A2))",
+  "column#7": "=@INDEX(D!B1:B8,ROW())",
+  "column#8": "=@INDEX(D!B1:B8,COLUMN(D!B1))",
+  "column#9": "=@INDEX(D!B1:B8,COLUMN())",
+  "column#10": "=@INDEX(D!B1:B8,ROWS(D!B1:B2))",
+  "column#11": "=@INDEX(D!B1:B8,COLUMNS(D!B1:C1))",
+  "column#12": "=@INDEX(D!B1:B8,COUNT(D!B1:B2))",
+  "column#13": "=@INDEX(D!B1:B8,COUNTA(D!B1:B2))",
+  "column#14": "=@INDEX(D!B1:B8,COUNTIF(D!B1:B8,\">20\"))",
+  "column#15": "=@INDEX(D!B1:B8,INT(2.5))",
+  "column#16": "=@INDEX(D!B1:B8,ROUND(2.4,0))",
+  "column#17": "=@INDEX(D!B1:B8,MAX(1,2))",
+  "column#18": "=@INDEX(D!B1:B8,MIN(2,3))",
+  "column#19": "=@INDEX(D!B1:B8,ABS(-2))",
+  "column#20": "=@INDEX(D!B1:B8,LEN(\"ab\"))",
+  "column#21": "=@INDEX(D!B1:B8,IF(D!A4,2,1))",
+  "column#22": "=@INDEX(D!B1:B8,CHOOSE(1,2,3))",
+  "column#23": "=@INDEX(D!B1:B8,VALUE(\"2\"))",
+  "column#24": "=@INDEX(D!B1:B8,--\"2\")",
+  "column#25": "=@INDEX(D!B1:B8,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))",
+  "column#26": "=@INDEX(D!B1:B8,MATCH(15,D!B1:B8,0)-1)",
+  "column#27": "=@INDEX(D!B1:B8,MATCH(16,D!B1:B8,0)/2)",
+  "column#28": "=@INDEX(D!B1:B8,IFERROR(MATCH(8,D!B1:B8,0),1))",
+  "column#29": "=@INDEX(D!B1:B8,SUM(1,1))",
+  "column#30": "=@INDEX(D!B1:B8,FIND(\"b\",\"ab\"))",
+  "column#31": "=@INDEX(D!B1:B8,SEARCH(\"b\",\"ab\"))",
+  "column#32": "=@INDEX(D!B1:B8,MONTH(\"2025-02-01\"))",
+  "column#33": "=@INDEX(D!B1:B8,AREAS(D!B1))",
+  "column#34": "=@INDEX(D!B1:B8,FACT(2))",
+  "column#35": "=INDEX(D!B1:B8,(MATCH(8,D!B1:B8,0)))",
+  "column#36": "=INDEX(D!B1:B8,MATCH(@D!B1:B3,D!B1:B8,0))",
+  "column#37": "=@INDEX(D!B1:B8,INDEX(D!L1:L6,2))",
+  "column#38": "=@INDEX(D!B1:B8,SUMPRODUCT((D!B1:B8>20)*1))",
+  "row#1": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1)",
+  "row#2": "=INDEX(D!B1:C3,MATCH(2.5,D!L1:L6,1),1)",
+  "row#3": "=INDEX(D!B1:C3,MATCH(2.5,D!L1:L6),1)",
+  "row#4": "=INDEX(D!B1:C3,MATCH(7,{9,7,5},-1),1)",
+  "row#5": "=@INDEX(D!B1:C3,XMATCH(8,D!B1:B8),1)",
+  "row#6": "=@INDEX(D!B1:C3,ROW(D!A2),1)",
+  "row#7": "=@INDEX(D!B1:C3,ROW(),1)",
+  "row#8": "=@INDEX(D!B1:C3,COLUMN(D!B1),1)",
+  "row#9": "=@INDEX(D!B1:C3,COLUMN(),1)",
+  "row#10": "=@INDEX(D!B1:C3,ROWS(D!B1:B2),1)",
+  "row#11": "=@INDEX(D!B1:C3,COLUMNS(D!B1:C1),1)",
+  "row#12": "=@INDEX(D!B1:C3,COUNT(D!B1:B2),1)",
+  "row#13": "=@INDEX(D!B1:C3,COUNTA(D!B1:B2),1)",
+  "row#14": "=@INDEX(D!B1:C3,COUNTIF(D!B1:B8,\">20\"),1)",
+  "row#15": "=@INDEX(D!B1:C3,INT(2.5),1)",
+  "row#16": "=@INDEX(D!B1:C3,ROUND(2.4,0),1)",
+  "row#17": "=@INDEX(D!B1:C3,MAX(1,2),1)",
+  "row#18": "=@INDEX(D!B1:C3,MIN(2,3),1)",
+  "row#19": "=@INDEX(D!B1:C3,ABS(-2),1)",
+  "row#20": "=@INDEX(D!B1:C3,LEN(\"ab\"),1)",
+  "row#21": "=@INDEX(D!B1:C3,IF(D!A4,2,1),1)",
+  "row#22": "=@INDEX(D!B1:C3,CHOOSE(1,2,3),1)",
+  "row#23": "=@INDEX(D!B1:C3,VALUE(\"2\"),1)",
+  "row#24": "=@INDEX(D!B1:C3,--\"2\",1)",
+  "row#25": "=@INDEX(D!B1:C3,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0),1)",
+  "row#26": "=@INDEX(D!B1:C3,MATCH(15,D!B1:B8,0)-1,1)",
+  "row#27": "=@INDEX(D!B1:C3,MATCH(16,D!B1:B8,0)/2,1)",
+  "row#28": "=@INDEX(D!B1:C3,IFERROR(MATCH(8,D!B1:B8,0),1),1)",
+  "row#29": "=@INDEX(D!B1:C3,SUM(1,1),1)",
+  "row#30": "=@INDEX(D!B1:C3,FIND(\"b\",\"ab\"),1)",
+  "row#31": "=@INDEX(D!B1:C3,SEARCH(\"b\",\"ab\"),1)",
+  "row#32": "=@INDEX(D!B1:C3,MONTH(\"2025-02-01\"),1)",
+  "row#33": "=@INDEX(D!B1:C3,AREAS(D!B1),1)",
+  "row#34": "=@INDEX(D!B1:C3,FACT(2),1)",
+  "row#35": "=INDEX(D!B1:C3,(MATCH(8,D!B1:B8,0)),1)",
+  "row#36": "=INDEX(D!B1:C3,MATCH(@D!B1:B3,D!B1:B8,0),1)",
+  "row#37": "=@INDEX(D!B1:C3,INDEX(D!L1:L6,2),1)",
+  "row#38": "=@INDEX(D!B1:C3,SUMPRODUCT((D!B1:B8>20)*1),1)",
+  "col#1": "=INDEX(D!B1:C3,1,MATCH(8,D!B1:B8,0))",
+  "col#2": "=INDEX(D!B1:C3,1,MATCH(2.5,D!L1:L6,1))",
+  "col#3": "=INDEX(D!B1:C3,1,MATCH(2.5,D!L1:L6))",
+  "col#4": "=INDEX(D!B1:C3,1,MATCH(7,{9,7,5},-1))",
+  "col#5": "=@INDEX(D!B1:C3,1,XMATCH(8,D!B1:B8))",
+  "col#6": "=@INDEX(D!B1:C3,1,ROW(D!A2))",
+  "col#7": "=@INDEX(D!B1:C3,1,ROW())",
+  "col#8": "=@INDEX(D!B1:C3,1,COLUMN(D!B1))",
+  "col#9": "=@INDEX(D!B1:C3,1,COLUMN())",
+  "col#10": "=@INDEX(D!B1:C3,1,ROWS(D!B1:B2))",
+  "col#11": "=@INDEX(D!B1:C3,1,COLUMNS(D!B1:C1))",
+  "col#12": "=@INDEX(D!B1:C3,1,COUNT(D!B1:B2))",
+  "col#13": "=@INDEX(D!B1:C3,1,COUNTA(D!B1:B2))",
+  "col#14": "=@INDEX(D!B1:C3,1,COUNTIF(D!B1:B8,\">20\"))",
+  "col#15": "=@INDEX(D!B1:C3,1,INT(2.5))",
+  "col#16": "=@INDEX(D!B1:C3,1,ROUND(2.4,0))",
+  "col#17": "=@INDEX(D!B1:C3,1,MAX(1,2))",
+  "col#18": "=@INDEX(D!B1:C3,1,MIN(2,3))",
+  "col#19": "=@INDEX(D!B1:C3,1,ABS(-2))",
+  "col#20": "=@INDEX(D!B1:C3,1,LEN(\"ab\"))",
+  "col#21": "=@INDEX(D!B1:C3,1,IF(D!A4,2,1))",
+  "col#22": "=@INDEX(D!B1:C3,1,CHOOSE(1,2,3))",
+  "col#23": "=@INDEX(D!B1:C3,1,VALUE(\"2\"))",
+  "col#24": "=@INDEX(D!B1:C3,1,--\"2\")",
+  "col#25": "=@INDEX(D!B1:C3,1,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))",
+  "col#26": "=@INDEX(D!B1:C3,1,MATCH(15,D!B1:B8,0)-1)",
+  "col#27": "=@INDEX(D!B1:C3,1,MATCH(16,D!B1:B8,0)/2)",
+  "col#28": "=@INDEX(D!B1:C3,1,IFERROR(MATCH(8,D!B1:B8,0),1))",
+  "col#29": "=@INDEX(D!B1:C3,1,SUM(1,1))",
+  "col#30": "=@INDEX(D!B1:C3,1,FIND(\"b\",\"ab\"))",
+  "col#31": "=@INDEX(D!B1:C3,1,SEARCH(\"b\",\"ab\"))",
+  "col#32": "=@INDEX(D!B1:C3,1,MONTH(\"2025-02-01\"))",
+  "col#33": "=@INDEX(D!B1:C3,1,AREAS(D!B1))",
+  "col#34": "=@INDEX(D!B1:C3,1,FACT(2))",
+  "col#35": "=INDEX(D!B1:C3,1,(MATCH(8,D!B1:B8,0)))",
+  "col#36": "=INDEX(D!B1:C3,1,MATCH(@D!B1:B3,D!B1:B8,0))",
+  "col#37": "=@INDEX(D!B1:C3,1,INDEX(D!L1:L6,2))",
+  "col#38": "=@INDEX(D!B1:C3,1,SUMPRODUCT((D!B1:B8>20)*1))",
+  "alone#1": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0))",
+  "alone#2": "=INDEX(D!B1:C3,MATCH(2.5,D!L1:L6,1))",
+  "alone#3": "=INDEX(D!B1:C3,MATCH(2.5,D!L1:L6))",
+  "alone#4": "=INDEX(D!B1:C3,MATCH(7,{9,7,5},-1))",
+  "alone#5": "=@INDEX(D!B1:C3,XMATCH(8,D!B1:B8))",
+  "alone#6": "=@INDEX(D!B1:C3,ROW(D!A2))",
+  "alone#7": "=@INDEX(D!B1:C3,ROW())",
+  "alone#8": "=@INDEX(D!B1:C3,COLUMN(D!B1))",
+  "alone#9": "=@INDEX(D!B1:C3,COLUMN())",
+  "alone#10": "=@INDEX(D!B1:C3,ROWS(D!B1:B2))",
+  "alone#11": "=@INDEX(D!B1:C3,COLUMNS(D!B1:C1))",
+  "alone#12": "=@INDEX(D!B1:C3,COUNT(D!B1:B2))",
+  "alone#13": "=@INDEX(D!B1:C3,COUNTA(D!B1:B2))",
+  "alone#14": "=@INDEX(D!B1:C3,COUNTIF(D!B1:B8,\">20\"))",
+  "alone#15": "=@INDEX(D!B1:C3,INT(2.5))",
+  "alone#16": "=@INDEX(D!B1:C3,ROUND(2.4,0))",
+  "alone#17": "=@INDEX(D!B1:C3,MAX(1,2))",
+  "alone#18": "=@INDEX(D!B1:C3,MIN(2,3))",
+  "alone#19": "=@INDEX(D!B1:C3,ABS(-2))",
+  "alone#20": "=@INDEX(D!B1:C3,LEN(\"ab\"))",
+  "alone#21": "=@INDEX(D!B1:C3,IF(D!A4,2,1))",
+  "alone#22": "=@INDEX(D!B1:C3,CHOOSE(1,2,3))",
+  "alone#23": "=@INDEX(D!B1:C3,VALUE(\"2\"))",
+  "alone#24": "=@INDEX(D!B1:C3,--\"2\")",
+  "alone#25": "=@INDEX(D!B1:C3,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))",
+  "alone#26": "=@INDEX(D!B1:C3,MATCH(15,D!B1:B8,0)-1)",
+  "alone#27": "=@INDEX(D!B1:C3,MATCH(16,D!B1:B8,0)/2)",
+  "alone#28": "=@INDEX(D!B1:C3,IFERROR(MATCH(8,D!B1:B8,0),1))",
+  "alone#29": "=@INDEX(D!B1:C3,SUM(1,1))",
+  "alone#30": "=@INDEX(D!B1:C3,FIND(\"b\",\"ab\"))",
+  "alone#31": "=@INDEX(D!B1:C3,SEARCH(\"b\",\"ab\"))",
+  "alone#32": "=@INDEX(D!B1:C3,MONTH(\"2025-02-01\"))",
+  "alone#33": "=@INDEX(D!B1:C3,AREAS(D!B1))",
+  "alone#34": "=@INDEX(D!B1:C3,FACT(2))",
+  "alone#35": "=INDEX(D!B1:C3,(MATCH(8,D!B1:B8,0)))",
+  "alone#36": "=INDEX(D!B1:C3,MATCH(@D!B1:B3,D!B1:B8,0))",
+  "alone#37": "=@INDEX(D!B1:C3,INDEX(D!L1:L6,2))",
+  "alone#38": "=@INDEX(D!B1:C3,SUMPRODUCT((D!B1:B8>20)*1))",
+  "across#1": "=INDEX(D!B1:D1,MATCH(8,D!B1:B8,0))",
+  "across#2": "=INDEX(D!B1:D1,MATCH(2.5,D!L1:L6,1))",
+  "across#3": "=INDEX(D!B1:D1,MATCH(2.5,D!L1:L6))",
+  "across#4": "=INDEX(D!B1:D1,MATCH(7,{9,7,5},-1))",
+  "across#5": "=@INDEX(D!B1:D1,XMATCH(8,D!B1:B8))",
+  "across#6": "=@INDEX(D!B1:D1,ROW(D!A2))",
+  "across#7": "=@INDEX(D!B1:D1,ROW())",
+  "across#8": "=@INDEX(D!B1:D1,COLUMN(D!B1))",
+  "across#9": "=@INDEX(D!B1:D1,COLUMN())",
+  "across#10": "=@INDEX(D!B1:D1,ROWS(D!B1:B2))",
+  "across#11": "=@INDEX(D!B1:D1,COLUMNS(D!B1:C1))",
+  "across#12": "=@INDEX(D!B1:D1,COUNT(D!B1:B2))",
+  "across#13": "=@INDEX(D!B1:D1,COUNTA(D!B1:B2))",
+  "across#14": "=@INDEX(D!B1:D1,COUNTIF(D!B1:B8,\">20\"))",
+  "across#15": "=@INDEX(D!B1:D1,INT(2.5))",
+  "across#16": "=@INDEX(D!B1:D1,ROUND(2.4,0))",
+  "across#17": "=@INDEX(D!B1:D1,MAX(1,2))",
+  "across#18": "=@INDEX(D!B1:D1,MIN(2,3))",
+  "across#19": "=@INDEX(D!B1:D1,ABS(-2))",
+  "across#20": "=@INDEX(D!B1:D1,LEN(\"ab\"))",
+  "across#21": "=@INDEX(D!B1:D1,IF(D!A4,2,1))",
+  "across#22": "=@INDEX(D!B1:D1,CHOOSE(1,2,3))",
+  "across#23": "=@INDEX(D!B1:D1,VALUE(\"2\"))",
+  "across#24": "=@INDEX(D!B1:D1,--\"2\")",
+  "across#25": "=@INDEX(D!B1:D1,MATCH(4,D!B1:B8,0)+MATCH(4,D!B1:B8,0))",
+  "across#26": "=@INDEX(D!B1:D1,MATCH(15,D!B1:B8,0)-1)",
+  "across#27": "=@INDEX(D!B1:D1,MATCH(16,D!B1:B8,0)/2)",
+  "across#28": "=@INDEX(D!B1:D1,IFERROR(MATCH(8,D!B1:B8,0),1))",
+  "across#29": "=@INDEX(D!B1:D1,SUM(1,1))",
+  "across#30": "=@INDEX(D!B1:D1,FIND(\"b\",\"ab\"))",
+  "across#31": "=@INDEX(D!B1:D1,SEARCH(\"b\",\"ab\"))",
+  "across#32": "=@INDEX(D!B1:D1,MONTH(\"2025-02-01\"))",
+  "across#33": "=@INDEX(D!B1:D1,AREAS(D!B1))",
+  "across#34": "=@INDEX(D!B1:D1,FACT(2))",
+  "across#35": "=INDEX(D!B1:D1,(MATCH(8,D!B1:B8,0)))",
+  "across#36": "=INDEX(D!B1:D1,MATCH(@D!B1:B3,D!B1:B8,0))",
+  "across#37": "=@INDEX(D!B1:D1,INDEX(D!L1:L6,2))",
+  "across#38": "=@INDEX(D!B1:D1,SUMPRODUCT((D!B1:B8>20)*1))",
+  "form#1": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),MATCH(7,D!C1:C8,0))",
+  "form#2": "=INDEX(D!B:B,MATCH(8,D!B1:B8,0))",
+  "form#3": "=INDEX(D!1:1,MATCH(8,D!B1:B8,0))",
+  "form#4": "=@INDEX({1;2;3},MATCH(8,D!B1:B8,0))",
+  "form#5": "=INDEX({1,2;3,4},MATCH(8,D!B1:B8,0),1)",
+  "form#6": "=@INDEX({1,2,3},MATCH(8,D!B1:B8,0))",
+  "form#7": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1,1)",
+  "form#8": "=@INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0)",
+  "form#9": "=@INDEX(D!B1:C3,0,MATCH(8,D!B1:B8,0))",
+  "form#10": "=@INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),)",
+  "form#11": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))+1",
+  "form#12": "=SUM(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)))",
+  "form#13": "=SUM(D!B1:INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)))",
+  "form#14": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))&\"\"",
+  "form#15": "=@INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),D!A12)",
+  "form#16": "=@INDEX(D!B1:C3,D!A12,MATCH(8,D!B1:B8,0))",
+  "form#17": "=@INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),2.5)",
+  "form#18": "=OFFSET(D!B1,MATCH(8,D!B1:B8,0)-1,0)",
+  "form#19": "=OFFSET(D!B1,1,0)",
+  "form#20": "=@OFFSET(D!B1,0,0,MATCH(8,D!B1:B8,0))",
+  "form#21": "=@OFFSET(D!B1:B3,MATCH(8,D!B1:B8,0)-1,0)",
+  "form#22": "=OFFSET(D!B1,MATCH(8,D!B1:B8,0),0,1,1)",
+  "form#23": "=@INDIRECT(\"D!B\"&MATCH(8,D!B1:B8,0))",
+  "form#24": "=@INDIRECT(\"D!B2\")",
+  "form#25": "=@INDIRECT(\"D!B1:B\"&MATCH(8,D!B1:B8,0))",
+  "form#26": "=CHOOSE(MATCH(8,D!B1:B8,0),D!B1,D!C1)",
+  "form#27": "=@CHOOSE(MATCH(8,D!B1:B8,0),D!B1:B3,D!C1:C3)",
+  "form#28": "=CHOOSE(MATCH(8,D!B1:B8,0),1,2)"
+ },
+ "rows": {
+  "column#1": 1,
+  "column#2": 2,
+  "column#3": 3,
+  "column#4": 4,
+  "column#5": 5,
+  "column#6": 6,
+  "column#7": 7,
+  "column#8": 8,
+  "column#9": 9,
+  "column#10": 10,
+  "column#11": 11,
+  "column#12": 12,
+  "column#13": 13,
+  "column#14": 14,
+  "column#15": 15,
+  "column#16": 16,
+  "column#17": 17,
+  "column#18": 18,
+  "column#19": 19,
+  "column#20": 20,
+  "column#21": 21,
+  "column#22": 22,
+  "column#23": 23,
+  "column#24": 24,
+  "column#25": 25,
+  "column#26": 26,
+  "column#27": 27,
+  "column#28": 28,
+  "column#29": 29,
+  "column#30": 30,
+  "column#31": 31,
+  "column#32": 32,
+  "column#33": 33,
+  "column#34": 34,
+  "column#35": 35,
+  "column#36": 36,
+  "column#37": 37,
+  "column#38": 38,
+  "row#1": 39,
+  "row#2": 40,
+  "row#3": 41,
+  "row#4": 42,
+  "row#5": 43,
+  "row#6": 44,
+  "row#7": 45,
+  "row#8": 46,
+  "row#9": 47,
+  "row#10": 48,
+  "row#11": 49,
+  "row#12": 50,
+  "row#13": 51,
+  "row#14": 52,
+  "row#15": 53,
+  "row#16": 54,
+  "row#17": 55,
+  "row#18": 56,
+  "row#19": 57,
+  "row#20": 58,
+  "row#21": 59,
+  "row#22": 60,
+  "row#23": 61,
+  "row#24": 62,
+  "row#25": 63,
+  "row#26": 64,
+  "row#27": 65,
+  "row#28": 66,
+  "row#29": 67,
+  "row#30": 68,
+  "row#31": 69,
+  "row#32": 70,
+  "row#33": 71,
+  "row#34": 72,
+  "row#35": 73,
+  "row#36": 74,
+  "row#37": 75,
+  "row#38": 76,
+  "col#1": 77,
+  "col#2": 78,
+  "col#3": 79,
+  "col#4": 80,
+  "col#5": 81,
+  "col#6": 82,
+  "col#7": 83,
+  "col#8": 84,
+  "col#9": 85,
+  "col#10": 86,
+  "col#11": 87,
+  "col#12": 88,
+  "col#13": 89,
+  "col#14": 90,
+  "col#15": 91,
+  "col#16": 92,
+  "col#17": 93,
+  "col#18": 94,
+  "col#19": 95,
+  "col#20": 96,
+  "col#21": 97,
+  "col#22": 98,
+  "col#23": 99,
+  "col#24": 100,
+  "col#25": 101,
+  "col#26": 102,
+  "col#27": 103,
+  "col#28": 104,
+  "col#29": 105,
+  "col#30": 106,
+  "col#31": 107,
+  "col#32": 108,
+  "col#33": 109,
+  "col#34": 110,
+  "col#35": 111,
+  "col#36": 112,
+  "col#37": 113,
+  "col#38": 114,
+  "alone#1": 115,
+  "alone#2": 116,
+  "alone#3": 117,
+  "alone#4": 118,
+  "alone#5": 119,
+  "alone#6": 120,
+  "alone#7": 121,
+  "alone#8": 122,
+  "alone#9": 123,
+  "alone#10": 124,
+  "alone#11": 125,
+  "alone#12": 126,
+  "alone#13": 127,
+  "alone#14": 128,
+  "alone#15": 129,
+  "alone#16": 130,
+  "alone#17": 131,
+  "alone#18": 132,
+  "alone#19": 133,
+  "alone#20": 134,
+  "alone#21": 135,
+  "alone#22": 136,
+  "alone#23": 137,
+  "alone#24": 138,
+  "alone#25": 139,
+  "alone#26": 140,
+  "alone#27": 141,
+  "alone#28": 142,
+  "alone#29": 143,
+  "alone#30": 144,
+  "alone#31": 145,
+  "alone#32": 146,
+  "alone#33": 147,
+  "alone#34": 148,
+  "alone#35": 149,
+  "alone#36": 150,
+  "alone#37": 151,
+  "alone#38": 152,
+  "across#1": 153,
+  "across#2": 154,
+  "across#3": 155,
+  "across#4": 156,
+  "across#5": 157,
+  "across#6": 158,
+  "across#7": 159,
+  "across#8": 160,
+  "across#9": 161,
+  "across#10": 162,
+  "across#11": 163,
+  "across#12": 164,
+  "across#13": 165,
+  "across#14": 166,
+  "across#15": 167,
+  "across#16": 168,
+  "across#17": 169,
+  "across#18": 170,
+  "across#19": 171,
+  "across#20": 172,
+  "across#21": 173,
+  "across#22": 174,
+  "across#23": 175,
+  "across#24": 176,
+  "across#25": 177,
+  "across#26": 178,
+  "across#27": 179,
+  "across#28": 180,
+  "across#29": 181,
+  "across#30": 182,
+  "across#31": 183,
+  "across#32": 184,
+  "across#33": 185,
+  "across#34": 186,
+  "across#35": 187,
+  "across#36": 188,
+  "across#37": 189,
+  "across#38": 190,
+  "form#1": 191,
+  "form#2": 192,
+  "form#3": 193,
+  "form#4": 194,
+  "form#5": 195,
+  "form#6": 196,
+  "form#7": 197,
+  "form#8": 198,
+  "form#9": 199,
+  "form#10": 200,
+  "form#11": 201,
+  "form#12": 202,
+  "form#13": 203,
+  "form#14": 204,
+  "form#15": 205,
+  "form#16": 206,
+  "form#17": 207,
+  "form#18": 208,
+  "form#19": 209,
+  "form#20": 210,
+  "form#21": 211,
+  "form#22": 212,
+  "form#23": 213,
+  "form#24": 214,
+  "form#25": 215,
+  "form#26": 216,
+  "form#27": 217,
+  "form#28": 218
+ }
+}
