@@ -90,8 +90,8 @@ export function buildSpillCases(): SpillCase[] {
 /** The text Excel 365 was predicted to show (canonical, without `=`), committed before Excel ran. */
 export const SHOWN: Readonly<Record<string, string>> = Object.fromEntries(CASES.map(([f, t], i) => [`S!${cellOf(i)}`, canonical(parse(t === '=' ? f : t === '@' ? `@${f}` : t))]))
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/** The predictions Excel did not confirm: Excel reads `+2` as the literal 2, and shows it so. */
+export const MISSED: readonly string[] = ['S!AX3']
 
 /** The converter's text of each formula. */
 export const CONVERTED = (): Record<string, string> => Object.fromEntries(at.map((a) => [`S!${a}`, fromLegacy(FORMULAS[a].slice(1), { names: NAMES, sheet: 'S' })]))
