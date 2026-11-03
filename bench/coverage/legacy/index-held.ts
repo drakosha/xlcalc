@@ -28,5 +28,5 @@ export function buildProbes(): Probe[] {
 /** The text Excel 365 was predicted to show for each case (canonical, without `=`), committed before Excel ran. */
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/** The predictions Excel did not confirm: OFFSET over `B1:B1` with no size is not one cell to Excel, a range of one cell being a range. */
+export const MISSED: readonly string[] = ['held#31']
