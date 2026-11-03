@@ -38,6 +38,8 @@ type Kind = 'one' | 'range' | 'array' | 'rowcol'
 interface Out {
   ast: Ast
   kind: Kind
+  /** A place Excel knows leaves one cell as INDEX's row or column: a whole number literal from 1, such a name, MATCH. */
+  pos?: true
 }
 
 /** Arguments whose class the sets show only in part: IFERROR's value and TYPE's pass an array on (`TYPE(IFS("x",1))` is 64), N and T take a range's first cell. */
@@ -103,8 +105,8 @@ function intersects(kind: Kind, slot: Slot, where: Where): boolean {
 
 const wider = (a: Kind, b: Kind): Kind => (a === 'range' || b === 'range' ? 'range' : a === 'array' || b === 'array' || a === 'rowcol' || b === 'rowcol' ? 'array' : 'one')
 
-/** A positive whole number literal (INDEX's row or column that leaves one cell). */
-const place = (n: Ast | undefined) => n?.k === 'num' && Number.isInteger(n.v) && n.v >= 1
+/** A whole number literal from 1: INDEX's row or column that leaves one cell. */
+const counting = (n: Ast) => n.k === 'num' && Number.isInteger(n.v) && n.v >= 1
 
 /** The size of a literal reference: rows and columns, or null for anything else. */
 function size(n: Ast): [number, number] | null {
@@ -121,8 +123,14 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
     case 'INDEX': {
       const ref = args[0].kind === 'range' || nodes[0].k === 'ref'
       // of one value one value; of several, one cell when every index given is a number that leaves one
-      const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (place(nodes[1]) && (nodes.length < 3 ? ref : place(nodes[2])))
+      const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
       return one ? 'one' : ref ? 'range' : 'array'
+    }
+    case 'OFFSET': {
+      // one cell when the height and the width are each the literal 1, or left out over one cell; the shifts do not matter
+      const cell = args[0].kind === 'one' || size(nodes[0])?.join() === '1,1'
+      const one = (n: Ast | undefined) => (n === undefined ? cell : n.k === 'num' && n.v === 1)
+      return one(nodes[3]) && one(nodes[4]) ? 'one' : 'range'
     }
     case 'VLOOKUP':
     case 'HLOOKUP':
@@ -171,7 +179,9 @@ function converter(names: Names) {
       case 'arr':
         return { ast: n, kind: 'array' }
       case 'name':
-        return { ast: n, kind: nameKind(n, scope) }
+        return { ast: n, ...nameKind(n, scope) }
+      case 'num':
+        return { ast: n, kind: 'one', ...(counting(n) ? { pos: true as const } : {}) }
       case 'un':
       case 'pct': {
         const a = go(n.a, where, 'v', scope)
@@ -191,14 +201,15 @@ function converter(names: Names) {
       // `(@A1:A3)`: the operand in its place gets `@`
       case 'paren': {
         const a = go(n.a, where, slot, scope)
-        return { ast: { ...n, a: a.ast }, kind: a.kind }
+        return { ast: { ...n, a: a.ast }, kind: a.kind, ...(a.pos ? { pos: true as const } : {}) }
       }
       case 'fn': {
         const args = n.args.map((a, i) => {
           const [s, w] = argument(n.name, i, a, where)
           return go(a, w, s, scope)
         })
-        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args) }
+        // Excel knows MATCH's answer for a place, and no other call's (XMATCH, ROWS, COUNT are not)
+        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args), ...(n.name === 'MATCH' ? { pos: true as const } : {}) }
       }
       case 'let': {
         // the values and the calculation are references or arrays, as an argument of IF is
@@ -218,12 +229,13 @@ function converter(names: Names) {
         return { ast: n, kind: 'one' }
     }
   }
-  // a name gives what its formula gives, computed as an array as Excel computes a name
-  const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Kind => {
+  // a name gives what its formula gives, computed as an array as Excel computes a name; Excel takes only a literal, a
+  // cell or another name for one value (`1+1`, `(2)`, `ABS(-2)` get `@`), and only a literal from 1 for INDEX's place
+  const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Omit<Out, 'ast'> => {
     const sheet = n.sheet ?? scope
     const def = names(n.name, sheet)
     const key = `${sheet ?? ''}!${caseKey(n.name)}`
-    if (!def || reading.has(key)) return 'one'
+    if (!def || reading.has(key)) return { kind: 'one' }
     reading.add(key)
     const outer = locals
     locals = []
@@ -231,7 +243,9 @@ function converter(names: Names) {
     const kind = node(def.ast, 'A', 'a', undefined).kind
     locals = outer
     reading.delete(key)
-    return kind === 'rowcol' ? 'array' : kind
+    const k = def.ast.k
+    if (k === 'num' || k === 'str' || k === 'bool' || k === 'err') return { kind: 'one', ...(counting(def.ast) ? { pos: true as const } : {}) }
+    return { kind: kind === 'rowcol' || (kind === 'one' && k !== 'ref' && k !== 'name') ? 'array' : kind }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
