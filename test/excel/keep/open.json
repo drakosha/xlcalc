@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.114.2",
-  "seconds": 17.3,
-  "date": "2026-10-27"
+  "version": "16.114.3",
+  "seconds": 20.5,
+  "date": "2026-11-03"
  },
  "cases": {
   "chart-values": {
@@ -35,7 +35,7 @@
    }
   },
   "chart-formulas-styles": {
-   "sent": "5716839e9c8b44b56b6126aa0e1e744b55437679e7f3ff4f57ece2569ced2907",
+   "sent": "85ef20ebaa14c8cb24857cbfca4043f72e37ae78dbcbb2bafe4ce862a5dbcf14",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -93,7 +93,7 @@
    }
   },
   "chart-structure": {
-   "sent": "9567b31a756041af61a84911b9e50027ec062246563d0c5b2630895615538048",
+   "sent": "d5476aadaa232d561e276857bc01ea02152d9d52f83b1c934a8c10f3a8e0455d",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -180,7 +180,7 @@
    }
   },
   "picture-formulas-styles": {
-   "sent": "40f5894e6fee3d2b369747421af7a01e71c8d1c2fd080a58adf29323e1580052",
+   "sent": "afde2f374bf12e2ff6ad57cf8a63c70c12f72e886560dfb7fcfda82f64f06731",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -238,7 +238,7 @@
    }
   },
   "picture-structure": {
-   "sent": "8076ebd45f95f1fa3839af1c1ebf8d4d864ed3aa9c22d697e6d9af7dacf7f61d",
+   "sent": "0958605ec9f170de78d8ed03ed54997933bf39b2579a85e477e1c6edc612ed85",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -325,7 +325,7 @@
    }
   },
   "pivot-formulas-styles": {
-   "sent": "b682005cdc95f52d0fa7f33ee7cc57f9e954dcafb09302618bc1169ec01fadf1",
+   "sent": "fa3b4681d7ace169c867748fadca6a963017e4207fcbc14ea982a95f7ba5a26e",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -383,7 +383,7 @@
    }
   },
   "pivot-structure": {
-   "sent": "0239f0c1c73058c9a6e0bf69bbc1e6b809083cccc34709e8aab1cf2d965ac47d",
+   "sent": "ed759d31ec0ab83e5eb1787d196afc7bf8230959f1cfc771b23446029ead46a3",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -470,7 +470,7 @@
    }
   },
   "print-formulas-styles": {
-   "sent": "c00f5f1856ad918e37ac81cdf93d78b36e47d79b24e2dfcafe0a78337f45b6cd",
+   "sent": "715c6b29fd8aa267b58a7a0fd9f43b5acbeda4053e090e56f11d9b2e254dbcad",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -528,7 +528,7 @@
    }
   },
   "print-structure": {
-   "sent": "292dc7eb874af592bf546d82822e700f38d7c5726c7e55c52c907d16671aa318",
+   "sent": "e622badc27ba439519715ceef0c7fda3ae350462ec5bcc9d46300299c9619d47",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -615,7 +615,7 @@
    }
   },
   "chartsheet-formulas-styles": {
-   "sent": "77b833ce473fb2bb92fcd5e56e94db352e6a39005946cbd47ba7858a69388336",
+   "sent": "b58df84860182d2e4d9d245692e0f8ed4430b9db3e4b984fad6a4af617d722ae",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -673,7 +673,7 @@
    }
   },
   "chartsheet-structure": {
-   "sent": "1af140a9c4f396ff2d101840be5fdb73efa4c008d789fd5199014518548b7b53",
+   "sent": "52c761c0d236cbb2fa63c23f138e94fa4521ba0e2301fd6e7b9cbee003df0b95",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -760,7 +760,7 @@
    }
   },
   "all-formulas-styles": {
-   "sent": "6a314de71f0dc60e8ebfa4104c10ebdce964576fb3141b4db2cc604c3c8920fc",
+   "sent": "d7ce2400efdfdfa110dbd6751a88c8ed2190336f31d695e512cdaf3ff8289d84",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -818,7 +818,7 @@
    }
   },
   "all-structure": {
-   "sent": "19f6508fc9665bb77a641fbeb41bc47ed90b5a8fb310140a7fbc3674a074655a",
+   "sent": "b16757963a005e1de78c0a535d035de4df9c94c81ba140bfacf5a32ec7fa3d0f",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -876,7 +876,7 @@
    }
   },
   "chart-links": {
-   "sent": "d8c89df8b0db51f83fd20026e71f409afd3f9b74ba8955264fc8e5ab19f70da0",
+   "sent": "17f155c83408bc3cef1d7c4fe92a708723b50313590e60512b46f58eb6a600cc",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -905,7 +905,7 @@
    }
   },
   "picture-links": {
-   "sent": "c07a0232be1cb1f94bf1165ac7372863a96cb7c84f2d71d9fb4af656fc029557",
+   "sent": "93b978f9e1d49fcb5bd3e6964cae9a189094389b0da39bdf671f3d5f46d1eea6",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -934,7 +934,7 @@
    }
   },
   "pivot-links": {
-   "sent": "a7f2b6cc03c4257d8416495dabe838d696244e53b06f6b03274bb6b7b5903a8e",
+   "sent": "2d97fe5c9fddb5160badeab7f3bf45de172c11c5daeeb296dfdb5f56a9f94bb5",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -963,7 +963,7 @@
    }
   },
   "print-links": {
-   "sent": "f95b5d022f230b43f6b7b59d1994c803a62b1afe8d953e05b2a05ee3966af622",
+   "sent": "5f69abaa3aee09d0d90f90f86d6036ad609499237ee983b2150bbc281db3f3ca",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -992,7 +992,7 @@
    }
   },
   "chartsheet-links": {
-   "sent": "6d44d44596fcff203e645d0722cfa71f8730b5a09888c2121715bb24f579a256",
+   "sent": "ad31df3dbbaeed28b8ccffd795d69c05794cfc48e8887bc1987970f6bdc0ac33",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -1021,7 +1021,7 @@
    }
   },
   "all-links": {
-   "sent": "3667c9b38a3cd3c9996adc327db2ab1bd74c2fd7c29bdcb35eb79f3b8fbfdc76",
+   "sent": "a59e807fa2957dd577265ae94d8df231aaca1859fe64f7aa439387b47f208135",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -1267,7 +1267,7 @@
    }
   },
   "criteria-links": {
-   "sent": "197b6ebd86f45780287948982c5095a02ed7f48174dbdba9e34c7dd16a56ef0b",
+   "sent": "fe5d6fe16d2842b712e2ce1d0a8989d7d4c24be30f8bd5144e1d3bcb39d13b2d",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -1298,7 +1298,7 @@
    }
   },
   "criteria-formulas-styles": {
-   "sent": "674f2f4853308c45be63cfd5cb586c55d590f92970dde7f390931a10a98391d7",
+   "sent": "b6888a35b2b31acc67ac24c8d439672e8f9666a3ccdccc5eddb20e2443268a90",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -1360,7 +1360,7 @@
    }
   },
   "criteria-structure": {
-   "sent": "e83598342af1d6f6b0bc3566a92aced22f39960cbaed3cae018e25e094cb1489",
+   "sent": "4bb697a9a6d96b2bf2c18fc22cf824fed7759e10ab1a8832f533381abe3ee6eb",
    "written": {
     "charts": 0,
     "chartsheets": 0,

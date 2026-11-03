@@ -666,7 +666,8 @@ try {
         $answers = foreach ($s in $b.steps) { Step $xl $wb $s }
         '{"answers":' + (List $answers)
       } finally {
-        $wb.Close($false)
+        # Excel busy after a save (a pivot cache refreshing) rejects the call (RPC_E_CALL_REJECTED): asked again, up to 10 s
+        for ($k = 1; ; $k++) { try { $wb.Close($false); break } catch { if ($k -ge 10 -or $_.Exception.HResult -ne -2147418111) { throw }; Start-Sleep 1 } }
       }
     } catch { '{"rejected":' + (Str "$($_.Exception.HResult) $($_.Exception.Message)") }
     $res += ',"seconds":' + ((Get-Date) - $t0).TotalSeconds.ToString('0.000', $inv) + '}'

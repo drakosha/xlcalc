@@ -40,6 +40,10 @@ import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
 import { KeptStyles } from './styles.js'
 import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
+import { oldKind } from './kind.js'
+import { legacyConverter } from '../../legacy/convert.js'
+import { fileText } from '../write/formula.js'
+import { parseAddress } from '../../model.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, relType, rootOf, setAttrs, TYPE, type ContentTypes, type Placed } from './xml.js'
 
@@ -230,6 +234,8 @@ class Kept {
   /** The file's parts removed, by name in lower case. */
   private readonly gone = new Set<string>()
   private readonly pivots: KeptPivots
+  /** The book's formulas of the old kind read as dynamic ones, made once a formula is written anew. */
+  private legacy?: ReturnType<typeof legacyConverter>
 
   constructor(
     readonly src: Source,
@@ -318,11 +324,13 @@ class Kept {
       this.sheetRels[j] = attr(d.attrs, 'id') ?? ''
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
       const p0 = this.pieces0(k)
-      const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
-      // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never lost
+      const ctx = this.context(book, this.w1, j, this.cells?.[j], issues)
+      const p1 = sheetPieces(s1, k, ctx)
+      // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never
+      // lost, and so are rows or columns moved under it: its cells would move without it
       const name = book0.sheets[k].name
       const conditional = this.lost.conditional.has(name) ? this.rules(k, j, p0, p1) : undefined
-      if (this.lost.validation.has(name) && p0.validations !== p1.validations)
+      if (this.lost.validation.has(name) && (p0.validations !== p1.validations || this.id.lines[k]))
         throw new KeptRefusal({ key: 'keptValidation', sheet: name }, 'rules')
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
@@ -339,7 +347,7 @@ class Kept {
       }
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}), oldKind: (addr, written) => this.oldKind(s1, addr, written, ctx) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
@@ -349,6 +357,14 @@ class Kept {
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
+  }
+
+  /** The `<f>` of the old kind of a formula of the book's sheet written anew, where Excel reads it as the workbook computes it (`kind.ts`). */
+  private oldKind(sheet: SheetInput, addr: string, written: string, ctx: SheetContext): string | undefined {
+    const c = sheet.cells[addr]
+    if (c?.formula === undefined || c.array !== undefined) return undefined
+    const { row, col } = parseAddress(addr)
+    return oldKind(c.formula, sheet.name, written, (this.legacy ??= legacyConverter(this.book.names)), (f) => fileText(f, ctx, ctx.tableAt(row, col)?.name))
   }
 
   /** The model's pieces of the file's sheet `k` as read. */

@@ -58,6 +58,8 @@ export interface SpliceInput {
   conditional?: { main: string; ext: string }
   /** The rectangles of the file's cell formats that look as earlier ones where they lie now (`formats.ts`); none past their limit. */
   formats?: Formats
+  /** The `<f>` of the old kind of the workbook's formula at an address, where Excel reads that as the workbook computes it (`kind.ts`); `written`, its text as written. */
+  oldKind?: (addr: string, written: string) => string | undefined
 }
 
 export interface Spliced {
@@ -195,12 +197,28 @@ function srcCells(xml: string, row: SrcRow): Map<number, Src> | null {
   return out
 }
 
-/** A file's cell with a new value (`g`'s) and cell format `s`, its formula element and other attributes as the file has them. */
+/** The extensions of an element (`<extLst>`, its last child) whose body lies from `open` to its closing tag before `end`, empty for none. */
+function extOf(xml: string, open: number, end: number): string {
+  if (xml.lastIndexOf('extLst>', end) < open) return ''
+  const last = childrenOf(xml, { qname: '', local: '', start: open, open, end }).at(-1)
+  return last?.local === 'extLst' ? xml.slice(last.start, last.end) : ''
+}
+
+/** A file's cell with a new value (`g`'s) and cell format `s`, its formula element, extensions and other attributes as the file has them. */
 function patched(src: Src, g: Gen, s: number): string {
   const tag = src.text.slice(0, tagEnd(src.text, 0))
   const open = opening(setAttrs(tag, { s: s ? String(s) : null, t: g.t || null, vm: g.vm ?? null }))
   const name = /^<([\w.:-]+)/.exec(tag)![1]
-  return `${open}${src.f ?? ''}${g.value}</${name}>`
+  return `${open}${src.f ?? ''}${g.value}${extOf(src.text, tag.length, src.text.length)}</${name}>`
+}
+
+/** A cell the writer wrote, a formula that does not spill as one of the old kind where that loses nothing (`kind.ts`). */
+function older(g: Gen, addr: string, oldKind: SpliceInput['oldKind']): string {
+  const m = / cm="\d+"/.exec(g.f)
+  const open = m && `${m[0]}<f t="array" ref="${addr}">`
+  if (!open || !oldKind || !g.f.startsWith(open)) return g.text
+  const f = oldKind(addr, g.f.slice(open.length, -4))
+  return f === undefined ? g.text : g.text.replace(m[0], '').replace(g.f.slice(m[0].length), f)
 }
 
 /** A file's cell with cell format `s` in place of its own. */
@@ -320,7 +338,8 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
       if (own?.master) broken.add(own.si!)
       const s1 = xfOf(own, col, x1.s)
       x.styles.use('cellXfs', s1)
-      body += s1 === x1.s ? x1.text : x1.text.replace(/^(<c r="\w+")(?: s="\d+")?/, s1 ? `$1 s="${s1}"` : '$1')
+      const text = older(x1, addr!, x.oldKind)
+      body += s1 === x1.s ? text : text.replace(/^(<c r="\w+")(?: s="\d+")?/, s1 ? `$1 s="${s1}"` : '$1')
     }
     const attrsChanged = (a?.attrs ?? '') !== (b?.attrs ?? '')
     // the row's format where rows or columns moved: that of the rows it lies in now
@@ -425,6 +444,8 @@ function rowXml(s: SrcRow | undefined, a: RowWritten | undefined, b: RowWritten 
     tag = `<${name} r="${r}"${attrs}${rest}>`
   }
   const name = /^<([\w.:-]+)/.exec(tag)![1]
+  // the row's extensions where it stays (Excel drops them when it saves the file)
+  if (s && !x.lines) body += extOf(x.xml, s.bodyStart, s.end)
   return body ? `${opening(tag)}${body}</${name}>` : closing(tag)
 }
 

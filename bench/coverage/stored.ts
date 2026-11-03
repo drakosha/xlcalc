@@ -112,7 +112,8 @@ export interface StoredAnswers<C extends { id: string }, A> {
 /** The stored answers a run keeps: a case's answer (its saved file there too) or refusal, while the case and its file are the same. */
 export function keptAnswers<C extends { id: string }, A>(cases: C[], sent: Record<string, string>, prev: StoredAnswers<C, A> | null, saved: (id: string) => boolean): { answers: Record<string, A>; rejected: Record<string, string> } {
   const key = (c: C, hash: string | undefined) => JSON.stringify([c, hash])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.sent[c.id])]) ?? [])
+  // a set whose cases are their files alone stores no cases (`keep` open sets): what was sent tells them
+  const same = new Map(prev?.cases ? prev.cases.map((c) => [c.id, key(c, prev.sent[c.id])]) : Object.entries(prev?.sent ?? {}).map(([id, hash]) => [id, key({ id } as C, hash)]))
   const answers: Record<string, A> = {}
   const rejected: Record<string, string> = {}
   for (const c of cases)

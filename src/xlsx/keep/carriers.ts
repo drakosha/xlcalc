@@ -9,7 +9,7 @@
  * breaks, protected ranges and the conditional formats the model does not read (`rules.ts`). A part an item cannot write back as Excel would refuses (comment threads, a pivot
  * table cut). Parts whose references are not read (`unparsed`) are known only by their sheet's carrier: rows and
  * columns inserted or deleted there are seen, a range moved over them is not. A cell with what only the file holds
- * (formatted runs of text, a rich value the writer does not write, phonetic text) has a carrier of its own, which
+ * (formatted runs of text, a rich value the writer does not write, phonetic text, extensions) has a carrier of its own, which
  * tells where the cell went; past `KEPT_CELLS` of them on a sheet they have none. A cell format that looks as an earlier
  * one has carriers of its rectangles on each sheet (`formats.ts`); past `KEPT_FORMATS` rectangles on a sheet, none.
  */
@@ -310,11 +310,12 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
 
   /**
    * A sheet's cells with what only the file holds: a shared string with formatted runs or phonetic text, an inline one
-   * with them, a rich value the writer does not write (a picture in the cell, a data type), phonetic text shown; each
+   * with them, a rich value the writer does not write (a picture in the cell, a data type), phonetic text shown, extensions; each
    * with a carrier of its own, of a name apart from the parts' (`c<sheet>.<n>`). Past `KEPT_CELLS` of them, none.
    */
   function keptCells(xml: string, data: Placed, i: number) {
-    if (!richStrings.size && !/ (?:vm|ph)="|<(?:[\w.-]+:)?is>/.test(xml)) return
+    const ext = xml.lastIndexOf('extLst>', data.end) > data.open
+    if (!ext && !richStrings.size && !/ (?:vm|ph)="|<(?:[\w.-]+:)?is>/.test(xml)) return
     const found: string[] = []
     for (const m of xml.slice(data.open, data.end).matchAll(CELL_XML)) {
       const a = attributes(m[1])
@@ -323,7 +324,8 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
         (a.t === 's' && richStrings.has(Number(/<(?:[\w.-]+:)?v>(\d+)</.exec(body)?.[1]))) ||
         (a.t === 'inlineStr' && RUNS.test(body)) ||
         (a.vm !== undefined && !OWN_ERRORS.has(meta.error(Number(a.vm)) ?? '')) ||
-        (a.ph !== undefined && a.ph !== '0' && a.ph !== 'false')
+        (a.ph !== undefined && a.ph !== '0' && a.ph !== 'false') ||
+        (ext && body.includes('extLst>'))
       // a cell without its address keeps what it holds only where it stays
       if (kept && a.r !== undefined && ADDR.test(a.r)) found.push(a.r)
     }
