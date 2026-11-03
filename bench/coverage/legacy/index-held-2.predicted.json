@@ -1,0 +1,17 @@
+{
+ "held#1": "OFFSET('D'!B1:B1,0,0,1,1)",
+ "held#2": "@OFFSET('D'!B1:B1,1,0,1)",
+ "held#3": "@OFFSET('D'!B1:C1,1,0,,1)",
+ "held#4": "OFFSET(('D'!B1),1,0,1)",
+ "held#5": "@OFFSET('D'!B1,1,0,,)",
+ "held#6": "OFFSET('D'!$B$1,MATCH(8,'D'!B1:B8,0),0)",
+ "held#7": "OFFSET('D'!B1,1,0,1,1)&@OFFSET('D'!B1:B3,1,0)",
+ "held#8": "ABS(OFFSET('D'!B1:B3,1,0,1,1))",
+ "held#9": "INDEX('D'!B1:B8,MATCH(8,'D'!B1:B8,0))*INDEX('D'!C1:C8,MATCH(8,'D'!B1:B8,0))",
+ "held#10": "SUMPRODUCT(INDEX('D'!B1:C3,MATCH(8,'D'!B1:B8,0),0))",
+ "held#11": "@INDEX('D'!B1:C3,MIN(MATCH(8,'D'!B1:B8,0),2),1)",
+ "held#12": "INDEX('D'!B1:C3,1,(((MATCH(8,'D'!B1:B8,0)))))",
+ "held#13": "INDEX('D'!B:C,MATCH(8,'D'!B1:B8,0),2)",
+ "held#14": "INDEX('D'!B1:B8,MATCH(8,{4,8,15},0))",
+ "held#15": "INDEX('D'!B1:B8,MATCH(8,'D'!B1:B8,-1))"
+}

@@ -132,6 +132,7 @@ A plain formula without the mark is a legacy formula too. Excel 365 calculates i
 |---|---|
 | `A1:A3*2`, `ABS(A1:A3)` | `@A1:A3*2`, `ABS(@A1:A3)` |
 | `INDEX(A1:B5,0,1)` | `@INDEX(A1:B5,0,1)` |
+| `INDEX(B1:B5,MATCH(3,A1:A5,0))` | as written: MATCH gives one place |
 | `span*1`, where `span` is a name that refers to a range | `@span*1` |
 | `SUM(A1:A3)`, `SUMPRODUCT(A1:A3*2)`, `IF(A1>0,1,2)` | as written |
 
