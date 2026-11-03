@@ -170,13 +170,14 @@ describe('a restore and the hard deadline', () => {
 
 describe('a restore that fails', () => {
   it("leaves nothing of the session in the thread's memory", async () => {
-    // a book of 16 MB of text; a thread of 96 MB holds a few of them at most
+    // a book of 16 MB of text; a thread of 112 MB holds a few of them at most, while the ten kept would take 160 MB
+    // (96 MB failed 2 runs in 11 on Node 24 from 0.78.0, its code a little larger, as a collection came late)
     const big = (k: number): BookInput => {
       const cells: BookInput['sheets'][0]['cells'] = {}
       for (let r = 1; r <= 4000; r++) cells[`A${r}`] = { value: `${k}:${r}:` + 'x'.repeat(4000) }
       return { sheets: [{ name: 'S', cells }] }
     }
-    const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 96, maxSessionsPerThread: 1 })
+    const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 112, maxSessionsPerThread: 1 })
     kept(calc)
     const other = await calc.createSession(chainBook(3), { clock: CLOCK })
     for (let k = 0; k < 10; k++) {
