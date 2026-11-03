@@ -111,6 +111,16 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect('K9' in s.getBook().sheets[0].cells || 'K10' in s.getBook().sheets[0].cells).toBe(false)
   })
 
+  it("empty cells formatted are in the sheet's looks of the book and of a snapshot, as an input's are, not in its cells", () => {
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 45000, numberFormat: 14 } } }] }, opts)
+    s.patchCells([{ sheet: 'S', cell: 'B1', set: { numberFormat: 14 } }, { sheet: 'S', range: 'C1:C2', set: { numberFormat: 14 } }])
+    const sheet = { name: 'S', cells: { A1: { value: 45000, numberFormat: 14 } }, looks: [{ range: 'B1:C1', numberFormat: 14 }, { range: 'C2', numberFormat: 14 }] }
+    expect(s.getBook().sheets).toEqual([sheet])
+    expect(s.getSnapshot().book.sheets).toEqual([sheet])
+    expect(s.getCell('S', 'C2')).toMatchObject({ value: null, numberFormat: 14 })
+    expect(createSession({ sheets: [{ name: 'S', cells: { A1: { value: 45000, numberFormat: 14 }, B1: { numberFormat: 14 }, C1: { numberFormat: 14 }, C2: { numberFormat: 14 } } }] }).getBook().sheets).toEqual([sheet])
+  })
+
   it('a patch the session refuses changes nothing', () => {
     const s = createSession(book(), opts)
     const before = JSON.stringify(s.getBook())

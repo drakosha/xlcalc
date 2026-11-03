@@ -84,8 +84,11 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
           expect(fileName(b.target), b.target).toBe(fileName(link.target))
           // Excel keeps the sheets in order and may add one a formula names
           expect(b.sheets.slice(0, link.sheets.length).map((s) => s.name)).toEqual(link.sheets.map((s) => s.name))
+          // a book Excel read beside (open-held): the values it read of it, without the mark
+          const read = c.ops?.flatMap((o) => (o.op === 'source' && o.target === link.target ? [o.sheets] : []))[0]
           link.sheets.forEach((s, k) => {
-            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(kept(s.cells?.[addr]))
+            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(kept(s.cells && addr in s.cells ? s.cells[addr] : read?.[s.name]?.[addr]))
+            if (read) expect(b.sheets[k].refreshError).toBeUndefined()
           })
           expect((b.names ?? []).map((n) => n.name)).toEqual((link.names ?? []).map((n) => n.name))
         })
@@ -160,8 +163,8 @@ function canonicalBook(b: BookInput): BookInput {
 
 describe('the round trip of the books of the set written', () => {
   it.each(written.map((c) => [c.id, c] as const))('%s: the file reads back as the book written, with the same input hash', async (_, c) => {
-    // the writer stores a link's #SPILL! and #CALC! as #VALUE!, as Excel keeps them
-    const externalBooks: ExternalBook[] = linksBook(c).externalBooks!.map((b) => ({ ...b, sheets: b.sheets.map((s) => (s.cells ? { ...s, cells: Object.fromEntries(Object.entries(s.cells).map(([a, v]) => [a, kept(v)])) } : s)) }))
+    // the writer stores a link's #SPILL! and #CALC! as #VALUE!, as Excel keeps them, and a space of its target as %20
+    const externalBooks: ExternalBook[] = linksBook(c).externalBooks!.map((b) => ({ ...b, target: b.target.replaceAll(' ', '%20'), sheets: b.sheets.map((s) => (s.cells ? { ...s, cells: Object.fromEntries(Object.entries(s.cells).map(([a, v]) => [a, kept(v)])) } : s)) }))
     const book = { ...writtenBook(c), externalBooks }
     const r = await readXlsx(await linkFile(c))
     expect(r.issues).toEqual([])

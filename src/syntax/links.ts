@@ -13,20 +13,38 @@ import { isSpace } from './scan.js'
 import { linkedTableText, shownSpec } from './table.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
 
-/** A link's target as a formula shows it: the folder (`C:\data\`, `../data/`, empty for a file name) and the file. */
-export function shownTarget(target: string): { dir: string; file: string } {
-  const t = target.replace(/^file:\/\/\/?/i, '')
+/** A path without `file://`, split into its folder (`C:\data\`, `../data/`, empty for a file name) and its file. */
+function splitPath(path: string): { dir: string; file: string } {
+  const t = path.replace(/^file:\/\/\/?/i, '')
   const k = Math.max(t.lastIndexOf('/'), t.lastIndexOf('\\')) + 1
   return { dir: t.slice(0, k), file: t.slice(k) }
 }
 
-/** The number of the link a path or file name names (from 1), the whole path first, then the file alone; 0 for none. */
+/** A target with its escapes undone (`%20` a space, `%D0%9A` `К`), as Excel shows it; a `%` that escapes nothing stays. */
+function unescaped(target: string): string {
+  return target.replace(/(?:%[0-9a-f]{2})+/gi, (run) => {
+    try {
+      return decodeURIComponent(run)
+    } catch {
+      return run
+    }
+  })
+}
+
+/** A link's target as a formula shows it: the folder and the file, unescaped. */
+export const shownTarget = (target: string) => splitPath(unescaped(target))
+
+/**
+ * The number of the link a path or file name names (from 1), the whole path first, then the file alone, against the
+ * targets unescaped, as a person reads them; 0 for none. The typed path is taken as written: a file may have `%` in its name.
+ */
 export function linkOf(books: readonly ExternalBook[], path: string): number {
+  const shown = books.map((b) => shownTarget(b.target))
   const whole = caseKey(path.replace(/^file:\/\/\/?/i, ''))
-  const exact = books.findIndex((b) => caseKey(b.target.replace(/^file:\/\/\/?/i, '')) === whole)
+  const exact = shown.findIndex((t) => caseKey(t.dir + t.file) === whole)
   if (exact >= 0) return exact + 1
-  const file = caseKey(shownTarget(path).file)
-  return books.findIndex((b) => caseKey(shownTarget(b.target).file) === file) + 1
+  const file = caseKey(splitPath(path).file)
+  return shown.findIndex((t) => caseKey(t.file) === file) + 1
 }
 
 /** Whether a sheet's name in a reference is no sheet of the book but a path or a file name a link has (`Book2.xlsx!Rate`). */
@@ -162,14 +180,14 @@ export function linksIn(formula: string): number[] {
 /**
  * The links with every sheet of the books numbered `ks` marked as Excel marks them when a formula referring to a closed
  * book is entered (`refreshError`: it cannot read the book, and a cell the stored values do not hold is `#REF!` since);
- * the same array when nothing changes.
+ * a book the host holds open (`open`) is read and not marked; the same array when nothing changes.
  */
 export function markedLinks(books: ExternalBook[] | undefined, ks: Iterable<number>): ExternalBook[] | undefined {
   if (!books) return books
   let out: ExternalBook[] | undefined
   for (const k of ks) {
     const b = (out ?? books)[k - 1]
-    if (!b || b.sheets.every((s) => s.refreshError)) continue
+    if (!b || b.open || b.sheets.every((s) => s.refreshError)) continue
     out ??= [...books]
     out[k - 1] = { ...b, sheets: b.sheets.map((s) => (s.refreshError ? s : { ...s, refreshError: true })) }
   }

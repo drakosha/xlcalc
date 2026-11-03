@@ -4,6 +4,7 @@
  * no edit reaches; another workbook's defined names are put in the place of their references before a formula is
  * compiled. A cell the stored values do not hold is blank, or `#REF!` on a sheet whose last update failed
  * (`refreshError`) or of which nothing is stored: there those cells are written as `#REF!` where formulas read them.
+ * A book the host holds open (`open`) is read as Excel reads an open book: a cell it does not hold is blank.
  */
 import type { ExternalBook, ExternalValue } from './contract.js'
 import { caseKey } from './collate.js'
@@ -61,7 +62,7 @@ export function linkSheets(books: readonly ExternalBook[] | undefined, first: nu
     for (const s of b.sheets) {
       links.sheets.set(sheetAt(book, s.name), first + data.length)
       const sh: SheetData = { name: s.name, cols: [], rows: 0, fills: [] }
-      const stored = s.cells === undefined || s.refreshError ? new Set<number>() : null
+      const stored = !b.open && (s.cells === undefined || s.refreshError) ? new Set<number>() : null
       for (const [addr, v] of Object.entries(s.cells ?? {})) {
         const { row, col } = parseAddress(addr)
         stored?.add(row * MAX_COLS + col)
@@ -129,13 +130,13 @@ export function strictCells(links: LinkState, sheets: readonly SheetData[], refs
 
 /**
  * The links numbered `ks` marked in `books` (`markedLinks`) taken by the state: their sheets' cells the stored values do
- * not hold are `#REF!` from now on. The sheets of a link Excel did not mark yet are those that change.
+ * not hold are `#REF!` from now on. The sheets of a link Excel did not mark yet are those that change; an open book's none.
  */
 export function strictLinks(links: LinkState, books: readonly ExternalBook[], ks: ReadonlySet<number>): void {
   let i = 0
   books.forEach((b, j) => {
     for (const s of b.sheets) {
-      if (ks.has(j + 1) && !links.strict[i]) {
+      if (ks.has(j + 1) && !b.open && !links.strict[i]) {
         const stored = new Set<number>()
         for (const addr of Object.keys(s.cells ?? {})) {
           const { row, col } = parseAddress(addr)

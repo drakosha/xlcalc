@@ -28,7 +28,7 @@ import { crc32 } from '../zip/read.js'
 import { zip, type EntryRecord } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
 import { keyOf } from '../../style-table.js'
-import { externalLinkXml } from '../write/links.js'
+import { externalLinkXml, linkTarget } from '../write/links.js'
 import { records } from './zip.js'
 import { carrierNames, carriersOf, type Carriers, type Edit } from './carriers.js'
 import { keptRules } from './rules.js'
@@ -709,7 +709,7 @@ class Kept {
       const part = this.parts.fresh('xl/externalLinks/externalLink', '.xml')
       this.parts.set(part, externalLinkXml(l1[i], i + 1, this.issues))
       const rels = new Rels(undefined)
-      rels.add(relType('externalLinkPath'), l1[i].target, true)
+      rels.add(relType('externalLinkPath'), linkTarget(l1[i]), true)
       this.parts.set(relsPath(part), rels.xml())
       this.types.override(part, `${TYPE}.externalLink+xml`)
       added.push(`<externalReference r:id="${this.wbRels.add(relType('externalLink'), relative(this.src.wbPath, part))}"/>`)

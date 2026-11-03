@@ -36,4 +36,27 @@ describe.each(KINDS)('setExternalBooks in %s', (kind) => {
     await expect(s.setExternalBooks([{ sheets: [] } as never])).rejects.toBeInstanceOf(InputError)
     await Promise.all([s.close(), sync.close()])
   })
+
+  it('a link the host holds open: a formula typed over it marks nothing and a cell it does not hold is blank; closed again, typing marks it', async () => {
+    const open = await opener(kind)
+    const s = await open(book(), { clock })
+    const held: ExternalBook[] = [{ target: 'Other.xlsx', sheets: [{ name: 'Data', cells: { B2: 5, H1: 10, H2: 20 } }], open: true }]
+    await s.setExternalBooks(held)
+    expect(await s.setCellText('S', 'A2', '=SUM([Other.xlsx]Data!H:H)+[Other.xlsx]Data!Z99')).toMatchObject({ ok: true })
+    expect(await s.setCellText('S', 'A3', '=ISBLANK([Other.xlsx]Data!Z99)')).toMatchObject({ ok: true })
+    expect([(await s.getCell('S', 'A2'))?.value, (await s.getCell('S', 'A3'))?.value]).toEqual([30, true])
+    expect((await s.getBook()).externalBooks).toEqual(held)
+    // closed: the values stay, unmarked, until a formula over the link is typed
+    await s.setExternalBooks([{ target: 'Other.xlsx', sheets: held[0].sheets }])
+    expect((await s.getCell('S', 'A2'))?.value).toBe(30)
+    await s.setCellText('S', 'A4', '=[Other.xlsx]Data!B2')
+    expect([(await s.getCell('S', 'A2'))?.value, (await s.getCell('S', 'A3'))?.value]).toEqual([{ error: 'REF' }, false])
+    expect((await s.getBook()).externalBooks![0].sheets[0].refreshError).toBe(true)
+    await s.undo()
+    await s.undo()
+    expect((await s.getBook()).externalBooks).toEqual(held)
+    await expect(s.setExternalBooks([{ ...held[0], open: false } as never])).rejects.toThrow('books[0].open: expected true, got boolean false')
+    await expect(s.setExternalBooks([{ ...held[0], sheets: [{ name: 'Data', refreshError: true }] }])).rejects.toThrow('a workbook held open has no refreshError')
+    await s.close()
+  })
 })

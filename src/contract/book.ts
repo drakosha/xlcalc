@@ -478,12 +478,21 @@ export interface BookInput {
  * the values Excel saved from it when it last read it.
  */
 export interface ExternalBook {
-  /** Where the link points, as stored in the file: a file name, a relative or absolute path, or a `file:` or web address. */
+  /**
+   * Where the link points, as stored in the file: a file name, a relative or absolute path, or a `file:` or web address,
+   * a space as `%20` (a space given as it is is written so); formulas show and find it with its escapes undone.
+   */
   target: string
   /** Its sheets in the order the file lists them. */
   sheets: ExternalSheet[]
   /** Its defined names that the workbook's formulas use: workbook-level ones, or ones local to one of its sheets. */
   names?: ExternalName[]
+  /**
+   * The host holds the workbook open, having read it, as Excel reads a linked workbook that is open: a cell missing from
+   * the stored values is blank, a sheet without `cells` is an empty sheet, and entering a formula that refers to it sets
+   * no `refreshError`, which its sheets must not have. A file stores no such flag: it gets the values without the marker.
+   */
+  open?: true
 }
 
 /** A sheet of an external workbook and the values stored from it. */

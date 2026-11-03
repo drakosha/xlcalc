@@ -23,7 +23,7 @@ import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
-import { externalLinkXml } from './links.js'
+import { externalLinkXml, linkTarget } from './links.js'
 import { nextBlock } from './parts.js'
 import { fileTree, type FileNames, type FileShapes } from './formula.js'
 import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
@@ -281,7 +281,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // the links to other workbooks, `[1]` the first, each pointing at its book through a relationship of its own
   const linkRefs = (book.externalBooks ?? []).map((b, i) => {
     const part = `externalLinks/externalLink${i + 1}.xml`
-    files.push({ name: `xl/${part}`, text: externalLinkXml(b, i + 1, issues) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, b.target, true]]) })
+    files.push({ name: `xl/${part}`, text: externalLinkXml(b, i + 1, issues) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, linkTarget(b), true]]) })
     contentTypes.push([`/xl/${part}`, `${TYPE}.externalLink+xml`])
     return `<externalReference r:id="rId${wbRels.push([`${REL}/externalLink`, part])}"/>`
   })

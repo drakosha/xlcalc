@@ -53,9 +53,29 @@ function valueIn(book: BookInput, result: { sheets: { cells: Record<string, { va
   return valOf(result.sheets[book.sheets.findIndex((s) => s.name === sheet)]?.cells[cell]?.value)
 }
 
+/**
+ * A linked book a host reads, as Excel reads the book beside: the link of `target` with the book's values and `open`
+ * while the book is open; closed, the values stay and `open` goes.
+ */
+function readSource(s: Session, target: string, open: boolean, sheets?: Record<string, Record<string, number | string | boolean>>): void {
+  const books = s.getBook().externalBooks!.map(({ open: _, ...b }) =>
+    b.target !== target ? b : { ...b, ...(sheets ? { sheets: b.sheets.map((x) => ({ name: x.name, cells: { ...x.cells, ...sheets[x.name] } })) } : {}), ...(open ? { open: true as const } : {}) },
+  )
+  s.setExternalBooks(books)
+}
+
 /** A case's operations in a session, as Excel took them (a fill down is a copy of its first row over the rest); how rows inserted moved the cells. */
 function applyOps(s: Session, ops: readonly LinksOp[] = []): ((ref: CellRef) => CellRef)[] {
   return ops.flatMap((o) => {
+    if (o.op === 'enter') {
+      const t = s.setCellText(o.sheet, o.cell, o.formula)
+      if (!t.ok) throw new Error(`enter: ${t.message}`)
+      return []
+    }
+    if (o.op === 'source' || o.op === 'dropSource') {
+      readSource(s, o.target, o.op === 'source', o.op === 'source' ? o.sheets : undefined)
+      return []
+    }
     const r =
       o.op === 'fillDown'
         ? s.editStructure({ op: 'copyRange', from: { sheet: o.sheet, range: o.to.split(':')[0] }, to: { sheet: o.sheet, range: `${o.to.replace(/\d+:/, (m) => `${Number(m.slice(0, -1)) + 1}:`)}` } })
@@ -73,7 +93,8 @@ function applyOps(s: Session, ops: readonly LinksOp[] = []): ((ref: CellRef) => 
 const inFolder = (book: BookInput, folder: string, sep: string): BookInput => ({ ...book, externalBooks: book.externalBooks!.map((b) => ({ ...b, target: `${folder}${sep}${b.target}` })) })
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', 'refresh-held', 'tables-held', 'written']))
+  // open-held puts a linked book beside the opened one, which the Windows harness alone does
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', ...(root ? ['open-held'] : []), 'refresh-held', 'tables-held', 'written']))
   for (const set of stored(root)) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()
@@ -113,7 +134,9 @@ describe.each(PLATFORMS)('links against %s', (_, root) => {
           }
           // targets as Excel resolves them from the opened book's folder are its file system's: `targets` is shown as stored
           if (c.id === 'targets') continue
-          const shown = inFolder(book, set.answers[c.id].folder, root === '' ? '/' : '\\')
+          // a book open beside is shown by its name alone, as a link the host holds open shows its stored target
+          const held = c.ops?.some((o) => o.op === 'source' && o.open && !c.ops!.some((d) => d.op === 'dropSource' && d.target === o.target))
+          const shown = held ? book : inFolder(book, set.answers[c.id].folder, root === '' ? '/' : '\\')
           for (const [key, excel] of Object.entries(answer.formulas)) {
             const [sheet, cell] = key.split('!')
             const formula = book.sheets.find((x) => x.name === sheet)!.cells[cell]!.formula!

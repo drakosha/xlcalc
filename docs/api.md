@@ -3151,12 +3151,21 @@ the values Excel saved from it when it last read it.
 
 ```ts
 interface ExternalBook {
-  /** Where the link points, as stored in the file: a file name, a relative or absolute path, or a `file:` or web address. */
+  /**
+   * Where the link points, as stored in the file: a file name, a relative or absolute path, or a `file:` or web address,
+   * a space as `%20` (a space given as it is is written so); formulas show and find it with its escapes undone.
+   */
   target: string
   /** Its sheets in the order the file lists them. */
   sheets: ExternalSheet[]
   /** Its defined names that the workbook's formulas use: workbook-level ones, or ones local to one of its sheets. */
   names?: ExternalName[]
+  /**
+   * The host holds the workbook open, having read it, as Excel reads a linked workbook that is open: a cell missing from
+   * the stored values is blank, a sheet without `cells` is an empty sheet, and entering a formula that refers to it sets
+   * no `refreshError`, which its sheets must not have. A file stores no such flag: it gets the values without the marker.
+   */
+  open?: true
 }
 ```
 
@@ -5336,10 +5345,10 @@ interface Session {
   clearCells(ranges: RangeRef[], what: ClearKind, opts?: EditOptions): EditResult
   /**
    * Formatting of cells and ranges (`CellPatch`), applied in order and atomically, leaving the cells' values and formulas
-   * as they are: an empty cell in a rectangle gets a cell entry with the formatting, a cell left with nothing is removed,
-   * and a cell in a legacy array formula's range or in a spill takes the formatting while the array stays. A style given
-   * by its fields is applied over each cell's own (`docs/edits.md`); identical styles share one entry of the workbook's
-   * `styles`. Recalculates nothing.
+   * as they are: an empty cell in a rectangle gets the formatting (in the sheet's `looks`, where formatting alone is
+   * held), a cell left with nothing is removed, and a cell in a legacy array formula's range or in a spill takes the
+   * formatting while the array stays. A style given by its fields is applied over each cell's own (`docs/edits.md`);
+   * identical styles share one entry of the workbook's `styles`. Recalculates nothing.
    */
   patchCells(patches: CellPatch[], opts?: EditOptions): EditResult
   /**

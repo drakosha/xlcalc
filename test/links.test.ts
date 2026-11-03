@@ -60,6 +60,27 @@ describe('the text of a reference to another workbook', () => {
     expect(parseEntry('=[Other.xlsx]Sheet1!A1', { externalBooks: LINKS })).toMatchObject({ ok: false, code: 'external_ref', at: 2 })
     expect(parseEntry('=[Book2.xlsx]Sheet1!A1', {})).toEqual({ ok: true, input: { formula: '[Book2.xlsx]Sheet1!A1' } })
   })
+
+  it('a target as a file stores it, with escapes (`%20`), is found and shown by the name a person reads; typed text is taken as written', () => {
+    const externalBooks: ExternalBook[] = [
+      { target: 'Отчет%202025.xlsm', sheets: [{ name: 'Продажи', cells: { H6: 5 } }] },
+      { target: 'file:///C:/data/Sub%20Folder/%D0%9A%D0%BD%D0%B8%D0%B3%D0%B0.xlsx', sheets: [{ name: 'Data', cells: { A1: 7 } }] },
+      { target: 'Rise 50%.xlsx', sheets: [{ name: 'S', cells: { A1: 1 } }] },
+    ]
+    const shown = toLocal("'[1]Продажи'!$H$6+'[2]Data'!A1+[1]!Rate+'[3]S'!A1", 'en-US', { externalBooks })
+    expect(shown).toEqual({ ok: true, formula: "'[Отчет 2025.xlsm]Продажи'!$H$6+'C:/data/Sub Folder/[Книга.xlsx]Data'!A1+'Отчет 2025.xlsm'!Rate+'[Rise 50%.xlsx]S'!A1" })
+    expect(toInvariant(`=${shown.ok && shown.formula}`, 'en-US', { externalBooks })).toEqual({ ok: true, formula: "'[1]Продажи'!$H$6+'[2]Data'!A1+[1]!Rate+'[3]S'!A1" })
+    expect(parseEntry("='[Отчет 2025.xlsm]Продажи'!$H$6*2", { externalBooks })).toEqual({ ok: true, input: { formula: "'[1]Продажи'!$H$6*2" } })
+    expect(parseEntry("='C:\\data\\Sub Folder\\[Книга.xlsx]Data'!A1", { externalBooks })).toEqual({ ok: true, input: { formula: "'[2]Data'!A1" } })
+    expect(parseEntry("='[Отчет%202025.xlsm]Продажи'!$H$6", { externalBooks })).toMatchObject({ ok: false, code: 'external_ref' })
+    expect(validateFormula("'[1]Нет'!A1", { externalBooks })).toMatchObject({ ok: false, message: 'the workbook Отчет 2025.xlsm has no sheet Нет' })
+    const s = createSession({ sheets: [{ name: 'S', cells: {} }] })
+    s.setExternalBooks([externalBooks[0]])
+    s.setCells([{ sheet: 'S', cell: 'A1', input: { formula: "'[Отчет 2025.xlsm]Продажи'!$H$6" } }])
+    expect(s.getCell('S', 'A1')).toMatchObject({ formula: "'[1]Продажи'!$H$6", value: 5 })
+    expect(s.setCellText('S', 'A2', "='[Отчет 2025.xlsm]Продажи'!$H$6*2")).toMatchObject({ ok: true })
+    expect(s.getCell('S', 'A2')).toMatchObject({ value: 10 })
+  })
 })
 
 describe('a book’s links', () => {
@@ -108,6 +129,10 @@ describe('a book’s links', () => {
     expect([lost.sheets[0].cells.A1.value, lost.diagnostics.filter((d) => d.kind === 'name')]).toEqual([{ error: 'REF' }, []])
     const marked = LINKS.map((b, i) => (i ? b : { ...b, sheets: b.sheets.map((s) => ({ ...s, refreshError: true as const })) }))
     expect(values(book({ A1: "'[1]Sheet1'!A9", A2: "SUM('[1]Sheet1'!A:A)", A3: "'[1]Sheet1'!A1", A4: "MATCH(3,'[1]Sheet1'!A:A,0)" }, { externalBooks: marked }))).toEqual({ A1: { error: 'REF' }, A2: { error: 'REF' }, A3: 1, A4: 3 })
+    // a book the host holds open: a cell it does not hold is blank, and a sheet without values is an empty one
+    const open = LINKS.map((b): ExternalBook => ({ ...b, open: true }))
+    expect(values(book({ A1: "'[1]Sheet1'!A9", A2: "SUM('[1]Sheet1'!A:A)", A3: "'[2]Gone'!A1", A4: "ISBLANK('[2]Gone'!A1)" }, { externalBooks: open }))).toEqual({ A1: 0, A2: 6, A3: 0, A4: true })
+    expect(inputHash(book({}, { externalBooks: open }))).not.toBe(inputHash(book({})))
   })
 
   it('a position that takes an open book’s reference is #VALUE! over a link, directly, through a name or a LET name', () => {

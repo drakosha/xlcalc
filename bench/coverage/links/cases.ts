@@ -60,8 +60,20 @@ export interface LinksCase {
 
 export type LinkedFormula = string | { formula: string; array: string }
 
-/** An operation on this book: a fill down of `to`, a copy of `range` to `to`, rows inserted over `range`, the sheet renamed `to`. */
-export type LinksOp = { op: 'fillDown'; sheet: string; to: string } | { op: 'copyRange'; sheet: string; range: string; to: string } | { op: 'insertRows'; sheet: string; range: string } | { op: 'renameSheet'; sheet: string; to: string }
+/**
+ * An operation on this book: a fill down of `to`, a copy of `range` to `to`, rows inserted over `range`, the sheet
+ * renamed `to`; and on Windows alone (`bench/windows/links.ts`), a formula typed into `cell` in Excel's spelling (`enter`),
+ * the linked book `target` put beside this one with the values of `sheets`, opened or left closed on the disk (`source`),
+ * and that book closed and removed (`dropSource`).
+ */
+export type LinksOp =
+  | { op: 'fillDown'; sheet: string; to: string }
+  | { op: 'copyRange'; sheet: string; range: string; to: string }
+  | { op: 'insertRows'; sheet: string; range: string }
+  | { op: 'renameSheet'; sheet: string; to: string }
+  | { op: 'enter'; sheet: string; cell: string; formula: string }
+  | { op: 'source'; target: string; open: boolean; sheets: Record<string, Record<string, number | string | boolean>> }
+  | { op: 'dropSource'; target: string }
 
 export interface LinksCases {
   cases: LinksCase[]
