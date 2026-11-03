@@ -15,7 +15,6 @@
  */
 import type { NameInput } from '../contract.js'
 import { canonical, FormulaError, isRefOp, parse, type Ast, type RangeRef } from '../syntax.js'
-import { caseKey } from '../collate.js'
 import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
@@ -38,6 +37,10 @@ type Kind = 'one' | 'range' | 'array' | 'rowcol'
 interface Out {
   ast: Ast
   kind: Kind
+  /** A place Excel knows leaves one cell as INDEX's row or column: a whole number literal from 1, such a name, MATCH. */
+  pos?: true
+  /** A name of a formula that is not a reference: a reference where it goes, but INDEX takes it as an array. */
+  named?: true
 }
 
 /** Arguments whose class the sets show only in part: IFERROR's value and TYPE's pass an array on (`TYPE(IFS("x",1))` is 64), N and T take a range's first cell. */
@@ -103,8 +106,11 @@ function intersects(kind: Kind, slot: Slot, where: Where): boolean {
 
 const wider = (a: Kind, b: Kind): Kind => (a === 'range' || b === 'range' ? 'range' : a === 'array' || b === 'array' || a === 'rowcol' || b === 'rowcol' ? 'array' : 'one')
 
-/** A positive whole number literal (INDEX's row or column that leaves one cell). */
-const place = (n: Ast | undefined) => n?.k === 'num' && Number.isInteger(n.v) && n.v >= 1
+/** A whole number literal from 1 to 65535 (Excel's two-byte integer, 65536 is not one): INDEX's place that leaves one cell. */
+const counting = (n: Ast) => n.k === 'num' && Number.isInteger(n.v) && n.v >= 1 && n.v <= 65535
+
+/** `pos` of an `Out` where `yes`. */
+const placed = (yes: boolean | undefined): Pick<Out, 'pos'> => (yes ? { pos: true } : {})
 
 /** The size of a literal reference: rows and columns, or null for anything else. */
 function size(n: Ast): [number, number] | null {
@@ -114,11 +120,12 @@ function size(n: Ast): [number, number] | null {
 
 /**
  * What the conversion reads of a formula's references and numbers outside array constants (`syntax/shape.ts`'s holes):
- * a reference's kind, size and spill mark, whether a number is a place (`place`). Formulas of one shape with one key
- * convert alike, so a writer asks once per key (`xlsx/write/kind.ts`); what else the conversion comes to read goes here.
+ * a reference's kind, size and spill mark, whether a number is 1 (OFFSET's size) or else a place (`counting`). Formulas
+ * of one shape (its functions and names spelled in it) with one key convert alike, so a writer asks once per key
+ * (`xlsx/write/kind.ts`); what else the conversion comes to read goes here.
  */
 export const legacyKey = (holes: readonly (RangeRef | number)[]) =>
-  holes.map((h) => (typeof h === 'number' ? (Number.isInteger(h) && h >= 1 ? 'p' : 'n') : `${h.kind}${h.r2 - h.r1},${h.c2 - h.c1}${h.spill ? '#' : ''}`)).join(';')
+  holes.map((h) => (typeof h === 'number' ? (h === 1 ? '1' : counting({ k: 'num', v: h }) ? 'p' : 'n') : `${h.kind}${h.r2 - h.r1},${h.c2 - h.c1}${h.spill ? '#' : ''}`)).join(';')
 
 /** A call's answer after its arguments are converted. */
 function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
@@ -127,10 +134,15 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
     case 'COLUMN':
       return args.length && args[0].kind !== 'one' ? 'rowcol' : 'one'
     case 'INDEX': {
-      const ref = args[0].kind === 'range' || nodes[0].k === 'ref'
-      // of one value one value; of several, one cell when every index given is a number that leaves one
-      const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (place(nodes[1]) && (nodes.length < 3 ? ref : place(nodes[2])))
+      const ref = (args[0].kind === 'range' && !args[0].named) || nodes[0].k === 'ref'
+      // of one cell or value one value (`INDEX(B1,0)` too); of several, one cell when every index given is a place that leaves one
+      const one = args[0].kind === 'one' || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
       return one ? 'one' : ref ? 'range' : 'array'
+    }
+    case 'OFFSET': {
+      // one cell when the height and the width are each the literal 1, or left out from a cell (`B1:B1` is a range); the shifts do not matter
+      const one = (n: Ast | undefined) => (n === undefined ? args[0].kind === 'one' : n.k === 'num' && n.v === 1)
+      return one(nodes[3]) && one(nodes[4]) ? 'one' : 'range'
     }
     case 'VLOOKUP':
     case 'HLOOKUP':
@@ -154,9 +166,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
 type Names = (name: string, sheet: string | undefined) => { ast: Ast } | undefined
 
 function converter(names: Names) {
-  // the kind of each LET name, by slot; the names being read; the number of `@` put in
-  let locals: Kind[] = []
-  const reading = new Set<string>()
+  // the kind of each LET name, by slot; the number of `@` put in
+  const locals: Kind[] = []
   let added = 0
   const go = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
     const o = node(n, where, slot, scope)
@@ -179,11 +190,14 @@ function converter(names: Names) {
       case 'arr':
         return { ast: n, kind: 'array' }
       case 'name':
-        return { ast: n, kind: nameKind(n, scope) }
+        return { ast: n, ...nameKind(n, scope) }
+      case 'num':
+        return { ast: n, kind: 'one', ...placed(counting(n)) }
       case 'un':
       case 'pct': {
         const a = go(n.a, where, 'v', scope)
-        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array' }
+        // Excel reads `+2` as the literal 2 (`+MATCH(…)` is not MATCH)
+        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array', ...placed(n.k === 'un' && n.op === '+' && counting(n.a)) }
       }
       case 'bin': {
         // the reference operators take references whole and answer one
@@ -199,14 +213,15 @@ function converter(names: Names) {
       // `(@A1:A3)`: the operand in its place gets `@`
       case 'paren': {
         const a = go(n.a, where, slot, scope)
-        return { ast: { ...n, a: a.ast }, kind: a.kind }
+        return { ast: { ...n, a: a.ast }, kind: a.kind, ...placed(a.pos) }
       }
       case 'fn': {
         const args = n.args.map((a, i) => {
           const [s, w] = argument(n.name, i, a, where)
           return go(a, w, s, scope)
         })
-        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args) }
+        // Excel knows MATCH's answer for a place, and no other call's (XMATCH, ROWS, COUNT are not)
+        return { ast: { ...n, args: args.map((a) => a.ast) }, kind: answer(n.name, args, n.args), ...placed(n.name === 'MATCH') }
       }
       case 'let': {
         // the values and the calculation are references or arrays, as an argument of IF is
@@ -226,20 +241,16 @@ function converter(names: Names) {
         return { ast: n, kind: 'one' }
     }
   }
-  // a name gives what its formula gives, computed as an array as Excel computes a name
-  const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Kind => {
-    const sheet = n.sheet ?? scope
-    const def = names(n.name, sheet)
-    const key = `${sheet ?? ''}!${caseKey(n.name)}`
-    if (!def || reading.has(key)) return 'one'
-    reading.add(key)
-    const outer = locals
-    locals = []
-    // a name's formula sees the global names
-    const kind = node(def.ast, 'A', 'a', undefined).kind
-    locals = outer
-    reading.delete(key)
-    return kind === 'rowcol' ? 'array' : kind
+  // a name: Excel takes a literal or a cell for one value (a whole number from 1 for INDEX's place, as the literal), any
+  // other formula for a reference whatever it computes (`1+1`, `(2)`, ABS(-2), an array, another name get `@`, not in N)
+  const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Omit<Out, 'ast'> => {
+    const def = names(n.name, n.sheet ?? scope)?.ast
+    if (!def) return { kind: 'one' }
+    const lit = def.k === 'un' && def.op === '-' ? def.a : def
+    if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...placed(counting(def)) }
+    if (def.k === 'ref') return { kind: def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
+    // a range of the reference operators (`'S'!B1:'S'!B8`) is a formula too
+    return { kind: 'range', ...(def.k === 'ref3d' ? {} : { named: true }) }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0

@@ -1,0 +1,300 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.4
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "names of arrays and expressions over ranges as references, in formulas of the old kind",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "H1": {
+        "formula": "IFERROR(s_arr,0)"
+       },
+       "H2": {
+        "formula": "INDEX(s_arr,2)"
+       },
+       "H3": {
+        "formula": "INDEX(s_col,2)"
+       },
+       "H4": {
+        "formula": "ROWS(s_col)"
+       },
+       "H5": {
+        "formula": "s_rows"
+       },
+       "H6": {
+        "formula": "SUM(s_rows)"
+       },
+       "H7": {
+        "formula": "s_rows+0"
+       },
+       "H8": {
+        "formula": "IFERROR(s_x3,0)"
+       },
+       "H9": {
+        "formula": "T(s_txt)"
+       },
+       "H10": {
+        "formula": "INDEX(s_x3,2)"
+       },
+       "H11": {
+        "formula": "ABS(s_arr)"
+       },
+       "H12": {
+        "formula": "SUMPRODUCT(s_x3)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "s_arr",
+      "ref": "{4,5,6}"
+     },
+     {
+      "name": "s_col",
+      "ref": "{4;5;6}"
+     },
+     {
+      "name": "s_rows",
+      "ref": "ROW('S'!$B$1:$B$3)"
+     },
+     {
+      "name": "s_x3",
+      "ref": "'S'!$B$1:$B$8*3"
+     },
+     {
+      "name": "s_txt",
+      "ref": "{\"a\",\"b\"}"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H1"
+    },
+    {
+     "sheet": "S",
+     "range": "H2"
+    },
+    {
+     "sheet": "S",
+     "range": "H3"
+    },
+    {
+     "sheet": "S",
+     "range": "H4"
+    },
+    {
+     "sheet": "S",
+     "range": "H5"
+    },
+    {
+     "sheet": "S",
+     "range": "H6"
+    },
+    {
+     "sheet": "S",
+     "range": "H7"
+    },
+    {
+     "sheet": "S",
+     "range": "H8"
+    },
+    {
+     "sheet": "S",
+     "range": "H9"
+    },
+    {
+     "sheet": "S",
+     "range": "H10"
+    },
+    {
+     "sheet": "S",
+     "range": "H11"
+    },
+    {
+     "sheet": "S",
+     "range": "H12"
+    }
+   ],
+   "legacy": [
+    "S!H1",
+    "S!H2",
+    "S!H3",
+    "S!H4",
+    "S!H5",
+    "S!H6",
+    "S!H7",
+    "S!H8",
+    "S!H9",
+    "S!H10",
+    "S!H11",
+    "S!H12"
+   ],
+   "predicted": {
+    "S!H1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 6
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H8": {
+     "t": "n",
+     "v": 12
+    },
+    "S!H9": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 24
+    },
+    "S!H11": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H12": {
+     "t": "n",
+     "v": 344.25
+    }
+   }
+  }
+ ],
+ "answers": {
+  "names": {
+   "values": {
+    "S!H1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 6
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H8": {
+     "t": "n",
+     "v": 12
+    },
+    "S!H9": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 24
+    },
+    "S!H11": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H12": {
+     "t": "n",
+     "v": 344.25
+    }
+   },
+   "formulas": {
+    "S!H1": "=IFERROR(s_arr,0)",
+    "S!H2": "=INDEX(s_arr,2)",
+    "S!H3": "=INDEX(s_col,2)",
+    "S!H4": "=ROWS(s_col)",
+    "S!H5": "=s_rows",
+    "S!H6": "=SUM(s_rows)",
+    "S!H7": "=s_rows+0",
+    "S!H8": "=IFERROR(s_x3,0)",
+    "S!H9": "=T(s_txt)",
+    "S!H10": "=INDEX(s_x3,2)",
+    "S!H11": "=ABS(s_arr)",
+    "S!H12": "=SUMPRODUCT(s_x3)"
+   },
+   "formulas2": {
+    "S!H1": "=IFERROR(@s_arr,0)",
+    "S!H2": "=@INDEX(s_arr,2)",
+    "S!H3": "=@INDEX(s_col,2)",
+    "S!H4": "=ROWS(s_col)",
+    "S!H5": "=@s_rows",
+    "S!H6": "=SUM(s_rows)",
+    "S!H7": "=@s_rows+0",
+    "S!H8": "=IFERROR(@s_x3,0)",
+    "S!H9": "=T(s_txt)",
+    "S!H10": "=@INDEX(s_x3,2)",
+    "S!H11": "=ABS(@s_arr)",
+    "S!H12": "=SUMPRODUCT(s_x3)"
+   }
+  }
+ }
+}

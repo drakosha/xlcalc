@@ -1,0 +1,723 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 54.6
+ },
+ "cases": [
+  {
+   "id": "forty",
+   "about": "forty formulas that tell the rules of INDEX's place apart, of the old kind",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 20
+       },
+       "C2": {
+        "value": 120
+       },
+       "C3": {
+        "value": 130
+       },
+       "C4": {
+        "value": 140
+       },
+       "C5": {
+        "value": 150
+       },
+       "D1": {
+        "value": 2
+       },
+       "H3": {
+        "formula": "INDEX(B1:B5,2)"
+       },
+       "I3": {
+        "formula": "INDEX(B1:B5,0)"
+       },
+       "J3": {
+        "formula": "INDEX(B1:B5,-1)"
+       },
+       "K3": {
+        "formula": "INDEX(B1:B5,2.5)"
+       },
+       "L3": {
+        "formula": "INDEX(B1:B5,TRUE)"
+       },
+       "M3": {
+        "formula": "INDEX(B1:B5,\"2\")"
+       },
+       "N3": {
+        "formula": "INDEX(B1:B5,1+1)"
+       },
+       "O3": {
+        "formula": "INDEX(B1:B5,D1)"
+       },
+       "P3": {
+        "formula": "INDEX(B1:B5,(2))"
+       },
+       "Q3": {
+        "formula": "INDEX(B1:B5,MATCH(3,A1:A5,0))"
+       },
+       "R3": {
+        "formula": "INDEX(B1:B5,MATCH(99,A1:A5,0))"
+       },
+       "S3": {
+        "formula": "INDEX(B1:B5,XMATCH(3,A1:A5,0))"
+       },
+       "T3": {
+        "formula": "INDEX(B1:B5,MATCH(3,A1:A5,0)+0)"
+       },
+       "U3": {
+        "formula": "INDEX(B1:B5,ABS(MATCH(3,A1:A5,0)))"
+       },
+       "V3": {
+        "formula": "INDEX(B1:B5,IF(TRUE,MATCH(3,A1:A5,0),1))"
+       },
+       "W3": {
+        "formula": "INDEX(B1:B5,ROW(A2))"
+       },
+       "X3": {
+        "formula": "INDEX(B1:B5,COLUMN(B1))"
+       },
+       "Y3": {
+        "formula": "INDEX(B1:B5,ROWS(A1:A3))"
+       },
+       "Z3": {
+        "formula": "INDEX(B1:B5,COLUMNS(A1:C1))"
+       },
+       "AA3": {
+        "formula": "INDEX(B1:B5,COUNT(A1:A3))"
+       },
+       "AB3": {
+        "formula": "INDEX(B1:B5,COUNT(F1:F3))"
+       },
+       "AC3": {
+        "formula": "INDEX(B1:B5,SUM(0))"
+       },
+       "AD3": {
+        "formula": "INDEX(B1:B5,SUM(2))"
+       },
+       "AE3": {
+        "formula": "INDEX(B1:B5,LEN(\"\"))"
+       },
+       "AF3": {
+        "formula": "INDEX(B1:B5,INT(2.5))"
+       },
+       "AG3": {
+        "formula": "INDEX(B1:B5,FIND(\"a\",\"abc\"))"
+       },
+       "AH3": {
+        "formula": "INDEX(B1:B5,RANK(3,A1:A5,0))"
+       },
+       "AI3": {
+        "formula": "INDEX(B1:B5,FALSE())"
+       },
+       "AJ3": {
+        "formula": "INDEX(B1:C5,MATCH(3,A1:A5,0),2)"
+       },
+       "AK3": {
+        "formula": "INDEX(B1:C5,2,MATCH(20,B1:C1,0))"
+       },
+       "AL3": {
+        "formula": "INDEX(B1:D1,MATCH(20,B1:D1,0))"
+       },
+       "AM3": {
+        "formula": "INDEX({10;20;30},MATCH(3,A1:A5,0))"
+       },
+       "AN3": {
+        "formula": "INDEX({10;20;30},MATCH(3,A1:A5,0),1)"
+       },
+       "AO3": {
+        "formula": "INDEX(nData,MATCH(3,A1:A5,0))"
+       },
+       "AP3": {
+        "formula": "INDEX(B1:B5,nPos)"
+       },
+       "AQ3": {
+        "formula": "INDEX(B1:B5,nTwo)"
+       },
+       "AR3": {
+        "formula": "INDEX(B1:B5,nZero)"
+       },
+       "AS3": {
+        "formula": "INDEX(B:B,65535)"
+       },
+       "AT3": {
+        "formula": "INDEX(B:B,65536)"
+       },
+       "AU3": {
+        "formula": "INDEX(B1,0)"
+       },
+       "AV3": {
+        "formula": "INDEX(B1:B5,2.0)"
+       },
+       "AW3": {
+        "formula": "INDEX(B1:B5,2E0)"
+       },
+       "AX3": {
+        "formula": "INDEX(B1:B5,+2)"
+       },
+       "AY3": {
+        "formula": "INDEX(B:B,70000)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nData",
+      "ref": "'S'!$B$1:$B$5"
+     },
+     {
+      "name": "nPos",
+      "ref": "MATCH(3,'S'!$A$1:$A$5,0)"
+     },
+     {
+      "name": "nTwo",
+      "ref": "2"
+     },
+     {
+      "name": "nZero",
+      "ref": "0"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H3"
+    },
+    {
+     "sheet": "S",
+     "range": "I3"
+    },
+    {
+     "sheet": "S",
+     "range": "J3"
+    },
+    {
+     "sheet": "S",
+     "range": "K3"
+    },
+    {
+     "sheet": "S",
+     "range": "L3"
+    },
+    {
+     "sheet": "S",
+     "range": "M3"
+    },
+    {
+     "sheet": "S",
+     "range": "N3"
+    },
+    {
+     "sheet": "S",
+     "range": "O3"
+    },
+    {
+     "sheet": "S",
+     "range": "P3"
+    },
+    {
+     "sheet": "S",
+     "range": "Q3"
+    },
+    {
+     "sheet": "S",
+     "range": "R3"
+    },
+    {
+     "sheet": "S",
+     "range": "S3"
+    },
+    {
+     "sheet": "S",
+     "range": "T3"
+    },
+    {
+     "sheet": "S",
+     "range": "U3"
+    },
+    {
+     "sheet": "S",
+     "range": "V3"
+    },
+    {
+     "sheet": "S",
+     "range": "W3"
+    },
+    {
+     "sheet": "S",
+     "range": "X3"
+    },
+    {
+     "sheet": "S",
+     "range": "Y3"
+    },
+    {
+     "sheet": "S",
+     "range": "Z3"
+    },
+    {
+     "sheet": "S",
+     "range": "AA3"
+    },
+    {
+     "sheet": "S",
+     "range": "AB3"
+    },
+    {
+     "sheet": "S",
+     "range": "AC3"
+    },
+    {
+     "sheet": "S",
+     "range": "AD3"
+    },
+    {
+     "sheet": "S",
+     "range": "AE3"
+    },
+    {
+     "sheet": "S",
+     "range": "AF3"
+    },
+    {
+     "sheet": "S",
+     "range": "AG3"
+    },
+    {
+     "sheet": "S",
+     "range": "AH3"
+    },
+    {
+     "sheet": "S",
+     "range": "AI3"
+    },
+    {
+     "sheet": "S",
+     "range": "AJ3"
+    },
+    {
+     "sheet": "S",
+     "range": "AK3"
+    },
+    {
+     "sheet": "S",
+     "range": "AL3"
+    },
+    {
+     "sheet": "S",
+     "range": "AM3"
+    },
+    {
+     "sheet": "S",
+     "range": "AN3"
+    },
+    {
+     "sheet": "S",
+     "range": "AO3"
+    },
+    {
+     "sheet": "S",
+     "range": "AP3"
+    },
+    {
+     "sheet": "S",
+     "range": "AQ3"
+    },
+    {
+     "sheet": "S",
+     "range": "AR3"
+    },
+    {
+     "sheet": "S",
+     "range": "AS3"
+    },
+    {
+     "sheet": "S",
+     "range": "AT3"
+    },
+    {
+     "sheet": "S",
+     "range": "AU3"
+    },
+    {
+     "sheet": "S",
+     "range": "AV3"
+    },
+    {
+     "sheet": "S",
+     "range": "AW3"
+    },
+    {
+     "sheet": "S",
+     "range": "AX3"
+    },
+    {
+     "sheet": "S",
+     "range": "AY3"
+    }
+   ],
+   "legacy": [
+    "S!H3",
+    "S!I3",
+    "S!J3",
+    "S!K3",
+    "S!L3",
+    "S!M3",
+    "S!N3",
+    "S!O3",
+    "S!P3",
+    "S!Q3",
+    "S!R3",
+    "S!S3",
+    "S!T3",
+    "S!U3",
+    "S!V3",
+    "S!W3",
+    "S!X3",
+    "S!Y3",
+    "S!Z3",
+    "S!AA3",
+    "S!AB3",
+    "S!AC3",
+    "S!AD3",
+    "S!AE3",
+    "S!AF3",
+    "S!AG3",
+    "S!AH3",
+    "S!AI3",
+    "S!AJ3",
+    "S!AK3",
+    "S!AL3",
+    "S!AM3",
+    "S!AN3",
+    "S!AO3",
+    "S!AP3",
+    "S!AQ3",
+    "S!AR3",
+    "S!AS3",
+    "S!AT3",
+    "S!AU3",
+    "S!AV3",
+    "S!AW3",
+    "S!AX3",
+    "S!AY3"
+   ]
+  }
+ ],
+ "answers": {
+  "forty": {
+   "values": {
+    "S!H3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!I3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!J3": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!K3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!L3": {
+     "t": "n",
+     "v": 10
+    },
+    "S!M3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!N3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!O3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!P3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!Q3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!R3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!S3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!T3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!U3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!V3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!W3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!X3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!Y3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!Z3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AA3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AB3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AC3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AD3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AE3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AF3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AG3": {
+     "t": "n",
+     "v": 10
+    },
+    "S!AH3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AI3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AJ3": {
+     "t": "n",
+     "v": 130
+    },
+    "S!AK3": {
+     "t": "n",
+     "v": 120
+    },
+    "S!AL3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AM3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AN3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AO3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AP3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AQ3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AR3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!AS3": {
+     "t": "n",
+     "v": 0
+    },
+    "S!AT3": {
+     "t": "n",
+     "v": 0
+    },
+    "S!AU3": {
+     "t": "n",
+     "v": 10
+    },
+    "S!AV3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AW3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AX3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!AY3": {
+     "t": "n",
+     "v": 0
+    }
+   },
+   "formulas": {
+    "S!H3": "=INDEX(B1:B5,2)",
+    "S!I3": "=INDEX(B1:B5,0)",
+    "S!J3": "=INDEX(B1:B5,-1)",
+    "S!K3": "=INDEX(B1:B5,2.5)",
+    "S!L3": "=INDEX(B1:B5,TRUE)",
+    "S!M3": "=INDEX(B1:B5,\"2\")",
+    "S!N3": "=INDEX(B1:B5,1+1)",
+    "S!O3": "=INDEX(B1:B5,D1)",
+    "S!P3": "=INDEX(B1:B5,(2))",
+    "S!Q3": "=INDEX(B1:B5,MATCH(3,A1:A5,0))",
+    "S!R3": "=INDEX(B1:B5,MATCH(99,A1:A5,0))",
+    "S!S3": "=INDEX(B1:B5,XMATCH(3,A1:A5,0))",
+    "S!T3": "=INDEX(B1:B5,MATCH(3,A1:A5,0)+0)",
+    "S!U3": "=INDEX(B1:B5,ABS(MATCH(3,A1:A5,0)))",
+    "S!V3": "=INDEX(B1:B5,IF(TRUE,MATCH(3,A1:A5,0),1))",
+    "S!W3": "=INDEX(B1:B5,ROW(A2))",
+    "S!X3": "=INDEX(B1:B5,COLUMN(B1))",
+    "S!Y3": "=INDEX(B1:B5,ROWS(A1:A3))",
+    "S!Z3": "=INDEX(B1:B5,COLUMNS(A1:C1))",
+    "S!AA3": "=INDEX(B1:B5,COUNT(A1:A3))",
+    "S!AB3": "=INDEX(B1:B5,COUNT(F1:F3))",
+    "S!AC3": "=INDEX(B1:B5,SUM(0))",
+    "S!AD3": "=INDEX(B1:B5,SUM(2))",
+    "S!AE3": "=INDEX(B1:B5,LEN(\"\"))",
+    "S!AF3": "=INDEX(B1:B5,INT(2.5))",
+    "S!AG3": "=INDEX(B1:B5,FIND(\"a\",\"abc\"))",
+    "S!AH3": "=INDEX(B1:B5,RANK(3,A1:A5,0))",
+    "S!AI3": "=INDEX(B1:B5,FALSE())",
+    "S!AJ3": "=INDEX(B1:C5,MATCH(3,A1:A5,0),2)",
+    "S!AK3": "=INDEX(B1:C5,2,MATCH(20,B1:C1,0))",
+    "S!AL3": "=INDEX(B1:D1,MATCH(20,B1:D1,0))",
+    "S!AM3": "=INDEX({10;20;30},MATCH(3,A1:A5,0))",
+    "S!AN3": "=INDEX({10;20;30},MATCH(3,A1:A5,0),1)",
+    "S!AO3": "=INDEX(nData,MATCH(3,A1:A5,0))",
+    "S!AP3": "=INDEX(B1:B5,nPos)",
+    "S!AQ3": "=INDEX(B1:B5,nTwo)",
+    "S!AR3": "=INDEX(B1:B5,nZero)",
+    "S!AS3": "=INDEX(B:B,65535)",
+    "S!AT3": "=INDEX(B:B,65536)",
+    "S!AU3": "=INDEX(B1,0)",
+    "S!AV3": "=INDEX(B1:B5,2)",
+    "S!AW3": "=INDEX(B1:B5,2)",
+    "S!AX3": "=INDEX(B1:B5,2)",
+    "S!AY3": "=INDEX(B:B,70000)"
+   },
+   "formulas2": {
+    "S!H3": "=INDEX(B1:B5,2)",
+    "S!I3": "=@INDEX(B1:B5,0)",
+    "S!J3": "=@INDEX(B1:B5,-1)",
+    "S!K3": "=@INDEX(B1:B5,2.5)",
+    "S!L3": "=@INDEX(B1:B5,TRUE)",
+    "S!M3": "=@INDEX(B1:B5,\"2\")",
+    "S!N3": "=@INDEX(B1:B5,1+1)",
+    "S!O3": "=@INDEX(B1:B5,D1)",
+    "S!P3": "=INDEX(B1:B5,(2))",
+    "S!Q3": "=INDEX(B1:B5,MATCH(3,A1:A5,0))",
+    "S!R3": "=INDEX(B1:B5,MATCH(99,A1:A5,0))",
+    "S!S3": "=@INDEX(B1:B5,XMATCH(3,A1:A5,0))",
+    "S!T3": "=@INDEX(B1:B5,MATCH(3,A1:A5,0)+0)",
+    "S!U3": "=@INDEX(B1:B5,ABS(MATCH(3,A1:A5,0)))",
+    "S!V3": "=@INDEX(B1:B5,IF(TRUE,MATCH(3,A1:A5,0),1))",
+    "S!W3": "=@INDEX(B1:B5,ROW(A2))",
+    "S!X3": "=@INDEX(B1:B5,COLUMN(B1))",
+    "S!Y3": "=@INDEX(B1:B5,ROWS(A1:A3))",
+    "S!Z3": "=@INDEX(B1:B5,COLUMNS(A1:C1))",
+    "S!AA3": "=@INDEX(B1:B5,COUNT(A1:A3))",
+    "S!AB3": "=@INDEX(B1:B5,COUNT(F1:F3))",
+    "S!AC3": "=@INDEX(B1:B5,SUM(0))",
+    "S!AD3": "=@INDEX(B1:B5,SUM(2))",
+    "S!AE3": "=@INDEX(B1:B5,LEN(\"\"))",
+    "S!AF3": "=@INDEX(B1:B5,INT(2.5))",
+    "S!AG3": "=@INDEX(B1:B5,FIND(\"a\",\"abc\"))",
+    "S!AH3": "=@INDEX(B1:B5,RANK(3,A1:A5,0))",
+    "S!AI3": "=@INDEX(B1:B5,FALSE())",
+    "S!AJ3": "=INDEX(B1:C5,MATCH(3,A1:A5,0),2)",
+    "S!AK3": "=INDEX(B1:C5,2,MATCH(20,B1:C1,0))",
+    "S!AL3": "=INDEX(B1:D1,MATCH(20,B1:D1,0))",
+    "S!AM3": "=@INDEX({10;20;30},MATCH(3,A1:A5,0))",
+    "S!AN3": "=INDEX({10;20;30},MATCH(3,A1:A5,0),1)",
+    "S!AO3": "=INDEX(nData,MATCH(3,A1:A5,0))",
+    "S!AP3": "=@INDEX(B1:B5,@nPos)",
+    "S!AQ3": "=INDEX(B1:B5,nTwo)",
+    "S!AR3": "=@INDEX(B1:B5,nZero)",
+    "S!AS3": "=INDEX(B:B,65535)",
+    "S!AT3": "=@INDEX(B:B,65536)",
+    "S!AU3": "=INDEX(B1,0)",
+    "S!AV3": "=INDEX(B1:B5,2)",
+    "S!AW3": "=INDEX(B1:B5,2)",
+    "S!AX3": "=INDEX(B1:B5,2)",
+    "S!AY3": "=@INDEX(B:B,70000)"
+   }
+  }
+ }
+}

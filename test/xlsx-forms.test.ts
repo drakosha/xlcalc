@@ -22,7 +22,6 @@ const OTHERWISE: Record<string, string> = {
   E8: 'SUMPRODUCT((A1:A5>2)*B1:B5): Excel makes a dynamic array of an operation over a range, though Excel before 365 computes it alike in SUMPRODUCT',
   E11: 'MAX(INDEX(A1:A5*B1:B5,0)): the same, INDEX with 0 taking the array whole',
   E20: 'SUM(FILTER(A1:A5,A1:A5>2)): the same; Excel 365 reads FILTER of the old kind without `@`',
-  E15: 'INDEX(B1:B5,MATCH(3,A1:A5,0)): the reader puts `@` before INDEX whose index is not a number, where Excel puts none after MATCH',
 }
 
 const book = formsBook()
@@ -63,13 +62,13 @@ describe('writeXlsx: a formula in the form Excel 365 saves it in', () => {
 
   it('formulas of one shape take the form of their own references: a cell, a range, a number that is a place or not', async () => {
     const cells: BookInput['sheets'][0]['cells'] = { A1: { value: 1 }, A2: { value: 2 }, B1: { value: 3 }, B2: { value: 4 } }
-    // one shape: `SUM(A1*2)` and `SUM(A1:A2*2)` (the old kind intersects the range), INDEX at a place and at a fraction
-    const formulas = { D1: 'SUM(A1*2)', D2: 'SUM(A1:A2*2)', E2: 'SUM(A2*2)', F1: 'INDEX(A1:B2,1,2)', F2: 'INDEX(A1:B2,1.5,2)', G1: 'INDEX(A1:B2,2,1)' }
+    // one shape: `SUM(A1*2)` and `SUM(A1:A2*2)` (the old kind intersects the range), INDEX at a place, at a fraction and past 65535, at MATCH
+    const formulas = { D1: 'SUM(A1*2)', D2: 'SUM(A1:A2*2)', E2: 'SUM(A2*2)', F1: 'INDEX(A1:B2,1,2)', F2: 'INDEX(A1:B2,1.5,2)', G1: 'INDEX(A1:B2,2,1)', G2: 'INDEX(A1:B2,70000,1)', H1: 'INDEX(A1:B2,MATCH(2,A1:A2,0),1)' }
     for (const [a, f] of Object.entries(formulas)) cells[a] = { formula: f }
     const b: BookInput = { sheets: [{ name: 'S', cells }] }
     const xml = (await openArchive((await writeXlsx({ book: b, result: compute(b) })).data).text('xl/worksheets/sheet1.xml'))!
     const form = (a: string) => (new RegExp(`<c r="${a}"[^>]*>`).exec(xml)![0].includes('cm=') ? 'dynamic' : 'old')
-    expect(Object.fromEntries(Object.keys(formulas).map((a) => [a, form(a)]))).toEqual({ D1: 'old', D2: 'dynamic', E2: 'old', F1: 'old', F2: 'dynamic', G1: 'old' })
+    expect(Object.fromEntries(Object.keys(formulas).map((a) => [a, form(a)]))).toEqual({ D1: 'old', D2: 'dynamic', E2: 'old', F1: 'old', F2: 'dynamic', G1: 'old', G2: 'dynamic', H1: 'old' })
   })
 
   it("`@` the old kind does itself goes; on one cell it stays as _xlfn.SINGLE; a LAMBDA's call is a dynamic array, as Excel saves them", async () => {

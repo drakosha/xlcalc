@@ -1,0 +1,472 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.991,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "held#1",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,(2),1)"
+  },
+  {
+   "id": "held#2",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!$B$1:$B$8,MATCH(8,D!$B$1:$B$8,0))"
+  },
+  {
+   "id": "held#3",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(\"Чай\",D!F1:F7,0)-4,2)"
+  },
+  {
+   "id": "held#4",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,2,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "held#5",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C8,MATCH(8,D!B1:B8,0),MATCH(7,D!C1:C8,0),1)"
+  },
+  {
+   "id": "held#6",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)*1)"
+  },
+  {
+   "id": "held#7",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)+0)"
+  },
+  {
+   "id": "held#8",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,+MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "held#9",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,LOOKUP(2,D!L1:L6))"
+  },
+  {
+   "id": "held#10",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8))"
+  },
+  {
+   "id": "held#11",
+   "group": "held",
+   "fn": "IFERROR",
+   "formula": "IFERROR(INDEX(D!B1:B8,MATCH(99,D!B1:B8,0)),\"\")"
+  },
+  {
+   "id": "held#12",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)):D!B8"
+  },
+  {
+   "id": "held#13",
+   "group": "held",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(INDEX(D!L1:L6,MATCH(8,D!B1:B8,0)),D!L1:N6,2,FALSE)"
+  },
+  {
+   "id": "held#14",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(D!A2,D!C1:C8,0))"
+  },
+  {
+   "id": "held#15",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(1,(D!B1:B8>5)*(D!C1:C8>5),0))"
+  },
+  {
+   "id": "held#16",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,1,1)"
+  },
+  {
+   "id": "held#17",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),MATCH(D!A12,D!C1:C8,0))"
+  },
+  {
+   "id": "held#18",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0),1)"
+  },
+  {
+   "id": "held#19",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1)*INDEX(D!B1:C3,1,MATCH(8,D!B1:B8,0))"
+  },
+  {
+   "id": "held#20",
+   "group": "held",
+   "fn": "IF",
+   "formula": "IF(D!A4,INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),0)"
+  },
+  {
+   "id": "held#21",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,INDEX(D!L1:L6,MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "held#22",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MAX(MATCH(8,D!B1:B8,0),1))"
+  },
+  {
+   "id": "held#23",
+   "group": "held",
+   "fn": "ROWS",
+   "formula": "ROWS(INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0))"
+  },
+  {
+   "id": "held#24",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))>5"
+  },
+  {
+   "id": "held#25",
+   "group": "held",
+   "fn": "TEXT",
+   "formula": "TEXT(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),\"0\")"
+  },
+  {
+   "id": "held#26",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,MATCH(8,D!B1:B8,0),1,1)"
+  },
+  {
+   "id": "held#27",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:C1,0,0,1,1)"
+  },
+  {
+   "id": "held#28",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,0,0,1,D!G1)"
+  },
+  {
+   "id": "held#29",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!A1,ROW()-1,0)"
+  },
+  {
+   "id": "held#30",
+   "group": "held",
+   "fn": "SUM",
+   "formula": "SUM(OFFSET(D!B1,0,0,MATCH(8,D!B1:B8,0)))"
+  },
+  {
+   "id": "held#31",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:B1,1,0)"
+  },
+  {
+   "id": "held#32",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,1,0,1,)"
+  },
+  {
+   "id": "held#33",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(INDIRECT(\"D!B1\"),1,0)"
+  },
+  {
+   "id": "held#34",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,1,0)*OFFSET(D!C1,1,0)"
+  },
+  {
+   "id": "held#35",
+   "group": "held",
+   "fn": "IFERROR",
+   "formula": "IFERROR(OFFSET(D!B1,9,0),0)"
+  },
+  {
+   "id": "held#36",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),0,1)"
+  },
+  {
+   "id": "held#37",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1:C3,1,1,1,1)+1"
+  },
+  {
+   "id": "held#38",
+   "group": "held",
+   "fn": "OFFSET",
+   "formula": "OFFSET(D!B1,1,0,1,1.5)"
+  }
+ ],
+ "values": {
+  "held#1": {
+   "t": "n",
+   "v": 8
+  },
+  "held#2": {
+   "t": "n",
+   "v": 8
+  },
+  "held#3": {
+   "t": "n",
+   "v": 7
+  },
+  "held#4": {
+   "t": "n",
+   "v": 7
+  },
+  "held#5": {
+   "t": "n",
+   "v": 7
+  },
+  "held#6": {
+   "t": "n",
+   "v": 8
+  },
+  "held#7": {
+   "t": "n",
+   "v": 8
+  },
+  "held#8": {
+   "t": "n",
+   "v": 8
+  },
+  "held#9": {
+   "t": "n",
+   "v": 8
+  },
+  "held#10": {
+   "t": "n",
+   "v": 8
+  },
+  "held#11": {
+   "t": "s",
+   "v": ""
+  },
+  "held#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#13": {
+   "t": "s",
+   "v": "two"
+  },
+  "held#14": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#16": {
+   "t": "n",
+   "v": 4
+  },
+  "held#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#18": {
+   "t": "n",
+   "v": 8
+  },
+  "held#19": {
+   "t": "n",
+   "v": 16
+  },
+  "held#20": {
+   "t": "n",
+   "v": 8
+  },
+  "held#21": {
+   "t": "n",
+   "v": 8
+  },
+  "held#22": {
+   "t": "n",
+   "v": 8
+  },
+  "held#23": {
+   "t": "n",
+   "v": 1
+  },
+  "held#24": {
+   "t": "b",
+   "v": true
+  },
+  "held#25": {
+   "t": "s",
+   "v": "8"
+  },
+  "held#26": {
+   "t": "n",
+   "v": 11
+  },
+  "held#27": {
+   "t": "n",
+   "v": 4
+  },
+  "held#28": {
+   "t": "n",
+   "v": 4
+  },
+  "held#29": {
+   "t": "n",
+   "v": 0
+  },
+  "held#30": {
+   "t": "n",
+   "v": 12
+  },
+  "held#31": {
+   "t": "n",
+   "v": 8
+  },
+  "held#32": {
+   "t": "n",
+   "v": 8
+  },
+  "held#33": {
+   "t": "n",
+   "v": 8
+  },
+  "held#34": {
+   "t": "n",
+   "v": 56
+  },
+  "held#35": {
+   "t": "n",
+   "v": 0
+  },
+  "held#36": {
+   "t": "n",
+   "v": 7
+  },
+  "held#37": {
+   "t": "n",
+   "v": 8
+  },
+  "held#38": {
+   "t": "n",
+   "v": 8
+  }
+ },
+ "formulas": {
+  "held#1": "=INDEX(D!B1:C3,(2),1)",
+  "held#2": "=INDEX(D!$B$1:$B$8,MATCH(8,D!$B$1:$B$8,0))",
+  "held#3": "=@INDEX(D!B1:C3,MATCH(\"Чай\",D!F1:F7,0)-4,2)",
+  "held#4": "=INDEX(D!B1:C3,2,MATCH(8,D!B1:B8,0))",
+  "held#5": "=INDEX(D!B1:C8,MATCH(8,D!B1:B8,0),MATCH(7,D!C1:C8,0),1)",
+  "held#6": "=@INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)*1)",
+  "held#7": "=@INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)+0)",
+  "held#8": "=@INDEX(D!B1:B8,+MATCH(8,D!B1:B8,0))",
+  "held#9": "=@INDEX(D!B1:B8,LOOKUP(2,D!L1:L6))",
+  "held#10": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8))",
+  "held#11": "=IFERROR(INDEX(D!B1:B8,MATCH(99,D!B1:B8,0)),\"\")",
+  "held#12": "=@INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)):D!B8",
+  "held#13": "=VLOOKUP(INDEX(D!L1:L6,MATCH(8,D!B1:B8,0)),D!L1:N6,2,FALSE)",
+  "held#14": "=INDEX(D!B1:B8,MATCH(D!A2,D!C1:C8,0))",
+  "held#15": "=INDEX(D!B1:B8,MATCH(1,(@D!B1:B8>5)*(@D!C1:C8>5),0))",
+  "held#16": "=INDEX(D!B1:C3,1,1)",
+  "held#17": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),MATCH(D!A12,D!C1:C8,0))",
+  "held#18": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0),1)",
+  "held#19": "=INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),1)*INDEX(D!B1:C3,1,MATCH(8,D!B1:B8,0))",
+  "held#20": "=IF(D!A4,INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),0)",
+  "held#21": "=@INDEX(D!B1:B8,INDEX(D!L1:L6,MATCH(8,D!B1:B8,0)))",
+  "held#22": "=@INDEX(D!B1:B8,MAX(MATCH(8,D!B1:B8,0),1))",
+  "held#23": "=ROWS(INDEX(D!B1:C3,MATCH(8,D!B1:B8,0),0))",
+  "held#24": "=INDEX(D!B1:B8,MATCH(8,D!B1:B8,0))>5",
+  "held#25": "=TEXT(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),\"0\")",
+  "held#26": "=OFFSET(D!B1,MATCH(8,D!B1:B8,0),1,1)",
+  "held#27": "=OFFSET(D!B1:C1,0,0,1,1)",
+  "held#28": "=@OFFSET(D!B1,0,0,1,D!G1)",
+  "held#29": "=OFFSET(D!A1,ROW()-1,0)",
+  "held#30": "=SUM(OFFSET(D!B1,0,0,MATCH(8,D!B1:B8,0)))",
+  "held#31": "=@OFFSET(D!B1:B1,1,0)",
+  "held#32": "=@OFFSET(D!B1,1,0,1,)",
+  "held#33": "=@OFFSET(INDIRECT(\"D!B1\"),1,0)",
+  "held#34": "=OFFSET(D!B1,1,0)*OFFSET(D!C1,1,0)",
+  "held#35": "=IFERROR(OFFSET(D!B1,9,0),0)",
+  "held#36": "=OFFSET(INDEX(D!B1:B8,MATCH(8,D!B1:B8,0)),0,1)",
+  "held#37": "=OFFSET(D!B1:C3,1,1,1,1)+1",
+  "held#38": "=@OFFSET(D!B1,1,0,1,1.5)"
+ },
+ "rows": {
+  "held#1": 1,
+  "held#2": 2,
+  "held#3": 3,
+  "held#4": 4,
+  "held#5": 5,
+  "held#6": 6,
+  "held#7": 7,
+  "held#8": 8,
+  "held#9": 9,
+  "held#10": 10,
+  "held#11": 11,
+  "held#12": 12,
+  "held#13": 13,
+  "held#14": 14,
+  "held#15": 15,
+  "held#16": 16,
+  "held#17": 17,
+  "held#18": 18,
+  "held#19": 19,
+  "held#20": 20,
+  "held#21": 21,
+  "held#22": 22,
+  "held#23": 23,
+  "held#24": 24,
+  "held#25": 25,
+  "held#26": 26,
+  "held#27": 27,
+  "held#28": 28,
+  "held#29": 29,
+  "held#30": 30,
+  "held#31": 31,
+  "held#32": 32,
+  "held#33": 33,
+  "held#34": 34,
+  "held#35": 35,
+  "held#36": 36,
+  "held#37": 37,
+  "held#38": 38
+ }
+}

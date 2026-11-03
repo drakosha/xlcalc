@@ -132,6 +132,7 @@ A plain formula without the mark is a legacy formula too. Excel 365 calculates i
 |---|---|
 | `A1:A3*2`, `ABS(A1:A3)` | `@A1:A3*2`, `ABS(@A1:A3)` |
 | `INDEX(A1:B5,0,1)` | `@INDEX(A1:B5,0,1)` |
+| `INDEX(B1:B5,MATCH(3,A1:A5,0))` | as written: MATCH gives one place |
 | `span*1`, where `span` is a name that refers to a range | `@span*1` |
 | `SUM(A1:A3)`, `SUMPRODUCT(A1:A3*2)`, `IF(A1>0,1,2)` | as written |
 
@@ -372,7 +373,7 @@ A workbook written and read back keeps its values and their `hash`, but usually 
 
 ### Formulas
 
-A formula is written as a plain formula (`<f>B2*C2</f>`), which Excel of every version reads and edits as it is, wherever Excel reads that back as the formula the workbook has: `B2*C2`, `SUM(A1:A5)`, `VLOOKUP(3,A1:B5,2,FALSE)`, `SUMPRODUCT((A1:A5>2)*B1:B5)`, `LET(x,A1,x*2)`, `XLOOKUP(3,A1:A5,B1:B5)`. `@` that a plain formula does by itself is left out (`@A1:A5*2` is written `A1:A5*2`, as Excel 365 saves it), and `@` on one cell stays as `_xlfn.SINGLE(A4)`. The form follows from the formula alone: a formula that a file had as a dynamic array is written plain when the plain one computes the same.
+A formula is written as a plain formula (`<f>B2*C2</f>`), which Excel of every version reads and edits as it is, wherever Excel reads that back as the formula the workbook has: `B2*C2`, `SUM(A1:A5)`, `VLOOKUP(3,A1:B5,2,FALSE)`, `INDEX(B1:B5,MATCH(3,A1:A5,0))`, `SUMPRODUCT((A1:A5>2)*B1:B5)`, `LET(x,A1,x*2)`, `XLOOKUP(3,A1:A5,B1:B5)`. `@` that a plain formula does by itself is left out (`@A1:A5*2` is written `A1:A5*2`, as Excel 365 saves it), and `@` on one cell stays as `_xlfn.SINGLE(A4)`. The form follows from the formula alone: a formula that a file had as a dynamic array is written plain when the plain one computes the same.
 
 Everywhere else a formula is written as a dynamic array formula, with cell metadata and the range its array spilled into, as Excel 365 saves one: a formula that spills (`SEQUENCE(3)`, `A1:A3*2`), one that computes an array where a plain formula would take one value (`SUM(IF(A1:A5>2,B1:B5,0))`, `MAX(A1:A5*B1:B5)`, `AND(A1:A5>0)`), and a call of a LAMBDA or of a name. Excel 2019 and older show such a formula in braces, as an array formula entered with Ctrl+Shift+Enter, and compute it so. Excel 365 makes a dynamic array of a few formulas that a plain one computes alike (`SUMPRODUCT((A1:A5>2)*B1:B5)`, `MAX(INDEX(A1:A5*B1:B5,0))`, `SUM(FILTER(A1:A5,A1:A5>2))`); the writer writes them plain, and Excel 365 reads them back as they were.
 
@@ -652,7 +653,7 @@ Reading uses the parser and the copy and paste of the structure operations. It d
 
 ## Checked against Excel
 
-Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote without the repair dialog, calculated it and saved it, and the reader read the files Excel saved back as Excel read them. Excel 16.114 for Mac and Excel for Windows saved 40 formulas of each kind typed into a workbook in the form the writer writes them, except the three plain formulas above that Excel makes dynamic arrays and `INDEX(B1:B5,MATCH(3,A1:A5,0))`; Excel for Mac opened the writer's file of them and showed each formula as the workbook has it. Excel 16.114 for Mac saved a sheet's AutoFilter written alone and on a filtered sheet over the range written, and the AutoFilters it made itself read with their ranges; Excel for Windows was not run on AutoFilters.
+Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote without the repair dialog, calculated it and saved it, and the reader read the files Excel saved back as Excel read them. Excel 16.114 for Mac and Excel for Windows saved 40 formulas of each kind typed into a workbook in the form the writer writes them, except the three plain formulas above that Excel makes dynamic arrays; Excel for Mac opened the writer's file of them and showed each formula as the workbook has it. Excel 16.114 for Mac saved a sheet's AutoFilter written alone and on a filtered sheet over the range written, and the AutoFilters it made itself read with their ranges; Excel for Windows was not run on AutoFilters.
 
 ## Known differences
 
@@ -663,7 +664,6 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel for Mac saves the built-in currency and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21, so a workbook read from a file saved by Excel has these codes and numbers.
 - Some theme colors with a tint differ from Excel's by up to 3 of 255 in a channel.
 - The East Asian date formats 50 to 58 are read as the code `m/d/yy`, which Excel for Mac en-US displays for them; Excel for Windows displays them as its short date, format 14, in en-US and ru-RU.
-- `INDEX` whose row or column is not a number, as in `INDEX(B1:B5,MATCH(3,A1:A5,0))`, is written as a dynamic array formula, where Excel 365 saves it plain: the reader puts `@` before such an `INDEX` of a plain formula.
 - In a few places Excel calculates a legacy formula differently from the dynamic formula it displays for it. The engine returns the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - An AutoFilter's criteria and sort are not kept. A filtered sheet comes back with the writer's criteria, which every row satisfies, and Excel's Reapply then shows every row.
 - A filtered sheet without an AutoFilter or a table with a header row is written with an AutoFilter over its cells, and reads back with it.

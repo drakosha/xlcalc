@@ -1,0 +1,414 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.4
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "names of literals, cells, names and calls in formulas of the old kind",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "H1": {
+        "formula": "q_neg"
+       },
+       "H2": {
+        "formula": "INDEX(B1:B8,q_three)"
+       },
+       "H3": {
+        "formula": "q_true"
+       },
+       "H4": {
+        "formula": "INDEX(B1:B8,q_true)"
+       },
+       "H5": {
+        "formula": "INDEX(B1:B8,q_cell)"
+       },
+       "H6": {
+        "formula": "q_alias"
+       },
+       "H7": {
+        "formula": "INDEX(B1:B8,q_alias)"
+       },
+       "H8": {
+        "formula": "q_err"
+       },
+       "H9": {
+        "formula": "q_box"
+       },
+       "H10": {
+        "formula": "N(q_sum)"
+       },
+       "H11": {
+        "formula": "IF(TRUE,q_sum)"
+       },
+       "H12": {
+        "formula": "SUM(q_sum)"
+       },
+       "H13": {
+        "formula": "q_len*2"
+       },
+       "H14": {
+        "formula": "INDEX(q_rng,q_three)"
+       },
+       "H15": {
+        "formula": "INDEX(q_rng,MATCH(8,q_rng,0))+q_len"
+       },
+       "H16": {
+        "formula": "OFFSET(q_cell,1,0)"
+       },
+       "H17": {
+        "formula": "OFFSET(q_rng,1,0,1,1)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "q_neg",
+      "ref": "-2"
+     },
+     {
+      "name": "q_three",
+      "ref": "3"
+     },
+     {
+      "name": "q_true",
+      "ref": "TRUE"
+     },
+     {
+      "name": "q_cell",
+      "ref": "'S'!$B$3"
+     },
+     {
+      "name": "q_two",
+      "ref": "2"
+     },
+     {
+      "name": "q_alias",
+      "ref": "q_two"
+     },
+     {
+      "name": "q_err",
+      "ref": "#N/A"
+     },
+     {
+      "name": "q_box",
+      "ref": "'S'!$B$2:$B$2"
+     },
+     {
+      "name": "q_sum",
+      "ref": "SUM('S'!$B$1:$B$8)"
+     },
+     {
+      "name": "q_len",
+      "ref": "LEN(\"abc\")"
+     },
+     {
+      "name": "q_rng",
+      "ref": "'S'!$B$1:$B$8"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H1"
+    },
+    {
+     "sheet": "S",
+     "range": "H2"
+    },
+    {
+     "sheet": "S",
+     "range": "H3"
+    },
+    {
+     "sheet": "S",
+     "range": "H4"
+    },
+    {
+     "sheet": "S",
+     "range": "H5"
+    },
+    {
+     "sheet": "S",
+     "range": "H6"
+    },
+    {
+     "sheet": "S",
+     "range": "H7"
+    },
+    {
+     "sheet": "S",
+     "range": "H8"
+    },
+    {
+     "sheet": "S",
+     "range": "H9"
+    },
+    {
+     "sheet": "S",
+     "range": "H10"
+    },
+    {
+     "sheet": "S",
+     "range": "H11"
+    },
+    {
+     "sheet": "S",
+     "range": "H12"
+    },
+    {
+     "sheet": "S",
+     "range": "H13"
+    },
+    {
+     "sheet": "S",
+     "range": "H14"
+    },
+    {
+     "sheet": "S",
+     "range": "H15"
+    },
+    {
+     "sheet": "S",
+     "range": "H16"
+    },
+    {
+     "sheet": "S",
+     "range": "H17"
+    }
+   ],
+   "legacy": [
+    "S!H1",
+    "S!H2",
+    "S!H3",
+    "S!H4",
+    "S!H5",
+    "S!H6",
+    "S!H7",
+    "S!H8",
+    "S!H9",
+    "S!H10",
+    "S!H11",
+    "S!H12",
+    "S!H13",
+    "S!H14",
+    "S!H15",
+    "S!H16",
+    "S!H17"
+   ],
+   "predicted": {
+    "S!H1": {
+     "t": "n",
+     "v": -2
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 15
+    },
+    "S!H3": {
+     "t": "b",
+     "v": true
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H5": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 2
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H8": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H11": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H12": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H13": {
+     "t": "n",
+     "v": 6
+    },
+    "S!H14": {
+     "t": "n",
+     "v": 15
+    },
+    "S!H15": {
+     "t": "n",
+     "v": 11
+    },
+    "S!H16": {
+     "t": "n",
+     "v": 16
+    },
+    "S!H17": {
+     "t": "n",
+     "v": 8
+    }
+   }
+  }
+ ],
+ "answers": {
+  "names": {
+   "values": {
+    "S!H1": {
+     "t": "n",
+     "v": -2
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 15
+    },
+    "S!H3": {
+     "t": "b",
+     "v": true
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H5": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 2
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H8": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H11": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H12": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!H13": {
+     "t": "n",
+     "v": 6
+    },
+    "S!H14": {
+     "t": "n",
+     "v": 15
+    },
+    "S!H15": {
+     "t": "n",
+     "v": 11
+    },
+    "S!H16": {
+     "t": "n",
+     "v": 16
+    },
+    "S!H17": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!H1": "=q_neg",
+    "S!H2": "=INDEX(B1:B8,q_three)",
+    "S!H3": "=q_true",
+    "S!H4": "=INDEX(B1:B8,q_true)",
+    "S!H5": "=INDEX(B1:B8,q_cell)",
+    "S!H6": "=q_alias",
+    "S!H7": "=INDEX(B1:B8,q_alias)",
+    "S!H8": "=q_err",
+    "S!H9": "=q_box",
+    "S!H10": "=N(q_sum)",
+    "S!H11": "=IF(TRUE,q_sum)",
+    "S!H12": "=SUM(q_sum)",
+    "S!H13": "=q_len*2",
+    "S!H14": "=INDEX(q_rng,q_three)",
+    "S!H15": "=INDEX(q_rng,MATCH(8,q_rng,0))+q_len",
+    "S!H16": "=OFFSET(q_cell,1,0)",
+    "S!H17": "=OFFSET(q_rng,1,0,1,1)"
+   },
+   "formulas2": {
+    "S!H1": "=q_neg",
+    "S!H2": "=INDEX(B1:B8,q_three)",
+    "S!H3": "=q_true",
+    "S!H4": "=@INDEX(B1:B8,q_true)",
+    "S!H5": "=@INDEX(B1:B8,q_cell)",
+    "S!H6": "=@q_alias",
+    "S!H7": "=@INDEX(B1:B8,@q_alias)",
+    "S!H8": "=q_err",
+    "S!H9": "=@q_box",
+    "S!H10": "=N(q_sum)",
+    "S!H11": "=@IF(TRUE,q_sum)",
+    "S!H12": "=SUM(q_sum)",
+    "S!H13": "=@q_len*2",
+    "S!H14": "=INDEX(q_rng,q_three)",
+    "S!H15": "=INDEX(q_rng,MATCH(8,q_rng,0))+@q_len",
+    "S!H16": "=OFFSET(q_cell,1,0)",
+    "S!H17": "=OFFSET(q_rng,1,0,1,1)"
+   }
+  }
+ }
+}
