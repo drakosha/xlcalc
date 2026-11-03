@@ -273,6 +273,11 @@ function slowOver() {
 }
 
 const BUSY = { error: 'BUSY' }
+/**
+ * The opening call's deadline: it waits for the answer that long, and its cold build of the 3,001 formulas counts in
+ * it too, which in a new thread of a pool on a CI runner took more than 300 ms.
+ */
+const OPEN_MS = 1000
 const shown = async (s: AsyncSession) => Promise.all(['A1', 'B1', 'B3000'].map(async (a) => (await s.getCell('S', a))?.value))
 /** A call stopped by its soft deadline or its abort after a few milliseconds. */
 const stopping = (stop: 'soft_timeout' | 'aborted') => {
@@ -295,7 +300,7 @@ describe.each([
       const c = await make()
       calcs.push(c)
       const { book, externals, host } = slowOver()
-      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: OPEN_MS })
       expect(await shown(s)).toEqual([BUSY, BUSY, BUSY])
       host.release()
       await new Promise((done) => setTimeout(done, 10))
@@ -310,7 +315,7 @@ describe.each([
       const c = await make()
       calcs.push(c)
       const { book, externals, host } = slowOver()
-      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: OPEN_MS })
       host.release()
       await new Promise((done) => setTimeout(done, 10))
       const edit = [{ sheet: 'S', cell: 'D1', input: { value: 1 } }]
@@ -325,7 +330,7 @@ describe.each([
       const c = await make()
       calcs.push(c)
       const { book, externals, host } = slowOver()
-      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: OPEN_MS })
       host.release()
       await new Promise((done) => setTimeout(done, 10))
       if (preview === 'previewChanges') {
@@ -342,7 +347,7 @@ describe.each([
       const c = await make()
       calcs.push(c)
       const { book, externals, host } = slowOver()
-      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: 300 })
+      const s = await c.createSession(book, { clock: CLOCK, externals, execution, timeoutMs: OPEN_MS })
       host.release()
       await s.settleConnections()
       const before = await shown(s)

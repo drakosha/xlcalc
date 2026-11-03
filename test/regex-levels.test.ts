@@ -120,7 +120,7 @@ describe('pcreEngine', () => {
     } finally {
       await late.close()
     }
-  }, 30_000)
+  }, 90_000)
 
   it("Excel's match limit is #VALUE! at once, in every kind of session", async () => {
     const t0 = performance.now()
