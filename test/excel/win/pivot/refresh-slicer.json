@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 29.9
+  "seconds": 29.9,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 16 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -205,22 +206,22 @@
   }
  ],
  "sent": {
-  "row-one": "fba7da4c24622c710587f08f251640cea206aea5b59e202194dd8801c4580b83 581bb1faa69789f2",
-  "row-two": "f9140ce8011750ea3d0d6b24a7472ea40fb8555cbe29a3ccd857e72fd33217ca 581bb1faa69789f2",
-  "row-blank": "f286c7555c0a5e885756814fd7be3379ac90d0ebbee30cc1d81290e68ce40b43 581bb1faa69789f2",
-  "row-all": "3a85213281d133397ffa7b0d5b32789d8db887d431ac9c846ce8bcfcc55a3ccb 581bb1faa69789f2",
-  "other-field": "ccae00abd8450fd74ff40d036a0bf46eb9da71fb50710b93e0154f810c5e83c0 581bb1faa69789f2",
-  "other-field-numbers": "c2925cfbef494310dc5e2ce2375f38e083a1289ee563a0e70ed5a143a26eb6c6 581bb1faa69789f2",
-  "two-pivots": "0501b2c64a7574370dbf17be31b4adde180017dfa88b8664d0f4b904127f030f 581bb1faa69789f2",
-  "two-pivots-one": "a55fac5198286978e45d1cab6f60701e2661872e9ced61c1406f49d16da7536f 581bb1faa69789f2",
-  "no-data": "dcf4454e7f16a736456fc4cce0b4f5cbff6c43b19b6a8aa6c0f1a3d1723852ae 581bb1faa69789f2",
-  "with-hidden": "3f3392d93aa51e69a7ff479af4b53f49a2f75a1d5ad78232534f329f9fceabd7 581bb1faa69789f2",
-  "page-and-slicer": "a41bba95aa55deb59be1840a6f51f08679ad2997635f6d4c21bd61483d5b0595 581bb1faa69789f2",
-  "timeline-range": "b522e60129a8be5eed70624ab3da53062e6c8e184c40808064a2724b5b293112 581bb1faa69789f2",
-  "timeline-level": "1f96f4333cbada053567737cab2bd92a6a893182625b0b20f6d1a16574a8bcf3 581bb1faa69789f2",
-  "timeline-days": "4ce145dfcc88ad527d6d3550481df74537a7423c057100f8a0cae1e0364f4c4a 581bb1faa69789f2",
-  "timeline-rows-dates": "4f1c6f0c86c52b04f5124f4ccc994948392c1a764bbf3aaf665ff1c8bac12dec 581bb1faa69789f2",
-  "timeline-and-slicer": "92bcb04539eedb9d872a0bf4d90554ccee42c3d3c3fff1f0d88de807d3734d07 581bb1faa69789f2"
+  "row-one": "d52bf2bc727c501535463ac5b6ad96798c43500a3aa1199e829e0a6cde3766b8 581bb1faa69789f2",
+  "row-two": "d51655bf885122b3591928f44297531589623cce51403e7d2753d514ba9ca675 581bb1faa69789f2",
+  "row-blank": "afce137f2fa9671b755a58aad8506de831b61e85179ca2ad18406e9b39073348 581bb1faa69789f2",
+  "row-all": "6a54ab13414be6bf25bfc7c2c387bfc51d7b32b99b3bfcf7836eb901e9cdb41d 581bb1faa69789f2",
+  "other-field": "0f126be2245eddb2646d67c2be84dd1685b2b0248ff5305191009b830df881a3 581bb1faa69789f2",
+  "other-field-numbers": "4b1fb9a4dc6f2cf9f3384f4092432784d6cdee0a1ee6fb932a6065b02e1ba49a 581bb1faa69789f2",
+  "two-pivots": "2b47fd16c34d9dfd50d26e4ac4ec7ebb8b2b79029a85cee0ef2780c47144e0d2 581bb1faa69789f2",
+  "two-pivots-one": "96d1ca811c742bc771df232237892499c91a0ab0b5a51fc2eb65aff9c02f669f 581bb1faa69789f2",
+  "no-data": "ac19322dcdff52a4ed8d9c2673cc74248fb32ba0c8271971132356ea6df23bfd 581bb1faa69789f2",
+  "with-hidden": "5bb30eae4717a720cc9e2636c515db4842ddaff89aa296207bd7fd72d01c538f 581bb1faa69789f2",
+  "page-and-slicer": "3587d98e5a6b60b9d266df11eaee0c52c3bdf07cc35a80c0d9229af2ba1bea0d 581bb1faa69789f2",
+  "timeline-range": "d43369a790aeaed79092ea319fdbf6354e051a1efcfcf19298679a19ec7def0a 581bb1faa69789f2",
+  "timeline-level": "14f7d1bb595e628e942011cd668659085cf7a4b1f8097bd2f073a2abf72d8486 581bb1faa69789f2",
+  "timeline-days": "7ab9b5b8a62c3a13a263c5345afc8563f33c154e1cef1528e3868017a96f0861 581bb1faa69789f2",
+  "timeline-rows-dates": "e5ffc3aca5501369f2926560320bd51cdf5514d5ab0ad1a8300f8eb3c9c23428 581bb1faa69789f2",
+  "timeline-and-slicer": "1a8350515d57cde1d47aa91dd54544477bcaff777fd69b3378bd1a6b19583c93 581bb1faa69789f2"
  },
  "answers": {
   "row-one": {
@@ -272,7 +273,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -323,7 +327,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -393,7 +400,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      }
     },
@@ -456,7 +466,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -514,7 +527,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -565,7 +581,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -671,7 +690,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -770,7 +792,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -876,7 +901,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -975,7 +1003,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1081,7 +1112,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -1180,7 +1214,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1274,7 +1311,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "D3:D8",
+       "columns": ""
       },
       "P!PT1": {
        "table": "A3:B5",
@@ -1321,7 +1361,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -1408,7 +1451,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "D3:D8",
+       "columns": ""
       },
       "P!PT1": {
        "table": "A3:B5",
@@ -1455,7 +1501,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -1561,7 +1610,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "D3:D9",
+       "columns": ""
       },
       "P!PT1": {
        "table": "A3:B5",
@@ -1608,7 +1660,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -1707,7 +1762,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "D3:D9",
+       "columns": ""
       },
       "P!PT1": {
        "table": "A3:B5",
@@ -1754,7 +1812,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -1812,7 +1873,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -1863,7 +1927,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -1957,7 +2024,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      }
     },
@@ -2044,7 +2114,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -2138,7 +2211,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A6",
+       "columns": ""
       }
      }
     },
@@ -2225,7 +2301,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -2295,7 +2374,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      }
     },
@@ -2358,7 +2440,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -2428,7 +2513,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      }
     },
@@ -2491,7 +2579,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -2549,7 +2640,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      }
     },
@@ -2600,7 +2694,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -2706,7 +2803,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -2805,7 +2905,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -2887,7 +2990,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
      }
     },
@@ -2962,7 +3068,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
      },
      "results": {

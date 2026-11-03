@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.2",
   "locale": "en-US",
-  "seconds": 15.5
+  "seconds": 15.5,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 6 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "guarded": {
@@ -224,12 +225,12 @@
   }
  ],
  "sent": {
-  "lines-written": "a28c29438ea86445a00cecdf40674eced46c7fdfe9a99ba8510171029b062643",
-  "column-unlocked": "f3845f8fdcd42e866e86b126f8e52c4b0a771943786dab0588250e892def942d",
-  "rows-below": "f3845f8fdcd42e866e86b126f8e52c4b0a771943786dab0588250e892def942d",
-  "column-copied": "f3845f8fdcd42e866e86b126f8e52c4b0a771943786dab0588250e892def942d",
-  "row-cleared": "f3845f8fdcd42e866e86b126f8e52c4b0a771943786dab0588250e892def942d",
-  "kept-width": "a99196b1773789dd7b66a4b38ffea66ce00752fbec4d8b6195df8b66fe7330dc"
+  "lines-written": "f78ef9ad089054ce4dcc547d5b9529c7d1cc461c9b41bde7d288e23f54ba0ff7",
+  "column-unlocked": "47f049ea265e7cf8b787dad92302e487223b58acffd789b57e0525f696a5a6cd",
+  "rows-below": "47f049ea265e7cf8b787dad92302e487223b58acffd789b57e0525f696a5a6cd",
+  "column-copied": "47f049ea265e7cf8b787dad92302e487223b58acffd789b57e0525f696a5a6cd",
+  "row-cleared": "47f049ea265e7cf8b787dad92302e487223b58acffd789b57e0525f696a5a6cd",
+  "kept-width": "af456792a97d60b5a98da9406128e83b8c0570f70fc14c03714f0bff27207c73"
  },
  "answers": {
   "lines-written": {

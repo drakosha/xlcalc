@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 17.5
+  "seconds": 17.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 29 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -361,35 +362,35 @@
   }
  ],
  "sent": {
-  "region-up": "d56a947b915aace95b2aab60b8bded53656840ab336fc98f5016017604ca7291 581bb1faa69789f2",
-  "region-down": "6cd07961b472d8bc50882c74cdc796f21cf86410e1c5c205e19be6ae7b17d3b9 581bb1faa69789f2",
-  "code-down": "591ac827c6d39876931375018b5186a8f5a0ccdcad042400684f6e60c8b8c063 581bb1faa69789f2",
-  "date-down": "7741acc134a66586b48899c49207883e973f8beb07d1107a7a59359f270694e8 581bb1faa69789f2",
-  "product-down": "d3b34a20aaf240f999d642aa79ddabda45f7bd3e323b48fb3390ee77aa93c212 581bb1faa69789f2",
-  "flag-down": "bf6b5276d07bbc7a9c9ec4f7a7d13058de98a0be085aa6b4318b23fecb9aec03 581bb1faa69789f2",
-  "note-up": "8f15928ecd66df20fa70deb1bc06971f3465341a708957d1d8b189aa9b66c261 581bb1faa69789f2",
-  "amount-up": "68a08a6e9da746913c90a97fdb66a0e2cee2264bbe77d160112e309777461bb3 581bb1faa69789f2",
-  "value-down": "a1c43c4aa4f833b808cff12ed57a3fabf2c589b8b0b603ce071865a69a5bc90f 581bb1faa69789f2",
-  "value-up": "37d016978db461cd8f98e73071d365552a7ac8cded7c7f0ab23986f01ae615ce 581bb1faa69789f2",
-  "value-errors": "b524577c4a7f46a16fb47d7c12e0e08168b55b75ca42861bc22d4eedaa2639ee 581bb1faa69789f2",
-  "value-errors-up": "66dd902bcf590a07c922000bac40b6cbd08232b89980037f8dcd58d6101d3879 581bb1faa69789f2",
-  "inner-value": "59ab652c4b28ebe4428d14f826dd6b804e7940475a039a1c4d4ac8f894a29128 581bb1faa69789f2",
-  "outer-and-inner": "f214fe983fbb7de597f7d29e1d5d4963c6da3ec23f78ec872c3b3eb629cc97c4 581bb1faa69789f2",
-  "column-value": "d0c00e9582629d0d70c88012eb6c10dd18fca7aa0aaeb59daff8ebe83826a83a 581bb1faa69789f2",
-  "count-ties": "f7b34441c2f9c04849bc579b481cfaca44184947ca172beb44eeefc83acd7e7a 581bb1faa69789f2",
-  "manual-first": "f4430fec2c6b58083a78d6f04e3b53544046fec8e3c22c8ac2eb62025deab08c 581bb1faa69789f2",
-  "manual-last": "e67df1aa51b605a35c871bac0c6d8746b082bedb11b66d58e3baf53f1a218d1b 581bb1faa69789f2",
-  "manual-blank": "cac3f5697e87392f3c99e9ae3072af479864bfab8182caa6c811613c56e299fc 581bb1faa69789f2",
-  "manual-then-field": "9c12301096f546366f4ff30f1aad0bfa70c08229c3b0db47b1b7d9fdd10d29b4 581bb1faa69789f2",
-  "months": "e729ac4b2d1265c1be8f00fff8bde9e467dff543a3087d608427d780602440e0 581bb1faa69789f2",
-  "months-down": "d443f2a9866b9d5a0c61ea3a9bea80fb8ccfdfe56191e7219918bc464cf62140 581bb1faa69789f2",
-  "months-no-lists": "f04f82d6e8bd282965a776a3a426bff8e794ac15f14b233fd9107e335971a7fa 581bb1faa69789f2",
-  "refresh-value-sort": "b8455d833b994109b79fc18ec15edacd2f7cab23bbdb440cecdf3c06e5c89367 581bb1faa69789f2",
-  "refresh-label-sort-new": "342b9e54265b20ca09ca38e67aa78c3349092297fff2c89a3eb2e31187615859 581bb1faa69789f2",
-  "refresh-auto-off": "4ded021203188dab796c37ec7f3d0b8bd75bf220d56ef5992679739c22461b19 581bb1faa69789f2",
-  "refresh-value-auto-off": "ef407727a2962114d0efbb63fc76ddccfcfe2db1c58e65e1603f1eb6fec32614 581bb1faa69789f2",
-  "refresh-unsorted-new": "fd83de0219e23a3ebfcb85b911757ec58d0e36947b945992c1c83004127efb32 581bb1faa69789f2",
-  "refresh-manual-new": "ae21cee4ff5f567147b44064197af9a3fef4c82d03c62348fb9cf21f2a8a100e 581bb1faa69789f2"
+  "region-up": "edf1e521bd3e66a89fbaee7808b977efefc92eaaa7e73e9194f316bc93b9e9cb 581bb1faa69789f2",
+  "region-down": "b393a8ad30cafbe80646447a59702d03c249cc36b79a78621c12901d3f21765d 581bb1faa69789f2",
+  "code-down": "e095538564e84711637427185809433f3e976ee109acf7fa0260820a9f1a73b0 581bb1faa69789f2",
+  "date-down": "8f63808a0d64f330fb039fa34de57171b1cc2359886d8fb982a6827eedd67124 581bb1faa69789f2",
+  "product-down": "d2dfd1aed71e2c016431704016efabaabccdc14101bc2ead01fcdb2f8393776f 581bb1faa69789f2",
+  "flag-down": "3b4baa37772078896a347d3920e85ff5dc5f698ae5cff44b07b20321c1d31d82 581bb1faa69789f2",
+  "note-up": "effdf3b8145824d5352206db3c972d83dfe021a5f8c5074f86f65e5aed5c315c 581bb1faa69789f2",
+  "amount-up": "e5d842f5639edcc97b38c9abcf641d7100c1b2de2c40c0b7676fd95f4bd9ae18 581bb1faa69789f2",
+  "value-down": "54dbe2699173113e285a3dbcb1b1fc31ea2605508c15ea904c06b69e85c22fe2 581bb1faa69789f2",
+  "value-up": "eaf88afa2a7127ff3946a5db5f29ce7aa8ceb8465b754365f4f16378bc00c280 581bb1faa69789f2",
+  "value-errors": "5beae0fb0db21eb6ec8e53671c9a5cb9621fc44d834c874b1fa369fa0ea4c5b7 581bb1faa69789f2",
+  "value-errors-up": "406223dc05e16fe81522b2c8c90e31aaf7d8752d5c8ea360e7c9840936b7585e 581bb1faa69789f2",
+  "inner-value": "45a72dd4f911780171e164b6e2c11d49733f4a77893d34895dd6a931e58b2b64 581bb1faa69789f2",
+  "outer-and-inner": "f9cd8ab58bf9420a691c34cedb67e56cd2d6b330a0bd1204de53784b1a381b2e 581bb1faa69789f2",
+  "column-value": "fea80d596504fd30d68eba8219add985c69ac11db8d94142914363afffabd4d1 581bb1faa69789f2",
+  "count-ties": "52df01cf920d414bd7e6f3faf34197ee804b9f9fed6964c087988fa1dc130c98 581bb1faa69789f2",
+  "manual-first": "1acda5036424ce35018a69967a9784e48f55b27264a63173b3f507d4a72ad968 581bb1faa69789f2",
+  "manual-last": "0b65ebfc3225bc276e1c7a75fd58c2577c10bd7368918b6302b49262c9d89f0a 581bb1faa69789f2",
+  "manual-blank": "a1583d80bde806afbe5c15678bf69bb267d215ab75db4a28ca90140b662072f7 581bb1faa69789f2",
+  "manual-then-field": "a24aeda6d5e5aa06e5bbf4cc7a51fee3694e33239cf681f1fb872ab7641538f1 581bb1faa69789f2",
+  "months": "187b088e0c0b09ee80877b206cd98f3786f886e394e4dbff4956049ffbba4783 581bb1faa69789f2",
+  "months-down": "3ef36d724b27cd58a7bc960e99460a8d293122b2bbcc347ccc846cbfc8ec689a 581bb1faa69789f2",
+  "months-no-lists": "0da92a8c1ca59e384707fc4704d389addcb2095f779c4333af42660f457337f6 581bb1faa69789f2",
+  "refresh-value-sort": "c14916241865ea23a7ee58750b550b691417ba67ee1094906857dccc0b979f7a 581bb1faa69789f2",
+  "refresh-label-sort-new": "65d97bd7bce47ec0ebe8c98ee0a6c9f0577f87f262e7c9628a743c6639dba270 581bb1faa69789f2",
+  "refresh-auto-off": "b46ec27a784b2a85a19b21233b49d177a4fbe203ff6d6cb54f3fb8e93393b5d8 581bb1faa69789f2",
+  "refresh-value-auto-off": "03402adde6cef7a25b3441a312c5029766c8e8eb38a49982a2580d23af415a87 581bb1faa69789f2",
+  "refresh-unsorted-new": "8c203770895b36fcfc927583e62039eb6b374fc02c8717ce25bf30f437ffa20b 581bb1faa69789f2",
+  "refresh-manual-new": "61cb0c7683f055b04dff91ce9f3a26a41552c9e9e65d56bf9fcda512c836ed35 581bb1faa69789f2"
  },
  "answers": {
   "region-up": {
@@ -489,7 +490,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -588,7 +592,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -694,7 +701,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -793,7 +803,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -887,7 +900,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      }
     },
@@ -974,7 +990,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -1176,7 +1195,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
       }
      }
     },
@@ -1371,7 +1393,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
       }
      },
      "results": {
@@ -1477,7 +1502,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -1576,7 +1604,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1646,7 +1677,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      }
     },
@@ -1709,7 +1743,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -1875,7 +1912,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A14",
+       "columns": ""
       }
      }
     },
@@ -2034,7 +2074,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A14",
+       "columns": ""
       }
      },
      "results": {
@@ -2608,7 +2651,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A48",
+       "columns": ""
       }
      }
     },
@@ -3175,7 +3221,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A48",
+       "columns": ""
       }
      },
      "results": {
@@ -3281,7 +3330,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -3380,7 +3432,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -3486,7 +3541,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -3585,7 +3643,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -3697,7 +3758,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -3802,7 +3866,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -3914,7 +3981,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -4019,7 +4089,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -4341,7 +4414,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      }
     },
@@ -4656,7 +4732,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -4978,7 +5057,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      }
     },
@@ -5293,7 +5375,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -5531,7 +5616,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:G4"
       }
      }
     },
@@ -5762,7 +5850,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:G4"
       }
      },
      "results": {
@@ -5856,7 +5947,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      }
     },
@@ -5943,7 +6037,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -6049,7 +6146,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -6148,7 +6248,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -6254,7 +6357,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -6353,7 +6459,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -6459,7 +6568,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -6558,7 +6670,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -6724,7 +6839,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
      }
     },
@@ -6883,7 +7001,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -7121,7 +7242,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      }
     },
@@ -7352,7 +7476,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      },
      "results": {
@@ -7590,7 +7717,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      }
     },
@@ -7821,7 +7951,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      },
      "results": {
@@ -8059,7 +8192,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      }
     },
@@ -8290,7 +8426,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A20",
+       "columns": ""
       }
      },
      "results": {
@@ -8396,7 +8535,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -8495,7 +8637,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -8625,7 +8770,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      }
     },
@@ -8748,7 +8896,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -8878,7 +9029,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      }
     },
@@ -9001,7 +9155,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -9107,7 +9264,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     },
@@ -9206,7 +9366,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -9336,7 +9499,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      }
     },
@@ -9459,7 +9625,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -9577,7 +9746,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      }
     },
@@ -9688,7 +9860,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {

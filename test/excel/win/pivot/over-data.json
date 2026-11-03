@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 37.5
+  "seconds": 37.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 8 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -268,14 +269,14 @@
   }
  ],
  "sent": {
-  "value": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e5569460a5aad558",
-  "formula": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e7e287a1becf1c17",
-  "format": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 3b682eed56cfd0bd",
-  "value-format": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cee03f7dadf5f6f1",
-  "merged": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 747daad5ab714898",
-  "table": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d1a4c16f3c18deef",
-  "top-left": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 24f917b8d8ab7350",
-  "grows-over": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e45f57ae2f3d697c"
+  "value": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e5569460a5aad558",
+  "formula": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e7e287a1becf1c17",
+  "format": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 3b682eed56cfd0bd",
+  "value-format": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 cee03f7dadf5f6f1",
+  "merged": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 747daad5ab714898",
+  "table": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d1a4c16f3c18deef",
+  "top-left": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 24f917b8d8ab7350",
+  "grows-over": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e45f57ae2f3d697c"
  },
  "answers": {
   "value": {
@@ -561,7 +562,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -583,7 +587,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -868,7 +875,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -890,7 +900,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3",
+       "columns": ""
       }
      },
      "results": {
@@ -1182,7 +1195,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -1204,7 +1220,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -1489,7 +1508,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:I9",
@@ -1584,7 +1606,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3:H9",
+       "columns": ""
       }
      },
      "results": {
@@ -1876,7 +1901,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:J20",
@@ -2157,7 +2185,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -2442,7 +2473,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:I9",
@@ -2537,7 +2571,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3:H9",
+       "columns": ""
       }
      },
      "results": {
@@ -2829,7 +2866,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -2851,7 +2891,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -3136,7 +3179,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -3158,7 +3204,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3",
+       "columns": ""
       }
      },
      "results": {
@@ -3450,7 +3499,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -3472,7 +3524,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -3757,7 +3812,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -3779,7 +3837,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3",
+       "columns": ""
       }
      },
      "results": {
@@ -4071,7 +4132,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -4093,7 +4157,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -4378,7 +4445,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -4400,7 +4470,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3",
+       "columns": ""
       }
      },
      "results": {
@@ -4692,7 +4765,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:J20",
@@ -4973,7 +5049,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -5258,7 +5337,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:I9",
@@ -5353,7 +5435,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3:H9",
+       "columns": ""
       }
      },
      "results": {
@@ -5645,7 +5730,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3:J20",
@@ -5926,7 +6014,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      }
     },
@@ -6211,7 +6302,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       },
       "PT2": {
        "table": "H3",
@@ -6233,7 +6327,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "H3",
+       "columns": ""
       }
      },
      "results": {

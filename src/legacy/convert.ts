@@ -14,7 +14,7 @@
  * - `A` inside an argument that takes an array: nothing gets `@`.
  */
 import type { NameInput } from '../contract.js'
-import { canonical, FormulaError, isRefOp, parse, type Ast } from '../syntax.js'
+import { canonical, FormulaError, isRefOp, parse, type Ast, type RangeRef } from '../syntax.js'
 import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
@@ -117,6 +117,15 @@ function size(n: Ast): [number, number] | null {
   if (n.k === 'paren') return size(n.a)
   return n.k === 'ref' && !n.ref.spill ? [n.ref.r2 - n.ref.r1 + 1, n.ref.c2 - n.ref.c1 + 1] : null
 }
+
+/**
+ * What the conversion reads of a formula's references and numbers outside array constants (`syntax/shape.ts`'s holes):
+ * a reference's kind, size and spill mark, whether a number is 1 (OFFSET's size) or else a place (`counting`). Formulas
+ * of one shape (its functions and names spelled in it) with one key convert alike, so a writer asks once per key
+ * (`xlsx/write/kind.ts`); what else the conversion comes to read goes here.
+ */
+export const legacyKey = (holes: readonly (RangeRef | number)[]) =>
+  holes.map((h) => (typeof h === 'number' ? (h === 1 ? '1' : counting({ k: 'num', v: h }) ? 'p' : 'n') : `${h.kind}${h.r2 - h.r1},${h.c2 - h.c1}${h.spill ? '#' : ''}`)).join(';')
 
 /** A call's answer after its arguments are converted. */
 function answer(fn: string, args: Out[], nodes: Ast[]): Kind {

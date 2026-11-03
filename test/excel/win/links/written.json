@@ -6,7 +6,7 @@
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
-  "rerun": "targets: system en-US (code page 1252), 2026-11-03, its file sent with the space of a target as %20; the answer is the earlier one but for the work folder",
+  "rerun": "targets: system en-US (code page 1252), 2026-11-03, its file sent with the space of a target as %20; the answer is the earlier one but for the work folder; Excel 16.0.20430.20146 for Windows, 2026-11-03: 7 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but where Excel answers otherwise now, the earlier writer's file too (test/links-excel.test.ts, VERSIONED)",
   "dpi": 96,
   "seconds": 24.1
  },
@@ -702,20 +702,20 @@
   }
  ],
  "sent": {
-  "cache": "9026dfc14c8cca4c22769751fc998feffe64fbfd5b331559f3db0ec5478061bb",
-  "refresh-error": "28a40af6f64692aadba993872da4b00a52676ede5b078c13dbe2fca045bcc631",
-  "two-links": "41f48131a64c9c5e5b682cb286465bb350c1329a271f7a08e16cd3363576e9c7",
-  "targets": "188fe5638922e6ca8c74927d4e551f517ca474ef9bdc3cb164a1620cacc766d4",
-  "stored-empty": "f4ffe38d615ad7083f33675a44d6888dd2d5272ddd01a35576e8eb2fbaa32a4b",
-  "errors": "078d032b4deee87bfb13c7fd7c6bed8203fcd9fcdd78c62e59f78ed0f60724ff",
-  "placeholder": "9e706e8481bdb7073e260ea212b6bdc95b29a350b7e99c7dab8a7c5f7c99664f"
+  "cache": "b7f51f3f6d941829e4fddacfb132fe7191bbc832dc0c451e36c7a54861742324",
+  "refresh-error": "6fd739b2cb5e8cff9feff47854e1639b5abda3fb2a5b40fa30cc09a8e645e28a",
+  "two-links": "85767079e7b483498f93e1be9f0de3f119b71d1bc31bba4deeb24253767854a4",
+  "targets": "7c195b378e525b601a2679843cb310c824de6bcba004f0166105ac9560dedf86",
+  "stored-empty": "f236ceface6c8afac90b5e12a8949a3bc69fc75722570b5e8243d5c3159107ed",
+  "errors": "21849ac0409bca7ddbcd01d6573a427ddbdd6013e6893dc297ff3a9fa490991d",
+  "placeholder": "e139cb40fea9826a38286304d23f456df746b50f755f56e4d4a30141a7bcba6f"
  },
  "answers": {
   "cache": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-46817-1",
    "reads": [
     {
      "values": {
@@ -832,8 +832,8 @@
        "v": 7
       },
       "S!A29": {
-       "t": "e",
-       "v": "VALUE"
+       "t": "n",
+       "v": 2
       },
       "S!A30": {
        "t": "e",
@@ -889,88 +889,88 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1"
      },
      "shown": {
       "S!A1": "2",
@@ -1001,7 +1001,7 @@
       "S!A26": "5",
       "S!A27": "TRUE",
       "S!A28": "7",
-      "S!A29": "#VALUE!",
+      "S!A29": "2",
       "S!A30": "#REF!",
       "S!A31": "6",
       "S!A32": "6",
@@ -1130,8 +1130,8 @@
        "v": "VALUE"
       },
       "S!A24": {
-       "t": "e",
-       "v": "REF"
+       "t": "n",
+       "v": 31.2
       },
       "S!A25": {
        "t": "n",
@@ -1150,8 +1150,8 @@
        "v": 8
       },
       "S!A29": {
-       "t": "e",
-       "v": "VALUE"
+       "t": "n",
+       "v": 1
       },
       "S!A30": {
        "t": "e",
@@ -1223,96 +1223,96 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B10"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-written-46817-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='C:\\xlcalc\\work\\links-written-46817-1\\[Book2.xlsx]Sheet1'!B10"
      },
      "shown": {
       "S!A1": "2",
@@ -1338,12 +1338,12 @@
       "S!A21": "4",
       "S!A22": "#REF!",
       "S!A23": "#VALUE!",
-      "S!A24": "#REF!",
+      "S!A24": "31.2",
       "S!A25": "3",
       "S!A26": "5",
       "S!A27": "TRUE",
       "S!A28": "8",
-      "S!A29": "#VALUE!",
+      "S!A29": "1",
       "S!A30": "#REF!",
       "S!A31": "6",
       "S!A32": "6",
@@ -1381,9 +1381,9 @@
   },
   "refresh-error": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1401,14 +1401,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1432,14 +1432,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1451,10 +1451,10 @@
   },
   "two-links": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx",
-    "C:\\xlcalc\\work\\links-written-57669-1\\Data.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-written-5099-1\\Data.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1468,12 +1468,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1492,12 +1492,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1508,14 +1508,14 @@
   },
   "targets": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-92624-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx",
     "C:\\xlcalc\\work\\data\\Book3.xlsx",
     "C:\\data\\Book4.xlsx",
     "C:\\Users\\x\\data\\Book5.xlsx",
     "https://example.com/share/Book6.xlsx",
-    "C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\Книга 7.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Sub Folder\\Книга 7.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-92624-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1545,20 +1545,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1597,20 +1597,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-92624-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-92624-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1625,9 +1625,9 @@
   },
   "stored-empty": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1669,26 +1669,26 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A1:A3)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A1:A3)"
      },
      "shown": {
       "S!A1": "0",
@@ -1742,26 +1742,26 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A1:A3)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Marked'!A1:A3)"
      },
      "shown": {
       "S!A1": "0",
@@ -1779,9 +1779,9 @@
   },
   "errors": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1819,24 +1819,24 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A6"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A6"
      },
      "shown": {
       "S!A1": "#VALUE!",
@@ -1885,24 +1885,24 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A6"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A6"
      },
      "shown": {
       "S!A1": "#VALUE!",
@@ -1919,10 +1919,10 @@
   },
   "placeholder": {
    "sources": [
-    "C:\\xlcalc\\work\\links-written-57669-1\\Book2.xlsx",
-    "C:\\xlcalc\\work\\links-written-57669-1\\Data.xlsx"
+    "C:\\xlcalc\\work\\links-written-5099-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-written-5099-1\\Data.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-written-57669-1",
+   "folder": "C:\\xlcalc\\work\\links-written-5099-1",
    "reads": [
     {
      "values": {
@@ -1936,12 +1936,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1960,12 +1960,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-written-57669-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-written-57669-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-written-5099-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-written-5099-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",

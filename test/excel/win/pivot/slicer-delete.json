@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 22
+  "seconds": 22,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -222,11 +223,11 @@
   }
  ],
  "sent": {
-  "delete-slicer": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fa7e0911ad5a637e",
-  "delete-timeline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 25dd5dd4d3eeec18",
-  "sheet-one": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9264eef30b0428da",
-  "sheet-two": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ffc70621dc9753e6",
-  "sheet-timeline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 15e90f1cb4f0a6d8"
+  "delete-slicer": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 fa7e0911ad5a637e",
+  "delete-timeline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 25dd5dd4d3eeec18",
+  "sheet-one": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9264eef30b0428da",
+  "sheet-two": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ffc70621dc9753e6",
+  "sheet-timeline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 15e90f1cb4f0a6d8"
  },
  "answers": {
   "delete-slicer": {
@@ -278,7 +279,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "results": {
@@ -362,7 +366,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
      },
      "slicers": {
@@ -434,7 +441,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -548,7 +558,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "slicers": {
@@ -656,7 +669,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       },
       "PT2": {
        "table": "A3:B8",
@@ -739,7 +755,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -872,7 +891,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       },
       "PT2": {
        "error": "-2147352565 Invalid index. (Exception from HRESULT: 0x8002000B (DISP_E_BADINDEX))"
@@ -959,7 +981,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       },
       "PT2": {
        "table": "A3:B8",
@@ -1042,7 +1067,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -1127,7 +1155,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       },
       "PT2": {
        "error": "-2147352565 Invalid index. (Exception from HRESULT: 0x8002000B (DISP_E_BADINDEX))"
@@ -1262,7 +1293,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       },
       "PT2": {
        "table": "A3:B8",
@@ -1345,7 +1379,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
      },
      "results": {
@@ -1460,7 +1497,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       },
       "PT2": {
        "error": "-2147352565 Invalid index. (Exception from HRESULT: 0x8002000B (DISP_E_BADINDEX))"

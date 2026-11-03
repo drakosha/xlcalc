@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 35.4
+  "seconds": 35.4,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 12 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -625,18 +626,18 @@
   }
  ],
  "sent": {
-  "table-range-2": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 915dc018d8e54553",
-  "table-alone": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 3b81f81fb69b2864",
-  "table-and-filters": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 f06e9bc7d8904c78",
-  "filters-alone": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ba23a19a9d548ea1",
-  "with-cells-around": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e470c8565d0519b3",
-  "its-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 882d88a66a6f9f31",
-  "whole-sheet": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b7bd62c0d05b4808",
-  "both": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 3d220d6d06c000fd",
-  "one-and-part": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 84a5892a7fd9cec3",
-  "one-of-two": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cc3b5be7d95cd7fc",
-  "clear-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 34307c9afae4e822",
-  "clear-formats": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8aa73df8a7efbe41"
+  "table-range-2": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 915dc018d8e54553",
+  "table-alone": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 3b81f81fb69b2864",
+  "table-and-filters": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 f06e9bc7d8904c78",
+  "filters-alone": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ba23a19a9d548ea1",
+  "with-cells-around": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e470c8565d0519b3",
+  "its-columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 882d88a66a6f9f31",
+  "whole-sheet": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b7bd62c0d05b4808",
+  "both": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 3d220d6d06c000fd",
+  "one-and-part": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 84a5892a7fd9cec3",
+  "one-of-two": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 cc3b5be7d95cd7fc",
+  "clear-all": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 34307c9afae4e822",
+  "clear-formats": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 8aa73df8a7efbe41"
  },
  "answers": {
   "table-range-2": {

@@ -1,7 +1,7 @@
 /**
- * A worksheet part from a sheet of the book. Formulas are written as dynamic array formulas (`cm` with the XLDAPR
- * metadata, `t="array"` over the range their array spilled into), as Excel 365 saves them: the engine computes
- * every formula by the rules of dynamic arrays, and so does Excel then. An array formula of the old kind
+ * A worksheet part from a sheet of the book. A formula is written in the oldest form that loses nothing (`kind.ts`):
+ * of the old kind (`<f>`) where Excel reads that as the engine computes it, else as a dynamic array formula (`cm` with
+ * the XLDAPR metadata, `t="array"` over the range its array spilled into), as Excel 365 saves them. An array formula of the old kind
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
  * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
  * come from the result: a formula's value, and the cells its array spilled into; a formula a circular reference stops
@@ -30,6 +30,7 @@ import { RICH_TYPE } from '../read/metadata.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { fileText, type FileNames, type FileShapes } from './formula.js'
+import type { OldKinds, ShapeSeen } from './kind.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { CellFormats } from './styles.js'
@@ -66,6 +67,8 @@ export interface SheetContext extends FileNames {
   result?: Record<string, ResultCell>
   /** The book's formulas written by their shape (`fileText`), shared by its sheets. */
   shapes?: FileShapes
+  /** The form of the old kind of a formula that does not spill, where it has one (`kind.ts`); without it, every formula a dynamic array. */
+  oldKind?: OldKinds
   /** The addresses of the sheet's cells and of its result's (`Object.keys`), where the checks listed them already. */
   keys?: readonly string[]
   resultKeys?: readonly string[]
@@ -106,8 +109,10 @@ export interface RowWritten {
  * what the book's writer needs of the sheet.
  */
 export interface SheetPieces {
-  /** Whether a formula was written (the book then needs the dynamic array metadata). */
+  /** Whether a formula was written. */
   formulas: boolean
+  /** Whether a dynamic array formula was written (the book then needs the dynamic array metadata). */
+  dynamic: boolean
   /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
   rels: SheetRel[]
   /** The comments part and VML drawing of the sheet's notes, their count, and the cells of those shown all the time. */
@@ -191,7 +196,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const xmlAt: string[][] = [], colsOf: number[][] = []
   const extent = { r1: Infinity, r2: -1, c1: MAX_COLS, c2: 0, n: 0 }
   const rowsUsed = new Set<number>()
-  let formulas = false
+  let formulas = false, dynamic = false
   const put = (row: number, col: number, xml: string) => {
     const xs = (xmlAt[row] ??= [])
     if (xs[col] === undefined) {
@@ -248,7 +253,8 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     // the book's table holding the cell, looked up once for its name and its totals row
     const table = mode === 'formulas' ? ctx.tableAt(row, col) : undefined
-    const text = mode === 'formulas' ? fileText(c.formula, ctx, table?.name, ctx.shapes) : null
+    const seen: { shape?: ShapeSeen } = {}
+    const text = mode === 'formulas' ? fileText(c.formula, ctx, table?.name, ctx.shapes, seen) : null
     // without a value (no result), the cell is written empty
     if (mode === 'formulas' && text === null) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
     if (text === null) {
@@ -261,7 +267,10 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
       continue
     }
     const ref = c.array ?? res?.spill ?? addr
-    put(row, col, cellXml(addr, row, col, c, value, `<f t="array" ref="${ref}">${escapeText(text)}</f>`, c.array === undefined))
+    const written = escapeText(text)
+    const old = c.array === undefined && ref === addr ? ctx.oldKind?.(c.formula, sheet.name, text, (f) => fileText(f, ctx, table?.name), seen.shape) : undefined
+    dynamic ||= old === undefined && c.array === undefined
+    put(row, col, cellXml(addr, row, col, c, value, old ?? `<f t="array" ref="${ref}">${written}</f>`, old === undefined && c.array === undefined))
   }
   // the cells arrays spilled into, with the look their own cells give them (a result's addresses are not checked: parsed)
   const spilled = (addr: string, v: CellValue) => {
@@ -365,6 +374,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     tableParts: tablePartsXml(ctx.tableParts),
     ext: cond.ext,
     formulas,
+    dynamic,
     rels,
     ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size, shown: [...notes].flatMap(([a, n]) => (n.shown ? [a] : [])).join(' ') } } : {}),
   }

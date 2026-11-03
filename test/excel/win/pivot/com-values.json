@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 20.5
+  "seconds": 20.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 10 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -103,16 +104,16 @@
   }
  ],
  "sent": {
-  "Num": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 75ab494c08dee363",
-  "NumBlank": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 80ab1fbca38b2406",
-  "NumText": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c c0355f9dd92c8ebd",
-  "NumDate": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 480445705e6414ef",
-  "Text": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c e92957cf64dcf342",
-  "Years": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 1dafbb4de9eda237",
-  "Bool": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 0b2905bb460420e9",
-  "Err": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c ec3d128edfffe999",
-  "Blank": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 532f9d4ddc44aa83",
-  "NumAsText": "d0332165c1de0f9b8d71b4ca04c2229b2f48b857cee0dbfd3088abba4775815c 390f08f6471ddcd7"
+  "Num": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 75ab494c08dee363",
+  "NumBlank": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 80ab1fbca38b2406",
+  "NumText": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 c0355f9dd92c8ebd",
+  "NumDate": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 480445705e6414ef",
+  "Text": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 e92957cf64dcf342",
+  "Years": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 1dafbb4de9eda237",
+  "Bool": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 0b2905bb460420e9",
+  "Err": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 ec3d128edfffe999",
+  "Blank": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 532f9d4ddc44aa83",
+  "NumAsText": "7f2b2efddacb930dd3c11948ae5c7e650df38a6e1db5a3b3de71e9e517fbfdc7 390f08f6471ddcd7"
  },
  "answers": {
   "Num": {
@@ -146,7 +147,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -189,7 +193,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -232,7 +239,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -275,7 +285,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -318,7 +331,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -361,7 +377,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -404,7 +423,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -447,7 +469,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -490,7 +515,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -533,7 +561,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {

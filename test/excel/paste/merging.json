@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.2",
   "locale": "en-US",
-  "seconds": 22.6
+  "seconds": 22.6,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 17 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "merging": {
@@ -442,23 +443,23 @@
   }
  ],
  "sent": {
-  "all-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "all-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-transposed": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-skip": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allUsingSourceTheme-add": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4"
+  "all-over": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-same": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-inside": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-relative": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-plain": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-other-sheet": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "all-empty": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-over": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-same": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-inside": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-relative": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-plain": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-other-sheet": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-empty": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-transposed": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-skip": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allUsingSourceTheme-add": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615"
  },
  "answers": {
   "all-over": {},

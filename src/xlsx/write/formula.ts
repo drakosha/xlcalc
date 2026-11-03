@@ -14,6 +14,7 @@ import { bindLinks } from '../../syntax/links.js'
 import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
 import { FILE_PRINT, toFile } from '../formulas/to-file.js'
+import type { ShapeSeen } from './kind.js'
 
 /** What a formula of the book may name in its file. */
 export interface FileNames {
@@ -77,8 +78,9 @@ const fileHole = (h: Hole) => (typeof h === 'number' ? String(h).toUpperCase() :
 /**
  * A formula of a cell in a file's spelling (`toFile` of its `fileTree`), null when the file cannot hold it; through its
  * shape's template where a formula of the shape in the same table (`enclosing`) was written before (`shapes`, a book's).
+ * `seen.shape` gets the formula's shape where it is kept by one.
  */
-export function fileText(formula: string, names: FileNames, enclosing: string | undefined, shapes?: FileShapes): string | null {
+export function fileText(formula: string, names: FileNames, enclosing: string | undefined, shapes?: FileShapes, seen?: { shape?: ShapeSeen }): string | null {
   const own = (toks?: Tok[]) => {
     const tree = fileTree(formula, names, enclosing, toks ? { toks } : {})
     return tree && toFile(tree)
@@ -91,6 +93,7 @@ export function fileText(formula: string, names: FileNames, enclosing: string | 
   // a spill reference is written as ANCHORARRAY, which its shape does not tell
   if (!shape || shape.holes.some((h) => typeof h !== 'number' && h.spill)) return own(toks)
   const key = tableShapeKey(enclosing, shape.key)
+  if (seen) seen.shape = { key, holes: shape.holes }
   const t = shapes.get(key)
   if (t && (t.at || ready(t, FILE_PRINT, fileHole))) return instanceText(t, shape.holes)
   if (t !== undefined) {

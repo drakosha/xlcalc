@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 20.9
+  "seconds": 20.9,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -93,11 +94,11 @@
   }
  ],
  "sent": {
-  "orientation-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ea2e5fefa67d6c6c",
-  "add-fields-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7849b4dd93320578",
-  "add-fields-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b92aa2b8751e9108",
-  "add-fields-times": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2bf67d03fa1a10d2",
-  "cube-field-rows": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a5e11cb973797354"
+  "orientation-columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ea2e5fefa67d6c6c",
+  "add-fields-rows": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7849b4dd93320578",
+  "add-fields-columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b92aa2b8751e9108",
+  "add-fields-times": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 2bf67d03fa1a10d2",
+  "cube-field-rows": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 a5e11cb973797354"
  },
  "answers": {
   "orientation-columns": {
@@ -266,7 +267,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": "B3:O4"
       }
      },
      "results": {
@@ -468,7 +472,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
       }
      },
      "results": {
@@ -644,7 +651,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": "B3:O4"
       }
      },
      "results": {
@@ -1267,7 +1277,10 @@
          "yyyy-mm-dd hh:mm",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A52",
+       "columns": ""
       }
      },
      "results": {
@@ -1308,7 +1321,10 @@
         [
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "errors": [

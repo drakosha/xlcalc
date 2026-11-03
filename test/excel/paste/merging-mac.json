@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.3",
   "locale": "en-US",
-  "seconds": 7.4
+  "seconds": 7.4,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 11 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "merging": {
@@ -696,17 +697,17 @@
   }
  ],
  "sent": {
-  "allMergingConditionalFormats-over": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-same": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-inside": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-relative": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-plain": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-other-sheet": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-empty": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-transposed": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-skip": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-add": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
-  "allMergingConditionalFormats-tiled": "81108701c30d394613dac8bd0feede4d9058fb060508d373ef8a46a37ffdc8a4",
+  "allMergingConditionalFormats-over": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-same": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-inside": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-relative": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-plain": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-other-sheet": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-empty": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-transposed": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-skip": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-add": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
+  "allMergingConditionalFormats-tiled": "97fa6d681d3ceb540c35d559dec441676710dd3cede0db45d2b4d44137977615",
   "below-own": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
   "over-own-rule": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",
   "over-own-cells": "16a7043e82fbcab2456e5db95c91b049c7e9f3d974afcbd3541f1a6aebf96c11",

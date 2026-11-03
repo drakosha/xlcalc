@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 25.1
+  "seconds": 25.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -136,11 +137,11 @@
   }
  ],
  "sent": {
-  "compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 19a2e8386baa7afa",
-  "outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 eb876efb395c542a",
-  "tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cd7366bdb0b1bcb9",
-  "columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 540b4105cea9cf13",
-  "tabular-bottom": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8adcd9f877992eb3"
+  "compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 19a2e8386baa7afa",
+  "outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 eb876efb395c542a",
+  "tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 cd7366bdb0b1bcb9",
+  "columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 540b4105cea9cf13",
+  "tabular-bottom": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 8adcd9f877992eb3"
  },
  "answers": {
   "compact": {
@@ -456,7 +457,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -853,7 +857,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -1250,7 +1257,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -1542,7 +1552,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:H5"
       }
      },
      "results": {
@@ -1939,7 +1952,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {

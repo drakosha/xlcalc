@@ -2,23 +2,24 @@
  "meta": {
   "version": "16.114.3",
   "seconds": 1.5,
-  "date": "2026-10-29"
+  "date": "2026-10-29",
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 110 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "values": {
    "sent": "6cc4d409c7ae8cb2d2a4a6a13c9831be0ffd09185c0678955c8d1f9fbb8fbb9b"
   },
   "escapes": {
-   "sent": "666718da8c8083739833e4215466c81be053c6ae97c307e5a6aee4742364e994"
+   "sent": "15589dd5c9d3f76329272d20bf0c9cef642b0344f3f8d67473b93ca7fe17d2e4"
   },
   "formulas": {
-   "sent": "650c9daed62ad7d8d05f63772274ccd4e2f05aab3d0c4016ffbad19269bfbbb0"
+   "sent": "54cac315e4247ecec56618e50365e1431d68e1ee7f364c4235d0f7c2b58dcd17"
   },
   "formulas-values": {
    "sent": "ac8c218730ddd8bd4de5ac763cd9559f5ec5bc47367662b11829c73481ea94cc"
   },
   "spills": {
-   "sent": "71a23cbcfce5729d7e2ae079f97d82c9f31eefffbf57d6adfb06c8e478135777"
+   "sent": "328b6951f51288243c80978ed86a44609fcf7ef76188c20f6d763d6535d50c3f"
   },
   "spills-values": {
    "sent": "60eea2cb84467a63cf63ee82247aeef49f4b8289d1f86920870396bca156a07b"
@@ -27,40 +28,40 @@
    "sent": "d3e20d80b84f6f605f28de603737d6c6e58e6b09d22e5de26b122c78d8c51a96"
   },
   "sheet-names": {
-   "sent": "63bc8e71068b5d14820038bae1eae028d2185114d5a3e7cd34aaa731703c60cc"
+   "sent": "77236cd6d8baa5121f7a1441c4a8f7f2775ad510974369930e47dfe0de06fe92"
   },
   "en": {
-   "sent": "6d3b210aa54d3d614cb9f05c5427198070e506948eb77de4de4b9339163c0fc0"
+   "sent": "0b0efc4b6c425fb922c10f41d7c7130bc36e33e58e3fb3ab61e7b30cf3293d02"
   },
   "synth": {
-   "sent": "ec253b8aa2211d07f0b321418f66f1a2784c31f9bdca30f5757b5ae430a09bf7"
+   "sent": "915dd85c6baf40a5b1f38a28e98d965ae34ff689bf7f465673f029484a4fdfb6"
   },
   "ru": {
-   "sent": "91d6f9f09f0ddcc4ca925fbfc9c2c8cb1cc9ffea8dc8455b477649c00b532507"
+   "sent": "46bdfa39c117bcd634d8c28d3db2a7b3f16f4c10dbe3abf46e31c6d9075b57cb"
   },
   "struct-edge-edge": {
-   "sent": "63e6d463e9f385b299a4eb773f940d7e0f354e52448fe1e7deeabc0aa8cbc013"
+   "sent": "1f9a92d75352770124166635ef5d33315ce3187a6a8e64a946d166f5d8a033f8"
   },
   "struct-edge-full": {
-   "sent": "9a55c4084a39058b214d2eff9f184e4a5508407f7a6988bbc614be60e403a17b"
+   "sent": "999cf0fb503a5acacc5f7772d49560cbdcac0f954a0c6e6251223a653a2c0c7b"
   },
   "struct-move-base": {
-   "sent": "7d641e88ecd5da53b8907e5cf9979941594d5d815d8fbd2e914689caa2b78083"
+   "sent": "fd671b1c3b8bf8a67f15aebe723d0eadb05982415f2124808925ad8e6ac05151"
   },
   "struct-move-fill": {
-   "sent": "1db6dfd49d0f977429ff637eeb16bffa44d78d3daf219d2313f0626a164157ee"
+   "sent": "09d04902de0dfd64145d8246ca4b71d3e6ee81f52fa2d422a014e78f1dedda16"
   },
   "struct-moves-window": {
-   "sent": "f68d17cbcaf85ffd92c93c1ba8bfe5c97ba985b07f08ca28a21a73924af85cc5"
+   "sent": "371f493f937a501cee0ea36555a47d43e11b43f8b64910326af6e1426ef0c134"
   },
   "struct-sheets-broken": {
-   "sent": "2457c9466725b9bf7fc1f57fdc630b15f116d3f008d6cdcf79886c492be745ae"
+   "sent": "65a52034500176acbfd83dc5cb29ae33a9fe4f1a05c79d1045d277910f97f7e8"
   },
   "struct-spill-spill": {
-   "sent": "bf020c46b947175e57bced067e61bf5cf8ebd3d430c80d7d4dc65fc9c57e5d6f"
+   "sent": "07d07b9aa859e8c8a5c8ef320910c23b50a472973dc550f0f06bc411f45416e5"
   },
   "struct-styles-styled": {
-   "sent": "c3b74bd6389282c77809cb25a576e32dc9f74ff5870eeaa791a68201bbb682ba"
+   "sent": "222677d484f9ecd9f86ac4e0b94e2705e0888f3348a018d0004e39aa0927031b"
   },
   "spill-base-down": {
    "sent": "ef05288b4801332b06c9a091a03de0c692d1230d3f323e36c13b50f6e6faa072"
@@ -72,25 +73,25 @@
    "sent": "745047c9652d81645b67af2172ccdc37975bec5537874e7d4e9bf849949f4ded"
   },
   "spill-base-range": {
-   "sent": "94d8502a5e2a190b9a91e5eee4ef3549e6a3d24a10536492ebb15a2d45071c95"
+   "sent": "2b3d4b9c65102e331586ec1e7992b7939d0b07b6e3c544c0be1ede578618b149"
   },
   "spill-base-constant": {
    "sent": "426ea6f971ccdf217948aea222922375e0b842d091a23c96b8d0fee779ccd148"
   },
   "spill-base-one-seq": {
-   "sent": "0da04ac6d5f3f8bb7f3df969488399cca91360006c79576f58059ead481af63a"
+   "sent": "d248fb911fa956524603571c503338166f5a8edf3ab9d5cbda379c7a031140ca"
   },
   "spill-base-one-const": {
-   "sent": "5739a21ea35ae681876f26c8a52ca8928e5068b53495a2717b4924c7e358baa9"
+   "sent": "3e17de9625defcb0034f2fac6960cd23385e3cc5d1984d9a5d11a9ae22eeffd5"
   },
   "spill-base-block-value": {
    "sent": "b8bd7a4ecbd9916adffee4d8bf43067c435aae9f11d7c7c787a1882de2997ae0"
   },
   "spill-base-block-formula": {
-   "sent": "53d422500f1f94ccf5dcfcd03a9a6798ad01ef70c327c92474fcfe5587306859"
+   "sent": "7763c2c7a5816eb260769bf224da7e470d9a637c520543c118e4024421dd07af"
   },
   "spill-base-block-formula-text": {
-   "sent": "9f27ddc4105408e6afd90bbc47152f45a8a158b83f1232a48e0a9114b61f4d52"
+   "sent": "2cea2129f4ce25cead44db1965bde681765efc42cb1b47257b3498f2edbff3a2"
   },
   "spill-base-block-text": {
    "sent": "dccd190b56e3478a091abbaa0a25e8f19c4011f520b5708ab7177a64967948df"
@@ -105,7 +106,7 @@
    "sent": "d26662ba233dab5abe2105c8175f6df501727c5788fffc169ec9e1b946402551"
   },
   "spill-base-block-dependent": {
-   "sent": "79a39ffd77dc7247fcb74aca5349fc59fa046def1ed122883d5ca773da57e038"
+   "sent": "d86ea6f1d17a5fbf7768da828c1964a476724ed93fe6bdba2b2bcf4849cbd1b5"
   },
   "spill-base-merged-inside": {
    "sent": "54ef8153fa18193c26fad20dfd1cced60336482a1c23e35a8b91571efefce183"
@@ -135,7 +136,7 @@
    "sent": "b0540b22098049ce91c6216b8e524b8036e9958f0c9910fa32644ccd9566f2db"
   },
   "spill-base-chain": {
-   "sent": "670ed32de8de423ec832d17f17015537c8a3d246aa44bb3427d3b8dd3059c356"
+   "sent": "28ce5180109f17f28430975662e2ae7dc3d64d77ff78c84dbdc58b4ed5267a67"
   },
   "spill-base-edge-down": {
    "sent": "7b897d04d7694a3784de3640a302998bf99a69933e467c61255872238d642fb7"
@@ -150,31 +151,31 @@
    "sent": "4f4400bd763639208811569e599cdd109dc6af530213f4f9f5bced679e7f5eb1"
   },
   "spill-base-ref": {
-   "sent": "3efb6791cb7054cfe271cb27dfd820fc51bfc025ea50d78392fd12c1b9c3ba22"
+   "sent": "e122a28c512652de7cab55aeb036e3cd71bbf4fe8b4e7f96f7c93b1c4ef905c3"
   },
   "spill-base-ref-blocked": {
-   "sent": "7881242e9704a642541e23d02f34c3cd2a4c58eaed00752dea1b08a7e3d4d3ad"
+   "sent": "1ebc22ae1093a777a07b84353ec400a9a8dd3461d4ced05e3531a94f2b6fd3af"
   },
   "spill-base-ref-inside": {
-   "sent": "777614fc4d558817b83a831a2632e4ea05f102736a09311fc3c5b5d6b69023ad"
+   "sent": "36c7c6ac3725ec6148c12c072f13d3eeca58404b0d6405967387efdcc88d08f6"
   },
   "spill-base-ref-value": {
-   "sent": "0f1e99427160a2784006e790fe52e909cedd8e4d7cb12633eb7ab27bef5940a6"
+   "sent": "8083ea4472c58ee85199e5c5fd33e06547c731c981db29109bd43826cca9d580"
   },
   "spill-base-ref-scalar": {
-   "sent": "5877d5d4c172a4ef9f6ee2ade5175548a6ad603368f93bf0d1c38772378191b1"
+   "sent": "cc214bf801ad9879b439acfb16eae7e907c8574c3dafcf8bb385e74e262102eb"
   },
   "spill-base-ref-empty": {
-   "sent": "d557d1c7a33ed837df560f417ab5f720e3c8dd5da2fd5e7c1beee10dd13d29bb"
+   "sent": "e41614090f22f23f504eff2491d95d8187836c499c877f142b6db60574a8c018"
   },
   "spill-base-ref-name": {
-   "sent": "522128833ca484b937b8a30b0f7d530c9cf65155ad66a06953bf9e068f2bf971"
+   "sent": "a7be6abad3c5d6e6a22bb164f83271cbed7a66106f0f99540046a57b9d51a9a1"
   },
   "spill-base-ref-sheet": {
-   "sent": "390b1c193aa4151e8847458831d71e77c861da9e7cfbe8762d08f6787438010f"
+   "sent": "9b0678b2e6447792b3f0c7ca1588b0365ae06a19a0bd0739d73e85738067bad0"
   },
   "spill-base-readers": {
-   "sent": "e731cbbdeed91ef4e580d3b73734c6a42c4722d1856904f9500ad7c3ab7243f6"
+   "sent": "754ded796bf2b78cd99c1f10d3b7007c116b5cb90af4c7ddb3026a18d791f3b7"
   },
   "spill-base-size-fits": {
    "sent": "cca7b761801ea5cf8ffe05c1e61dc5368d006673179b60232ec0ba16087d6ce4"
@@ -204,7 +205,7 @@
    "sent": "5df5eb3fb2e12edfb4d816725418842bbb18146117e72b6d2b754658e5d2231f"
   },
   "spill-base-rand": {
-   "sent": "a074b1a96355e62e7c9140c005669255bd3cf95ac23ed156ff8cb99f9cfe6b8b"
+   "sent": "978269e31664c62cf9672f661c05c1f96fbe67fa5f05f8093323e52f9faeaf44"
   },
   "spill-held-text-rect": {
    "sent": "77e54bc5433ac8e274b5527a4397a1ebe7112a03e6868524dd126b2ef757d1bc"
@@ -216,10 +217,10 @@
    "sent": "7cf782f995477180b451f7171ed3bc5184758091c13211f0e1154fe243468d95"
   },
   "spill-held-ref-rect": {
-   "sent": "c2c3e4e2b7145937b71f6fb262ec65147f451a1cd3073ed95b389e58276f3995"
+   "sent": "23b5fb633448ba590e09b035a735e0110d9b95ae5bf73ded25fc19a10411e8bc"
   },
   "spill-held-name-row": {
-   "sent": "0db512484fb18d54ed30d7370d04e432ca834de17e527a6ef6c937cb6e983ee8"
+   "sent": "10cd34774ed47eb64b797826a099fa67f8e3f2bc24d15a9fa60853188c344c62"
   },
   "spill-held-col-text": {
    "sent": "1217740811b0e153edd3de2d74d39425a92943c82621bc376e7e6ed1510de17e"
@@ -228,19 +229,19 @@
    "sent": "222f96978074924464a86980dcf5a5ee7f3c3520a0c3cf2235b39c8defe1fc75"
   },
   "spill-held-one-const-ref": {
-   "sent": "14304a6e6b9d54597b112331d628737a2a4bd2a202a67b753bfb14ba6bf1e82f"
+   "sent": "664bc55de4745638f90807fa1cedd995af767795c10f626fe82c03244bfb9bc8"
   },
   "spill-held-transpose": {
    "sent": "99c3202885bdd327e202a8e62c4577e5a6fca650dc37135ca434bd004d6f1093"
   },
   "spill-held-blocked-chain": {
-   "sent": "6e4244bd972cacdc7bb98ef9476253c9e72535a241e05de72dec96de7d5b5b82"
+   "sent": "706f6cdef27675e64307d906f492f6c5a9ff045b2b070a8314e937f51d7980b6"
   },
   "spill-held-sum-partial": {
-   "sent": "515a56026a5279c6fcf6b464a7fcc81921616072e668aa1556ff49e5882edf5d"
+   "sent": "ac921674272c3a6e03ab1c4e988761c690727377e2f5eb61c644b22a5ee4b659"
   },
   "spill-held-other-sheet-reader": {
-   "sent": "f3311edc5ee2ef03b40c5a7dccc3110bde6aa4d3cf4aca1a777554fddf759eb3"
+   "sent": "3dba586a0b9f4528b713312dbf5c32602af4758aa0ca1e95970e9dacb3d6c437"
   },
   "spill-held-dep-cross": {
    "sent": "570d63f106b559efeff7763101c414fad8444fd19dcf76ad76c179767b4f4c9f"
@@ -252,19 +253,19 @@
    "sent": "0974d092fab4bb04357c58dc63ccae5cee177818a612ded59f471a9e3a050bfe"
   },
   "spill-held-error-block": {
-   "sent": "0238946ca98a3aca288bd43ad9045361d6e51dcc054985a847c5160de1c1be21"
+   "sent": "d1ed0a040cd866f9fb9ff1d228820ae1ab96f62da19287d82821ae79abd76e06"
   },
   "spill-held-filter-rect": {
    "sent": "8e234db972e388a15d5d840a02fd73eb45c78c49445f6789418859511573dc47"
   },
   "spill-let-shadow": {
-   "sent": "5ec7c4f5232fb716c7b2d384ea2b52d09097858fa1d925e011eab5363b347506"
+   "sent": "dce6de9d2476f8559c7a1f610d90b6919252545d5e9159d8e1fa0dd5d232ca54"
   },
   "spill-let-spill": {
    "sent": "3b1337f3f4108a3393dccf0e9459a7f223f8e1a9bda59e13642af6e17057c04d"
   },
   "spill-let-text": {
-   "sent": "372ee55bdd3582ada95b5a137a3b42818a0a6343e4ae7f1f31fa9b6db441c415"
+   "sent": "09be362b99b79397edfba1f26c0c0953c8b667f6756cb5293ca3e9076474dc1c"
   },
   "spill-order-cross-B1-A2": {
    "sent": "7ad6260b655ce361d425b8466cac7248a735511869a56c253e54180f351e9902"
@@ -324,88 +325,88 @@
    "sent": "fe3fa0f55b26fd8b432c46b8dd0f49a6d3a2d058ab6a97ec5318a066d82e3e40"
   },
   "struct-arrays-arrays": {
-   "sent": "63e9b13d60aac81b547d5e843e225c63665d3db290d4cb54dd3822b0c5e8bd56"
+   "sent": "868c73de45f8174f33c1feb6a837dcf098ceebf50105e67ebcee4fb951dce417"
   },
   "struct-cube-cube": {
-   "sent": "45c8c581552906f4564947178116882e6759134473029916af8b4723d6a7bf1e"
+   "sent": "ce9a4e84125b2e8b9711a86df137b1bf33ab3e6f2cedb606a7d3682ad2058d2e"
   },
   "spill-at-column": {
-   "sent": "aa0a5b069b88b0b2b1c047977ef07ed2b72c6f18dc52a159a52c0901594dd1fa"
+   "sent": "2ebb0fe19ec482f998df727fce5b27d80eba46d2f338f1cbac83d9d74c5621ef"
   },
   "spill-at-row": {
-   "sent": "7d4d2fc2bea61236ca918b1a3aeb7c315d270ee90d23f81bcef4fd4bc047a371"
+   "sent": "628fe7947c00be42899045b62b23de68f10cccb6a3370dfc2a3985dd385dcf99"
   },
   "spill-at-other-sheet": {
-   "sent": "d62eddd48f4b8110e6d41c9c4e8f5a50e88a643a6a0fdcab0fc32332da22e7fd"
+   "sent": "4d9ba0d0e1a2dd0e45066cc1bd874e4f1fe05af23dca10bd8e2f985c4bb00976"
   },
   "spill-at-arrays": {
-   "sent": "0e7458f21ad1039407231efc6c2518efc1b54fdf036a54e07a554c846ff5a32e"
+   "sent": "1eaab05afd593089776f611c17b1a8784cce7209f57ea45c7c8e90dfea8ebd62"
   },
   "spill-at-calls": {
-   "sent": "e453ca715ffdca79bde1fd92e370bfcfbae68e806470e8e1759bfd220fc0ebc7"
+   "sent": "f6bffabf554269cb95233f690c088495b6610439b331012cfafc5a4be5338dd3"
   },
   "spill-at-reference": {
-   "sent": "ce4550666aed794ca7980808dfa56eb6a790f18fe21d7fba43740cbfc5a53203"
+   "sent": "bcb6b55d933bff5c1bd9bc7ba1a2a08f66c3d7848871c36c4083c553299ae6b0"
   },
   "spill-at-names": {
-   "sent": "8f52d99165998a0f73dd960ce0e10e7876f4d13ffe822dc443257c22b2280987"
+   "sent": "8011da9bff74645e7baf685397a10df859ad41f3f97b43c3622b7968ae719b71"
   },
   "spill-at-union": {
-   "sent": "d94d58dfab0a1c70a61e398c97c556c813f86ba03193face55b0b86f9c8ca8e4"
+   "sent": "8281f036e15900fa67a5d8f7dfec479d430047676b73274b0bc5531b39a40481"
   },
   "spill-cse-fit": {
-   "sent": "e36b375a756a67ab547a006b6016f7fb2de3e3b3fd2ce859d7b27b60642759e5"
+   "sent": "9e83fc43c128fc68bdafefa767ca58ce97ff02017edc37404aa6ed74ec9aaff1"
   },
   "spill-cse-larger": {
-   "sent": "aeec9f9cd6c9163c9135a6b182111f8d6fe3f4f520fedac502523e20b2f1c03e"
+   "sent": "c239c50fde50b157eba9df5a1c15fe386ee821edda7f46368833a2003b641a3e"
   },
   "spill-cse-smaller": {
-   "sent": "5def015579f017ace3b02cd0771f5a9dcf4bdc1b522a9dac510796dfd10c6d95"
+   "sent": "886a1615b19126596d70462ee2c45b38d5d6224bd406421a5f0217daa16065c7"
   },
   "spill-cse-row": {
-   "sent": "c85fb8efbae27045f7604d24b3b7c13722676991b176e3b59eb542b2fd275bec"
+   "sent": "f0056fb11c86a9f24e642ef15e787d1af1c2162918c954a5b110d0811e132c65"
   },
   "spill-cse-scalar": {
-   "sent": "b121d74d4f6272feedf437cd6656ec39f58096973d816ab4516cade9f9648f29"
+   "sent": "441ec42eab69f4f729a41b902554c203ebd4239103ac57df59cb49e41d9ac71c"
   },
   "spill-cse-block": {
-   "sent": "b395b461d5abc7094c105f9f4a153eddc1332ff4a1e3e97f9d5ba521f49f633b"
+   "sent": "6fdaa7c0bfc23c2ed1bc74310fd1c5b18a24baf7f06c8aaa8a591347021b8617"
   },
   "spill-cse-position": {
-   "sent": "fb8f41b63c842883586c353410ae93ea004b3b39fb038f9271e1fadcef7bb693"
+   "sent": "6a296c79840aeb79108465136d78f102181983cb535bad5bb6fb11358ed5e1a7"
   },
   "spill-cse-single": {
-   "sent": "d04b442c64605ef21a4a944c3bfd9dcbe95cf6747ea2c86c78fd5f68d666cca4"
+   "sent": "6b1f30827226d00640c55f2cc9d0000bc359bdeb8403b5c523b1e8cd61bf5ec4"
   },
   "spill-cse-readers": {
-   "sent": "b9b22b7c7d9064418d433a1854c8dc8b42394635de53850907e43890bb60f515"
+   "sent": "baad5b853f63a3b71fbcdf1efce3147765e72f3092491b2242c55d30802060dc"
   },
   "spill-cse-collision": {
    "sent": "c28be45ae0c00c6630c09ed62a32b2c5d34c571d86c55baefd593767e00a881d"
   },
   "spill-cse-transpose": {
-   "sent": "dfd8fb36df2847024fa92a545737d4bfe539647d715a546a601650c41070669b"
+   "sent": "362065fa8e15015640ade6c650173455f3799b03a5844acfe788debaf221e67e"
   },
   "spill-names-constants": {
-   "sent": "1efbdc346b323f9305a16d75e30dbb49837b98272ca07c7274bd040493bc5491"
+   "sent": "076bc6977f00e56c303850cff1301b1397f1839ac63219addbfe89a19ed40b77"
   },
   "spill-names-formulas": {
-   "sent": "c891f63e79a736dfe7f9673354a840ab89e07e40287887029a1d03ccef6d17b0"
+   "sent": "2bd219f0043034cc7110190304c4e439bfa71bef93a082cf4dbee7e3b071d12d"
   },
   "spill-names-union": {
    "sent": "aaaea341ae4f5ef4d9e09371d33f73449a2ab3d3f4b6ce9f836cdaec56b28213"
   },
   "spill-names-relative-rel": {
-   "sent": "d2a1cbac0a8f17120a8948f2c5106cc448dd6208ec64a4aa73df721d2d8e9c1f"
+   "sent": "5a180840f5c94ca477ac28d0f2d0ab550caf55b4d382e6d793826f96f915dcdf"
   },
   "spill-names-relative-relr": {
-   "sent": "576666fee13821d8d9d9216c784c94c2c5af6f4c91cd148bc125454644479ebf"
+   "sent": "4a7dedb7b4e214bc07d34ece73082d219d0c1c48ecd36dd7dae86d20d0910ba7"
   },
   "spill-names-relative-mix": {
-   "sent": "6a49f6ffa377c66631d33ef4432d47a8d0b571ee98a42ceb90d2f9fd3c52ad5d"
+   "sent": "3e1a19529773987c53489f12423785ddea4f41f35eda65ebe3b786fd190c63fd"
   },
   "spill-names-relative-up": {
-   "sent": "fa0dcbe7d5c6be1a36bcd9b612cb5d06ed21b7c57d1d2d8ad8470e85b256a74c"
+   "sent": "b8e5f84b40292b768f279b4c4707295443251569f6603fb94edd460dfc528db3"
   },
   "spill-names-relative-relf": {
    "sent": "bbeeb4e870650a236bc67f35586d322c177ef9824e860a78330c999f3f6ef4db"
@@ -417,130 +418,130 @@
    "sent": "0db3c3e205bb29430e02177a0f2aa76bff487c9eb5f775f867f968e196384dc8"
   },
   "spill-names-scope": {
-   "sent": "a73503324f3f7cf7b942304c811ead268c69dc946728401e3a8274e47e5373a5"
+   "sent": "d84f796123afd0771d9d2c65c10d1142fcb5a2aced64f08be0906d460c363b96"
   },
   "spill-names-array-for-reference": {
    "sent": "8932c175bbdec1fb38edc4f06d95a0e4b34d05a5dd6df6250fe59da476a954b5"
   },
   "spill-names-sheet-global": {
-   "sent": "0efd80b5badbb42537c13637c9158a1bb9e964cd2f825e64e3f17ea8d67be499"
+   "sent": "7596c7c7ba642e59865c6c4bdc5e3518f22ef4a04a9a53bb87737e75444861fe"
   },
   "spill-names-lost": {
-   "sent": "f678b94ac241f95cfef9aec6eb6abf57fe0d33bb78ae73d7e277868a5d0c77ef"
+   "sent": "5c5c0f224e3c9bb80a3357e715e6e6bfc3c48f2bbb714fb897bd033098f65605"
   },
   "spill-names-unknown-function": {
    "sent": "3632d24ab4bbdcb00e81ae63f384170a8e416c4cf27a744d83aa8b0d5e8d0eec"
   },
   "spill-names-chain": {
-   "sent": "07f9488d965db2839f83a10efb17512706641001898f1a58f2c1f7a1c3ff6411"
+   "sent": "2871c7a2b864007de59e5f754e67968290453f9d9512ebe551980d92a0eb59b0"
   },
   "tables-refs-parts": {
-   "sent": "fab7c8819edbe155ada25d55f51d3b7165ea1231a4726eb0695e80462c604fe7"
+   "sent": "05304255dff202caa04a4b2b175487369df54b384c79199c78b93a4278ac315e"
   },
   "tables-refs-this-row": {
-   "sent": "ca0eedf5c8d9b63523af3dc2033a0863850746dccc9c7e6a3ac7e5a578ba11b4"
+   "sent": "1cf9f0e3ba0affb0f5ca3a50a78d97434b6753b3af914873ab8502ee268c5aed"
   },
   "tables-refs-inside": {
-   "sent": "135dca33e528f05baeb16084138ce7411123a2d8d2d166fcacec14e4ce632427"
+   "sent": "c85d4343f213829bc25ee802e9a5d6fef5f385180a141ae7fbd3de422218376b"
   },
   "tables-refs-no-headers": {
-   "sent": "ca547e6fdaf5bfe9c89bf5ae369a0b641e94e929ca95fc14032c4f422d750ca9"
+   "sent": "9d8629f05fdcdc9efd419dc2f386e183f2590cc3c44b69e5db683fcc9081f3dd"
   },
   "tables-refs-totals": {
-   "sent": "99910b0a263287e26ad48c6da2b31647328b8da1b31fdd102b33fe1a05142f4f"
+   "sent": "7c73384c6e71c6c0094d9b25a209de3442271759b5b2fbb4923699df158f09a6"
   },
   "tables-refs-escapes": {
-   "sent": "155a7107dcd1eb9f3ffcd7c676ac4f7b3ccb1ae714c453783dd0f95a7d78a2ce"
+   "sent": "bea722ff69a983e1fc4cf6895892b493c02729c0fa92472d850e2bc770bcd1f2"
   },
   "tables-refs-names": {
-   "sent": "06b157f49b434f8a895a0b7ae07f9c6be0e10b050c80a70bb6892094625c4bb3"
+   "sent": "6b88801c64c74885b20e643a9638b96d7c7db931ffc5bd0bc506d157cb7d0935"
   },
   "tables-refs-spill": {
-   "sent": "181ff7b1ceccd26ebaa8e49093070a0168b12fc240576cc5477063daf263079f"
+   "sent": "28bc9342c37643006b3e48e0d317b6732c2cabb969aac374ba086e938151be5b"
   },
   "tables-refs-held-offset": {
-   "sent": "7031b1dd05acc150d745f515afa6dc4244802634d702db661e0b2aa716b6dcb3"
+   "sent": "0cfcd0e0590aef75e2401ddbe0326e1c90f091c86c1bddd865cbed018e3e943b"
   },
   "tables-refs-held-totals-row": {
-   "sent": "5f5f025ecc622b62bf6e52f499f679b3256b9405823bdd289de99b3cc74a5559"
+   "sent": "c501b0d68890a8d825867a1b21561db4ba2eb9fcc468521171431c9912b105d4"
   },
   "tables-refs-held-escapes": {
-   "sent": "d2b28f720894585823ea7268bd888cc585f77440d37a48cbbd3a8c76039618ac"
+   "sent": "f45ff6b03cee660c9d18c39934639f0c83dd5a3af78996a2e2f13520b41718bc"
   },
   "tables-refs-held-names": {
    "sent": "17737c2ee36f16ac6c3e5cbd08e9b4e2195e78d5f4684fd41beb1f51e7a6b31b"
   },
   "tables-refs-held-arrays": {
-   "sent": "ef621ffecf9dbddfc0e37c5a6879724674534082bfddd9d3287d6cfb87c36aad"
+   "sent": "6af24f2b87d20cee56248b1fd2785a16c8b83b68326407153b491bdb954120aa"
   },
   "tables-ops-ins-inside": {
-   "sent": "f1c10821b5b9720ef42f91edf04bd0800829fed95a9c612c4edfc60916c6ace6"
+   "sent": "61a2f8e0731218461e407b166278139651813e739f5d5d04204b2ff7aec3f01d"
   },
   "tables-ops-ins-totals": {
-   "sent": "f5a118684bd1d2ca895065bbf91d818b253269055802728578a5305a33c66c87"
+   "sent": "3411e08510cf05261c2ec12d2c2341c8ffdd0c0a1c3fb515a89d11c79cfc9ba7"
   },
   "tables-ops-ins-no-header": {
-   "sent": "05f7f089fbf9dca57907e6b4c2f18f1edcfd0d7d061f26c3376ae0da1e5af8e5"
+   "sent": "e617b106f7b34d3ba5fe8570c5932dab4fe17c9847d842d5fdb7a0898886a7d5"
   },
   "tables-ops-ins-two": {
-   "sent": "66ca35ca35ee413cdd0958b9aa8d0ecd14f25157d0265b11aa9f56f147b3575c"
+   "sent": "4d7fb444082a190aa047d93d9f4b29ac54fbfbadd39545249c128bc965ddf559"
   },
   "tables-ops-ins-grow-move": {
-   "sent": "0bbfe7eefff48d086539d34fe4912c3495b6785275ca145b1ed6885ec94dc188"
+   "sent": "708a439c116b8c1b83d3ecdc219d78d29550f06bd4f8fd5f1025bb1160484936"
   },
   "tables-ops-ins-below": {
-   "sent": "8d28e29be77d113ba8181c5f0b315d4784c17b995bcb87152faef9605346c7e4"
+   "sent": "42862dd4c251f3ce5a85dc4a1b38294c7bef5b785836bca8f2c4ce1acff919f1"
   },
   "tables-ops-insc-taken": {
-   "sent": "05808cce67c6841ff5567bd1f37a0e28a3f68e8b0b143cbf6ca3ff8f82f30d6a"
+   "sent": "2cc277ed5878cb5af4b1392024f42408ba93f6d3033126d78e3745caca42e1b9"
   },
   "tables-ops-held-ins-other-header": {
-   "sent": "e204cccdfc263f24986f5bcfa41cdeaba4932ba9a0bfa28a53b08f934ca2066b"
+   "sent": "8e2337974c4caadfc0f619f55df775859ee48a9c5158c56b3ec716f3ff83dcd6"
   },
   "tables-ops-held-ins-past-other": {
-   "sent": "89859aceda480595d79969565db3d389eaaacc67737a2fb832da19e7226e0dab"
+   "sent": "e56bf1526f6efe82133599615c5db02616e840c35ff97f693b8501deb647486f"
   },
   "tables-ops-held-del-only-row": {
-   "sent": "454b8aa81dc349bd675219ce65adce45373426f089ef38cde0b6b4f0b1de3475"
+   "sent": "3c70b76e579c8330158cb7ced47b748b420566564d2ec5d5d6f8f94090c2e140"
   },
   "tables-ops-held-del-data-totals-all": {
-   "sent": "7116d1c120164ada15481d64f73d7a5518d3027d7295e0b45d30723f8d0d7f80"
+   "sent": "2b9adb238e96c81ca19cb8866b58bbf1f7dd5acb55db3a0121c60c75e9b7b0f0"
   },
   "tables-ops-held-del-first-rows": {
-   "sent": "f80a5f32e42f3707f71972e72c5d2bab6ce93c939d83e29a19fc9a52a18d523b"
+   "sent": "2d147aa38ae57f38e952f920bec93272cf6fff5c2be7cfa528d0ee5648f82722"
   },
   "tables-ops-held-move-to-table": {
-   "sent": "d07f74120b5117c58f28e1d03222d53e5c245a509812c61d8d5821cfab35151c"
+   "sent": "22c058071dd270a4b6535ed819846ce307d8b4758e4799013f07ed4ca7e21733"
   },
   "tables-ops-held-rename-name": {
-   "sent": "5c7116c993cad837217489f40702e845eb6073d4181a1dc75541fc8b1338f204"
+   "sent": "f4402ceb2b0e3680c411800401bc06c77d10a1be668598526c854d6f34be536b"
   },
   "tables-ops-held-head-dup-three": {
-   "sent": "fb0ae4705ed646bd9c978411a2afe179ab26fff5a2a4a1f8fb64e62887f940f6"
+   "sent": "f6efcc091a56e0858ae3b5e37bade556d6124d99d59a9a595ec75b932f4549fa"
   },
   "tables-ops-held-convert-names": {
-   "sent": "a71cf27c14c135ad67fe4d7f65890b9a7377b24c3a19a232690ebec6270cf451"
+   "sent": "5e624c2fb45be0a48024458ed5634ea50dc778a683a8a85e5b1e9aa47627a9d5"
   },
   "hidden": {
-   "sent": "45c05cee2ae317fa5907906241f4e2a10d252230e65694954f4e4a2cbfb0f986"
+   "sent": "391860a2c9a2d026b840b68cb748bb067c235112c7b72464f697030dc7b73ce2"
   },
   "zero-sizes": {
-   "sent": "ed47692ed019cffceee8e5f9274bf50bc22b3ec614ddd328f88a1fb518b7e8c9"
+   "sent": "e349ac5685ceecdd1c460d1fcad87fa03a016cbf4689b8e68b483ab9a885ccbf"
   },
   "filtered": {
-   "sent": "7493830cd31cc58a1b77a52cd95c9595591fa0237d99ac972c3c9c99b3887cf6"
+   "sent": "4a712056f37e410126b829899ab321b2b17184b584cf5e5ba3399d6d20cf3c61"
   },
   "filtered-table": {
-   "sent": "8917d85681cb41d22ad9987a48fbf792fef0c02cf82cf214bf4b8f7dd25ff70d"
+   "sent": "0ed94e74f7a69515a409d070dae2349770ac59e1b53fdc47bccd855452d00eea"
   },
   "date1904": {
-   "sent": "eaf22020abc789f037f922dcb2bb5c22a8269852ca84d2952be80e6f84c182a8"
+   "sent": "42d0bec4f965e2420a39072b2d7218a9f3cc001bdf918b252bac9e3f57251283"
   },
   "iteration": {
-   "sent": "1a7686ad4c681d783494b5aa064f391b6804b16c78f56f6e5f94f6e9fdaacc8b"
+   "sent": "23b59f23c02c1e1efd6bc74275efdf6f8528b9a29e7af25780a0d050800d3394"
   },
   "iteration-default": {
-   "sent": "6bd34c9334570c9e1f2707390caf0b3de59a0de01e88eeb768d43202c2ba22c1"
+   "sent": "72fbdc7c9f50d93fb159b4aff410e5aa5bbfa4f65c45f4a2583ab8f040364061"
   },
   "builtin": {
    "sent": "a3d3c4e36a903250f728528026189150abeb972303fe80c7d82229f1a8504212"
@@ -549,16 +550,16 @@
    "sent": "b7be4a852a552d8857e6c37d85d50746f55b8053ae5f71ca3832a6d1dbf82180"
   },
   "lost-sheet": {
-   "sent": "0e66d04d4dee2579afb23f0411efd78a6c15ceeafd9c9464beb5af1c2d52ddd0"
+   "sent": "128f6457ba7c926ff69de5d031ff9ae05a45c71728b4e47027cf11d5b0144029"
   },
   "autofilter": {
-   "sent": "08f64b1572f9a7713ee0a8e9051a7d110561ba252222ee977e7216027c23a14a"
+   "sent": "06254627c08f3a4c7f5c2b5ccf90cf56b1aeec56f12c479ad70314eb6a18a2f7"
   },
   "autofilter-filtered": {
-   "sent": "8d1c32647140f05862543143a054e98e231ac2627b155ad6c853e564d9b14b70"
+   "sent": "bc8ad8040e0b8a9a321e9085439a5c684607926f417181931b37896fd40578f9"
   },
   "lambdas": {
-   "sent": "d6b1791a4f07d432ef3b49115746d75bcc3346e29d9fe97377d8a7a66bcae608"
+   "sent": "28d49e8ba3e511702bc7763df03f01af5862fff07ef6dea705162bc445a9c251"
   }
  }
 }

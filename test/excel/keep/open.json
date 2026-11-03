@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 20.5,
+  "seconds": 7.4,
   "date": "2026-11-03"
  },
  "cases": {
@@ -876,7 +876,7 @@
    }
   },
   "chart-links": {
-   "sent": "17f155c83408bc3cef1d7c4fe92a708723b50313590e60512b46f58eb6a600cc",
+   "sent": "d8c89df8b0db51f83fd20026e71f409afd3f9b74ba8955264fc8e5ab19f70da0",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -905,7 +905,7 @@
    }
   },
   "picture-links": {
-   "sent": "93b978f9e1d49fcb5bd3e6964cae9a189094389b0da39bdf671f3d5f46d1eea6",
+   "sent": "c07a0232be1cb1f94bf1165ac7372863a96cb7c84f2d71d9fb4af656fc029557",
    "written": {
     "charts": 0,
     "chartsheets": 0,
@@ -934,7 +934,7 @@
    }
   },
   "pivot-links": {
-   "sent": "2d97fe5c9fddb5160badeab7f3bf45de172c11c5daeeb296dfdb5f56a9f94bb5",
+   "sent": "a7f2b6cc03c4257d8416495dabe838d696244e53b06f6b03274bb6b7b5903a8e",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -963,7 +963,7 @@
    }
   },
   "print-links": {
-   "sent": "5f69abaa3aee09d0d90f90f86d6036ad609499237ee983b2150bbc281db3f3ca",
+   "sent": "f95b5d022f230b43f6b7b59d1994c803a62b1afe8d953e05b2a05ee3966af622",
    "written": {
     "charts": 1,
     "chartsheets": 0,
@@ -992,7 +992,7 @@
    }
   },
   "chartsheet-links": {
-   "sent": "ad31df3dbbaeed28b8ccffd795d69c05794cfc48e8887bc1987970f6bdc0ac33",
+   "sent": "6d44d44596fcff203e645d0722cfa71f8730b5a09888c2121715bb24f579a256",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -1021,7 +1021,7 @@
    }
   },
   "all-links": {
-   "sent": "a59e807fa2957dd577265ae94d8df231aaca1859fe64f7aa439387b47f208135",
+   "sent": "3667c9b38a3cd3c9996adc327db2ab1bd74c2fd7c29bdcb35eb79f3b8fbfdc76",
    "written": {
     "charts": 2,
     "chartsheets": 1,
@@ -1267,7 +1267,7 @@
    }
   },
   "criteria-links": {
-   "sent": "fe5d6fe16d2842b712e2ce1d0a8989d7d4c24be30f8bd5144e1d3bcb39d13b2d",
+   "sent": "197b6ebd86f45780287948982c5095a02ed7f48174dbdba9e34c7dd16a56ef0b",
    "written": {
     "charts": 0,
     "chartsheets": 0,

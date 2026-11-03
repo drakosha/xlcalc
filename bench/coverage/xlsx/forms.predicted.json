@@ -1,0 +1,176 @@
+{
+ "E1": {
+  "form": "old",
+  "text": "A1*B1"
+ },
+ "E2": {
+  "form": "old",
+  "text": "SUM(A1:A5)"
+ },
+ "E3": {
+  "form": "old",
+  "text": "A1:A5*2"
+ },
+ "E4": {
+  "form": "dynamic",
+  "text": "_xlfn.SINGLE(A4)+1",
+  "ref": "E4"
+ },
+ "E5": {
+  "form": "old",
+  "text": "VLOOKUP(3,A1:B5,2,FALSE)"
+ },
+ "E6": {
+  "form": "dynamic",
+  "text": "SUM(IF(A1:A5>2,B1:B5,0))",
+  "ref": "E6"
+ },
+ "E7": {
+  "form": "old",
+  "text": "SUMPRODUCT(A1:A5,B1:B5)"
+ },
+ "E8": {
+  "form": "old",
+  "text": "SUMPRODUCT((A1:A5>2)*B1:B5)"
+ },
+ "E9": {
+  "form": "dynamic",
+  "text": "MAX(A1:A5*B1:B5)",
+  "ref": "E9"
+ },
+ "E10": {
+  "form": "old",
+  "text": "SUM(INDEX(A1:B5,0,1))"
+ },
+ "E11": {
+  "form": "old",
+  "text": "MAX(INDEX(A1:A5*B1:B5,0))"
+ },
+ "E12": {
+  "form": "dynamic",
+  "text": "SUM(ROW(A1:A3))",
+  "ref": "E12"
+ },
+ "E13": {
+  "form": "old",
+  "text": "COUNTIF(A1:A5,\">2\")"
+ },
+ "E14": {
+  "form": "old",
+  "text": "SUMIFS(B1:B5,A1:A5,\">2\")"
+ },
+ "E15": {
+  "form": "dynamic",
+  "text": "INDEX(B1:B5,MATCH(3,A1:A5,0))",
+  "ref": "E15"
+ },
+ "E16": {
+  "form": "old",
+  "text": "_xlfn.LET(_xlpm.x,A1,_xlpm.x*2)"
+ },
+ "E17": {
+  "form": "old",
+  "text": "_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)(A2)"
+ },
+ "E18": {
+  "form": "old",
+  "text": "_xlfn.XLOOKUP(3,A1:A5,B1:B5)"
+ },
+ "E19": {
+  "form": "old",
+  "text": "_xlfn.TEXTJOIN(\",\",TRUE,C1:C3)"
+ },
+ "E20": {
+  "form": "old",
+  "text": "SUM(_xlfn._xlws.FILTER(A1:A5,A1:A5>2))"
+ },
+ "E21": {
+  "form": "old",
+  "text": "_xlfn.CONCAT(C1:C3)"
+ },
+ "E22": {
+  "form": "old",
+  "text": "INDEX(A1:B5,0,1)"
+ },
+ "E23": {
+  "form": "old",
+  "text": "IF(A1>0,\"y\",\"n\")"
+ },
+ "E24": {
+  "form": "old",
+  "text": "A1&\"x\""
+ },
+ "E25": {
+  "form": "old",
+  "text": "_xlfn.LET(_xlpm.r,A1:A5,SUM(_xlpm.r))"
+ },
+ "E26": {
+  "form": "dynamic",
+  "text": "AND(A1:A5>0)",
+  "ref": "E26"
+ },
+ "E27": {
+  "form": "old",
+  "text": "ROWS(A1:A5)"
+ },
+ "E28": {
+  "form": "dynamic",
+  "text": "SUM(A1:A5*1)",
+  "ref": "E28"
+ },
+ "E29": {
+  "form": "dynamic",
+  "text": "_xlfn.XLOOKUP(3,A1:A5,A1:B5)",
+  "ref": "E29:F29"
+ },
+ "G1": {
+  "form": "dynamic",
+  "text": "_xlfn.SEQUENCE(3)",
+  "ref": "G1:G3"
+ },
+ "H1": {
+  "form": "dynamic",
+  "text": "A1:A3*2",
+  "ref": "H1:H3"
+ },
+ "I1": {
+  "form": "dynamic",
+  "text": "_xlfn._xlws.FILTER(A1:A5,A1:A5>2)",
+  "ref": "I1:I3"
+ },
+ "J1": {
+  "form": "dynamic",
+  "text": "INDEX(A1:B5,0,1)",
+  "ref": "J1:J5"
+ },
+ "K1": {
+  "form": "dynamic",
+  "text": "ROW(A1:A3)",
+  "ref": "K1:K3"
+ },
+ "L1": {
+  "form": "old",
+  "text": "A1*B1"
+ },
+ "L2": {
+  "form": "old"
+ },
+ "L3": {
+  "form": "old"
+ },
+ "M1": {
+  "form": "dynamic",
+  "text": "SUM(IF(A1:A5>A1,1,0))",
+  "ref": "M1"
+ },
+ "M2": {
+  "form": "dynamic",
+  "text": "SUM(IF(A2:A6>A2,1,0))",
+  "ref": "M2"
+ },
+ "M3": {
+  "form": "dynamic",
+  "text": "SUM(IF(A3:A7>A3,1,0))",
+  "ref": "M3"
+ }
+}

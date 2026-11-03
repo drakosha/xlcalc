@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 18.7
+  "seconds": 18.7,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 18 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "refs": {
@@ -438,24 +439,24 @@
   }
  ],
  "sent": {
-  "refs-out-transposed": "d5fe50948432162a7714cec2a845fe2a84ce5359504286087d4b2708c1addb83",
-  "refs-out-all-transposed": "d5fe50948432162a7714cec2a845fe2a84ce5359504286087d4b2708c1addb83",
-  "tiled-transposed": "d5fe50948432162a7714cec2a845fe2a84ce5359504286087d4b2708c1addb83",
-  "merged-part-all": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "merged-part-wide-all": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "merged-same-values": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "merged-inside-values": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "merged-inside-formats": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "formats-over-note": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "values-over-note": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "formats-on-array-part": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "values-on-array-part": "b549a83eff665a9189212cafb97be8b6314042020cf0a1599e40743142808a49",
-  "column-formats": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190",
-  "column-values": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190",
-  "validation-tiled": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190",
-  "table-values": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190",
-  "table-formulas": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190",
-  "table-formats": "c7d3c24c85e0bdfed1004448c5e3fde61958597199144a39d78c935ccd1e6190"
+  "refs-out-transposed": "6ec253d2b2b17ff0290887cd49362f0dc4d86b7cabff8cf3fd95c3cd90e91f4e",
+  "refs-out-all-transposed": "6ec253d2b2b17ff0290887cd49362f0dc4d86b7cabff8cf3fd95c3cd90e91f4e",
+  "tiled-transposed": "6ec253d2b2b17ff0290887cd49362f0dc4d86b7cabff8cf3fd95c3cd90e91f4e",
+  "merged-part-all": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "merged-part-wide-all": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "merged-same-values": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "merged-inside-values": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "merged-inside-formats": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "formats-over-note": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "values-over-note": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "formats-on-array-part": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "values-on-array-part": "8bc091c1efb6050abea1a8cff84b4376567374c3d836104966b5b11335d4e56a",
+  "column-formats": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73",
+  "column-values": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73",
+  "validation-tiled": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73",
+  "table-values": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73",
+  "table-formulas": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73",
+  "table-formats": "140d6f0044117f9608f26c540ffb8ff3a2a5175b928c38be2f69afa5a7d7dc73"
  },
  "answers": {
   "refs-out-transposed": {},

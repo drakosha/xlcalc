@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.3",
   "locale": "en-US",
-  "seconds": 12.6
+  "seconds": 12.6,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 8 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "held": {
@@ -173,14 +174,14 @@
   }
  ],
  "sent": {
-  "tiled-over-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "transposed-onto-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "skip-onto-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "last-cell-alone": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "other-sheet-one-cell": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "beside-array": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "array-onto-plain": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4",
-  "array-formulas-onto-plain": "5dd3e11a05cfb792b7c70fc87c7834cb41abf3e9eb71c32d167ad190ec4459e4"
+  "tiled-over-one-cell": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "transposed-onto-one-cell": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "skip-onto-one-cell": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "last-cell-alone": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "other-sheet-one-cell": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "beside-array": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "array-onto-plain": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b",
+  "array-formulas-onto-plain": "916dc62284cd09c86e29c3a32fdbfbb0d6fe23b3625eb332ad415e235eabf24b"
  },
  "answers": {
   "tiled-over-one-cell": {},

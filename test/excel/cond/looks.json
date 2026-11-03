@@ -2,8 +2,9 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "day": "2026-10-10",
-  "seconds": 62.4
+  "day": "2026-11-03",
+  "seconds": 62.4,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but for TODAY(), which the day of this run gives"
  },
  "books": {
   "cellIs": {
@@ -3312,12 +3313,12 @@
   }
  ],
  "sent": {
-  "cell-is": "3b63a0e5d89107bf5539b755d29e0eb9815e2c83234c18522591f8d0bb274c7e",
+  "cell-is": "a4527a16183f7c4b1edfc3928457e1ec41a7319561db36f19487a3eb8e199eb1",
   "expression": "bff70445d603699876ff0778daacb8273be74217e98426666d5a5501893f8d85",
-  "text": "a15c580fbb439a1a9ca33c8d12ed3090b73893509cd3f37dc8fdeb896451f2c0",
-  "period": "5dc379f73d2013028e4c0ab69f6373f472ed2e0629ddafa33a4ddf976ec785f7",
-  "top": "f25f149eccc77d07080612fcb4e530bba44e6ac30565a85f2f8392267ead71c8",
-  "scale": "62ab327c4dfa9301edefcc948bf574a68de849fb56845d23282e95d0088d2023",
+  "text": "249a77a2842c01a491f779ffa73ced8aed581dd82e1c564ef63df87e21c1c4ac",
+  "period": "ac6a54926beeaf78f36df365f6e90db0184845f1f508a99b2b54f00cb8563e3a",
+  "top": "73137a933db9e65abbc6596e2c119aede0914a8b940ea5a6eba0d7dacf23d916",
+  "scale": "04ebd2affee0392bd8beb175ff25ab07a1862c3c2d7377b2e80ca433a2aec139",
   "priority": "186726b27f2c52a31b93367fca9c3b907ecc83c6dcaea5e04fde7fd13fa1b8d2"
  },
  "answers": {
@@ -5247,630 +5248,630 @@
    "looks": {
     "S": {
      "B1": {
-      "text": "46305",
+      "text": "46329",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "C1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E1": {
-      "text": "46305",
+      "text": "46329",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "F1": {
-      "text": "46305",
+      "text": "46329",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "G1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I1": {
-      "text": "46305",
+      "text": "46329",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "J1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "K1": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C2": {
-      "text": "46304",
+      "text": "46328",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "D2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E2": {
-      "text": "46304",
+      "text": "46328",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "F2": {
-      "text": "46304",
+      "text": "46328",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "G2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I2": {
-      "text": "46304",
+      "text": "46328",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "J2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "K2": {
-      "text": "46304",
+      "text": "46328",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D3": {
-      "text": "46306",
+      "text": "46330",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "E3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "F3": {
-      "text": "46306",
-      "fill": null,
-      "font": "#000000",
+      "text": "46330",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "G3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H3": {
-      "text": "46306",
-      "fill": "#FFC7CE",
-      "font": "#9C0006",
+      "text": "46330",
+      "fill": null,
+      "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I3": {
-      "text": "46306",
+      "text": "46330",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "J3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "K3": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E4": {
-      "text": "46299",
+      "text": "46323",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "F4": {
-      "text": "46299",
-      "fill": "#FFC7CE",
-      "font": "#9C0006",
-      "bold": false,
-      "italic": false
-     },
-     "G4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
+     "G4": {
+      "text": "46323",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
      "H4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I4": {
-      "text": "46299",
-      "fill": "#FFC7CE",
-      "font": "#9C0006",
-      "bold": false,
-      "italic": false
-     },
-     "J4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
+     "J4": {
+      "text": "46323",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
      "K4": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "F5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "G5": {
-      "text": "46298",
+      "text": "46322",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "H5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I5": {
-      "text": "46298",
-      "fill": "#FFC7CE",
-      "font": "#9C0006",
-      "bold": false,
-      "italic": false
-     },
-     "J5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
+     "J5": {
+      "text": "46322",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
      "K5": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E6": {
-      "text": "46298",
-      "fill": null,
-      "font": "#000000",
+      "text": "46326",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "F6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "G6": {
-      "text": "46298",
+      "text": "46326",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "H6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I6": {
-      "text": "46298",
-      "fill": "#FFC7CE",
-      "font": "#9C0006",
-      "bold": false,
-      "italic": false
-     },
-     "J6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
+     "J6": {
+      "text": "46326",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
      "K6": {
-      "text": "46298",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "F7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "G7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "J7": {
-      "text": "46275",
+      "text": "46298",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "K7": {
-      "text": "46275",
+      "text": "46298",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "B8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "C8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "F8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "G8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "J8": {
-      "text": "46336",
+      "text": "46359",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "K8": {
-      "text": "46336",
+      "text": "46359",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "B9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "C9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "D9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "E9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "F9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "G9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "H9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "I9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": false,
       "italic": false
      },
      "J9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,
       "italic": false
      },
      "K9": {
-      "text": "46305.5",
+      "text": "46329.5",
       "fill": null,
       "font": "#000000",
       "bold": false,

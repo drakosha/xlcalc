@@ -3,7 +3,8 @@
   "version": "16.114.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "date": "2026-10-29",
-  "seconds": 39.6
+  "seconds": 39.6,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 3 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -495,15 +496,15 @@
   "named": "711e331d54c7d40e5c378cbf43ad08b979da240d9a1a305bb9799c05cf958823",
   "named-long": "9c40c84416d46400d891fbe71007bcc3f9a8030683f84d0170e42f58a307058c",
   "empty-file": "feaed04a5f4602d63e186b19b3730bec7dd302c4388ccea7fa96283082cdf0c9",
-  "w-formats": "c6e958f0758bc409498d29059a0efd704521399ac076560061eab9d59115e9f8",
+  "w-formats": "04486b2cfd5e7e1c61dd65e33c90e1ca091333e0507630d25c83c91153ab4c70",
   "w-texts": "a5484d1f8e69f1546d7dfa197101d8d8f8343fb12a768a2651153acdbe4bd771",
   "w-wide": "9eda3ea8e93356dc28ab8b7855eb3f2d417cbaf4c419794db7070cee92ad67b9",
   "w-offset": "9c81f89850772f1353f030b8dda22b28709aa71b51097dd8d4868c604939eb8c",
   "w-short-rows": "5c320226e626bf8e79116c6062163b2f19ad5ecdc09a1e92665b67c24a888f83",
   "w-gap": "bfdcada1fb67daeadc59fc1e8cef891a63fb7128db210774151339609dda87cb",
   "w-formatted": "91c63693ce15d83e1cb2704c77cd7244e60741d2e8742e593c1504bd6b3ef065",
-  "w-sheets": "6a862397ae75abdbca5aa7d36b74eaf486968d8947e4d0afbbc8bb82489dd482",
-  "w-array": "8c148030dcc98591d6c786c658780990563aa9d9b8d73ee2a66a5e5aff00d98e",
+  "w-sheets": "9e52d0fe4352af7a385edcf834a7e2e953416522506fba74964c1cbdc60edfc3",
+  "w-array": "8423ed2f31dc2aa9bbf299acfe627c2da70ccc728f4f519da6ae83d5c65c778f",
   "w-unicode": "1cbcadfbd9bbbc8135b16f3f550e9966b029acf2b662ca8a3c5f19d107984f48",
   "w-empty": "ad86dacda862f250101e28543a4a3b75211ab8e0f85e8cf40595b7a804d65582"
  },

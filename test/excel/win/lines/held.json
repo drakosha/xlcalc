@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 37.5
+  "seconds": 37.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 4 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "grid": {
@@ -335,10 +336,10 @@
   }
  ],
  "sent": {
-  "written": "1b7526f2a01927336d3ef637c20becb612e643328dd2baac0bdd61d1bcb803fa",
-  "bare": "00248dd477ad8e2387282e2faa5f092234e1aba8ee3adbbe7dec87edf0832fd8",
-  "typed": "1b7526f2a01927336d3ef637c20becb612e643328dd2baac0bdd61d1bcb803fa",
-  "bare-typed": "00248dd477ad8e2387282e2faa5f092234e1aba8ee3adbbe7dec87edf0832fd8",
+  "written": "e471c5b5f390ae7231ae577e9691711ef0111eff4c8281ca9aa43152d078aaed",
+  "bare": "ecf44d80e95e7b24f123b2bf56909c27e3f893c32d66253d93c74fe2a58a8b73",
+  "typed": "e471c5b5f390ae7231ae577e9691711ef0111eff4c8281ca9aa43152d078aaed",
+  "bare-typed": "ecf44d80e95e7b24f123b2bf56909c27e3f893c32d66253d93c74fe2a58a8b73",
   "excel-fill-format": "877a8def645e5a7cbf69f37da477b0ec0acba1da4e13ab3555c50c288d055a6b",
   "excel-italic-fill": "877a8def645e5a7cbf69f37da477b0ec0acba1da4e13ab3555c50c288d055a6b"
  },

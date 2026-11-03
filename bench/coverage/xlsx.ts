@@ -9,7 +9,8 @@
  * `test/excel/xlsx/colors.json`. `xlsx formats`: the codes Excel en-US shows for the built-in number formats
  * (`xlsx/formats.ts`) into `test/excel/xlsx/formats.json`. `xlsx intersect`: formulas of the old kind computed and saved by Excel
  * (`xlsx/intersect.ts`) into `test/excel/xlsx/intersect/`. `xlsx filters`: files with filters in each form a file holds
- * them (`xlsx/filters.ts`) computed and saved by Excel into `test/excel/xlsx/filters/`.
+ * them (`xlsx/filters.ts`) computed and saved by Excel into `test/excel/xlsx/filters/`. `xlsx forms`: formulas of each
+ * kind typed into a book of values (`xlsx/forms.ts`), saved by Excel into `test/excel/xlsx/forms/`.
  * `test/excel/xlsx/<step>.json` records what was sent (a hash per book), so a run sends again only the books that
  * changed (`FCOV_FRESH=1` sends all); `FXLSX_ONLY=id,id` limits a run.
  */
@@ -28,6 +29,7 @@ import { compareBooks, compareCached, entries } from './xlsx/compare.js'
 import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
 import { FILTER_FILES, filterFile } from './xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
+import { FORM_CASES, FORM_CELLS, FORMS_BOOK, FORMS_PREDICTED, formsBook, savedForms, SHOWN_PREDICTED, type FormSaved } from './xlsx/forms.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 import { partsHash } from './xlsx/sent.js'
 import { loadStored, secondsSince, setModule, writeAnswers } from './stored.js'
@@ -43,6 +45,8 @@ export interface Sent {
   sent: string
   /** The repair window's text when Excel refused the file. */
   rejected?: string
+  /** The formulas Excel showed (`formula2`) in the cells the step reads, by address. */
+  shown?: Record<string, string>
 }
 
 export interface StoredRun {
@@ -55,7 +59,7 @@ const sha = (x: Uint8Array | string) => createHash('sha256').update(x).digest('h
 const load = (step: string): StoredRun => loadStored<StoredRun>(join(DATA, `${step}.json`)) ?? { meta: {}, books: {} }
 
 /** Sends the books that changed through Excel in each book's locale (a tag), storing what Excel saved under `dir`. */
-async function send(step: string, books: { id: string; locale: string; bytes: () => Promise<Uint8Array>; hash: string }[], report: (id: string, saved: Uint8Array) => Promise<string>) {
+async function send(step: string, books: { id: string; locale: string; bytes: () => Promise<Uint8Array>; hash: string; enter?: [string, string][]; shown?: string[] }[], report: (id: string, saved: Uint8Array, shown?: Record<string, string>) => Promise<string>) {
   const run = load(step)
   const dir = join(DATA, step)
   mkdirSync(dir, { recursive: true })
@@ -78,14 +82,14 @@ async function send(step: string, books: { id: string; locale: string; bytes: ()
     for (const b of todo) {
       const bytes = await b.bytes()
       writeFileSync(join(OUT, `${step}-${b.id}.xlsx`), bytes)
-      const r = await saveThroughExcel(bytes, b.id)
+      const r = await saveThroughExcel(bytes, b.id, b.enter, b.shown)
       if ('rejected' in r) {
         run.books[b.id] = { sent: b.hash, rejected: r.rejected }
         console.log(`${b.id}: Excel refused the file: ${r.rejected}`)
       } else {
         writeFileSync(join(dir, `${b.id}.xlsx`), r.saved)
-        run.books[b.id] = { sent: b.hash }
-        console.log(`${b.id}: saved, ${await report(b.id, r.saved)}`)
+        run.books[b.id] = { sent: b.hash, ...(r.shown ? { shown: r.shown } : {}) }
+        console.log(`${b.id}: saved, ${await report(b.id, r.saved, r.shown)}`)
       }
       save()
     }
@@ -163,6 +167,34 @@ async function intersect() {
   await send('intersect', [{ id: 'old-formulas', locale: 'en-US', bytes: async () => data, hash: await partsHash(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
 }
 
+/**
+ * The typed formulas (`forms`); the file Excel saved of them opened again (`reopened`), and the book of the same
+ * formulas as `writeXlsx` writes it (`written`), each cell's formula as Excel shows it read.
+ */
+async function forms() {
+  const { data } = await writeXlsx({ book: FORMS_BOOK })
+  const enter = FORM_CASES.map((c): [string, string] => [c.range, c.formula])
+  const predicted = JSON.parse(readFileSync(FORMS_PREDICTED, 'utf8')) as Record<string, FormSaved>
+  const own = join(DATA, 'forms/forms.xlsx')
+  const shownBook = async (id: string, bytes: Uint8Array) => ({ id, locale: 'en-US', bytes: async () => bytes, hash: await partsHash(bytes), shown: FORM_CELLS })
+  const book = formsBook()
+  const books = [
+    { id: 'forms', locale: 'en-US', bytes: async () => data, hash: sha(`${await partsHash(data)}${JSON.stringify(enter)}`), enter },
+    ...(existsSync(own) ? [await shownBook('reopened', new Uint8Array(readFileSync(own)))] : []),
+    await shownBook('written', (await writeXlsx({ book, result: compute(book) })).data),
+  ]
+  const shownPredicted = JSON.parse(readFileSync(SHOWN_PREDICTED, 'utf8')) as Record<string, Record<string, string>>
+  await send('forms', books, async (id, saved, shown = {}) => {
+    if (id !== 'forms') {
+      const misses = FORM_CELLS.filter((a) => shown[a] !== shownPredicted[id]?.[a])
+      return `${misses.length} of ${FORM_CELLS.length} formulas shown otherwise than predicted: ${misses.map((a) => `${a} ${shown[a]}`).join(', ')}`
+    }
+    const got = await savedForms(saved)
+    const misses = Object.keys(predicted).filter((a) => JSON.stringify(got[a]) !== JSON.stringify(predicted[a]))
+    return `${misses.length} of ${Object.keys(predicted).length} cells otherwise than predicted: ${misses.map((a) => `${a} ${JSON.stringify(got[a])}`).join(', ')}`
+  })
+}
+
 async function filters() {
   const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, locale: 'en-US', data: await filterFile(c) })))
   await send(
@@ -179,9 +211,10 @@ async function filters() {
 export async function stepXlsx(what: string | undefined): Promise<void> {
   if (what === 'roundtrip') await roundTrip()
   else if (what === 'filters') await filters()
+  else if (what === 'forms') await forms()
   else if (what === 'saved') await saved()
   else if (what === 'colors') await colors()
   else if (what === 'intersect') await intersect()
   else if (what === 'formats') await formats()
-  else throw new Error('xlsx: roundtrip | saved | filters | colors | formats | intersect')
+  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | formats | intersect')
 }

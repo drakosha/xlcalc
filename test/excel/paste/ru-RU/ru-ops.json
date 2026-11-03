@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.114.3",
   "locale": "ru-RU",
-  "seconds": 16.3
+  "seconds": 16.3,
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 10 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "ru": {
@@ -261,16 +262,16 @@
   }
  ],
  "sent": {
-  "formulas-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "formulas-subtract": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "formulas-multiply": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "formulas-divide": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "values-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "all-add": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "values-number-formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "values-add-formats": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c",
-  "formulas-number-formats-multiply": "ab1e8c9f93e9fd35be6c80e4aa38eb0846bd3b79632d6a8c3bc008e176fc887c"
+  "formulas-add": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "formulas-subtract": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "formulas-multiply": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "formulas-divide": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "values-add": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "all-add": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "values-number-formats": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "formats": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "values-add-formats": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c",
+  "formulas-number-formats-multiply": "9084851304787c8d98515c779aa7c5967f9b18b6381c69a944a1cd4661cf157c"
  },
  "answers": {
   "formulas-add": {

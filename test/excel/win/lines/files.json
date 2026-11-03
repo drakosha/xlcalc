@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 34.3
+  "seconds": 34.3,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 4 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "formatted": {
@@ -428,10 +429,10 @@
   }
  ],
  "sent": {
-  "written": "8b31c4eb8e175ac208b2fcdfd48bf4b10005c9e2daf5a44af883e0b163a0ad81",
-  "bare": "dec3347ce7492b3f3b599ad971ebd5827333b5bbfb000edad909f327ecd39709",
-  "typed-crossing": "dec3347ce7492b3f3b599ad971ebd5827333b5bbfb000edad909f327ecd39709",
-  "typed-written": "8b31c4eb8e175ac208b2fcdfd48bf4b10005c9e2daf5a44af883e0b163a0ad81",
+  "written": "e65489d35726dc0f783d47b391b5b00f7aa418688f6612f558b3fd23702f0ce8",
+  "bare": "451a78f8001851acf1fe4634bf5d6989530a24a22a70f01b188c94372cdf6489",
+  "typed-crossing": "451a78f8001851acf1fe4634bf5d6989530a24a22a70f01b188c94372cdf6489",
+  "typed-written": "e65489d35726dc0f783d47b391b5b00f7aa418688f6612f558b3fd23702f0ce8",
   "excel-column": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",
   "excel-row": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",
   "excel-column-row": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",

@@ -40,10 +40,7 @@ import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
 import { KeptStyles } from './styles.js'
 import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
-import { oldKind } from './kind.js'
-import { legacyConverter } from '../../legacy/convert.js'
 import { fileText } from '../write/formula.js'
-import { parseAddress } from '../../model.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, relType, rootOf, setAttrs, TYPE, type ContentTypes, type Placed } from './xml.js'
 
@@ -234,8 +231,6 @@ class Kept {
   /** The file's parts removed, by name in lower case. */
   private readonly gone = new Set<string>()
   private readonly pivots: KeptPivots
-  /** The book's formulas of the old kind read as dynamic ones, made once a formula is written anew. */
-  private legacy?: ReturnType<typeof legacyConverter>
 
   constructor(
     readonly src: Source,
@@ -298,6 +293,7 @@ class Kept {
       tableAt: w.tableAt(i),
       tableParts: [],
       epoch: w.epoch,
+      oldKind: w.oldKind,
       ...(w.filterTables[i] ? { filterTable: w.filterTables[i] } : {}),
       noteBlock: this.block,
       active: w.active === i,
@@ -347,7 +343,7 @@ class Kept {
       }
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}), oldKind: (addr, written) => this.oldKind(s1, addr, written, ctx) })
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
@@ -357,14 +353,6 @@ class Kept {
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
-  }
-
-  /** The `<f>` of the old kind of a formula of the book's sheet written anew, where Excel reads it as the workbook computes it (`kind.ts`). */
-  private oldKind(sheet: SheetInput, addr: string, written: string, ctx: SheetContext): string | undefined {
-    const c = sheet.cells[addr]
-    if (c?.formula === undefined || c.array !== undefined) return undefined
-    const { row, col } = parseAddress(addr)
-    return oldKind(c.formula, sheet.name, written, (this.legacy ??= legacyConverter(this.book.names)), (f) => fileText(f, ctx, ctx.tableAt(row, col)?.name))
   }
 
   /** The model's pieces of the file's sheet `k` as read. */

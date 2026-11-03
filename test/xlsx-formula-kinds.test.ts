@@ -42,8 +42,9 @@ describe('xlsx: names of any formula, @, references across sheets, old-kind arra
     expect(issues).toEqual([])
     const sheet = await part(data, 'xl/worksheets/sheet2.xml')
     expect(sheet).toContain('<c r="B1"><f t="array" ref="B1:B3">A1:A3*2</f><v>20</v></c><c r="C1"><f t="array" ref="C1">SUM(A1:A3*A1:A3)</f><v>1400</v></c>')
-    expect(sheet).toContain('<c r="D2" cm="1"><f t="array" ref="D2">_xlfn.SINGLE(A1:A3)+rate</f><v>20.5</v></c>')
-    expect(sheet).toContain(`<f t="array" ref="E1">SUM('Jan:Feb'!A1:A3)</f><v>66</v>`)
+    // the implicit intersection the old kind does itself: `@` in the book, none in the file
+    expect(sheet).toContain('<c r="D2"><f>A1:A3+rate</f><v>20.5</v></c>')
+    expect(sheet).toContain(`<f>SUM('Jan:Feb'!A1:A3)</f><v>66</v>`)
     expect(await part(data, 'xl/workbook.xml')).toContain(
       `<definedName name="rate">0.5</definedName><definedName name="twice">'Jan'!$A$1:$A$3*2</definedName><definedName name="both">'Jan'!$A$1:$A$2,'Jan'!$A$3</definedName><definedName name="left">'Feb'!XFD1</definedName>`,
     )

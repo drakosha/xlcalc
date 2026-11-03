@@ -2,9 +2,10 @@
  "meta": {
   "version": "16.114.3",
   "platform": "Mac",
-  "locale": "en-US"
+  "locale": "en-US",
+  "rerun": "Excel 16.114.3 for Mac, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
- "sent": "9e8522e4469e886cb8d9b85adb5627660a63e0eed9e08450369f9161ddd1ded0",
+ "sent": "4972f4773df8bd324b1682bdff04ab2d609fafbd164f3ab8b57c728a0ffa223e",
  "opened": [
   [
    "=A1-B1",

@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 17.3
+  "seconds": 17.3,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 3 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -117,9 +118,9 @@
   }
  ],
  "sent": {
-  "xlsx": "36ce48d6c95ff212cb7e0eb28e1565322d01263fe1f9dfc77cf014d11b4a8809 792ca6723360bb08",
-  "kept": "0b6709b1f54c27e00831d2f6d8cdd9eec08977452d7ae018ec67ca30153b010a 792ca6723360bb08",
-  "space": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0cb9e958d0d194ec"
+  "xlsx": "8a1508315989ab642642e74edb1a1b336650e219e5e4f9af6a8d1fc554a30110 792ca6723360bb08",
+  "kept": "faea33b3d0f7e86e95e745d86b70371b9b6c6d5b036e70420d90a459e5831ec9 792ca6723360bb08",
+  "space": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 0cb9e958d0d194ec"
  },
  "answers": {
   "xlsx": {
@@ -219,7 +220,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -356,7 +360,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -493,7 +500,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
