@@ -49,5 +49,8 @@ export function buildProbes(): Probe[] {
 /** The text Excel 365 was predicted to show for each case (canonical, without `=`), committed before Excel ran. */
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/**
+ * The predictions Excel did not confirm: of the calls predicted to leave one cell only MATCH does (XMATCH, ROW, COLUMN,
+ * ROWS, COLUMNS get `@`), and OFFSET over one cell with no size or the size 1 is one cell.
+ */
+export const MISSED: readonly string[] = [...Object.keys(SHAPES).flatMap((s) => [5, 6, 7, 8, 9, 10, 11].map((i) => `${s}#${i}`)), 'form#18', 'form#19', 'form#22']

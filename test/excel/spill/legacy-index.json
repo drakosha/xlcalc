@@ -1,0 +1,651 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.4
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "INDEX over a name, with a name for its row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "H1": {
+        "formula": "INDEX(nm,MATCH(8,nm,0))"
+       },
+       "H2": {
+        "formula": "INDEX(B1:B8,pos)"
+       },
+       "H3": {
+        "formula": "INDEX(B1:B8,two)"
+       },
+       "H4": {
+        "formula": "INDEX(nm,2)"
+       },
+       "H5": {
+        "formula": "INDEX(B1:B8,MATCH(8,nm,0))"
+       },
+       "H6": {
+        "formula": "INDEX(nm,pos)"
+       },
+       "H7": {
+        "formula": "INDEX(blk,MATCH(8,nm,0),1)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nm",
+      "ref": "'S'!$B$1:$B$8"
+     },
+     {
+      "name": "blk",
+      "ref": "'S'!$B$1:$C$8"
+     },
+     {
+      "name": "pos",
+      "ref": "MATCH(8,'S'!$B$1:$B$8,0)"
+     },
+     {
+      "name": "two",
+      "ref": "2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H1"
+    },
+    {
+     "sheet": "S",
+     "range": "H2"
+    },
+    {
+     "sheet": "S",
+     "range": "H3"
+    },
+    {
+     "sheet": "S",
+     "range": "H4"
+    },
+    {
+     "sheet": "S",
+     "range": "H5"
+    },
+    {
+     "sheet": "S",
+     "range": "H6"
+    },
+    {
+     "sheet": "S",
+     "range": "H7"
+    }
+   ],
+   "legacy": [
+    "S!H1",
+    "S!H2",
+    "S!H3",
+    "S!H4",
+    "S!H5",
+    "S!H6",
+    "S!H7"
+   ],
+   "predicted": {
+    "S!H1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 8
+    }
+   }
+  },
+  {
+   "id": "formulas",
+   "about": "names of formulas, alone and as INDEX's row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "J1": {
+        "formula": "p_1"
+       },
+       "J2": {
+        "formula": "p_2"
+       },
+       "J3": {
+        "formula": "p_3"
+       },
+       "J4": {
+        "formula": "p_4"
+       },
+       "J5": {
+        "formula": "p_5"
+       },
+       "J6": {
+        "formula": "p_6"
+       },
+       "J7": {
+        "formula": "p_7"
+       },
+       "J8": {
+        "formula": "p_8"
+       },
+       "J9": {
+        "formula": "p_9"
+       },
+       "J10": {
+        "formula": "p_10"
+       },
+       "J11": {
+        "formula": "p_11"
+       },
+       "K1": {
+        "formula": "INDEX(B1:B8,z)"
+       },
+       "K2": {
+        "formula": "INDEX(B1:B8,half)"
+       },
+       "K3": {
+        "formula": "INDEX(B1:B8,par)"
+       },
+       "K4": {
+        "formula": "INDEX(B1:B8,p_1)"
+       },
+       "K5": {
+        "formula": "INDEX(B1:B8,p_9)"
+       },
+       "K6": {
+        "formula": "INDEX(B1:B8,txt)"
+       },
+       "K7": {
+        "formula": "INDEX(blk,one,one)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "p_1",
+      "ref": "1+1"
+     },
+     {
+      "name": "p_2",
+      "ref": "ABS(-2)"
+     },
+     {
+      "name": "p_3",
+      "ref": "PI()"
+     },
+     {
+      "name": "p_4",
+      "ref": "SUM('S'!$B$1:$B$8)"
+     },
+     {
+      "name": "p_5",
+      "ref": "ROWS('S'!$B$1:$B$8)"
+     },
+     {
+      "name": "p_6",
+      "ref": "'S'!$B$2"
+     },
+     {
+      "name": "p_7",
+      "ref": "'S'!$B$2*2"
+     },
+     {
+      "name": "p_8",
+      "ref": "INDEX('S'!$B$1:$B$8,2)"
+     },
+     {
+      "name": "p_9",
+      "ref": "MATCH(8,'S'!$B$2,0)"
+     },
+     {
+      "name": "p_10",
+      "ref": "\"x\""
+     },
+     {
+      "name": "p_11",
+      "ref": "MATCH(8,{4,8,15},0)"
+     },
+     {
+      "name": "z",
+      "ref": "0"
+     },
+     {
+      "name": "half",
+      "ref": "2.5"
+     },
+     {
+      "name": "par",
+      "ref": "(2)"
+     },
+     {
+      "name": "txt",
+      "ref": "\"2\""
+     },
+     {
+      "name": "one",
+      "ref": "1"
+     },
+     {
+      "name": "blk",
+      "ref": "'S'!$B$1:$C$8"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "J1"
+    },
+    {
+     "sheet": "S",
+     "range": "J2"
+    },
+    {
+     "sheet": "S",
+     "range": "J3"
+    },
+    {
+     "sheet": "S",
+     "range": "J4"
+    },
+    {
+     "sheet": "S",
+     "range": "J5"
+    },
+    {
+     "sheet": "S",
+     "range": "J6"
+    },
+    {
+     "sheet": "S",
+     "range": "J7"
+    },
+    {
+     "sheet": "S",
+     "range": "J8"
+    },
+    {
+     "sheet": "S",
+     "range": "J9"
+    },
+    {
+     "sheet": "S",
+     "range": "J10"
+    },
+    {
+     "sheet": "S",
+     "range": "J11"
+    },
+    {
+     "sheet": "S",
+     "range": "K1"
+    },
+    {
+     "sheet": "S",
+     "range": "K2"
+    },
+    {
+     "sheet": "S",
+     "range": "K3"
+    },
+    {
+     "sheet": "S",
+     "range": "K4"
+    },
+    {
+     "sheet": "S",
+     "range": "K5"
+    },
+    {
+     "sheet": "S",
+     "range": "K6"
+    },
+    {
+     "sheet": "S",
+     "range": "K7"
+    }
+   ],
+   "legacy": [
+    "S!J1",
+    "S!J2",
+    "S!J3",
+    "S!J4",
+    "S!J5",
+    "S!J6",
+    "S!J7",
+    "S!J8",
+    "S!J9",
+    "S!J10",
+    "S!J11",
+    "S!K1",
+    "S!K2",
+    "S!K3",
+    "S!K4",
+    "S!K5",
+    "S!K6",
+    "S!K7"
+   ],
+   "predicted": {
+    "S!J1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 3.14159265358979
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J7": {
+     "t": "n",
+     "v": 16
+    },
+    "S!J8": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J9": {
+     "t": "n",
+     "v": 1
+    },
+    "S!J10": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!J11": {
+     "t": "n",
+     "v": 2
+    },
+    "S!K1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K2": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K3": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K5": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K7": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  }
+ ],
+ "answers": {
+  "names": {
+   "values": {
+    "S!H1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!H1": "=INDEX(nm,MATCH(8,nm,0))",
+    "S!H2": "=INDEX(B1:B8,pos)",
+    "S!H3": "=INDEX(B1:B8,two)",
+    "S!H4": "=INDEX(nm,2)",
+    "S!H5": "=INDEX(B1:B8,MATCH(8,nm,0))",
+    "S!H6": "=INDEX(nm,pos)",
+    "S!H7": "=INDEX(blk,MATCH(8,nm,0),1)"
+   },
+   "formulas2": {
+    "S!H1": "=INDEX(nm,MATCH(8,nm,0))",
+    "S!H2": "=@INDEX(B1:B8,@pos)",
+    "S!H3": "=INDEX(B1:B8,two)",
+    "S!H4": "=INDEX(nm,2)",
+    "S!H5": "=INDEX(B1:B8,MATCH(8,nm,0))",
+    "S!H6": "=@INDEX(nm,@pos)",
+    "S!H7": "=INDEX(blk,MATCH(8,nm,0),1)"
+   }
+  },
+  "formulas": {
+   "values": {
+    "S!J1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 3.141592653589793
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 114.75
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J7": {
+     "t": "n",
+     "v": 16
+    },
+    "S!J8": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J9": {
+     "t": "n",
+     "v": 1
+    },
+    "S!J10": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!J11": {
+     "t": "n",
+     "v": 2
+    },
+    "S!K1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K2": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K3": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K5": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!K7": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!J1": "=p_1",
+    "S!J2": "=p_2",
+    "S!J3": "=p_3",
+    "S!J4": "=p_4",
+    "S!J5": "=p_5",
+    "S!J6": "=p_6",
+    "S!J7": "=p_7",
+    "S!J8": "=p_8",
+    "S!J9": "=p_9",
+    "S!J10": "=p_10",
+    "S!J11": "=p_11",
+    "S!K1": "=INDEX(B1:B8,z)",
+    "S!K2": "=INDEX(B1:B8,half)",
+    "S!K3": "=INDEX(B1:B8,par)",
+    "S!K4": "=INDEX(B1:B8,p_1)",
+    "S!K5": "=INDEX(B1:B8,p_9)",
+    "S!K6": "=INDEX(B1:B8,txt)",
+    "S!K7": "=INDEX(blk,one,one)"
+   },
+   "formulas2": {
+    "S!J1": "=@p_1",
+    "S!J2": "=@p_2",
+    "S!J3": "=@p_3",
+    "S!J4": "=@p_4",
+    "S!J5": "=@p_5",
+    "S!J6": "=p_6",
+    "S!J7": "=@p_7",
+    "S!J8": "=@p_8",
+    "S!J9": "=@p_9",
+    "S!J10": "=p_10",
+    "S!J11": "=@p_11",
+    "S!K1": "=@INDEX(B1:B8,z)",
+    "S!K2": "=@INDEX(B1:B8,half)",
+    "S!K3": "=@INDEX(B1:B8,@par)",
+    "S!K4": "=@INDEX(B1:B8,@p_1)",
+    "S!K5": "=@INDEX(B1:B8,@p_9)",
+    "S!K6": "=@INDEX(B1:B8,txt)",
+    "S!K7": "=INDEX(blk,one,one)"
+   }
+  }
+ }
+}

@@ -89,5 +89,8 @@ export const SHOWN: Readonly<Record<string, string>> = {
   ...Object.fromEntries(Object.entries(PLACE_NAMES).map(([a, [, t]]) => [`S!${a}`, t])),
 }
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/**
+ * The predictions Excel did not confirm: a name of any formula but a literal or a cell gets `@` (`1+1`, `(2)`, PI(),
+ * MATCH over one cell too), and a name of a whole number literal from 1 is INDEX's place as the literal is.
+ */
+export const MISSED: readonly string[] = ['S!H2', 'S!H3', 'S!H6', 'S!J1', 'S!J2', 'S!J3', 'S!J7', 'S!J9', 'S!K3', 'S!K4', 'S!K5']
