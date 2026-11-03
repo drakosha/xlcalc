@@ -7,8 +7,9 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "day": "2026-10-10",
-  "seconds": 24.3
+  "day": "2026-11-03",
+  "seconds": 24.3,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but for TODAY(), which the day of this run gives"
  },
  "books": {
   "plain": {
@@ -690,7 +691,7 @@
   }
  ],
  "sent": {
-  "made": "fa2bc7dea1cab2ac9a443ec366007ad8874f21df1e39b952069dde29736de6cb"
+  "made": "76ad2bc57f8a97821a008ebe1716f73ed2ecef0183cb044403593d56bdbc154d"
  },
  "answers": {
   "made": {
@@ -739,7 +740,7 @@
       "italic": false
      },
      "H1": {
-      "text": "46307",
+      "text": "46331",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -858,7 +859,7 @@
       "italic": false
      },
      "H2": {
-      "text": "46306",
+      "text": "46330",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -977,7 +978,7 @@
       "italic": false
      },
      "H3": {
-      "text": "46305",
+      "text": "46329",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1096,7 +1097,7 @@
       "italic": false
      },
      "H4": {
-      "text": "46304",
+      "text": "46328",
       "fill": "#FFC7CE",
       "font": "#9C0006",
       "bold": true,
@@ -1215,7 +1216,7 @@
       "italic": false
      },
      "H5": {
-      "text": "46303",
+      "text": "46327",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1334,7 +1335,7 @@
       "italic": false
      },
      "H6": {
-      "text": "46302",
+      "text": "46326",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1453,7 +1454,7 @@
       "italic": false
      },
      "H7": {
-      "text": "46301",
+      "text": "46325",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1572,7 +1573,7 @@
       "italic": false
      },
      "H8": {
-      "text": "46300",
+      "text": "46324",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1691,7 +1692,7 @@
       "italic": false
      },
      "H9": {
-      "text": "46299",
+      "text": "46323",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1810,7 +1811,7 @@
       "italic": false
      },
      "H10": {
-      "text": "46298",
+      "text": "46322",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -1929,7 +1930,7 @@
       "italic": false
      },
      "H11": {
-      "text": "46297",
+      "text": "46321",
       "fill": null,
       "font": "#000000",
       "bold": false,
@@ -2048,7 +2049,7 @@
       "italic": false
      },
      "H12": {
-      "text": "46296",
+      "text": "46320",
       "fill": null,
       "font": "#000000",
       "bold": false,

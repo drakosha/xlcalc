@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 21.7
+  "seconds": 21.7,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -50,14 +51,14 @@
   }
  ],
  "sent": {
-  "one-cell": "a923407d184510c11a697ce6e0c023a7a4651ea151e61fa8c883ee7d3cca1da1"
+  "one-cell": "fe6307fdad6d1b182587ecc6078a7a69db8fc6af9ac1321232c22ef0e2c9c529"
  },
  "answers": {
   "one-cell": {
    "sources": [
-    "C:\\xlcalc\\work\\links-first-45214-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-first-31666-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-first-45214-1",
+   "folder": "C:\\xlcalc\\work\\links-first-31666-1",
    "reads": [
     {
      "values": {
@@ -71,10 +72,10 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-first-45214-1\\[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='C:\\xlcalc\\work\\links-first-31666-1\\[Book2.xlsx]Sheet1'!A1+1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-first-45214-1\\[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='C:\\xlcalc\\work\\links-first-31666-1\\[Book2.xlsx]Sheet1'!A1+1"
      },
      "shown": {
       "S!A1": "6",
@@ -93,10 +94,10 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-first-45214-1\\[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='C:\\xlcalc\\work\\links-first-31666-1\\[Book2.xlsx]Sheet1'!A1+1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-first-45214-1\\[Book2.xlsx]Sheet1'!A1+1"
+      "S!A1": "='C:\\xlcalc\\work\\links-first-31666-1\\[Book2.xlsx]Sheet1'!A1+1"
      },
      "shown": {
       "S!A1": "6",

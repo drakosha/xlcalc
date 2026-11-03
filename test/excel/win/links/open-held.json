@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 17.2
+  "seconds": 17.2,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 4 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -399,17 +400,17 @@
   }
  ],
  "sent": {
-  "open": "b785a9ef91863eb056f09630a45f55e109037550180372a619e15b32c3e2d219",
-  "closed-after": "2860318f8de872326d14cac31824853b4014823730fd4658b7647155e5bf7076",
-  "disk": "cf0ca231e5508ced60ac2deccacf1378cc4f57a6b2b2d0b2610f07976577c289",
-  "missing": "fc50f8691dfa2afbc25cfb481fdb8ea40db84071165a737b50a506530138439d"
+  "open": "3152333756d1f64d0b408239b35e5b032cd53a17fec8bd1f61ee27e7659c7880",
+  "closed-after": "c8ef8085cf4cc4ed3b598f98657b390bbacd75f58f38d934d50532ce58b7acd9",
+  "disk": "dbb1562f33cf07f2c7db7b03d343a58ccb1bfde76006e4d86d7be792ade3ecbb",
+  "missing": "fdfcc5106bf549d39b582ab2a2c2e9bf3f829fc629203ed4df23eda970098813"
  },
  "answers": {
   "open": {
    "sources": [
-    "C:\\xlcalc\\work\\links-open-held-5716-1\\Open1.xlsx"
+    "C:\\xlcalc\\work\\links-open-held-35622-1\\Open1.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-open-held-5716-1",
+   "folder": "C:\\xlcalc\\work\\links-open-held-35622-1",
    "reads": [
     {
      "values": {
@@ -423,12 +424,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open1.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open1.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open1.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open1.xlsx]Sheet1'!H2"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open1.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open1.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open1.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open1.xlsx]Sheet1'!H2"
      },
      "shown": {
       "S!A1": "1",
@@ -495,9 +496,9 @@
   },
   "closed-after": {
    "sources": [
-    "C:\\xlcalc\\work\\links-open-held-5716-1\\Open2.xlsx"
+    "C:\\xlcalc\\work\\links-open-held-35622-1\\Open2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-open-held-5716-1",
+   "folder": "C:\\xlcalc\\work\\links-open-held-35622-1",
    "reads": [
     {
      "values": {
@@ -511,12 +512,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H2"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H2"
      },
      "shown": {
       "S!A1": "1",
@@ -555,20 +556,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!B5"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open2.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open2.xlsx]Sheet1'!B5"
      },
      "shown": {
       "S!A1": "1",
@@ -583,9 +584,9 @@
   },
   "disk": {
    "sources": [
-    "C:\\xlcalc\\work\\links-open-held-5716-1\\Open3.xlsx"
+    "C:\\xlcalc\\work\\links-open-held-35622-1\\Open3.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-open-held-5716-1",
+   "folder": "C:\\xlcalc\\work\\links-open-held-35622-1",
    "reads": [
     {
      "values": {
@@ -599,12 +600,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H2"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H2"
      },
      "shown": {
       "S!A1": "1",
@@ -643,20 +644,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!B5"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open3.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open3.xlsx]Sheet1'!B5"
      },
      "shown": {
       "S!A1": "1",
@@ -671,9 +672,9 @@
   },
   "missing": {
    "sources": [
-    "C:\\xlcalc\\work\\links-open-held-5716-1\\Open4.xlsx"
+    "C:\\xlcalc\\work\\links-open-held-35622-1\\Open4.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-open-held-5716-1",
+   "folder": "C:\\xlcalc\\work\\links-open-held-35622-1",
    "reads": [
     {
      "values": {
@@ -687,12 +688,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H2"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H2"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H2"
      },
      "shown": {
       "S!A1": "1",
@@ -731,20 +732,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!B5"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H2",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!H:H)",
-      "S!A4": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!Z99",
-      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!Z99)",
-      "S!A6": "='C:\\xlcalc\\work\\links-open-held-5716-1\\[Open4.xlsx]Sheet1'!B5"
+      "S!A1": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H2",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!H:H)",
+      "S!A4": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!Z99",
+      "S!A5": "=ISBLANK('C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!Z99)",
+      "S!A6": "='C:\\xlcalc\\work\\links-open-held-35622-1\\[Open4.xlsx]Sheet1'!B5"
      },
      "shown": {
       "S!A1": "1",

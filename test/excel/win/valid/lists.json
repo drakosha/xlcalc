@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 23.7
+  "seconds": 23.7,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 1 case sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "lists": {
@@ -241,7 +242,7 @@
  ],
  "window": "A1:J7",
  "sent": {
-  "lists": "538e6f7f98f076e4f81e9a5751ae6e47091ab360b759a390bcfc24754c45bc08"
+  "lists": "d3eee4ffc78fd672daefe08fdf7e74c9306c5aac1957541761e5216d33bc5e4e"
  },
  "answers": {
   "lists": {

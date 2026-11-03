@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 19.1
+  "seconds": 19.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 3 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -232,16 +233,16 @@
   }
  ],
  "sent": {
-  "marked": "e4a12ad3ce1e1a63a71c6ba655d89b80c171a39409787f5d34ab499ca5956691",
-  "empty": "29fb0cef6b11aa64d816f166f146eff0ded56be4c4cc048b16dff1da4b99bc5b",
-  "scope": "b4cf55e2551ebfc12b75a764a276e9e6764d0936fa8377145ad9a9b2ff8e224f"
+  "marked": "e7cc41492e0ac21e8d99e9f6a5fb84309e950c056c2f2819d29f5639515e1110",
+  "empty": "bab8fb24d6c9c987b1eca948a8ddd614fbecba0437d64fb8c8061a93972added",
+  "scope": "bb3cabd531bbd55400caa4da17cd358332c0577a03e0a8e48a99155dba105ef2"
  },
  "answers": {
   "marked": {
    "sources": [
-    "C:\\xlcalc\\work\\links-refresh-held-25311-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-refresh-held-38018-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-refresh-held-25311-1",
+   "folder": "C:\\xlcalc\\work\\links-refresh-held-38018-1",
    "reads": [
     {
      "values": {
@@ -263,16 +264,16 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9)"
      },
      "shown": {
       "S!A1": "1",
@@ -301,16 +302,16 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "=ISBLANK('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9)"
      },
      "shown": {
       "S!A1": "1",
@@ -323,9 +324,9 @@
   },
   "empty": {
    "sources": [
-    "C:\\xlcalc\\work\\links-refresh-held-25311-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-refresh-held-38018-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-refresh-held-25311-1",
+   "folder": "C:\\xlcalc\\work\\links-refresh-held-38018-1",
    "reads": [
     {
      "values": {
@@ -347,16 +348,16 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Marked'!A1",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]None'!A1",
-      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A:A)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Marked'!A1",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]None'!A1",
+      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A:A)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Marked'!A1",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]None'!A1",
-      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A:A)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Marked'!A1",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]None'!A1",
+      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A:A)"
      },
      "shown": {
       "S!A1": "0",
@@ -385,16 +386,16 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Marked'!A1",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]None'!A1",
-      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A:A)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Marked'!A1",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]None'!A1",
+      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A:A)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Marked'!A1",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]None'!A1",
-      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Empty'!A:A)"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Marked'!A1",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]None'!A1",
+      "S!A4": "=SUM('C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Empty'!A:A)"
      },
      "shown": {
       "S!A1": "0",
@@ -407,10 +408,10 @@
   },
   "scope": {
    "sources": [
-    "C:\\xlcalc\\work\\links-refresh-held-25311-1\\Book2.xlsx",
-    "C:\\xlcalc\\work\\links-refresh-held-25311-1\\Data.xlsx"
+    "C:\\xlcalc\\work\\links-refresh-held-38018-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-refresh-held-38018-1\\Data.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-refresh-held-25311-1",
+   "folder": "C:\\xlcalc\\work\\links-refresh-held-38018-1",
    "reads": [
     {
      "values": {
@@ -432,16 +433,16 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet2'!A9",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Data.xlsx]Data'!A9",
-      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet2'!A9",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Data.xlsx]Data'!A9",
+      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet2'!A9",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Data.xlsx]Data'!A9",
-      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet2'!A9",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Data.xlsx]Data'!A9",
+      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "0",
@@ -475,18 +476,18 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet2'!A9",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Data.xlsx]Data'!A9",
-      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A2"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet2'!A9",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Data.xlsx]Data'!A9",
+      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A2"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet2'!A9",
-      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Data.xlsx]Data'!A9",
-      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-refresh-held-25311-1\\[Book2.xlsx]Sheet1'!A2"
+      "S!A1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet2'!A9",
+      "S!A3": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Data.xlsx]Data'!A9",
+      "S!C1": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-refresh-held-38018-1\\[Book2.xlsx]Sheet1'!A2"
      },
      "shown": {
       "S!A1": "#REF!",

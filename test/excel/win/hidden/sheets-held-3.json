@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 42.6
+  "seconds": 42.6,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 10 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "plain": {
@@ -417,16 +418,16 @@
   ]
  },
  "sent": {
-  "end-high-inward": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
-  "end-low-outward": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
-  "end-high-past-low": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
-  "end-low-to-end": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
-  "end-high-between": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
-  "end-past-hidden-tail": "d1219500a6dd6f92a1b2e85980e1fbd4f936a25394b02e860ec60865553375b1",
-  "before-hidden-first": "1a4095e1a4effa432f5a2251a3f5023e5dda10aea47bc7faaefd564dd04e9a6a",
-  "hidden-to-end": "562b648811326eab8f1561032ccaa76d5ea96db099dfcd6a1ff51adb621f82c2",
-  "hidden-to-end-hidden-tail": "36ca7d5f99958523d31dcfabb7815ec28b24aac8444f509a9c29beb28dd9e0e4",
-  "before-very-last": "db992a1beac25af002d7f480dea7c67a70d150611cf6ddb606ae4ff172f1db34"
+  "end-high-inward": "4dab6212042ff98bbfd2dcd1659c3df09f9cfb9c81ab17d819d2e5a45bda7c2a",
+  "end-low-outward": "4dab6212042ff98bbfd2dcd1659c3df09f9cfb9c81ab17d819d2e5a45bda7c2a",
+  "end-high-past-low": "4dab6212042ff98bbfd2dcd1659c3df09f9cfb9c81ab17d819d2e5a45bda7c2a",
+  "end-low-to-end": "4dab6212042ff98bbfd2dcd1659c3df09f9cfb9c81ab17d819d2e5a45bda7c2a",
+  "end-high-between": "4dab6212042ff98bbfd2dcd1659c3df09f9cfb9c81ab17d819d2e5a45bda7c2a",
+  "end-past-hidden-tail": "78a264df80e85f8f819d8c6fbaf1674da2e9ec22a0f10253ca1f566949022ad9",
+  "before-hidden-first": "08ac780ee926bd0922885421b49f729145406eab75d7e9a79d38a267cdfe9ae9",
+  "hidden-to-end": "ee8819b9505be2ce40b9889ac62237d7cd6586bf01bbf43af99dbd129d7b6028",
+  "hidden-to-end-hidden-tail": "62593eaa7dcc4a22c3811e33c5f493db96bc75f0c53e58833eedc1ce630642a7",
+  "before-very-last": "d9b7f797d8609786991673b190b8e35a431b3062b899e68de4daf0fabe5a22f0"
  },
  "answers": {
   "end-high-inward": {

@@ -8,18 +8,19 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "day": "2026-11-03",
-  "seconds": 23.6
+  "seconds": 23.6,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 7 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but for the names of the books in the run"
  },
  "sent": {
   "chart-values": "0defe606105b87cdbbe5cfd371fd992b7a5d3cb45f76e9d3d1e9a24e8716776c",
-  "chart-links": "17f155c83408bc3cef1d7c4fe92a708723b50313590e60512b46f58eb6a600cc",
+  "chart-links": "d8c89df8b0db51f83fd20026e71f409afd3f9b74ba8955264fc8e5ab19f70da0",
   "chart-formulas-styles": "85ef20ebaa14c8cb24857cbfca4043f72e37ae78dbcbb2bafe4ce862a5dbcf14",
   "chart-parts": "79c3193031bb6c1536111099c277f97c36af2a60e6a83e8c1e08a077c401f282",
   "chart-structure": "d5476aadaa232d561e276857bc01ea02152d9d52f83b1c934a8c10f3a8e0455d",
   "chart-below": "282539b9f7216704ab670801e155f423dd4ddee5050929d1e2ceedda9ee6c837",
   "chart-filter": "95f40ab914a644022a39177e4d9c7dac33c7ca3f3cfdb33dec42af527bbcf3d4",
   "picture-values": "29723f08ff8914bbebebefc5ddf5b16d777227623d7094ead28e56f6e0ff59a7",
-  "picture-links": "93b978f9e1d49fcb5bd3e6964cae9a189094389b0da39bdf671f3d5f46d1eea6",
+  "picture-links": "c07a0232be1cb1f94bf1165ac7372863a96cb7c84f2d71d9fb4af656fc029557",
   "picture-formulas-styles": "afde2f374bf12e2ff6ad57cf8a63c70c12f72e886560dfb7fcfda82f64f06731",
   "picture-parts": "0c36ab4138c1e66f2f341ab0c3af18f54ba348d3c5a52e1e281f94540dbc5b40",
   "picture-structure": "0958605ec9f170de78d8ed03ed54997933bf39b2579a85e477e1c6edc612ed85",
@@ -27,35 +28,35 @@
   "picture-filter": "fbf0be08053d2b51c0fd24f869ea23fe62c5ffec476c895f4f805ba83fbc87ac",
   "picture-rich-sheet": "ee5706571d0fad5dd0419e3e8c41d5facbffb79764cfb63ca8e62bd86003be5e",
   "pivot-values": "1cd73a150a29f7ccd68f95a9c0760aed4a271bf8b947331ceec879c68dc41497",
-  "pivot-links": "2d97fe5c9fddb5160badeab7f3bf45de172c11c5daeeb296dfdb5f56a9f94bb5",
+  "pivot-links": "a7f2b6cc03c4257d8416495dabe838d696244e53b06f6b03274bb6b7b5903a8e",
   "pivot-formulas-styles": "fa3b4681d7ace169c867748fadca6a963017e4207fcbc14ea982a95f7ba5a26e",
   "pivot-parts": "839d4f2e3e589ca86ff3172874adfed62691cb037430a4db8e023129758419c1",
   "pivot-structure": "ed759d31ec0ab83e5eb1787d196afc7bf8230959f1cfc771b23446029ead46a3",
   "pivot-below": "afb348950d55003bbfce7207b4f4cad40bb2decff4a52344aefa300ded02a4da",
   "pivot-filter": "9fe9a6ca08ba219f59b6503afa41cc01b961749d516dfcce05c4751ec3aaf5ea",
   "print-values": "2aa10797ed48518db602645d40ae1431b2a8522f3aa8266f7e672859a8158783",
-  "print-links": "5f69abaa3aee09d0d90f90f86d6036ad609499237ee983b2150bbc281db3f3ca",
+  "print-links": "f95b5d022f230b43f6b7b59d1994c803a62b1afe8d953e05b2a05ee3966af622",
   "print-formulas-styles": "715c6b29fd8aa267b58a7a0fd9f43b5acbeda4053e090e56f11d9b2e254dbcad",
   "print-parts": "8e848d917ab60f05ee55a7e6b70ba961ef658d50187390de4ed2bcd8771648ef",
   "print-structure": "e622badc27ba439519715ceef0c7fda3ae350462ec5bcc9d46300299c9619d47",
   "print-below": "5624914c4495399d88fd5479ff18e9f213ed3460102c8679024df221260f71b2",
   "print-filter": "fc6733718b3ea480346d1e52c0a17e0efc35bd5df86ffbeaead9736deb57f52d",
   "chartsheet-values": "3281ae3c939f1f325b7247dcc0c0bab4c95c16545af5ca83b2c63ee8716479e1",
-  "chartsheet-links": "ad31df3dbbaeed28b8ccffd795d69c05794cfc48e8887bc1987970f6bdc0ac33",
+  "chartsheet-links": "6d44d44596fcff203e645d0722cfa71f8730b5a09888c2121715bb24f579a256",
   "chartsheet-formulas-styles": "b58df84860182d2e4d9d245692e0f8ed4430b9db3e4b984fad6a4af617d722ae",
   "chartsheet-parts": "5004056c57d3e94231e558fa63a4bf6ad5c36cf04bb01bc3e56beba269961c1f",
   "chartsheet-structure": "52c761c0d236cbb2fa63c23f138e94fa4521ba0e2301fd6e7b9cbee003df0b95",
   "chartsheet-below": "6c187fbc2fe07671bf19c2a206a09c170f54d35d44f42ea9f1d75beb4ae29c32",
   "chartsheet-filter": "b99a696af9913fd088d9c9a4360b58c1e49ed55e46e552ed8b4c63e7a962bf2e",
   "all-values": "28f05e0eb7394a92e83f02b8aafb4ea3f876510caf596acf3b67ad3867e500e3",
-  "all-links": "a59e807fa2957dd577265ae94d8df231aaca1859fe64f7aa439387b47f208135",
+  "all-links": "3667c9b38a3cd3c9996adc327db2ab1bd74c2fd7c29bdcb35eb79f3b8fbfdc76",
   "all-formulas-styles": "d7ce2400efdfdfa110dbd6751a88c8ed2190336f31d695e512cdaf3ff8289d84",
   "all-parts": "e5a871929b7ee0fe2b48b03c26c9da6ae5e80b815240fc910e32da6afbac69ec",
   "all-structure": "b16757963a005e1de78c0a535d035de4df9c94c81ba140bfacf5a32ec7fa3d0f",
   "all-below": "eec75f20a22ae9dca7c6af263517ac796341c0a73f2db236d7e145f36caab306",
   "all-filter": "60a6c46f6d52b15e80213abb1ba3814a21ca8cec302ff1601a4a688e5b873384",
   "criteria-values": "d2c8bff8adecd4b2b30ff590c81b14b5e33f93889a3ddd9e28d2d9b2624dd561",
-  "criteria-links": "fe5d6fe16d2842b712e2ce1d0a8989d7d4c24be30f8bd5144e1d3bcb39d13b2d",
+  "criteria-links": "197b6ebd86f45780287948982c5095a02ed7f48174dbdba9e34c7dd16a56ef0b",
   "criteria-formulas-styles": "b6888a35b2b31acc67ac24c8d439672e8f9666a3ccdccc5eddb20e2443268a90",
   "criteria-parts": "cce181833ce737aa51e3b60dbfb7f96d48988f7560754fe7266edc00ad1f8472",
   "criteria-structure": "4bb697a9a6d96b2bf2c18fc22cf824fed7759e10ab1a8832f533381abe3ee6eb",
@@ -122,8 +123,8 @@
   },
   "picture-links": {
    "opened": [
-    "3.xlsx",
-    "3 - Excel",
+    "1.xlsx",
+    "1 - Excel",
     []
    ]
   },
@@ -178,8 +179,8 @@
   },
   "pivot-links": {
    "opened": [
-    "6.xlsx",
-    "6 - Excel",
+    "2.xlsx",
+    "2 - Excel",
     []
    ]
   },
@@ -227,8 +228,8 @@
   },
   "print-links": {
    "opened": [
-    "9.xlsx",
-    "9 - Excel",
+    "3.xlsx",
+    "3 - Excel",
     []
    ]
   },
@@ -276,8 +277,8 @@
   },
   "chartsheet-links": {
    "opened": [
-    "12.xlsx",
-    "12 - Excel",
+    "4.xlsx",
+    "4 - Excel",
     []
    ]
   },
@@ -325,8 +326,8 @@
   },
   "all-links": {
    "opened": [
-    "15.xlsx",
-    "15 - Excel",
+    "5.xlsx",
+    "5 - Excel",
     []
    ]
   },
@@ -374,8 +375,8 @@
   },
   "criteria-links": {
    "opened": [
-    "18.xlsx",
-    "18 - Excel",
+    "6.xlsx",
+    "6 - Excel",
     []
    ]
   },

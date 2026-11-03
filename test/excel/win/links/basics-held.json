@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 24.5
+  "seconds": 24.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 5 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but where Excel answers otherwise now, the earlier writer's file too (test/links-excel.test.ts, VERSIONED)"
  },
  "cases": [
   {
@@ -557,18 +558,18 @@
   }
  ],
  "sent": {
-  "cache": "479479465b6f5921e4b912efbfecea41568b53bbe1761e84dd87163aad6b3c2a",
-  "refresh-error": "b3372de28be0ee6a3de287bbf75370c812c16ee368414c6c507deefab67f95fe",
-  "two-links": "55a840666e13c74a7757771c3a63a7f19047282e7fe7c8792a3e99e23d80364b",
-  "inserted": "3dfa06cafc6a923cda709607a4b50846fd383cb294b9d1528bf93a1074c62590",
-  "targets": "402c67f84514b61c43aa4ae9fc3d8f79a584769c373dd47cc7649590666c1c53"
+  "cache": "d1b5010277f3aee79ab41a23546b60835ca8c8eb6772c3488a93ae4cd1955abf",
+  "refresh-error": "7d2b7806aef56b243e3ddd23f00b507550e31eefdfcf30d3f929641ddc943524",
+  "two-links": "fd1cacb7e7ccb49b4f2b91507d4c1e338c7cdabba478c74e87488c13cb9587a5",
+  "inserted": "66c00fa6d8a535c8f91f00be27f3a16424f0c76adf4cb9ad880a70ab9583560c",
+  "targets": "73b8156c59d6c2bcea9aa7f40ff3328cf694e3265a91b734bbc7d6d3f9548191"
  },
  "answers": {
   "cache": {
    "sources": [
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-basics-held-91631-1",
+   "folder": "C:\\xlcalc\\work\\links-basics-held-4752-1",
    "reads": [
     {
      "values": {
@@ -685,8 +686,8 @@
        "v": 7
       },
       "S!A29": {
-       "t": "e",
-       "v": "VALUE"
+       "t": "n",
+       "v": 2
       },
       "S!A30": {
        "t": "e",
@@ -742,88 +743,88 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1"
      },
      "shown": {
       "S!A1": "2",
@@ -854,7 +855,7 @@
       "S!A26": "5",
       "S!A27": "TRUE",
       "S!A28": "7",
-      "S!A29": "#VALUE!",
+      "S!A29": "2",
       "S!A30": "#REF!",
       "S!A31": "6",
       "S!A32": "6",
@@ -983,8 +984,8 @@
        "v": "VALUE"
       },
       "S!A24": {
-       "t": "e",
-       "v": "REF"
+       "t": "n",
+       "v": 31.2
       },
       "S!A25": {
        "t": "n",
@@ -1003,8 +1004,8 @@
        "v": 8
       },
       "S!A29": {
-       "t": "e",
-       "v": "VALUE"
+       "t": "n",
+       "v": 1
       },
       "S!A30": {
        "t": "e",
@@ -1076,96 +1077,96 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B10"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Rate",
-      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Konst",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Rate",
+      "S!A14": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A,'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!D1:D3,\"x\",'C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='C:\\xlcalc\\work\\links-basics-held-4752-1\\[Book2.xlsx]Sheet1'!B10"
      },
      "shown": {
       "S!A1": "2",
@@ -1191,12 +1192,12 @@
       "S!A21": "4",
       "S!A22": "#REF!",
       "S!A23": "#VALUE!",
-      "S!A24": "#REF!",
+      "S!A24": "31.2",
       "S!A25": "3",
       "S!A26": "5",
       "S!A27": "TRUE",
       "S!A28": "8",
-      "S!A29": "#VALUE!",
+      "S!A29": "1",
       "S!A30": "#REF!",
       "S!A31": "6",
       "S!A32": "6",
@@ -1234,9 +1235,9 @@
   },
   "refresh-error": {
    "sources": [
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-basics-held-91631-1",
+   "folder": "C:\\xlcalc\\work\\links-basics-held-29190-1",
    "reads": [
     {
      "values": {
@@ -1254,14 +1255,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1285,14 +1286,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Other'!A1)"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1304,10 +1305,10 @@
   },
   "two-links": {
    "sources": [
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx",
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Data.xlsx"
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Data.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-basics-held-91631-1",
+   "folder": "C:\\xlcalc\\work\\links-basics-held-29190-1",
    "reads": [
     {
      "values": {
@@ -1321,12 +1322,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1345,12 +1346,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1",
-      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Data.xlsx]Data'!A1"
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1+'C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1361,9 +1362,9 @@
   },
   "inserted": {
    "sources": [
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx"
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Book2.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-basics-held-91631-1",
+   "folder": "C:\\xlcalc\\work\\links-basics-held-29190-1",
    "reads": [
     {
      "values": {
@@ -1377,11 +1378,11 @@
       }
      },
      "formulas": {
-      "S!A3": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A3": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A3",
       "S!B3": "=A3"
      },
      "local": {
-      "S!A3": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A3": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A3",
       "S!B3": "=A3"
      },
      "shown": {
@@ -1409,11 +1410,11 @@
       }
      },
      "formulas": {
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A3",
       "S!B4": "=A4"
      },
      "local": {
-      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A3",
       "S!B4": "=A4"
      },
      "shown": {
@@ -1433,14 +1434,14 @@
   },
   "targets": {
    "sources": [
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Book2.xlsx",
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Book2.xlsx",
     "C:\\xlcalc\\work\\data\\Book3.xlsx",
     "C:\\data\\Book4.xlsx",
     "C:\\Users\\x\\data\\Book5.xlsx",
     "https://example.com/share/Book6.xlsx",
-    "C:\\xlcalc\\work\\links-basics-held-91631-1\\Sub Folder\\Книга 7.xlsx"
+    "C:\\xlcalc\\work\\links-basics-held-29190-1\\Sub Folder\\Книга 7.xlsx"
    ],
-   "folder": "C:\\xlcalc\\work\\links-basics-held-91631-1",
+   "folder": "C:\\xlcalc\\work\\links-basics-held-29190-1",
    "reads": [
     {
      "values": {
@@ -1470,20 +1471,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1522,20 +1523,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='C:\\xlcalc\\work\\data\\[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:\\data\\[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='C:\\Users\\x\\data\\[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-91631-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='C:\\xlcalc\\work\\links-basics-held-29190-1\\Sub Folder\\[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",

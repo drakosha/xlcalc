@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 26
+  "seconds": 26,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 32 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but for an operation onto a formula now plain, combined where it was refused"
  },
  "books": {
   "ops": {
@@ -611,38 +612,38 @@
   }
  ],
  "sent": {
-  "add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "subtract-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "multiply-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "divide-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "divide-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "number-add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "number-add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "formula-add-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "formula-add-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "formula-subtract-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "text-add-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-formats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-validation": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-notes": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-columnWidths": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-valuesAndNumberFormats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-formulasAndNumberFormats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-allExceptBorders": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-transposed": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-merged": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "add-merged-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-all": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-values": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-formulas": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-formats": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-notes": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-allExceptBorders": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-add": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-transposed": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af",
-  "skip-onto-blank": "56056ea66e51e3cc809743fc84d73ea7e9614f6444affdeefa81a8d6d27382af"
+  "add-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "subtract-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "multiply-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "divide-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-all": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-formulas": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "divide-all": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "number-add-all": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "number-add-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "formula-add-formulas": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "formula-add-all": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "formula-subtract-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "text-add-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-formats": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-validation": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-notes": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-columnWidths": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-valuesAndNumberFormats": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-formulasAndNumberFormats": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-allExceptBorders": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-transposed": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-merged": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "add-merged-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-all": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-values": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-formulas": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-formats": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-notes": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-allExceptBorders": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-add": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-transposed": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f",
+  "skip-onto-blank": "3b12242a142285ef7f7383f7e917b8a7a5a44ba88ca62928e114d509ff4b009f"
  },
  "answers": {
   "add-values": {},
@@ -652,24 +653,12 @@
   "add-all": {},
   "add-formulas": {},
   "divide-all": {},
-  "number-add-all": {
-   "error": "-2146827284 You can't change part of an array."
-  },
-  "number-add-values": {
-   "error": "-2146827284 You can't change part of an array."
-  },
-  "formula-add-formulas": {
-   "error": "-2146827284 You can't change part of an array."
-  },
-  "formula-add-all": {
-   "error": "-2146827284 You can't change part of an array."
-  },
-  "formula-subtract-values": {
-   "error": "-2146827284 You can't change part of an array."
-  },
-  "text-add-values": {
-   "error": "-2146827284 You can't change part of an array."
-  },
+  "number-add-all": {},
+  "number-add-values": {},
+  "formula-add-formulas": {},
+  "formula-add-all": {},
+  "formula-subtract-values": {},
+  "text-add-values": {},
   "add-formats": {},
   "add-validation": {},
   "add-notes": {},

@@ -7,7 +7,8 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 18
+  "seconds": 18,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 16 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "books": {
   "held": {
@@ -341,22 +342,22 @@
   ]
  },
  "sent": {
-  "number-add-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-add-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-divide-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "formula-add-formulas": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "formula-multiply-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "formula-subtract-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "decimal-add-values": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "blank-multiply-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "blank-divide-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-subtract-blank": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-add-spill": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-add-other-sheet": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "number-add-merged": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "text-add-all": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "empty-text-skip": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34",
-  "empty-text-values-skip": "4c4eed1570627783a5943af701b3c9428b678653d669246d1f45193ba6484c34"
+  "number-add-all": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-add-values": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-divide-values": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "formula-add-formulas": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "formula-multiply-all": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "formula-subtract-values": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "decimal-add-values": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "blank-multiply-blank": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "blank-divide-blank": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-subtract-blank": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-add-spill": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-add-other-sheet": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "number-add-merged": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "text-add-all": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "empty-text-skip": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43",
+  "empty-text-values-skip": "b0c9d22322941e28c2a2db50b3f0016b2b7bcb08af0213d5725e2391a5df2e43"
  },
  "answers": {
   "number-add-all": {},
