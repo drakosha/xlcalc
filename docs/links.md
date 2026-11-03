@@ -49,6 +49,14 @@ A copy adjusts a link's relative references, as Excel adjusts them: `[1]Sheet1!A
 
 Entering a formula that refers to a linked workbook, whether typed, set or pasted (`setCells`, `setCellText`, `pasteText`, `copyRange` and the rest), makes Excel try to read that workbook, which is closed: it marks every sheet of that link as `refreshError`, and from then on its cells that the stored values do not include are `#REF!`, including in formulas that already read them. A session does the same: its workbook's link gets the marker, and `getBook()` returns it, so a full calculation of the session's workbook matches the session. Other links keep their state. Renaming a sheet or inserting rows does not set the marker.
 
+A host that reads the other workbook itself says so with `open: true` on the link, given with the values it read (`setExternalBooks`). Excel reads a linked workbook that is open, or a closed one it finds on the disk, in the same way: a cell missing from the values is blank, as an empty cell of that workbook is (`SUM('[1]Sales'!H:H)` sums the column, `ISBLANK('[1]Sales'!Z99)` is TRUE), a sheet without `cells` is an empty sheet, and entering a formula over it sets no `refreshError`, which its sheets must not have (an `InputError`). Given again without `open`, the link keeps its values unmarked until a formula over it is entered, as Excel keeps what it read after the workbook is closed. A file stores no such flag: `writeXlsx` and `writeKept` write the values without the marker and a sheet without values as an empty one, as Excel saves a workbook it read, and `readXlsx` gives the link without `open`.
+
+```js
+s.setExternalBooks([{ target: 'Sales.xlsx', sheets: [{ name: 'Sales', cells: { H1: 10, H2: 20 } }], open: true }])
+s.setCellText('S', 'B1', '=SUM([Sales.xlsx]Sales!H:H)+[Sales.xlsx]Sales!Z99')
+console.log(s.getCell('S', 'B1')?.value) // → 30
+```
+
 ## Formula text
 
 The stored formula numbers the link and quotes its sheet, as every stored reference is quoted: `'[1]Sheet1'!A1`, `'[1]My Sheet'!A1:B9`, the workbook-level name `[1]!Rate`, and a sheet-level name `'[1]Sheet1'!Local`. A file writes `[1]Sheet1!A1`, with quotes only where the sheet name needs them, and reading it back produces the same formula.
@@ -86,9 +94,12 @@ console.log(cell?.formula, cell?.value) // → '[1]Sheet'!$I$8*2 84
 - Only entering or pasting a formula with a link was verified to mark the link. Whether moving such a formula, undoing the edit, or entering a formula that reads a link only through a name marks it was not verified: the engine marks the link for formulas whose text names it, on entering and pasting, and an undo keeps the marker.
 - On a marked sheet, a range is read only to one row and one column beyond the stored values, so that an entire column stays cheap; a sum over it is `#REF!` as in Excel, but a count of errors over it (`COUNTA`) counts one `#REF!` where Excel counts every cell missing from the values.
 - A reference across sheets of another workbook (`[1]Jan:Mar!A1`) and a spill reference into one (`[1]Sheet1!A1#`) are rejected.
-- `INDIRECT` into a linked workbook is `#REF!`, and `OFFSET` and `CELL` over one are `#VALUE!`, as Excel calculates them over a closed workbook.
+- `INDIRECT` into a linked workbook is `#REF!`, and `OFFSET` and `CELL` over one are `#VALUE!`, as Excel calculates them over a closed workbook, also over a link held `open`, whose workbook Excel would calculate them over. A table of a linked workbook is `#REF!` there too.
+- Excel shows a reference to a workbook that is open by its name alone (`[Sales.xlsx]Sales!A1`); a link held `open` shows the path it stores, as any link.
 - A link of a kind other than a workbook (DDE, OLE) keeps its number and is reported by `readXlsx`; its references are `#REF!`.
 
 ## Checked against Excel
 
 Tested in Excel for Mac and Excel for Windows, each opening every file without updating its links and returning the same values everywhere; the engine returns their values and their formula text.
+
+Excel for Windows also typed formulas over a linked workbook placed beside the file: opened, opened and closed before calculating, left closed on the disk, and missing (`test/excel/win/links/open-held.json`). In the first three it read the workbook, a cell the workbook does not hold was blank, no sheet was marked, and the file it saved stored the values it read; a missing workbook marked the link. A session holding the link `open` returns the same values. The predictions, committed before the run, matched 15 of 16 cells: a formula typed before over a closed workbook on the disk was read again too.
