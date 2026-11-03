@@ -309,6 +309,11 @@ function checkLooks(v: unknown, path: string, styles: number) {
 }
 
 /** The examples of a linked workbook and its sheet, and of a sheet of stored values, in refusals. */
+/** A flag given: true alone. */
+function onlyTrue(v: unknown, path: string): void {
+  if (v !== true) throw new InputError(path, `expected true, got ${what(v)}`)
+}
+
 const LINKED = 'such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }'
 const LINKED_SHEET = 'such as { name: "Sheet1", cells: { A1: 5 } }'
 const STORED_SHEET = 'such as { name: "Sheet1", cells: { B1: { value: 2 } } }'
@@ -326,14 +331,17 @@ export function checkExternalBooks(v: unknown, path: string, values = true): Ext
     const book = object(b, p, `a linked workbook ${LINKED}`)
     onlyKeys(book, p, ['target', 'sheets', 'names', 'open'])
     checkString(book.target, `${p}.target`)
-    if (book.open !== undefined && book.open !== true) throw new InputError(`${p}.open`, `expected true, got ${what(book.open)}`)
+    if (book.open !== undefined) onlyTrue(book.open, `${p}.open`)
     const sheets = array(book.sheets, `${p}.sheets`, `an array of sheets ${LINKED_SHEET}`)
     sheets.forEach((s, j) => {
       const sp = `${p}.sheets[${j}]`
       const sheet = object(s, sp, `a sheet ${LINKED_SHEET}`)
       onlyKeys(sheet, sp, ['name', 'cells', 'refreshError'])
       checkString(sheet.name, `${sp}.name`)
-      if (sheet.refreshError !== undefined && (sheet.refreshError !== true || book.open)) throw new InputError(`${sp}.refreshError`, book.open ? 'a linked workbook held open is read: none of its sheets has refreshError' : `expected true, got ${what(sheet.refreshError)}`)
+      if (sheet.refreshError !== undefined) {
+        if (book.open) throw new InputError(`${sp}.refreshError`, 'a workbook held open has no refreshError')
+        onlyTrue(sheet.refreshError, `${sp}.refreshError`)
+      }
       if (sheet.cells === undefined) return
       const cells = object(sheet.cells, `${sp}.cells`, 'an object of stored values by address such as { A1: 5 }')
       if (values)
@@ -529,7 +537,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     if (o.fit !== undefined) {
       const lines = o.rows !== undefined ? 'rows' : 'columns'
       onlyKeys(o, p, ['sheet', lines, 'fit'])
-      if (o.fit !== true) throw new InputError(`${p}.fit`, `expected true, got ${what(o.fit)}`)
+      onlyTrue(o.fit, `${p}.fit`)
       checkSpan(o[lines], `${p}.${lines}`, lines === 'rows' ? 'r' : 'c')
       return o as unknown as LayoutEdit
     }

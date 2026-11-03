@@ -56,7 +56,7 @@ describe.each(KINDS)('setExternalBooks in %s', (kind) => {
     await s.undo()
     expect((await s.getBook()).externalBooks).toEqual(held)
     await expect(s.setExternalBooks([{ ...held[0], open: false } as never])).rejects.toThrow('books[0].open: expected true, got boolean false')
-    await expect(s.setExternalBooks([{ ...held[0], sheets: [{ name: 'Data', refreshError: true }] }])).rejects.toThrow('a linked workbook held open is read: none of its sheets has refreshError')
+    await expect(s.setExternalBooks([{ ...held[0], sheets: [{ name: 'Data', refreshError: true }] }])).rejects.toThrow('a workbook held open has no refreshError')
     await s.close()
   })
 })
