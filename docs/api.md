@@ -5336,10 +5336,10 @@ interface Session {
   clearCells(ranges: RangeRef[], what: ClearKind, opts?: EditOptions): EditResult
   /**
    * Formatting of cells and ranges (`CellPatch`), applied in order and atomically, leaving the cells' values and formulas
-   * as they are: an empty cell in a rectangle gets a cell entry with the formatting, a cell left with nothing is removed,
-   * and a cell in a legacy array formula's range or in a spill takes the formatting while the array stays. A style given
-   * by its fields is applied over each cell's own (`docs/edits.md`); identical styles share one entry of the workbook's
-   * `styles`. Recalculates nothing.
+   * as they are: an empty cell in a rectangle gets the formatting (in the sheet's `looks`, where formatting alone is
+   * held), a cell left with nothing is removed, and a cell in a legacy array formula's range or in a spill takes the
+   * formatting while the array stays. A style given by its fields is applied over each cell's own (`docs/edits.md`);
+   * identical styles share one entry of the workbook's `styles`. Recalculates nothing.
    */
   patchCells(patches: CellPatch[], opts?: EditOptions): EditResult
   /**
