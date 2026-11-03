@@ -1,12 +1,12 @@
 {
  "meta": {
   "version": "16.114.3",
-  "seconds": 2.5,
-  "date": "2026-10-28"
+  "seconds": 38.5,
+  "date": "2026-11-03"
  },
  "cases": {
   "chart-insert-in": {
-   "sent": "5057880ba1359aa09ed2884e907afd91586670a41753040eacc4e79aada3c0d1",
+   "sent": "a011d2569b7cf9768b980eee2fa6e121c4194a0925c61c1707bf2e64211111b0",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -37,7 +37,7 @@
    }
   },
   "chart-delete-in": {
-   "sent": "3d4250f6ef0d8990331a9d3282d3831106f07067da9318e22b784f03d01dbe4c",
+   "sent": "a11d4fc616074457e0b4c2cb252b36e25325ee448bac4faba92bce0c73196dbd",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -68,7 +68,7 @@
    }
   },
   "chart-delete-series": {
-   "sent": "7b09da0300c285b2b43ade96a6876bda2417d92afbaf4608113743b6388f1cfd",
+   "sent": "8d9336e1861736b78320eca9ba2a2b5b0ad86f655e7727ae66eff8d6e303bd9f",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -98,7 +98,7 @@
    }
   },
   "chart-delete-chart": {
-   "sent": "2eac40b1913570d51039dc4566b424baf5d732687f861fb87dcc2abb39f44996",
+   "sent": "0a242812132280e316928dba85c1e91760b9c420bee7fc0b2421a7978982eca7",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -121,7 +121,7 @@
    }
   },
   "chart-insert-cols": {
-   "sent": "70054197ad31459aabc074a8dd13fba4a36b588f3191eccccce5147b4b3a29d2",
+   "sent": "24d3a317e9ecb77ba891823c6ff15e483fc1c9a46c1c540769a4140d9f50f0aa",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -152,7 +152,7 @@
    }
   },
   "chart-rename": {
-   "sent": "791aee8f7414d47be9ed70b2e9a933bf5662748725fe0a2f922b9bd7f2793c78",
+   "sent": "bff9c3ce4a647a799e6f70e9af03432e206926544542e1af78598c2db16b2bf1",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -183,7 +183,7 @@
    }
   },
   "chart-move": {
-   "sent": "2fef590c2cfaa04be77898824a8cc473cbfc305c9f0a949abca7a915dbdbbbeb",
+   "sent": "c380bfe5a66792f9bbeadcdc8f74eabac270f0dc7f0a8785d0d75c9941aae65e",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -214,7 +214,7 @@
    }
   },
   "picture-delete-picture": {
-   "sent": "e2029e068c589de782427c7ad9367e7c8d8e97d0ff3918c004e197c75c962805",
+   "sent": "253e7f94baa93e8edc38c41accdfe303697fc7ff0a912391af10ba1d6bcbba0a",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -241,7 +241,7 @@
    }
   },
   "sized-delete-picture": {
-   "sent": "a74c5c1adbea44fafb3a0b1a42e29fc366bcfda8c8492dd76bb4765b50e47928",
+   "sent": "ba9945e8f32b40900e3bf4d5be5f1ad8a78b13413d2e47d4f1609245529844d5",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -273,7 +273,7 @@
    }
   },
   "sized-insert-above": {
-   "sent": "560ac5e29770eab07344c290ccc751117f5a7e0380eced82e710152ed76ad846",
+   "sent": "4a305eddc8091ced16575354bf867e55d1e89cd9b251099f0f261c15380a37b1",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -306,7 +306,7 @@
    }
   },
   "moving-insert-in": {
-   "sent": "6e6f9c013d1c2f2b1e21de5fea34728327ff3b2468010f19b357e58ac2398f69",
+   "sent": "32c23e61599c9c042b3db69cef59767352310ccd474762f94d83a22b097ae5a7",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -372,7 +372,7 @@
    }
   },
   "pivot-insert-source": {
-   "sent": "f4c4a3627bcdd6bc70e79ff5bd45021b3fa183d4eb4e982a55848d914441fa11",
+   "sent": "bed0556522a9a69213346572c916eeb937f6fd0a6e2f400c56b602c3f869972d",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -406,7 +406,7 @@
    }
   },
   "print-delete": {
-   "sent": "5b0c20f095f35e9315eb23f86cafa58252b0fd1c8ee567bc0bf3306dda4d0dcd",
+   "sent": "d78cdf8cc6deded24dec9bcc7d3814351b0cbc1c2a2e6d9119bda9f41509df57",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -442,7 +442,7 @@
    }
   },
   "print-insert": {
-   "sent": "5f818f5a4392b940b5aa5127f2c0d079032036f59ee120614bd316b99285ca14",
+   "sent": "9df0414ad773b441fa60345f727447649fcd4d141542376a0534dc8c78231e04",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -478,7 +478,7 @@
    }
   },
   "print-delete-break-row": {
-   "sent": "6b82388118d292b2036528832ad3ebc7e52069e5890d77a35ea6dfb8088dd995",
+   "sent": "4dd66a327e134429c4ddd12647b924ee20f0815fc60105e5160af213f6682be0",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -512,7 +512,7 @@
    }
   },
   "chartsheet-rename": {
-   "sent": "9f6fdd6fb2dbcef65d1f2a2c1f0e2897ef9956c3917ac491f5850a8335884437",
+   "sent": "4bd3a6e8aac01bd37fccade4096196cca71611ae77b47d01db460734f02c5272",
    "saved": {
     "charts": 2,
     "chartsheets": 1,
@@ -545,7 +545,7 @@
    }
   },
   "all-insert-cols": {
-   "sent": "42703ca9aa9c760ac6d67ee3d95ea9aade3b6f93cd2283184548bfccb250f308",
+   "sent": "5980d2bdd93e7c4d27524b2e6fcc78970dd82ec40ec555d1608cd120cb989630",
    "saved": {
     "charts": 2,
     "chartsheets": 1,
@@ -584,7 +584,7 @@
    }
   },
   "chartsheet-source-deleted": {
-   "sent": "cf78bd3417cd3f879653a9ac93c5e58d75924cf2138b5a724b94d4b6161379c5",
+   "sent": "e50e382e3b47f052ff9e77d9ce9b9bad962afd2a5345aeab000d44e774ed7082",
    "saved": {
     "charts": 1,
     "chartsheets": 1,
@@ -609,7 +609,7 @@
    }
   },
   "filter-insert-in": {
-   "sent": "6385b11e97cf72532a26c120876b8e251f745a5ab884e502244ae69f29c1fb47",
+   "sent": "168057c693dfd78d504e3ce72618a4b1ccb5b7210c7cbb47efbda8d3f0295b81",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -667,7 +667,7 @@
    }
   },
   "filter-insert-above": {
-   "sent": "2e95d4c64c892c5b1ee70540877389f95c3b7f373d0c46e1d6ef387b85c5667d",
+   "sent": "739e5578c85ca32caf28b9775e3f8c2657e1339c98cda499ba27d258251f20ea",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -696,7 +696,7 @@
    }
   },
   "filter-delete-header": {
-   "sent": "f12e17ceecc0808b1b16120fe215c24ffdd18c801e3eb6a65176379b65839e55",
+   "sent": "dfac3c74d58ae8ef7cb205e6d87c9c0140a7662ad9f6e708188ed2e869fb0de9",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -719,7 +719,7 @@
    }
   },
   "filter-delete-all": {
-   "sent": "07d9a409033f712f53aab56fe81e493b9d4e47f4e934a3a4f5d3e87de0350417",
+   "sent": "b52dd1cb18df3d90ac0030878b45d14c5ecf41ea33c3d03e17ef1c68f5d17164",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -742,7 +742,7 @@
    }
   },
   "filter-delete-column": {
-   "sent": "16ee0589107cbe1dc8c5c3ad597cdf855b28506ca6e4c41e218d21dda828b049",
+   "sent": "ceb986f7b0f6515445d62cf684de339d3ed1c5fbd45b093091fddb3b685b5145",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -771,7 +771,7 @@
    }
   },
   "filter-delete-columns-all": {
-   "sent": "2650a5c0d48d8575e5cf7c43b75e6ca9ae4219426d6c1ced61464d75e48107e6",
+   "sent": "daa66bebcdfcec7ac784a77585299bddc7dbb9596b7217248809f2c1043a04d9",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -794,7 +794,7 @@
    }
   },
   "filter-insert-column": {
-   "sent": "650d87c6f3f78ba56c96bd33c9ca2e4695912cdf5c8eb301be2fe2ec51bb43e0",
+   "sent": "08f3dd1b955d6487b0f21c3ab1c73e255304c4c898e753f75bdc9535d97c8a42",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -823,7 +823,7 @@
    }
   },
   "filter-insert-column-right": {
-   "sent": "f51146a0c15e9ff9285da44ec293e0742ddda7d2941a8459e2d63a4477afe626",
+   "sent": "2615568eee5f9997b23b8bc33802a2ee24f57030c19820d80dd41b5a3ae223f6",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -852,7 +852,7 @@
    }
   },
   "filter-move": {
-   "sent": "3aceab4509e80160efc7b04fbd051ec5e77e6885c740377c2e30c421d19f8dba",
+   "sent": "3db770eb834706248a8182708675f18376d776e461c636bd415810ce1642ca30",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -881,7 +881,7 @@
    }
   },
   "filter-move-sheet": {
-   "sent": "c5376ed92e471c366f3f9fab3cec251124dcfd4ea16fd6a0a4e33004ecf41268",
+   "sent": "73679421e78a0eb1f9acc7c5dd54ef0c0f3dd772cbd0c406f7dd6d375b3558a4",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -933,7 +933,7 @@
    }
   },
   "filter-move-over": {
-   "sent": "b41dec9c6344b393ad222442938e28337b7034a6f8a1a7683b244bc8152686bb",
+   "sent": "420f11d3d1148d1f022df9aaa6e44de5a7c32ca5f82bbf7c138ac50e9c623890",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -962,7 +962,7 @@
    }
   },
   "filter-rename": {
-   "sent": "f7691307d633e5d7659df4a3cb349d508dafa76acc33a67e878c64db12db5ad3",
+   "sent": "52fbd6af851be384f698869b8cd5430940db4c6a381e5748bc8087fd7c984126",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -991,7 +991,7 @@
    }
   },
   "filter-delete-sheet": {
-   "sent": "d51c488a2e974fde938506415768056c5a45d19c98443b8626c942c2cc845e29",
+   "sent": "3c7b3004e6d57e65b7b3f3b063bd8a14d1c3e94fea325d9f89ee97c14ee14231",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1014,7 +1014,7 @@
    }
   },
   "filter-delete-head-two": {
-   "sent": "badc36c7d5a62883743ab0f7f41aa98801432e41271a92723262bb9b20a4d5c4",
+   "sent": "70e2449184d833fad2c7e5f456f43318beb76e3082fc4da4fcf3c9fb175a9e59",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1037,7 +1037,7 @@
    }
   },
   "filter-delete-first-column": {
-   "sent": "78d85d58913010b4bf76d35c5671b11c485a1fe0e6b161643a06e683bf431061",
+   "sent": "2394b468fe23f0c05df7f595df5e74335ddc740245e0d956016ed89835996d56",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1095,7 +1095,7 @@
    }
   },
   "filter-move-end-down": {
-   "sent": "b496f72e761a7b49eb47f133783c9060de55c1a10ba138159231cee7599e1a0e",
+   "sent": "c3800953a6c839e08135bcbd765161a664bdb0ceba82353df1f0a4090644eff4",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1380,7 +1380,7 @@
    }
   },
   "wide-delete-before": {
-   "sent": "004867b9ee2136b99a838392ee6e353e5d45a0b61c4e43724daadfafe9c287e5",
+   "sent": "ed1e15c3b0894b1b10590d5ccce88353e9068363abe78e891c9e60781ad07888",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1412,7 +1412,7 @@
    }
   },
   "sparklines-delete-data": {
-   "sent": "2c71b252af8cf094b569c7fe03af4c6a6fbf998c1a8a2f44f27789e5dfde3c40",
+   "sent": "b7b0749652a406c5f68c8d6f7a1d6099429f16b08144b05f11fa39b9e1f547b1",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1441,7 +1441,7 @@
    }
   },
   "sparklines-delete-data-col": {
-   "sent": "fd5565e1870d3d57bae89060d0f457a6158f68acafe3ed50353afe38160474d7",
+   "sent": "b6f26096ae800d7a75e053c012bee00e5a879288d7a43a6804e246199437541c",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1470,7 +1470,7 @@
    }
   },
   "pivot-delete-source-cells": {
-   "sent": "c6f18194dce115686897de9974fa157a0f1e580bbb55a0b498635b63a5ad414c",
+   "sent": "54041888fe004c36001f39768826efb0a3aef25213e01c4b462d46afe96525ee",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -1502,7 +1502,7 @@
    }
   },
   "sparklines-delete-cell": {
-   "sent": "f0a071449babd756672619e6c697dd2b4a3f638b7031a7cbf94688ecdea695f9",
+   "sent": "41baca4474fedba8df9f547f668fa55396af96716b85f854361581ebe62c6609",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1627,7 +1627,7 @@
    }
   },
   "pivot-delete-source-rows": {
-   "sent": "453a9938b93e2ad0ab552de0a5bd712b0cdf986214ab054f241183f8e7c00823",
+   "sent": "fdaa4514dca54b9de2a3d6ab4eea9c85aa654355eb6b0a703132b52259b81b8e",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
@@ -1653,7 +1653,7 @@
    }
   },
   "sparklines-delete-both": {
-   "sent": "87f76d8bc67722a6beb9a3949e6aeb563024d5baa5a30ace59ca51d19075a07b",
+   "sent": "92593cafa793c7e8e731ae4ecdc48c4ca639bc62456c46636044cba357059c9d",
    "saved": {
     "charts": 0,
     "chartsheets": 0,
