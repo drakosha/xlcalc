@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.78.0 (2026-11-03)
+
+Added:
+
+- `numberFormatSamples(value, { locale, dateSystem })` in `xlcalc/entry` and the root: the samples Excel's Number Format list shows under its items for the active cell's value, in list order: `No specific format` (`Формат не указан`) under General, the value in each item's format under the others, ten `#` for a number the format cannot show, a sample past 50 characters cut to 50 and `...`, nothing under the others for an empty cell. Neither the cell's own format nor its column's width changes them. Measured in Excel for Windows, en-US and ru-RU; ru-RU's long date keeps the weekday, as cells show it. A locale gives the words under General in `regional.formats.noFormat`.
+
+Fixed:
+
+- A percent past the largest number (`1E+307` in `0%` or `0.00%`) displays `#` in a cell, as a value its format cannot show (it showed `0%` or `0.In%`); `TEXT` gives `#VALUE!`.
+
+Changed:
+
+- `xlcalc/entry` is 111 KB minified (it was 108).
+
 ## 0.77.0 (2026-11-02)
 
 Changed:
