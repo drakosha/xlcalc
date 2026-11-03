@@ -28,9 +28,9 @@ on run argv
 			set shown to {}
 			if (count of argv) > 4 then
 				set AppleScript's text item delimiters to ","
-				set cells to text items of (item 5 of argv)
+				set addrs to text items of (item 5 of argv)
 				set AppleScript's text item delimiters to ""
-				repeat with a in cells
+				repeat with a in addrs
 					set end of shown to (a as text) & (character id 9) & (formula2 of range (a as text) of worksheet 1 of wb)
 				end repeat
 			end if
