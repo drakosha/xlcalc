@@ -1,29 +1,60 @@
 # xlcalc
 
-A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook (sheets of cells with values and Excel formulas, plus defined names), and it returns the calculated values, the errors with their reasons and a deterministic hash of the values. Formulas use Excel syntax with English function names; [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
+A spreadsheet formula engine for JavaScript. You give it a workbook as plain data: sheets of cells with values and Excel formulas, plus defined names. It returns the calculated values, the errors with their reasons, and a deterministic hash of the values.
 
 Under heavy development. AI-engineered.
 
-- **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 51,925, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
-- **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
-- **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
-- **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
-- **Displayed text.** Each cell carries the text Excel displays for it by its number format, locale and column width; a session also gives a viewport's conditional formats ([Number formats](docs/formats.md)).
-- **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
-- **PivotTables.** Read from xlsx with their slicers and timelines, `GETPIVOTDATA` over them, created and changed in a session, and with `xlcalc/pivot` refreshed and laid out as Excel does: filters, sorting, Show Values As, grouping, calculated fields and items; written back as Excel opens them ([PivotTables](docs/pivot-tables.md)).
-- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)).
-- **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
-- **Node 20.19 or newer and browsers**, no Node APIs.
-
-## Install
+## Quick start
 
 ```sh
 npm install xlcalc
 ```
 
-ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
+```js
+import { compute } from 'xlcalc'
 
-### What to import
+const cells = {
+  A1: { value: 'North' }, B1: { value: 120 },
+  A2: { value: 'South' }, B2: { value: 80 },
+  A3: { value: 'North' }, B3: { value: 45.5 },
+  D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
+  D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
+  D3: { formula: 'B1/(B2-80)' },
+}
+const { sheets, diagnostics } = compute({ sheets: [{ name: 'Sales', cells }] })
+console.log(sheets[0].cells.D1.value) // → 165.5
+console.log(sheets[0].cells.D2.value) // → 80
+console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'DIV0' } division by zero
+```
+
+A formula goes in `formula`, without the leading `=` (one given is dropped, with the same `inputHash`). Data goes in `value`, so text from your data never becomes a formula. The same holds for the formulas of names, tables, conditional formats and data validation. A date goes in `value` as `{ date: '2026-01-31' }`: the cell is `{ value: { date: '2026-01-31' } }`, and the date becomes an Excel serial number. `numberFormat` and `meta` pass through to the result, whose `text` is the value in its number format.
+
+More examples are in [Recipes](#recipes) below and in the [quick start guide](docs/quick-start.md).
+
+## Checked against real Excel
+
+A function is admitted only after it matches Excel on all of its cases. Any other function is `#NAME?`.
+
+The expected results come from real Excel. A harness drives Excel 16 for Mac, and Excel for Windows on a Windows machine, and the results are stored in the repository ([`test/excel/`](https://github.com/drakosha/xlcalc/tree/master/test/excel)). The tests compare the engine with them, so the tests run without Excel. The functions and formulas have 51,925 cases; displayed text, structure operations, tables and xlsx files are checked on workbooks of their own. Many case sets are predicted first: the expected results are written down before Excel runs them. When a prediction misses, the rule is fixed and tested again on a new set.
+
+How each rule was checked: [Development](docs/development.md#how-the-rules-were-checked). The cases by function: [Functions](docs/functions.md). Known differences: [Limitations](docs/limitations.md); other inputs can differ too.
+
+## Features
+
+- **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
+- **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
+- **Excel 365 arrays and LAMBDA.** Operations over ranges, array constants, functions that return arrays, and spilling with `#SPILL!` and `E2#` ([Arrays](docs/formulas.md#arrays)); functions of a workbook's own with `LAMBDA`, in cells and in names, `MAP` and its kin, `GROUPBY` and `PIVOTBY` ([Functions of your own](docs/formulas.md#functions-of-your-own-lambda)).
+- **Displayed text.** Each cell carries the text Excel displays for it by its number format, locale and column width; a session also gives a viewport's conditional formats ([Number formats](docs/formats.md)).
+- **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
+- **Other languages.** Formulas use Excel syntax with English function names; [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
+- **PivotTables.** Read from xlsx with their slicers and timelines, `GETPIVOTDATA` over them, created and changed in a session, and with `xlcalc/pivot` refreshed and laid out as Excel does: filters, sorting, Show Values As, grouping, calculated fields and items; written back as Excel opens them ([PivotTables](docs/pivot-tables.md)).
+- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)).
+- **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
+- **Node 20.19 or newer and browsers**, no Node APIs.
+
+## What to import
+
+ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
 A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (31.10.2026, 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 395 KB.
 
@@ -50,27 +81,6 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
 `xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
-
-## Quick start
-
-```js
-import { compute } from 'xlcalc'
-
-const cells = {
-  A1: { value: 'North' }, B1: { value: 120 },
-  A2: { value: 'South' }, B2: { value: 80 },
-  A3: { value: 'North' }, B3: { value: 45.5 },
-  D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
-  D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
-  D3: { formula: 'B1/(B2-80)' },
-}
-const { sheets, diagnostics } = compute({ sheets: [{ name: 'Sales', cells }] })
-console.log(sheets[0].cells.D1.value) // → 165.5
-console.log(sheets[0].cells.D2.value) // → 80
-console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'DIV0' } division by zero
-```
-
-A formula goes in `formula` without the leading `=` (one given is dropped, with the same `inputHash`), apart from `value`, so text from your data never becomes a formula; the same holds for the formulas of names, tables, conditional formats and data validation. A date is `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and becomes an Excel serial number. `numberFormat` and `meta` pass through to the result, whose `text` is the value in its number format.
 
 ## Recipes
 
