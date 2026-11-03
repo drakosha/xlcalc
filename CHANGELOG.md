@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.78.1 (2026-11-03)
+
+Fixed:
+
+- `docs/links.md` closes its example's code block, so its sections Known differences and Checked against Excel render as headings and the link to the first from `docs/limitations.md` leads there.
+
 ## 0.78.0 (2026-11-03)
 
 Added:
