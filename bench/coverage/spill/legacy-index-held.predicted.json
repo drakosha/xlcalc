@@ -1,0 +1,91 @@
+{
+ "names": {
+  "S!H1": {
+   "t": "n",
+   "v": -2
+  },
+  "S!H2": {
+   "t": "n",
+   "v": 15
+  },
+  "S!H3": {
+   "t": "b",
+   "v": true
+  },
+  "S!H4": {
+   "t": "n",
+   "v": 4
+  },
+  "S!H5": {
+   "t": "e",
+   "v": "REF"
+  },
+  "S!H6": {
+   "t": "n",
+   "v": 2
+  },
+  "S!H7": {
+   "t": "n",
+   "v": 8
+  },
+  "S!H8": {
+   "t": "e",
+   "v": "NA"
+  },
+  "S!H9": {
+   "t": "n",
+   "v": 8
+  },
+  "S!H10": {
+   "t": "n",
+   "v": 114.75
+  },
+  "S!H11": {
+   "t": "n",
+   "v": 114.75
+  },
+  "S!H12": {
+   "t": "n",
+   "v": 114.75
+  },
+  "S!H13": {
+   "t": "n",
+   "v": 6
+  },
+  "S!H14": {
+   "t": "n",
+   "v": 15
+  },
+  "S!H15": {
+   "t": "n",
+   "v": 11
+  },
+  "S!H16": {
+   "t": "n",
+   "v": 16
+  },
+  "S!H17": {
+   "t": "n",
+   "v": 8
+  }
+ },
+ "shown": {
+  "S!H1": "@q_neg",
+  "S!H2": "INDEX(B1:B8,q_three)",
+  "S!H3": "q_true",
+  "S!H4": "@INDEX(B1:B8,q_true)",
+  "S!H5": "@INDEX(B1:B8,q_cell)",
+  "S!H6": "q_alias",
+  "S!H7": "@INDEX(B1:B8,q_alias)",
+  "S!H8": "q_err",
+  "S!H9": "@q_box",
+  "S!H10": "N(@q_sum)",
+  "S!H11": "@IF(TRUE,q_sum)",
+  "S!H12": "SUM(q_sum)",
+  "S!H13": "@q_len*2",
+  "S!H14": "INDEX(q_rng,q_three)",
+  "S!H15": "INDEX(q_rng,MATCH(8,q_rng,0))+@q_len",
+  "S!H16": "OFFSET(q_cell,1,0)",
+  "S!H17": "OFFSET(q_rng,1,0,1,1)"
+ }
+}
