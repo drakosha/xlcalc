@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.79.0 (2026-11-03)
+
+Added:
+
+- `ExternalBook.open`: a host that has read a linked workbook itself says so, and the session reads it as Excel reads an open workbook: a cell missing from its values is blank and a sheet without `cells` is empty, not `#REF!`, and entering a formula over the link sets no `refreshError`; `open` with `refreshError` is an `InputError`. A file gets the values without the marker; `readXlsx` does not set it. `INDIRECT`, `OFFSET`, `CELL` and the tables of a linked workbook stay as for a closed one, a known difference. Checked in Excel for Windows (the set `open-held`).
+
+Changed:
+
+- A link's target as a file stores it, with a space as `%20` (`Report%202025.xlsx`), is found and shown by the name a person reads (`[Report 2025.xlsx]`), as Excel shows it, in `toLocal`, `toInvariant`, `parseEntry`, `setCellText` and `setCells`; typed text is not decoded. `writeXlsx` and `writeKept` write a space of a target as `%20`, as Excel does, leaving Cyrillic, backslashes and `%` as they are, so a link given with a space comes back from the file with `%20`.
+- `writeKept` writes a formula it writes anew, one that inserted or deleted rows or columns readdressed among them, as a plain formula where Excel computes that as the workbook does, and as a dynamic array formula only where it spills or the plain one would compute otherwise: a plain formula no longer adds cell metadata to the file, so Excel before dynamic arrays shows it without braces. Writing a sheet whose formulas all move takes some 13 % longer.
+
+Fixed:
+
+- `writeKept` refuses (`rules`) rows or columns inserted or deleted on a sheet whose data validation rules the workbook could not read, which stayed on cells that moved.
+- `writeKept` keeps a cell's extensions (`<extLst>`) when its value changes and moves them with the cell, as Excel does, and a row written again keeps its extensions where rows did not move.
+- Docs: an empty cell that `patchCells` formats is held in the sheet's `looks`, where `getBook()` and a snapshot list it, not in `cells`.
+
 ## 0.78.1 (2026-11-03)
 
 Fixed:
