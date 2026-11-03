@@ -52,8 +52,8 @@ export function buildSpillCases(): SpillCase[] {
 /** The text Excel 365 was predicted to show for each formula (canonical, without `=`), committed before Excel ran. */
 export const SHOWN: Readonly<Record<string, string>> = PREDICTED.shown
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/** The predictions Excel did not confirm: N takes a name of an array constant without `@` too (and gives #VALUE!): a name of any formula but a literal or a cell is a reference to Excel. */
+export const MISSED: readonly string[] = ['S!H2']
 
 /** The converter's text of each formula, written into the prediction. */
 export const converted = () => Object.fromEntries(at.map((a) => [`S!${a}`, fromLegacy(FORMULAS[a].slice(1), { names: NAMES, sheet: 'S' })]))
