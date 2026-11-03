@@ -39,6 +39,8 @@ interface Out {
   kind: Kind
   /** A place Excel knows leaves one cell as INDEX's row or column: a whole number literal from 1, such a name, MATCH. */
   pos?: true
+  /** A name of a formula that is not a reference: a reference where it goes, but INDEX takes it as an array. */
+  named?: true
 }
 
 /** Arguments whose class the sets show only in part: IFERROR's value and TYPE's pass an array on (`TYPE(IFS("x",1))` is 64), N and T take a range's first cell. */
@@ -120,7 +122,7 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
     case 'COLUMN':
       return args.length && args[0].kind !== 'one' ? 'rowcol' : 'one'
     case 'INDEX': {
-      const ref = args[0].kind === 'range' || nodes[0].k === 'ref'
+      const ref = (args[0].kind === 'range' && !args[0].named) || nodes[0].k === 'ref'
       // of one value one value; of several, one cell when every index given is a number that leaves one
       const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
       return one ? 'one' : ref ? 'range' : 'array'
@@ -233,7 +235,8 @@ function converter(names: Names) {
     if (!def) return { kind: 'one' }
     const lit = def.k === 'un' && def.op === '-' ? def.a : def
     if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def) ? { pos: true as const } : {}) }
-    return { kind: def.k === 'ref' && def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
+    if (def.k === 'ref') return { kind: def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
+    return { kind: 'range', ...(def.k === 'ref3d' || def.k === 'union' || (def.k === 'bin' && isRefOp(def.op)) ? {} : { named: true as const }) }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
