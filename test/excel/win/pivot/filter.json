@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-30",
-  "seconds": 17.1
+  "seconds": 17.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 61 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -1382,67 +1383,67 @@
   }
  ],
  "sent": {
-  "hide-one": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e5c72db4ff7c715e",
-  "hide-blank": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 771689683b72a6cb",
-  "hide-three": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1526c1361c33abf9",
-  "hide-inner": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 af6336ecc4b531f2",
-  "hide-column": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7d8c59370efcbebb",
-  "hide-two-named": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1332d12e10372e84",
-  "page-one": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e2e8aec1c7c8b4f8",
-  "page-several": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 78f0742a0234a4d8",
-  "page-blank": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7ef45ba5da51e96c",
-  "page-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 02aad1e6455a3179",
-  "page-two": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1d33f7b5646b171d",
-  "equals": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 226f5beaca952337",
-  "equals-case": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 28ed3fa9028e2942",
-  "not-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c8cc47f6c22950e2",
-  "begins": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 75337f2a9e1d676a",
-  "not-begins": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 353ab9dcc769c3cd",
-  "ends": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 05aacfc081400794",
-  "not-ends": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 99e0c388ca9a825b",
-  "contains": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 50ca7658c1b0a58f",
-  "not-contains": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 80db127de82082d8",
-  "greater": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a3958140fc799371",
-  "greater-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7eaa2dfa697fc232",
-  "less": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2db64ffb23086583",
-  "less-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 5da02fcc52949d7c",
-  "between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2978180d2646818c",
-  "not-between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b7f1e5786853925e",
-  "wildcard-star": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a004b4b0114dd189",
-  "wildcard-mark": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1b9a00acb04ab679",
-  "blank-label": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d5b06ddcc994277e",
-  "label-numbers": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 dc3f4d6b3d61683c",
-  "label-numbers-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b7bbf20969a27e46",
-  "value-greater": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2337bb2a6217a65d",
-  "value-greater-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d9f353c65ff939a0",
-  "value-less": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 812d922ef79abbdb",
-  "value-less-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 f18748f6eab30758",
-  "value-equals": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b0bf6f46c026faff",
-  "value-not-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d2eb160b78790d4f",
-  "value-between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c7f47b88abe0512c",
-  "value-not-between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 058fee0fec178011",
-  "top-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7427f2f42c5f8ee0",
-  "bottom-count": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 91282a31532cb6c6",
-  "top-percent": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 65eacb8347dbf164",
-  "bottom-percent": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ae1d3cdda8d35ea4",
-  "top-sum": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7ff0594c2c95697d",
-  "bottom-sum": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a352ae99074bdf8c",
-  "top-inner": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4bf8477d928c1949",
-  "top-errors": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e81b377db48b42b7",
-  "date-after": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 011b2964511bd16d",
-  "date-before-equal": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9d76ee434372b882",
-  "date-between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e4153b13924c42cb",
-  "date-not-between": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 641cc824ca4eae85",
-  "date-specific": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1a415c2535237799",
-  "date-january": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7a6f9045bfed396d",
-  "date-quarter-2": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6401e966851138a2",
-  "label-and-value": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d36d30ddb3b4ec3c",
-  "label-then-value": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0b422d75f1b517ec",
-  "hidden-and-value": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 42610941b7f6879c",
-  "inner-label": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6805f17db993c21e",
-  "outer-value-inner-label": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e32f3da96f5b5b17",
-  "column-filter": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fffdb08811342ec7",
-  "page-and-label": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1c12fef3831706fe"
+  "hide-one": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e5c72db4ff7c715e",
+  "hide-blank": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 771689683b72a6cb",
+  "hide-three": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1526c1361c33abf9",
+  "hide-inner": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 af6336ecc4b531f2",
+  "hide-column": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7d8c59370efcbebb",
+  "hide-two-named": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1332d12e10372e84",
+  "page-one": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e2e8aec1c7c8b4f8",
+  "page-several": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 78f0742a0234a4d8",
+  "page-blank": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7ef45ba5da51e96c",
+  "page-all": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 02aad1e6455a3179",
+  "page-two": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1d33f7b5646b171d",
+  "equals": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 226f5beaca952337",
+  "equals-case": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 28ed3fa9028e2942",
+  "not-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 c8cc47f6c22950e2",
+  "begins": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 75337f2a9e1d676a",
+  "not-begins": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 353ab9dcc769c3cd",
+  "ends": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 05aacfc081400794",
+  "not-ends": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 99e0c388ca9a825b",
+  "contains": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 50ca7658c1b0a58f",
+  "not-contains": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 80db127de82082d8",
+  "greater": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 a3958140fc799371",
+  "greater-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7eaa2dfa697fc232",
+  "less": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 2db64ffb23086583",
+  "less-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 5da02fcc52949d7c",
+  "between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 2978180d2646818c",
+  "not-between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b7f1e5786853925e",
+  "wildcard-star": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 a004b4b0114dd189",
+  "wildcard-mark": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1b9a00acb04ab679",
+  "blank-label": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d5b06ddcc994277e",
+  "label-numbers": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 dc3f4d6b3d61683c",
+  "label-numbers-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b7bbf20969a27e46",
+  "value-greater": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 2337bb2a6217a65d",
+  "value-greater-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d9f353c65ff939a0",
+  "value-less": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 812d922ef79abbdb",
+  "value-less-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 f18748f6eab30758",
+  "value-equals": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b0bf6f46c026faff",
+  "value-not-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d2eb160b78790d4f",
+  "value-between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 c7f47b88abe0512c",
+  "value-not-between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 058fee0fec178011",
+  "top-count": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7427f2f42c5f8ee0",
+  "bottom-count": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 91282a31532cb6c6",
+  "top-percent": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 65eacb8347dbf164",
+  "bottom-percent": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ae1d3cdda8d35ea4",
+  "top-sum": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7ff0594c2c95697d",
+  "bottom-sum": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 a352ae99074bdf8c",
+  "top-inner": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 4bf8477d928c1949",
+  "top-errors": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e81b377db48b42b7",
+  "date-after": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 011b2964511bd16d",
+  "date-before-equal": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9d76ee434372b882",
+  "date-between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e4153b13924c42cb",
+  "date-not-between": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 641cc824ca4eae85",
+  "date-specific": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1a415c2535237799",
+  "date-january": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7a6f9045bfed396d",
+  "date-quarter-2": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 6401e966851138a2",
+  "label-and-value": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d36d30ddb3b4ec3c",
+  "label-then-value": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 0b422d75f1b517ec",
+  "hidden-and-value": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 42610941b7f6879c",
+  "inner-label": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 6805f17db993c21e",
+  "outer-value-inner-label": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e32f3da96f5b5b17",
+  "column-filter": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 fffdb08811342ec7",
+  "page-and-label": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1c12fef3831706fe"
  },
  "answers": {
   "hide-one": {
@@ -1530,8 +1531,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -1621,8 +1628,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -1688,8 +1701,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -1887,8 +1906,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A17",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -2074,8 +2099,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:E4"
       }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
      }
     }
    ]
@@ -2285,8 +2316,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:F4"
       }
+     },
+     "results": {
+      "op 2": "Sum of Qty"
      },
      "errors": [
       "op 3: -2146827284 Unable to get the PivotItems property of the PivotField class"
@@ -2415,8 +2452,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A9",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]
@@ -2542,8 +2585,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A9",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]
@@ -2621,8 +2670,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]
@@ -2748,8 +2803,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A9",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     },
     {
@@ -2871,7 +2932,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A9",
+       "columns": ""
       }
      }
     }
@@ -2998,8 +3062,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B2",
+       "rows": "A4:A9",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]
@@ -3053,8 +3123,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3108,8 +3184,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3199,8 +3281,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3254,8 +3342,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3345,8 +3439,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3412,8 +3512,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3491,8 +3597,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3546,8 +3658,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3625,8 +3743,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3704,8 +3828,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3783,8 +3913,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3862,8 +3998,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -3953,8 +4095,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4020,8 +4168,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4099,8 +4253,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4154,8 +4314,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4209,8 +4375,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4264,8 +4436,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4343,8 +4521,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -4410,8 +4594,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -4477,8 +4667,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4544,8 +4740,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4623,8 +4825,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4702,8 +4910,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4757,8 +4971,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4848,8 +5068,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4915,8 +5141,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -4994,8 +5226,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5061,8 +5299,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5128,8 +5372,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5195,8 +5445,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5274,8 +5530,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5341,8 +5603,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5420,8 +5688,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5583,8 +5857,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A14",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -5650,8 +5930,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Amount"
      }
     }
    ]
@@ -5765,8 +6051,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -5844,8 +6136,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -5935,8 +6233,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A8",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -6074,8 +6378,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A12",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -6129,8 +6439,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -6184,8 +6500,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A5",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -6263,8 +6585,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Qty"
      }
     }
    ]
@@ -6330,8 +6658,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -6397,8 +6731,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -6464,8 +6804,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -6603,8 +6949,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A12",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -6646,8 +6998,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A4",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 1": "Sum of Price"
      }
     }
    ]
@@ -6809,8 +7167,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]
@@ -6900,8 +7264,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A6",
+       "columns": ""
       }
+     },
+     "results": {
+      "op 2": "Sum of Price"
      }
     }
    ]

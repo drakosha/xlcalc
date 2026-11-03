@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 21.6
+  "seconds": 21.6,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 4 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -89,10 +90,10 @@
   }
  ],
  "sent": {
-  "plain": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 6d50f3f3bae25a59",
-  "up": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 bc40ce873b30f818",
-  "down": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 77f7b0f99b2cc901",
-  "slicer": "879b3bd2b6c1c80c7ff5ff0c0a96734924bb97df7f3663a054ab21d559ec0527 837907f19c7f315a"
+  "plain": "8a3baedb4fe953a7edbed01aab81da6969c002e814aa2c617a2887c6ddd36a38 6d50f3f3bae25a59",
+  "up": "8a3baedb4fe953a7edbed01aab81da6969c002e814aa2c617a2887c6ddd36a38 bc40ce873b30f818",
+  "down": "8a3baedb4fe953a7edbed01aab81da6969c002e814aa2c617a2887c6ddd36a38 77f7b0f99b2cc901",
+  "slicer": "8a3baedb4fe953a7edbed01aab81da6969c002e814aa2c617a2887c6ddd36a38 837907f19c7f315a"
  },
  "answers": {
   "plain": {

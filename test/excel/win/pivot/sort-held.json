@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-30",
-  "seconds": 39
+  "seconds": 39,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 18 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -527,24 +528,24 @@
   }
  ],
  "sent": {
-  "region-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 60d2fefc4ec180a7",
-  "product-up": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 0571a0c47ce0e43c",
-  "code-up": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8ab7de4c8f777aa8",
-  "when-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9c3d062f42eccc49",
-  "price-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 d3946df87bcabb11",
-  "value-average-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8bbe707b8290adf3",
-  "value-count-up-ties": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 18069d2952019769",
-  "second-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdd1e6cc5317cdfc",
-  "outer-label-inner-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 dd3db5bffd19e7e3",
-  "column-label-down": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 14d7aec35ed17b46",
-  "tabular-value": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9d93d49bc66a4730",
-  "manual-two": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e60792984d1baced",
-  "manual-inner": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 7e2bd48e2a48507e",
-  "manual-then-sort": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 a1c2fdeafb05d554",
-  "days-list": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 b873a27ae518f4aa",
-  "refresh-value-up-new": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 67ea57c21eeafa12",
-  "refresh-label-down-gone": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdf4662c98e61c47",
-  "refresh-manual-gone": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e9f380ff2eb6c9e3"
+  "region-down": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 60d2fefc4ec180a7",
+  "product-up": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 0571a0c47ce0e43c",
+  "code-up": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 8ab7de4c8f777aa8",
+  "when-down": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 9c3d062f42eccc49",
+  "price-down": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 d3946df87bcabb11",
+  "value-average-down": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 8bbe707b8290adf3",
+  "value-count-up-ties": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 18069d2952019769",
+  "second-value": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 fdd1e6cc5317cdfc",
+  "outer-label-inner-value": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 dd3db5bffd19e7e3",
+  "column-label-down": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 14d7aec35ed17b46",
+  "tabular-value": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 9d93d49bc66a4730",
+  "manual-two": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 e60792984d1baced",
+  "manual-inner": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 7e2bd48e2a48507e",
+  "manual-then-sort": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 a1c2fdeafb05d554",
+  "days-list": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 b873a27ae518f4aa",
+  "refresh-value-up-new": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 87318d4869dbe6d3",
+  "refresh-label-down-gone": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 fdf4662c98e61c47",
+  "refresh-manual-gone": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 e9f380ff2eb6c9e3"
  },
  "answers": {
   "region-down": {
@@ -656,7 +657,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -774,7 +778,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -880,7 +887,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1646,7 +1656,10 @@
          "yyyy-mm-dd hh:mm",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A64",
+       "columns": ""
       }
      },
      "results": {
@@ -2316,7 +2329,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A56",
+       "columns": ""
       }
      },
      "results": {
@@ -2434,7 +2450,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -2552,7 +2571,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -2694,7 +2716,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": "B3:C3"
       }
      },
      "results": {
@@ -3125,7 +3150,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A36",
+       "columns": ""
       }
      },
      "results": {
@@ -3390,7 +3418,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A11",
+       "columns": "B3:G4"
       }
      },
      "results": {
@@ -3922,7 +3953,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B36",
+       "columns": ""
       }
      },
      "results": {
@@ -4040,7 +4074,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -4470,7 +4507,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A36",
+       "columns": ""
       }
      },
      "results": {
@@ -4588,7 +4628,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -4702,7 +4745,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      }
     }
@@ -4973,7 +5019,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A23",
+       "columns": ""
       }
      },
      "results": {
@@ -5092,7 +5141,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -5218,7 +5270,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -5336,7 +5391,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -5450,7 +5508,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -5568,7 +5629,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -5694,7 +5758,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {

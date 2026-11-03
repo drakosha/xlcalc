@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 98.2
+  "seconds": 98.2,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 37 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -944,43 +945,43 @@
   }
  ],
  "sent": {
-  "two-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d92ac0b2bba093ca",
-  "two-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fed181f6b1721d44",
-  "two-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1fbf7b25674062ec",
-  "three-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e201532625506fe3",
-  "three-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8d66ea6738649bee",
-  "three-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8300594e803243ee",
-  "repeat-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9a653494a0c6665e",
-  "repeat-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0316011c56568752",
-  "repeat-field": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 730236be9ecdbcfd",
-  "repeat-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d39dba23c9739cd0",
-  "bottom-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6324612c959f2359",
-  "bottom-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 56b4e8a99d13b2a3",
-  "bottom-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9538c646cb90f821",
-  "top-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 dda670601afca4a8",
-  "no-subtotals-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 05a7750a8cee18ee",
-  "no-subtotals-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 16f674010c51e4b7",
-  "no-subtotals-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 236068296c0cd8c7",
-  "subtotals-three": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 5bcf2720cff34935",
-  "subtotals-three-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ac7e7260faac3d0e",
-  "subtotals-inner": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d0abdb206f8ca0d4",
-  "subtotals-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fe3b9e52b8e959d8",
-  "no-row-grand": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6027000ea6593c15",
-  "no-column-grand": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7e68651615caa51a",
-  "no-grand": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 940a33647bec2673",
-  "no-grand-rows-only": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 bfe80ff75755b680",
-  "blank-compact": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e6f09a67ff22f37f",
-  "blank-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ba98772504395366",
-  "captions": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e37de7344d0b433b",
-  "captions-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d88c9ebacf79c7a0",
-  "form-per-field": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 538bf5ad02525b57",
-  "two-columns": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4679cd280732113b",
-  "two-columns-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 17f484e6ffad62b4",
-  "two-values-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 40e63df198a39ce9",
-  "two-values-rows-outline": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 066a7b859bf0eda4",
-  "page-tabular": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 fe17787d96f09c64",
-  "empty-text": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e49d7281a22c347c",
-  "phases": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c3ee82515f9aed0f"
+  "two-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d92ac0b2bba093ca",
+  "two-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 fed181f6b1721d44",
+  "two-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1fbf7b25674062ec",
+  "three-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e201532625506fe3",
+  "three-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 8d66ea6738649bee",
+  "three-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 8300594e803243ee",
+  "repeat-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9a653494a0c6665e",
+  "repeat-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 0316011c56568752",
+  "repeat-field": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 730236be9ecdbcfd",
+  "repeat-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d39dba23c9739cd0",
+  "bottom-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 6324612c959f2359",
+  "bottom-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 56b4e8a99d13b2a3",
+  "bottom-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9538c646cb90f821",
+  "top-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 dda670601afca4a8",
+  "no-subtotals-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 05a7750a8cee18ee",
+  "no-subtotals-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 16f674010c51e4b7",
+  "no-subtotals-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 236068296c0cd8c7",
+  "subtotals-three": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 5bcf2720cff34935",
+  "subtotals-three-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ac7e7260faac3d0e",
+  "subtotals-inner": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d0abdb206f8ca0d4",
+  "subtotals-columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 fe3b9e52b8e959d8",
+  "no-row-grand": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 6027000ea6593c15",
+  "no-column-grand": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7e68651615caa51a",
+  "no-grand": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 940a33647bec2673",
+  "no-grand-rows-only": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 bfe80ff75755b680",
+  "blank-compact": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e6f09a67ff22f37f",
+  "blank-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ba98772504395366",
+  "captions": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e37de7344d0b433b",
+  "captions-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d88c9ebacf79c7a0",
+  "form-per-field": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 538bf5ad02525b57",
+  "two-columns": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 4679cd280732113b",
+  "two-columns-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 17f484e6ffad62b4",
+  "two-values-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 40e63df198a39ce9",
+  "two-values-rows-outline": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 066a7b859bf0eda4",
+  "page-tabular": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 fe17787d96f09c64",
+  "empty-text": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e49d7281a22c347c",
+  "phases": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 c3ee82515f9aed0f"
  },
  "answers": {
   "two-compact": {
@@ -1296,7 +1297,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -1693,7 +1697,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -2090,7 +2097,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -2472,7 +2482,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -3034,7 +3047,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -3596,7 +3612,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -4158,7 +4177,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -4720,7 +4742,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -5282,7 +5307,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -5664,7 +5692,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -6214,7 +6245,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A46",
+       "columns": ""
       }
      },
      "results": {
@@ -7028,7 +7062,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      },
      "results": {
@@ -7590,7 +7627,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -7987,7 +8027,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -8369,7 +8412,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -8931,7 +8977,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -9403,7 +9452,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C27",
+       "columns": ""
       }
      },
      "results": {
@@ -9950,7 +10002,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B37",
+       "columns": ""
       }
      },
      "results": {
@@ -10392,7 +10447,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A37",
+       "columns": ""
       }
      },
      "results": {
@@ -10954,7 +11012,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -11300,7 +11361,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:J5"
       }
      },
      "results": {
@@ -11442,7 +11506,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:C4"
       }
      },
      "results": {
@@ -11590,7 +11657,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -11717,7 +11787,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:C4"
       }
      },
      "results": {
@@ -12027,7 +12100,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A26",
+       "columns": ""
       }
      },
      "results": {
@@ -12409,7 +12485,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -13223,7 +13302,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      },
      "results": {
@@ -13389,7 +13471,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -13786,7 +13871,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -14348,7 +14436,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -14640,7 +14731,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:H5"
       }
      },
      "results": {
@@ -15121,7 +15215,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B19",
+       "columns": "C3:G4"
       }
      },
      "results": {
@@ -15431,7 +15528,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B18",
+       "columns": "C3:D3"
       }
      },
      "results": {
@@ -16264,7 +16364,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C47",
+       "columns": ""
       }
      },
      "results": {
@@ -16707,7 +16810,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "A1:B2",
+       "rows": "A4:B28",
+       "columns": ""
       }
      },
      "results": {
@@ -17275,7 +17381,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B28",
+       "columns": "C3:E4"
       }
      },
      "results": {
@@ -17597,7 +17706,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -17990,7 +18102,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      }
     },
@@ -18221,7 +18336,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:G4"
       }
      }
     },
@@ -18317,7 +18435,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": "B3:G4"
       }
      }
     }

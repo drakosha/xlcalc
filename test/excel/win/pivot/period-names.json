@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 19.1
+  "seconds": 19.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 14 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -389,20 +390,20 @@
   }
  ],
  "sent": {
-  "years": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 dfc0a1e568f448e6",
-  "quarters": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9cd870f72e77e2b2",
-  "months": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d549a484e257b419",
-  "days": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c2e05381663f5dda",
-  "hours": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 4fb3f78804c2e079",
-  "minutes": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 724adb8452e521df",
-  "seconds": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 6290666c438b079a",
-  "dates-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 02169035cae505ea",
-  "times-all": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 8f7a21df26a67d84",
-  "days-7": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 aecc1f66468d4184",
-  "start-end": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0fe0d677533abe37",
-  "price-half": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 b3737fc542ea6ef3",
-  "price-start-blank": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7216f98faabebdaf",
-  "refresh-new-date": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 129200bb2de176ab"
+  "years": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 dfc0a1e568f448e6",
+  "quarters": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9cd870f72e77e2b2",
+  "months": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d549a484e257b419",
+  "days": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 c2e05381663f5dda",
+  "hours": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 4fb3f78804c2e079",
+  "minutes": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 724adb8452e521df",
+  "seconds": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 6290666c438b079a",
+  "dates-all": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 02169035cae505ea",
+  "times-all": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 8f7a21df26a67d84",
+  "days-7": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 aecc1f66468d4184",
+  "start-end": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 0fe0d677533abe37",
+  "price-half": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 b3737fc542ea6ef3",
+  "price-start-blank": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7216f98faabebdaf",
+  "refresh-new-date": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 129200bb2de176ab"
  },
  "answers": {
   "years": {

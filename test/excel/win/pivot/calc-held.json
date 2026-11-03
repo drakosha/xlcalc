@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 37.5
+  "seconds": 37.5,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 18 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -458,24 +459,24 @@
   }
  ],
  "sent": {
-  "if-errors": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 2588a3bad5d77901",
-  "iferror-ratio": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 80852af8d68468e2",
-  "power": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 e1ce6103f9cc5e61",
-  "abs": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 f8d6f30d6b0936fe",
-  "min": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 dfbfd0fe508aebc5",
-  "div-some": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fe623035a636630a",
-  "boolean": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 d8a8bcda99f5a98d",
-  "columns-subtotals": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8cb9d72665b36545",
-  "ratio-tabular": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 fdf834a0a16e2426",
-  "item-subtotals": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 245a6bafaee73ece",
-  "item-grand": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 1ce97189f3c8650f",
-  "item-number": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 0f810083cf688bdb",
-  "item-lower": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 da7934c6f602b35f",
-  "item-two-fields": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 de0cca5c5337fcdf",
-  "field-and-item": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 6ab630b1f5e0508e",
-  "item-then-field": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 5f30c259fe2713e8",
-  "shared-field": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 a99f9a3a9e2fb0aa",
-  "shared-item": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 f7a4ac007d5cae80"
+  "if-errors": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 2588a3bad5d77901",
+  "iferror-ratio": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 80852af8d68468e2",
+  "power": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 e1ce6103f9cc5e61",
+  "abs": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 f8d6f30d6b0936fe",
+  "min": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 dfbfd0fe508aebc5",
+  "div-some": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 fe623035a636630a",
+  "boolean": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 d8a8bcda99f5a98d",
+  "columns-subtotals": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 8cb9d72665b36545",
+  "ratio-tabular": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 fdf834a0a16e2426",
+  "item-subtotals": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 245a6bafaee73ece",
+  "item-grand": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 1ce97189f3c8650f",
+  "item-number": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 0f810083cf688bdb",
+  "item-lower": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 da7934c6f602b35f",
+  "item-two-fields": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 de0cca5c5337fcdf",
+  "field-and-item": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 6ab630b1f5e0508e",
+  "item-then-field": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 5f30c259fe2713e8",
+  "shared-field": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 a99f9a3a9e2fb0aa",
+  "shared-item": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 f7a4ac007d5cae80"
  },
  "answers": {
   "if-errors": {
@@ -593,7 +594,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -1023,7 +1027,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A36",
+       "columns": ""
       }
      },
      "results": {
@@ -1141,7 +1148,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -1265,7 +1275,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -1383,7 +1396,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -1489,7 +1505,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1607,7 +1626,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -2365,7 +2387,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B22",
+       "columns": "C3:I4"
       }
      },
      "results": {
@@ -2907,7 +2932,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B36",
+       "columns": ""
       }
      },
      "results": {
@@ -3409,7 +3437,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A42",
+       "columns": ""
       }
      },
      "results": {
@@ -3611,7 +3642,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A12",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -3729,7 +3763,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -3859,7 +3896,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -4457,7 +4497,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A50",
+       "columns": ""
       }
      },
      "results": {
@@ -4614,7 +4657,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": "B3:C3"
       }
      },
      "results": {
@@ -4772,7 +4818,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": "B3:C3"
       }
      },
      "results": {
@@ -4891,7 +4940,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       },
       "PT2": {
        "table": "E3:F10",
@@ -4998,7 +5050,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "E3:E10",
+       "columns": ""
       }
      },
      "results": {
@@ -5129,7 +5184,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       },
       "PT2": {
        "table": "E3:F11",
@@ -5248,7 +5306,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "E3:E11",
+       "columns": ""
       }
      },
      "results": {

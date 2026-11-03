@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 16.4
+  "seconds": 16.4,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 7 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -196,13 +197,13 @@
   }
  ],
  "sent": {
-  "quarters-years-start": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 063f90ea7e4e9282",
-  "days-months-columns": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9eae9a990a63a7ba",
-  "minutes-hours": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 00725c5c0d553f3c",
-  "days-14": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 1374321d18ea11d6",
-  "years-end": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 69db83c504898cf0",
-  "qty-fraction-start": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 8a11807171a094ca",
-  "qty-fraction-price": "0c111e37c630273041ba7b94e40acaa49c3f66706cc6d6db98f570246b0c0527 9187af623e72f1e6"
+  "quarters-years-start": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 063f90ea7e4e9282",
+  "days-months-columns": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 9eae9a990a63a7ba",
+  "minutes-hours": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 00725c5c0d553f3c",
+  "days-14": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 1374321d18ea11d6",
+  "years-end": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 69db83c504898cf0",
+  "qty-fraction-start": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 8a11807171a094ca",
+  "qty-fraction-price": "cde69625f24461f0a211c7f4426cb5f50e2311565f62aabe3a876ed788d62ac4 9187af623e72f1e6"
  },
  "answers": {
   "quarters-years-start": {

@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 29.1
+  "seconds": 29.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 11 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -294,17 +295,17 @@
   }
  ],
  "sent": {
-  "default": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 24d61c15bd7e2425",
-  "own": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ae0f56a580cf51fd",
-  "other-default-en": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7404fc75afa07633",
-  "other-default-ru": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 0fbe7eeb8ca8f4ae",
-  "sum-text-en": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 e52a7806cb2d6e6b",
-  "sum-text-ru": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 d36552b25cbe7bfe",
-  "second": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 93fa3f0a30f487e0",
-  "named-back": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 1350c0b4a54ef897",
-  "name-and-function": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 83e52035e4c875de",
-  "lower-case": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 11a20fed2ec9c0bc",
-  "calculated": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 c7b27dfac1ae9b7e"
+  "default": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 24d61c15bd7e2425",
+  "own": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ae0f56a580cf51fd",
+  "other-default-en": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7404fc75afa07633",
+  "other-default-ru": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 0fbe7eeb8ca8f4ae",
+  "sum-text-en": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 e52a7806cb2d6e6b",
+  "sum-text-ru": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 d36552b25cbe7bfe",
+  "second": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 93fa3f0a30f487e0",
+  "named-back": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 1350c0b4a54ef897",
+  "name-and-function": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 83e52035e4c875de",
+  "lower-case": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 11a20fed2ec9c0bc",
+  "calculated": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 c7b27dfac1ae9b7e"
  },
  "answers": {
   "default": {

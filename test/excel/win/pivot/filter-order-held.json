@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 40.1
+  "seconds": 40.1,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 2 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -2240,8 +2241,8 @@
   "var": "a509336873f7997d27086bac69c7e0066b94bb2482e8b2124f9a1adc88db3c77 d074c855d95afad9",
   "stdDev": "a509336873f7997d27086bac69c7e0066b94bb2482e8b2124f9a1adc88db3c77 9902e67430fdffc7",
   "two-filters": "a509336873f7997d27086bac69c7e0066b94bb2482e8b2124f9a1adc88db3c77 daede2ec88366bd5",
-  "errors-all": "510049e683530ad734c1ada975477d9c9bea88d0cdc5063dbb7e26dfa1e95eaf 7eadb847a24de9a3",
-  "errors-filtered": "510049e683530ad734c1ada975477d9c9bea88d0cdc5063dbb7e26dfa1e95eaf ba1444a294df2689"
+  "errors-all": "3b916a94776218c288ba72928cc2ec98eff9fe2516eb7e9c1172981a4282c3a1 7eadb847a24de9a3",
+  "errors-filtered": "3b916a94776218c288ba72928cc2ec98eff9fe2516eb7e9c1172981a4282c3a1 ba1444a294df2689"
  },
  "answers": {
   "sum": {
@@ -8124,7 +8125,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A5",
+       "columns": "B3:C3"
       }
      },
      "results": {
@@ -8230,7 +8234,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B1",
+       "rows": "A3:A5",
+       "columns": "B3:C3"
       }
      },
      "results": {

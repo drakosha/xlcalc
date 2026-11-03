@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 32.9
+  "seconds": 32.9,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 21 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -630,27 +631,27 @@
   }
  ],
  "sent": {
-  "text": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 0e20ab1d76e1535f",
-  "money": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 1e23c709d617375f",
-  "pct": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 4100f05548ebf9e8",
-  "plain": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 65aabf1064a49275",
-  "thou": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 f89b9624f65cefca",
-  "day": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 be5112da27eef744",
-  "long": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 b292823897b9ed5c",
-  "time": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 6dccd19974cadbae",
-  "when": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 d0d0e88c1311824f",
-  "clock": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a7dd06bef479d7d0",
-  "flag": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 6c38ff869a23c66b",
-  "err": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 63c1578f1e494b94",
-  "mixed": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 1b904c5abe19c821",
-  "money-no-axis": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 b0ac6040b3441f22",
-  "plain-own-format": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 35fc4b319caf2928",
-  "day-months": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a1896928b3308127",
-  "day-months-years": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 835ae749d76c8ee1",
-  "time-1904": "0fdc123cb366a033a98e2104446eb1f80ebb42adf3b499b76006c6f1b6a206e5 6dccd19974cadbae",
-  "clock-1904": "0fdc123cb366a033a98e2104446eb1f80ebb42adf3b499b76006c6f1b6a206e5 a7dd06bef479d7d0",
-  "time-no-axis": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 dc63ed3d78a0d7d7",
-  "n-numbers": "3ac7f5a234d21b878f5106c8afcde77bbbb276d3b68cf3b945d473b5c55bf972 a5e7b42c62cad74c"
+  "text": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 0e20ab1d76e1535f",
+  "money": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 1e23c709d617375f",
+  "pct": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 4100f05548ebf9e8",
+  "plain": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 65aabf1064a49275",
+  "thou": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 f89b9624f65cefca",
+  "day": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 be5112da27eef744",
+  "long": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 b292823897b9ed5c",
+  "time": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 6dccd19974cadbae",
+  "when": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 d0d0e88c1311824f",
+  "clock": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 a7dd06bef479d7d0",
+  "flag": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 6c38ff869a23c66b",
+  "err": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 63c1578f1e494b94",
+  "mixed": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 1b904c5abe19c821",
+  "money-no-axis": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 b0ac6040b3441f22",
+  "plain-own-format": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 35fc4b319caf2928",
+  "day-months": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 a1896928b3308127",
+  "day-months-years": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 835ae749d76c8ee1",
+  "time-1904": "ed731bc8b49e4cf89fdb7a6ebcad5b4bf8cb1f2a7c1608de8f7752958d49ad83 6dccd19974cadbae",
+  "clock-1904": "ed731bc8b49e4cf89fdb7a6ebcad5b4bf8cb1f2a7c1608de8f7752958d49ad83 a7dd06bef479d7d0",
+  "time-no-axis": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 dc63ed3d78a0d7d7",
+  "n-numbers": "d1491f55187999915ac9cb12a7a1655a1b773b4decb5a9dc299a89f4814b9fa9 a5e7b42c62cad74c"
  },
  "answers": {
   "text": {
@@ -762,7 +763,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -962,7 +966,10 @@
          "$# ##0,00",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -1172,7 +1179,10 @@
          "0,0%",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -1382,7 +1392,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -1592,7 +1605,10 @@
          "# ##0",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -1802,7 +1818,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -2012,7 +2031,10 @@
          "Д ММММ ГГГГ",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -2210,7 +2232,10 @@
          "ч:мм",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -2410,7 +2435,10 @@
          "ДД.ММ.ГГГГ ч:мм",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -2620,7 +2648,10 @@
          "ч:мм",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -2770,7 +2801,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A6",
+       "columns": ""
       }
      },
      "results": {
@@ -2918,7 +2952,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -3106,7 +3143,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -3216,7 +3256,10 @@
         [
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -3426,7 +3469,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -3639,7 +3685,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -3873,7 +3922,10 @@
          "Основной",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A13",
+       "columns": ""
       }
      },
      "results": {
@@ -4005,7 +4057,10 @@
          "ч:мм",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A10",
+       "columns": ""
       }
      },
      "results": {
@@ -4205,7 +4260,10 @@
          "ч:мм",
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A11",
+       "columns": ""
       }
      },
      "results": {
@@ -4325,7 +4383,10 @@
         [
          "Основной"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": ""
       }
      },
      "results": {
@@ -4477,7 +4538,10 @@
          "Основной",
          "0,0%"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A7",
+       "columns": ""
       }
      },
      "results": {

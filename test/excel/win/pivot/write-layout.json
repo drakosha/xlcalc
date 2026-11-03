@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 40.8
+  "seconds": 40.8,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 37 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -457,43 +458,43 @@
   }
  ],
  "sent": {
-  "two-compact": "2cff88ac4903d90ac924f9fd54b61b1012e340ac6f5520b9b3c813a9cd0bae34 581bb1faa69789f2",
-  "two-outline": "6b998902ac36b4ae6264b5548598bf954378a9bcd9f7d441fd39ddc11e8ea59c 581bb1faa69789f2",
-  "two-tabular": "6fb9533f70d987b205c9d91492892a1061466e8ee710076b72bb6dc6466ff1e0 581bb1faa69789f2",
-  "three-compact": "25fc3e43e788d2974361548bf485d2fdced80fea725c6983ccc3150c5e845dd7 581bb1faa69789f2",
-  "three-outline": "0ea6e4b520a7cdec25fdaa8f6905d25c6ad16aebe576f7cd7bd4ae6455a10a83 581bb1faa69789f2",
-  "three-tabular": "28d16a884a5a2b9d8e66b596e849fedbd39f1972263e0cb07f75c2f710b4f211 581bb1faa69789f2",
-  "repeat-outline": "76bd13000daf2d38d960b3260aeda3250923bf567d6a131e23345cc131b0eefa 581bb1faa69789f2",
-  "repeat-tabular": "53e5710a75734fb7e80cd7352f5478413abbbf01ef74ebb6841879efb7f242c3 581bb1faa69789f2",
-  "repeat-field": "cdd74f6502598e2ef260c9ad1708d4fd25f739ff572133e4eaa65a0acc13c8ac 581bb1faa69789f2",
-  "repeat-compact": "439ca64d4bda7ea7601e274adcde45773edcb665e8b6b01ad7ae1ca32745a30e 581bb1faa69789f2",
-  "bottom-compact": "04f606e6c5380b309ace0fccf271d3fa3481ac1328081887353971f1e12d883f 581bb1faa69789f2",
-  "bottom-outline": "64c307177e90d70b8a964ffa78d44813823468343539e33aea4ceca8bbfbb17a 581bb1faa69789f2",
-  "bottom-tabular": "9c12fe62eafb2ff5abc2e1290437e3134cc6f7d5547032f85dbc458894ce3f30 581bb1faa69789f2",
-  "top-outline": "42d89a82fc3234f7e735831d4712918be3cb3ba133e0d7b72f52bb2b992f3360 581bb1faa69789f2",
-  "no-subtotals-compact": "0168fce0d7cc4aeda8a597d7aa3aae55185f07f63544d01bf23bd4f7c6521920 581bb1faa69789f2",
-  "no-subtotals-outline": "8ce5ec30553910a7daea4af06bc23e3af9ef817503f833675bc538545376b9df 581bb1faa69789f2",
-  "no-subtotals-tabular": "3638fda007f5b46240004a93ff3beac63ae15ce0daaac5e259dc710105f18fea 581bb1faa69789f2",
-  "subtotals-three": "250d4113d417530808de6df9b27290af8d613dae095ce61337784303f1be2f01 581bb1faa69789f2",
-  "subtotals-three-compact": "17a3cb6daca2b6a04ade9a6a5911f17e4eacb5c076c0b4d14a026c0e6b472192 581bb1faa69789f2",
-  "subtotals-inner": "55ac087cc147358bdc93ceb5eb70001774fe15e7dd1b98ba962aefbf4a544bb6 581bb1faa69789f2",
-  "subtotals-columns": "fefe88b1e749a781a256760d812a628327eb98393338cfb3ee45362d9421a906 581bb1faa69789f2",
-  "no-row-grand": "81c2c71aa3ee8fa8da7c94fd5bab34f92a4a81d6179ff656454ec158937495ba 581bb1faa69789f2",
-  "no-column-grand": "6268533389f248ec19c21b8c445a8e912a842b7a77a44bba64612d5e30cb1a51 581bb1faa69789f2",
-  "no-grand": "67c96863e32371e76217760d1f16aaaca1c3e2dfd79f87d647fd3f5be2336b0a 581bb1faa69789f2",
-  "no-grand-rows-only": "04af86148c94b515e5c5233998d3971bd1de481bca32e4a1ccd692cad31f1ece 581bb1faa69789f2",
-  "blank-compact": "aff6278393a7048d0279fd607d9c3b2afabbeead37dcd841fcdff695e03cf067 581bb1faa69789f2",
-  "blank-tabular": "2e998714c4481a5df0dc488d3ac9a4f66e229614c8728c27bb3dfd0223e1669c 581bb1faa69789f2",
-  "captions": "fc1ca9103e215605ea8cc5ee5acf4e5075c564d01b0c08b3e070edc3b492855a 581bb1faa69789f2",
-  "captions-tabular": "a6b1747ff1581d9ece568f9fa5efef0a3088e99b852c558c01d8c9b3b6f87e67 581bb1faa69789f2",
-  "form-per-field": "087a9eaea931c546b7fa361c70c3efd7863a6d689d3f2034dc5cadf0a8041e54 581bb1faa69789f2",
-  "two-columns": "d4c790c62f44576f9c9a67241138b90a15936921516a3b640d22c1dd00a99c85 581bb1faa69789f2",
-  "two-columns-tabular": "c14811a197a12503c737f1aac5efda59e09d1b83130cb0158073a905aed0ac97 581bb1faa69789f2",
-  "two-values-tabular": "2f439a7c9c73d748b0a1d0e5c7edc0081af9d0e666cfb47c0d7d7e8db1bedafd 581bb1faa69789f2",
-  "two-values-rows-outline": "8421c98b9247851db565d25eb9363d2579e09b0e53992892158ae04b00aa7b85 581bb1faa69789f2",
-  "page-tabular": "8505e204f77ace08c84119fe65608dcffa15f0d2305a3a655ba0ad45a10e14d0 581bb1faa69789f2",
-  "empty-text": "634fca41dbd996d5febfacfcc8dd09dd81b13f183b8ef089ebad02686f385e8b 581bb1faa69789f2",
-  "phases": "b69d0468ba966d8aac66c198525acb49703e61c5684a248ad287efeda3237df7 581bb1faa69789f2"
+  "two-compact": "12e137e57f7c46410c2b39801930c1a6ce9704b9bbce0cdf5331a2a04052cb7b 581bb1faa69789f2",
+  "two-outline": "085527ba3b99681afc32923e43814b5e2a4060e9e50ac257c5943d0a1ed5e854 581bb1faa69789f2",
+  "two-tabular": "789f237659161c6605f87621700991791ca8470a8f4999e54225ed9977392649 581bb1faa69789f2",
+  "three-compact": "93c8742cce3a972ad5ea9c50c368a6ae5a50e04df85caa60da2d01801d665bf2 581bb1faa69789f2",
+  "three-outline": "97684a264fd2fd46f69fd5a69535b5fb85914d9ef6267dbbd3029b7f01318ede 581bb1faa69789f2",
+  "three-tabular": "7bd17315b8f02d4129e259b502f64d3d1c35acfb86c2d2b12e71bad037b44488 581bb1faa69789f2",
+  "repeat-outline": "567c3196a4a5c9e7dc71735d3e885a999988aed63f8211e45ed3dc53715c3377 581bb1faa69789f2",
+  "repeat-tabular": "c5d16c8d90af70ee7a33e9c6fa9f1062fc83c7b1653e4ad6aacb44e3370d0b0f 581bb1faa69789f2",
+  "repeat-field": "de041afc1bb87f2990fe8d44adc2a65ca33666a525e4a6d4266a6fc06ab90ab9 581bb1faa69789f2",
+  "repeat-compact": "9f26b4efff489a00e845c63c1f5b34e437fc43ab1f08049d89c5cc02119cc74a 581bb1faa69789f2",
+  "bottom-compact": "ba7906c9036d4443405e9a69ba014711b71fe5ab35545f8cb5c8b9c88cda41d8 581bb1faa69789f2",
+  "bottom-outline": "3d2a017339f0d86ea9970f2c7bbc61415f2024725f956cdc9c6aa8a6988a6127 581bb1faa69789f2",
+  "bottom-tabular": "cdd65043cf3589e75bebea6b79d00d96b072a92e3e83b2e5e09fcaefc4acc28f 581bb1faa69789f2",
+  "top-outline": "c195af1bf812696c0d3d90bf93bb40bc2dfd50d48116fa33ab9151a3d6d9669a 581bb1faa69789f2",
+  "no-subtotals-compact": "8b36c61d087962b6f724502c9a126c51f27de5bfca349642e06882922cfa7ea1 581bb1faa69789f2",
+  "no-subtotals-outline": "b9905032cb7df7b201c8797d7d9a5eb7757cd91ca178256046963222895dc3c3 581bb1faa69789f2",
+  "no-subtotals-tabular": "7663b2a79836bc2062199af88cbb5aaf40ca684a1e6e169228e78eaf63cc4310 581bb1faa69789f2",
+  "subtotals-three": "56665dcbc29e67d1cefb5f8a788aa2b27b559beb245c41cf423cbed9425336e9 581bb1faa69789f2",
+  "subtotals-three-compact": "1e78b90c1d0bfdb5d235a02ac3fbb990a77c23d0400790154d971070a8b3c585 581bb1faa69789f2",
+  "subtotals-inner": "0526a24052b1432414be1cff72634095c7075a67b6cc23cff70e68d06936f36b 581bb1faa69789f2",
+  "subtotals-columns": "7e65c8c93e8e9bf083710ce58927feaa612e441dccafe5084b3b49bfd8fac477 581bb1faa69789f2",
+  "no-row-grand": "13c99d2892e88645b7b05cde2cf4b79734d9510393325a4a7f8076c8ff5b5f28 581bb1faa69789f2",
+  "no-column-grand": "bb0e5dbea70bf5a9e8de09be0028b4282db21353066674498b3c1e3c2142e04c 581bb1faa69789f2",
+  "no-grand": "bbbd08f527dc46404765834e27d19b45069a4941a885af66219144ccb76e46ab 581bb1faa69789f2",
+  "no-grand-rows-only": "5b0a8dd9c9790fa16c8849a969ec30b6ae587d564f86493181187145ad286e54 581bb1faa69789f2",
+  "blank-compact": "5a3331729f71ff44d7053104432195a901998ce270a2a47d1d7e9a854772ab59 581bb1faa69789f2",
+  "blank-tabular": "d79d5dcbb45b6942d473c0d011968c7c05759410d981b39fde6465d179edce92 581bb1faa69789f2",
+  "captions": "d90bc94d93590ebc6a1e3db4937159fca67286d76d619ec2c00d81ffdc2a6a7d 581bb1faa69789f2",
+  "captions-tabular": "87dc059e93d0d15600c10420ebcb2177927cdaea940c9d64e15e64be57b2e276 581bb1faa69789f2",
+  "form-per-field": "621b90b94299ffe043fa52a9f9c855811031932d6ccb498b7f435b4244f8eb82 581bb1faa69789f2",
+  "two-columns": "889c5466fc1cb20fd92915ba44cc40f6efc4121e9e821245f7ca4d37c783844c 581bb1faa69789f2",
+  "two-columns-tabular": "56c7f134bbfea66cc4636107bd4ba15d440b9878ff3dc05d1932a0f2dcfe86ef 581bb1faa69789f2",
+  "two-values-tabular": "5c4e0b30d81f7c9828f21258c7f7044cb97cceed7cb30a19258a7a60ff1635f2 581bb1faa69789f2",
+  "two-values-rows-outline": "e3bb87c5db2177f2bc0983d47dec7a0f6399978c85188c281dd24cd3449008b4 581bb1faa69789f2",
+  "page-tabular": "87ec7fa5b09fdb95efe875c24b549fbeea8e68c8782ba056a83d437f15ae3618 581bb1faa69789f2",
+  "empty-text": "9b23fd23505058b933fbbea3c9c8040cded48fdfdb617b93dc3986359ed2af7d 581bb1faa69789f2",
+  "phases": "5e5f60bf4722d69f2173e56e2aa8a270d25ddb42a757b163fb9d7d226c5f0cde 581bb1faa69789f2"
  },
  "answers": {
   "two-compact": {
@@ -809,7 +810,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      }
     },
@@ -1124,7 +1128,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A27",
+       "columns": ""
       }
      },
      "results": {
@@ -1521,7 +1528,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      }
     },
@@ -1911,7 +1921,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -2308,7 +2321,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      }
     },
@@ -2698,7 +2714,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -3080,7 +3099,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      }
     },
@@ -3455,7 +3477,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -4017,7 +4042,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -4572,7 +4600,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -5134,7 +5165,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -5689,7 +5723,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -6251,7 +6288,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -6806,7 +6846,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -7368,7 +7411,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -7923,7 +7969,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -8485,7 +8534,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -9040,7 +9092,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -9422,7 +9477,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      }
     },
@@ -9797,7 +9855,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -10347,7 +10408,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A46",
+       "columns": ""
       }
      }
     },
@@ -10890,7 +10954,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A46",
+       "columns": ""
       }
      },
      "results": {
@@ -11704,7 +11771,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      }
     },
@@ -12511,7 +12581,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      },
      "results": {
@@ -13073,7 +13146,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -13628,7 +13704,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -14025,7 +14104,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      }
     },
@@ -14415,7 +14497,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -14797,7 +14882,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      }
     },
@@ -15172,7 +15260,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -15734,7 +15825,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -16289,7 +16383,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -16761,7 +16858,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C27",
+       "columns": ""
       }
      }
     },
@@ -17226,7 +17326,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C27",
+       "columns": ""
       }
      },
      "results": {
@@ -17773,7 +17876,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B37",
+       "columns": ""
       }
      }
     },
@@ -18313,7 +18419,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B37",
+       "columns": ""
       }
      },
      "results": {
@@ -18755,7 +18864,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A37",
+       "columns": ""
       }
      }
     },
@@ -19190,7 +19302,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A37",
+       "columns": ""
       }
      },
      "results": {
@@ -19752,7 +19867,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -20307,7 +20425,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -20653,7 +20774,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:J5"
       }
      }
     },
@@ -20992,7 +21116,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:J5"
       }
      },
      "results": {
@@ -21134,7 +21261,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:C4"
       }
      }
     },
@@ -21269,7 +21399,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:C4"
       }
      },
      "results": {
@@ -21417,7 +21550,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:D4"
       }
      }
     },
@@ -21558,7 +21694,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -21685,7 +21824,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:C4"
       }
      }
     },
@@ -21805,7 +21947,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A9",
+       "columns": "B3:C4"
       }
      },
      "results": {
@@ -22115,7 +22260,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A26",
+       "columns": ""
       }
      }
     },
@@ -22418,7 +22566,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A26",
+       "columns": ""
       }
      },
      "results": {
@@ -22800,7 +22951,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      }
     },
@@ -23175,7 +23329,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A32",
+       "columns": ""
       }
      },
      "results": {
@@ -23989,7 +24146,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      }
     },
@@ -24796,7 +24956,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C46",
+       "columns": ""
       }
      },
      "results": {
@@ -24962,7 +25125,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
      }
     },
@@ -25121,7 +25287,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:A10",
+       "columns": "B3:D4"
       }
      },
      "results": {
@@ -25518,7 +25687,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      }
     },
@@ -25908,7 +26080,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B27",
+       "columns": ""
       }
      },
      "results": {
@@ -26470,7 +26645,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      }
     },
@@ -27025,7 +27203,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C32",
+       "columns": ""
       }
      },
      "results": {
@@ -27317,7 +27498,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:H5"
       }
      }
     },
@@ -27602,7 +27786,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A5:A11",
+       "columns": "B3:H5"
       }
      },
      "results": {
@@ -28083,7 +28270,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B19",
+       "columns": "C3:G4"
       }
      }
     },
@@ -28557,7 +28747,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B19",
+       "columns": "C3:G4"
       }
      },
      "results": {
@@ -28867,7 +29060,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B18",
+       "columns": "C3:D3"
       }
      }
     },
@@ -29170,7 +29366,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:B18",
+       "columns": "C3:D3"
       }
      },
      "results": {
@@ -30002,7 +30201,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C47",
+       "columns": ""
       }
      }
     },
@@ -30827,7 +31029,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:C47",
+       "columns": ""
       }
      },
      "results": {
@@ -31269,7 +31474,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B2",
+       "rows": "A4:B28",
+       "columns": ""
       }
      }
     },
@@ -31704,7 +31912,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "A1:B2",
+       "rows": "A4:B28",
+       "columns": ""
       }
      },
      "results": {
@@ -32272,7 +32483,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B28",
+       "columns": "C3:E4"
       }
      }
     },
@@ -32833,7 +33047,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A4:B28",
+       "columns": "C3:E4"
       }
      },
      "results": {
@@ -32936,7 +33153,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": "B3:G4"
       }
      }
     },
@@ -33032,7 +33252,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "",
+       "columns": "B3:G4"
       }
      },
      "results": {

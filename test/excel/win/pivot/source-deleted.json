@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 18.2
+  "seconds": 18.2,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 3 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -87,9 +88,9 @@
   }
  ],
  "sent": {
-  "range": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 a82ccc445744e202",
-  "table": "7984deddc0056b5aba4918bbaa7e772499df9c09d376b974a74d84222d5e48be a9d45afaf0825d04",
-  "name": "7bb713bbb5a552763bf812621f76e2d656502963880a6d0e6321d5a51f5b2749 bd61ce77f20b6582"
+  "range": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 a82ccc445744e202",
+  "table": "ef2295dc7ef0c896514c0c6b6b88917a6a2509da95efa06f8d1eafc9f04cbf9f a9d45afaf0825d04",
+  "name": "796ccac18e33256f5e69b435be4230844f771775f3b938ade6f9b7929b53794c bd61ce77f20b6582"
  },
  "answers": {
   "range": {
@@ -189,7 +190,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -291,7 +295,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -397,7 +404,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -499,11 +509,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "errors": [
-      "op 4: -2146827284 We couldn't get the data from 'Sales' in the workbook 'C:\\xlcalc\\work\\pivot-source-deleted-54589-1\\1.xlsx'."
+      "op 4: -2146827284 We couldn't get the data from 'Sales' in the workbook 'C:\\xlcalc\\work\\pivot-source-deleted-97218-1\\1.xlsx'."
      ]
     }
    ]
@@ -605,7 +618,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -707,11 +723,14 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "errors": [
-      "op 4: -2146827284 We couldn't get the data from 'SalesData' in the workbook 'C:\\xlcalc\\work\\pivot-source-deleted-54589-1\\2.xlsx'."
+      "op 4: -2146827284 We couldn't get the data from 'SalesData' in the workbook 'C:\\xlcalc\\work\\pivot-source-deleted-97218-1\\2.xlsx'."
      ]
     }
    ]

@@ -8,7 +8,8 @@
   "system": "en-US (code page 1252)",
   "dpi": 96,
   "date": "2026-10-31",
-  "seconds": 24.7
+  "seconds": 24.7,
+  "rerun": "Excel 16.0.20430.20146 for Windows, 2026-11-03: 8 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones"
  },
  "cases": [
   {
@@ -661,14 +662,14 @@
   }
  ],
  "sent": {
-  "no-objects-no-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 9eeaa3ff4b1130c9",
-  "no-objects-no-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cdc88256fab56fb7",
-  "no-objects-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 edbb4b1ce117eb1d",
-  "no-objects-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 7de08389dfe3f1b6",
-  "objects-no-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 cdcc08d01a5d3e32",
-  "objects-no-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 98f05f9df96fceca",
-  "objects-pivots-locked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 2d4968e3e320290e",
-  "objects-pivots-unlocked": "c3d2af3cd5727c16000030bcebfaa46b1206f9f211e84e0f3fae7331a182e625 ae9344bc889fd865"
+  "no-objects-no-pivots-locked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 9eeaa3ff4b1130c9",
+  "no-objects-no-pivots-unlocked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 cdc88256fab56fb7",
+  "no-objects-pivots-locked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 edbb4b1ce117eb1d",
+  "no-objects-pivots-unlocked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 7de08389dfe3f1b6",
+  "objects-no-pivots-locked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 cdcc08d01a5d3e32",
+  "objects-no-pivots-unlocked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 98f05f9df96fceca",
+  "objects-pivots-locked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 2d4968e3e320290e",
+  "objects-pivots-unlocked": "3631df47eb8ed65a0f0fde144d6ac339aefbe05277d410dbc7bfced062be6398 ae9344bc889fd865"
  },
  "answers": {
   "no-objects-no-pivots-locked": {
@@ -768,7 +769,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -930,7 +934,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1028,7 +1035,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A4",
+       "columns": ""
       }
      },
      "results": {
@@ -1135,7 +1145,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A4",
+       "columns": ""
       }
      },
      "results": {
@@ -1296,7 +1309,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1454,7 +1470,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A9",
+       "columns": ""
       }
      },
      "results": {
@@ -1552,7 +1571,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A4",
+       "columns": ""
       }
      },
      "results": {
@@ -1653,7 +1675,10 @@
          "General",
          "General"
         ]
-       ]
+       ],
+       "page": "",
+       "rows": "A3:A4",
+       "columns": ""
       }
      },
      "results": {
