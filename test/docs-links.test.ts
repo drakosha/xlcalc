@@ -18,11 +18,28 @@ const slug = (heading: string) =>
     .replace(/[^\p{L}\p{N}\p{M}\s_-]/gu, '')
     .replace(/\s/g, '-')
 
+/**
+ * A Markdown file's lines outside fenced code blocks, as CommonMark reads fences: a block closes only at a line of its
+ * fence's character alone, at least as long, so ``` followed by text on its line leaves the block open to the end.
+ */
+function outsideCode(text: string): string {
+  const out: string[] = []
+  let fence: string | undefined
+  for (const line of text.split('\n')) {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
+    if (fence === undefined) {
+      if (m && !(m[1][0] === '`' && m[2].includes('`'))) fence = m[1]
+      else out.push(line)
+    } else if (m && m[1][0] === fence[0] && m[1].length >= fence.length && !m[2].trim()) fence = undefined
+  }
+  return out.join('\n')
+}
+
 /** The anchors of a Markdown file's headings, outside code blocks. */
 function anchors(text: string): Set<string> {
   const out = new Set<string>()
   const seen = new Map<string, number>()
-  for (const m of text.replace(/```[\s\S]*?```/g, '').matchAll(/^#{1,6} (.+)$/gm)) {
+  for (const m of outsideCode(text).matchAll(/^#{1,6} (.+)$/gm)) {
     const base = slug(m[1])
     const n = seen.get(base) ?? 0
     seen.set(base, n + 1)

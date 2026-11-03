@@ -75,7 +75,9 @@ s.setExternalBooks([{ target: 'Report.xlsx', sheets: [{ name: 'Sheet', cells: { 
 s.setCellText('S', 'A1', "='[Report.xlsx]Sheet'!$I$8*2")
 const cell = s.getCell('S', 'A1')
 console.log(cell?.formula, cell?.value) // → '[1]Sheet'!$I$8*2 84
-``` `validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it, a reference to another workbook is rejected.
+```
+
+`validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it, a reference to another workbook is rejected.
 
 ## Known differences
 
