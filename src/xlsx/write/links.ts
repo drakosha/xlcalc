@@ -4,7 +4,7 @@
  * `t="b"`, an error as `t="e"` (#SPILL! and #CALC! as `#VALUE!`: Excel repairs a file that holds their text there, and
  * shows and saves `#VALUE!` for them with a rich value, the set `links/written`), a cell stored empty as `<cell r="A4"/>`,
  * the mark of a failed update as `refreshError="1"`. A sheet without `cells` gets no data, as every cell of it is `#REF!` then. The
- * part points at the other book through its relationship `rId1` (`book.ts` writes it with the target as the book holds it).
+ * part points at the other book through its relationship `rId1` (`book.ts` writes it with the target `linkTarget` gives).
  */
 import type { ErrorCode, ExternalBook, ExternalSheet, ExternalValue } from '../../contract.js'
 import { parseAddress, sortAddresses } from '../../model.js'
@@ -32,6 +32,9 @@ function sheetData(s: ExternalSheet, i: number, at: string, issues: Issues): str
   const mark = s.refreshError ? ' refreshError="1"' : ''
   return rows.length ? `<sheetData sheetId="${i}"${mark}>${rows.join('')}</row></sheetData>` : `<sheetData sheetId="${i}"${mark}/>`
 }
+
+/** A link's target as Excel writes it in the relationship: a space as `%20`, the rest as it is (Cyrillic, backslashes, `%`, an escape already made). */
+export const linkTarget = (b: ExternalBook): string => b.target.replaceAll(' ', '%20')
 
 /** The part of the link `[n]`; each list is left out when empty, as the file's schema has no empty one. */
 export function externalLinkXml(b: ExternalBook, n: number, issues: Issues): string {

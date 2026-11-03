@@ -31,18 +31,20 @@ describe('writeKept writes the links a host gives', () => {
     const data = await linked()
     const s = await session(data, ([other]) => [
       { ...other, sheets: [{ name: 'Data', cells: { B2: 5, C3: 7 } }] },
-      { target: 'Отчёт.xlsx', sheets: [{ name: 'Лист', cells: { I8: 42 } }] },
+      { target: 'Отчёт 2025.xlsx', sheets: [{ name: 'Лист', cells: { I8: 42 } }] },
     ])
-    expect(s.setCellText('S', 'A2', "='[Отчёт.xlsx]Лист'!$I$8+[Other.xlsx]Data!C3")).toMatchObject({ ok: true })
+    expect(s.setCellText('S', 'A2', "='[Отчёт 2025.xlsx]Лист'!$I$8+[Other.xlsx]Data!C3")).toMatchObject({ ok: true })
     expect(s.getCell('S', 'A2')).toMatchObject({ formula: "'[2]Лист'!$I$8+'[1]Data'!C3", value: 49 })
     const w = await writeKept(data, s.getSnapshot())
     const parts = await partsOf(w.data)
     expect(parts.get('xl/workbook.xml')).toMatch(/<externalReferences><externalReference r:id="(rId\d+)"\/><externalReference r:id="(rId\d+)"\/><\/externalReferences>/)
-    expect(parts.get('xl/externalLinks/_rels/externalLink2.xml.rels')).toContain('Target="Отчёт.xlsx" TargetMode="External"')
+    // the space escaped, as Excel writes a target; the Cyrillic as it is
+    expect(parts.get('xl/externalLinks/_rels/externalLink2.xml.rels')).toContain('Target="Отчёт%202025.xlsx" TargetMode="External"')
     expect(parts.get('[Content_Types].xml')).toContain('<Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>')
     const back = await readXlsx(w.data)
     expect(back.issues).toEqual([])
-    expect(back.book.externalBooks).toEqual(s.getBook().externalBooks)
+    // the target comes back as the file stores it
+    expect(back.book.externalBooks).toEqual(s.getBook().externalBooks!.map((b) => ({ ...b, target: b.target.replace(' ', '%20') })))
     // as a file stores a link's reference, without quotes
     expect(back.book.sheets[0].cells.A2).toEqual({ formula: '[2]Лист!$I$8+[1]Data!C3' })
   })

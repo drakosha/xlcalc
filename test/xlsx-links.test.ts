@@ -194,7 +194,7 @@ const BOOK2: ExternalBook = {
 
 describe('xlsx links: writing', () => {
   it("each link as Excel writes its part, its relationship and the workbook's reference", async () => {
-    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }], externalBooks: [BOOK2, { target: 'Sub Folder/A&B.xlsx', sheets: [{ name: 'Data', cells: { A1: 7 } }] }] }
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }], externalBooks: [BOOK2, { target: 'Sub Folder/A&B.xlsx', sheets: [{ name: 'Data', cells: { A1: 7 } }] }, { target: 'file:///C:\\Отчеты%202025\\Rise 50%.xlsx', sheets: [] }] }
     const { data, issues } = await writeXlsx({ book })
     expect(issues).toEqual([])
     expect(await part(data, 'xl/externalLinks/externalLink1.xml')).toBe(
@@ -205,9 +205,11 @@ describe('xlsx links: writing', () => {
         '<row r="2"><cell r="A2"><v>2.5</v></cell><cell r="B2" t="b"><v>1</v></cell></row><row r="3"><cell r="B3" t="e"><v>#N/A</v></cell></row><row r="4"><cell r="A4"/><cell r="B4" t="e"><v>#DIV/0!</v></cell></row></sheetData>' +
         '<sheetData sheetId="2"/></sheetDataSet></externalBook></externalLink>',
     )
-    expect(await part(data, 'xl/externalLinks/_rels/externalLink2.xml.rels')).toContain(`<Relationship Id="rId1" Type="${REL}/externalLinkPath" Target="Sub Folder/A&amp;B.xlsx" TargetMode="External"/>`)
+    // a space escaped as Excel escapes it, the rest as the target has it: Cyrillic, backslashes, a `%`, an escape already there
+    expect(await part(data, 'xl/externalLinks/_rels/externalLink2.xml.rels')).toContain(`<Relationship Id="rId1" Type="${REL}/externalLinkPath" Target="Sub%20Folder/A&amp;B.xlsx" TargetMode="External"/>`)
+    expect(await part(data, 'xl/externalLinks/_rels/externalLink3.xml.rels')).toContain('Target="file:///C:\\Отчеты%202025\\Rise%2050%.xlsx"')
     const wb = await part(data, 'xl/workbook.xml')
-    expect(wb).toContain('</sheets><externalReferences><externalReference r:id="rId3"/><externalReference r:id="rId4"/></externalReferences><calcPr/>')
+    expect(wb).toContain('</sheets><externalReferences><externalReference r:id="rId3"/><externalReference r:id="rId4"/><externalReference r:id="rId5"/></externalReferences><calcPr/>')
     expect(await part(data, 'xl/_rels/workbook.xml.rels')).toContain(`<Relationship Id="rId3" Type="${REL}/externalLink" Target="externalLinks/externalLink1.xml"/><Relationship Id="rId4" Type="${REL}/externalLink" Target="externalLinks/externalLink2.xml"/>`)
     expect(await part(data, '[Content_Types].xml')).toContain('<Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>')
   })

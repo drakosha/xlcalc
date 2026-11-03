@@ -12,7 +12,7 @@ const externalBooks = [
 ]
 ```
 
-Element `i` of `externalBooks` corresponds to `[i+1]`. `target` is where the link points, as the file stores it: a file name, a relative or an absolute path, a `file:` or web address. A sheet's `cells` are its stored values by address (a number, text, a boolean or an error), with `null` for a cell stored as empty. `readXlsx` reads them from the file's links and `writeXlsx` writes them back ([docs/xlsx.md](xlsx.md)).
+Element `i` of `externalBooks` corresponds to `[i+1]`. `target` is where the link points, as the file stores it: a file name, a relative or an absolute path, a `file:` or web address. A file stores a space as `%20` (`Report%202025.xlsx`); a host may give it as a space too. A formula displays and finds the link by the target with its escapes undone (`[Report 2025.xlsx]`), and `writeXlsx` and `writeKept` write a space as `%20`, as Excel does, so a link given with a space comes back from the file with `%20`. A sheet's `cells` are its stored values by address (a number, text, a boolean or an error), with `null` for a cell stored as empty. `readXlsx` reads them from the file's links and `writeXlsx` writes them back ([docs/xlsx.md](xlsx.md)).
 
 ## In short
 
@@ -61,11 +61,12 @@ The stored formula numbers the link and quotes its sheet, as every stored refere
 | `'[1]My Sheet'!A1` | `Prices.xlsx` | `'[Prices.xlsx]My Sheet'!A1` |
 | `'[1]Sheet1'!A1` | `../data/Prices.xlsx` | `'../data/[Prices.xlsx]Sheet1'!A1` |
 | `'[1]Sheet1'!A1` | `file:///C:\data\Prices.xlsx` | `'C:\data\[Prices.xlsx]Sheet1'!A1` |
+| `'[1]Sheet1'!A1` | `Prices%202025.xlsx` | `'[Prices 2025.xlsx]Sheet1'!A1` |
 | `[1]!Rate` | `Prices.xlsx` | `Prices.xlsx!Rate` |
 | `[1]!Rate` | `../data/Prices.xlsx` | `'../data/Prices.xlsx'!Rate` |
 | `[1]!Sales[[#This Row],[Qty]]` | `Prices.xlsx` | `Prices.xlsx!Sales[@Qty]` |
 
-Typed text can use either form or the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, matching the full path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` becomes `'[1]Sheet1'!A1`). A user who opens a cell for editing and presses Enter keeps the formula. A workbook that the workbook has no link to is rejected with `external_ref` and a message in the workbook's language: the other file is outside the model. A host that has read the other workbook gives the link itself, with the values it needs: in `BookInput.externalBooks` before it opens the workbook, or in a session with `setExternalBooks(books)`, which replaces the links, calculates the workbook again and is one step of undo. A formula reads a link by its number, so a new link goes after the others, which keep their places; then typed text finds it by its file name (`='[Report.xlsx]Sheet'!$I$8`). The same call gives a link more values, or values read again. `writeXlsx` writes every link, and `writeKept` writes a new link and the values of a changed one over the original file ([Writing over the original file](xlsx-keep.md#links-to-other-workbooks)).
+Typed text can use either form or the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, matching the full path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` becomes `'[1]Sheet1'!A1`). They compare typed text with the target as displayed: `[Report 2025.xlsx]` finds the target `Report%202025.xlsx`, while typed text is taken as written, since a file may have `%` in its name. A user who opens a cell for editing and presses Enter keeps the formula. A workbook that the workbook has no link to is rejected with `external_ref` and a message in the workbook's language: the other file is outside the model. A host that has read the other workbook gives the link itself, with the values it needs: in `BookInput.externalBooks` before it opens the workbook, or in a session with `setExternalBooks(books)`, which replaces the links, calculates the workbook again and is one step of undo. A formula reads a link by its number, so a new link goes after the others, which keep their places; then typed text finds it by its file name (`='[Report.xlsx]Sheet'!$I$8`). The same call gives a link more values, or values read again. `writeXlsx` writes every link, and `writeKept` writes a new link and the values of a changed one over the original file ([Writing over the original file](xlsx-keep.md#links-to-other-workbooks)).
 
 ```js
 import { createSession } from 'xlcalc'
