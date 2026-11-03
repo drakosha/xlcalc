@@ -236,7 +236,8 @@ function converter(names: Names) {
     const lit = def.k === 'un' && def.op === '-' ? def.a : def
     if (lit.k === 'num' || lit.k === 'str' || lit.k === 'bool' || lit.k === 'err') return { kind: 'one', ...(counting(def) ? { pos: true as const } : {}) }
     if (def.k === 'ref') return { kind: def.ref.kind === 'cell' && !def.ref.spill ? 'one' : 'range' }
-    return { kind: 'range', ...(def.k === 'ref3d' || def.k === 'union' || (def.k === 'bin' && isRefOp(def.op)) ? {} : { named: true as const }) }
+    // a range of the reference operators (`'S'!B1:'S'!B8`) is a formula too
+    return { kind: 'range', ...(def.k === 'ref3d' ? {} : { named: true as const }) }
   }
   return (ast: Ast, sheet: string | undefined): Ast | undefined => {
     added = 0
