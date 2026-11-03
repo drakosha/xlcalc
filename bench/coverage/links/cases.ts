@@ -11,6 +11,7 @@ import type { BookInput, CellValue, ExternalBook, RangeRef, SheetInput } from '.
 import { fromFile } from '../../../src/xlsx/formulas/from-file.js'
 import { ERROR_TEXT } from '../../../src/syntax/errors.js'
 import { writeXlsx } from '../../../src/xlsx.js'
+import { metadata } from '../../../src/xlsx/write/book.js'
 import { escapeAttr, escapeText } from '../../../src/xlsx/xml/text.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
 import { zip } from '../../../src/xlsx/zip/write.js'
@@ -167,14 +168,17 @@ export async function linkFile(c: LinksCase): Promise<Uint8Array> {
   const archive = openArchive(data)
   const files: { name: string; data: Uint8Array }[] = []
   const enc = new TextEncoder()
+  // a dynamic array formula of the case's points at the dynamic array metadata, which a file of plain formulas lacks
+  const meta = !archive.names.includes('xl/metadata.xml') && Object.values(c.linked).some((cells) => Object.values(cells).some((f) => typeof f !== 'string'))
+  if (meta) files.push({ name: 'xl/metadata.xml', data: enc.encode(metadata(true, [])) })
   for (const name of archive.names) {
     let text = name.endsWith('.xml') || name.endsWith('.rels') ? (await archive.text(name))! : undefined
     const sheet = /^xl\/worksheets\/sheet(\d+)\.xml$/.exec(name)
     if (text !== undefined && sheet) {
       for (const [addr, f] of Object.entries(c.linked[sheets[Number(sheet[1]) - 1].name] ?? {})) text = withFormula(text, addr, f)
     } else if (name === 'xl/workbook.xml') text = workbookXml(text!, c, sheets)
-    else if (name === 'xl/_rels/workbook.xml.rels') text = text!.replace('</Relationships>', `${c.links.map((_, i) => `<Relationship Id="rIdL${i + 1}" Type="${REL}/externalLink" Target="externalLinks/externalLink${i + 1}.xml"/>`).join('')}</Relationships>`)
-    else if (name === '[Content_Types].xml') text = text!.replace('</Types>', `${c.links.map((_, i) => `<Override PartName="/xl/externalLinks/externalLink${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>`).join('')}</Types>`)
+    else if (name === 'xl/_rels/workbook.xml.rels') text = text!.replace('</Relationships>', `${c.links.map((_, i) => `<Relationship Id="rIdL${i + 1}" Type="${REL}/externalLink" Target="externalLinks/externalLink${i + 1}.xml"/>`).join('')}${meta ? `<Relationship Id="rIdM" Type="${REL}/sheetMetadata" Target="metadata.xml"/>` : ''}</Relationships>`)
+    else if (name === '[Content_Types].xml') text = text!.replace('</Types>', `${c.links.map((_, i) => `<Override PartName="/xl/externalLinks/externalLink${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>`).join('')}${meta ? '<Override PartName="/xl/metadata.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml"/>' : ''}</Types>`)
     files.push({ name, data: text === undefined ? (await archive.bytes(name))! : enc.encode(text) })
   }
   c.links.forEach((b, i) => {
