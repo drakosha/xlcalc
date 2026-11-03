@@ -19,10 +19,6 @@ import './locales.js'
 /** The paste sets with answers of Excel. */
 export const PASTE_SETS = ['probe', 'held', 'merges', 'fit', 'kinds', 'ops', 'kinds-held', 'ops-held', 'kinds-held-2', 'kinds-held-3', 'kinds-held-4', 'painter', 'merging', 'merging-held', 'lines-ops', 'lines-ops-held', 'spill-ops', 'array-ops', 'array-ops-held', 'merging-rules', 'merging-mac', 'fit-borders', 'painter-double']
 
-/** An operation onto a formula written as a dynamic array formula. */
-const DYNAMIC =
-  'Excel refuses an operation onto a formula it holds as a dynamic array formula, as a file xlcalc writes holds every formula; the engine refuses it onto a spilled array alone and combines a formula that does not spill, as Excel combines a typed one (the set ops-held)'
-
 /** Values or formulas and number formats of whole columns. */
 const COLUMNS = "Excel gives each cell of the column within the sheet's used range the number format of the source's column; the engine pastes the cells' own"
 
@@ -51,7 +47,6 @@ export const INTO_MERGED = "Excel pastes one cell into a merged area with its va
 export const PASTE_KNOWN: Readonly<Record<string, string>> = {
   'held/table-formats': "Excel pastes the look a table's style gives its cells as their formats; the engine does not draw table styles",
   'kinds/allExceptBorders-column': 'a whole column that cuts a merged area (A5:B5): Excel leaves out the merged cell, the engine pastes it',
-  ...Object.fromEntries(['number-add-all', 'number-add-values', 'formula-add-formulas', 'formula-add-all', 'formula-subtract-values'].map((id) => [`ops/${id}`, DYNAMIC])),
   'merging-held/all-into-merged': INTO_MERGED,
   'kinds-held/valuesAndNumberFormats-column': COLUMNS,
   'kinds-held/formulasAndNumberFormats-column': COLUMNS,

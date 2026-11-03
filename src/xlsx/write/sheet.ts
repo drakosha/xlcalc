@@ -268,7 +268,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     }
     const ref = c.array ?? res?.spill ?? addr
     const written = escapeText(text)
-    const old = c.array === undefined && ref === addr ? ctx.oldKind?.(c.formula, sheet.name, written, (f) => fileText(f, ctx, table?.name), seen.shape) : undefined
+    const old = c.array === undefined && ref === addr ? ctx.oldKind?.(c.formula, sheet.name, text, (f) => fileText(f, ctx, table?.name), seen.shape) : undefined
     dynamic ||= old === undefined && c.array === undefined
     put(row, col, cellXml(addr, row, col, c, value, old ?? `<f t="array" ref="${ref}">${written}</f>`, old === undefined && c.array === undefined))
   }

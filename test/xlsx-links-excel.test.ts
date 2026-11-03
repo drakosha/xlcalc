@@ -39,10 +39,15 @@ const NOT_IN_MODEL = XLSX_EN_MESSAGES.externalLinks({})
 const kept = <T extends CachedValue | null | undefined>(v: T): T => (v && typeof v === 'object' && (v.error === 'SPILL' || v.error === 'CALC') ? ({ error: 'VALUE' } as T) : v)
 
 /** The targets Excel wrote for the case `targets` of `basics-held`: Excel for Mac keeps a relative path it could not find as an absolute one beside it (`alternateUrls`), Excel for Windows writes every path as an absolute one without the drive. */
-const TARGETS: Record<string, string[]> = {
-  '': ['Book2.xlsx', '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/Book3.xlsx', 'file:///C:/data/Book4.xlsx', '/Users/x/data/Book5.xlsx', 'https://example.com/share/Book6.xlsx', 'Sub%20Folder/Книга%207.xlsx'],
-  'win/': ['/xlcalc/work/links-basics-held-91631-1/Book2.xlsx', '/xlcalc/work/data/Book3.xlsx', '/data/Book4.xlsx', '/Users/x/data/Book5.xlsx', 'https://example.com/share/Book6.xlsx', '/xlcalc/work/links-basics-held-91631-1/Sub%20Folder/Книга%207.xlsx'],
+const TARGETS = (root: string): string[] => {
+  const run = runFolder(root, 'basics-held', 'targets')
+  return root
+    ? [`/xlcalc/work/${run}/Book2.xlsx`, '/xlcalc/work/data/Book3.xlsx', '/data/Book4.xlsx', '/Users/x/data/Book5.xlsx', 'https://example.com/share/Book6.xlsx', `/xlcalc/work/${run}/Sub%20Folder/Книга%207.xlsx`]
+    : ['Book2.xlsx', '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/Book3.xlsx', 'file:///C:/data/Book4.xlsx', '/Users/x/data/Book5.xlsx', 'https://example.com/share/Book6.xlsx', 'Sub%20Folder/Книга%207.xlsx']
 }
+
+/** The folder of a case's run on Windows (`links-basics-held-91631-1`), which Excel writes into the targets: the last part of the folder of its answer. */
+const runFolder = (root: string, set: string, id: string) => stored(root).find((x) => x.name === set)!.answers[id].folder.split(/[\\/]/).at(-1)!
 
 /** Where Excel wrote that `Book2.xlsx` is: Excel for Mac as the file had it, Excel for Windows as an absolute path from the folder it opened the file in. */
 const book2 = (root: string, folder: string) => (root ? `/xlcalc/work/${folder}/Book2.xlsx` : 'Book2.xlsx')
@@ -97,16 +102,16 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
   }
 
   it('the targets of the forms a link takes, as Excel wrote them', async () => {
-    expect((await saved(root, 'basics-held', 'targets')).book.externalBooks!.map((b) => b.target)).toEqual(TARGETS[root])
+    expect((await saved(root, 'basics-held', 'targets')).book.externalBooks!.map((b) => b.target)).toEqual(TARGETS(root))
   })
 
   it('the stored values, the marks of failed updates and the names of a link after edits', async () => {
-    expect((await saved(root, 'basics-held', 'cache')).book.externalBooks).toEqual([{ target: book2(root, 'links-basics-held-91631-1'), ...CACHE }])
+    expect((await saved(root, 'basics-held', 'cache')).book.externalBooks).toEqual([{ target: book2(root, runFolder(root, 'basics-held', 'cache')), ...CACHE }])
   })
 
   it('data without values, with the mark and without it; a sheet the link had no data of comes back marked', async () => {
     const r = await saved(root, 'refresh-held', 'empty')
-    expect(r.book.externalBooks).toEqual([{ target: book2(root, 'links-refresh-held-25311-1'), sheets: [{ name: 'Empty', cells: {} }, { name: 'Marked', cells: {}, refreshError: true }, { name: 'None', cells: {}, refreshError: true }] }])
+    expect(r.book.externalBooks).toEqual([{ target: book2(root, runFolder(root, 'refresh-held', 'empty')), sheets: [{ name: 'Empty', cells: {} }, { name: 'Marked', cells: {}, refreshError: true }, { name: 'None', cells: {}, refreshError: true }] }])
   })
 
   it("every formula and name over Excel's links reads without an issue", async () => {
@@ -126,6 +131,9 @@ function unfoldered(a: LinksAnswer, r: LinksRead): LinksRead {
 
 const written = buildLinksCases().cases
 
+/** The predicted answers of the set written that Excel gives otherwise since November, the file of the earlier writer too. */
+const CHANGED = new Set(['', 'win/'].flatMap((root) => ['cache S!A24', 'cache S!A29', ...(root ? [] : ['stored-empty S!A9'])].map((k) => `${root}${k}`)))
+
 describe.each(PLATFORMS)('the links writeXlsx wrote against %s', (_, root) => {
   const set = stored(root).find((s) => s.name === 'written')!
   const held = stored(root).find((s) => s.name === 'basics-held')!
@@ -141,6 +149,8 @@ describe.each(PLATFORMS)('the links writeXlsx wrote against %s', (_, root) => {
     const missed: string[] = []
     for (const c of written)
       for (const [key, p] of Object.entries(c.predicted ?? {})) {
+        // an answer Excel gives otherwise now than the predictions were measured on (`test/links-excel.test.ts`, `VERSIONED`)
+        if (CHANGED.has(`${root}${c.id} ${key}`)) continue
         const got = valueOf(set.answers[c.id].reads[1].values[key])
         if (JSON.stringify(got) === JSON.stringify(p)) continue
         missed.push(`${c.id} ${key}`)
