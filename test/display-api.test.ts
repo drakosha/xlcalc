@@ -81,6 +81,8 @@ describe('displayValue', () => {
     const width = 8.83203125
     expect([displayValue(12345678, { width }).text, displayValue(123456789, { width }).text]).toEqual(['12345678', '1.23E+08'])
     expect(displayValue(46096, { numberFormat: 'dd.mm.yyyy', width }).text).toBe('#########')
+    // a percent past the largest number cannot be shown, as a date out of range
+    expect([displayValue(1e307, { numberFormat: 10, width }).text, displayValue(-1e307, { numberFormat: '0%', width }).text]).toEqual(['#########', '#########'])
   })
 
   it('entryWidth, fitColumns and the results keep their own widths: the default one without a width', () => {

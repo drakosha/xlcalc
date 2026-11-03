@@ -54,11 +54,13 @@ function digitsOf(toks: Tok[]): Digits {
   return p
 }
 
+/** A number's size by a section's percents and scale, to 15 significant digits, as Excel shows the product (0.285 is 29%). */
+const scaled = (v: number, pct: number, scale: number) => (pct || scale ? Number(((Math.abs(v) * Math.pow(100, pct)) / Math.pow(1000, scale)).toPrecision(15)) : Math.abs(v))
+
 /** Digits, decimals and literals of a section by its placeholders. */
 function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): string {
   const { dot, intEnd, scale, grouping, pct, fracPh, zeros, firstPh } = digitsOf(toks)
-  // a percent or a scale is applied to 15 significant digits, as Excel shows the product (0.285 is 29%)
-  let x = pct || scale ? Number(((Math.abs(v) * Math.pow(100, pct)) / Math.pow(1000, scale)).toPrecision(15)) : Math.abs(v)
+  let x = scaled(v, pct, scale)
   const fixed = positional(x, fracPh.length)
   x = Number(fixed)
   let [ip, fp = ''] = fixed.split('.')
@@ -282,7 +284,11 @@ function planOf(toks: Tok[]): Plan {
 /** A number by a section of digits, a fraction or scientific notation; null when it cannot be shown. */
 export function formatNumber(v: number, toks: Tok[], signed: boolean, style: Style): string | null {
   const p = planOf(toks)
-  if (!p) return formatDigits(v, toks, signed, style)
+  if (!p) {
+    // a percent past the largest number (1E+307 in 0%) cannot be shown
+    const { pct, scale } = digitsOf(toks)
+    return Number.isFinite(scaled(v, pct, scale)) ? formatDigits(v, toks, signed, style) : null
+  }
   if ('exponent' in p) return formatExponent(v, p.exponent, signed, style)
   return p.fraction && formatFraction(v, p.fraction, signed, style)
 }

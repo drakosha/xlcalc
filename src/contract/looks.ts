@@ -31,6 +31,15 @@ export interface FormatChoice {
 }
 
 /**
+ * An item of the Number Format list with the sample Excel shows under its name for the active cell's value
+ * (`numberFormatSamples`): `No specific format` under General, else the value in the item's format (`1,234.50`).
+ */
+export interface FormatSample {
+  key: FormatChoiceKey
+  sample: string
+}
+
+/**
  * A currency's item of the Accounting Number Format menu (`$` on Excel's Home tab), in menu order (`accountingFormats`):
  * the currency's ISO code, the item's name in the menu (`£ English (United Kingdom)`), and the accounting format it
  * applies, as Excel writes it to a file.

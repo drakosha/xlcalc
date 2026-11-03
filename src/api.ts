@@ -15,6 +15,7 @@ import * as regexLevels from './regex-level.js'
 import * as pivotLevel from './pivot-level.js'
 import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
+import * as samples from './numfmt/samples.js'
 import * as fit from './layout/fit.js'
 import * as heights from './layout/heights.js'
 import * as helpers from './helpers.js'
@@ -71,6 +72,7 @@ export const copyFormula = /* @__PURE__ */ strict(copy.copyFormula)
 export const parseEntry = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entry.parseEntry))
 export const entryText = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.entryText))
 export const needsApostrophe = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.needsApostrophe))
+export const numberFormatSamples = /* @__PURE__ */ strict(samples.numberFormatSamples)
 export const entryWidth = /* @__PURE__ */ strict(fit.entryWidth)
 export const fitColumns = /* @__PURE__ */ strict(fit.fitColumns)
 export const fitRows = /* @__PURE__ */ strict(heights.fitRows)

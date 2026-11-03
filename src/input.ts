@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CachedValues, CalcLimits, CellEdit, CellInput, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CachedValues, CalcLimits, CellEdit, CellInput, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, FormatSampleOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { checkSpan, SPAN_KEY } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -606,6 +606,16 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   optionalLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
+}
+
+/** `numberFormatSamples`' options. */
+export function checkSampleOptions(v: unknown, path = 'opts'): FormatSampleOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { locale: 'ru-RU', dateSystem: 1904 }")
+  onlyKeys(o, path, ['locale', 'dateSystem'])
+  if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
+  optionalLocale(o.locale, `${path}.locale`)
+  return o as FormatSampleOptions
 }
 
 /** `entryWidth`'s options: `displayValue`'s and the column's `bestFit`. */

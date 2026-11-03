@@ -17,6 +17,8 @@ export interface FormatNames {
   readonly categories: Readonly<Record<FormatCategory, string>>
   readonly choices: Readonly<Record<FormatChoiceKey, string>>
   readonly currency: string
+  /** What the list writes under General, whatever the cell holds (`numberFormatSamples`); en-US's without it. */
+  readonly noFormat?: string
   /** The Accounting Number Format menu's currencies in order (`accountingFormats`); en-US's without them. */
   readonly accounting?: readonly AccountingCurrency[]
 }
