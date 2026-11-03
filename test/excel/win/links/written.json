@@ -5,9 +5,10 @@
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
-  "system": "en-US (code page 1252)",
+  "system": "ru-RU (code page 1251)",
+  "rerun": "targets: system en-US (code page 1252), 2026-11-03, its file sent with the space of a target as %20; the answer is the earlier one but for the work folder",
   "dpi": 96,
-  "seconds": 20.5
+  "seconds": 24.1
  },
  "cases": [
   {
