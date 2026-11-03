@@ -1,7 +1,9 @@
 -- Open a book, compute it fully, save it as xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name:
 -- after `save workbook as` the book is known by that name; and formulas to enter first, as Excel 365 takes a typed
--- one (`formula2`), lines of a range of the first sheet and its formula joined by a tab (none when left out).
+-- one (`formula2`), lines of a range of the first sheet and its formula joined by a tab (none when left out); and
+-- cells of the first sheet, by commas, whose formula as Excel 365 shows it (`formula2`) is read after the book is
+-- computed: the output is then their lines, each cell and its formula joined by a tab.
 on run argv
 	set p to item 1 of argv
 	set q to item 2 of argv
@@ -23,9 +25,22 @@ on run argv
 				end repeat
 			end if
 			calculate full
+			set shown to {}
+			if (count of argv) > 4 then
+				set AppleScript's text item delimiters to ","
+				set cells to text items of (item 5 of argv)
+				set AppleScript's text item delimiters to ""
+				repeat with a in cells
+					set end of shown to (a as text) & (character id 9) & (formula2 of range (a as text) of worksheet 1 of wb)
+				end repeat
+			end if
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no
 		end timeout
 	end tell
-	return "saved"
+	if shown is {} then return "saved"
+	set AppleScript's text item delimiters to (character id 10)
+	set t to shown as text
+	set AppleScript's text item delimiters to ""
+	return t
 end run

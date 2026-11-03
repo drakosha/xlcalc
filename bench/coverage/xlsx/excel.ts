@@ -34,13 +34,18 @@ function watched(name: string, data: Uint8Array, label: string, args: (dir: stri
   })
 }
 
-export type Saved = { saved: Uint8Array } | { rejected: string }
+export type Saved = { saved: Uint8Array; shown?: Record<string, string> } | { rejected: string }
 
-/** The file as Excel saves it after opening and computing it, with `enter`'s formulas typed into ranges of its first sheet before. */
-export async function saveThroughExcel(data: Uint8Array, label: string, enter: readonly (readonly [range: string, formula: string])[] = []): Promise<Saved> {
-  const typed = enter.length ? [enter.map(([r, f]) => `${r}\t${f}`).join('\n')] : []
-  const r = await watched('excel-save.applescript', data, label, (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...typed], (dir) => new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
-  return 'out' in r ? { saved: r.out as Uint8Array } : r
+/**
+ * The file as Excel saves it after opening and computing it, with `enter`'s formulas typed into ranges of its first
+ * sheet before; and the formulas Excel shows (`formula2`) in the cells `shown` names of that sheet, by address.
+ */
+export async function saveThroughExcel(data: Uint8Array, label: string, enter: readonly (readonly [range: string, formula: string])[] = [], shown: readonly string[] = []): Promise<Saved> {
+  const args = [enter.map(([r, f]) => `${r}\t${f}`).join('\n'), ...(shown.length ? [shown.join(',')] : [])]
+  let text = ''
+  const r = await watched('excel-save.applescript', data, label, (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...(args.join('') ? args : [])], (dir, out) => ((text = out), new Uint8Array(readFileSync(join(dir, 'saved.xlsx')))))
+  if (!('out' in r)) return r
+  return { saved: r.out as Uint8Array, ...(shown.length ? { shown: Object.fromEntries(text.trim().split('\n').map((l) => l.split('\t') as [string, string])) } : {}) }
 }
 
 /** The fill colours Excel shows for cells of the file's first sheet, as `#RRGGBB`. */

@@ -6,14 +6,14 @@
  * Excel for Windows through `bench/windows/run.ts xlsx forms` into `test/excel/win/xlsx/forms/`). `test/xlsx-forms.test.ts`
  * checks that `writeXlsx` writes each formula in the form Excel saved it in.
  */
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import type { BookInput } from '../../../src/contract.js'
 import { compute } from '../../../src/index.js'
 import { legacyConverter } from '../../../src/legacy/convert.js'
 import { rectCells, parseRange } from '../../../src/structure/area.js'
 import { copyFormula } from '../../../src/structure/copy.js'
-import { writeXlsx } from '../../../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { oldKind } from '../../../src/xlsx/keep/kind.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
 import { attributes } from '../../../src/xlsx/xml/scan.js'
@@ -65,6 +65,9 @@ export const FORM_CASES: FormCase[] = [
   { id: 'shared', range: 'L1:L3', formula: '=A1*B1' },
   { id: 'shared-sum-if', range: 'M1:M3', formula: '=SUM(IF(A1:A5>A1,1,0))' },
 ]
+
+/** Every cell of the cases' ranges. */
+export const FORM_CELLS = FORM_CASES.flatMap((c) => [...rectCells(parseRange(c.range)!)])
 
 /** The book Excel opens: values in S!A1:C5 alone, the formulas typed in by Excel. */
 export const FORMS_BOOK: BookInput = {
@@ -118,6 +121,18 @@ export function formsBook(): BookInput {
 }
 
 export const FORMS_PREDICTED = fileURLToPath(new URL('./forms.predicted.json', import.meta.url))
+export const SHOWN_PREDICTED = fileURLToPath(new URL('./forms-shown.predicted.json', import.meta.url))
+
+/**
+ * The formulas Excel shows (`formula2`), predicted: in the file Excel saved, opened again, as the reader reads it
+ * (`reopened`, `@` where the reader puts it into a formula of the old kind); in the file `writeXlsx` writes, the book's.
+ */
+export async function predictShown(saved: Uint8Array): Promise<Record<string, Record<string, string>>> {
+  const read = (await readXlsx(saved)).book.sheets[0].cells
+  const book = formsBook().sheets[0].cells
+  const by = (cells: typeof book) => Object.fromEntries(FORM_CELLS.map((a) => [a, `=${cells[a].formula}`]))
+  return { reopened: by(read), written: by(book) }
+}
 
 /**
  * The forms predicted before Excel ran, by the rule `writeKept` writes a formula by (`keep/kind.ts`): a formula that
@@ -142,6 +157,9 @@ export async function predictForms(): Promise<Record<string, FormSaved>> {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const out = await predictForms()
-  writeFileSync(FORMS_PREDICTED, JSON.stringify(out, null, 1) + '\n')
+  if (process.argv[2] === 'shown') {
+    const saved = new Uint8Array(readFileSync(fileURLToPath(new URL('../../../test/excel/xlsx/forms/forms.xlsx', import.meta.url))))
+    writeFileSync(SHOWN_PREDICTED, JSON.stringify(await predictShown(saved), null, 1) + '\n')
+  } else writeFileSync(FORMS_PREDICTED, JSON.stringify(out, null, 1) + '\n')
   console.log(Object.entries(out).map(([a, f]) => `${a} ${f.form} ${f.text ?? ''} ${f.ref ?? ''}`).join('\n'))
 }
