@@ -35,6 +35,8 @@ export interface Extra {
   shrunk?: number[]
   /** Attributes added to cells of a sheet (`vm="1"` of a rich value, `ph="1"`), by address. */
   attrs?: { sheet: number; cells: Record<string, string> }
+  /** Parts' text changed last, by name (`xl/worksheets/sheet1.xml`): XML the writer does not write put in by hand. */
+  edit?: Record<string, (text: string) => string>
 }
 
 const anchorXml = (x: Anchor, inner: string, editAs?: string) =>
@@ -107,6 +109,7 @@ export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Arr
       let k = -1
       return x.replace(/<cellXfs[^>]*>([\s\S]*?)<\/cellXfs>/, (all) => all.replace(/<xf [^>]*?(\/>|>[\s\S]*?<\/xf>)/g, (xf) => (++k === i ? `${xf.replace(/\/>$|>[\s\S]*<\/xf>$/, '')} applyAlignment="1"><alignment shrinkToFit="1"/></xf>` : xf)))
     })
+  for (const [name, f] of Object.entries(extra.edit ?? {})) edit(name, f)
   return zip([...parts].map(([name, text]) => ({ name, data: new TextEncoder().encode(text) })))
 }
 

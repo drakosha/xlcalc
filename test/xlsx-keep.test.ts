@@ -11,7 +11,6 @@ import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
 import { KEPT_CELLS } from '../src/xlsx/keep/carriers.js'
 import { changedParts, partsOf, withParts } from './keep-files.js'
 import { ruRU } from './locales.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
 const book = (): BookInput => ({
@@ -493,15 +492,9 @@ describe('validation the workbook could not read is refused, never lost; conditi
         { name: 'T', cells: { A1: { value: 3 } }, conditionalFormats: [{ type: 'cellIs', ranges: ['A1'], operator: 'greaterThan', formulas: ['0'], style: { font: { bold: true } } }] },
       ],
     }
-    const archive = openArchive((await writeXlsx({ book })).data)
-    const parts = new Map<string, string | Uint8Array>()
-    for (const name of archive.names) parts.set(name, (await archive.text(name))!)
-    const sheet = parts.get('xl/worksheets/sheet1.xml') as string
     // a rule of a type the workbook does not have, and a rule's IME mode, which it does not keep
     const cf = '<conditionalFormatting sqref="C1:C3"><cfRule type="unknownKind" priority="9"/></conditionalFormatting>'
-    const at = sheet.indexOf('<dataValidations')
-    parts.set('xl/worksheets/sheet1.xml', (sheet.slice(0, at) + cf + sheet.slice(at)).replace('<dataValidation ', '<dataValidation imeMode="hiragana" '))
-    return zip([...parts].map(([name, data]) => ({ name, data: typeof data === 'string' ? new TextEncoder().encode(data) : data })))
+    return withParts(book, { edit: { 'xl/worksheets/sheet1.xml': (x) => x.replace('<dataValidations', cf + '$&').replace('<dataValidation ', '<dataValidation imeMode="hiragana" ') } })
   }
 
   it("the sheet's validation changed, or moved by its rows, is refused with rules; its conditional formats, a value or another sheet's rules are written", async () => {
@@ -528,5 +521,23 @@ describe('validation the workbook could not read is refused, never lost; conditi
       expect(parts.get('xl/worksheets/sheet1.xml')).toContain('type="unknownKind"')
       expect(parts.get('xl/worksheets/sheet1.xml')).toContain('imeMode="hiragana"')
     }
+  })
+
+  it('rows inserted on a sheet whose only rule the workbook could not read are refused with rules: the rule would stay on cells that moved', async () => {
+    // "between" without its second formula, which the reader does not take
+    const rule = '<dataValidations count="1"><dataValidation type="whole" sqref="A3"><formula1>0</formula1></dataValidation></dataValidations>'
+    const data = await withParts({ sheets: [{ name: 'Лист1', cells: { A1: { value: 1 }, A3: { value: 3 } } }] }, { edit: { 'xl/worksheets/sheet1.xml': (x) => x.replace('</sheetData>', `$&${rule}`) } })
+    const read = await openKept(data, { locale: 'ru-RU' })
+    expect(read.issues.map((x) => [x.code, x.sheet])).toEqual([['dataValidation', 'Лист1']])
+    const open = () => createSession(read.book, { cached: read.cached })
+    for (const op of [{ op: 'insertRows', sheet: 'Лист1', row: 2 }, { op: 'deleteColumns', sheet: 'Лист1', column: 'B' }] as const) {
+      const s = open()
+      s.editStructure(op)
+      await expect(writeKept(data, s.getSnapshot(), { locale: 'ru-RU' })).rejects.toMatchObject({ name: 'KeptRefusal', code: 'rules' })
+    }
+    // a value changed leaves the rule where it is
+    const s = open()
+    s.setCells([{ sheet: 'Лист1', cell: 'A1', input: { value: 2 } }])
+    expect((await partsOf((await writeKept(data, s.getSnapshot())).data)).get('xl/worksheets/sheet1.xml')).toContain(rule)
   })
 })

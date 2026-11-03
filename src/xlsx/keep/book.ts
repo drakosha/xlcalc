@@ -319,10 +319,11 @@ class Kept {
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
       const p0 = this.pieces0(k)
       const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
-      // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never lost
+      // rules the workbook does not hold go with a sheet's rules written again (`rules.ts`); validation is refused, never
+      // lost, and so are rows or columns moved under it: its cells would move without it
       const name = book0.sheets[k].name
       const conditional = this.lost.conditional.has(name) ? this.rules(k, j, p0, p1) : undefined
-      if (this.lost.validation.has(name) && p0.validations !== p1.validations)
+      if (this.lost.validation.has(name) && (p0.validations !== p1.validations || this.id.lines[k]))
         throw new KeptRefusal({ key: 'keptValidation', sheet: name }, 'rules')
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
