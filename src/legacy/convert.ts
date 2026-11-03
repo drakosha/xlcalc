@@ -106,8 +106,8 @@ function intersects(kind: Kind, slot: Slot, where: Where): boolean {
 
 const wider = (a: Kind, b: Kind): Kind => (a === 'range' || b === 'range' ? 'range' : a === 'array' || b === 'array' || a === 'rowcol' || b === 'rowcol' ? 'array' : 'one')
 
-/** A whole number literal from 1: INDEX's row or column that leaves one cell. */
-const counting = (n: Ast) => n.k === 'num' && Number.isInteger(n.v) && n.v >= 1
+/** A whole number literal from 1 to 65535 (Excel's two-byte integer, 65536 is not one): INDEX's place that leaves one cell. */
+const counting = (n: Ast) => n.k === 'num' && Number.isInteger(n.v) && n.v >= 1 && n.v <= 65535
 
 /** The size of a literal reference: rows and columns, or null for anything else. */
 function size(n: Ast): [number, number] | null {
@@ -123,8 +123,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
       return args.length && args[0].kind !== 'one' ? 'rowcol' : 'one'
     case 'INDEX': {
       const ref = (args[0].kind === 'range' && !args[0].named) || nodes[0].k === 'ref'
-      // of one value one value; of several, one cell when every index given is a number that leaves one
-      const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
+      // of one cell or value one value (`INDEX(B1,0)` too); of several, one cell when every index given is a place that leaves one
+      const one = args[0].kind === 'one' || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
       return one ? 'one' : ref ? 'range' : 'array'
     }
     case 'OFFSET': {
@@ -184,7 +184,8 @@ function converter(names: Names) {
       case 'un':
       case 'pct': {
         const a = go(n.a, where, 'v', scope)
-        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array' }
+        // Excel reads `+2` as the literal 2 (`+MATCH(…)` is not MATCH)
+        return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array', ...(n.k === 'un' && n.op === '+' && counting(n.a) ? { pos: true as const } : {}) }
       }
       case 'bin': {
         // the reference operators take references whole and answer one
