@@ -1,9 +1,9 @@
 /**
  * A date as its serial number in a book's date system and back, without a book (`dateToSerial`, `serialToDate`). The
- * text is what `CellInput.date` takes (`2026-01-31`, `2026-01-31T18:00`, with seconds and their fraction), read by the
- * same parse, with no time zone; Excel's phantom 1900-02-29 is serial 60 in the 1900 system. Excel has no date before
- * the system's day 0 or after 9999-12-31 (a cell shows `#` for one, `DATE` gives `#NUM!`), so neither helper makes one:
- * it is an `InputError`.
+ * text is what a cell's `value: { date }` takes (`2026-01-31`, `2026-01-31T18:00`, with seconds and their fraction),
+ * read by the same parse, with no time zone; Excel's phantom 1900-02-29 is serial 60 in the 1900 system. Excel has no
+ * date before the system's day 0 or after 9999-12-31 (a cell shows `#` for one, `DATE` gives `#NUM!`), so neither
+ * helper makes one: it is an `InputError`.
  */
 import { EPOCH_1904, epochOf, MAX_SERIAL, ymd, type DateSystem } from './dates.js'
 import { InputError, what } from './input-error.js'
@@ -37,8 +37,8 @@ const pad = (n: number, width = 2) => String(n).padStart(width, '0')
 export const beforeDayZero = (text: string, e: number) => `${JSON.stringify(text)} is before the ${e === EPOCH_1904 ? '1904' : '1900'} date system's day 0 (${e === EPOCH_1904 ? '1904-01-01' : '1900-01-00'}): Excel has no such date`
 
 /**
- * The serial number of a date and time in the form `CellInput.date` accepts (`2026-01-31` is 46053, `2026-01-31T18:00`
- * is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
+ * The serial number of a date and time in the form a cell's `value: { date }` accepts (`2026-01-31` is 46053,
+ * `2026-01-31T18:00` is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
  */
 export function dateToSerial(text: string, opts?: DateSystemOptions): number {
   checkString(text, 'text')
@@ -54,9 +54,9 @@ export function dateToSerial(text: string, opts?: DateSystemOptions): number {
 }
 
 /**
- * The date and time of a serial number in `opts.dateSystem`, in the form `CellInput.date` accepts, without a time zone:
- * just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond (`2026-01-31T18:00`,
- * `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
+ * The date and time of a serial number in `opts.dateSystem`, in the form a cell's `value: { date }` accepts, without a
+ * time zone: just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond
+ * (`2026-01-31T18:00`, `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
  */
 export function serialToDate(serial: number, opts?: DateSystemOptions): string {
   const e = epoch(opts)

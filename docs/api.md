@@ -199,8 +199,8 @@ until `setClock`; `{ live: true }` takes a fresh clock on every recalculation.
 function dateToSerial(text: string, opts?: DateSystemOptions): number
 ```
 
-The serial number of a date and time in the form [`CellInput.date`](#cellinput) accepts (`2026-01-31` is 46053, `2026-01-31T18:00`
-is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
+The serial number of a date and time in the form a cell's `value: { date }` accepts (`2026-01-31` is 46053,
+`2026-01-31T18:00` is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
 
 ### <a id="xlcalc-debuggeneratedcode"></a>`debugGeneratedCode`
 
@@ -776,9 +776,9 @@ takes up the rest of the text. Strings, function names and defined names are not
 function serialToDate(serial: number, opts?: DateSystemOptions): string
 ```
 
-The date and time of a serial number in `opts.dateSystem`, in the form [`CellInput.date`](#cellinput) accepts, without a time zone:
-just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond (`2026-01-31T18:00`,
-`2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
+The date and time of a serial number in `opts.dateSystem`, in the form a cell's `value: { date }` accepts, without a
+time zone: just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond
+(`2026-01-31T18:00`, `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
 
 ### <a id="xlcalc-stepdecimals"></a>`stepDecimals`
 
