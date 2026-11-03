@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.80.0 (2026-11-03)
+
+Changed:
+
+- `writeXlsx` writes a formula as a plain formula, which Excel 2019 and older read and edit as it is, wherever Excel reads it back as the workbook's formula (`B2*C2`, `SUM(A1:A5)`, `VLOOKUP`, `INDEX(B1:B5,MATCH(3,A1:A5,0))`, `SUMPRODUCT((A1:A5>2)*B1:B5)`, `LET`, `XLOOKUP`), and as a dynamic array formula only where it spills, computes an array where a plain one takes one value (`SUM(IF(A1:A5>2,1,0))`), calls a LAMBDA or a name, refers to another workbook or uses a name of a computed formula, as Excel 365 saves typed formulas. `@` that a plain formula does by itself is left out; on one cell it stays as `_xlfn.SINGLE`. Cell metadata is written only when a dynamic array formula is. It was every formula as a dynamic array, which Excel 2019 and older show in braces (`{=B2*C2}`). `writeKept` writes new formulas by the same rule.
+- Reading formulas of the old kind (a file's formula without dynamic array metadata), as Excel 365 shows them: `INDEX(range,MATCH(…))` and `INDEX(range,MATCH(…),MATCH(…))` without `@`; only MATCH itself, a whole number literal from 1 to 65535 and a name of such a literal leave INDEX one cell, while `XMATCH`, `ROWS` or `MATCH(…)+0` do not; `INDEX(B1,0)` without `@`. `OFFSET(B1,rows,cols)` and OFFSET with a height and width of 1 without `@`. A name of a formula other than a literal or a single cell gets `@` where one value goes (`=@n` for `n = 1+1`), and INDEX over such a name with one place gets `@`. Checked in Excel for Mac and Windows; values are unchanged.
+
 ## 0.79.0 (2026-11-03)
 
 Added:
