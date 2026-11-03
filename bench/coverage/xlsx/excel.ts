@@ -36,9 +36,10 @@ function watched(name: string, data: Uint8Array, label: string, args: (dir: stri
 
 export type Saved = { saved: Uint8Array } | { rejected: string }
 
-/** The file as Excel saves it after opening and computing it. */
-export async function saveThroughExcel(data: Uint8Array, label: string): Promise<Saved> {
-  const r = await watched('excel-save.applescript', data, label, (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx'], (dir) => new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
+/** The file as Excel saves it after opening and computing it, with `enter`'s formulas typed into ranges of its first sheet before. */
+export async function saveThroughExcel(data: Uint8Array, label: string, enter: readonly (readonly [range: string, formula: string])[] = []): Promise<Saved> {
+  const typed = enter.length ? [enter.map(([r, f]) => `${r}\t${f}`).join('\n')] : []
+  const r = await watched('excel-save.applescript', data, label, (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...typed], (dir) => new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
   return 'out' in r ? { saved: r.out as Uint8Array } : r
 }
 

@@ -4,30 +4,35 @@
  * recording what was sent (a hash per file) or Excel's refusal; the books of `bench/coverage/xlsx/stored.ts` the same
  * way into `xlsx/stored/`. Formats (`bench/coverage/xlsx/formats.ts`): the codes
  * Excel shows for the built-in number formats 1 to 58 of the Mac step's book, `NumberFormat` and `NumberFormatLocal`,
- * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. `test/xlsx-win.test.ts`
- * reads them.
+ * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. Forms
+ * (`bench/coverage/xlsx/forms.ts`): the Mac step's formulas typed into its book (`Formula2`) and the book saved into
+ * `xlsx/forms/`. `test/xlsx-win.test.ts` and `test/xlsx-forms.test.ts` read them.
  */
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
+import { FORM_CASES, FORMS_BOOK } from '../coverage/xlsx/forms.js'
+import { writeXlsx } from '../../src/xlsx.js'
 import { STORED_FILES, storedFile } from '../coverage/xlsx/stored.js'
 import { partsHash } from '../coverage/xlsx/sent.js'
 import { localeDir } from '../coverage/locales.js'
 import { loadStored, secondsSince, writeAnswers } from '../coverage/stored.js'
 import { winFile } from './functions.js'
-import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, OUT, runJob, type Step, type Tag, type WinEnv } from './remote.js'
 
-/** Files of `files`, each computed fully and saved by Excel into `xlsx/<kind>/`, recorded with what was sent in `xlsx/<kind>.json`. */
-async function savedFiles<F extends { id: string }>(kind: string, files: readonly F[], bytes: (f: F) => Promise<Uint8Array>, tag: Tag, e: WinEnv): Promise<void> {
+/** Files of `files`, each computed fully and saved by Excel into `xlsx/<kind>/`, recorded with what was sent in `xlsx/<kind>.json`; `first`, steps before (and in the hash of what was sent). */
+async function savedFiles<F extends { id: string }>(kind: string, files: readonly F[], bytes: (f: F) => Promise<Uint8Array>, tag: Tag, e: WinEnv, first: Step[] = []): Promise<void> {
   const dir = winFile(`xlsx/${kind}`)
   const file = winFile(`xlsx/${kind}.json`)
   const run: StoredRun = loadStored<StoredRun>(file) ?? { meta: {}, books: {} }
   const books = await Promise.all(
     files.map(async (c) => {
       const data = await bytes(c)
-      return { id: c.id, data, hash: await partsHash(data) }
+      const hash = await partsHash(data)
+      return { id: c.id, data, hash: first.length ? createHash('sha256').update(hash + JSON.stringify(first)).digest('hex') : hash }
     }),
   )
   run.books = Object.fromEntries(Object.entries(run.books).filter(([id]) => books.some((b) => b.id === id)))
@@ -43,7 +48,7 @@ async function savedFiles<F extends { id: string }>(kind: string, files: readonl
     todo,
     async (b, f) => {
       writeFileSync(f, b.data)
-      return { file: f, steps: [{ do: 'full' }, { do: 'saveAs' }] }
+      return { file: f, steps: [...first, { do: 'full' }, { do: 'saveAs' }] }
     },
     (b, a, cutShort) => {
       if (!a && cutShort) return [b]
@@ -63,6 +68,10 @@ export const stepXlsxFilters = (tag: Tag, e: WinEnv) => savedFiles('filters', FI
 
 /** The books over functions the engine computes no value for (`bench/coverage/xlsx/stored.ts`), as Excel saves them. */
 export const stepXlsxStored = (tag: Tag, e: WinEnv) => savedFiles('stored', STORED_FILES, storedFile, tag, e)
+
+/** The Mac step's typed formulas (`bench/coverage/xlsx/forms.ts`) as Excel for Windows saves them. */
+export const stepXlsxForms = (tag: Tag, e: WinEnv) =>
+  savedFiles('forms', [{ id: 'forms' }], async () => (await writeXlsx({ book: FORMS_BOOK })).data, tag, e, FORM_CASES.map((c) => ({ do: 'set', sheet: 'S', cell: c.range, kind: 'f2', value: c.formula })))
 
 /** The codes Excel for Windows shows for the built-in formats 1 to 58 in `tag`: `formats` in English (`NumberFormat`), `local` in the user's language. */
 export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
