@@ -80,4 +80,11 @@ describe('writeXlsx: a formula in the form Excel 365 saves it in', () => {
     expect(xml).toContain('<c r="D1" cm="1"><f t="array" ref="D1">_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)(A2)</f><v>4</v></c>')
     expect((await readXlsx(data)).book.sheets[0].cells).toEqual(b.sheets[0].cells)
   })
+
+  it('a formula over another workbook is a dynamic array: Excel computes some of the old kind otherwise', async () => {
+    const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: '[1]Data!A1*2' }, A2: { formula: 'A1*2' } } }], externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Data', cells: { A1: 7 } }] }] }
+    const xml = (await openArchive((await writeXlsx({ book: b, result: compute(b) })).data).text('xl/worksheets/sheet1.xml'))!
+    expect(xml).toContain('<c r="A1" cm="1"><f t="array" ref="A1">[1]Data!A1*2</f><v>14</v></c>')
+    expect(xml).toContain('<c r="A2"><f>A1*2</f><v>28</v></c>')
+  })
 })

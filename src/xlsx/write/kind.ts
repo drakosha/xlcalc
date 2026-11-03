@@ -30,10 +30,11 @@ export function oldKind(formula: string, sheet: string, written: string, legacy:
     throw e
   }
   // a call of a LAMBDA or of a name (`Twice(B1:B3)`): the conversion does not know what its answer is, and Excel 365
-  // saves one as a dynamic array; Excel before 365 has no LAMBDA
-  let calls = false
-  walk(ast, (n) => (calls ||= n.k === 'call'))
-  if (calls) return undefined
+  // saves one as a dynamic array; Excel before 365 has no LAMBDA. A reference into another workbook: Excel computes some
+  // of the old kind otherwise (`SUM([1]Sheet1!A:A)` #REF! as a dynamic array, 6 of the old kind) and refused a file of them
+  let unknown = false
+  walk(ast, (n) => (unknown ||= n.k === 'call' || n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)))
+  if (unknown) return undefined
   // the old kind does the implicit intersection `@` asks for where it puts one itself
   const bare = mapAst(ast, (n) => (n.k === 'at' ? n.a : undefined))
   if (bare !== ast && canonical(legacy(bare, sheet) ?? bare) === canonical(ast)) {
