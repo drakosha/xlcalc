@@ -49,6 +49,13 @@ describe('writeKept writes the links a host gives', () => {
     expect(back.book.sheets[0].cells.A2).toEqual({ formula: '[2]Лист!$I$8+[1]Data!C3' })
   })
 
+  it('a new target as the file stores it is written as given, without a second escape; a plain one gets its space as %20 and its & as XML', async () => {
+    const data = await linked()
+    const s = await session(data, (links) => [...links, ...['Отчет%202025.xlsm', 'P&L 2025.xlsx'].map((target) => ({ target, sheets: [{ name: 'Data', cells: { A1: 1 } }] }))])
+    const parts = await partsOf((await writeKept(data, s.getSnapshot())).data)
+    expect([2, 3].map((n) => /Target="([^"]*)"/.exec(parts.get(`xl/externalLinks/_rels/externalLink${n}.xml.rels`)!)![1])).toEqual(['Отчет%202025.xlsm', 'P&amp;L%202025.xlsx'])
+  })
+
   it("the file's link keeps the relationship its part points at the other workbook by", async () => {
     const data = await linked()
     const parts = await partsOf(data)

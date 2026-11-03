@@ -214,6 +214,12 @@ describe('xlsx links: writing', () => {
     expect(await part(data, '[Content_Types].xml')).toContain('<Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>')
   })
 
+  it('a target as the file stores it is written as given, without a second escape; a plain one gets its space as %20 and its & as XML', async () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: {} }], externalBooks: ['Отчет%202025.xlsm', 'P&L 2025.xlsx'].map((target) => ({ target, sheets: [] })) }
+    const { data } = await writeXlsx({ book })
+    expect(await Promise.all([1, 2].map(async (n) => /Target="([^"]*)"/.exec(await part(data, `xl/externalLinks/_rels/externalLink${n}.xml.rels`))![1]))).toEqual(['Отчет%202025.xlsm', 'P&amp;L%202025.xlsx'])
+  })
+
   it("#SPILL! and #CALC! stored as #VALUE!, which Excel shows for them there; the engine's #CYCLE! as 0, reported", async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {} }], externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: { error: 'SPILL' }, A2: { error: 'CALC' }, A3: { error: 'CYCLE' }, A4: { error: 'NA' } } }] }] }
     const { data, issues } = await writeXlsx({ book })
