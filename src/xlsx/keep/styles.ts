@@ -11,7 +11,7 @@ import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.j
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
 import { attributes, attrsAt, elements } from '../xml/scan.js'
-import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
+import { borderXml, checkWritten, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
@@ -103,6 +103,7 @@ export class KeptStyles {
     return numFmtId(code, (c) => {
       let id = this.codes.get(c)
       if (id === undefined) {
+        checkWritten(c)
         this.codes.set(c, (id = this.nextFormat++))
         this.add('numFmts', `<numFmt numFmtId="${id}" formatCode="${escapeAttr(c)}"/>`)
       }

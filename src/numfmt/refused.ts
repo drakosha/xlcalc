@@ -10,6 +10,8 @@ import { EN_CODES, parseFormat } from './parse.js'
 const MAX_CODE = 255
 /** The letters of dates, times and eras, in either case: beside a digit placeholder they refuse a section. */
 const DATE_LETTERS = /[bdeghmnsy]/i
+/** Excel's numerals of East Asian scripts, which the engine does not read. */
+const DBNUM = /^\[DBNum[1-4]\]$/i
 /** Conditions a code may have (`[<1]0;[<2]0;0`). */
 const MAX_CONDITIONS = 2
 /**
@@ -56,7 +58,7 @@ function readSection(section: string): Read | null {
     } else if (ch === '[') {
       const j = section.indexOf(']', i)
       const bracket = section.slice(i, j + 1)
-      if (j < 0 || parseFormat(bracket, EN_CODES) === null) return null
+      if (j < 0 || (parseFormat(bracket, EN_CODES) === null && !DBNUM.test(bracket))) return null
       if (/^\[[hms]+\]$/i.test(bracket)) out.bare += 'h'
       if (/^\[[<>=]/.test(bracket)) conditions++
       else if (/^\[[a-z]/i.test(bracket) && !/^\[[hms]+\]$/i.test(bracket)) colors++
@@ -132,5 +134,7 @@ export function formatRefused(code: string): boolean {
   const conditions = reads.reduce((n, r) => n + r.conditions, 0)
   if (conditions > MAX_CONDITIONS || (conditions && reads.length > 3) || reads.some((r) => r.twice)) return true
   if (reads.reduce((n, r) => n + sectionCost(r), 0) > MAX_COST) return true
+  // a fourth section is for text alone (`0;-0;0;@`)
+  if (reads.length === 4 && /[0#?]/.test(reads[3].bare)) return true
   return !reads.every((r, i) => sectionReads(r.bare, i === reads.length - 1))
 }

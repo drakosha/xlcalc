@@ -924,6 +924,12 @@ The values of `written` were predicted and committed before Excel ran it. In the
 
 The set `tables-held` (four books) takes the structured references to a table of a linked book that a host's books hold (`[1]Таблица[[#This Row],[Столбец]]`), which the engine did not parse: the table's row and column, a whole column in SUM, `#All`, an operator, a Latin name, the form with `!` after the link, and a link whose book defines a name like the table. Predicted `#REF!` everywhere, as Excel calculates a table of a closed book. Excel for Mac and Windows gave `#REF!` in every case, and only the form with `!` kept its reference (`'…\Book2.xlsx'!Таблица[@Столбец]` shown, `[1]!Таблица[[#This Row],[Столбец]]` saved); without `!` the reference was lost as the book opened (`=#REF!`, `=SUM(#REF!)`) and the saved file dropped the link. The reader and the engine follow both.
 
+### Reading and writing xlsx: Codes Excel does not open
+
+From [Number formats, Codes Excel does not open](formats.md#codes-excel-does-not-open).
+
+The sets `digits-date-letters`, `bare-literals`, `bare-held`, `refused-held` and `written-held` of `bench/coverage/display/` run on Excel for Windows alone, whose step halves a book down to the codes Excel refuses (the Mac's stops at the repair window). The rule of `numfmt/refused.ts` was written after the first two; `bare-held` and `refused-held`, each predicted by the rule before Excel ran it, missed 8 and 25 codes and refused 2 and 4 wrongly, and showed that the size is a whole code's. So the rule is strict where it does not know. `written-held`, 114 codes a person or an agent writes, predicted as well, missed `0;0;0;0` and refused `[DBNum1]0`, `0:` and `0 :шт` wrongly; the first and the second were corrected. An independent matrix of 333 codes, opened one by one in Excel for Windows in en-US and ru-RU and, 56 files of them, in Excel for Mac, gave one answer on all three for each code they share; `test/format-refused.test.ts` checks the sets without Excel. No code of the 401 opened in the display sets or of the 46 in the files Excel saved in `test/excel` is refused.
+
 ### Reading and writing xlsx: Notes, hyperlinks and frozen panes
 
 From [Reading and writing xlsx, Notes, hyperlinks and frozen panes](xlsx.md#notes-hyperlinks-and-frozen-panes).
