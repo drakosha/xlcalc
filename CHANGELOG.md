@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.82.0 (2026-11-04)
+
+Added:
+
+- `isDateFormat` in `xlcalc` and `xlcalc/entry`: whether a number format shows a date or a time in any of its sections (`dd.mm.yyyy`, `[h]:mm`, `mm:ss.00`, built-in 14), for the codes `numberFormatCategory` calls custom. A code of digit placeholders with a date's bare letter (`#,##0 m`), or one that does not read (`0 samples`), is no date: Excel for Windows does not open a file with one, and `0 "m"` is the unit it shows.
+- `linkFileName` and `linkTarget` in `xlcalc` and `xlcalc/text`: the file's name of a link's target as a formula shows it, by which the package finds a link (compare two with `sameName`), and the target of a file's name as Excel writes it: `100% a.xlsx` is `100%25%20a.xlsx`, `a#b.xlsx` is `a%23b.xlsx`, Cyrillic and `&` as they are. `writeXlsx` and `writeKept` still escape only a target's space, so a host adding a link gives `target: linkTarget(name)`.
+
+Changed:
+
+- `writeXlsx` and `writeKept` write a formula over another workbook as a plain formula wherever Excel computes that alike, as Excel saves such a formula typed: `[1]Data!A1*2`, `SUM([1]Data!A:A)`, `VLOOKUP(7,[1]Data!A1:B3,2,FALSE)`, so Excel 2019 and older show it without braces. It stays a dynamic array where a range takes one value of the old kind (`[1]Data!A1:A3`, `ABS([1]Data!A1:A3)`, `SUM(IF([1]Data!A1:A3>1,1,0))`), and over a defined name or a table of another workbook, whose size the file does not say. Excel for Mac and Excel for Windows computed the same formulas in both forms alike but for those predicted to part; the difference over a marked link that 0.80.0 gave as the reason is one of Excel's version, in both forms.
+- `scanExternalReferences` gives a reference the range operator joins to something else (`[Book.xlsx]Data!A1:C`) as `{ book, sheet, unread: true }`, where 0.81.0 left it out: a new member of `ExternalReference`, without an area.
+
+Fixed:
+
+- A range of a link in a plain formula of a file (`[1]Data!B1:B3`, `ABS([1]Data!B1:B3)`) takes `@` in `readXlsx`, `openKept` and `fromLegacy`, as a sheet's range does and as Excel computes it: one value of the formula's row, where it spilled.
+
 ## 0.81.0 (2026-11-04)
 
 Added:
