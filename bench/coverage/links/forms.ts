@@ -8,6 +8,11 @@
  * (`COUNTBLANK`, `SUMIF` and `COUNTIF` #VALUE!, as over a closed workbook);
  * ranges (`ranges-*`) differ as they did (`SUM([1]Sheet1!A:A)`, a range alone), which is why these are files of their own:
  * a refused file costs only them.
+ *
+ * The first run took back the guess about ranges: the two forms parted only over a range alone, which does not spill of the
+ * old kind. So `converted-*`, committed before its run too: of the old kind a link's range takes `@` where a sheet's would
+ * (`legacy/convert.ts`), and the two forms agree wherever that adds none; `filled-*`, the two forms agree after a fill
+ * down marks the link.
  */
 import type { CachedValue, LinkedBook, LinkedFormula, LinksCase, LinksCases } from './cases.js'
 
@@ -81,6 +86,76 @@ const RANGES: [string, string][] = [
   ['VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)', 'A36'],
 ]
 
+/**
+ * Ranges where the two forms should part or not, each at row 2 with the columns beside it free: what the engine computes
+ * of the old kind once a link's reference converts as a reference (`@` where one value goes), and of the dynamic array.
+ */
+const CONVERTED: [string, CachedValue, CachedValue][] = [
+  ['[1]Sheet1!B1:B3', 8, 7],
+  ['[1]Sheet1!B1:B3*2', 16, 14],
+  ['ABS([1]Sheet1!B1:B3)', 8, 7],
+  ['SUM([1]Sheet1!B1:B3)', 24, 24],
+  ['SUM([1]Sheet1!B:B)', 24, 24],
+  ['SUM(IF([1]Sheet1!B1:B3>7,1,0))', 1, 2],
+  ['SUMPRODUCT(([1]Sheet1!B1:B3>7)*1)', 2, 2],
+  ['MAX([1]Sheet1!B1:B3*2)', 16, 18],
+  ['INDEX([1]Sheet1!B1:B3,2)', 8, 8],
+  ['INDEX([1]Sheet1!B1:B3,MATCH(8,[1]Sheet1!B1:B3,0))', 8, 8],
+  ['VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)', 7, 7],
+  ['MATCH(8,[1]Sheet1!B1:B3,0)', 2, 2],
+  ['COUNTA([1]Sheet1!A1:A6)', 5, 5],
+  ['AVERAGE([1]Sheet1!B1:B3)', 8, 8],
+  ['SUMIF([1]Sheet1!B1:B3,">7")', VALUE, VALUE],
+  ['COUNTIF([1]Sheet1!B1:B3,8)', VALUE, VALUE],
+  ['COUNTBLANK([1]Sheet1!A5:A9)', VALUE, VALUE],
+  ['ROW([1]Sheet1!B2:B3)', 2, 2],
+  ['ROWS([1]Sheet1!B1:B3)', 3, 3],
+  ['LEN([1]Sheet1!B1:B3)', 1, 1],
+  ['OFFSET([1]Sheet1!B1:B3,0,0)', VALUE, VALUE],
+  ['[1]Sheet1!B1:B3 [1]Sheet1!A2:C2', 8, 8],
+  ['SUM([1]Sheet1!B2:[1]Sheet1!B3)', 17, 17],
+  ['SUM([1]Marked!A:A)', REF, REF],
+  ['SUM([1]Marked!A1:A3)', REF, REF],
+  ['COUNTA([1]Marked!A1:A3)', 2, 2],
+  ['[1]Marked!A1:A3', REF, 3],
+  ['VLOOKUP(3,[1]Marked!A1:B3,1,FALSE)', 3, 3],
+  ['SUM([1]NoData!A1:A3)', REF, REF],
+  ['SUM([1]NoData!A:A)', REF, REF],
+]
+/** Every other column of row 2: A2, C2 and on. */
+const beside = (i: number) => `${i >= 13 ? String.fromCharCode(64 + Math.floor((i * 2) / 26)) : ''}${String.fromCharCode(65 + ((i * 2) % 26))}2`
+
+const convertedCases = (id: string, about: string, form: (f: string, at: string) => LinkedFormula, value: (c: (typeof CONVERTED)[number]) => CachedValue): LinksCase => ({
+  id,
+  about,
+  sheets: [{ name: 'S', cells: {} }],
+  linked: { S: Object.fromEntries(CONVERTED.map(([f], i) => [beside(i), form(f, beside(i))])) },
+  links: [LINK],
+  read: [{ sheet: 'S', range: 'A2:BH4' }],
+  predicted: Object.fromEntries(CONVERTED.map((c, i) => [`S!${beside(i)}`, value(c)])),
+})
+
+/** Formulas filled down, which marks the link's sheets: a cell it holds no value of is `#REF!` then, as before, in both forms alike. */
+const FILLED: [string, string][] = [
+  ['A1', '[1]Sheet1!B1'],
+  ['C1', '[1]Sheet1!B1*2'],
+  ['E1', 'SUM([1]Sheet1!B:B)'],
+  ['G1', 'VLOOKUP(5,[1]Sheet1!$A$1:$B$3,2,FALSE)'],
+  ['I1', '[1]Sheet1!Z9'],
+  ['K1', 'ISBLANK([1]Sheet1!Z9)'],
+  ['M1', 'SUM([1]Sheet1!B1:B3)'],
+]
+
+const filledCases = (id: string, about: string, form: (f: string, at: string) => LinkedFormula): LinksCase => ({
+  id,
+  about,
+  sheets: [{ name: 'S', cells: {} }],
+  linked: { S: Object.fromEntries(FILLED.map(([at, f]) => [at, form(f, at)])) },
+  links: [LINK],
+  read: [{ sheet: 'S', range: 'A1:N3' }],
+  ops: FILLED.map(([at]) => ({ op: 'fillDown', sheet: 'S', to: `${at}:${at[0]}3` })),
+})
+
 const own = (cells: Record<string, unknown>): LinksCase['sheets'] => [{ name: 'S', cells: { C1: { value: 2 }, ...cells } as never }]
 const first = (range: string) => range.split(':')[0]
 
@@ -113,6 +188,10 @@ export function buildLinksCases(): LinksCases {
       cellCases('cells-dynamic', 'each reference one cell, as a dynamic array', dynamic),
       rangeCases('ranges-plain', 'ranges, of the old kind', plain),
       rangeCases('ranges-dynamic', 'ranges, as a dynamic array', dynamic),
+      convertedCases('converted-plain', 'ranges at row 2, of the old kind', plain, (c) => c[1]),
+      convertedCases('converted-dynamic', 'ranges at row 2, as a dynamic array', dynamic, (c) => c[2]),
+      filledCases('filled-plain', 'filled down, of the old kind', plain),
+      filledCases('filled-dynamic', 'filled down, as a dynamic array', dynamic),
     ],
   }
 }
