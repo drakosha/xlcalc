@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { InputError, type BookInput } from '../src/index.js'
-import { formatRefused } from '../src/numfmt/refused.js'
+import { formatRefused } from '../src/text.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { zip } from '../src/xlsx/zip/write.js'
@@ -40,6 +40,21 @@ describe('formatRefused', () => {
   it.each(['0 m', '0 kg', '0 USD', '0 шт/ч', '0 л/мин', '#,##0 руб/м', 'Итог: 0', '0 samples', 'General 0', '@ General', '0 @', '@;@', '0;0;0;0', '[<1]0;[<2]0;[<3]0;0', '[<1][<2]0', '[Red][Blue]0', '[Foo]0', '0 "шт', '0\\', '0;0;0;0;0', 'ss.0000', '0'.repeat(256), `0 "${'x'.repeat(122)}"`, `"${'x'.repeat(120)}";"${'x'.repeat(120)}"`])('%s is not', (code) =>
     expect(formatRefused(code)).toBe(true),
   )
+})
+
+describe('formatRefused as the package gives it', () => {
+  it('a built-in format by its number is not refused, and what is no format is an error', () => {
+    for (const f of [0, 4, 14, 49]) expect(formatRefused(f)).toBe(false)
+    expect(() => formatRefused(1000 as never)).toThrow(InputError)
+    expect(() => formatRefused(null as never)).toThrow(InputError)
+  })
+
+  it('agrees with the writer', async () => {
+    for (const numberFormat of ['0 kg', 'Итог: 0', '[Foo]0', '0 "kg"', '0 шт', '#,##0 ₽']) {
+      const written = writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1, numberFormat } } }] } }).then(() => false, () => true)
+      expect(await written, numberFormat).toBe(formatRefused(numberFormat))
+    }
+  })
 })
 
 describe('writing a refused code', () => {
