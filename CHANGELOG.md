@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.83.0 (2026-11-05)
+
+Changed:
+
+- `writeXlsx` and `writeKept` refuse, with an `InputError` that names it, a number format code Excel does not open a file with, a code no cell uses too; no file is written. Text needs no quotes while none of its letters reads as a code: `0 шт`, `#,##0 руб`, `#,##0 ₽` and `0 x` are written. `0 kg`, `0 USD`, `0 m`, `0 шт/ч` and `Итог: 0` are refused, and `0 "kg"` and `0 "шт/ч"` written. So are `General 0`, `0 @`, `@;0`, `0;0;0;0`, more than two conditions, two colors or conditions in a section, a condition with four sections, a bracket that means nothing and a long text. The check comes from measurements in Excel and is strict where it does not know, so it refuses a few codes Excel opens (`0:`, a text past about 80 characters bare or 120 quoted); it cannot be complete ([Codes Excel does not open](docs/formats.md#codes-excel-does-not-open)).
+- A file that already has such a code reads as before, and `writeKept` leaves it the file's own; the workbook written as a new file by `writeXlsx` is refused.
+
 ## 0.82.0 (2026-11-04)
 
 Added:
