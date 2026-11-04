@@ -150,7 +150,18 @@ const EXT_KNOWN = new Set(
 /** Formatted runs of text, or phonetic ones, in the XML of a string. */
 const RUNS = /<(?:[\w.-]+:)?(?:r|rPh)[\s>]/
 /** A cell of a sheet's XML: its attributes and content. */
-const CELL_XML = /<(?:[\w.-]+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?c>)/g
+export const CELL_XML = /<(?:[\w.-]+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?c>)/g
+
+/** The numbers of the shared strings with `runs` in their XML. */
+export function stringsWith(sst: string | undefined, runs: RegExp): Set<number> {
+  const found = new Set<number>()
+  if (sst && runs.test(sst)) elements(sst, 'si').forEach((e, k) => runs.test(e.body ?? '') && found.add(k))
+  return found
+}
+
+/** Whether a cell's text, shared or inline, has `runs` in its XML; `strings`, the shared ones that have them. */
+export const textWith = (a: Record<string, string>, body: string, strings: Set<number>, runs: RegExp) =>
+  (a.t === 's' && strings.has(Number(/<(?:[\w.-]+:)?v>(\d+)</.exec(body)?.[1]))) || (a.t === 'inlineStr' && runs.test(body))
 /** The rich values of errors the writer writes itself (`write/book.ts`). */
 const OWN_ERRORS = new Set(['#SPILL!', '#CALC!', '#CONNECT!', '#BLOCKED!', '#GETTING_DATA'])
 
@@ -233,8 +244,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
   const [sst, metaXml, richValues, richStructures, stylesXml, themeXml] = await Promise.all(['sharedStrings', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'styles', 'theme'].map(part))
   const colors = palette(themeXml, stylesXml)
   const dxfs = readDxfs(stylesXml, colors)
-  const richStrings = new Set<number>()
-  if (sst && RUNS.test(sst)) elements(sst, 'si').forEach((e, k) => RUNS.test(e.body ?? '') && richStrings.add(k))
+  const richStrings = stringsWith(sst, RUNS)
   const meta = cellMetadata(metaXml, richValues, richStructures)
 
   const types = new ContentTypes(src.types)
@@ -321,8 +331,7 @@ export async function carriersOf(src: Source, book: BookInput, styles: KeptStyle
       const a = attributes(m[1])
       const body = m[2] ?? ''
       const kept =
-        (a.t === 's' && richStrings.has(Number(/<(?:[\w.-]+:)?v>(\d+)</.exec(body)?.[1]))) ||
-        (a.t === 'inlineStr' && RUNS.test(body)) ||
+        textWith(a, body, richStrings, RUNS) ||
         (a.vm !== undefined && !OWN_ERRORS.has(meta.error(Number(a.vm)) ?? '')) ||
         (a.ph !== undefined && a.ph !== '0' && a.ph !== 'false') ||
         (ext && body.includes('extLst>'))

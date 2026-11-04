@@ -8,7 +8,7 @@
 import type { BookInput, SheetInput, TableInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
 import { SHEET_STATES } from '../../input.js'
-import { object, onlyOptions } from '../../input/basic.js'
+import { checkBoolean, object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
 import { checkLimits, fileBytes, readStyled } from '../read/book.js'
@@ -167,7 +167,8 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
 async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
   const bytes = fileBytes(original)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
-  onlyOptions(o, 'opts', ['values', 'locale', 'limits'])
+  onlyOptions(o, 'opts', ['values', 'locale', 'limits', 'writeValues'])
+  if (o.writeValues !== undefined) checkBoolean(o.writeValues, 'opts.writeValues')
   const limits = o.limits === undefined ? undefined : checkLimits(o.limits)
   const { book: given, cells, locale, unasked } = writeArgs(snapshot, { ...(o.values !== undefined ? { values: o.values } : {}), ...(o.locale !== undefined ? { locale: o.locale } : {}) })
   const src = await openSource(bytes, limits)
@@ -182,6 +183,7 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
   const unread = (code: string) => new Set(read.issues.flatMap((x) => (x.code === code && x.sheet !== undefined ? [x.sheet] : [])))
   const lost = { conditional: unread('conditionalFormat'), validation: unread('dataValidation') }
   const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits, styles), lost, carriers.rules)
+  k.writeValues = o.writeValues === true
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
@@ -219,6 +221,8 @@ class Kept {
   changed = false
   /** Whether a part written holds a formula of the book. */
   formulas = false
+  /** Whether a sheet whose values of formulas differ from the file's counts as changed (`WriteKeptOptions.writeValues`). */
+  writeValues = false
   private readonly w0: BookWriting
   private readonly w1: BookWriting
   /** The workbook's relationship id of each sheet of the book written. */
@@ -344,7 +348,7 @@ class Kept {
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
       const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
-      this.changed ||= out.changed || xml !== ss.xml
+      this.changed ||= out.changed || xml !== ss.xml || (this.writeValues && out.xml !== undefined)
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
       if (rels.changed) this.parts.set(relsPath(ss.part), rels.xml())

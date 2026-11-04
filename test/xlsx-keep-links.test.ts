@@ -56,6 +56,16 @@ describe('writeKept writes the links a host gives', () => {
     expect([2, 3].map((n) => /Target="([^"]*)"/.exec(parts.get(`xl/externalLinks/_rels/externalLink${n}.xml.rels`)!)![1])).toEqual(['Отчет%202025.xlsm', 'P&amp;L%202025.xlsx'])
   })
 
+  it("a file's formula has a link's number: by the name of a link it takes its number; by the name or the number of none, it is left out", async () => {
+    const data = await linked()
+    const { book } = await openKept(data)
+    const cells = { A1: book.sheets[0].cells.A1, B1: { formula: '[Other.xlsx]Data!B2' }, C1: { formula: '[Нет.xlsx]Data!B2' }, D1: { formula: '[7]Data!B2' } }
+    const w = await writeKept(data, { book: { ...book, sheets: [{ ...book.sheets[0], cells }] } })
+    const xml = (await partsOf(w.data)).get('xl/worksheets/sheet1.xml')!
+    expect([...xml.matchAll(/<f\b[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['[1]Data!B2', '[1]Data!B2'])
+    expect(w.issues.filter((i) => i.code === 'formula').flatMap((i) => i.cells)).toEqual(['C1', 'D1'])
+  })
+
   it("the file's link keeps the relationship its part points at the other workbook by", async () => {
     const data = await linked()
     const parts = await partsOf(data)
