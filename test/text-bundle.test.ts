@@ -27,7 +27,7 @@ describe('text without the engine', () => {
     // (65,614 bytes) with pivotBlankLabel, the sizes of a new slicer and timeline and the buttons where Excel draws them;
     // 64.8 (66,380 bytes) with accountingFormats; 65.0 (66,561 bytes) with the locales a module loads on being imported,
     // the limit raised to 70 KB (Mikhail, 02.11); 66.0 (67,585 bytes) with scanExternalReferences, of syntax/print its walk alone;
-    // 66.5 (68,140 bytes) with linkFileName and linkTarget, a module of their own; 68.8 (70,488 bytes) with formatRefused
+    // 66.5 (68,140 bytes) with linkFileName and linkTarget, a module of their own; 71.4 (73,127 bytes) with formatRefused
     expect(code.length).toBeLessThan(70 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)

@@ -6,13 +6,14 @@
  */
 import type { NumberFormat } from '../contract.js'
 import { checkFormat } from '../input/styles.js'
+import { EN_CODES, parseFormat, splitSections } from './parse.js'
 
 /** A longer code Excel cuts to this or refuses: never what was asked for. */
 const MAX_CODE = 255
 /** The letters of dates, times and eras, in either case: beside a digit placeholder they refuse a section. */
 const DATE_LETTERS = /[bdeghmnsy]/i
-/** What a bracket may hold, by itself: `parse.ts` reads the same but for the numerals of East Asian scripts; here not to bring the parser into the writers' bundles. */
-const BRACKET = /^\[(?:\$[^\]]*|h+|m+|s+|black|blue|cyan|green|magenta|red|white|yellow|color ?(?:[1-9]|[1-4]\d|5[0-6])|(?:<>|<=|>=|<|>|=)\s*-?\d*[.,]?\d+(?:e[+-]?\d+)?|DBNum[1-4])\]$/i
+/** Excel's numerals of East Asian scripts, which the parser does not read. */
+const DBNUM = /^\[DBNum[1-4]\]$/i
 /** Conditions a code may have (`[<1]0;[<2]0;0`). */
 const MAX_CONDITIONS = 2
 /**
@@ -59,7 +60,7 @@ function readSection(section: string): Read | null {
     } else if (ch === '[') {
       const j = section.indexOf(']', i)
       const bracket = section.slice(i, j + 1)
-      if (j < 0 || !BRACKET.test(bracket)) return null
+      if (j < 0 || (parseFormat(bracket, EN_CODES) === null && !DBNUM.test(bracket))) return null
       if (/^\[[hms]+\]$/i.test(bracket)) out.bare += 'h'
       if (/^\[[<>=]/.test(bracket)) conditions++
       else if (/^\[[a-z]/i.test(bracket) && !/^\[[hms]+\]$/i.test(bracket)) colors++
@@ -105,25 +106,6 @@ function sectionCost(read: Read): number {
   return read.cost + literals * CHAR_COST + codes * CODE_COST + (/[0#?]/.test(rest) ? DIGITS_COST : 0) + (literals && !read.quotedLast ? 1 : 0)
 }
 
-/** A code's sections, split where `;` is no literal; null when a quote or a bracket does not close. */
-function sectionsOf(code: string): string[] | null {
-  const sections: string[] = []
-  let from = 0
-  for (let i = 0; i < code.length; i++) {
-    const ch = code[i]
-    if (ch === '"' || ch === '[') {
-      i = code.indexOf(ch === '"' ? '"' : ']', i + 1)
-      if (i < 0) return null
-    } else if (ch === '\\' || ch === '_' || ch === '*') i++
-    else if (ch === ';') {
-      sections.push(code.slice(from, i))
-      from = i + 1
-    }
-  }
-  sections.push(code.slice(from))
-  return sections
-}
-
 /**
  * Whether Excel does not open a file with this number format, which `writeXlsx` and `writeKept` then refuse: for a Format Cells
  * window that says so at once. Text goes in quotes where its letters read as codes (`0 kg` is refused, `0 "kg"` is not). A
@@ -134,8 +116,8 @@ export function formatRefused(format: NumberFormat): boolean {
   if (typeof format === 'number') return false
   const code = format
   if (code.length > MAX_CODE) return true
-  const sections = sectionsOf(code)
-  if (!sections || sections.length > 4) return true
+  const sections = splitSections(code)
+  if (sections.length > 4) return true
   const read = sections.map(readSection)
   if (read.some((r) => r === null)) return true
   const reads = read as Read[]
