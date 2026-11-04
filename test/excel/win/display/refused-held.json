@@ -1,0 +1,1492 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 167.7
+ },
+ "cases": [
+  {
+   "id": "r1",
+   "cell": {
+    "value": 1234.5,
+    "format": "General;0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r2",
+   "cell": {
+    "value": 1234.5,
+    "format": "0;General"
+   },
+   "width": 40
+  },
+  {
+   "id": "r3",
+   "cell": {
+    "value": 1234.5,
+    "format": "General;General"
+   },
+   "width": 40
+  },
+  {
+   "id": "r4",
+   "cell": {
+    "value": 1234.5,
+    "format": "General;@"
+   },
+   "width": 40
+  },
+  {
+   "id": "r5",
+   "cell": {
+    "value": 1234.5,
+    "format": "@;General"
+   },
+   "width": 40
+  },
+  {
+   "id": "r6",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd General"
+   },
+   "width": 40
+  },
+  {
+   "id": "r7",
+   "cell": {
+    "value": 1234.5,
+    "format": "General dd"
+   },
+   "width": 40
+  },
+  {
+   "id": "r8",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1]General;0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r9",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1]0;[<2]0;General"
+   },
+   "width": 40
+  },
+  {
+   "id": "r10",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1][<2]0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r11",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1][<2][<3]0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r12",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red][Blue]0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r13",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1]0;0;0;0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r14",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1]0;[>5]0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r15",
+   "cell": {
+    "value": 1234.5,
+    "format": "[<1]0;[>5]0;[=2]0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r16",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 AM/PM x"
+   },
+   "width": 40
+  },
+  {
+   "id": "r17",
+   "cell": {
+    "value": 1234.5,
+    "format": "@ AM/PM"
+   },
+   "width": 40
+  },
+  {
+   "id": "r18",
+   "cell": {
+    "value": 1234.5,
+    "format": "AM/PM @"
+   },
+   "width": 40
+  },
+  {
+   "id": "r19",
+   "cell": {
+    "value": 1234.5,
+    "format": "A/P 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r20",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 A/P;0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r21",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 a/p"
+   },
+   "width": 40
+  },
+  {
+   "id": "r22",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 am/pm"
+   },
+   "width": 40
+  },
+  {
+   "id": "r23",
+   "cell": {
+    "value": 1234.5,
+    "format": "AM/PM"
+   },
+   "width": 40
+  },
+  {
+   "id": "r24",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 AM"
+   },
+   "width": 40
+  },
+  {
+   "id": "r25",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 PM"
+   },
+   "width": 40
+  },
+  {
+   "id": "r26",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 шт/0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r27",
+   "cell": {
+    "value": 1234.5,
+    "format": "шт/0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r28",
+   "cell": {
+    "value": 1234.5,
+    "format": "0/шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r29",
+   "cell": {
+    "value": 1234.5,
+    "format": "# ?/шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r30",
+   "cell": {
+    "value": 1234.5,
+    "format": "?/? шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r31",
+   "cell": {
+    "value": 1234.5,
+    "format": "0/0 шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r32",
+   "cell": {
+    "value": 1234.5,
+    "format": "0/10"
+   },
+   "width": 40
+  },
+  {
+   "id": "r33",
+   "cell": {
+    "value": 1234.5,
+    "format": "0/1"
+   },
+   "width": 40
+  },
+  {
+   "id": "r34",
+   "cell": {
+    "value": 1234.5,
+    "format": "0/0/шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r35",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"шт\"/ч"
+   },
+   "width": 40
+  },
+  {
+   "id": "r36",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 шт\\/ч"
+   },
+   "width": 40
+  },
+  {
+   "id": "r37",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 шт\"/\"ч"
+   },
+   "width": 40
+  },
+  {
+   "id": "r38",
+   "cell": {
+    "value": 1234.5,
+    "format": "x/x"
+   },
+   "width": 40
+  },
+  {
+   "id": "r39",
+   "cell": {
+    "value": 1234.5,
+    "format": "шт/шт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r40",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 x/y"
+   },
+   "width": 40
+  },
+  {
+   "id": "r41",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 c/p"
+   },
+   "width": 40
+  },
+  {
+   "id": "r42",
+   "cell": {
+    "value": 1234.5,
+    "format": "% /"
+   },
+   "width": 40
+  },
+  {
+   "id": "r43",
+   "cell": {
+    "value": 1234.5,
+    "format": "0%/"
+   },
+   "width": 40
+  },
+  {
+   "id": "r44",
+   "cell": {
+    "value": 1234.5,
+    "format": "/0%"
+   },
+   "width": 40
+  },
+  {
+   "id": "r45",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"руб.\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r46",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 руб."
+   },
+   "width": 40
+  },
+  {
+   "id": "r47",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 р."
+   },
+   "width": 40
+  },
+  {
+   "id": "r48",
+   "cell": {
+    "value": 1234.5,
+    "format": "# ##0 \"р.\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r49",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0 тыс"
+   },
+   "width": 40
+  },
+  {
+   "id": "r50",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0 тыс."
+   },
+   "width": 40
+  },
+  {
+   "id": "r51",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0,, млн"
+   },
+   "width": 40
+  },
+  {
+   "id": "r52",
+   "cell": {
+    "value": 1234.5,
+    "format": "0,0 %"
+   },
+   "width": 40
+  },
+  {
+   "id": "r53",
+   "cell": {
+    "value": 1234.5,
+    "format": "0.0%"
+   },
+   "width": 40
+  },
+  {
+   "id": "r54",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yy г"
+   },
+   "width": 40
+  },
+  {
+   "id": "r55",
+   "cell": {
+    "value": 1234.5,
+    "format": "mmmm yyyy г."
+   },
+   "width": 40
+  },
+  {
+   "id": "r56",
+   "cell": {
+    "value": 1234.5,
+    "format": "ч:мм"
+   },
+   "width": 40
+  },
+  {
+   "id": "r57",
+   "cell": {
+    "value": 1234.5,
+    "format": "h ч mm мин"
+   },
+   "width": 40
+  },
+  {
+   "id": "r58",
+   "cell": {
+    "value": 1234.5,
+    "format": "h \"ч\" mm \"мин\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r59",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 °C;-0 °C"
+   },
+   "width": 40
+  },
+  {
+   "id": "r60",
+   "cell": {
+    "value": 1234.5,
+    "format": "0.00 \"м²\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r61",
+   "cell": {
+    "value": 1234.5,
+    "format": "0.00 м²"
+   },
+   "width": 40
+  },
+  {
+   "id": "r62",
+   "cell": {
+    "value": 1234.5,
+    "format": "0.00 м3"
+   },
+   "width": 40
+  },
+  {
+   "id": "r63",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 кВт"
+   },
+   "width": 40
+  },
+  {
+   "id": "r64",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 кВт·ч"
+   },
+   "width": 40
+  },
+  {
+   "id": "r65",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 kWh"
+   },
+   "width": 40
+  },
+  {
+   "id": "r66",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 W"
+   },
+   "width": 40
+  },
+  {
+   "id": "r67",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 V"
+   },
+   "width": 40
+  },
+  {
+   "id": "r68",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 l"
+   },
+   "width": 40
+  },
+  {
+   "id": "r69",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 t"
+   },
+   "width": 40
+  },
+  {
+   "id": "r70",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 ц"
+   },
+   "width": 40
+  },
+  {
+   "id": "r71",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 т"
+   },
+   "width": 40
+  },
+  {
+   "id": "r72",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 га"
+   },
+   "width": 40
+  },
+  {
+   "id": "r73",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 чел"
+   },
+   "width": 40
+  },
+  {
+   "id": "r74",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 дн"
+   },
+   "width": 40
+  },
+  {
+   "id": "r75",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 мес"
+   },
+   "width": 40
+  },
+  {
+   "id": "r76",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 лет"
+   },
+   "width": 40
+  },
+  {
+   "id": "r77",
+   "cell": {
+    "value": 1234.5,
+    "format": "Итого: 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r78",
+   "cell": {
+    "value": 1234.5,
+    "format": "Total: 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r79",
+   "cell": {
+    "value": 1234.5,
+    "format": "Sum 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r80",
+   "cell": {
+    "value": 1234.5,
+    "format": "Cost 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r81",
+   "cell": {
+    "value": 1234.5,
+    "format": "Qty 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r82",
+   "cell": {
+    "value": 1234.5,
+    "format": "No 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r83",
+   "cell": {
+    "value": 1234.5,
+    "format": "Nr 0"
+   },
+   "width": 40
+  },
+  {
+   "id": "r84",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r85",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r86",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r87",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r88",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r89",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\";\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r90",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r91",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;0;0;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r92",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r93",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;0;0;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r94",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r95",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;0;0;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r96",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r97",
+   "cell": {
+    "value": 1234.5,
+    "format": "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;0;0;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+   },
+   "width": 40
+  },
+  {
+   "id": "r98",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r99",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r100",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r101",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r102",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r103",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r104",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r105",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r106",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r107",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r108",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r109",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r110",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r111",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r112",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r113",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r114",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r115",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r116",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r117",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r118",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r119",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r120",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r121",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r122",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r123",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r124",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r125",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r126",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r127",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r128",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r129",
+   "cell": {
+    "value": 1234.5,
+    "format": "[Red]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r130",
+   "cell": {
+    "value": 1234.5,
+    "format": "[$-419]\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r131",
+   "cell": {
+    "value": 1234.5,
+    "format": "dd.mm.yyyy \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r132",
+   "cell": {
+    "value": 1234.5,
+    "format": "_-* \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r133",
+   "cell": {
+    "value": 1234.5,
+    "format": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" 0 \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r134",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r135",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r136",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r137",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r138",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r139",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r140",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r141",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r142",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r143",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r144",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r145",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  },
+  {
+   "id": "r146",
+   "cell": {
+    "value": 1234.5,
+    "format": "0 \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\" \"a\""
+   },
+   "width": 40
+  }
+ ],
+ "answers": {
+  "r1": {
+   "text": "1234.5"
+  },
+  "r2": {
+   "text": "1235"
+  },
+  "r3": {
+   "text": "1234.5"
+  },
+  "r4": {
+   "text": "1234.5"
+  },
+  "r6": {
+   "text": "18 0.499999999"
+  },
+  "r7": {
+   "text": "0.499999999 18"
+  },
+  "r8": {
+   "text": "1235"
+  },
+  "r9": {
+   "text": "1234.5"
+  },
+  "r14": {
+   "text": "1235"
+  },
+  "r16": {
+   "text": "1235 PM x"
+  },
+  "r17": {
+   "text": "1234.5"
+  },
+  "r18": {
+   "text": "1234.5"
+  },
+  "r20": {
+   "text": "1235 P"
+  },
+  "r21": {
+   "text": "1235 p"
+  },
+  "r22": {
+   "text": "1235 PM"
+  },
+  "r23": {
+   "text": "PM"
+  },
+  "r26": {
+   "text": "2469 шт/2"
+  },
+  "r30": {
+   "text": "2469/2 шт"
+  },
+  "r31": {
+   "text": "2469/2 шт"
+  },
+  "r32": {
+   "text": "12345/10"
+  },
+  "r33": {
+   "text": "1235/1"
+  },
+  "r36": {
+   "text": "1235 шт/ч"
+  },
+  "r37": {
+   "text": "1235 шт/ч"
+  },
+  "r45": {
+   "text": "1,234.50 руб."
+  },
+  "r46": {
+   "text": "1,234.50 руб."
+  },
+  "r47": {
+   "text": "1,234.50 р."
+  },
+  "r48": {
+   "text": "1 235 р."
+  },
+  "r49": {
+   "text": "1,235 тыс"
+  },
+  "r50": {
+   "text": "1,235 тыс."
+  },
+  "r51": {
+   "text": "0 млн"
+  },
+  "r52": {
+   "text": "123,450 %"
+  },
+  "r53": {
+   "text": "123450.0%"
+  },
+  "r54": {
+   "text": "18.05.03 г"
+  },
+  "r55": {
+   "text": "May 1903 г."
+  },
+  "r56": {
+   "text": "ч:мм"
+  },
+  "r57": {
+   "text": "12 ч 00 мин"
+  },
+  "r58": {
+   "text": "12 ч 00 мин"
+  },
+  "r59": {
+   "text": "1235 °C"
+  },
+  "r60": {
+   "text": "1234.50 м²"
+  },
+  "r61": {
+   "text": "1234.50 м²"
+  },
+  "r62": {
+   "text": "1234.50 м3"
+  },
+  "r63": {
+   "text": "1235 кВт"
+  },
+  "r64": {
+   "text": "1235 кВт·ч"
+  },
+  "r66": {
+   "text": "1235 W"
+  },
+  "r67": {
+   "text": "1235 V"
+  },
+  "r68": {
+   "text": "1235 l"
+  },
+  "r69": {
+   "text": "1235 t"
+  },
+  "r70": {
+   "text": "1235 ц"
+  },
+  "r71": {
+   "text": "1235 т"
+  },
+  "r72": {
+   "text": "1235 га"
+  },
+  "r73": {
+   "text": "1235 чел"
+  },
+  "r74": {
+   "text": "1235 дн"
+  },
+  "r75": {
+   "text": "1235 мес"
+  },
+  "r76": {
+   "text": "1235 лет"
+  },
+  "r98": {
+   "text": "#######################################"
+  },
+  "r99": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r100": {
+   "text": "#######################################"
+  },
+  "r101": {
+   "text": "#######################################"
+  },
+  "r102": {
+   "text": "#######################################"
+  },
+  "r103": {
+   "text": "#######################################"
+  },
+  "r104": {
+   "text": "#######################################"
+  },
+  "r105": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r106": {
+   "text": "#######################################"
+  },
+  "r107": {
+   "text": "#######################################"
+  },
+  "r108": {
+   "text": "#######################################"
+  },
+  "r111": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r113": {
+   "text": "#######################################"
+  },
+  "r114": {
+   "text": "#######################################"
+  },
+  "r117": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r120": {
+   "text": "#######################################"
+  },
+  "r123": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r126": {
+   "text": "#######################################"
+  },
+  "r129": {
+   "text": "#######################################",
+   "color": "#FF0000"
+  },
+  "r132": {
+   "text": "#######################################"
+  },
+  "r134": {
+   "text": "1235 a a a a a a a a a a a a a a a a a a a a"
+  },
+  "r135": {
+   "text": "#######################################"
+  },
+  "r136": {
+   "text": "#######################################"
+  }
+ },
+ "rejected": [
+  "r5",
+  "r10",
+  "r11",
+  "r12",
+  "r13",
+  "r15",
+  "r19",
+  "r24",
+  "r25",
+  "r28",
+  "r29",
+  "r34",
+  "r38",
+  "r39",
+  "r40",
+  "r41",
+  "r42",
+  "r43",
+  "r65",
+  "r77",
+  "r78",
+  "r79",
+  "r80",
+  "r83",
+  "r84",
+  "r85",
+  "r86",
+  "r87",
+  "r88",
+  "r89",
+  "r92",
+  "r93",
+  "r94",
+  "r95",
+  "r96",
+  "r97",
+  "r110",
+  "r112",
+  "r115",
+  "r116",
+  "r119",
+  "r121",
+  "r122",
+  "r124",
+  "r125",
+  "r128",
+  "r130",
+  "r131",
+  "r133",
+  "r137",
+  "r138",
+  "r139",
+  "r142",
+  "r143",
+  "r144",
+  "r27",
+  "r35",
+  "r44",
+  "r81",
+  "r82",
+  "r90",
+  "r91",
+  "r109",
+  "r118",
+  "r127",
+  "r140",
+  "r141",
+  "r145",
+  "r146"
+ ]
+}

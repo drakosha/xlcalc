@@ -4,6 +4,8 @@
  * General). Number formats Excel shows by the regional settings are written as codes of their own, so the file
  * shows what `numberFormat` says in every locale.
  */
+import { InputError } from '../../input-error.js'
+import { formatRefused } from '../../numfmt/refused.js'
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
 import { escapeAttr } from '../xml/text.js'
@@ -85,6 +87,11 @@ export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => numb
   return `<dxf>${font}${numFmtXml}${fill}${border}</dxf>`
 }
 
+/** A code a file is to take: refused where Excel does not open a file with it, a code no cell uses too. */
+export function checkWritten(code: string): void {
+  if (formatRefused(code)) throw new InputError('numberFormat', `Excel does not open a file with the number format ${JSON.stringify(code)}: text in a format goes in quotes (0 "kg", 0 "шт/ч")`)
+}
+
 /** A number format's id among the built-in ones and those a file defines (`custom`, which a new code joins from 164 on). */
 export function numFmtId(code: NumberFormat | undefined, custom: (code: string) => number): number {
   // a built-in format given by number is written as that number, as Excel stores it
@@ -139,7 +146,10 @@ export class StyleWriter implements CellFormats {
   numFmt(code: NumberFormat | undefined): number {
     return numFmtId(code, (c) => {
       let id = this.formats.get(c)
-      if (id === undefined) this.formats.set(c, (id = 164 + this.formats.size))
+      if (id === undefined) {
+        checkWritten(c)
+        this.formats.set(c, (id = 164 + this.formats.size))
+      }
       return id
     })
   }

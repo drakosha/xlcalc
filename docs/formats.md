@@ -206,6 +206,16 @@ A section writes the minus sign of a negative number unless it can only accept n
 - The text of a tag before its first hyphen is a currency symbol and is displayed as written: `[$€-x-euro2] #,##0.00` displays `€ 1.50`, and `#,##0.00 [$₽-ru-RU]` displays `1.50 ₽`.
 - `B1` or `B2` at the start of a date code chooses its calendar, in any locale. `B1` is the Gregorian calendar, with English names as `[$-409]` gives them: `B1d mmmm yyyy` displays `31 January 2025` in ru-RU too. `B2` is the Hijri calendar, Excel's tabular one (30-year cycles from 1 Muharram 1 AH, 622-07-15), with Arabic names: 2025-01-31 with `B2d mmmm yyyy` displays `2 شعبان 1446`, and 2000-01-01 with `B2dd/mm/yyyy` displays `25/09/1420`. Under `B2`, `mmm` is the full month name (`mmmmm` its first letter) and `ddd` the full day name.
 
+## Codes Excel does not open
+
+Excel reads every number format code of a file on opening, a code no cell uses too, and does not open the file with one it cannot read; repairing the file makes the cell General. `writeXlsx` and `writeKept` refuse such a code with an `InputError`, which names it, and write no file.
+
+Text needs no quotes while none of its letters reads as a code: `0 шт`, `#,##0 руб`, `#,##0 ₽` and `0 x` open. Beside digit placeholders the letters of dates, times and eras do not (`b d e g h m n s y`, either case), so `0 kg`, `0 USD`, `0 pcs` and `0 m` go in quotes, `0 "kg"`; so does text with `/` or `:`, as `0 шт/ч` and `Итог: 0` do not open, and `0 "шт/ч"` does. Other codes Excel does not open: `General` or `@` beside digits (`General 0`, `0 @`), `@` in a section but the last (`@;0`), digits in a fourth section (`0;0;0;0`), more than two conditions, or two conditions or colors in a section (`[Red][Blue]0`), a condition with four sections, a bracket that means nothing (`[Foo]0`), and more than 255 characters or a long text: about 120 quoted or 80 bare in a whole code.
+
+The check is strict where it does not know. It refuses a few codes Excel opens (`0:`, and a text past 240 of its units, near Excel's limit), which quotes or a shorter text mend. It comes from measurements and cannot be complete: of the last 114 codes held out it missed one, since corrected. A file that already has such a code reads, and `writeKept` leaves it the file's own; the workbook written as a new file by `writeXlsx` is refused.
+
+A comma is the group separator in a code whatever the locale: `# ##0,00 ₽` opens and shows `1 235 ₽`, with no decimals. The code for two decimals is `#,##0.00 ₽`, `1,234.50 ₽` in en-US.
+
 ## Built-in formats
 
 An xlsx file stores some formats by number only, without a code. A format here can be such a number, from 0 to 49: `{ value: 45688.75, numberFormat: 14 }`. Excel displays some of them according to the locale, so the same number is displayed differently in en-US and ru-RU.
