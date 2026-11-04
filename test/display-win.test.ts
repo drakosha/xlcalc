@@ -18,7 +18,8 @@ import { currentCases } from './stored-cases.js'
 /** The reasons that covered a case, filled as the sets run. */
 const used = new Set<string>()
 
-const SETS = TAGS.flatMap((locale) => storedSets<StoredDisplay>(`win/display/${localeDir(locale)}`).map((s) => ({ ...s, locale })))
+// digits-date-letters is of codes Excel refuses a file for, which the engine need not show (`test/is-date-format.test.ts`)
+const SETS = TAGS.flatMap((locale) => storedSets<StoredDisplay>(`win/display/${localeDir(locale)}`).filter((s) => s.name !== 'digits-date-letters').map((s) => ({ ...s, locale })))
 
 /** A case's cell as Excel for Windows showed it and as the engine shows it. */
 interface Shown {
