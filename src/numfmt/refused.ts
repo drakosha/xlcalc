@@ -4,14 +4,12 @@
  * `bare-held`, `refused-held`, `written-held`). Literals need no quotes while no letter reads as a code: `0 шт`, `#,##0 ₽` and `0 x` open;
  * `0 m`, `0 kg`, `0 USD` and `0 шт/ч` do not, `0 "kg"` and `0 "шт/ч"` do.
  */
-import { EN_CODES, parseFormat } from './parse.js'
-
 /** A longer code Excel cuts to this or refuses: never what was asked for. */
 const MAX_CODE = 255
 /** The letters of dates, times and eras, in either case: beside a digit placeholder they refuse a section. */
 const DATE_LETTERS = /[bdeghmnsy]/i
-/** Excel's numerals of East Asian scripts, which the engine does not read. */
-const DBNUM = /^\[DBNum[1-4]\]$/i
+/** What a bracket may hold, by itself: `parse.ts` reads the same but for the numerals of East Asian scripts; here not to bring the parser into the writers' bundles. */
+const BRACKET = /^\[(?:\$[^\]]*|h+|m+|s+|black|blue|cyan|green|magenta|red|white|yellow|color ?(?:[1-9]|[1-4]\d|5[0-6])|(?:<>|<=|>=|<|>|=)\s*-?\d*[.,]?\d+(?:e[+-]?\d+)?|DBNum[1-4])\]$/i
 /** Conditions a code may have (`[<1]0;[<2]0;0`). */
 const MAX_CONDITIONS = 2
 /**
@@ -58,7 +56,7 @@ function readSection(section: string): Read | null {
     } else if (ch === '[') {
       const j = section.indexOf(']', i)
       const bracket = section.slice(i, j + 1)
-      if (j < 0 || (parseFormat(bracket, EN_CODES) === null && !DBNUM.test(bracket))) return null
+      if (j < 0 || !BRACKET.test(bracket)) return null
       if (/^\[[hms]+\]$/i.test(bracket)) out.bare += 'h'
       if (/^\[[<>=]/.test(bracket)) conditions++
       else if (/^\[[a-z]/i.test(bracket) && !/^\[[hms]+\]$/i.test(bracket)) colors++
