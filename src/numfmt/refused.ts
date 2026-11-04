@@ -4,6 +4,9 @@
  * `bare-held`, `refused-held`, `written-held`). Literals need no quotes while no letter reads as a code: `0 шт`, `#,##0 ₽` and `0 x` open;
  * `0 m`, `0 kg`, `0 USD` and `0 шт/ч` do not, `0 "kg"` and `0 "шт/ч"` do.
  */
+import type { NumberFormat } from '../contract.js'
+import { checkFormat } from '../input/styles.js'
+
 /** A longer code Excel cuts to this or refuses: never what was asked for. */
 const MAX_CODE = 255
 /** The letters of dates, times and eras, in either case: beside a digit placeholder they refuse a section. */
@@ -121,8 +124,15 @@ function sectionsOf(code: string): string[] | null {
   return sections
 }
 
-/** Whether Excel refuses a file with this number format code. */
-export function formatRefused(code: string): boolean {
+/**
+ * Whether Excel does not open a file with this number format, which `writeXlsx` and `writeKept` then refuse: for a Format Cells
+ * window that says so at once. Text goes in quotes where its letters read as codes (`0 kg` is refused, `0 "kg"` is not). A
+ * built-in format by its number is not refused. The check comes from measurements and is strict where it does not know.
+ */
+export function formatRefused(format: NumberFormat): boolean {
+  checkFormat(format, 'format')
+  if (typeof format === 'number') return false
+  const code = format
   if (code.length > MAX_CODE) return true
   const sections = sectionsOf(code)
   if (!sections || sections.length > 4) return true
