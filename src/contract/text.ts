@@ -154,11 +154,13 @@ export type FormulaReference = GridReference | TableReference
 /**
  * A reference of a formula to another workbook, as `scanExternalReferences` finds it: `book` the file's name as the formula
  * bar shows it (`'[Sales.xlsx]Data'!B2`), or the number of a link as a file stores it (`[1]Data!B2`); with `sheet` and its
- * area, or with `name` a defined name of that workbook (`[Sales.xlsx]!Rate`).
+ * area, or with `name` a defined name of that workbook (`[Sales.xlsx]!Rate`), or with `unread` where the range operator joins
+ * it to something else and the text does not say its area (`[Sales.xlsx]Data!A1:C`).
  */
 export type ExternalReference =
   | { book: number | string; sheet: string; kind: 'cells' | 'columns' | 'rows'; top: number; left: number; bottom: number; right: number }
   | { book: number | string; name: string; sheet?: string }
+  | { book: number | string; sheet: string; unread: true }
 
 /**
  * What an arrow key does at a position in formula text typed over a cell (Excel's Enter mode), as `refAt` determines

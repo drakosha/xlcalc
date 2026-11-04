@@ -61,6 +61,8 @@ console.log(s.getCell('S', 'B1')?.value) // → 30
 
 The stored formula numbers the link and quotes its sheet, as every stored reference is quoted: `'[1]Sheet1'!A1`, `'[1]My Sheet'!A1:B9`, the workbook-level name `[1]!Rate`, and a sheet-level name `'[1]Sheet1'!Local`. A file writes `[1]Sheet1!A1`, with quotes only where the sheet name needs them, and reading it back produces the same formula.
 
+`linkFileName(target)` is the file's name of a link's target as a formula shows it, by which the package finds a link: `file:///C:\data\Report%202025.xlsm` is `Report 2025.xlsm` (compare two with `sameName`). `linkTarget(name)` is the target of a file's name as Excel writes it, for a link a host adds: `%`, a space, `#` and `?` escaped, the rest as it is, so `100% a.xlsx` is `100%25%20a.xlsx`. `linkFileName` gives the name back.
+
 `toLocal` with `externalBooks`, a viewport's `formulaLocal` and `editText`, and the text of `explain` display a link's reference as Excel displays it, with the link's file name in brackets and the path the link stores:
 
 | stored | link's target | displayed |

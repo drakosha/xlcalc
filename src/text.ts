@@ -28,6 +28,7 @@ import * as point from './point.js'
 import * as pivotView from './pivot/cells.js'
 import * as pivotSuggest from './pivot-suggest.js'
 import * as words from './pivot-words.js'
+import * as linkTargets from './syntax/link-target.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
@@ -39,6 +40,8 @@ export { FUNCTION_CATEGORIES } from './function-categories.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const scanExternalReferences = /* @__PURE__ */ strict(scan.scanExternalReferences)
+export const linkFileName = /* @__PURE__ */ strict(linkTargets.linkFileName)
+export const linkTarget = /* @__PURE__ */ strict(linkTargets.linkTarget)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const callAt = /* @__PURE__ */ strict(call.callAt)
 export const nameAt = /* @__PURE__ */ strict(call.nameAt)

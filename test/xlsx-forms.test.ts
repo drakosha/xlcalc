@@ -11,7 +11,7 @@ import { compareCached } from '../bench/coverage/xlsx/compare.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { compute } from '../src/index.js'
-import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { fromLegacy, readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import type { BookInput } from '../src/contract.js'
 
@@ -81,10 +81,24 @@ describe('writeXlsx: a formula in the form Excel 365 saves it in', () => {
     expect((await readXlsx(data)).book.sheets[0].cells).toEqual(b.sheets[0].cells)
   })
 
-  it('a formula over another workbook is a dynamic array: Excel computes some of the old kind otherwise', async () => {
-    const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: '[1]Data!A1*2' }, A2: { formula: 'A1*2' } } }], externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Data', cells: { A1: 7 } }] }] }
+  it('a formula over another workbook is of the old kind where a sheet\'s would be: a range where one value goes keeps it a dynamic array', async () => {
+    const formulas = { A1: '[1]Data!A1*2', A2: 'A1*2', A3: 'SUM([1]Data!A:A)', A4: 'VLOOKUP(7,[1]Data!A1:B3,2,FALSE)', A5: 'ISBLANK([1]Data!Z9)', C1: '[1]Data!A1:A3', D1: 'ABS([1]Data!A1:A3)', E1: 'SUM(IF([1]Data!A1:A3>1,1,0))', F1: '[1]!Rate' }
+    const b: BookInput = {
+      sheets: [{ name: 'S', cells: Object.fromEntries(Object.entries(formulas).map(([a, formula]) => [a, { formula }])) }],
+      externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Data', cells: { A1: 7, A2: 8, A3: 9, B1: 1 } }], names: [{ name: 'Rate', ref: 'Data!$A$1' }] }],
+    }
     const xml = (await openArchive((await writeXlsx({ book: b, result: compute(b) })).data).text('xl/worksheets/sheet1.xml'))!
-    expect(xml).toContain('<c r="A1" cm="1"><f t="array" ref="A1">[1]Data!A1*2</f><v>14</v></c>')
+    expect(xml).toContain('<c r="A1"><f>[1]Data!A1*2</f><v>14</v></c>')
     expect(xml).toContain('<c r="A2"><f>A1*2</f><v>28</v></c>')
+    for (const a of ['A3', 'A4', 'A5']) expect(xml).toMatch(new RegExp(`<c r="${a}"[^>]*><f>`))
+    for (const a of ['C1', 'D1', 'E1', 'F1']) expect(xml).toMatch(new RegExp(`<c r="${a}" cm="1"[^>]*><f t="array"`))
+  })
+
+  it("a range of a link of the old kind reads with `@`, as a sheet's, and is written back of the old kind", () => {
+    expect(fromLegacy('[1]S!B1:B3')).toBe("@'[1]S'!B1:B3")
+    expect(fromLegacy('ABS([1]S!B1:B3)')).toBe("ABS(@'[1]S'!B1:B3)")
+    expect(fromLegacy('SUM([1]S!B1:B3)')).toBe("SUM('[1]S'!B1:B3)")
+    expect(fromLegacy('INDEX([1]S!B1:B3,MATCH(1,[1]S!A1:A3,0))')).toBe("INDEX('[1]S'!B1:B3,MATCH(1,'[1]S'!A1:A3,0))")
+    expect(fromLegacy('[1]S!B2')).toBe("'[1]S'!B2")
   })
 })

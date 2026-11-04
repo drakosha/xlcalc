@@ -28,12 +28,11 @@ export function oldKind(formula: string, sheet: string, file: string, legacy: Le
   const ast = parsed(formula)
   if (!ast) return undefined
   // a call of a LAMBDA or of a name (`Twice(B1:B3)`): the conversion does not know what its answer is, and Excel 365
-  // saves one as a dynamic array; Excel before 365 has no LAMBDA. A reference into another workbook: Excel computes some
-  // of the old kind otherwise (`SUM([1]Sheet1!A:A)` #REF! as a dynamic array, 6 of the old kind) and refused a file of
-  // them. A name of a formula that is no literal or reference (`computed`): the old kind of `SUMIF(sq,">10")` over
-  // `sq` = `A1:A3*10` is #VALUE!, the dynamic one #SPILL!, which the text Excel shows does not tell
+  // saves one as a dynamic array; Excel before 365 has no LAMBDA. A name or a table of another workbook, whose size the
+  // file does not say. A name of a formula that is no literal or reference (`computed`): the old kind of `SUMIF(sq,">10")`
+  // over `sq` = `A1:A3*10` is #VALUE!, the dynamic one #SPILL!, which the text Excel shows does not tell
   let unknown = false
-  walk(ast, (n) => (unknown ||= n.k === 'call' || n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined) || (n.k === 'name' && computed(n.name, n.sheet ?? sheet))))
+  walk(ast, (n) => (unknown ||= n.k === 'call' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined) || (n.k === 'name' && computed(n.name, n.sheet ?? sheet))))
   if (unknown) return undefined
   const dynamic = parsed(fromFile(file).formula)
   if (!dynamic) return undefined

@@ -69,7 +69,7 @@ describe('built package', () => {
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])
     // the root's functions of formula text and the clipboard's are the subpath's own
-    expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'DEFAULT_SLICER_SIZE', 'DEFAULT_TIMELINE_SIZE', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'accountingFormats', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'pivotBlankLabel', 'pivotCellAt', 'pivotCells', 'quoteSheetIfNeeded', 'refAt', 'renamedValueField', 'scanExternalReferences', 'scanReferences', 'stepDecimals', 'suggestPivotField', 'valueComparator'], same: true })
+    expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'DEFAULT_SLICER_SIZE', 'DEFAULT_TIMELINE_SIZE', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'accountingFormats', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'linkFileName', 'linkTarget', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'pivotBlankLabel', 'pivotCellAt', 'pivotCells', 'quoteSheetIfNeeded', 'refAt', 'renamedValueField', 'scanExternalReferences', 'scanReferences', 'stepDecimals', 'suggestPivotField', 'valueComparator'], same: true })
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
 

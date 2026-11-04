@@ -115,7 +115,7 @@ const placed = (yes: boolean | undefined): Pick<Out, 'pos'> => (yes ? { pos: tru
 /** The size of a literal reference: rows and columns, or null for anything else. */
 function size(n: Ast): [number, number] | null {
   if (n.k === 'paren') return size(n.a)
-  return n.k === 'ref' && !n.ref.spill ? [n.ref.r2 - n.ref.r1 + 1, n.ref.c2 - n.ref.c1 + 1] : null
+  return (n.k === 'ref' && !n.ref.spill) || n.k === 'xref' ? [n.ref.r2 - n.ref.r1 + 1, n.ref.c2 - n.ref.c1 + 1] : null
 }
 
 /**
@@ -134,7 +134,7 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
     case 'COLUMN':
       return args.length && args[0].kind !== 'one' ? 'rowcol' : 'one'
     case 'INDEX': {
-      const ref = (args[0].kind === 'range' && !args[0].named) || nodes[0].k === 'ref'
+      const ref = (args[0].kind === 'range' && !args[0].named) || nodes[0].k === 'ref' || nodes[0].k === 'xref'
       // of one cell or value one value (`INDEX(B1,0)` too); of several, one cell when every index given is a place that leaves one
       const one = args[0].kind === 'one' || (args[1]?.pos && (nodes.length < 3 ? ref : args[2].pos))
       return one ? 'one' : ref ? 'range' : 'array'
@@ -178,6 +178,7 @@ function converter(names: Names) {
   const node = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
     switch (n.k) {
       case 'ref':
+      case 'xref':
         return { ast: n, kind: n.ref.kind === 'cell' && !n.ref.spill ? 'one' : 'range' }
       case 'ref3d':
       case 'union':
