@@ -152,6 +152,15 @@ export interface TableReference extends ReferenceSpan {
 export type FormulaReference = GridReference | TableReference
 
 /**
+ * A reference of a formula to another workbook, as `scanExternalReferences` finds it: `book` the file's name as the formula
+ * bar shows it (`'[Sales.xlsx]Data'!B2`), or the number of a link as a file stores it (`[1]Data!B2`); with `sheet` and its
+ * area, or with `name` a defined name of that workbook (`[Sales.xlsx]!Rate`).
+ */
+export type ExternalReference =
+  | { book: number | string; sheet: string; kind: 'cells' | 'columns' | 'rows'; top: number; left: number; bottom: number; right: number }
+  | { book: number | string; name: string; sheet?: string }
+
+/**
  * What an arrow key does at a position in formula text typed over a cell (Excel's Enter mode), as `refAt` determines
  * it: `insert`, a reference to the cell the arrow points to is inserted at `at` (Point mode), preceded by its own `=`
  * with `equals` (at the start of the text, where Excel starts a new formula: `=A1` becomes `=D3=A1`); `commit`, the text

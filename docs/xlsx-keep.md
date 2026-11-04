@@ -30,6 +30,7 @@ console.log(same.data === original) // → true
 | `values` | which formula values the file stores, as for `writeXlsx`: `'require'` by default with a result, `'omit'` without one, `'preserve'` |
 | `locale` | the language of the issues' messages and of a refusal's, as for `writeXlsx` |
 | `limits` | how large the original file's parts may be once inflated, as for `readXlsx` |
+| `writeValues` | `true` stores the values of the formulas that differ from the file's also when nothing else changed, where the original bytes come back without it: for a file a generator wrote without values, which a program that does not calculate will read |
 
 A change the file cannot take without pointing a part at other cells is refused: `writeKept` throws `KeptRefusal`, exported by the subpath, with the reason in its message and its kind in `code`, and writes no file ([Refusals](#refusals)).
 
@@ -61,6 +62,8 @@ A change the file cannot take without pointing a part at other cells is refused:
 A workbook that did not change, the values of its formulas aside, gives the original bytes: the values Excel stored stay. Once something changed, the formulas take their values from the result, as `writeXlsx` writes them, and Excel computes the workbook again when it opens the file.
 
 What the file holds and the workbook does not is reported by `openKept`'s issues as by `readXlsx`'s: the workbook cannot hold it, but the file keeps it.
+
+A workbook that changed only in those values is written with `writeValues`: the rows whose values differ take them beside the file's own `<f>`, the other parts stay as the file has them, and, as for any change, `calcChain.xml` is left out and the workbook asks Excel to calculate on loading. With no value that differs, the original bytes come back all the same, so writing again over the file written gives that file. With `values: 'preserve'` a formula the result has no value for stays without one, so a host can leave out the formulas it does not want to answer for, such as those over a workbook it has not read.
 
 ## Structure operations
 
@@ -164,6 +167,22 @@ Everything the workbook holds moves with these operations on its own: formulas, 
 - The ignored errors of a sheet with rows or columns inserted or deleted are left out: no carrier holds their cells.
 - `docProps/app.xml`, which lists the sheets' names for file browsers, stays as it was.
 - A file whose active sheet is a chart sheet, once sheets were added, deleted or moved, gets the workbook's active sheet, a worksheet, while the chart sheet keeps its selected tab: Excel opens it with both sheets selected (`[Group]`).
+
+## Inspecting a file
+
+`inspectKept(data, opts)` says what a host checks of a file without reading it into a workbook. It resolves to `{ sheets }`, and takes `limits`, as `readXlsx` does.
+
+```js
+import { writeXlsx } from 'xlcalc/xlsx'
+import { inspectKept } from 'xlcalc/xlsx/keep'
+
+const made = { sheets: [{ name: 'Data', cells: { A1: { value: 'a' } } }] }
+const { data } = await writeXlsx({ book: made })
+const { sheets } = await inspectKept(data)
+console.log(sheets[0]) // → { name: 'Data', part: 'xl/worksheets/sheet1.xml', formattedText: [] }
+```
+
+Each sheet has its `name` as the file has it, its `part` in the archive, to tell which parts a change may touch, and `formattedText`, the addresses of the cells with formatted runs of text: the workbook does not hold the runs, so `writeKept` keeps such a cell while it is not changed and a value written over it loses them. Phonetic text alone is not among them.
 
 ## Checked against Excel
 

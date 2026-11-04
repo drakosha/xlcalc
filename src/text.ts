@@ -38,6 +38,7 @@ export { DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE } from './drawing-size.js'
 export { FUNCTION_CATEGORIES } from './function-categories.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
+export const scanExternalReferences = /* @__PURE__ */ strict(scan.scanExternalReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const callAt = /* @__PURE__ */ strict(call.callAt)
 export const nameAt = /* @__PURE__ */ strict(call.nameAt)

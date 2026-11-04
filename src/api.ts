@@ -49,7 +49,7 @@ export { CalcError } from './exec/budget.js'
 export { enUS } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export * from './a1.js'
-export { accountingFormats, callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, pivotBlankLabel, pivotCellAt, pivotCells, refAt, renamedValueField, scanReferences, stepDecimals, suggestPivotField, valueComparator } from './text.js'
+export { accountingFormats, callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, pivotBlankLabel, pivotCellAt, pivotCells, refAt, renamedValueField, scanExternalReferences, scanReferences, stepDecimals, suggestPivotField, valueComparator } from './text.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses;
 // those that check a formula's calls count by the functions' declared arguments in a bundle without the engine (`declared-arity.ts`)

@@ -11,6 +11,7 @@ import { compute, createInlineCalc, createSession, InputError, parseCell, toInva
 import * as a1 from '../src/a1.js'
 import * as text from '../src/text.js'
 import * as xlsx from '../src/xlsx.js'
+import * as keep from '../src/xlsx-keep.js'
 import * as csv from '../src/csv.js'
 import * as locales from '../src/locales.js'
 import * as worker from '../src/worker/index.js'
@@ -121,7 +122,7 @@ describe('the functions of the package take no options they do not', () => {
   const ROOT = {
     compute: 2, createSession: 2, createInlineCalc: 1, liveBook: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
     toLocal: 3, toInvariant: 3, registerLocale: 1, registerRegex: 1, registerPivot: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, numberFormatSamples: 2, entryWidth: 2, fitColumns: 4, fitRows: 4, displayValue: 2, builtinFormatCode: 2, numberFormatCategory: 2, numberFormatChoices: 1, accountingFormats: 1, errorText: 2,
-    scanReferences: 2, refAt: 3, callAt: 3, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, functionSignature: 2,
+    scanExternalReferences: 1, scanReferences: 2, refAt: 3, callAt: 3, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, functionSignature: 2,
     parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, nameAt: 3, columnWidthFromChars: 1, columnWidthToChars: 1, compareValues: 3, findMatcher: 2, findReplacer: 3, mergedArea: 2, valueComparator: 1, outlineEdit: 2, stepDecimals: 4, suggestPivotField: 2, pivotCells: 3, pivotCellAt: 3, renamedValueField: 5, pivotBlankLabel: 1,
   }
   /** Every function the package gives out, by entry point, and the arguments it takes. */
@@ -132,9 +133,10 @@ describe('the functions of the package take no options they do not', () => {
     // its groups are objects, which registerFunctions takes
     ['xlcalc/functions', groups, {}],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, mergedArea: 2, outlineEdit: 2 }],
-    ['xlcalc/text', text, { scanReferences: 2, refAt: 3, callAt: 3, nameAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, columnWidthFromChars: 1, columnWidthToChars: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1, accountingFormats: 1, findMatcher: 2, findReplacer: 3, compareValues: 3, valueComparator: 1, stepDecimals: 4, suggestPivotField: 2, pivotCells: 3, pivotCellAt: 3, renamedValueField: 5, pivotBlankLabel: 1 }],
+    ['xlcalc/text', text, { scanExternalReferences: 1, scanReferences: 2, refAt: 3, callAt: 3, nameAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, columnWidthFromChars: 1, columnWidthToChars: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1, accountingFormats: 1, findMatcher: 2, findReplacer: 3, compareValues: 3, valueComparator: 1, stepDecimals: 4, suggestPivotField: 2, pivotCells: 3, pivotCellAt: 3, renamedValueField: 5, pivotBlankLabel: 1 }],
     ['xlcalc/entry', typedEntry, { parseEntry: 2, entryText: 2, needsApostrophe: 2, numberFormatSamples: 2 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
+    ['xlcalc/xlsx/keep', keep, { openKept: 2, writeKept: 3, inspectKept: 2 }],
     ['xlcalc/csv', csv, { readCsv: 2, writeCsv: 2 }],
     ['xlcalc/locales', locales, { loadLocale: 1 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
@@ -147,13 +149,13 @@ describe('the functions of the package take no options they do not', () => {
 
   for (const [entry, mod, table] of FUNCTIONS)
     it(`${entry}: each function by its parameters, refusing an options object past them`, async () => {
-      const fns = Object.fromEntries(Object.entries(mod).filter(([k, f]) => typeof f === 'function' && !/Error$/.test(k)))
+      const fns = Object.fromEntries(Object.entries(mod).filter(([k, f]) => typeof f === 'function' && !/(?:Error|Refusal)$/.test(k)))
       expect(Object.fromEntries(Object.entries(fns).map(([k, f]) => [k, (f as () => void).length]))).toEqual(table)
       for (const [name, max] of Object.entries(table)) {
         if (name === 'registerFunctions') continue
         const f = fns[name] as (...a: unknown[]) => unknown
         const refused = `takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (table is an option of toLocal and toInvariant)`
-        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/locales') await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
+        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/xlsx/keep' || entry === 'xlcalc/locales') await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
         else expect(() => f(...Array(max).fill(undefined), { table: 'T' }), name).toThrow(new InputError(name, refused))
       }
     })

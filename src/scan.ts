@@ -4,13 +4,16 @@
  * references around the place. Text in a locale is read through its translation into stored text, whose positions map
  * back to the typed ones.
  */
-import type { FormulaReference, ScanOptions } from './contract.js'
+import type { ExternalReference, FormulaReference, ScanOptions } from './contract.js'
 import { checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
 import { optionalLocale } from './locale/load.js'
 import { translate, type Translated } from './locale/translate.js'
 import type { Locale } from './locale/types.js'
 import { FormulaError, tokenize, type Tok } from './syntax.js'
+import type { Ast } from './syntax/ast.js'
+import { parse } from './syntax/parse.js'
+import { walk } from './syntax/print.js'
 import { bracketEnd, closingQuote, isSpace } from './syntax/scan.js'
 import { AREA_WORDS } from './syntax/table.js'
 
@@ -121,5 +124,32 @@ export function scanReferences(formula: string, opts?: ScanOptions): FormulaRefe
       const sheets = tok.sheet === null ? {} : { sheet: tok.sheet, ...(tok.last === undefined ? {} : { sheetLast: tok.last }) }
       out.push({ kind: KIND[ref.kind], ...place, ...sheets, top: ref.r1 + 1, left: ref.c1 + 1, bottom: ref.r2 + 1, right: ref.c2 + 1, ...(ref.spill ? { spill: true } : {}) })
     }
+  return out
+}
+
+/**
+ * The references of a stored formula to other workbooks, in order: for a host that reads those workbooks before the
+ * formula is entered. `formula` may have its leading `=`; a formula that does not read has none (entering it says why), nor
+ * does a reference the range operator joins to something else (`[Book.xlsx]Data!A1:C`), whose area the text does not say.
+ */
+export function scanExternalReferences(formula: string): ExternalReference[] {
+  const text = checkString(formula, 'formula')
+  if (!text.includes('[')) return []
+  let ast
+  try {
+    ast = parse(text.startsWith('=') ? text.slice(1) : text)
+  } catch (e) {
+    if (e instanceof FormulaError) return []
+    throw e
+  }
+  const out: ExternalReference[] = []
+  // `[B.xlsx]S!A1:C` is the range operator over a cell and a name: the text does not say the area
+  const joined = new Set<Ast>()
+  const bare = (n: Ast): Ast => (n.k === 'paren' ? bare(n.a) : n)
+  walk(ast, (n) => {
+    if (n.k === 'bin' && n.op === ':') joined.add(bare(n.a)).add(bare(n.b))
+    else if (n.k === 'xref' && !joined.has(n)) out.push({ book: n.book, sheet: n.sheet, kind: KIND[n.ref.kind], top: n.ref.r1 + 1, left: n.ref.c1 + 1, bottom: n.ref.r2 + 1, right: n.ref.c2 + 1 })
+    else if (n.k === 'xname') out.push({ book: n.book, name: n.name, ...(n.sheet === undefined ? {} : { sheet: n.sheet }) })
+  })
   return out
 }
