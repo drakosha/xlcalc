@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.81.0 (2026-11-04)
+
+Added:
+
+- `inspectKept` in `xlcalc/xlsx/keep`: what a host checks of a file without reading it into a workbook. `sheets[]` gives each worksheet's `name`, its `part` in the archive and `formattedText`, the addresses of the cells with formatted runs of text, shared or inline, which a value written over them loses; phonetic text alone is not among them.
+- `writeKept`'s option `writeValues`: stores the values of the formulas that differ from the file's also when nothing else changed, beside the file's own `<f>`, for a file a generator wrote without values. As for any change, `calcChain.xml` is left out and the workbook asks for a full calculation on loading; with no value that differs, or without a result, the original bytes come back. With `values: 'preserve'` a formula the result has no value for stays without one.
+- `scanExternalReferences` in `xlcalc` and `xlcalc/text`: a stored formula's references to other workbooks, for a host that reads those workbooks before the formula is entered: `book`, with `sheet` and the area, or with `name`. A reference the range operator joins to something else (`[Book.xlsx]Data!A1:C`) is not among them, as the text does not say its area, nor is what entering a formula does not read as a link (a path with brackets of its own, a file's name without brackets).
+
 ## 0.80.0 (2026-11-03)
 
 Changed:
