@@ -128,8 +128,9 @@ const versioned = (root: string, key: string) => (VERSIONED_ON[key] ?? ['']).inc
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
   // open-held puts a linked book beside the opened one, which the Windows harness alone does
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', ...(root ? ['open-held'] : []), 'refresh-held', 'tables-held', 'written']))
-  for (const set of stored(root)) {
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'forms', 'functions-held', ...(root ? ['open-held'] : []), 'refresh-held', 'tables-held', 'written']))
+  // forms holds each formula in two forms of a file, which `linksBook` does not tell apart (`test/xlsx-links-excel.test.ts`)
+  for (const set of stored(root).filter((x) => x.name !== 'forms')) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()
       const at = (c: LinksCase, key: string) => `${set.name}/${c.id}/${key}`

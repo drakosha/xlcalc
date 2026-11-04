@@ -1,9 +1,8 @@
 {
  "meta": {
-  "version": "16.113.4",
-  "rerun": "targets: Excel 16.114.3, 2026-11-03, its file sent with the space of a target as %20; the answer is the earlier one but for the temporary folder; Excel 16.114.3 for Mac, 2026-11-03: 7 cases sent again as writeXlsx writes a formula of the old kind where that loses nothing; the answers the earlier ones but where Excel answers otherwise now, the earlier writer's file too (test/links-excel.test.ts, VERSIONED)",
+  "version": "16.114.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 13.5
+  "seconds": 13.2
  },
  "cases": [
   {
@@ -697,20 +696,20 @@
   }
  ],
  "sent": {
-  "cache": "b7f51f3f6d941829e4fddacfb132fe7191bbc832dc0c451e36c7a54861742324",
-  "refresh-error": "6fd739b2cb5e8cff9feff47854e1639b5abda3fb2a5b40fa30cc09a8e645e28a",
-  "two-links": "85767079e7b483498f93e1be9f0de3f119b71d1bc31bba4deeb24253767854a4",
-  "targets": "7c195b378e525b601a2679843cb310c824de6bcba004f0166105ac9560dedf86",
-  "stored-empty": "f236ceface6c8afac90b5e12a8949a3bc69fc75722570b5e8243d5c3159107ed",
-  "errors": "21849ac0409bca7ddbcd01d6573a427ddbdd6013e6893dc297ff3a9fa490991d",
-  "placeholder": "e139cb40fea9826a38286304d23f456df746b50f755f56e4d4a30141a7bcba6f"
+  "cache": "72d235cd470e3ea7b4e7172a9687b5a970f9bb865e47faa94695d6a833c58e07",
+  "refresh-error": "a91aa61ef4082fa27b6742a122091ff3e94e73d176b0fb24b36c8c47a004a1cc",
+  "two-links": "be6264eb4d3a60ee10b5a78574375245d679405953f9b6a6348f3667373dbc12",
+  "targets": "22ec98bed26045fa51c2ed6d3aee3aa812ec3406d8a8736ba1286e0ec0658e76",
+  "stored-empty": "f3313a4a73e58410a14916c0cfccbe4ff7a7b9c916a6f8a0f76ed7912d741e57",
+  "errors": "2abc4d2caf4c079fead7ecf3ecf77f816f48e19570484cd40a170c1b8137bc92",
+  "placeholder": "96491eb4a70ca52a5954a027a22aebcf255de6fd1c130d489e62e76aacb7cafb"
  },
  "answers": {
   "cache": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -884,88 +883,88 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Rate",
-      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Konst",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Rate",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Rate",
-      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Konst",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Rate",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
-      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,Sheet1!A1)",
+      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1",
-      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1"
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1"
      },
      "shown": {
       "S!A1": "2",
@@ -1218,96 +1217,96 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Rate",
-      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Konst",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Rate",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B10"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9&\"|\"",
-      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A9)",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B1",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B2",
-      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B3",
-      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B4,\"e\")",
-      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]My Sheet'!A1",
-      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Лист 1'!A1",
-      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Rate",
-      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!Local",
-      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Konst",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A6": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A9)",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B2",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B3",
+      "S!A10": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B4,\"e\")",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]My Sheet'!A1",
+      "S!A12": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Лист 1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Rate",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!Local",
+      "S!A15": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Konst",
       "S!A16": "=Ext*2",
-      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,0))",
-      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
-      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
-      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A17": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,MATCH(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,0))",
+      "S!A18": "=VLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!A19": "=SUMIFS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A20": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\")",
+      "S!A21": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3=\"x\")*'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A22": "=INDIRECT(\"[1]Sheet1!A1\")",
-      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1,1,0)",
-      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1)",
-      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
-      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B5)",
-      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1)",
-      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:B4)",
-      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A5)",
-      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/Book2.xlsx'!Bad",
+      "S!A23": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A24": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1)",
+      "S!A25": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A26": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B5)",
+      "S!A27": "=ISREF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A28": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:B4)",
+      "S!A29": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A30": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx'!Bad",
       "S!A31": "=SUM(ExtR)",
-      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!1:1,0)",
-      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
-      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B:B)",
-      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A:A)",
-      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A32": "=MATCH(20,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!1:1,0)",
+      "S!A33": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3,Local1!A1)",
+      "S!A34": "=XLOOKUP(2,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B:B)",
+      "S!A35": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A36": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!D1:D3,\"x\",'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3)",
       "S!A37": "=INDIRECT(\"'[Book2.xlsx]Sheet1'!A1\")",
-      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1:A3*2",
-      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A1",
-      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A2",
-      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!A3",
-      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1",
-      "S!C6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!$A$1",
-      "S!D10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-46594/[Book2.xlsx]Sheet1'!B10"
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1:A3*2",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!C5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1",
+      "S!C6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!$A$1",
+      "S!D10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B10"
      },
      "shown": {
       "S!A1": "2",
@@ -1376,9 +1375,9 @@
   },
   "refresh-error": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1396,14 +1395,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1427,14 +1426,14 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1)"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1",
-      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Other'!A1)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1",
+      "S!A3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Other'!A1)"
      },
      "shown": {
       "S!A1": "6",
@@ -1446,10 +1445,10 @@
   },
   "two-links": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx",
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Data.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx",
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Data.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1463,12 +1462,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1487,12 +1486,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1503,14 +1502,14 @@
   },
   "targets": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx",
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx",
     "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/Book3.xlsx",
     "C:/data/Book4.xlsx",
     "/Users/x/data/Book5.xlsx",
     "https://example.com/share/Book6.xlsx",
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Sub Folder/Книга 7.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Sub Folder/Книга 7.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1540,20 +1539,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:/data/[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='/Users/x/data/[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:/data/[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='/Users/x/data/[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1592,20 +1591,20 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:/data/[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='/Users/x/data/[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
       "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/data/[Book3.xlsx]Sheet1'!A1",
       "S!A3": "='C:/data/[Book4.xlsx]Sheet1'!A1",
       "S!A4": "='/Users/x/data/[Book5.xlsx]Sheet1'!A1",
       "S!A5": "='https://example.com/share/[Book6.xlsx]Sheet1'!A1",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Sub Folder/[Книга 7.xlsx]Sheet1'!A1"
      },
      "shown": {
       "S!A1": "1",
@@ -1620,9 +1619,9 @@
   },
   "stored-empty": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1664,26 +1663,26 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A1:A3)"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A1:A3)"
      },
      "shown": {
       "S!A1": "0",
@@ -1737,26 +1736,26 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A1:A3)"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2&\"|\"",
-      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!B1)",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2",
-      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A2)",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A3",
-      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Marked'!A1:A3)"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A4": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A5": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!B1)",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2",
+      "S!A7": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A2)",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A3",
+      "S!A9": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Marked'!A1:A3)"
      },
      "shown": {
       "S!A1": "0",
@@ -1774,9 +1773,9 @@
   },
   "errors": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1814,24 +1813,24 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A6"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A6"
      },
      "shown": {
       "S!A1": "#VALUE!",
@@ -1880,24 +1879,24 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A6"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2",
-      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1)",
-      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A2)",
-      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A3",
-      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A4",
-      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A5",
-      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A6"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1)",
+      "S!A4": "=ERROR.TYPE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A2)",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A4",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A5",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A6"
      },
      "shown": {
       "S!A1": "#VALUE!",
@@ -1914,10 +1913,10 @@
   },
   "placeholder": {
    "sources": [
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Book2.xlsx",
-    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/Data.xlsx"
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Book2.xlsx",
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/Data.xlsx"
    ],
-   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382",
    "reads": [
     {
      "values": {
@@ -1931,12 +1930,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",
@@ -1955,12 +1954,12 @@
       }
      },
      "formulas": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "local": {
-      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1",
-      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-68083/[Data.xlsx]Data'!A1"
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Book2.xlsx]Sheet1'!A1+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-89382/[Data.xlsx]Data'!A1"
      },
      "shown": {
       "S!A1": "12",

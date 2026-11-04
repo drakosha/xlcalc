@@ -1,0 +1,4965 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 15.5
+ },
+ "cases": [
+  {
+   "id": "cells-plain",
+   "about": "each reference one cell, of the old kind",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C1": {
+       "value": 2
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1",
+     "A2": "[1]Sheet1!A2",
+     "A3": "[1]Sheet1!A3",
+     "A4": "[1]Sheet1!A4",
+     "A5": "[1]Sheet1!A5",
+     "A6": "[1]Sheet1!A6",
+     "A7": "[1]Sheet1!A9",
+     "A8": "[1]Sheet1!$B$1",
+     "A9": "[1]Sheet1!A1*2+[1]Sheet1!B1",
+     "A10": "[1]Sheet1!A2&\"|\"",
+     "A11": "[1]Sheet1!A9&\"|\"",
+     "A12": "-[1]Sheet1!A1",
+     "A13": "[1]Sheet1!A1=5",
+     "A14": "[1]Sheet1!A1+C1",
+     "A15": "SUM([1]Sheet1!A1)",
+     "A16": "SUM([1]Sheet1!A1,[1]Sheet1!B1,1)",
+     "A17": "MAX([1]Sheet1!A1,2)",
+     "A18": "IF([1]Sheet1!A1>0,[1]Sheet1!B1,0)",
+     "A19": "IFERROR([1]Sheet1!A4,0)",
+     "A20": "ISBLANK([1]Sheet1!A9)",
+     "A21": "ISBLANK([1]Sheet1!A5)",
+     "A22": "ISNUMBER([1]Sheet1!A1)",
+     "A23": "LEN([1]Sheet1!A2)",
+     "A24": "TEXT([1]Sheet1!A1,\"0.00\")",
+     "A25": "COUNTBLANK([1]Sheet1!A9)",
+     "A26": "COUNTA([1]Sheet1!A1)",
+     "A27": "COUNT([1]Sheet1!A9)",
+     "A28": "ROW([1]Sheet1!A5)",
+     "A29": "COLUMN([1]Sheet1!B1)",
+     "A30": "ROWS([1]Sheet1!A1)",
+     "A31": "OFFSET([1]Sheet1!A1,1,0)",
+     "A32": "INDEX([1]Sheet1!A1,1)",
+     "A33": "VLOOKUP(5,[1]Sheet1!A1,1,FALSE)",
+     "A34": "MATCH(5,[1]Sheet1!A1,0)",
+     "A35": "SUMIF([1]Sheet1!A1,\">0\")",
+     "A36": "COUNTIF([1]Sheet1!A1,5)",
+     "A37": "[1]Marked!A1",
+     "A38": "[1]Marked!A9",
+     "A39": "SUM([1]Marked!A9)",
+     "A40": "[1]NoData!A1",
+     "A41": "SUM([1]NoData!A1)"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A41"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5,
+    "S!A2": "txt",
+    "S!A3": true,
+    "S!A4": {
+     "error": "NA"
+    },
+    "S!A5": 0,
+    "S!A6": "",
+    "S!A7": 0,
+    "S!A8": 7,
+    "S!A9": 17,
+    "S!A10": "txt|",
+    "S!A11": "|",
+    "S!A12": -5,
+    "S!A13": true,
+    "S!A14": 7,
+    "S!A15": 5,
+    "S!A16": 13,
+    "S!A17": 5,
+    "S!A18": 7,
+    "S!A19": 0,
+    "S!A20": true,
+    "S!A21": true,
+    "S!A22": true,
+    "S!A23": 3,
+    "S!A24": "5.00",
+    "S!A25": {
+     "error": "VALUE"
+    },
+    "S!A26": 1,
+    "S!A27": 0,
+    "S!A28": 5,
+    "S!A29": 2,
+    "S!A30": 1,
+    "S!A31": {
+     "error": "VALUE"
+    },
+    "S!A32": 5,
+    "S!A33": 5,
+    "S!A34": 1,
+    "S!A35": {
+     "error": "VALUE"
+    },
+    "S!A36": {
+     "error": "VALUE"
+    },
+    "S!A37": 3,
+    "S!A38": {
+     "error": "REF"
+    },
+    "S!A39": {
+     "error": "REF"
+    },
+    "S!A40": {
+     "error": "REF"
+    },
+    "S!A41": {
+     "error": "REF"
+    }
+   }
+  },
+  {
+   "id": "cells-dynamic",
+   "about": "each reference one cell, as a dynamic array",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C1": {
+       "value": 2
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": {
+      "formula": "[1]Sheet1!A1",
+      "array": "A1"
+     },
+     "A2": {
+      "formula": "[1]Sheet1!A2",
+      "array": "A2"
+     },
+     "A3": {
+      "formula": "[1]Sheet1!A3",
+      "array": "A3"
+     },
+     "A4": {
+      "formula": "[1]Sheet1!A4",
+      "array": "A4"
+     },
+     "A5": {
+      "formula": "[1]Sheet1!A5",
+      "array": "A5"
+     },
+     "A6": {
+      "formula": "[1]Sheet1!A6",
+      "array": "A6"
+     },
+     "A7": {
+      "formula": "[1]Sheet1!A9",
+      "array": "A7"
+     },
+     "A8": {
+      "formula": "[1]Sheet1!$B$1",
+      "array": "A8"
+     },
+     "A9": {
+      "formula": "[1]Sheet1!A1*2+[1]Sheet1!B1",
+      "array": "A9"
+     },
+     "A10": {
+      "formula": "[1]Sheet1!A2&\"|\"",
+      "array": "A10"
+     },
+     "A11": {
+      "formula": "[1]Sheet1!A9&\"|\"",
+      "array": "A11"
+     },
+     "A12": {
+      "formula": "-[1]Sheet1!A1",
+      "array": "A12"
+     },
+     "A13": {
+      "formula": "[1]Sheet1!A1=5",
+      "array": "A13"
+     },
+     "A14": {
+      "formula": "[1]Sheet1!A1+C1",
+      "array": "A14"
+     },
+     "A15": {
+      "formula": "SUM([1]Sheet1!A1)",
+      "array": "A15"
+     },
+     "A16": {
+      "formula": "SUM([1]Sheet1!A1,[1]Sheet1!B1,1)",
+      "array": "A16"
+     },
+     "A17": {
+      "formula": "MAX([1]Sheet1!A1,2)",
+      "array": "A17"
+     },
+     "A18": {
+      "formula": "IF([1]Sheet1!A1>0,[1]Sheet1!B1,0)",
+      "array": "A18"
+     },
+     "A19": {
+      "formula": "IFERROR([1]Sheet1!A4,0)",
+      "array": "A19"
+     },
+     "A20": {
+      "formula": "ISBLANK([1]Sheet1!A9)",
+      "array": "A20"
+     },
+     "A21": {
+      "formula": "ISBLANK([1]Sheet1!A5)",
+      "array": "A21"
+     },
+     "A22": {
+      "formula": "ISNUMBER([1]Sheet1!A1)",
+      "array": "A22"
+     },
+     "A23": {
+      "formula": "LEN([1]Sheet1!A2)",
+      "array": "A23"
+     },
+     "A24": {
+      "formula": "TEXT([1]Sheet1!A1,\"0.00\")",
+      "array": "A24"
+     },
+     "A25": {
+      "formula": "COUNTBLANK([1]Sheet1!A9)",
+      "array": "A25"
+     },
+     "A26": {
+      "formula": "COUNTA([1]Sheet1!A1)",
+      "array": "A26"
+     },
+     "A27": {
+      "formula": "COUNT([1]Sheet1!A9)",
+      "array": "A27"
+     },
+     "A28": {
+      "formula": "ROW([1]Sheet1!A5)",
+      "array": "A28"
+     },
+     "A29": {
+      "formula": "COLUMN([1]Sheet1!B1)",
+      "array": "A29"
+     },
+     "A30": {
+      "formula": "ROWS([1]Sheet1!A1)",
+      "array": "A30"
+     },
+     "A31": {
+      "formula": "OFFSET([1]Sheet1!A1,1,0)",
+      "array": "A31"
+     },
+     "A32": {
+      "formula": "INDEX([1]Sheet1!A1,1)",
+      "array": "A32"
+     },
+     "A33": {
+      "formula": "VLOOKUP(5,[1]Sheet1!A1,1,FALSE)",
+      "array": "A33"
+     },
+     "A34": {
+      "formula": "MATCH(5,[1]Sheet1!A1,0)",
+      "array": "A34"
+     },
+     "A35": {
+      "formula": "SUMIF([1]Sheet1!A1,\">0\")",
+      "array": "A35"
+     },
+     "A36": {
+      "formula": "COUNTIF([1]Sheet1!A1,5)",
+      "array": "A36"
+     },
+     "A37": {
+      "formula": "[1]Marked!A1",
+      "array": "A37"
+     },
+     "A38": {
+      "formula": "[1]Marked!A9",
+      "array": "A38"
+     },
+     "A39": {
+      "formula": "SUM([1]Marked!A9)",
+      "array": "A39"
+     },
+     "A40": {
+      "formula": "[1]NoData!A1",
+      "array": "A40"
+     },
+     "A41": {
+      "formula": "SUM([1]NoData!A1)",
+      "array": "A41"
+     }
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A41"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5,
+    "S!A2": "txt",
+    "S!A3": true,
+    "S!A4": {
+     "error": "NA"
+    },
+    "S!A5": 0,
+    "S!A6": "",
+    "S!A7": 0,
+    "S!A8": 7,
+    "S!A9": 17,
+    "S!A10": "txt|",
+    "S!A11": "|",
+    "S!A12": -5,
+    "S!A13": true,
+    "S!A14": 7,
+    "S!A15": 5,
+    "S!A16": 13,
+    "S!A17": 5,
+    "S!A18": 7,
+    "S!A19": 0,
+    "S!A20": true,
+    "S!A21": true,
+    "S!A22": true,
+    "S!A23": 3,
+    "S!A24": "5.00",
+    "S!A25": {
+     "error": "VALUE"
+    },
+    "S!A26": 1,
+    "S!A27": 0,
+    "S!A28": 5,
+    "S!A29": 2,
+    "S!A30": 1,
+    "S!A31": {
+     "error": "VALUE"
+    },
+    "S!A32": 5,
+    "S!A33": 5,
+    "S!A34": 1,
+    "S!A35": {
+     "error": "VALUE"
+    },
+    "S!A36": {
+     "error": "VALUE"
+    },
+    "S!A37": 3,
+    "S!A38": {
+     "error": "REF"
+    },
+    "S!A39": {
+     "error": "REF"
+    },
+    "S!A40": {
+     "error": "REF"
+    },
+    "S!A41": {
+     "error": "REF"
+    }
+   }
+  },
+  {
+   "id": "ranges-plain",
+   "about": "ranges, of the old kind",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C1": {
+       "value": 2
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1:A3",
+     "A6": "[1]Sheet1!A1:A1",
+     "A11": "SUM([1]Sheet1!A1:A1)",
+     "A16": "SUM([1]Sheet1!A1:A3)",
+     "A21": "SUM([1]Sheet1!A:A)",
+     "A26": "COUNTBLANK([1]Sheet1!A1:A5)",
+     "A31": "INDEX([1]Sheet1!B1:B3,2)",
+     "A36": "VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A40"
+    }
+   ]
+  },
+  {
+   "id": "ranges-dynamic",
+   "about": "ranges, as a dynamic array",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C1": {
+       "value": 2
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": {
+      "formula": "[1]Sheet1!A1:A3",
+      "array": "A1:A3"
+     },
+     "A6": {
+      "formula": "[1]Sheet1!A1:A1",
+      "array": "A6"
+     },
+     "A11": {
+      "formula": "SUM([1]Sheet1!A1:A1)",
+      "array": "A11"
+     },
+     "A16": {
+      "formula": "SUM([1]Sheet1!A1:A3)",
+      "array": "A16"
+     },
+     "A21": {
+      "formula": "SUM([1]Sheet1!A:A)",
+      "array": "A21"
+     },
+     "A26": {
+      "formula": "COUNTBLANK([1]Sheet1!A1:A5)",
+      "array": "A26"
+     },
+     "A31": {
+      "formula": "INDEX([1]Sheet1!B1:B3,2)",
+      "array": "A31"
+     },
+     "A36": {
+      "formula": "VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)",
+      "array": "A36"
+     }
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A40"
+    }
+   ]
+  },
+  {
+   "id": "converted-plain",
+   "about": "ranges at row 2, of the old kind",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A2": "[1]Sheet1!B1:B3",
+     "C2": "[1]Sheet1!B1:B3*2",
+     "E2": "ABS([1]Sheet1!B1:B3)",
+     "G2": "SUM([1]Sheet1!B1:B3)",
+     "I2": "SUM([1]Sheet1!B:B)",
+     "K2": "SUM(IF([1]Sheet1!B1:B3>7,1,0))",
+     "M2": "SUMPRODUCT(([1]Sheet1!B1:B3>7)*1)",
+     "O2": "MAX([1]Sheet1!B1:B3*2)",
+     "Q2": "INDEX([1]Sheet1!B1:B3,2)",
+     "S2": "INDEX([1]Sheet1!B1:B3,MATCH(8,[1]Sheet1!B1:B3,0))",
+     "U2": "VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)",
+     "W2": "MATCH(8,[1]Sheet1!B1:B3,0)",
+     "Y2": "COUNTA([1]Sheet1!A1:A6)",
+     "AA2": "AVERAGE([1]Sheet1!B1:B3)",
+     "AC2": "SUMIF([1]Sheet1!B1:B3,\">7\")",
+     "AE2": "COUNTIF([1]Sheet1!B1:B3,8)",
+     "AG2": "COUNTBLANK([1]Sheet1!A5:A9)",
+     "AI2": "ROW([1]Sheet1!B2:B3)",
+     "AK2": "ROWS([1]Sheet1!B1:B3)",
+     "AM2": "LEN([1]Sheet1!B1:B3)",
+     "AO2": "OFFSET([1]Sheet1!B1:B3,0,0)",
+     "AQ2": "[1]Sheet1!B1:B3 [1]Sheet1!A2:C2",
+     "AS2": "SUM([1]Sheet1!B2:[1]Sheet1!B3)",
+     "AU2": "SUM([1]Marked!A:A)",
+     "AW2": "SUM([1]Marked!A1:A3)",
+     "AY2": "COUNTA([1]Marked!A1:A3)",
+     "BA2": "[1]Marked!A1:A3",
+     "BC2": "VLOOKUP(3,[1]Marked!A1:B3,1,FALSE)",
+     "BE2": "SUM([1]NoData!A1:A3)",
+     "BG2": "SUM([1]NoData!A:A)"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:BH4"
+    }
+   ],
+   "predicted": {
+    "S!A2": 8,
+    "S!C2": 16,
+    "S!E2": 8,
+    "S!G2": 24,
+    "S!I2": 24,
+    "S!K2": 1,
+    "S!M2": 2,
+    "S!O2": 16,
+    "S!Q2": 8,
+    "S!S2": 8,
+    "S!U2": 7,
+    "S!W2": 2,
+    "S!Y2": 5,
+    "S!AA2": 8,
+    "S!AC2": {
+     "error": "VALUE"
+    },
+    "S!AE2": {
+     "error": "VALUE"
+    },
+    "S!AG2": {
+     "error": "VALUE"
+    },
+    "S!AI2": 2,
+    "S!AK2": 3,
+    "S!AM2": 1,
+    "S!AO2": {
+     "error": "VALUE"
+    },
+    "S!AQ2": 8,
+    "S!AS2": 17,
+    "S!AU2": {
+     "error": "REF"
+    },
+    "S!AW2": {
+     "error": "REF"
+    },
+    "S!AY2": 2,
+    "S!BA2": {
+     "error": "REF"
+    },
+    "S!BC2": 3,
+    "S!BE2": {
+     "error": "REF"
+    },
+    "S!BG2": {
+     "error": "REF"
+    }
+   }
+  },
+  {
+   "id": "converted-dynamic",
+   "about": "ranges at row 2, as a dynamic array",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A2": {
+      "formula": "[1]Sheet1!B1:B3",
+      "array": "A2"
+     },
+     "C2": {
+      "formula": "[1]Sheet1!B1:B3*2",
+      "array": "C2"
+     },
+     "E2": {
+      "formula": "ABS([1]Sheet1!B1:B3)",
+      "array": "E2"
+     },
+     "G2": {
+      "formula": "SUM([1]Sheet1!B1:B3)",
+      "array": "G2"
+     },
+     "I2": {
+      "formula": "SUM([1]Sheet1!B:B)",
+      "array": "I2"
+     },
+     "K2": {
+      "formula": "SUM(IF([1]Sheet1!B1:B3>7,1,0))",
+      "array": "K2"
+     },
+     "M2": {
+      "formula": "SUMPRODUCT(([1]Sheet1!B1:B3>7)*1)",
+      "array": "M2"
+     },
+     "O2": {
+      "formula": "MAX([1]Sheet1!B1:B3*2)",
+      "array": "O2"
+     },
+     "Q2": {
+      "formula": "INDEX([1]Sheet1!B1:B3,2)",
+      "array": "Q2"
+     },
+     "S2": {
+      "formula": "INDEX([1]Sheet1!B1:B3,MATCH(8,[1]Sheet1!B1:B3,0))",
+      "array": "S2"
+     },
+     "U2": {
+      "formula": "VLOOKUP(5,[1]Sheet1!A1:B3,2,FALSE)",
+      "array": "U2"
+     },
+     "W2": {
+      "formula": "MATCH(8,[1]Sheet1!B1:B3,0)",
+      "array": "W2"
+     },
+     "Y2": {
+      "formula": "COUNTA([1]Sheet1!A1:A6)",
+      "array": "Y2"
+     },
+     "AA2": {
+      "formula": "AVERAGE([1]Sheet1!B1:B3)",
+      "array": "AA2"
+     },
+     "AC2": {
+      "formula": "SUMIF([1]Sheet1!B1:B3,\">7\")",
+      "array": "AC2"
+     },
+     "AE2": {
+      "formula": "COUNTIF([1]Sheet1!B1:B3,8)",
+      "array": "AE2"
+     },
+     "AG2": {
+      "formula": "COUNTBLANK([1]Sheet1!A5:A9)",
+      "array": "AG2"
+     },
+     "AI2": {
+      "formula": "ROW([1]Sheet1!B2:B3)",
+      "array": "AI2"
+     },
+     "AK2": {
+      "formula": "ROWS([1]Sheet1!B1:B3)",
+      "array": "AK2"
+     },
+     "AM2": {
+      "formula": "LEN([1]Sheet1!B1:B3)",
+      "array": "AM2"
+     },
+     "AO2": {
+      "formula": "OFFSET([1]Sheet1!B1:B3,0,0)",
+      "array": "AO2"
+     },
+     "AQ2": {
+      "formula": "[1]Sheet1!B1:B3 [1]Sheet1!A2:C2",
+      "array": "AQ2"
+     },
+     "AS2": {
+      "formula": "SUM([1]Sheet1!B2:[1]Sheet1!B3)",
+      "array": "AS2"
+     },
+     "AU2": {
+      "formula": "SUM([1]Marked!A:A)",
+      "array": "AU2"
+     },
+     "AW2": {
+      "formula": "SUM([1]Marked!A1:A3)",
+      "array": "AW2"
+     },
+     "AY2": {
+      "formula": "COUNTA([1]Marked!A1:A3)",
+      "array": "AY2"
+     },
+     "BA2": {
+      "formula": "[1]Marked!A1:A3",
+      "array": "BA2"
+     },
+     "BC2": {
+      "formula": "VLOOKUP(3,[1]Marked!A1:B3,1,FALSE)",
+      "array": "BC2"
+     },
+     "BE2": {
+      "formula": "SUM([1]NoData!A1:A3)",
+      "array": "BE2"
+     },
+     "BG2": {
+      "formula": "SUM([1]NoData!A:A)",
+      "array": "BG2"
+     }
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:BH4"
+    }
+   ],
+   "predicted": {
+    "S!A2": 7,
+    "S!C2": 14,
+    "S!E2": 7,
+    "S!G2": 24,
+    "S!I2": 24,
+    "S!K2": 2,
+    "S!M2": 2,
+    "S!O2": 18,
+    "S!Q2": 8,
+    "S!S2": 8,
+    "S!U2": 7,
+    "S!W2": 2,
+    "S!Y2": 5,
+    "S!AA2": 8,
+    "S!AC2": {
+     "error": "VALUE"
+    },
+    "S!AE2": {
+     "error": "VALUE"
+    },
+    "S!AG2": {
+     "error": "VALUE"
+    },
+    "S!AI2": 2,
+    "S!AK2": 3,
+    "S!AM2": 1,
+    "S!AO2": {
+     "error": "VALUE"
+    },
+    "S!AQ2": 8,
+    "S!AS2": 17,
+    "S!AU2": {
+     "error": "REF"
+    },
+    "S!AW2": {
+     "error": "REF"
+    },
+    "S!AY2": 2,
+    "S!BA2": 3,
+    "S!BC2": 3,
+    "S!BE2": {
+     "error": "REF"
+    },
+    "S!BG2": {
+     "error": "REF"
+    }
+   }
+  },
+  {
+   "id": "filled-plain",
+   "about": "filled down, of the old kind",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!B1",
+     "C1": "[1]Sheet1!B1*2",
+     "E1": "SUM([1]Sheet1!B:B)",
+     "G1": "VLOOKUP(5,[1]Sheet1!$A$1:$B$3,2,FALSE)",
+     "I1": "[1]Sheet1!Z9",
+     "K1": "ISBLANK([1]Sheet1!Z9)",
+     "M1": "SUM([1]Sheet1!B1:B3)"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N3"
+    }
+   ],
+   "ops": [
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "A1:A3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "C1:C3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "E1:E3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "G1:G3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "I1:I3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "K1:K3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "M1:M3"
+    }
+   ]
+  },
+  {
+   "id": "filled-dynamic",
+   "about": "filled down, as a dynamic array",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": {
+      "formula": "[1]Sheet1!B1",
+      "array": "A1"
+     },
+     "C1": {
+      "formula": "[1]Sheet1!B1*2",
+      "array": "C1"
+     },
+     "E1": {
+      "formula": "SUM([1]Sheet1!B:B)",
+      "array": "E1"
+     },
+     "G1": {
+      "formula": "VLOOKUP(5,[1]Sheet1!$A$1:$B$3,2,FALSE)",
+      "array": "G1"
+     },
+     "I1": {
+      "formula": "[1]Sheet1!Z9",
+      "array": "I1"
+     },
+     "K1": {
+      "formula": "ISBLANK([1]Sheet1!Z9)",
+      "array": "K1"
+     },
+     "M1": {
+      "formula": "SUM([1]Sheet1!B1:B3)",
+      "array": "M1"
+     }
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5,
+        "A2": "txt",
+        "A3": true,
+        "A4": {
+         "error": "NA"
+        },
+        "A5": null,
+        "A6": "",
+        "B1": 7,
+        "B2": 8,
+        "B3": 9
+       }
+      },
+      {
+       "name": "Marked",
+       "refreshError": true,
+       "cells": {
+        "A1": 3
+       }
+      },
+      {
+       "name": "NoData",
+       "data": false
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N3"
+    }
+   ],
+   "ops": [
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "A1:A3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "C1:C3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "E1:E3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "G1:G3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "I1:I3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "K1:K3"
+    },
+    {
+     "op": "fillDown",
+     "sheet": "S",
+     "to": "M1:M3"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "cells-plain": "dfa2c8aa1fd7de735d5280b067b8a952013967c79eef644153b3d4ebd97777c3",
+  "cells-dynamic": "65cf0525ade9d1b23e1de8f6be586a22effa11f552327dcc513110e979bf5363",
+  "ranges-plain": "1baacacbd7c1ac025b06ff13f5cd9435163ea5c0670b6c45d7e7b86a035e4920",
+  "ranges-dynamic": "3e2e5d5b8d76f5a4096e43a9fa6cdb0405e2ce57344a6c834012158240271338",
+  "converted-plain": "89cca43f20f8f35a9ee7e3c5c1187efc8963a3f829a751e36cfd4273256d3fae",
+  "converted-dynamic": "193004a28459b6aa5f3b3a716429fe08c5304f074752ce901e6293a0c1225d96",
+  "filled-plain": "ddefe51f5b1177be0984dbbe219cf72506c9bcaea136bd7aec28d1c8146f4271",
+  "filled-dynamic": "f53cbad62f1af38b62d5826d880b9e19a3a00650e382d41f3fc2a672a41ddb13"
+ },
+ "answers": {
+  "cells-plain": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A6": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A7": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A8": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A9": {
+       "t": "n",
+       "v": 17
+      },
+      "S!A10": {
+       "t": "s",
+       "v": "txt|"
+      },
+      "S!A11": {
+       "t": "s",
+       "v": "|"
+      },
+      "S!A12": {
+       "t": "n",
+       "v": -5
+      },
+      "S!A13": {
+       "t": "b",
+       "v": true
+      },
+      "S!A14": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A15": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 13
+      },
+      "S!A17": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A18": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A19": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A20": {
+       "t": "b",
+       "v": true
+      },
+      "S!A21": {
+       "t": "b",
+       "v": true
+      },
+      "S!A22": {
+       "t": "b",
+       "v": true
+      },
+      "S!A23": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A24": {
+       "t": "s",
+       "v": "5.00"
+      },
+      "S!A25": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A27": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A28": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A29": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A30": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A32": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A33": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A34": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A35": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A36": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A37": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A38": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A39": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A40": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A41": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "#N/A",
+      "S!A5": "0",
+      "S!A6": "",
+      "S!A7": "0",
+      "S!A8": "7",
+      "S!A9": "17",
+      "S!A10": "txt|",
+      "S!A11": "|",
+      "S!A12": "-5",
+      "S!A13": "TRUE",
+      "S!A14": "7",
+      "S!A15": "5",
+      "S!A16": "13",
+      "S!A17": "5",
+      "S!A18": "7",
+      "S!A19": "0",
+      "S!A20": "TRUE",
+      "S!A21": "TRUE",
+      "S!A22": "TRUE",
+      "S!A23": "3",
+      "S!A24": "5.00",
+      "S!A25": "1",
+      "S!A26": "1",
+      "S!A27": "0",
+      "S!A28": "5",
+      "S!A29": "2",
+      "S!A30": "1",
+      "S!A31": "#VALUE!",
+      "S!A32": "5",
+      "S!A33": "5",
+      "S!A34": "1",
+      "S!A35": "#VALUE!",
+      "S!A36": "#VALUE!",
+      "S!A37": "3",
+      "S!A38": "#REF!",
+      "S!A39": "#REF!",
+      "S!A40": "#REF!",
+      "S!A41": "#REF!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A6": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A7": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A8": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A9": {
+       "t": "n",
+       "v": 17
+      },
+      "S!A10": {
+       "t": "s",
+       "v": "txt|"
+      },
+      "S!A11": {
+       "t": "s",
+       "v": "|"
+      },
+      "S!A12": {
+       "t": "n",
+       "v": -5
+      },
+      "S!A13": {
+       "t": "b",
+       "v": true
+      },
+      "S!A14": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A15": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 13
+      },
+      "S!A17": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A18": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A19": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A20": {
+       "t": "b",
+       "v": true
+      },
+      "S!A21": {
+       "t": "b",
+       "v": true
+      },
+      "S!A22": {
+       "t": "b",
+       "v": true
+      },
+      "S!A23": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A24": {
+       "t": "s",
+       "v": "5.00"
+      },
+      "S!A25": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A27": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A28": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A29": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A30": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A32": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A33": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A34": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A35": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A36": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A37": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A38": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A39": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A40": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A41": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "#N/A",
+      "S!A5": "0",
+      "S!A6": "",
+      "S!A7": "0",
+      "S!A8": "7",
+      "S!A9": "17",
+      "S!A10": "txt|",
+      "S!A11": "|",
+      "S!A12": "-5",
+      "S!A13": "TRUE",
+      "S!A14": "7",
+      "S!A15": "5",
+      "S!A16": "13",
+      "S!A17": "5",
+      "S!A18": "7",
+      "S!A19": "0",
+      "S!A20": "TRUE",
+      "S!A21": "TRUE",
+      "S!A22": "TRUE",
+      "S!A23": "3",
+      "S!A24": "5.00",
+      "S!A25": "1",
+      "S!A26": "1",
+      "S!A27": "0",
+      "S!A28": "5",
+      "S!A29": "2",
+      "S!A30": "1",
+      "S!A31": "#VALUE!",
+      "S!A32": "5",
+      "S!A33": "5",
+      "S!A34": "1",
+      "S!A35": "#VALUE!",
+      "S!A36": "#VALUE!",
+      "S!A37": "3",
+      "S!A38": "#REF!",
+      "S!A39": "#REF!",
+      "S!A40": "#REF!",
+      "S!A41": "#REF!"
+     }
+    }
+   ]
+  },
+  "cells-dynamic": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A6": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A7": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A8": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A9": {
+       "t": "n",
+       "v": 17
+      },
+      "S!A10": {
+       "t": "s",
+       "v": "txt|"
+      },
+      "S!A11": {
+       "t": "s",
+       "v": "|"
+      },
+      "S!A12": {
+       "t": "n",
+       "v": -5
+      },
+      "S!A13": {
+       "t": "b",
+       "v": true
+      },
+      "S!A14": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A15": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 13
+      },
+      "S!A17": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A18": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A19": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A20": {
+       "t": "b",
+       "v": true
+      },
+      "S!A21": {
+       "t": "b",
+       "v": true
+      },
+      "S!A22": {
+       "t": "b",
+       "v": true
+      },
+      "S!A23": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A24": {
+       "t": "s",
+       "v": "5.00"
+      },
+      "S!A25": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A27": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A28": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A29": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A30": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A32": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A33": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A34": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A35": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A36": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A37": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A38": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A39": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A40": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A41": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "#N/A",
+      "S!A5": "0",
+      "S!A6": "",
+      "S!A7": "0",
+      "S!A8": "7",
+      "S!A9": "17",
+      "S!A10": "txt|",
+      "S!A11": "|",
+      "S!A12": "-5",
+      "S!A13": "TRUE",
+      "S!A14": "7",
+      "S!A15": "5",
+      "S!A16": "13",
+      "S!A17": "5",
+      "S!A18": "7",
+      "S!A19": "0",
+      "S!A20": "TRUE",
+      "S!A21": "TRUE",
+      "S!A22": "TRUE",
+      "S!A23": "3",
+      "S!A24": "5.00",
+      "S!A25": "1",
+      "S!A26": "1",
+      "S!A27": "0",
+      "S!A28": "5",
+      "S!A29": "2",
+      "S!A30": "1",
+      "S!A31": "#VALUE!",
+      "S!A32": "5",
+      "S!A33": "5",
+      "S!A34": "1",
+      "S!A35": "#VALUE!",
+      "S!A36": "#VALUE!",
+      "S!A37": "3",
+      "S!A38": "#REF!",
+      "S!A39": "#REF!",
+      "S!A40": "#REF!",
+      "S!A41": "#REF!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A6": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A7": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A8": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A9": {
+       "t": "n",
+       "v": 17
+      },
+      "S!A10": {
+       "t": "s",
+       "v": "txt|"
+      },
+      "S!A11": {
+       "t": "s",
+       "v": "|"
+      },
+      "S!A12": {
+       "t": "n",
+       "v": -5
+      },
+      "S!A13": {
+       "t": "b",
+       "v": true
+      },
+      "S!A14": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A15": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 13
+      },
+      "S!A17": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A18": {
+       "t": "n",
+       "v": 7
+      },
+      "S!A19": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A20": {
+       "t": "b",
+       "v": true
+      },
+      "S!A21": {
+       "t": "b",
+       "v": true
+      },
+      "S!A22": {
+       "t": "b",
+       "v": true
+      },
+      "S!A23": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A24": {
+       "t": "s",
+       "v": "5.00"
+      },
+      "S!A25": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A27": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A28": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A29": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A30": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A32": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A33": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A34": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A35": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A36": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!A37": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A38": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A39": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A40": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A41": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A3",
+      "S!A4": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4",
+      "S!A5": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A6",
+      "S!A7": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9",
+      "S!A8": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!$B$1",
+      "S!A9": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1*2+'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1",
+      "S!A10": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2&\"|\"",
+      "S!A11": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9&\"|\"",
+      "S!A12": "=-'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1",
+      "S!A13": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1=5",
+      "S!A14": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1+C1",
+      "S!A15": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,1)",
+      "S!A17": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,2)",
+      "S!A18": "=IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1>0,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1,0)",
+      "S!A19": "=IFERROR('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A4,0)",
+      "S!A20": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A21": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A22": "=ISNUMBER('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A23": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A2)",
+      "S!A24": "=TEXT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\"0.00\")",
+      "S!A25": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A26": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A27": "=COUNT('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A9)",
+      "S!A28": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A5)",
+      "S!A29": "=COLUMN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1)",
+      "S!A30": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1)",
+      "S!A31": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,0)",
+      "S!A32": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1)",
+      "S!A33": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,1,FALSE)",
+      "S!A34": "=MATCH(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,0)",
+      "S!A35": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,\">0\")",
+      "S!A36": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1,5)",
+      "S!A37": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A1",
+      "S!A38": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9",
+      "S!A39": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Marked'!A9)",
+      "S!A40": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1",
+      "S!A41": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]NoData'!A1)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "#N/A",
+      "S!A5": "0",
+      "S!A6": "",
+      "S!A7": "0",
+      "S!A8": "7",
+      "S!A9": "17",
+      "S!A10": "txt|",
+      "S!A11": "|",
+      "S!A12": "-5",
+      "S!A13": "TRUE",
+      "S!A14": "7",
+      "S!A15": "5",
+      "S!A16": "13",
+      "S!A17": "5",
+      "S!A18": "7",
+      "S!A19": "0",
+      "S!A20": "TRUE",
+      "S!A21": "TRUE",
+      "S!A22": "TRUE",
+      "S!A23": "3",
+      "S!A24": "5.00",
+      "S!A25": "1",
+      "S!A26": "1",
+      "S!A27": "0",
+      "S!A28": "5",
+      "S!A29": "2",
+      "S!A30": "1",
+      "S!A31": "#VALUE!",
+      "S!A32": "5",
+      "S!A33": "5",
+      "S!A34": "1",
+      "S!A35": "#VALUE!",
+      "S!A36": "#VALUE!",
+      "S!A37": "3",
+      "S!A38": "#REF!",
+      "S!A39": "#REF!",
+      "S!A40": "#REF!",
+      "S!A41": "#REF!"
+     }
+    }
+   ]
+  },
+  "ranges-plain": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A11": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A21": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "n",
+       "v": 8
+      },
+      "S!A36": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "",
+      "S!A3": "",
+      "S!A4": "",
+      "S!A5": "",
+      "S!A6": "5",
+      "S!A7": "",
+      "S!A8": "",
+      "S!A9": "",
+      "S!A10": "",
+      "S!A11": "5",
+      "S!A12": "",
+      "S!A13": "",
+      "S!A14": "",
+      "S!A15": "",
+      "S!A16": "5",
+      "S!A17": "",
+      "S!A18": "",
+      "S!A19": "",
+      "S!A20": "",
+      "S!A21": "#N/A",
+      "S!A22": "",
+      "S!A23": "",
+      "S!A24": "",
+      "S!A25": "",
+      "S!A26": "1",
+      "S!A27": "",
+      "S!A28": "",
+      "S!A29": "",
+      "S!A30": "",
+      "S!A31": "8",
+      "S!A32": "",
+      "S!A33": "",
+      "S!A34": "",
+      "S!A35": "",
+      "S!A36": "7",
+      "S!A37": "",
+      "S!A38": "",
+      "S!A39": "",
+      "S!A40": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A11": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A21": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "n",
+       "v": 8
+      },
+      "S!A36": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "",
+      "S!A3": "",
+      "S!A4": "",
+      "S!A5": "",
+      "S!A6": "5",
+      "S!A7": "",
+      "S!A8": "",
+      "S!A9": "",
+      "S!A10": "",
+      "S!A11": "5",
+      "S!A12": "",
+      "S!A13": "",
+      "S!A14": "",
+      "S!A15": "",
+      "S!A16": "5",
+      "S!A17": "",
+      "S!A18": "",
+      "S!A19": "",
+      "S!A20": "",
+      "S!A21": "#N/A",
+      "S!A22": "",
+      "S!A23": "",
+      "S!A24": "",
+      "S!A25": "",
+      "S!A26": "1",
+      "S!A27": "",
+      "S!A28": "",
+      "S!A29": "",
+      "S!A30": "",
+      "S!A31": "8",
+      "S!A32": "",
+      "S!A33": "",
+      "S!A34": "",
+      "S!A35": "",
+      "S!A36": "7",
+      "S!A37": "",
+      "S!A38": "",
+      "S!A39": "",
+      "S!A40": ""
+     }
+    }
+   ]
+  },
+  "ranges-dynamic": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A11": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A21": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "n",
+       "v": 8
+      },
+      "S!A36": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "",
+      "S!A5": "",
+      "S!A6": "5",
+      "S!A7": "",
+      "S!A8": "",
+      "S!A9": "",
+      "S!A10": "",
+      "S!A11": "5",
+      "S!A12": "",
+      "S!A13": "",
+      "S!A14": "",
+      "S!A15": "",
+      "S!A16": "5",
+      "S!A17": "",
+      "S!A18": "",
+      "S!A19": "",
+      "S!A20": "",
+      "S!A21": "#N/A",
+      "S!A22": "",
+      "S!A23": "",
+      "S!A24": "",
+      "S!A25": "",
+      "S!A26": "1",
+      "S!A27": "",
+      "S!A28": "",
+      "S!A29": "",
+      "S!A30": "",
+      "S!A31": "8",
+      "S!A32": "",
+      "S!A33": "",
+      "S!A34": "",
+      "S!A35": "",
+      "S!A36": "7",
+      "S!A37": "",
+      "S!A38": "",
+      "S!A39": "",
+      "S!A40": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A2": {
+       "t": "s",
+       "v": "txt"
+      },
+      "S!A3": {
+       "t": "b",
+       "v": true
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A11": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A16": {
+       "t": "n",
+       "v": 5
+      },
+      "S!A21": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!A26": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A31": {
+       "t": "n",
+       "v": 8
+      },
+      "S!A36": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3",
+      "S!A6": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1",
+      "S!A11": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A1)",
+      "S!A16": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A3)",
+      "S!A21": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A:A)",
+      "S!A26": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:A5)",
+      "S!A31": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!A36": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-66736/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)"
+     },
+     "shown": {
+      "S!A1": "5",
+      "S!A2": "txt",
+      "S!A3": "TRUE",
+      "S!A4": "",
+      "S!A5": "",
+      "S!A6": "5",
+      "S!A7": "",
+      "S!A8": "",
+      "S!A9": "",
+      "S!A10": "",
+      "S!A11": "5",
+      "S!A12": "",
+      "S!A13": "",
+      "S!A14": "",
+      "S!A15": "",
+      "S!A16": "5",
+      "S!A17": "",
+      "S!A18": "",
+      "S!A19": "",
+      "S!A20": "",
+      "S!A21": "#N/A",
+      "S!A22": "",
+      "S!A23": "",
+      "S!A24": "",
+      "S!A25": "",
+      "S!A26": "1",
+      "S!A27": "",
+      "S!A28": "",
+      "S!A29": "",
+      "S!A30": "",
+      "S!A31": "8",
+      "S!A32": "",
+      "S!A33": "",
+      "S!A34": "",
+      "S!A35": "",
+      "S!A36": "7",
+      "S!A37": "",
+      "S!A38": "",
+      "S!A39": "",
+      "S!A40": ""
+     }
+    }
+   ]
+  },
+  "converted-plain": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848",
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!I2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!K2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!M2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!O2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!Q2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!S2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!U2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!W2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!Y2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AA2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AC2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AE2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AG2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AI2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!AK2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!AO2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AQ2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AS2": {
+       "t": "n",
+       "v": 17
+      },
+      "S!AU2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AW2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AY2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BC2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BE2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BG2": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "local": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "shown": {
+      "S!A2": "8",
+      "S!B2": "",
+      "S!C2": "16",
+      "S!D2": "",
+      "S!E2": "8",
+      "S!F2": "",
+      "S!G2": "24",
+      "S!H2": "",
+      "S!I2": "24",
+      "S!J2": "",
+      "S!K2": "1",
+      "S!L2": "",
+      "S!M2": "2",
+      "S!N2": "",
+      "S!O2": "16",
+      "S!P2": "",
+      "S!Q2": "8",
+      "S!R2": "",
+      "S!S2": "8",
+      "S!T2": "",
+      "S!U2": "7",
+      "S!V2": "",
+      "S!W2": "2",
+      "S!X2": "",
+      "S!Y2": "5",
+      "S!Z2": "",
+      "S!AA2": "8",
+      "S!AB2": "",
+      "S!AC2": "#VALUE!",
+      "S!AD2": "",
+      "S!AE2": "#VALUE!",
+      "S!AF2": "",
+      "S!AG2": "5",
+      "S!AH2": "",
+      "S!AI2": "2",
+      "S!AJ2": "",
+      "S!AK2": "3",
+      "S!AL2": "",
+      "S!AM2": "1",
+      "S!AN2": "",
+      "S!AO2": "#VALUE!",
+      "S!AP2": "",
+      "S!AQ2": "8",
+      "S!AR2": "",
+      "S!AS2": "17",
+      "S!AT2": "",
+      "S!AU2": "3",
+      "S!AV2": "",
+      "S!AW2": "3",
+      "S!AX2": "",
+      "S!AY2": "1",
+      "S!AZ2": "",
+      "S!BA2": "#REF!",
+      "S!BB2": "",
+      "S!BC2": "3",
+      "S!BD2": "",
+      "S!BE2": "#REF!",
+      "S!BF2": "",
+      "S!BG2": "#REF!",
+      "S!BH2": "",
+      "S!A3": "",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": "",
+      "S!O3": "",
+      "S!P3": "",
+      "S!Q3": "",
+      "S!R3": "",
+      "S!S3": "",
+      "S!T3": "",
+      "S!U3": "",
+      "S!V3": "",
+      "S!W3": "",
+      "S!X3": "",
+      "S!Y3": "",
+      "S!Z3": "",
+      "S!AA3": "",
+      "S!AB3": "",
+      "S!AC3": "",
+      "S!AD3": "",
+      "S!AE3": "",
+      "S!AF3": "",
+      "S!AG3": "",
+      "S!AH3": "",
+      "S!AI3": "",
+      "S!AJ3": "",
+      "S!AK3": "",
+      "S!AL3": "",
+      "S!AM3": "",
+      "S!AN3": "",
+      "S!AO3": "",
+      "S!AP3": "",
+      "S!AQ3": "",
+      "S!AR3": "",
+      "S!AS3": "",
+      "S!AT3": "",
+      "S!AU3": "",
+      "S!AV3": "",
+      "S!AW3": "",
+      "S!AX3": "",
+      "S!AY3": "",
+      "S!AZ3": "",
+      "S!BA3": "",
+      "S!BB3": "",
+      "S!BC3": "",
+      "S!BD3": "",
+      "S!BE3": "",
+      "S!BF3": "",
+      "S!BG3": "",
+      "S!BH3": "",
+      "S!A4": "",
+      "S!B4": "",
+      "S!C4": "",
+      "S!D4": "",
+      "S!E4": "",
+      "S!F4": "",
+      "S!G4": "",
+      "S!H4": "",
+      "S!I4": "",
+      "S!J4": "",
+      "S!K4": "",
+      "S!L4": "",
+      "S!M4": "",
+      "S!N4": "",
+      "S!O4": "",
+      "S!P4": "",
+      "S!Q4": "",
+      "S!R4": "",
+      "S!S4": "",
+      "S!T4": "",
+      "S!U4": "",
+      "S!V4": "",
+      "S!W4": "",
+      "S!X4": "",
+      "S!Y4": "",
+      "S!Z4": "",
+      "S!AA4": "",
+      "S!AB4": "",
+      "S!AC4": "",
+      "S!AD4": "",
+      "S!AE4": "",
+      "S!AF4": "",
+      "S!AG4": "",
+      "S!AH4": "",
+      "S!AI4": "",
+      "S!AJ4": "",
+      "S!AK4": "",
+      "S!AL4": "",
+      "S!AM4": "",
+      "S!AN4": "",
+      "S!AO4": "",
+      "S!AP4": "",
+      "S!AQ4": "",
+      "S!AR4": "",
+      "S!AS4": "",
+      "S!AT4": "",
+      "S!AU4": "",
+      "S!AV4": "",
+      "S!AW4": "",
+      "S!AX4": "",
+      "S!AY4": "",
+      "S!AZ4": "",
+      "S!BA4": "",
+      "S!BB4": "",
+      "S!BC4": "",
+      "S!BD4": "",
+      "S!BE4": "",
+      "S!BF4": "",
+      "S!BG4": "",
+      "S!BH4": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!I2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!K2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!M2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!O2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!Q2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!S2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!U2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!W2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!Y2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AA2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AC2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AE2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AG2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AI2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!AK2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!AO2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AQ2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AS2": {
+       "t": "n",
+       "v": 17
+      },
+      "S!AU2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AW2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AY2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BC2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BE2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BG2": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "local": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "shown": {
+      "S!A2": "8",
+      "S!B2": "",
+      "S!C2": "16",
+      "S!D2": "",
+      "S!E2": "8",
+      "S!F2": "",
+      "S!G2": "24",
+      "S!H2": "",
+      "S!I2": "24",
+      "S!J2": "",
+      "S!K2": "1",
+      "S!L2": "",
+      "S!M2": "2",
+      "S!N2": "",
+      "S!O2": "16",
+      "S!P2": "",
+      "S!Q2": "8",
+      "S!R2": "",
+      "S!S2": "8",
+      "S!T2": "",
+      "S!U2": "7",
+      "S!V2": "",
+      "S!W2": "2",
+      "S!X2": "",
+      "S!Y2": "5",
+      "S!Z2": "",
+      "S!AA2": "8",
+      "S!AB2": "",
+      "S!AC2": "#VALUE!",
+      "S!AD2": "",
+      "S!AE2": "#VALUE!",
+      "S!AF2": "",
+      "S!AG2": "5",
+      "S!AH2": "",
+      "S!AI2": "2",
+      "S!AJ2": "",
+      "S!AK2": "3",
+      "S!AL2": "",
+      "S!AM2": "1",
+      "S!AN2": "",
+      "S!AO2": "#VALUE!",
+      "S!AP2": "",
+      "S!AQ2": "8",
+      "S!AR2": "",
+      "S!AS2": "17",
+      "S!AT2": "",
+      "S!AU2": "3",
+      "S!AV2": "",
+      "S!AW2": "3",
+      "S!AX2": "",
+      "S!AY2": "1",
+      "S!AZ2": "",
+      "S!BA2": "#REF!",
+      "S!BB2": "",
+      "S!BC2": "3",
+      "S!BD2": "",
+      "S!BE2": "#REF!",
+      "S!BF2": "",
+      "S!BG2": "#REF!",
+      "S!BH2": "",
+      "S!A3": "",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": "",
+      "S!O3": "",
+      "S!P3": "",
+      "S!Q3": "",
+      "S!R3": "",
+      "S!S3": "",
+      "S!T3": "",
+      "S!U3": "",
+      "S!V3": "",
+      "S!W3": "",
+      "S!X3": "",
+      "S!Y3": "",
+      "S!Z3": "",
+      "S!AA3": "",
+      "S!AB3": "",
+      "S!AC3": "",
+      "S!AD3": "",
+      "S!AE3": "",
+      "S!AF3": "",
+      "S!AG3": "",
+      "S!AH3": "",
+      "S!AI3": "",
+      "S!AJ3": "",
+      "S!AK3": "",
+      "S!AL3": "",
+      "S!AM3": "",
+      "S!AN3": "",
+      "S!AO3": "",
+      "S!AP3": "",
+      "S!AQ3": "",
+      "S!AR3": "",
+      "S!AS3": "",
+      "S!AT3": "",
+      "S!AU3": "",
+      "S!AV3": "",
+      "S!AW3": "",
+      "S!AX3": "",
+      "S!AY3": "",
+      "S!AZ3": "",
+      "S!BA3": "",
+      "S!BB3": "",
+      "S!BC3": "",
+      "S!BD3": "",
+      "S!BE3": "",
+      "S!BF3": "",
+      "S!BG3": "",
+      "S!BH3": "",
+      "S!A4": "",
+      "S!B4": "",
+      "S!C4": "",
+      "S!D4": "",
+      "S!E4": "",
+      "S!F4": "",
+      "S!G4": "",
+      "S!H4": "",
+      "S!I4": "",
+      "S!J4": "",
+      "S!K4": "",
+      "S!L4": "",
+      "S!M4": "",
+      "S!N4": "",
+      "S!O4": "",
+      "S!P4": "",
+      "S!Q4": "",
+      "S!R4": "",
+      "S!S4": "",
+      "S!T4": "",
+      "S!U4": "",
+      "S!V4": "",
+      "S!W4": "",
+      "S!X4": "",
+      "S!Y4": "",
+      "S!Z4": "",
+      "S!AA4": "",
+      "S!AB4": "",
+      "S!AC4": "",
+      "S!AD4": "",
+      "S!AE4": "",
+      "S!AF4": "",
+      "S!AG4": "",
+      "S!AH4": "",
+      "S!AI4": "",
+      "S!AJ4": "",
+      "S!AK4": "",
+      "S!AL4": "",
+      "S!AM4": "",
+      "S!AN4": "",
+      "S!AO4": "",
+      "S!AP4": "",
+      "S!AQ4": "",
+      "S!AR4": "",
+      "S!AS4": "",
+      "S!AT4": "",
+      "S!AU4": "",
+      "S!AV4": "",
+      "S!AW4": "",
+      "S!AX4": "",
+      "S!AY4": "",
+      "S!AZ4": "",
+      "S!BA4": "",
+      "S!BB4": "",
+      "S!BC4": "",
+      "S!BD4": "",
+      "S!BE4": "",
+      "S!BF4": "",
+      "S!BG4": "",
+      "S!BH4": ""
+     }
+    }
+   ]
+  },
+  "converted-dynamic": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848",
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!I2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!K2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!M2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!O2": {
+       "t": "n",
+       "v": 18
+      },
+      "S!Q2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!S2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!U2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!W2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!Y2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AA2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AC2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AE2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AG2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AI2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!AK2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!AO2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AQ2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AS2": {
+       "t": "n",
+       "v": 17
+      },
+      "S!AU2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AW2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AY2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BC2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BE2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BG2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E3": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AI3": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM3": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 9
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 18
+      },
+      "S!E4": {
+       "t": "n",
+       "v": 9
+      },
+      "S!AM4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "local": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "shown": {
+      "S!A2": "7",
+      "S!B2": "",
+      "S!C2": "14",
+      "S!D2": "",
+      "S!E2": "7",
+      "S!F2": "",
+      "S!G2": "24",
+      "S!H2": "",
+      "S!I2": "24",
+      "S!J2": "",
+      "S!K2": "2",
+      "S!L2": "",
+      "S!M2": "2",
+      "S!N2": "",
+      "S!O2": "18",
+      "S!P2": "",
+      "S!Q2": "8",
+      "S!R2": "",
+      "S!S2": "8",
+      "S!T2": "",
+      "S!U2": "7",
+      "S!V2": "",
+      "S!W2": "2",
+      "S!X2": "",
+      "S!Y2": "5",
+      "S!Z2": "",
+      "S!AA2": "8",
+      "S!AB2": "",
+      "S!AC2": "#VALUE!",
+      "S!AD2": "",
+      "S!AE2": "#VALUE!",
+      "S!AF2": "",
+      "S!AG2": "5",
+      "S!AH2": "",
+      "S!AI2": "2",
+      "S!AJ2": "",
+      "S!AK2": "3",
+      "S!AL2": "",
+      "S!AM2": "1",
+      "S!AN2": "",
+      "S!AO2": "#VALUE!",
+      "S!AP2": "",
+      "S!AQ2": "8",
+      "S!AR2": "",
+      "S!AS2": "17",
+      "S!AT2": "",
+      "S!AU2": "3",
+      "S!AV2": "",
+      "S!AW2": "3",
+      "S!AX2": "",
+      "S!AY2": "1",
+      "S!AZ2": "",
+      "S!BA2": "3",
+      "S!BB2": "",
+      "S!BC2": "3",
+      "S!BD2": "",
+      "S!BE2": "#REF!",
+      "S!BF2": "",
+      "S!BG2": "#REF!",
+      "S!BH2": "",
+      "S!A3": "8",
+      "S!B3": "",
+      "S!C3": "16",
+      "S!D3": "",
+      "S!E3": "8",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": "",
+      "S!O3": "",
+      "S!P3": "",
+      "S!Q3": "",
+      "S!R3": "",
+      "S!S3": "",
+      "S!T3": "",
+      "S!U3": "",
+      "S!V3": "",
+      "S!W3": "",
+      "S!X3": "",
+      "S!Y3": "",
+      "S!Z3": "",
+      "S!AA3": "",
+      "S!AB3": "",
+      "S!AC3": "",
+      "S!AD3": "",
+      "S!AE3": "",
+      "S!AF3": "",
+      "S!AG3": "",
+      "S!AH3": "",
+      "S!AI3": "3",
+      "S!AJ3": "",
+      "S!AK3": "",
+      "S!AL3": "",
+      "S!AM3": "1",
+      "S!AN3": "",
+      "S!AO3": "",
+      "S!AP3": "",
+      "S!AQ3": "",
+      "S!AR3": "",
+      "S!AS3": "",
+      "S!AT3": "",
+      "S!AU3": "",
+      "S!AV3": "",
+      "S!AW3": "",
+      "S!AX3": "",
+      "S!AY3": "",
+      "S!AZ3": "",
+      "S!BA3": "#REF!",
+      "S!BB3": "",
+      "S!BC3": "",
+      "S!BD3": "",
+      "S!BE3": "",
+      "S!BF3": "",
+      "S!BG3": "",
+      "S!BH3": "",
+      "S!A4": "9",
+      "S!B4": "",
+      "S!C4": "18",
+      "S!D4": "",
+      "S!E4": "9",
+      "S!F4": "",
+      "S!G4": "",
+      "S!H4": "",
+      "S!I4": "",
+      "S!J4": "",
+      "S!K4": "",
+      "S!L4": "",
+      "S!M4": "",
+      "S!N4": "",
+      "S!O4": "",
+      "S!P4": "",
+      "S!Q4": "",
+      "S!R4": "",
+      "S!S4": "",
+      "S!T4": "",
+      "S!U4": "",
+      "S!V4": "",
+      "S!W4": "",
+      "S!X4": "",
+      "S!Y4": "",
+      "S!Z4": "",
+      "S!AA4": "",
+      "S!AB4": "",
+      "S!AC4": "",
+      "S!AD4": "",
+      "S!AE4": "",
+      "S!AF4": "",
+      "S!AG4": "",
+      "S!AH4": "",
+      "S!AI4": "",
+      "S!AJ4": "",
+      "S!AK4": "",
+      "S!AL4": "",
+      "S!AM4": "1",
+      "S!AN4": "",
+      "S!AO4": "",
+      "S!AP4": "",
+      "S!AQ4": "",
+      "S!AR4": "",
+      "S!AS4": "",
+      "S!AT4": "",
+      "S!AU4": "",
+      "S!AV4": "",
+      "S!AW4": "",
+      "S!AX4": "",
+      "S!AY4": "",
+      "S!AZ4": "",
+      "S!BA4": "#REF!",
+      "S!BB4": "",
+      "S!BC4": "",
+      "S!BD4": "",
+      "S!BE4": "",
+      "S!BF4": "",
+      "S!BG4": "",
+      "S!BH4": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!I2": {
+       "t": "n",
+       "v": 24
+      },
+      "S!K2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!M2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!O2": {
+       "t": "n",
+       "v": 18
+      },
+      "S!Q2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!S2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!U2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!W2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!Y2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AA2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AC2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AE2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AG2": {
+       "t": "n",
+       "v": 5
+      },
+      "S!AI2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!AK2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!AO2": {
+       "t": "e",
+       "v": "VALUE"
+      },
+      "S!AQ2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AS2": {
+       "t": "n",
+       "v": 17
+      },
+      "S!AU2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AW2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AY2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BC2": {
+       "t": "n",
+       "v": 3
+      },
+      "S!BE2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!BG2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E3": {
+       "t": "n",
+       "v": 8
+      },
+      "S!AI3": {
+       "t": "n",
+       "v": 3
+      },
+      "S!AM3": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 9
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 18
+      },
+      "S!E4": {
+       "t": "n",
+       "v": 9
+      },
+      "S!AM4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!BA4": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "local": {
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2",
+      "S!E2": "=ABS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!G2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!I2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!K2": "=SUM(IF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7,1,0))",
+      "S!M2": "=SUMPRODUCT(('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3>7)*1)",
+      "S!O2": "=MAX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3*2)",
+      "S!Q2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,2)",
+      "S!S2": "=INDEX('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0))",
+      "S!U2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:B3,2,FALSE)",
+      "S!W2": "=MATCH(8,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0)",
+      "S!Y2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A1:A6)",
+      "S!AA2": "=AVERAGE('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AC2": "=SUMIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,\">7\")",
+      "S!AE2": "=COUNTIF('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,8)",
+      "S!AG2": "=COUNTBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A5:A9)",
+      "S!AI2": "=ROW('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B3)",
+      "S!AK2": "=ROWS('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AM2": "=LEN('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!AO2": "=OFFSET('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3,0,0)",
+      "S!AQ2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3 '/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!A2:C2",
+      "S!AS2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3)",
+      "S!AU2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A:A)",
+      "S!AW2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!AY2": "=COUNTA('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3)",
+      "S!BA2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:A3",
+      "S!BC2": "=VLOOKUP(3,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Marked'!A1:B3,1,FALSE)",
+      "S!BE2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A1:A3)",
+      "S!BG2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]NoData'!A:A)"
+     },
+     "shown": {
+      "S!A2": "7",
+      "S!B2": "",
+      "S!C2": "14",
+      "S!D2": "",
+      "S!E2": "7",
+      "S!F2": "",
+      "S!G2": "24",
+      "S!H2": "",
+      "S!I2": "24",
+      "S!J2": "",
+      "S!K2": "2",
+      "S!L2": "",
+      "S!M2": "2",
+      "S!N2": "",
+      "S!O2": "18",
+      "S!P2": "",
+      "S!Q2": "8",
+      "S!R2": "",
+      "S!S2": "8",
+      "S!T2": "",
+      "S!U2": "7",
+      "S!V2": "",
+      "S!W2": "2",
+      "S!X2": "",
+      "S!Y2": "5",
+      "S!Z2": "",
+      "S!AA2": "8",
+      "S!AB2": "",
+      "S!AC2": "#VALUE!",
+      "S!AD2": "",
+      "S!AE2": "#VALUE!",
+      "S!AF2": "",
+      "S!AG2": "5",
+      "S!AH2": "",
+      "S!AI2": "2",
+      "S!AJ2": "",
+      "S!AK2": "3",
+      "S!AL2": "",
+      "S!AM2": "1",
+      "S!AN2": "",
+      "S!AO2": "#VALUE!",
+      "S!AP2": "",
+      "S!AQ2": "8",
+      "S!AR2": "",
+      "S!AS2": "17",
+      "S!AT2": "",
+      "S!AU2": "3",
+      "S!AV2": "",
+      "S!AW2": "3",
+      "S!AX2": "",
+      "S!AY2": "1",
+      "S!AZ2": "",
+      "S!BA2": "3",
+      "S!BB2": "",
+      "S!BC2": "3",
+      "S!BD2": "",
+      "S!BE2": "#REF!",
+      "S!BF2": "",
+      "S!BG2": "#REF!",
+      "S!BH2": "",
+      "S!A3": "8",
+      "S!B3": "",
+      "S!C3": "16",
+      "S!D3": "",
+      "S!E3": "8",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": "",
+      "S!O3": "",
+      "S!P3": "",
+      "S!Q3": "",
+      "S!R3": "",
+      "S!S3": "",
+      "S!T3": "",
+      "S!U3": "",
+      "S!V3": "",
+      "S!W3": "",
+      "S!X3": "",
+      "S!Y3": "",
+      "S!Z3": "",
+      "S!AA3": "",
+      "S!AB3": "",
+      "S!AC3": "",
+      "S!AD3": "",
+      "S!AE3": "",
+      "S!AF3": "",
+      "S!AG3": "",
+      "S!AH3": "",
+      "S!AI3": "3",
+      "S!AJ3": "",
+      "S!AK3": "",
+      "S!AL3": "",
+      "S!AM3": "1",
+      "S!AN3": "",
+      "S!AO3": "",
+      "S!AP3": "",
+      "S!AQ3": "",
+      "S!AR3": "",
+      "S!AS3": "",
+      "S!AT3": "",
+      "S!AU3": "",
+      "S!AV3": "",
+      "S!AW3": "",
+      "S!AX3": "",
+      "S!AY3": "",
+      "S!AZ3": "",
+      "S!BA3": "#REF!",
+      "S!BB3": "",
+      "S!BC3": "",
+      "S!BD3": "",
+      "S!BE3": "",
+      "S!BF3": "",
+      "S!BG3": "",
+      "S!BH3": "",
+      "S!A4": "9",
+      "S!B4": "",
+      "S!C4": "18",
+      "S!D4": "",
+      "S!E4": "9",
+      "S!F4": "",
+      "S!G4": "",
+      "S!H4": "",
+      "S!I4": "",
+      "S!J4": "",
+      "S!K4": "",
+      "S!L4": "",
+      "S!M4": "",
+      "S!N4": "",
+      "S!O4": "",
+      "S!P4": "",
+      "S!Q4": "",
+      "S!R4": "",
+      "S!S4": "",
+      "S!T4": "",
+      "S!U4": "",
+      "S!V4": "",
+      "S!W4": "",
+      "S!X4": "",
+      "S!Y4": "",
+      "S!Z4": "",
+      "S!AA4": "",
+      "S!AB4": "",
+      "S!AC4": "",
+      "S!AD4": "",
+      "S!AE4": "",
+      "S!AF4": "",
+      "S!AG4": "",
+      "S!AH4": "",
+      "S!AI4": "",
+      "S!AJ4": "",
+      "S!AK4": "",
+      "S!AL4": "",
+      "S!AM4": "1",
+      "S!AN4": "",
+      "S!AO4": "",
+      "S!AP4": "",
+      "S!AQ4": "",
+      "S!AR4": "",
+      "S!AS4": "",
+      "S!AT4": "",
+      "S!AU4": "",
+      "S!AV4": "",
+      "S!AW4": "",
+      "S!AX4": "",
+      "S!AY4": "",
+      "S!AZ4": "",
+      "S!BA4": "#REF!",
+      "S!BB4": "",
+      "S!BC4": "",
+      "S!BD4": "",
+      "S!BE4": "",
+      "S!BF4": "",
+      "S!BG4": "",
+      "S!BH4": ""
+     }
+    }
+   ]
+  },
+  "filled-plain": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E1": {
+       "t": "n",
+       "v": 24
+      },
+      "S!G1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!K1": {
+       "t": "b",
+       "v": true
+      },
+      "S!M1": {
+       "t": "n",
+       "v": 24
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)"
+     },
+     "shown": {
+      "S!A1": "7",
+      "S!B1": "",
+      "S!C1": "14",
+      "S!D1": "",
+      "S!E1": "24",
+      "S!F1": "",
+      "S!G1": "7",
+      "S!H1": "",
+      "S!I1": "0",
+      "S!J1": "",
+      "S!K1": "TRUE",
+      "S!L1": "",
+      "S!M1": "24",
+      "S!N1": "",
+      "S!A2": "",
+      "S!B2": "",
+      "S!C2": "",
+      "S!D2": "",
+      "S!E2": "",
+      "S!F2": "",
+      "S!G2": "",
+      "S!H2": "",
+      "S!I2": "",
+      "S!J2": "",
+      "S!K2": "",
+      "S!L2": "",
+      "S!M2": "",
+      "S!N2": "",
+      "S!A3": "",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K1": {
+       "t": "b",
+       "v": false
+      },
+      "S!M1": {
+       "t": "n",
+       "v": 24
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K2": {
+       "t": "b",
+       "v": false
+      },
+      "S!M2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 9
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 18
+      },
+      "S!E3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G3": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K3": {
+       "t": "b",
+       "v": false
+      },
+      "S!M3": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2*2",
+      "S!E2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10",
+      "S!K2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10)",
+      "S!M2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B4)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3*2",
+      "S!E3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G3": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11",
+      "S!K3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11)",
+      "S!M3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3:B5)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2*2",
+      "S!E2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10",
+      "S!K2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10)",
+      "S!M2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B4)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3*2",
+      "S!E3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G3": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11",
+      "S!K3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11)",
+      "S!M3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3:B5)"
+     },
+     "shown": {
+      "S!A1": "7",
+      "S!B1": "",
+      "S!C1": "14",
+      "S!D1": "",
+      "S!E1": "#REF!",
+      "S!F1": "",
+      "S!G1": "7",
+      "S!H1": "",
+      "S!I1": "#REF!",
+      "S!J1": "",
+      "S!K1": "FALSE",
+      "S!L1": "",
+      "S!M1": "24",
+      "S!N1": "",
+      "S!A2": "8",
+      "S!B2": "",
+      "S!C2": "16",
+      "S!D2": "",
+      "S!E2": "#REF!",
+      "S!F2": "",
+      "S!G2": "7",
+      "S!H2": "",
+      "S!I2": "#REF!",
+      "S!J2": "",
+      "S!K2": "FALSE",
+      "S!L2": "",
+      "S!M2": "#REF!",
+      "S!N2": "",
+      "S!A3": "9",
+      "S!B3": "",
+      "S!C3": "18",
+      "S!D3": "",
+      "S!E3": "#REF!",
+      "S!F3": "",
+      "S!G3": "7",
+      "S!H3": "",
+      "S!I3": "#REF!",
+      "S!J3": "",
+      "S!K3": "FALSE",
+      "S!L3": "",
+      "S!M3": "#REF!",
+      "S!N3": ""
+     }
+    }
+   ]
+  },
+  "filled-dynamic": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E1": {
+       "t": "n",
+       "v": 24
+      },
+      "S!G1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!K1": {
+       "t": "b",
+       "v": true
+      },
+      "S!M1": {
+       "t": "n",
+       "v": 24
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)"
+     },
+     "shown": {
+      "S!A1": "7",
+      "S!B1": "",
+      "S!C1": "14",
+      "S!D1": "",
+      "S!E1": "24",
+      "S!F1": "",
+      "S!G1": "7",
+      "S!H1": "",
+      "S!I1": "0",
+      "S!J1": "",
+      "S!K1": "TRUE",
+      "S!L1": "",
+      "S!M1": "24",
+      "S!N1": "",
+      "S!A2": "",
+      "S!B2": "",
+      "S!C2": "",
+      "S!D2": "",
+      "S!E2": "",
+      "S!F2": "",
+      "S!G2": "",
+      "S!H2": "",
+      "S!I2": "",
+      "S!J2": "",
+      "S!K2": "",
+      "S!L2": "",
+      "S!M2": "",
+      "S!N2": "",
+      "S!A3": "",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": "",
+      "S!G3": "",
+      "S!H3": "",
+      "S!I3": "",
+      "S!J3": "",
+      "S!K3": "",
+      "S!L3": "",
+      "S!M3": "",
+      "S!N3": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!E1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G1": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I1": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K1": {
+       "t": "b",
+       "v": false
+      },
+      "S!M1": {
+       "t": "n",
+       "v": 24
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 8
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 16
+      },
+      "S!E2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G2": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K2": {
+       "t": "b",
+       "v": false
+      },
+      "S!M2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 9
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 18
+      },
+      "S!E3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!G3": {
+       "t": "n",
+       "v": 7
+      },
+      "S!I3": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!K3": {
+       "t": "b",
+       "v": false
+      },
+      "S!M3": {
+       "t": "e",
+       "v": "REF"
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2*2",
+      "S!E2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10",
+      "S!K2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10)",
+      "S!M2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B4)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3*2",
+      "S!E3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G3": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11",
+      "S!K3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11)",
+      "S!M3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3:B5)"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1",
+      "S!C1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1*2",
+      "S!E1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G1": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9",
+      "S!K1": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z9)",
+      "S!M1": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B1:B3)",
+      "S!A2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2",
+      "S!C2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2*2",
+      "S!E2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G2": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I2": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10",
+      "S!K2": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z10)",
+      "S!M2": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B2:B4)",
+      "S!A3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3",
+      "S!C3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3*2",
+      "S!E3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B:B)",
+      "S!G3": "=VLOOKUP(5,'/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!$A$1:$B$3,2,FALSE)",
+      "S!I3": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11",
+      "S!K3": "=ISBLANK('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!Z11)",
+      "S!M3": "=SUM('/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-83848/[Book2.xlsx]Sheet1'!B3:B5)"
+     },
+     "shown": {
+      "S!A1": "7",
+      "S!B1": "",
+      "S!C1": "14",
+      "S!D1": "",
+      "S!E1": "#REF!",
+      "S!F1": "",
+      "S!G1": "7",
+      "S!H1": "",
+      "S!I1": "#REF!",
+      "S!J1": "",
+      "S!K1": "FALSE",
+      "S!L1": "",
+      "S!M1": "24",
+      "S!N1": "",
+      "S!A2": "8",
+      "S!B2": "",
+      "S!C2": "16",
+      "S!D2": "",
+      "S!E2": "#REF!",
+      "S!F2": "",
+      "S!G2": "7",
+      "S!H2": "",
+      "S!I2": "#REF!",
+      "S!J2": "",
+      "S!K2": "FALSE",
+      "S!L2": "",
+      "S!M2": "#REF!",
+      "S!N2": "",
+      "S!A3": "9",
+      "S!B3": "",
+      "S!C3": "18",
+      "S!D3": "",
+      "S!E3": "#REF!",
+      "S!F3": "",
+      "S!G3": "7",
+      "S!H3": "",
+      "S!I3": "#REF!",
+      "S!J3": "",
+      "S!K3": "FALSE",
+      "S!L3": "",
+      "S!M3": "#REF!",
+      "S!N3": ""
+     }
+    }
+   ]
+  }
+ }
+}
