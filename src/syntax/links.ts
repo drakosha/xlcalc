@@ -10,29 +10,9 @@ import { PLAIN_NAME } from '../sheet-pattern.js'
 import { FormulaError, type Ast } from './ast.js'
 import { mapAst, quoteSheet, sheetKey } from './print.js'
 import { isSpace } from './scan.js'
+import { shownTarget, splitPath } from './link-target.js'
 import { linkedTableText, shownSpec } from './table.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
-
-/** A path without `file://`, split into its folder (`C:\data\`, `../data/`, empty for a file name) and its file. */
-function splitPath(path: string): { dir: string; file: string } {
-  const t = path.replace(/^file:\/\/\/?/i, '')
-  const k = Math.max(t.lastIndexOf('/'), t.lastIndexOf('\\')) + 1
-  return { dir: t.slice(0, k), file: t.slice(k) }
-}
-
-/** A target with its escapes undone (`%20` a space, `%D0%9A` `К`), as Excel shows it; a `%` that escapes nothing stays. */
-function unescaped(target: string): string {
-  return target.replace(/(?:%[0-9a-f]{2})+/gi, (run) => {
-    try {
-      return decodeURIComponent(run)
-    } catch {
-      return run
-    }
-  })
-}
-
-/** A link's target as a formula shows it: the folder and the file, unescaped. */
-export const shownTarget = (target: string) => splitPath(unescaped(target))
 
 /**
  * The number of the link a path or file name names (from 1), the whole path first, then the file alone, against the

@@ -16,7 +16,7 @@ const bad = parseEntry('=СУММ(A1)+', { locale: 'ru-RU' })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 10
 ```
 
-`xlcalc/entry` provides `parseEntry`, `needsApostrophe`, `entryText` and `numberFormatSamples` (the samples of the Number Format list, [docs/formats.md](formats.md#the-ribbons-number-format-box)) without the engine (about 110 KB minified, with no function implementations), taking the locale as an object, for a grid that writes what the user types and opens cells for editing without loading the calculation engine.
+`xlcalc/entry` provides `parseEntry`, `needsApostrophe`, `entryText`, `isDateFormat` (whether a format shows a date or a time) and `numberFormatSamples` (the samples of the Number Format list, [docs/formats.md](formats.md#the-ribbons-number-format-box)) without the engine (about 110 KB minified, with no function implementations), taking the locale as an object, for a grid that writes what the user types and opens cells for editing without loading the calculation engine.
 
 ## In short
 

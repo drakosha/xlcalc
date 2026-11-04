@@ -1,0 +1,678 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.5
+ },
+ "cases": [
+  {
+   "id": "spaces",
+   "about": "a formula typed over a b c.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "a b c.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[a b c.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "a b c.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  },
+  {
+   "id": "percent",
+   "about": "a formula typed over 100% a.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "100% a.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[100% a.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "100% a.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  },
+  {
+   "id": "hash",
+   "about": "a formula typed over a#b.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "a#b.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[a#b.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "a#b.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  },
+  {
+   "id": "cyrillic",
+   "about": "a formula typed over Отчёт 2025.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "Отчёт 2025.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[Отчёт 2025.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "Отчёт 2025.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  },
+  {
+   "id": "ampersand",
+   "about": "a formula typed over P&L.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "P&L.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[P&L.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "P&L.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  },
+  {
+   "id": "escape-like",
+   "about": "a formula typed over a%20b.xlsx, open beside this book",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {}
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 1
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "source",
+     "target": "a%20b.xlsx",
+     "open": true,
+     "sheets": {
+      "Sheet1": {
+       "A1": 5
+      }
+     }
+    },
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "='[a%20b.xlsx]Sheet1'!A1"
+    },
+    {
+     "op": "dropSource",
+     "target": "a%20b.xlsx"
+    }
+   ],
+   "predicted": {
+    "S!A2": 5
+   }
+  }
+ ],
+ "sent": {
+  "spaces": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255",
+  "percent": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255",
+  "hash": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255",
+  "cyrillic": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255",
+  "ampersand": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255",
+  "escape-like": "aa64a977c95d8b8fdf970818225279251a613aefaa2e8cd247db68a56e97b255"
+ },
+ "answers": {
+  "spaces": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a b c.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a b c.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  },
+  "percent": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[100% a.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[100% a.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  },
+  "hash": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a#b.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a#b.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  },
+  "cyrillic": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[Отчёт 2025.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[Отчёт 2025.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  },
+  "ampersand": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[P&L.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[P&L.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  },
+  "escape-like": {
+   "sources": [
+    "C:\\xlcalc\\work\\links-names-23411-1\\Book2.xlsx"
+   ],
+   "folder": "C:\\xlcalc\\work\\links-names-23411-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a%20b.xlsx]Sheet1'!A1"
+     },
+     "local": {
+      "S!A1": "='C:\\xlcalc\\work\\links-names-23411-1\\[Book2.xlsx]Sheet1'!A1",
+      "S!A2": "='C:\\xlcalc\\work\\links-names-23411-1\\[a%20b.xlsx]Sheet1'!A1"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!A2": "5"
+     }
+    }
+   ]
+  }
+ }
+}

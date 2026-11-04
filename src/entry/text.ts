@@ -9,6 +9,7 @@ import type { CellValue, EntryTextOptions, NumberFormat } from '../contract.js'
 import { epochOf } from '../dates.js'
 import { checkCellValue, checkEntryTextOptions, entryOptionsOf } from '../input.js'
 import { checkString } from '../input/basic.js'
+import { checkFormat } from '../input/styles.js'
 import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { enCode, EN_CODES, generalText } from '../numfmt.js'
@@ -27,6 +28,28 @@ function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' |
   if (!sec) return 'number'
   if (kind(sec.toks) === 'date') return dayOrTime(sec.toks) === 'date' ? 'date' : 'time'
   return sec.toks.some((t: Tok) => t.t === 'pct') ? 'percent' : 'number'
+}
+
+/**
+ * Whether a number format shows a date or a time in any of its sections: `dd.mm.yyyy`, `[h]:mm`, `mm:ss.00`, `h AM/PM` and
+ * built-in 14 do; `#,##0 "m"`, `"date" 0`, `\\d0` and General do not. Nor does a section with digit placeholders and a date's
+ * bare letter (`#,##0 m`), or a code that does not read (`0 samples`): Excel does not open a file with one.
+ */
+export function isDateFormat(format: NumberFormat): boolean {
+  checkFormat(format, 'format')
+  return (parseFormat(enCode(format), EN_CODES) ?? []).some((s) => kind(s.toks) === 'date' && !hasDigits(s.toks))
+}
+
+/** Whether a date's section has digit placeholders: zeros after a point past a date's code are its fractions of a second (`ss.00`). */
+function hasDigits(toks: Tok[]): boolean {
+  let date = false
+  let fraction = false
+  for (const t of toks) {
+    if (t.t === 'ph' && !fraction) return true
+    if (t.t !== 'ph') fraction = date && t.t === 'dot'
+    date ||= t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm'
+  }
+  return false
 }
 
 /** A number as the bar writes it: positional up to 21 characters, the locale's decimal separator. */

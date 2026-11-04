@@ -17,3 +17,4 @@ export const parseEntry = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredAri
 export const entryText = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.entryText))
 export const needsApostrophe = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.needsApostrophe))
 export const numberFormatSamples = /* @__PURE__ */ strict(samples.numberFormatSamples)
+export const isDateFormat = /* @__PURE__ */ strict(entryTexts.isDateFormat)

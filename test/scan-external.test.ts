@@ -2,9 +2,11 @@
  * The references of a formula to other workbooks (`scanExternalReferences`): by a file's name as the formula bar shows it, or
  * by a link's number as a file stores it, for a host that reads those workbooks before the formula is entered.
  */
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { openArchive } from '../src/xlsx/zip/read.js'
 import { createSession, type BookInput } from '../src/index.js'
-import { scanExternalReferences } from '../src/text.js'
+import { linkFileName, linkTarget, scanExternalReferences } from '../src/text.js'
 
 const linked: BookInput = { sheets: [{ name: 'S', cells: {} }], externalBooks: [{ target: 'Книга.xlsx', sheets: [{ name: 'Лист', cells: { A1: 1, B1: 2 } }] }] }
 
@@ -53,9 +55,12 @@ describe('scanExternalReferences', () => {
     expect(scanExternalReferences("'[Книга.xlsx]Лист'!Имя")).toEqual([{ book: 'Книга.xlsx', name: 'Имя', sheet: 'Лист' }])
   })
 
-  it('gives no area for a reference the range operator joins to something else, and the others of the formula', () => {
-    for (const f of ['[Книга.xlsx]Лист!A1:B', "'[Книга.xlsx]Лист'!A1:B", '[1]Лист!A1:B', '[Книга.xlsx]Лист!A1:[Книга.xlsx]Лист!B2', 'B2:[Книга.xlsx]Лист!A1', '([Книга.xlsx]Лист!A1):B2']) expect(scanExternalReferences(f), f).toEqual([])
-    expect(scanExternalReferences('[a.xlsx]S!A1:B+[c.xlsx]T!C1').map((r) => r.book)).toEqual(['c.xlsx'])
+  it('gives no area for a reference the range operator joins to something else, its book and sheet with `unread`, and the others of the formula', () => {
+    const unread = { book: 'Книга.xlsx', sheet: 'Лист', unread: true }
+    for (const f of ['[Книга.xlsx]Лист!A1:B', "'[Книга.xlsx]Лист'!A1:B", 'B2:[Книга.xlsx]Лист!A1', '([Книга.xlsx]Лист!A1):B2']) expect(scanExternalReferences(f), f).toEqual([unread])
+    expect(scanExternalReferences('[Книга.xlsx]Лист!A1:[Книга.xlsx]Лист!B2')).toEqual([unread, unread])
+    expect(scanExternalReferences('[1]Лист!A1:B')).toEqual([{ book: 1, sheet: 'Лист', unread: true }])
+    expect(scanExternalReferences('[a.xlsx]S!A1:B+[c.xlsx]T!C1')).toEqual([{ book: 'a.xlsx', sheet: 'S', unread: true }, { book: 'c.xlsx', sheet: 'T', kind: 'cells', top: 1, left: 3, bottom: 1, right: 3 }])
     // an area in the text, an argument of what the operator joins
     expect(scanExternalReferences('[Книга.xlsx]Лист!A1:B5')[0]).toMatchObject({ top: 1, left: 1, bottom: 5, right: 2 })
     expect(scanExternalReferences('INDEX([a.xlsx]S!A1:A5,2):B2')[0]).toMatchObject({ book: 'a.xlsx', bottom: 5 })
@@ -79,5 +84,32 @@ describe('scanExternalReferences', () => {
     const s = createSession(linked)
     s.setCellText('S', 'A1', '=Книга.xlsx!Имя')
     expect(s.getCell('S', 'A1')).toMatchObject({ formula: '[1]!Имя' })
+  })
+})
+
+describe('linkFileName and linkTarget', () => {
+  it("gives a target's file as a formula shows it, without its folder and its escapes", () => {
+    expect(linkFileName('file:///C:\\папка\\Отчёт%202025.xlsm')).toBe('Отчёт 2025.xlsm')
+    expect(linkFileName('../data/a%2520b.xlsx')).toBe('a%20b.xlsx')
+    expect(linkFileName('100%.xlsx')).toBe('100%.xlsx')
+  })
+
+  it("finds the link a typed name means, as linkFileName reads its target", () => {
+    const s = createSession({ sheets: [{ name: 'S', cells: {} }], externalBooks: [{ target: linkTarget('Отчёт #1 100%.xlsx'), sheets: [{ name: 'Лист', cells: { A1: 5 } }] }] })
+    expect(s.setCellText('S', 'A1', "='[Отчёт #1 100%.xlsx]Лист'!A1")).toMatchObject({ ok: true })
+    expect(s.getCell('S', 'A1')).toMatchObject({ value: 5 })
+  })
+
+  it('gives back the name of each target it makes', () => {
+    for (const name of ['a b c.xlsx', '100% a.xlsx', 'a#b.xlsx', 'Отчёт 2025.xlsx', 'P&L.xlsx', 'a%20b.xlsx', 'a?b.xlsx', '%41.xlsx']) expect(linkFileName(linkTarget(name)), name).toBe(name)
+  })
+
+  it.each(['spaces', 'percent', 'hash', 'cyrillic', 'ampersand', 'escape-like'])('%s: writes what Excel for Windows wrote for the name', async (id) => {
+    const { sheets: _, ...stored } = { sheets: 0, ...JSON.parse(readFileSync(new URL('./excel/win/links/names.json', import.meta.url), 'utf8')) }
+    const c = stored.cases.find((x: { id: string }) => x.id === id)
+    const file = c.ops[0].target as string
+    const saved = openArchive(new Uint8Array(readFileSync(new URL(`./excel/win/links/names/${id}.xlsx`, import.meta.url))))
+    const rels = (await saved.text('xl/externalLinks/_rels/externalLink2.xml.rels'))!
+    expect(/Target="\.\.\/([^"]*)"/.exec(rels)![1].replaceAll('&amp;', '&')).toBe(linkTarget(file))
   })
 })

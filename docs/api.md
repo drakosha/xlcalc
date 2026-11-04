@@ -390,6 +390,16 @@ a new array with a copy of the style appended and its index. Equal styles have t
 in any order, a protection's defaults aside (`{ protection: { locked: true } }` is `{}`). A table is read once per array: the next call, given the returned table, reads only the added style. A
 table changed in place (a style added, replaced or removed) is read again; a style changed in place goes unnoticed.
 
+### <a id="xlcalc-isdateformat"></a>`isDateFormat`
+
+```ts
+function isDateFormat(format: NumberFormat): boolean
+```
+
+Whether a number format shows a date or a time in any of its sections: `dd.mm.yyyy`, `[h]:mm`, `mm:ss.00`, `h AM/PM` and
+built-in 14 do; `#,##0 "m"`, `"date" 0`, `\\d0` and General do not. Nor does a section with digit placeholders and a date's
+bare letter (`#,##0 m`), or a code that does not read (`0 samples`): Excel does not open a file with one.
+
 ### <a id="xlcalc-lineskey"></a>`linesKey`
 
 ```ts
@@ -397,6 +407,25 @@ function linesKey(first: number, last: number, axis: "columns" | "rows"): string
 ```
 
 The key for lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in ascending order regardless of which bound is given first.
+
+### <a id="xlcalc-linkfilename"></a>`linkFileName`
+
+```ts
+function linkFileName(target: string): string
+```
+
+The file's name of a link's target as a formula shows it, by which the package finds a link: without its folder and its
+escapes (`file:///C:\\data\\Report%202025.xlsm` is `Report 2025.xlsm`). Compare two with [`sameName`](#xlcalc-samename).
+
+### <a id="xlcalc-linktarget"></a>`linkTarget`
+
+```ts
+function linkTarget(name: string): string
+```
+
+The target of a link to a file by its name or path, as Excel writes it: `%`, a space, `#` and `?` escaped, the rest as it
+is (Cyrillic, `&`, a path's separators), so [`linkFileName`](#xlcalc-linkfilename) gives the name back. `?`, which Windows does not allow in a
+file's name, follows `#` and was not measured.
 
 ### <a id="xlcalc-livebook"></a>`liveBook`
 
@@ -765,8 +794,8 @@ function scanExternalReferences(formula: string): ExternalReference[]
 ```
 
 The references of a stored formula to other workbooks, in order: for a host that reads those workbooks before the
-formula is entered. `formula` may have its leading `=`; a formula that does not read has none (entering it says why), nor
-does a reference the range operator joins to something else (`[Book.xlsx]Data!A1:C`), whose area the text does not say.
+formula is entered. `formula` may have its leading `=`; a formula that does not read has none (entering it says why). A
+reference the range operator joins to something else (`[Book.xlsx]Data!A1:C`) has `unread` for its area, which the text does not say.
 
 ### <a id="xlcalc-scanreferences"></a>`scanReferences`
 
@@ -909,7 +938,7 @@ layout; with `appearance`, its conditional formats calculated over the result's 
 
 ## xlcalc/core
 
-Described under an entry above: [`accountingFormats`](#xlcalc-accountingformats), [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`DEFAULT_SLICER_SIZE`](#xlcalc-default_slicer_size), [`DEFAULT_TIMELINE_SIZE`](#xlcalc-default_timeline_size), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`linesKey`](#xlcalc-lineskey), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`numberFormatSamples`](#xlcalc-numberformatsamples), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`pivotBlankLabel`](#xlcalc-pivotblanklabel), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`PivotInputError`](#xlcalc-pivotinputerror), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`renamedValueField`](#xlcalc-renamedvaluefield), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanExternalReferences`](#xlcalc-scanexternalreferences), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
+Described under an entry above: [`accountingFormats`](#xlcalc-accountingformats), [`builtinFormatCode`](#xlcalc-builtinformatcode), [`CalcError`](#xlcalc-calcerror), [`callAt`](#xlcalc-callat), [`canonValue`](#xlcalc-canonvalue), [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`compute`](#xlcalc-compute), [`CONFIG_VERSION`](#xlcalc-config_version), [`copyFormula`](#xlcalc-copyformula), [`createInlineCalc`](#xlcalc-createinlinecalc), [`createSession`](#xlcalc-createsession), [`dateToSerial`](#xlcalc-datetoserial), [`debugGeneratedCode`](#xlcalc-debuggeneratedcode), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`DEFAULT_SLICER_SIZE`](#xlcalc-default_slicer_size), [`DEFAULT_TIMELINE_SIZE`](#xlcalc-default_timeline_size), [`displayValue`](#xlcalc-displayvalue), [`editStructure`](#xlcalc-editstructure), [`entryText`](#xlcalc-entrytext), [`entryWidth`](#xlcalc-entrywidth), [`enUS`](#xlcalc-enus), [`errorText`](#xlcalc-errortext), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`fitColumns`](#xlcalc-fitcolumns), [`fitRows`](#xlcalc-fitrows), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`FUNCTION_NAMES`](#xlcalc-function_names), [`functionSignature`](#xlcalc-functionsignature), [`InputError`](#xlcalc-inputerror), [`internStyle`](#xlcalc-internstyle), [`isDateFormat`](#xlcalc-isdateformat), [`linesKey`](#xlcalc-lineskey), [`linkFileName`](#xlcalc-linkfilename), [`linkTarget`](#xlcalc-linktarget), [`liveBook`](#xlcalc-livebook), [`LOCALES`](#xlcalc-locales), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameAt`](#xlcalc-nameat), [`nameKey`](#xlcalc-namekey), [`needsApostrophe`](#xlcalc-needsapostrophe), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`numberFormatSamples`](#xlcalc-numberformatsamples), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseClipboard`](#xlcalc-parseclipboard), [`parseEntry`](#xlcalc-parseentry), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`pivotBlankLabel`](#xlcalc-pivotblanklabel), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`PivotInputError`](#xlcalc-pivotinputerror), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`refAt`](#xlcalc-refat), [`registerLocale`](#xlcalc-registerlocale), [`registerPivot`](#xlcalc-registerpivot), [`registerRegex`](#xlcalc-registerregex), [`renamedValueField`](#xlcalc-renamedvaluefield), [`sameName`](#xlcalc-samename), [`sameValue`](#xlcalc-samevalue), [`scanExternalReferences`](#xlcalc-scanexternalreferences), [`scanReferences`](#xlcalc-scanreferences), [`serialToDate`](#xlcalc-serialtodate), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`toInvariant`](#xlcalc-toinvariant), [`toLocal`](#xlcalc-tolocal), [`validateFormula`](#xlcalc-validateformula), [`validateLocalFormula`](#xlcalc-validatelocalformula), [`validateName`](#xlcalc-validatename), [`validateNames`](#xlcalc-validatenames), [`validateSheetName`](#xlcalc-validatesheetname), [`valueComparator`](#xlcalc-valuecomparator), [`viewportOf`](#xlcalc-viewportof).
 
 ### <a id="xlcalccore-registerfunctions"></a>`registerFunctions`
 
@@ -977,11 +1006,11 @@ Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLette
 
 ## xlcalc/text
 
-Described under an entry above: [`accountingFormats`](#xlcalc-accountingformats), [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`DEFAULT_SLICER_SIZE`](#xlcalc-default_slicer_size), [`DEFAULT_TIMELINE_SIZE`](#xlcalc-default_timeline_size), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`pivotBlankLabel`](#xlcalc-pivotblanklabel), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`renamedValueField`](#xlcalc-renamedvaluefield), [`scanExternalReferences`](#xlcalc-scanexternalreferences), [`scanReferences`](#xlcalc-scanreferences), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`valueComparator`](#xlcalc-valuecomparator).
+Described under an entry above: [`accountingFormats`](#xlcalc-accountingformats), [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`DEFAULT_SLICER_SIZE`](#xlcalc-default_slicer_size), [`DEFAULT_TIMELINE_SIZE`](#xlcalc-default_timeline_size), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`linkFileName`](#xlcalc-linkfilename), [`linkTarget`](#xlcalc-linktarget), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`pivotBlankLabel`](#xlcalc-pivotblanklabel), [`pivotCellAt`](#xlcalc-pivotcellat), [`pivotCells`](#xlcalc-pivotcells), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`renamedValueField`](#xlcalc-renamedvaluefield), [`scanExternalReferences`](#xlcalc-scanexternalreferences), [`scanReferences`](#xlcalc-scanreferences), [`stepDecimals`](#xlcalc-stepdecimals), [`suggestPivotField`](#xlcalc-suggestpivotfield), [`valueComparator`](#xlcalc-valuecomparator).
 
 ## xlcalc/entry
 
-Described under an entry above: [`numberFormatSamples`](#xlcalc-numberformatsamples).
+Described under an entry above: [`isDateFormat`](#xlcalc-isdateformat), [`numberFormatSamples`](#xlcalc-numberformatsamples).
 
 ### <a id="xlcalcentry-entrytext"></a>`entryText`
 
@@ -3231,12 +3260,14 @@ interface ExternalName {
 
 A reference of a formula to another workbook, as [`scanExternalReferences`](#xlcalc-scanexternalreferences) finds it: `book` the file's name as the formula
 bar shows it (`'[Sales.xlsx]Data'!B2`), or the number of a link as a file stores it (`[1]Data!B2`); with `sheet` and its
-area, or with `name` a defined name of that workbook (`[Sales.xlsx]!Rate`).
+area, or with `name` a defined name of that workbook (`[Sales.xlsx]!Rate`), or with `unread` where the range operator joins
+it to something else and the text does not say its area (`[Sales.xlsx]Data!A1:C`).
 
 ```ts
 type ExternalReference =
   | { book: number | string; sheet: string; kind: 'cells' | 'columns' | 'rows'; top: number; left: number; bottom: number; right: number }
   | { book: number | string; name: string; sheet?: string }
+  | { book: number | string; sheet: string; unread: true }
 ```
 
 ### `ExternalResolver`

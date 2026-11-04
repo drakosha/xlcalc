@@ -49,7 +49,7 @@ export { CalcError } from './exec/budget.js'
 export { enUS } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export * from './a1.js'
-export { accountingFormats, callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, pivotBlankLabel, pivotCellAt, pivotCells, refAt, renamedValueField, scanExternalReferences, scanReferences, stepDecimals, suggestPivotField, valueComparator } from './text.js'
+export { accountingFormats, callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, linkFileName, linkTarget, parseClipboard, pivotBlankLabel, pivotCellAt, pivotCells, refAt, renamedValueField, scanExternalReferences, scanReferences, stepDecimals, suggestPivotField, valueComparator } from './text.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses;
 // those that check a formula's calls count by the functions' declared arguments in a bundle without the engine (`declared-arity.ts`)
@@ -72,6 +72,7 @@ export const copyFormula = /* @__PURE__ */ strict(copy.copyFormula)
 export const parseEntry = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entry.parseEntry))
 export const entryText = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.entryText))
 export const needsApostrophe = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.needsApostrophe))
+export const isDateFormat = /* @__PURE__ */ strict(entryTexts.isDateFormat)
 export const numberFormatSamples = /* @__PURE__ */ strict(samples.numberFormatSamples)
 export const entryWidth = /* @__PURE__ */ strict(fit.entryWidth)
 export const fitColumns = /* @__PURE__ */ strict(fit.fitColumns)
