@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.84.0 (2026-11-05)
+
+Added:
+
+- `formatRefused` in `xlcalc` and `xlcalc/text`: whether Excel does not open a file with a number format, which `writeXlsx` and `writeKept` then refuse, for a Format Cells window that says so at once (`0 kg` is refused, `0 "kg"` is not). A built-in format by its number is not refused. `xlcalc/text` now takes the number format parser whole, 71 KB.
+
+Changed:
+
+- The check of a code reads its brackets and sections by the number format parser's own code. `0_;0` and `0*;0` are refused: they split at `;` as the parser reads them, which was not measured in Excel.
+
 ## 0.83.0 (2026-11-05)
 
 Changed:
