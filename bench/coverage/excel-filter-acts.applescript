@@ -126,7 +126,11 @@ on sortModel(ws, col)
 		set t to first row index of rg
 		set b to t + (count of rows of rg) - 1
 		set k to range (col & t & ":" & col & b) of ws
-		set so to sort object of (my filterOf(ws))
+		if ((spec's objectForKey:"table") as boolean) then
+			set so to sort object of list object 1 of ws
+		else
+			set so to sort object of (autofilter object of ws)
+		end if
 		set fs to sortfieldset of so
 		clear sortfieldset fs
 		add sortfield fs key k sorton sort on values order sort descending
@@ -134,31 +138,45 @@ on sortModel(ws, col)
 	end tell
 end sortModel
 
--- a column's button opened from its header cell: its floating window
+-- a column's button opened from its header cell, and its floating window waited for
 on openButton(ws, col)
 	set rg to my filterRange(ws)
 	tell application "Microsoft Excel"
 		set t to first row index of rg
 		select range (col & t) of ws
 	end tell
-	kb's toFront()
-	tell application "System Events" to key code 125 using {option down}
-	repeat 20 times
-		delay 0.25
-		tell application "System Events" to tell process "Microsoft Excel"
-			repeat with w in windows
-				if subrole of w is "AXFloatingWindow" then return contents of w
-			end repeat
-		end tell
+	-- a press right after the selection, or with another application coming forward, may go unheard
+	repeat 3 times
+		delay 0.7
+		kb's toFront()
+		tell application "System Events" to key code 125 using {option down}
+		repeat 12 times
+			delay 0.25
+			if my buttonWindow() is not missing value then return
+		end repeat
 	end repeat
 	error "the button of column " & col & " opened no window"
 end openButton
 
+-- the button's floating window by its place among Excel's windows, missing value without one; the windows may be changing
+on buttonWindow()
+	try
+		tell application "System Events" to tell process "Microsoft Excel"
+			repeat with i from 1 to count of windows
+				if subrole of window i is "AXFloatingWindow" then return window i
+			end repeat
+		end tell
+	on error number n
+		if n is not -1719 and n is not -1728 then error number n
+	end try
+	return missing value
+end buttonWindow
+
 -- the values a button lists, without (Select All)
-on listedOf(w)
+on listedOf()
 	set out to {}
 	tell application "System Events"
-		set els to entire contents of w
+		set els to entire contents of my buttonWindow()
 		repeat with e in els
 			try
 				if role of e is "AXCheckBox" and description of e is "checkbox" then
@@ -178,59 +196,58 @@ on trimmed(t)
 	return t
 end trimmed
 
--- the first element of a window with this role whose description or title is `name`
-on elementOf(w, r, what)
-	tell application "System Events"
-		set els to entire contents of w
-		repeat with e in els
-			try
-				if role of e is r then
-					if (description of e as text) is what then return contents of e
-					if my trimmed(title of e as text) is what then return contents of e
-				end if
-			end try
-		end repeat
-	end tell
+-- the first element of the button's window with this role whose description or title is `what`, looked for again while the window redraws
+on elementOf(r, what)
+	repeat 10 times
+		try
+			tell application "System Events"
+				set els to entire contents of my buttonWindow()
+				repeat with e in els
+					try
+						if role of e is r then
+							if (description of e as text) is what then return contents of e
+							if my trimmed(title of e as text) is what then return contents of e
+						end if
+					end try
+				end repeat
+			end tell
+		end try
+		delay 0.5
+	end repeat
 	error "no " & r & " " & what & " in the button's window"
 end elementOf
 
-on closeButton(w)
-	tell application "System Events" to click my elementOf(w, "AXButton", "close button")
-	delay 0.8
+-- the button's window closed with Escape, if the click left it open; it may be closing while it is looked at
+on closeButton()
+	repeat 5 times
+		delay 0.5
+		if my buttonWindow() is missing value then return
+		tell application "System Events" to key code 53
+	end repeat
+	error "the button's window stays open"
 end closeButton
 
 on sortButton(ws, col)
-	set w to my openButton(ws, col)
-	set listed to my listedOf(w)
-	tell application "System Events" to click my elementOf(w, "AXRadioButton", "Sort Descending")
+	my openButton(ws, col)
+	set listed to my listedOf()
+	tell application "System Events" to click my elementOf("AXRadioButton", "Sort Descending")
 	delay 1
-	set w to my openAgain(ws, col)
-	my closeButton(w)
+	my closeButton()
 end sortButton
 
--- the button's window, if a click left it open; opened again otherwise, to be closed by the same hand
-on openAgain(ws, col)
-	tell application "System Events" to tell process "Microsoft Excel"
-		repeat with w in windows
-			if subrole of w is "AXFloatingWindow" then return contents of w
-		end repeat
-	end tell
-	return my openButton(ws, col)
-end openAgain
-
 on criteriaButton(ws, col, v)
-	set w to my openButton(ws, col)
-	set listed to my listedOf(w)
+	my openButton(ws, col)
+	set listed to my listedOf()
 	tell application "System Events"
-		click my elementOf(w, "AXCheckBox", "(Select All)")
+		click my elementOf("AXCheckBox", "(Select All)")
 		delay 0.5
-		click my elementOf(w, "AXCheckBox", v)
+		click my elementOf("AXCheckBox", v)
 		delay 0.5
-		set b to my elementOf(w, "AXButton", "Apply Filter")
+		set b to my elementOf("AXButton", "Apply Filter")
 		if enabled of b then click b
 	end tell
 	delay 1
-	my closeButton(my openAgain(ws, col))
+	my closeButton()
 end criteriaButton
 
 -- Data > AutoFilter from the menu bar, the button of the Data tab; a window Excel shows for it answered

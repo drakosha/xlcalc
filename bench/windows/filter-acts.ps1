@@ -37,9 +37,10 @@ function Step($ws, $b, $s) {
     } else {
       $f = FilterOf $ws $b
       $key = $ws.Range($s.sort + [string]$f.Range.Row + ':' + $s.sort + [string]($f.Range.Row + $f.Range.Rows.Count - 1))
-      [void]$f.Sort.SortFields.Clear()
-      [void]$f.Sort.SortFields.Add($key, 0, 2)
-      [void]$f.Sort.Apply()
+      $so = if ($b.table) { $ws.ListObjects.Item(1).Sort } else { $f.Sort }
+      [void]$so.SortFields.Clear()
+      [void]$so.SortFields.Add($key, 0, 2)
+      [void]$so.Apply()
     }
   } elseif ($names -contains 'off') {
     if ($s.off -eq 'button') {
