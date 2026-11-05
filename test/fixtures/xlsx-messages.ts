@@ -121,7 +121,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   linkLocationOut: [{}],
   rulesOver: [{}],
   pivotErrorValue: [{}],
-  pivotSourceCut: [{}],
   pivotTextCut: [{}],
   pivotFieldsOut: [{}],
   ruleTextCut: [{ field: 'promptTitle', max: 32 }, { field: 'prompt', max: 255 }, { field: 'errorTitle', max: 32 }, { field: 'error', max: 225 }],

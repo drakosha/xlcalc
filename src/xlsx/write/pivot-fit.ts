@@ -30,7 +30,7 @@ function fitCache(c: PivotCache, issues: Issues): PivotCache {
   const value = (v: PivotValue): PivotValue => (stored(v) ? v : { error: 'VALUE' })
   const clean = c.fields.every((f) => !f.items || f.items.every(stored)) && (c.records ?? []).every((r) => r.every(stored))
   if (!clean) issues.add('errorValue', { key: 'pivotErrorValue' })
-  const source = c.source.type === 'range' ? { ...c.source, sheet: clip(c.source.sheet, MAX_SHEET, issues, { key: 'pivotSourceCut' }, {}) } : c.source
+  const source = c.source.type === 'range' ? { ...c.source, sheet: clip(c.source.sheet, MAX_SHEET, issues, { key: 'pivotTextCut' }, {}) } : c.source
   return clean ? { ...c, source } : { ...c, source, fields: c.fields.map((f) => (f.items ? { ...f, items: f.items.map(value) } : f)), records: c.records?.map((r) => r.map(value)) }
 }
 

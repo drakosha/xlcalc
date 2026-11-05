@@ -245,7 +245,7 @@ describe('hyperlinks', () => {
 })
 
 describe('a table’s totals', () => {
-  const book = (foot: CellInput | undefined, totals?: object) => ({ sheets: [S({ tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', ...(totals ? { totals } : {}) }] }] }, { E1: { value: 'Q' }, E2: { value: 1 }, ...(foot ? { E3: foot } : {}) })] }) as BookInput
+  const book = (foot: CellInput | undefined, totals?: { function: 'sum' } | { label: string }) => ({ sheets: [S({ tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', ...(totals ? { totals } : {}) }] }] }, { E1: { value: 'Q' }, E2: { value: 1 }, ...(foot ? { E3: foot } : {}) })] }) as BookInput
   const column = async (b: BookInput) => /<tableColumn .*<\/tableColumns>/.exec((await written(b)).parts.get('xl/tables/table1.xml')!)![0]
 
   it.each([
