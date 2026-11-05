@@ -688,6 +688,7 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel for Windows saves a relative hyperlink address (`other.xlsx`) relative to the folder it saves the file to.
 - A comment thread is read as a note, without its dates, mentions and state, and written as a note.
 - A file with a data bar's lengths other than 0 and 100 on its Excel 2010 part alone, as earlier versions of `writeXlsx` wrote them: Excel takes 10 and 90, the reader the file's lengths.
+- `_xlfn.LONGTEXT`, which the grammar of [MS-XLSX] lists, is `#NAME?` in Excel for Mac 16.114, Excel for Windows 16.0.20430 and the engine, whatever its arguments.
 - A dxf number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
 - A gradient fill is read as no fill; Excel displays the gradient. A conditional format fill with `patternType="none"`, which removes a cell's own fill in Excel, and a solid fill without a color, which Excel displays as white on a cell without a fill, are read as no fill. Each is reported.
 - A data validation list whose item contains a comma (typed in ru-RU) is read as split at the comma. Excel saves a list's reference to a deleted sheet as `#REF!` alone, which the engine keeps as `#REF!$A$1:$A$4`.
