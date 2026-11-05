@@ -78,6 +78,7 @@ on takeStep(ws, stp)
 		if ((stp's objectForKey:"off") as text) is "button" then
 			tell application "Microsoft Excel" to select range "A1" of ws
 			my pressFilter()
+			tell application "Microsoft Excel" to if autofilter mode of ws then error "Data > AutoFilter did not remove the AutoFilter"
 		else
 			tell application "Microsoft Excel" to set autofilter mode of ws to false
 		end if
@@ -87,6 +88,7 @@ on takeStep(ws, stp)
 		if how is "button" then
 			tell application "Microsoft Excel" to select range a of ws
 			my pressFilter()
+			tell application "Microsoft Excel" to if not (autofilter mode of ws) then error "Data > AutoFilter set no AutoFilter"
 		else if how is "field" then
 			tell application "Microsoft Excel" to autofilter range (range a of ws) field 1
 		else
