@@ -69,6 +69,20 @@ describe("writeKept's writeValues", () => {
     expect(now.get('xl/styles.xml')).toBe(was.get('xl/styles.xml'))
   })
 
+  it('stores the values of 20,000 formulas in time linear in the sheet: a row looks for its extensions in its own text', async () => {
+    const cells: BookInput['sheets'][number]['cells'] = {}
+    for (let r = 1; r <= 20_000; r++) Object.assign(cells, { [`A${r}`]: { value: r }, [`B${r}`]: { formula: `A${r}*2` } })
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells }] } }, { values: 'omit' })
+    const { book: read } = await openKept(data)
+    const result = compute(read)
+    const started = performance.now()
+    const { data: written } = await writeKept(data, { book: read, result }, { writeValues: true })
+    const ms = performance.now() - started
+    expect((await partsOf(written)).get('xl/worksheets/sheet1.xml')).toContain('<c r="B20000"><f>A20000*2</f><v>40000</v></c>')
+    // 8.8 s when each row searched the sheet back to its start for an extension list
+    expect(ms).toBeLessThan(2000)
+  }, 120_000)
+
   it('leaves a formula the result has no value for as the file has it (`values: "preserve"`)', async () => {
     const data = await stale()
     const { book: read } = await openKept(data)
