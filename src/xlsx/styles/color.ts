@@ -3,7 +3,7 @@
  * palette, or the book's own `<indexedColors>`), `theme` with `tint` (the theme's colour lightened or darkened by
  * its luminance, by ECMA-376's `tint` on Excel's scale of 240 where the standard says 255). `auto` and the system colours are no colour.
  */
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { attributes, element, elements, type Element } from '../xml/scan.js'
 
 /** The legacy palette (ECMA-376 18.8.27): 64 is the system foreground, 65 the background. */
 const INDEXED = [
@@ -85,11 +85,8 @@ export function tinted(hex: string, tint: number): string {
 export function colorOf(e: Element | undefined, p: Palette): string | undefined {
   if (!e) return undefined
   const a = attributes(e.attrs)
-  if (flag(a.auto)) return undefined
-  let hex: string | undefined
-  if (a.rgb && /^[0-9A-Fa-f]{6,8}$/.test(a.rgb)) hex = a.rgb.slice(-6).toUpperCase()
-  else if (a.theme !== undefined) hex = p.theme[Number(a.theme)] || undefined
-  else if (a.indexed !== undefined) hex = p.indexed[Number(a.indexed)]
+  // of several kinds the highest counts, auto < indexed < rgb < theme ([MS-OI29500] 2.1.704; the set `xlsx/fills-read`)
+  const hex = (a.theme !== undefined && p.theme[Number(a.theme)]) || (a.rgb && /^[0-9A-Fa-f]{6,8}$/.test(a.rgb) && a.rgb.slice(-6).toUpperCase()) || (a.indexed !== undefined && p.indexed[Number(a.indexed)])
   if (!hex) return undefined
   return `#${tinted(hex, Number(a.tint ?? 0))}`
 }

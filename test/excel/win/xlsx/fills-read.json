@@ -1,0 +1,134 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 61
+ },
+ "cells": {
+  "fill-theme-rgb": {
+   "fill": "#4472C4",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-auto-rgb": {
+   "fill": "#FF0000",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-indexed-rgb": {
+   "fill": "#00FF00",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-indexed-theme": {
+   "fill": "#4472C4",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-auto-theme": {
+   "fill": "#4472C4",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-auto-indexed": {
+   "fill": "#FF0000",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-all-three": {
+   "fill": "#4472C4",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "fill-theme-tint-rgb": {
+   "fill": "#8EA9DB",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "font-theme-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#4472C4"
+  },
+  "font-auto-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#FF0000"
+  },
+  "font-indexed-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#00FF00"
+  },
+  "font-indexed-theme": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#4472C4"
+  },
+  "font-auto-theme": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#4472C4"
+  },
+  "font-auto-indexed": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#FF0000"
+  },
+  "font-all-three": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#4472C4"
+  },
+  "control-0": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#000000"
+  },
+  "control-1": {
+   "fill": "#FFFFFF",
+   "pattern": 17,
+   "font": "#000000"
+  },
+  "control-2": {
+   "fill": "#0000FF",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "red-green-0": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#000000"
+  },
+  "red-green-1": {
+   "fill": "#FFFFFF",
+   "pattern": 17,
+   "font": "#000000"
+  },
+  "red-green-2": {
+   "fill": "#0000FF",
+   "pattern": 1,
+   "font": "#000000"
+  },
+  "swapped-0": {
+   "fill": "#FFFFFF",
+   "pattern": -4142,
+   "font": "#000000"
+  },
+  "swapped-1": {
+   "fill": "#FFFFFF",
+   "pattern": 17,
+   "font": "#000000"
+  },
+  "swapped-2": {
+   "fill": "#0000FF",
+   "pattern": 1,
+   "font": "#000000"
+  }
+ }
+}
