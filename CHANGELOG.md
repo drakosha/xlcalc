@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.85.0 (2026-11-05)
+
+Added:
+
+- Reading xlsx reports a new issue, `noPrefix`: a function newer than Excel 2007 stored without its prefix, such as `XLOOKUP(…)` for `_xlfn.XLOOKUP(…)`, which a generator that takes a formula verbatim writes (openpyxl). One issue per function on a sheet or a name, the function in `fn` and its calls in `cells`. The engine calculates such a call as before and its values and hashes do not change; Excel shows `#NAME?`, hides it under `IFERROR`, and for `FILTER` and `SORT` does not open the file. Checked for each of the 168 names on Excel for Windows and for Mac ([Functions without their prefix](docs/xlsx.md#functions-without-their-prefix)).
+
+Fixed:
+
+- `writeKept` with `writeValues` takes time linear in the sheet: 20,000 formulas took 8.8 s, and take 0.45 s; 100,000 take 2.1 s.
+
 ## 0.84.0 (2026-11-05)
 
 Added:
