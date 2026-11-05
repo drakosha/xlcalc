@@ -1,0 +1,844 @@
+{
+ "cases": {
+  "a-field": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:C10",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-plain": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-off-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:C10",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-off-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-field": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:D21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:D21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-plain": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-off-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:D21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:D21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-off-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "A1:D21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "A1:D21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-field": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "B1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "B1:C21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-plain": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-off-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "B1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "B1:C21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-off-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "B1:C21",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "B1:C21",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-field": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "E1:F5",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "E1:F5",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-plain": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-off-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "E1:F5",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "E1:F5",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-off-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    },
+    {
+     "range": "E1:F5",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {},
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": "E1:F5",
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  }
+ }
+}

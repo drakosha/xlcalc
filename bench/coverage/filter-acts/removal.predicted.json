@@ -1,0 +1,1182 @@
+{
+ "cases": {
+  "a-fail-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     5
+    ],
+    "heights": {
+     "5": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "5": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "5": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-pass-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     6
+    ],
+    "heights": {
+     "6": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-fail-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     7
+    ],
+    "heights": {
+     "7": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "7": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "7": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-pass-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     6
+    ],
+    "heights": {
+     "6": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {
+     "22": "standard"
+    },
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "heights": {
+      "22": 0
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "22": "standard"
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-25-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     25
+    ],
+    "heights": {
+     "25": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      25
+     ],
+     "heights": {
+      "25": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      25
+     ],
+     "heights": {
+      "25": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     25
+    ]
+   }
+  },
+  "d-23-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     23
+    ],
+    "heights": {
+     "23": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      23
+     ],
+     "heights": {
+      "23": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      23
+     ],
+     "heights": {
+      "23": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     23
+    ]
+   }
+  },
+  "e-pass-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     2
+    ],
+    "heights": {
+     "2": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      2
+     ],
+     "heights": {
+      "2": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     2
+    ]
+   }
+  },
+  "e-fail-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     3
+    ],
+    "heights": {
+     "3": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      3
+     ],
+     "heights": {
+      "3": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     3
+    ]
+   }
+  },
+  "f-file-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": true,
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ],
+    "heights": {
+     "3": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "3": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "f-total-model": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22",
+    "filterMode": true,
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ],
+    "heights": {
+     "3": 0,
+     "22": "standard"
+    },
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "3": "standard",
+      "22": "standard"
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-fail-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     5
+    ],
+    "heights": {
+     "5": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "5": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "5": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "a-pass-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     6
+    ],
+    "heights": {
+     "6": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-fail-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     7
+    ],
+    "heights": {
+     "7": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "7": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "7": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "b-pass-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     6
+    ],
+    "heights": {
+     "6": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "6": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "c-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {
+     "22": "standard"
+    },
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "heights": {
+      "22": 0
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "22": "standard"
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "d-25-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     25
+    ],
+    "heights": {
+     "25": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      25
+     ],
+     "heights": {
+      "25": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      25
+     ],
+     "heights": {
+      "25": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     25
+    ]
+   }
+  },
+  "d-23-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     23
+    ],
+    "heights": {
+     "23": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "A1:C21",
+     "filterMode": true,
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      23
+     ],
+     "heights": {
+      "23": 0
+     },
+     "total": null
+    },
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      23
+     ],
+     "heights": {
+      "23": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     23
+    ]
+   }
+  },
+  "e-pass-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     2
+    ],
+    "heights": {
+     "2": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      2
+     ],
+     "heights": {
+      "2": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     2
+    ]
+   }
+  },
+  "e-fail-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": false,
+    "hidden": [
+     3
+    ],
+    "heights": {
+     "3": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [
+      3
+     ],
+     "heights": {
+      "3": 0
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     3
+    ]
+   }
+  },
+  "f-file-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C21",
+    "filterMode": true,
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ],
+    "heights": {
+     "3": 0
+    },
+    "total": null
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "3": "standard"
+     },
+     "total": null
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "f-total-button": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22",
+    "filterMode": true,
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ],
+    "heights": {
+     "3": 0,
+     "22": "standard"
+    },
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [
+    {
+     "range": "",
+     "filterMode": false,
+     "hidden": [],
+     "heights": {
+      "3": "standard",
+      "22": "standard"
+     },
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  }
+ }
+}
