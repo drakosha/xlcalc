@@ -126,6 +126,9 @@ export function fileBytes(data: unknown): Uint8Array {
   throw new InputError('data', `expected the file's bytes as a Uint8Array, ArrayBuffer or Buffer, got ${what(data)}: pass, for example, ${hint}`)
 }
 
+/** The signature of an OLE compound file. */
+const OLE = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]
+
 const BYTES = ['entryBytes', 'totalBytes'] as const
 
 /** `opts.limits`: whole numbers of bytes of at least 1, and a ratio of at least 1. */
@@ -151,10 +154,13 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = optionalLocale(o.locale, 'opts.locale')
+  // an .xls and a password-protected xlsx are OLE files, not zip archives
+  if (OLE.every((b, i) => bytes[i] === b)) throw new InputError('data', 'this is an .xls file or a password-protected workbook, which cannot be read: save it as .xlsx without a password')
   const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
   const issues = new Issues()
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
+  if (/\.bin$/i.test(wbPath) || (await archive.text('[Content_Types].xml'))?.includes('sheet.binary.macroEnabled')) throw new InputError('data', 'this is a binary workbook (.xlsb), which cannot be read: save it as .xlsx')
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
   const rels = await relsOf(archive, wbPath)
