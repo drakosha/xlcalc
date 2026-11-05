@@ -873,6 +873,7 @@ From [Reading and writing xlsx](xlsx.md).
 | `intersect` | 75 legacy formulas | read with `@` where Excel inserts it, and every formula calculates the value Excel stored, except the two with `OFFSET` |
 | `colors` | 233 fills: theme colors with Excel's tints, and the legacy palette | equal to Excel's color |
 | `colors-held` | 312 fills: the 12 colors of the Office 2023 theme at 26 tints, predicted before Excel ran them, on Excel for Mac and Excel for Windows | equal to Excel's color; the rounding before this set gave 267 of 312 |
+| `bars-held` | 9 files of a 2010 data bar's lengths, and on Excel for Windows one bar it made itself | saved and read back as predicted: lengths on both parts stay, and on the 2010 part alone they go; a bar made through COM has its lengths on the 2007 part alone, with no 2010 part, where a 2010 part was predicted |
 | `fills-read` | 24 cells of 4 hand-written books: colors of several kinds, and files that hold other first two fills | as predicted on both Excels: the highest of `auto` < `indexed` < `rgb` < `theme`, and fills 0 and 1 no fill and `gray125` |
 | `formats` | the built-in number formats 1 to 58 | the codes Excel en-US displays equal the engine's for 1 to 49 and the reader's for 50 to 58 |
 

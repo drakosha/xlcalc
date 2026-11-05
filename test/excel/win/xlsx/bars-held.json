@@ -1,0 +1,41 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.1
+ },
+ "books": {
+  "x14-only": {
+   "sent": "8a63ff0618790b4811a30cba1cef3b2349396ed0035902e0650e9138cc695ff0"
+  },
+  "both": {
+   "sent": "f16e26bf70eed07bf017d1d73a91113e2519d2549316b1d060edba24efdc0318"
+  },
+  "both-20-80": {
+   "sent": "de02eedeecdf18ed4751a5bb89512627de356b63225b050fab2c18ceca92306b"
+  },
+  "min-only": {
+   "sent": "8d65393ebf729a76c5a568c3305a56a576073b07ba1a014f3d70eb637b596da6"
+  },
+  "max-only": {
+   "sent": "5f0891d3e81a8e8bfee4bc9b51daacca11fd7349d594aedbe1c4b20a5d6eda5e"
+  },
+  "default-0-100": {
+   "sent": "022e858d667d92b82ddb607e60e4955e2a6b60c76c5e866cf354fd6fdae66c48"
+  },
+  "both-10-90": {
+   "sent": "916667b89dcc6beff91dee33d322d5a3d7dc5fa8f57e01a82fadf623771acf28"
+  },
+  "written-10-95": {
+   "sent": "c26604cac6b9b92ea713700d930ab6dc50335535099e69991e1d42db7ae7d463"
+  },
+  "written-5-90": {
+   "sent": "bbeb92b84f4335a10f975701c36cd14ec1fd137d8b46787ad78f1918ff1cf7eb"
+  }
+ }
+}
