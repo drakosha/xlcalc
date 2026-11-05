@@ -277,6 +277,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   emptyFormula: object
   tooLong: { max: number }
   tooDeep: { max: number }
+  tooManyOperators: { max: number }
   unexpectedEnd: object
   unexpected: { found: Found }
   expected: { char: '(' | ')'; found: Found }

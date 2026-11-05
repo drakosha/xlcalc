@@ -39,6 +39,7 @@ export const EN_MESSAGES: EnglishMessages = {
   emptyFormula: () => 'empty formula',
   tooLong: (p) => `formula longer than ${p.max} characters`,
   tooDeep: (p) => `nesting deeper than ${p.max} levels`,
+  tooManyOperators: (p) => `more than ${p.max} operators in one formula`,
   unexpectedEnd: () => 'unexpected end of formula',
   unexpected: (p) => `unexpected ${found(p.found)}`,
   expected: (p) => `expected ${p.char}, found ${found(p.found)}`,

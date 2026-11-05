@@ -34,6 +34,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   emptyFormula: [{}],
   tooLong: [{ max: 8192 }],
   tooDeep: [{ max: 64 }, { max: 21 }],
+  tooManyOperators: [{ max: 1024 }, { max: 21 }],
   unexpectedEnd: [{}],
   unexpected: [{ found: { t: 'fn', v: 'ROUND' } }, { found: { t: 'ident', v: 'TRUE' } }, { found: { t: 'op', v: '+' } }, { found: { t: 'num' } }, { found: { t: ',' } }, { found: { t: ')' } }],
   expected: [{ char: ')', found: { t: 'eof' } }, { char: ')', found: { t: 'str' } }],

@@ -288,6 +288,7 @@ const MESSAGES: Messages = {
   emptyFormula: () => 'Формула пуста',
   tooLong: (p) => `Формула длиннее ${p.max} ${plural(p.max, 'знака', 'знаков', 'знаков')}`,
   tooDeep: (p) => `Вложенность формулы больше ${p.max} ${plural(p.max, 'уровня', 'уровней', 'уровней')}`,
+  tooManyOperators: (p) => `В формуле больше ${p.max} ${plural(p.max, 'оператора', 'операторов', 'операторов')}`,
   unexpectedEnd: () => 'Формула не закончена',
   unexpected: (p, w) => `Здесь не может стоять ${found(p.found, w)}`,
   expected: (p, w) => `Ожидалась ${p.char}, ${instead(p.found, w)}`,

@@ -46,6 +46,7 @@ const TYPED: [string, EngineMessage, ValidateContext?][] = [
   ['=', { key: 'emptyFormula' }],
   [`=${'1+'.repeat(4096)}1`, { key: 'tooLong', max: 8192 }],
   [`=${'('.repeat(65)}1${')'.repeat(65)}`, { key: 'tooDeep', max: 64 }],
+  [`=${Array(1026).fill('1').join('+')}`, { key: 'tooManyOperators', max: 1024 }],
   ['=1+', { key: 'unexpectedEnd' }],
   ['=1)', { key: 'unexpected', found: { t: ')' } }],
   ['=1 СУММ(2)', { key: 'unexpected', found: { t: 'fn', v: 'SUM' } }],
