@@ -15,12 +15,14 @@ import type { StoredRun } from '../coverage/xlsx.js'
 import { BAR_CASES, barBook, barFile } from '../coverage/xlsx/bars-held.js'
 import { colorBook } from '../coverage/xlsx/colors.js'
 import { colorHeldCases, THEME_HELD } from '../coverage/xlsx/colors-held.js'
+import { FILL_FILES, fillBook } from '../coverage/xlsx/fills-read.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
 import { FORM_CASES, FORMS_BOOK } from '../coverage/xlsx/forms.js'
 import { writeXlsx } from '../../src/xlsx.js'
 import { STORED_FILES, storedFile } from '../coverage/xlsx/stored.js'
 import { partsHash } from '../coverage/xlsx/sent.js'
+import { fromBgr } from '../coverage/cond/cases.js'
 import { localeDir } from '../coverage/locales.js'
 import { loadStored, secondsSince, writeAnswers } from '../coverage/stored.js'
 import { winFile } from './functions.js'
@@ -107,8 +109,24 @@ export async function stepXlsxColorsHeld(tag: Tag, e: WinEnv): Promise<void> {
   const t0 = Date.now()
   const [a] = await runJob('xlsx-colors-held', [{ file: book, steps: [{ do: 'fills', sheet: 'Colors', cells: cases.map((c) => c.cell) }] }])
   if (!a || !('answers' in a)) throw new Error(`xlsx colors-held: Excel did not read the book: ${a ? a.rejected : 'the job ran past its time'}`)
-  const hex = (bgr: number) => `#${[bgr & 255, (bgr >> 8) & 255, (bgr >> 16) & 255].map((c) => c.toString(16).padStart(2, '0')).join('').toUpperCase()}`
-  const shown = a.answers[0] as [number, number][]
-  writeAnswers(winFile('xlsx/colors-held.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, colors: Object.fromEntries(cases.map((c, i) => [c.color, hex(shown[i][0])])) })
+  const shown = a.answers[0] as [number, number, number][]
+  writeAnswers(winFile('xlsx/colors-held.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, colors: Object.fromEntries(cases.map((c, i) => [c.color, fromBgr(shown[i][0])])) })
   console.log(`xlsx colors-held ${tag}: ${shown.length} read`)
+}
+
+/** Each cell of `xlsx/fills-read.ts` as Excel for Windows shows it, in the Mac step's shape with `Interior.Pattern`'s number, into `xlsx/fills-read.json`. */
+export async function stepXlsxFillsRead(tag: Tag, e: WinEnv): Promise<void> {
+  mkdirSync(OUT, { recursive: true })
+  const t0 = Date.now()
+  const cells: Record<string, unknown> = {}
+  for (const f of FILL_FILES) {
+    const book = join(OUT, `xlsx-fills-${f.id}.xlsx`)
+    writeFileSync(book, await fillBook(f))
+    const [a] = await runJob(`xlsx-fills-${f.id}`, [{ file: book, steps: [{ do: 'fills', sheet: 'S', cells: f.cells.map((c) => c.cell) }] }])
+    if (!a || !('answers' in a)) throw new Error(`xlsx fills-read ${f.id}: Excel did not read the book: ${a ? a.rejected : 'the job ran past its time'}`)
+    const shown = a.answers[0] as [number, number, number][]
+    f.cells.forEach((c, i) => (cells[c.id] = { fill: fromBgr(shown[i][0]), pattern: shown[i][1], font: fromBgr(shown[i][2]) }))
+  }
+  writeAnswers(winFile('xlsx/fills-read.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cells })
+  console.log(`xlsx fills-read ${tag}: ${Object.keys(cells).length} cells read`)
 }

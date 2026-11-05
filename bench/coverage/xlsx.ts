@@ -25,10 +25,11 @@ import { localeMeta } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
 import { BAR_CASES, barFile } from './xlsx/bars-held.js'
+import { FILL_FILES, fillBook } from './xlsx/fills-read.js'
 import { colorBook, colorCases, type ColorCase } from './xlsx/colors.js'
 import { colorHeldCases, THEME_HELD } from './xlsx/colors-held.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
-import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
+import { cellFills, fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
 import { FILTER_FILES, filterFile } from './xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { FORM_CASES, FORM_CELLS, FORMS_BOOK, FORMS_PREDICTED, formsBook, savedForms, SHOWN_PREDICTED, type FormSaved } from './xlsx/forms.js'
@@ -155,6 +156,17 @@ async function colors(name: string, cases: ColorCase[], theme?: string) {
   console.log(`${name}: ${cases.length} fills read`)
 }
 
+async function fillsRead() {
+  await ensureExcel('en-US')
+  const cells: Record<string, unknown> = {}
+  for (const f of FILL_FILES) {
+    const shown = await cellFills(await fillBook(f), f.cells.map((c) => c.cell))
+    f.cells.forEach((c, i) => (cells[c.id] = shown[i]))
+  }
+  writeAnswers(join(DATA, 'fills-read.json'), { meta: { version: excelVersion(), locale: localeMeta('en-US'), date: new Date().toISOString().slice(0, 10) }, cells })
+  console.log(`fills-read: ${Object.keys(cells).length} cells read`)
+}
+
 async function barsHeld() {
   await send(
     'bars-held',
@@ -225,7 +237,8 @@ export async function stepXlsx(what: string | undefined): Promise<void> {
   else if (what === 'colors') await colors('colors', colorCases())
   else if (what === 'colors-held') await colors('colors-held', colorHeldCases(), THEME_HELD)
   else if (what === 'bars-held') await barsHeld()
+  else if (what === 'fills-read') await fillsRead()
   else if (what === 'intersect') await intersect()
   else if (what === 'formats') await formats()
-  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | colors-held | bars-held | formats | intersect')
+  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | colors-held | bars-held | fills-read | formats | intersect')
 }

@@ -323,10 +323,10 @@ function Step($xl, $wb, $s) {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
-    # cells' fills: each [Interior.Color, Interior.Pattern]
+    # cells' fills: each [Interior.Color, Interior.Pattern, Font.Color]
     'fills' {
       $ws = $wb.Worksheets.Item($s.sheet)
-      List ($s.cells | ForEach-Object { $i = $ws.Range($_).Interior; List @((Cell ([double]$i.Color)), (Cell ([double]$i.Pattern))) })
+      List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Cell ([double]$c.Interior.Color)), (Cell ([double]$c.Interior.Pattern)), (Cell ([double]$c.Font.Color))) })
     }
     # a data bar Excel makes over a range, with its shortest and longest lengths
     'barMade' {
