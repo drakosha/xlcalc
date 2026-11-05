@@ -14,23 +14,23 @@
 import { pivotBook } from '../../../test/pivot-books.js'
 import type { CachedValue, LinkedBook, LinksCase, LinksCases } from './cases.js'
 
-type Edit = NonNullable<LinksCase['edit']>
-type Extra = Partial<Pick<LinksCase, 'refused' | 'holds' | 'names' | 'links' | 'book' | 'edit' | 'read'>> & { value?: CachedValue; cells?: LinksCase['sheets'][number]['cells']; sheet?: Partial<LinksCase['sheets'][number]>; more?: LinksCase['sheets'] }
+export type Edit = NonNullable<LinksCase['edit']>
+export type Extra = Partial<Pick<LinksCase, 'refused' | 'holds' | 'names' | 'links' | 'book' | 'edit' | 'read'>> & { value?: CachedValue; cells?: LinksCase['sheets'][number]['cells']; sheet?: Partial<LinksCase['sheets'][number]>; more?: LinksCase['sheets'] }
 
-const CELLS = Object.fromEntries([1, 2, 3, 4].flatMap((r, i) => [[`B${r}`, { value: i + 1 }], [`C${r}`, { value: [2, 3, 5, 7][i] }]]))
-const REFUSED = { refused: true } as const
-const SHEET1 = 'xl/worksheets/sheet1.xml'
-const STYLES = 'xl/styles.xml'
+export const CELLS = Object.fromEntries([1, 2, 3, 4].flatMap((r, i) => [[`B${r}`, { value: i + 1 }], [`C${r}`, { value: [2, 3, 5, 7][i] }]]))
+export const REFUSED = { refused: true } as const
+export const SHEET1 = 'xl/worksheets/sheet1.xml'
+export const STYLES = 'xl/styles.xml'
 const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 const XM = 'http://schemas.microsoft.com/office/excel/2006/main'
 
-const xml = (t: string) => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-const attr = (t: string) => xml(t).replaceAll('"', '&quot;')
-const rep = (s: string, n: number) => s.repeat(Math.ceil(n / s.length)).slice(0, n)
-const list = (n: number, f: (i: number) => string, sep = '') => Array.from({ length: n }, (_, i) => f(i)).join(sep)
+export const xml = (t: string) => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+export const attr = (t: string) => xml(t).replaceAll('"', '&quot;')
+export const rep = (s: string, n: number) => s.repeat(Math.ceil(n / s.length)).slice(0, n)
+export const list = (n: number, f: (i: number) => string, sep = '') => Array.from({ length: n }, (_, i) => f(i)).join(sep)
 
 /** Changes parts by text; a part's text that does not hold what it replaces throws, so no case goes out unchanged. */
-function subs(...changes: [part: string, from: string | RegExp, to: string][]): Edit {
+export function subs(...changes: [part: string, from: string | RegExp, to: string][]): Edit {
   return (part, text) => {
     let x = text
     for (const [p, from, to] of changes) {
@@ -42,7 +42,7 @@ function subs(...changes: [part: string, from: string | RegExp, to: string][]): 
   }
 }
 
-function one(id: string, about: string, linked: Record<string, string>, e: Extra = {}): LinksCase {
+export function one(id: string, about: string, linked: Record<string, string>, e: Extra = {}): LinksCase {
   const { value, cells, sheet, more, ...rest } = e
   const first = Object.keys(linked)[0] ?? 'A1'
   return {
@@ -58,7 +58,7 @@ function one(id: string, about: string, linked: Record<string, string>, e: Extra
 }
 
 /** A formula in S!A1. */
-const cell = (id: string, about: string, formula: string, e: Extra = {}) => one(id, about, { A1: formula }, e)
+export const cell = (id: string, about: string, formula: string, e: Extra = {}) => one(id, about, { A1: formula }, e)
 
 // --- B1: arguments that only a reference may fill (MS-XLSX 2.2.2, `ref-argument-expression`)
 
@@ -156,16 +156,16 @@ const LEN = (t: string) => `LEN("${t}")`
 const inRule = (t: string) => `LEN("${t}")>0`
 
 /** The dxf a rule of the 2007 block points at. */
-const DXF = [STYLES, '</styleSheet>', '<dxfs count="1"><dxf><font><b/></font></dxf></dxfs></styleSheet>'] as [string, string, string]
-const inSheet = (x: string): [string, string, string] => [SHEET1, '</sheetData>', `</sheetData>${x}`]
+export const DXF = [STYLES, '</styleSheet>', '<dxfs count="1"><dxf><font><b/></font></dxf></dxfs></styleSheet>'] as [string, string, string]
+export const inSheet = (x: string): [string, string, string] => [SHEET1, '</sheetData>', `</sheetData>${x}`]
 const cfBlock = (rule: string, sqref = 'D1') => `<conditionalFormatting sqref="${sqref}">${rule}</conditionalFormatting>`
 /** A rule of the 2007 block with the formula as the file holds it. */
-const cfEdit = (formula: string) => subs(inSheet(cfBlock(`<cfRule type="expression" dxfId="0" priority="1"><formula>${xml(formula)}</formula></cfRule>`)), DXF)
+export const cfEdit = (formula: string) => subs(inSheet(cfBlock(`<cfRule type="expression" dxfId="0" priority="1"><formula>${xml(formula)}</formula></cfRule>`)), DXF)
 /** A rule of Excel 2010's block, where a rule over another sheet goes. */
 const x14Edit = (formula: string) =>
   subs(inSheet(`<extLst><ext uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}" xmlns:x14="${X14}"><x14:conditionalFormattings><x14:conditionalFormatting xmlns:xm="${XM}"><x14:cfRule type="expression" priority="1" id="{00000001-0000-4000-8000-000000000001}"><xm:f>${xml(formula)}</xm:f><x14:dxf><font><b/></font></x14:dxf></x14:cfRule><xm:sqref>D1</xm:sqref></x14:conditionalFormatting></x14:conditionalFormattings></ext></extLst>`))
 const dvRule = (type: string, formula: string, sqref = 'D1') => `<dataValidation type="${type}" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="${sqref}"><formula1>${xml(formula)}</formula1></dataValidation>`
-const dvEdit = (type: string, formula: string) => subs(inSheet(`<dataValidations count="1">${dvRule(type, formula)}</dataValidations>`))
+export const dvEdit = (type: string, formula: string) => subs(inSheet(`<dataValidations count="1">${dvRule(type, formula)}</dataValidations>`))
 const csv = (n: number) => rep('abc,', n)
 
 const literals = (): LinksCase[] => [
@@ -233,7 +233,7 @@ const counts = (): LinksCase[] => [
   cell('count-udf-256', 'a user-defined call of 256', `FOO(${ones(256)})`, REFUSED),
   cell('count-lambda-253', 'LAMBDA of 253 parameters', `${lambda(253)}(${ones(253)})`, { value: 1 }),
   cell('count-lambda-254', 'LAMBDA of 254 parameters', `${lambda(254)}(${ones(254)})`, REFUSED),
-  // the engine refuses over 1,024 operators (`too_deep`), so a writer never writes these: what Excel does with them says whether that limit is its own
+  // hand-made, whatever the engine's parser takes: how long a chain Excel itself loads
   cell('plus-1000', '1,000 terms', plus(1000), { value: 1000 }),
   cell('plus-1025', '1,025 terms, 1,024 operators', plus(1025), { value: 1025 }),
   cell('plus-1026', '1,026 terms, 1,025 operators', plus(1026), { value: 1026 }),
@@ -320,7 +320,7 @@ const rules = (): LinksCase[] => [
 ]
 
 /** A table over E1:E3 whose totals row is E3: its column's attributes in the table part, what the cell holds beside them. */
-function total(id: string, about: string, column: string, foot: { formula?: string; value?: number }, e: Extra = {}): LinksCase {
+export function total(id: string, about: string, column: string, foot: { formula?: string; value?: number }, e: Extra = {}): LinksCase {
   return one(id, about, foot.formula ? { E3: foot.formula } : {}, {
     cells: { E1: { value: 'Q' }, E2: { value: 1 }, ...(foot.value === undefined ? {} : { E3: { value: foot.value } }) },
     sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q' }] }] },
@@ -345,21 +345,21 @@ const totals = (): LinksCase[] => [
 
 // --- B6: how many and how long
 
-const onStyle = (i: number): [string, string, string] => [SHEET1, '<c r="A1"><v>5</v></c>', `<c r="A1" s="${i}"><v>5</v></c>`]
-const FIVE: Extra = { cells: { A1: { value: 5 } } }
+export const onStyle = (i: number): [string, string, string] => [SHEET1, '<c r="A1"><v>5</v></c>', `<c r="A1" s="${i}"><v>5</v></c>`]
+export const FIVE: Extra = { cells: { A1: { value: 5 } } }
 const FONTS = /<fonts count="1">.*<\/fonts>/
 const FILLS = /<fills count="2">.*<\/fills>/
 const BORDERS = /<borders count="1">.*<\/borders>/
-const XFS = /<cellXfs count="1">.*<\/cellXfs>/
+export const XFS = /<cellXfs count="1">.*<\/cellXfs>/
 const BASE_FONT = '<font><sz val="11"/><name val="Calibri"/></font>'
-const BASE_XF = '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+export const BASE_XF = '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
 
 /** A font of the name on A1, or as the book's default. */
-const fontCell = (name: string) => subs([STYLES, FONTS, `<fonts count="2">${BASE_FONT}<font><sz val="11"/><name val="${attr(name)}"/></font></fonts>`], [STYLES, XFS, `<cellXfs count="2">${BASE_XF}<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>`], onStyle(1))
+export const fontCell = (name: string) => subs([STYLES, FONTS, `<fonts count="2">${BASE_FONT}<font><sz val="11"/><name val="${attr(name)}"/></font></fonts>`], [STYLES, XFS, `<cellXfs count="2">${BASE_XF}<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>`], onStyle(1))
 const fontBook = (name: string) => subs([STYLES, '<name val="Calibri"/>', `<name val="${attr(name)}"/>`])
 
 /** `n` custom number formats, A1 in the last: the shown text says whether Excel kept it. */
-const numFmts = (n: number) =>
+export const numFmts = (n: number) =>
   subs([STYLES, '<fonts ', `<numFmts count="${n}">${list(n, (i) => `<numFmt numFmtId="${164 + i}" formatCode="0.00&quot;i${i + 1}&quot;"/>`)}</numFmts><fonts `], [STYLES, XFS, `<cellXfs count="2">${BASE_XF}<xf numFmtId="${164 + n - 1}" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs>`], onStyle(1))
 
 /** `n` different cell formats out of 300 fonts and 300 fills, A1 in the last. */
@@ -373,7 +373,7 @@ function manyXfs(n: number): Edit {
     onStyle(n - 1),
   )
 }
-const manyFonts = (n: number) => subs([STYLES, FONTS, `<fonts count="${n}">${list(n, (i) => `<font><sz val="${(6 + (i % 400) / 20).toFixed(2)}"/><name val="Calibri"/></font>`)}</fonts>`])
+export const manyFonts = (n: number) => subs([STYLES, FONTS, `<fonts count="${n}">${list(n, (i) => `<font><sz val="${(6 + (i % 400) / 20).toFixed(2)}"/><name val="Calibri"/></font>`)}</fonts>`])
 const manyFills = (n: number) => subs([STYLES, FILLS, `<fills count="${n}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${list(n - 2, (i) => `<fill><patternFill patternType="solid"><fgColor rgb="FF${i.toString(16).padStart(6, '0').toUpperCase()}"/></patternFill></fill>`)}</fills>`])
 const manyBorders = (n: number) => subs([STYLES, BORDERS, `<borders count="${n}">${list(n, () => '<border><left/><right/><top/><bottom/><diagonal/></border>')}</borders>`])
 
@@ -382,8 +382,8 @@ const onLink = (location: string) => subs([SHEET1, 'location="S!A1"', `location=
 const onUrl = (url: string) => subs(['xl/worksheets/_rels/sheet1.xml.rels', 'Target="https://e.com/?"', `Target="${attr(url)}"`])
 const url = (n: number) => `https://e.com/?${rep('q', n - 15)}`
 const AUTHOR = (n: number) => subs(['xl/comments1.xml', '<author>x</author>', `<author>${rep('a', n)}</author>`])
-const LABEL = (n: number) => subs(['xl/tables/table1.xml', 'totalsRowLabel="L"', `totalsRowLabel="${rep('L', n)}"`])
-const labelled = (id: string, about: string, n: number, e: Extra = {}) => one(id, about, {}, { cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: 'L' } }, sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', totals: { label: 'L' } }] }] }, edit: LABEL(n), ...e })
+export const LABEL = (n: number) => subs(['xl/tables/table1.xml', 'totalsRowLabel="L"', `totalsRowLabel="${rep('L', n)}"`])
+export const labelled = (id: string, about: string, n: number, e: Extra = {}) => one(id, about, {}, { cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: 'L' } }, sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', totals: { label: 'L' } }] }] }, edit: LABEL(n), ...e })
 const SHEET_T = (name: string) => subs(['xl/workbook.xml', '<sheet name="T"', `<sheet name="${attr(name)}"`])
 
 /** A target of a link of `n` characters. */
@@ -392,7 +392,7 @@ const linkedTo = (b: LinkedBook, e: Extra = {}) => ({ links: [b], ...e })
 const extCell = (id: string, about: string, b: LinkedBook, e: Extra = {}) => cell(id, about, `[1]${b.sheets[0].name}!A1`, linkedTo(b, e))
 
 /** The cache and the PivotTable's sheets of a case: the book of `test/pivot-books.ts`, its slicer left out where `slicer` is false. */
-function pivoted(id: string, about: string, e: Extra & { slicer?: boolean; change?: (b: ReturnType<typeof pivotBook>) => void }): LinksCase {
+export function pivoted(id: string, about: string, e: Extra & { slicer?: boolean; change?: (b: ReturnType<typeof pivotBook>) => void }): LinksCase {
   const { slicer = true, change, ...rest } = e
   const whole = pivotBook()
   if (!slicer) {
@@ -403,7 +403,7 @@ function pivoted(id: string, about: string, e: Extra & { slicer?: boolean; chang
   const { sheets, ...book } = whole
   return { id, about, sheets, linked: {}, links: [], read: [{ sheet: 'Data', range: 'B2' }], predicted: { 'Data!B2': 10 }, book, ...rest }
 }
-const CACHE = 'xl/pivotCache/pivotCacheDefinition1.xml'
+export const CACHE = 'xl/pivotCache/pivotCacheDefinition1.xml'
 const PIVOT = 'xl/pivotTables/pivotTable1.xml'
 
 const limits = (): LinksCase[] => [
