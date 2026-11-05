@@ -62,6 +62,8 @@ export interface LinksCase {
   refused?: true
   /** Text a part of the file Excel saved holds if Excel kept what the case is about (a rule, a name, a font), read by `links/file-refusals-kept.ts`. */
   holds?: string
+  /** A `written` case's book where it is too big for the stored cases: stored answers do not keep it. */
+  make?: () => Partial<BookInput>
   /** What else the book holds that `sheets` and `names` do not say (PivotTable caches, slicer caches): the writer takes it with them. */
   book?: Omit<BookInput, 'sheets'>
   /** A change by hand to the finished file, for what the writer may come to refuse: a part's new text, undefined for a part it leaves. Stored answers do not keep it. */
@@ -222,6 +224,6 @@ export function linksBook(c: LinksCase): BookInput {
 
 /** The book `writeXlsx` writes of a case marked `written`: the case's book with its links (`linksBook`) and the mirror sheets. */
 export function writtenBook(c: LinksCase): BookInput {
-  const book = linksBook(c)
+  const book = { ...linksBook(c), ...c.book, ...c.make?.() }
   return { ...book, sheets: [...book.sheets, ...caseSheets(c).slice(c.sheets.length)] }
 }

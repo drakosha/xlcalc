@@ -26,15 +26,23 @@ const inOrder = <T>(m: Map<string, T>): [string, T][] => sortAddresses(m.keys())
 /** Excel's limit on a hyperlink's tooltip (ScreenTip): it does not load a file with a longer one (the parts set `files`). */
 const MAX_TIP = 255
 
+/** The characters of a location Excel loads: over them it refuses the file (the set `links/file-refusals`). An address has no such limit: 3,000 opens. */
+const MAX_LOCATION = 2084
+
 /** `<hyperlinks>` of the cells' links; `rel` gives the relationship id of an address outside the book. */
 export function hyperlinksXml(links: Map<string, CellLink>, rel: (url: string) => string, sheet: string, issues: Issues): string {
   if (!links.size) return ''
-  const items = inOrder(links).map(([cell, l]) => {
+  const items = inOrder(links).flatMap(([cell, l]) => {
+    // cutting a location would point elsewhere, as a tooltip's cut does not
+    if (l.location !== undefined && l.location.length > MAX_LOCATION) {
+      issues.add('hyperlink', { key: 'linkLocationOut' }, { sheet, cell })
+      return []
+    }
     const tip = l.tooltip === undefined ? undefined : clip(l.tooltip, MAX_TIP, issues, { key: 'tooltipCut' }, { sheet, cell })
     const attrs = (l.url !== undefined ? ` r:id="${rel(l.url)}"` : '') + (l.location !== undefined ? ` location="${escapeAttr(l.location)}"` : '') + (tip !== undefined ? ` tooltip="${escapeAttr(tip)}"` : '')
-    return `<hyperlink ref="${cell}"${attrs}/>`
+    return [`<hyperlink ref="${cell}"${attrs}/>`]
   })
-  return `<hyperlinks>${items.join('')}</hyperlinks>`
+  return items.length ? `<hyperlinks>${items.join('')}</hyperlinks>` : ''
 }
 
 /** The comments part of a sheet's notes: authors once each (an empty one for notes without), then the notes in cell order. */

@@ -6,6 +6,8 @@
  */
 import type { BookInput, DrawingPlace, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { caseKey } from '../../collate.js'
+import { localeBooleans } from '../../locale/registry.js'
+import { nameProblem } from '../../syntax/check.js'
 import { sheetKey } from '../../syntax/print.js'
 import { parseAddress } from '../../model.js'
 import type { Issues } from '../issues.js'
@@ -47,7 +49,10 @@ function pivotTables(tab: TabId, c: { pivots: { sheet: string; name: string }[] 
 }
 
 export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tabOf(book), cacheId = c.cache!): string {
-  const items = (c.items ?? []).map((x) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
+  // Excel opens no file whose slicer has no items (the set `links/file-refusals`): those of its field, each chosen
+  const field = book.pivotCaches?.find((x) => x.id === cacheId)?.fields.find((f) => caseKey(f.name) === caseKey(c.field))
+  const given = c.items?.length ? c.items : (field?.items ?? []).map((_, item) => ({ item }))
+  const items = given.map((x: NonNullable<SlicerCache['items']>[number]) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
   const nd = c.noData ?? {}
   const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
   const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, 'customListSort:t showMissing:t')}${cross}`
@@ -132,7 +137,8 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
       out.pivotCacheIds.add(c.cache!)
     })
   const pivotCaches = (book.slicerCaches ?? []).filter((c) => {
-    if (c.cache !== undefined) return true
+    // Excel opens no file whose slicer cache's name is no name (the set `links/file-refusals`)
+    if (c.cache !== undefined && nameProblem(c.name, localeBooleans(book.locale)) === null) return true
     issues.add('pivotTable', { key: 'pivotNotWritten' })
     return false
   })

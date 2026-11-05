@@ -1,11 +1,12 @@
 /**
  * `src/function-arity.ts`, each function's declared arguments without its implementation, `src/groups/manifest.ts`,
- * those of the groups' functions, and `src/function-words.ts`, the functions' names alone, made from the engine's
+ * those of the groups' functions, and `src/function-words.ts`, the functions' names and argument counts alone, made from the engine's
  * definitions (`DEFS`, every group loaded): `test/function-arity.test.ts` checks that the files are the ones this makes;
  * `npx tsx test/function-arity.ts --write` writes them again after the functions change.
  */
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { arityOf } from '../src/arity.js'
 import { DEFS } from '../src/functions.js'
 import { allFunctions } from '../src/groups/index.js'
 import { loadGroups } from '../src/groups/registry.js'
@@ -61,23 +62,42 @@ ${groups.join('\n')}
 }
 
 export function functionWords(): string {
-  const lines: string[] = []
-  let line = ''
+  const groups = new Map<string, string[]>()
   for (const name of Object.keys(DEFS).sort()) {
-    if (line && line.length + name.length + 1 > 116) {
-      lines.push(line)
-      line = ''
-    }
-    line += (line ? ' ' : '') + name
+    const { min, max, takes } = arityOf(DEFS[name])
+    const next = Array.from({ length: 256 - min }, (_, i) => min + i + 1).find((k) => k <= max && takes(k))
+    const key = `${min} ${max} ${next === undefined ? 1 : next - min}`
+    groups.set(key, [...(groups.get(key) ?? []), name])
   }
-  lines.push(line)
+  const row = ([key, names]: [string, string[]]) => {
+    const lines: string[] = []
+    let line = key
+    for (const name of names) {
+      if (line.length + name.length + 1 > 116) {
+        lines.push(line)
+        line = ''
+      }
+      line += (line ? ' ' : '') + name
+    }
+    return [...lines, line].join('\n  ')
+  }
   return `/**
- * The whitelisted functions' names, without their arguments: the xlsx writers tell a function's name from a defined name's
- * by them without the engine (\`syntax/check.ts\`, \`bindCalls\`). Made from the engine's definitions by
- * \`npx tsx test/function-arity.ts --write\`; \`test/function-arity.test.ts\` keeps it the same as them.
+ * The whitelisted functions' names and how many arguments each takes, without the rest of their arguments: the xlsx writers tell a
+ * function's name from a defined name's by them without the engine (\`syntax/check.ts\`, \`bindCalls\`), and what Excel refuses in a
+ * file (\`xlsx/write/excel-loads.ts\`). Each row of the table starts with the least, the most and the step between them. Made from
+ * the engine's definitions by \`npx tsx test/function-arity.ts --write\`; \`test/function-arity.test.ts\` keeps it the same as them.
  */
-export const FUNCTION_WORDS: ReadonlySet<string> = /* @__PURE__ */ new Set(
-  \`${lines.join('\n  ')}\`.split(/\\s+/),
+const parse = (table: string) => {
+  const out = new Map<string, readonly [min: number, max: number, step: number]>()
+  for (const row of table.split('|')) {
+    const [min, max, step, ...names] = row.trim().split(/\\s+/)
+    for (const name of names) out.set(name, [Number(min), Number(max), Number(step)])
+  }
+  return out
+}
+
+export const FUNCTION_COUNTS: ReadonlyMap<string, readonly [min: number, max: number, step: number]> = /* @__PURE__ */ parse(
+  \`${[...groups].sort(([a], [b]) => (a < b ? -1 : 1)).map(row).join('\n  |')}\`,
 )
 `
 }

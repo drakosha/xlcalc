@@ -15,7 +15,7 @@ import { arityOf } from '../../../src/arity.js'
 import { toFile } from '../../../src/xlsx/formulas/to-file.js'
 import { fileTree } from '../../../src/xlsx/write/formula.js'
 import type { LinksCase, LinksCases } from './cases.js'
-import { BASE_XF, CACHE, cell, cfEdit, DXF, dvEdit, FIVE, inSheet, labelled, list, manyFonts, numFmts, one, onStyle, pivoted, REFUSED, rep, STYLES, subs, total, XFS } from './file-refusals.js'
+import { ANY_COLUMN, BASE_XF, CACHE, cell, cfEdit, DXF, dvEdit, FIVE, inSheet, labelled, list, manyFonts, numFmts, one, onStyle, pivoted, REFUSED, rep, STYLES, subs, total, XFS } from './file-refusals.js'
 import { CALLS } from './no-prefix.js'
 
 // --- every function in a reference's place
@@ -106,8 +106,8 @@ const styles = (): LinksCase[] => [
 
 // --- a table's totals
 
-const LABELLED = (text: string, label: string) => ({ cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: text } }, sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', totals: { label: 'L' } }] }] }, edit: subs(['xl/tables/table1.xml', 'totalsRowLabel="L"', `totalsRowLabel="${label}"`]) })
-const NUMBER_CUSTOM = subs(['xl/tables/table1.xml', '<tableColumn id="1" name="Q"/>', '<tableColumn id="1" name="Q" totalsRowFunction="custom"><totalsRowFormula>42</totalsRowFormula></tableColumn>'])
+const LABELLED = (text: string, label: string) => ({ cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: text } }, sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', totals: { label: 'L' } }] }] }, edit: subs(['xl/tables/table1.xml', ANY_COLUMN, `<tableColumn id="1" name="Q" totalsRowLabel="${label}"/></tableColumns>`]) })
+const NUMBER_CUSTOM = subs(['xl/tables/table1.xml', ANY_COLUMN, '<tableColumn id="1" name="Q" totalsRowFunction="custom"><totalsRowFormula>42</totalsRowFormula></tableColumn></tableColumns>'])
 
 const totals = (): LinksCase[] => [
   total('totals-none-text', 'a text in the totals row, no label', '', {}, { cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: 'T' } }, ...REFUSED }),

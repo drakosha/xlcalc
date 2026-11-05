@@ -325,10 +325,13 @@ export function total(id: string, about: string, column: string, foot: { formula
     cells: { E1: { value: 'Q' }, E2: { value: 1 }, ...(foot.value === undefined ? {} : { E3: { value: foot.value } }) },
     sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q' }] }] },
     read: [{ sheet: 'S', range: 'E3' }],
-    edit: subs(['xl/tables/table1.xml', '<tableColumn id="1" name="Q"/>', `<tableColumn id="1" name="Q"${column}/>`]),
+    edit: subs(['xl/tables/table1.xml', ANY_COLUMN, `<tableColumn id="1" name="Q"${column}/></tableColumns>`]),
     ...e,
   })
 }
+
+/** The column as the writer wrote it, whatever it made of the cell under it: the case's own goes in by hand. */
+export const ANY_COLUMN = /<tableColumn id="1" name="Q".*<\/tableColumns>/
 
 const SUM_ATTR = ' totalsRowFunction="sum"'
 
@@ -382,7 +385,7 @@ const onLink = (location: string) => subs([SHEET1, 'location="S!A1"', `location=
 const onUrl = (url: string) => subs(['xl/worksheets/_rels/sheet1.xml.rels', 'Target="https://e.com/?"', `Target="${attr(url)}"`])
 const url = (n: number) => `https://e.com/?${rep('q', n - 15)}`
 const AUTHOR = (n: number) => subs(['xl/comments1.xml', '<author>x</author>', `<author>${rep('a', n)}</author>`])
-export const LABEL = (n: number) => subs(['xl/tables/table1.xml', 'totalsRowLabel="L"', `totalsRowLabel="${rep('L', n)}"`])
+export const LABEL = (n: number) => subs(['xl/tables/table1.xml', ANY_COLUMN, `<tableColumn id="1" name="Q" totalsRowLabel="${rep('L', n)}"/></tableColumns>`])
 export const labelled = (id: string, about: string, n: number, e: Extra = {}) => one(id, about, {}, { cells: { E1: { value: 'Q' }, E2: { value: 1 }, E3: { value: 'L' } }, sheet: { tables: [{ name: 'Tbl', range: 'E1:E3', totals: true, columns: [{ name: 'Q', totals: { label: 'L' } }] }] }, edit: LABEL(n), ...e })
 const SHEET_T = (name: string) => subs(['xl/workbook.xml', '<sheet name="T"', `<sheet name="${attr(name)}"`])
 
@@ -403,6 +406,8 @@ export function pivoted(id: string, about: string, e: Extra & { slicer?: boolean
   const { sheets, ...book } = whole
   return { id, about, sheets, linked: {}, links: [], read: [{ sheet: 'Data', range: 'B2' }], predicted: { 'Data!B2': 10 }, book, ...rest }
 }
+export /** A slicer as the writer wrote one of no items before it took those of its field. */
+const NO_ITEMS: [string, RegExp, string] = ['xl/slicerCaches/slicerCache1.xml', /<items count="\d+">.*<\/items>/, '<items count="0"></items>']
 export const CACHE = 'xl/pivotCache/pivotCacheDefinition1.xml'
 const PIVOT = 'xl/pivotTables/pivotTable1.xml'
 
@@ -459,10 +464,10 @@ const limits = (): LinksCase[] => [
   extCell('ext-name-bad', 'N14: a linked book’s name no book takes', { ...LINK, names: [{ name: 'x y', ref: '=A!$A$1' }] }, REFUSED),
   extCell('ext-name-ref', 'N14: a linked book’s name over no formula', { ...LINK, names: [{ name: 'xy', ref: '=garbage(' }] }, REFUSED),
   pivoted('pivot-control', 'N15: the PivotTable alone, no slicer', { slicer: false }),
-  pivoted('pivot-slicer', 'N15: a slicer whose cache has no defined name', { ...REFUSED }),
-  pivoted('pivot-slicer-name', 'N15: a slicer with the defined name beside it', { names: [{ name: 'Slicer_Region', ref: '#N/A' }], holds: 'Slicer_Region' }),
-  pivoted('pivot-slicer-space', 'N15: a slicer cache whose name is no name', { edit: subs(['xl/slicerCaches/slicerCache1.xml', 'name="Slicer_Region"', 'name="Slicer Region"']), ...REFUSED }),
-  pivoted('pivot-slicer-taken', 'N15: a slicer cache whose name a defined name holds', { names: [{ name: 'Slicer_Region', ref: 'Data!$A$1' }], ...REFUSED }),
+  pivoted('pivot-slicer', 'N15: a slicer whose cache has no defined name', { edit: subs(NO_ITEMS), ...REFUSED }),
+  pivoted('pivot-slicer-name', 'N15: a slicer with the defined name beside it', { names: [{ name: 'Slicer_Region', ref: '#N/A' }], edit: subs(NO_ITEMS), holds: 'Slicer_Region' }),
+  pivoted('pivot-slicer-space', 'N15: a slicer cache whose name is no name', { edit: subs(['xl/slicerCaches/slicerCache1.xml', 'name="Slicer_Region"', 'name="Slicer Region"'], NO_ITEMS), ...REFUSED }),
+  pivoted('pivot-slicer-taken', 'N15: a slicer cache whose name a defined name holds', { names: [{ name: 'Slicer_Region', ref: 'Data!$A$1' }], edit: subs(NO_ITEMS), ...REFUSED }),
   pivoted('pivot-error-spill', 'N16: #SPILL! among a cache’s items', { slicer: false, edit: subs([CACHE, '<s v="East"/>', '<e v="#SPILL!"/>']), ...REFUSED }),
   pivoted('pivot-error-na', 'N16: #N/A among a cache’s items', { slicer: false, edit: subs([CACHE, '<s v="East"/>', '<e v="#N/A"/>']) }),
   pivoted('pivot-field-dup', 'N16: two fields of a name in another case', { slicer: false, edit: subs([CACHE, 'cacheField name="Month"', 'cacheField name="region"']), ...REFUSED }),
