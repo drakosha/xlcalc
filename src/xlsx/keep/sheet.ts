@@ -197,7 +197,8 @@ function srcCells(xml: string, row: SrcRow): Map<number, Src> | null {
 
 /** The extensions of an element (`<extLst>`, its last child) whose body lies from `open` to its closing tag before `end`, empty for none. */
 function extOf(xml: string, open: number, end: number): string {
-  if (xml.lastIndexOf('extLst>', end) < open) return ''
+  // only this element's text: a search of the whole part per row would make a sheet's writing quadratic
+  if (!xml.slice(open, end).includes('extLst>')) return ''
   const last = childrenOf(xml, { qname: '', local: '', start: open, open, end }).at(-1)
   return last?.local === 'extLst' ? xml.slice(last.start, last.end) : ''
 }
