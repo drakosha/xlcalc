@@ -16,7 +16,7 @@ import { checkArrayEdits } from '../spill/fixed.js'
 import { checkPivotEdits } from '../pivot/part.js'
 import { headerEdits } from '../tables/headers.js'
 import { checkTables } from '../tables/check.js'
-import { checkStylesUsed, applyLayout, inputAt } from './book.js'
+import { checkStylesUsed, applyLayout, inputAt, shownEdits } from './book.js'
 import { checkFieldEdits, resolveEdits } from './cells.js'
 import { clearPlan } from './clear.js'
 import { checkNamesKept } from './names.js'
@@ -165,7 +165,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
         onlyKeys(op, path, ['op', 'edits'])
         const checked = checkLayoutEdits(op.edits, index, count, `${path}.edits`)
         if (checked.some((e) => 'fit' in e)) throw new InputError(path, 'AutoFit reads calculated values; use setLayout after applyChanges')
-        applyLayout(book, checked as never, (name) => index(name)!)
+        applyLayout(book, shownEdits(book, checked as never, (name) => index(name)!), (name) => index(name)!)
         break
       }
       default:

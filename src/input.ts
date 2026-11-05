@@ -530,7 +530,8 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     const edited = Object.keys(SHEET_EDITS)
     const field = edited.find((k) => o[k] !== undefined || (SHEET_EDITS[k].nullable && k in o))
     if (field) {
-      onlyKeys(o, p, ['sheet', field])
+      onlyKeys(o, p, field === 'autoFilter' ? ['sheet', field, 'showRows'] : ['sheet', field])
+      if (o.showRows !== undefined) onlyTrue(o.showRows, `${p}.showRows`)
       if (o[field] !== null || !SHEET_EDITS[field].nullable) SHEET_EDITS[field].check(o[field], `${p}.${field}`)
       return o as unknown as LayoutEdit
     }

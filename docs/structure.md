@@ -461,9 +461,17 @@ A sheet's AutoFilter (`autoFilter: { range: 'A1:C21' }`) is the filter buttons o
 - A copy, a renamed sheet and a moved sheet leave it; a deleted sheet takes it along.
 - `addTable` over all of it, its range or more, makes the table and removes the AutoFilter, which the table's own filter replaces. A table over part of it is rejected with `table`, as Excel rejects it, and an AutoFilter set over a table is an input error.
 
-The filter mode (`filtered`) stays as it is when the AutoFilter goes: a host that removes it as Excel's Filter button does also sets `filtered: false` and shows the rows.
+The filter mode (`filtered`) and the rows stay as they are when the AutoFilter goes. To remove it as Excel's Filter button does, in one undo step, pass `showRows`:
 
-What is entered under the AutoFilter does not change its range: Excel saves `A1:C5` after rows 6 and 7 are typed under it, pasted, copied or filled there. It filters more, though. `getAutoFilterRange(sheet)` gives the range the AutoFilter acts on, as Excel reads it: its range down to the last row of its current region, the block of cells that hold something around it, reached from cell to cell, diagonally too, up to an empty row and an empty column all round. Its header row and its columns stay. Over `A1:C5`:
+```js
+s.setLayout([{ sheet, autoFilter: null, showRows: true }])
+```
+
+On a filtered sheet this shows the rows of the AutoFilter's own range below its header, hidden by hand before the criteria too, and the sheet is no longer filtered. Other rows stay hidden, a row under an AutoFilter saved as `A1:C21` among them, though Excel reads it in the range. A row of height 0 keeps its height and stays out of view. On a sheet that is not filtered, no row changes.
+
+`{ sheet, autoFilter: { range }, showRows: true }` moves the AutoFilter the same way: however it is moved in Excel, the rows come back and the criteria go. Only removing it and setting it again gives the filter a new range there; `Range.AutoFilter` with a field keeps the old one.
+
+What is entered under the AutoFilter does not change its range: Excel saves `A1:C5` after rows 6 and 7 are typed under it, pasted, copied or filled there. It filters more, though. `getAutoFilterRange(sheet)` gives the range as Excel reads it (`AutoFilter.Range`): its range down to the last row of its current region, the block of cells that hold something around it, reached from cell to cell, diagonally too, up to an empty row and an empty column all round. Its header row and its columns stay. Over `A1:C5`:
 
 - a value typed into A6, or into D6 beside it, gives `A1:C6`, and one more in A7 gives `A1:C7`; a formula counts, one that shows nothing too, and a spill counts its cells;
 - a value in A7 with row 6 empty leaves `A1:C5`, and so does one in E6, a column away;
@@ -471,9 +479,26 @@ What is entered under the AutoFilter does not change its range: Excel saves `A1:
 - a column beside it that holds rows 1 to 9 gives `A1:C9`, and so do rows above the header that lead down a column further right;
 - clearing A6 again gives `A1:C5`: the range is read anew each time, never shorter than the AutoFilter's own.
 
-Hidden rows and criteria do not change it. A host that applies criteria filters this range and then sets it as the AutoFilter's, `setLayout([{ sheet, autoFilter: { range } }])`, as Excel saves the grown range once it filters. It returns null for a sheet without an AutoFilter, and reads the cells around the region as it grows, not the whole sheet.
+Hidden rows and criteria do not change it. A host that applies criteria filters this range and then sets it as the AutoFilter's, `setLayout([{ sheet, autoFilter: { range } }])`, as Excel saves the grown range once it filters; a last row of `SUBTOTAL` stays out of both ([A totals row](#a-totals-row-under-an-autofilter)). It returns null for a sheet without an AutoFilter, and reads the cells around the region as it grows, not the whole sheet.
 
-The keep sets `filter-*` checked these rules in Excel for Mac, each case predicted before Excel ran it ([docs/development.md](development.md#writing-over-the-original-file)), and the filter sets `grow`, `grow-held` and `grow-held-2` checked the range in both Excels ([docs/development.md](development.md#the-autofilter-under-what-is-entered)).
+### A totals row under an AutoFilter
+
+Whether a filter hides a totals row, and what sorting does to it, depends on its formula. With data in rows 2 to 21 and an AutoFilter on `A1:C21`:
+
+| The total | Criteria | Sorting | It counts |
+|---|---|---|---|
+| `SUBTOTAL(109,C2:C21)` in row 22 | shown | stays | the rows shown |
+| `SUM(C2:C21)` in row 22 | hidden | moves to row 2, and its formula becomes `SUM(C1:C1)` | all the rows, 0 once sorted |
+| a label alone in row 22 | hidden | stays, as an empty cell sorts last | |
+| `SUBTOTAL` in row 23, row 22 empty | shown | stays | the rows shown |
+| `SUM` in row 23, row 22 empty | shown | stays | all the rows |
+| a table's totals row | shown | stays | the rows shown |
+
+So a total that stays in view and counts what is shown is a `SUBTOTAL` right under the data or past an empty row, or a table's totals row.
+
+Excel reads a row of `SUBTOTAL` in the range, `A1:C22`, and `getAutoFilterRange` returns that, but it neither filters nor sorts the row, and saves `A1:C21` after applying criteria. This holds for the last row of that range alone, when a cell of it in the filter's columns is a formula that is itself a `SUBTOTAL`, whatever its code and range: `ROUND(SUBTOTAL(…))`, `AGGREGATE` and a reference to such a cell are filtered like any other row. Of `SUBTOTAL` in rows 22 and 23, only 23 stays out; of `SUBTOTAL` in 22 and a `SUM`, a label or a reference to it in 23, neither does. A host that applies criteria or sorts leaves such a row out of what it filters and of the range it sets.
+
+The keep sets `filter-*` checked these rules in Excel for Mac, each case predicted before Excel ran it ([docs/development.md](development.md#writing-over-the-original-file)), the filter sets `grow`, `grow-held` and `grow-held-2` checked the range in both Excels ([docs/development.md](development.md#the-autofilter-under-what-is-entered)), and the sets `filter-acts` checked criteria, sorting, removing and moving ([docs/development.md](development.md#what-an-autofilter-does-to-its-rows)).
 
 ## Notes, hyperlinks and frozen panes
 

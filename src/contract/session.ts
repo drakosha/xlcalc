@@ -205,10 +205,10 @@ export interface Session {
    */
   getUsedRange(sheet: string): SheetExtent
   /**
-   * The range the sheet's AutoFilter acts on, as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
+   * The range of the sheet's AutoFilter as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
    * grown down over the rows right under it that hold a value or a formula in its columns or the column on either side,
    * one after another, an empty row ending it; null without an AutoFilter. The AutoFilter's own range stays as Excel
-   * saves it; a host that applies criteria filters this range (`docs/structure.md` "The AutoFilter"). It reads the rows
+   * saves it; a host that applies criteria filters this range but a last row of SUBTOTAL (`docs/structure.md` "The AutoFilter"). It reads the rows
    * under the range up to the first empty one.
    */
   getAutoFilterRange(sheet: string): string | null
