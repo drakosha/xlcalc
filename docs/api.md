@@ -3780,8 +3780,12 @@ type LayoutEdit =
   | { sheet: string; merges: string[] }
   /** The sheet's filter mode (`SheetInput.filtered`). */
   | { sheet: string; filtered: boolean }
-  /** The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. */
-  | { sheet: string; autoFilter: AutoFilter | null }
+  /**
+   * The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. With `showRows`, as Excel's Filter button removes or moves
+   * it: on a filtered sheet the rows of its own range below the header are shown and the sheet is no longer filtered. Other rows
+   * stay hidden and a row of height 0 keeps its height. Without `showRows`, the rows and `filtered` stay as they are.
+   */
+  | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
@@ -5569,10 +5573,10 @@ interface Session {
    */
   getUsedRange(sheet: string): SheetExtent
   /**
-   * The range the sheet's AutoFilter acts on, as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
+   * The range of the sheet's AutoFilter as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
    * grown down over the rows right under it that hold a value or a formula in its columns or the column on either side,
    * one after another, an empty row ending it; null without an AutoFilter. The AutoFilter's own range stays as Excel
-   * saves it; a host that applies criteria filters this range (`docs/structure.md` "The AutoFilter"). It reads the rows
+   * saves it; a host that applies criteria filters this range but a last row of SUBTOTAL (`docs/structure.md` "The AutoFilter"). It reads the rows
    * under the range up to the first empty one.
    */
   getAutoFilterRange(sheet: string): string | null
