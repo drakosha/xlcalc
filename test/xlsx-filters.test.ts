@@ -13,7 +13,7 @@ import { codes, pack, partText as text, parts } from './xlsx-fixtures.js'
 
 /** A1:A6 hold 1, 2, 4, 8, 16, 32 and B1:B6 keys; C1 to C4 SUBTOTAL and AGGREGATE over A1:A6. */
 const ROWS = Array.from({ length: 6 }, (_, i) => `<c r="A${i + 1}"><v>${2 ** i}</v></c><c r="B${i + 1}" t="inlineStr"><is><t>${i % 3 ? 'x' : 'y'}</t></is></c>`)
-const FORMULAS = ['SUBTOTAL(9,A1:A6)', 'SUBTOTAL(109,A1:A6)', 'AGGREGATE(9,5,A1:A6)', 'AGGREGATE(9,4,A1:A6)']
+const FORMULAS = ['SUBTOTAL(9,A1:A6)', 'SUBTOTAL(109,A1:A6)', '_xlfn.AGGREGATE(9,5,A1:A6)', '_xlfn.AGGREGATE(9,4,A1:A6)']
 
 /** A sheet with rows 1 and 4 hidden and what goes around its data: a filter's parts. */
 async function filtered(opts: { before?: string; after?: string; table?: string; workbook?: string }) {
