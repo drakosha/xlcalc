@@ -88,6 +88,8 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   tableRefWithoutTable: () => 'a file cannot hold a structured reference without a table name: the formula is read as written and evaluates to an error',
   formulaExternal: () => 'a reference to another workbook that is not one of the links the file holds, or that the engine does not parse: the formula is read as written and evaluates to an error',
   letPrefix: () => 'a LET name that is parsed as a reference or a boolean once its _xlpm. prefix is removed: the formula changes its meaning',
+  noPrefix: () => 'a function newer than Excel 2007 stored without its _xlfn. prefix: the engine calculates it, Excel shows #NAME?',
+  noPrefixRefused: () => 'a function stored without its _xlfn._xlws. prefix: the engine calculates it, Excel does not open such a file',
   formulaUnparsed: () => 'a formula the engine does not parse is read as written (its cell evaluates to an error)',
   // reading: cells
   cellOutside: () => 'a cell outside the sheet (past its last row or column) is left out',

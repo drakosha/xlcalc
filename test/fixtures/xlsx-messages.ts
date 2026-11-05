@@ -49,6 +49,8 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   tableRefWithoutTable: [{}],
   formulaExternal: [{}],
   letPrefix: [{}],
+  noPrefix: [{}],
+  noPrefixRefused: [{}],
   formulaUnparsed: [{}],
   cellOutside: [{}],
   widthBad: [{}],
