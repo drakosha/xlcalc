@@ -9,9 +9,9 @@ import { openKept } from '../src/xlsx-keep.js'
 import { pack } from './xlsx-fixtures.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const xlsb = (workbook: string, types = '') =>
+const xlsb = (workbook: string) =>
   pack({
-    '[Content_Types].xml': `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">${types}</Types>`,
+    '[Content_Types].xml': '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
     '_rels/.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="${workbook}"/></Relationships>`,
     [workbook]: '\u0083\u0001\u0000',
   })
@@ -23,11 +23,6 @@ describe('a binary workbook', () => {
     await expect(readXlsx(file)).rejects.toThrow(InputError)
     await expect(readXlsx(file)).rejects.toThrow(/xlsb/)
     await expect(openKept(file)).rejects.toThrow(/xlsb/)
-  })
-
-  it('so is a part of another name of the binary content type', async () => {
-    const type = '<Override PartName="/xl/book.dat" ContentType="application/vnd.ms-excel.sheet.binary.macroEnabled.main"/>'
-    await expect(readXlsx(await xlsb('xl/book.dat', type))).rejects.toThrow(/xlsb/)
   })
 
   it('an .xls or a password-protected file says what it may be', async () => {

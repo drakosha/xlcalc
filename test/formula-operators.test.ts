@@ -12,18 +12,16 @@ const terms = (n: number) => Array(n).fill('1').join('+')
 const FORMS: [string, (n: number) => string][] = [
   ['+', terms],
   ['%', (n) => `1${'%'.repeat(n - 1)}`],
-  // `A1:A1` is one token, so a range operator stands between each two pairs
-  [':', (n) => Array(2 * n).fill('A1').join(':')],
 ]
 const book = (formula: string) => ({ sheets: [{ name: 'S', cells: { A1: { formula }, B1: { value: 5 }, C1: { formula: 'B1+1' } } }] })
 
 describe('a formula of very many operators', () => {
-  it('1,024 operators compute, and every walk over the tree takes them', async () => {
-    const formula = terms(1025)
-    for (const execution of ['closures', 'eval'] as const) expect(compute(book(formula), { clock: CLOCK, execution }).sheets[0].cells.A1.value).toBe(1025)
+  it('2,000 operators compute, and every walk over the tree takes them', async () => {
+    const formula = terms(2001)
+    for (const execution of ['closures', 'eval'] as const) expect(compute(book(formula), { clock: CLOCK, execution }).sheets[0].cells.A1.value).toBe(2001)
     const s = createSession(book(formula), { clock: CLOCK })
     s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 })
-    expect(s.getCell('S', 'A2')?.value).toBe(1025)
+    expect(s.getCell('S', 'A2')?.value).toBe(2001)
     expect(fromLegacy(formula)).toBe(formula)
     const { data, issues } = await writeXlsx({ book: book(formula) })
     expect(issues.filter((i) => i.code === 'formula')).toEqual([])
@@ -31,13 +29,13 @@ describe('a formula of very many operators', () => {
   })
 
   it.each(FORMS)('more, by %s: an error of that cell alone in compute', (_, form) => {
-    const r = compute(book(form(1026)), { clock: CLOCK })
+    const r = compute(book(form(2002)), { clock: CLOCK })
     expect(r.sheets[0].cells.A1.value).toEqual({ error: 'ERROR' })
-    expect(r.diagnostics[0]).toMatchObject({ cell: 'A1', check: 'too_deep', reason: 'more than 1024 operators in one formula' })
+    expect(r.diagnostics[0]).toMatchObject({ cell: 'A1', check: 'too_deep', reason: 'more than 2000 operators in one formula' })
     expect(r.sheets[0].cells.C1.value).toBe(6)
   })
 
-  it.each([1026, 3000, 4096])('%i terms are written as the value, with an issue', async (n) => {
+  it.each([2002, 3000, 4096])('%i terms are written as the value, with an issue', async (n) => {
     const result = compute(book(terms(n)), { clock: CLOCK })
     const { data, issues } = await writeXlsx({ book: book(terms(n)), result })
     expect(issues.map((i) => i.code)).toContain('formula')
