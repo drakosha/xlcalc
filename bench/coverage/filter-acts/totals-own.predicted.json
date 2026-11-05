@@ -1,0 +1,144 @@
+{
+ "cases": {
+  "file-criteria": {
+   "opens": true,
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "total": {
+      "row": 22,
+      "text": "10480"
+     }
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "file-sort": {
+   "opens": true,
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [],
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "hidden": [],
+    "sortRef": "A2:C21"
+   }
+  },
+  "picked-criteria": {
+   "opens": true,
+   "after": [
+    {
+     "range": "A1:C22"
+    },
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "total": {
+      "row": 22,
+      "text": "10480"
+     }
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "picked-sort": {
+   "opens": true,
+   "after": [
+    {
+     "range": "A1:C22"
+    },
+    {
+     "range": "A1:C22",
+     "hidden": [],
+     "total": {
+      "row": 22,
+      "text": "46030"
+     }
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "hidden": [],
+    "sortRef": "A2:C21"
+   }
+  }
+ }
+}
