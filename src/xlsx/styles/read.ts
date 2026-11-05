@@ -106,7 +106,9 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
   }
   const sides = { top: side(['top']), right: side(['right', 'end']), bottom: side(['bottom']), left: side(['left', 'start']) }
   for (const [k, v] of Object.entries(sides)) if (v) out[k as keyof typeof sides] = v
-  if (side(['diagonal'])) lost.push('diagonalBorder')
+  // without either direction nothing is drawn (ECMA-376 18.8.4)
+  const at = attributes(e.attrs)
+  if ((flag(at.diagonalUp) || flag(at.diagonalDown)) && side(['diagonal'])) lost.push('diagonalBorder')
   return Object.keys(out).length ? { border: out, lost } : { lost }
 }
 

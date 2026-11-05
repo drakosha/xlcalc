@@ -13,7 +13,7 @@ const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-']
 const REF_OPS = [' ', ':'] as const
 
 /**
- * The operators of one formula. Excel has no such limit of its own: 8,192 characters hold 4,096 of them, which the walks over
+ * The operators of one formula. 8,192 characters hold 4,096 of them, which the walks over
  * the tree do not survive on a default stack (from about 2,100, depending on what the JIT has done by then). Real files stay
  * far below: of 254,683 formulas in 1,123 user workbooks, the longest has 86.
  */

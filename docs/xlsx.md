@@ -84,9 +84,9 @@ Pass the locale the user reading the messages has chosen. A file does not record
 
 - `book` is a `BookInput`: sheets with their cells (including notes and hyperlinks), the formatting of their formatting-only cells ([Formatting-only cells](#formatting-only-cells)) and whether they are hidden; columns and rows (including their outline levels), merged areas, filter mode, frozen panes, conditional formats, data validation rules and outline settings; names, the style table, the locale, the date system, iterative calculation, and the links to other workbooks with their stored values ([Links to other workbooks](#links-to-other-workbooks)).
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
-- `issues` lists everything the workbook cannot represent, with the sheet and the cells or the name it concerns. Nothing is dropped without an issue. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
+- `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-A file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
+An `.xlsb`, an `.xls` and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, 200 by default. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits:
 
@@ -329,7 +329,9 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
 
-Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when one was actually made, for example a landscape page or fit to width.
+### What is not reported
+
+These parts of a file are left out without an issue, because nearly every file has them or they change no cell: gridlines and other view settings outside `SheetView`; page margins, print options and a page setup that was not actually made (a landscape page or fit to width is reported as `print`); phonetic settings; marks of ignored errors; custom and named sheet views; scenarios, data consolidation and watched cells. `writeXlsx` does not write them; `writeKept` keeps them, as it keeps everything it does not change.
 
 ### The language of the messages
 
@@ -538,7 +540,7 @@ Excel treats the part of an address after `#` as its location: a file containing
 
 ### Frozen panes
 
-`frozen: { rows: 2, columns: 1 }` keeps the first two rows and the first column in view, as Excel's Freeze Panes does with C3 selected. Split panes that are not frozen are not in the model and are reported.
+`frozen: { rows: 2, columns: 1 }` keeps the first two rows and the first column in view, as Excel's Freeze Panes does with C3 selected. Split panes that are not frozen are kept in `view.split`.
 
 ### Structure operations
 

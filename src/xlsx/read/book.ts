@@ -3,7 +3,7 @@
  * sheets taken in the order the workbook lists them (not by part names), each linked to its part by id; shared
  * strings, styles, the theme, the cell metadata of dynamic arrays and the links to other workbooks (`links.ts`) come from
  * the workbook's relationships.
- * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
+ * What the book cannot hold of the cells, formulas, names and looks is reported in `issues`; docs/xlsx.md, "What is not reported", names the rest.
  */
 import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, PivotRuleScope, SheetInput } from '../../contract.js'
