@@ -117,5 +117,5 @@ function predict(c: ActCase): PredictedAct {
 }
 
 const set = process.argv[2]
-const { buildActCases } = await setModule<ActSet>('filter-acts', set)
-writePrediction(new URL(`./${set}.ts`, import.meta.url).href, set, { cases: Object.fromEntries(buildActCases().map((c) => [c.id, predict(c)])) })
+const { buildActCases, predictAct } = await setModule<ActSet>('filter-acts', set)
+writePrediction(new URL(`./${set}.ts`, import.meta.url).href, set, { cases: Object.fromEntries(buildActCases().map((c) => [c.id, predictAct ? predictAct(c, (own) => acted(c, own)) : predict(c)])) })

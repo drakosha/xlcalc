@@ -99,6 +99,8 @@ export interface ActAnswer {
 
 export interface ActSet {
   buildActCases(): ActCase[]
+  /** The set's own model, with the range the engine reads for an AutoFilter on a range; the common one without it (`predict.ts`). */
+  predictAct?(c: ActCase, acted: (own: string) => string): PredictedAct
 }
 
 /** The label of the total row, and the rows read. */
@@ -217,6 +219,7 @@ export interface PredictedSaved {
   ref: string | null
   tableRef: string | null
   criteria: Record<string, string>
+  sortRef?: string | null
   filterMode: boolean
   hidden: number[]
 }
@@ -227,6 +230,13 @@ export interface PredictedAct {
   opened?: PredictedState
   after?: PredictedState[]
   saved?: PredictedSaved
+}
+
+/** Whether an answer holds all a prediction says, which may be part of what the answer has: the differences, by path. */
+export function missedBy(predicted: unknown, got: unknown, path = ''): string[] {
+  if (predicted && got && typeof predicted === 'object' && typeof got === 'object' && !(Array.isArray(predicted) && typeof predicted[0] !== 'object'))
+    return Object.keys(predicted).flatMap((k) => missedBy((predicted as Record<string, unknown>)[k], (got as Record<string, unknown>)[k], `${path}.${k}`))
+  return JSON.stringify(predicted) === JSON.stringify(got) ? [] : [`${path}: predicted ${JSON.stringify(predicted)}, got ${JSON.stringify(got)}`]
 }
 
 const predictedState = (s: ActState): PredictedState => ({
@@ -240,6 +250,6 @@ const predictedState = (s: ActState): PredictedState => ({
 /** An answer of Excel in the shape of a prediction. */
 export function asPredicted(a: ActAnswer): PredictedAct {
   if (a.refused) return { opens: false }
-  const { ref, tableRef, criteria, filterMode, hidden } = a.saved!
-  return { opens: true, opened: predictedState(a.opened!), after: a.after!.map(predictedState), saved: { ref, tableRef, criteria, filterMode, hidden } }
+  const { ref, tableRef, criteria, sortRef, filterMode, hidden } = a.saved!
+  return { opens: true, opened: predictedState(a.opened!), after: a.after!.map(predictedState), saved: { ref, tableRef, criteria, sortRef, filterMode, hidden } }
 }
