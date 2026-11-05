@@ -27,7 +27,10 @@ const REFERENCE_ONLY: ReadonlyMap<string, Positions> = /* @__PURE__ */ new Map([
   ...positions('AGGREGATE', { from: 4 }),
 ])
 
-/** The functions Excel takes in a reference's place, whatever they return there; a function it does not have is a user's call. */
+/** Functions of the whitelist no Excel measured has: a call of any count, anywhere, is a user's call, `#NAME?`. */
+const NOT_IN_EXCEL: ReadonlySet<string> = /* @__PURE__ */ new Set('EUROCONVERT JIS REGEXEXTRACT REGEXREPLACE REGEXTEST'.split(' '))
+
+/** The functions Excel takes in a reference's place, whatever they return there. */
 const MAY_RETURN_REFERENCE: ReadonlySet<string> = /* @__PURE__ */ new Set('CHOOSE DROP IF IFS INDEX INDIRECT OFFSET REDUCE SWITCH TAKE TRIMRANGE XLOOKUP'.split(' '))
 
 function fillsReference(a: Ast): boolean {
@@ -47,7 +50,7 @@ function fillsReference(a: Ast): boolean {
     case 'bin':
       return isRefOp(a.op)
     case 'fn':
-      return !FUNCTION_COUNTS.has(a.name) || MAY_RETURN_REFERENCE.has(a.name)
+      return !FUNCTION_COUNTS.has(a.name) || NOT_IN_EXCEL.has(a.name) || MAY_RETURN_REFERENCE.has(a.name)
     default:
       return true
   }
@@ -56,7 +59,7 @@ function fillsReference(a: Ast): boolean {
 /** The number of arguments of a built-in Excel takes, the engine's but where the sets showed otherwise. */
 function takesCount(name: string, k: number): boolean {
   const c = FUNCTION_COUNTS.get(name)
-  if (!c) return k <= MAX_USER_ARGS
+  if (!c || NOT_IN_EXCEL.has(name)) return k <= MAX_USER_ARGS
   if (k === 1 && (name === 'BYROW' || name === 'BYCOL')) return true
   return k >= c[0] && k <= c[1] && (k - c[0]) % c[2] === 0
 }

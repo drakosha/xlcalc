@@ -12,7 +12,7 @@ import { clip } from './xml.js'
 
 const MAX_TEXT = 255
 const MAX_SHEET = 31
-const STORED: ReadonlySet<string> = new Set(['DIV0', 'NA', 'NAME', 'NUM', 'REF', 'VALUE', 'NULL'])
+const STORED: ReadonlySet<string> = new Set(['DIV0', 'NA', 'NAME', 'NUM', 'REF', 'VALUE', 'NULL', 'BUSY', 'GETTING_DATA'])
 
 const badFields = (c: PivotCache) => {
   const seen = new Set<string>()

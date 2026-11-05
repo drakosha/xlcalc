@@ -1,0 +1,11 @@
+{
+ "text-cf-8192": true,
+ "text-cf-8193": true,
+ "text-dv-8192": true,
+ "text-dv-8193": true,
+ "cf-range-sum": true,
+ "cf-range-offset": true,
+ "numfmt-206-first": true,
+ "slicer-items": false,
+ "slicer-items-name": false
+}

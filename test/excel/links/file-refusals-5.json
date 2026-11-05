@@ -1,0 +1,5428 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 5.3
+ },
+ "cases": [
+  {
+   "id": "numfmt-206-dxf-new",
+   "about": "206 number formats and one more code in a conditional style alone",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 2
+      },
+      "B2": {
+       "value": 2
+      },
+      "C2": {
+       "value": 3
+      },
+      "B3": {
+       "value": 3
+      },
+      "C3": {
+       "value": 5
+      },
+      "B4": {
+       "value": 4
+      },
+      "C4": {
+       "value": 7
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "refused": true
+  },
+  {
+   "id": "numfmt-206-dxf-same",
+   "about": "206 number formats and a conditional style of one of them",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 2
+      },
+      "B2": {
+       "value": 2
+      },
+      "C2": {
+       "value": 3
+      },
+      "B3": {
+       "value": 3
+      },
+      "C3": {
+       "value": 5
+      },
+      "B4": {
+       "value": 4
+      },
+      "C4": {
+       "value": 7
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "holds": "cfRule"
+  },
+  {
+   "id": "fn-mode-mult",
+   "about": "COUNTIF over MODE.MULT itself",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 2
+      },
+      "B2": {
+       "value": 2
+      },
+      "C2": {
+       "value": 3
+      },
+      "B3": {
+       "value": 3
+      },
+      "C3": {
+       "value": 5
+      },
+      "B4": {
+       "value": 4
+      },
+      "C4": {
+       "value": 7
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "COUNTIF(_xlfn.MODE.MULT(B1:B3),1)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "refused": true
+  },
+  {
+   "id": "fn-munit",
+   "about": "COUNTIF over MUNIT itself",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 2
+      },
+      "B2": {
+       "value": 2
+      },
+      "C2": {
+       "value": 3
+      },
+      "B3": {
+       "value": 3
+      },
+      "C3": {
+       "value": 5
+      },
+      "B4": {
+       "value": 4
+      },
+      "C4": {
+       "value": 7
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "COUNTIF(_xlfn.MUNIT(3),1)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "refused": true
+  },
+  {
+   "id": "pivot-error-calc",
+   "about": "#CALC! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-busy",
+   "about": "#BUSY! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-cycle",
+   "about": "#CYCLE! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-connect",
+   "about": "#CONNECT! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-blocked",
+   "about": "#BLOCKED! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-error",
+   "about": "#ERROR! among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-error-getting",
+   "about": "#GETTING_DATA among a cache's items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   }
+  },
+  {
+   "id": "pivot-twin-sheet",
+   "about": "two PivotTables of one name on a sheet",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      },
+      "D3": {
+       "value": "Row Labels"
+      },
+      "E3": {
+       "value": "Sum of Amount"
+      },
+      "D4": {
+       "value": "North"
+      },
+      "E4": {
+       "value": 60
+      },
+      "D5": {
+       "value": "South"
+      },
+      "E5": {
+       "value": 80
+      },
+      "D6": {
+       "value": "East"
+      },
+      "E6": {
+       "value": 100
+      },
+      "D7": {
+       "value": "West"
+      },
+      "E7": {
+       "value": 120
+      },
+      "D8": {
+       "value": "Grand Total"
+      },
+      "E8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      },
+      {
+       "name": "Second",
+       "cache": 1,
+       "location": {
+        "range": "D3:E8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-twin-case",
+   "about": "two PivotTables on a sheet whose names differ in case",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      },
+      "D3": {
+       "value": "Row Labels"
+      },
+      "E3": {
+       "value": "Sum of Amount"
+      },
+      "D4": {
+       "value": "North"
+      },
+      "E4": {
+       "value": 60
+      },
+      "D5": {
+       "value": "South"
+      },
+      "E5": {
+       "value": 80
+      },
+      "D6": {
+       "value": "East"
+      },
+      "E6": {
+       "value": 100
+      },
+      "D7": {
+       "value": "West"
+      },
+      "E7": {
+       "value": 120
+      },
+      "D8": {
+       "value": "Grand Total"
+      },
+      "E8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      },
+      {
+       "name": "Second",
+       "cache": 1,
+       "location": {
+        "range": "D3:E8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   },
+   "refused": true
+  },
+  {
+   "id": "pivot-twin-sheets",
+   "about": "two PivotTables of one name on two sheets",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    },
+    {
+     "name": "Pivot2",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "Second",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   }
+  },
+  {
+   "id": "pivot-two-control",
+   "about": "two PivotTables of two names on a sheet",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Amount"
+      },
+      "C1": {
+       "value": "Month"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 10
+      },
+      "C2": {
+       "value": "Jan"
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 20
+      },
+      "C3": {
+       "value": "Jan"
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 30
+      },
+      "C4": {
+       "value": "Jan"
+      },
+      "A5": {
+       "value": "West"
+      },
+      "B5": {
+       "value": 40
+      },
+      "C5": {
+       "value": "Jan"
+      },
+      "A6": {
+       "value": "North"
+      },
+      "B6": {
+       "value": 50
+      },
+      "C6": {
+       "value": "Feb"
+      },
+      "A7": {
+       "value": "South"
+      },
+      "B7": {
+       "value": 60
+      },
+      "C7": {
+       "value": "Feb"
+      },
+      "A8": {
+       "value": "East"
+      },
+      "B8": {
+       "value": 70
+      },
+      "C8": {
+       "value": "Feb"
+      },
+      "A9": {
+       "value": "West"
+      },
+      "B9": {
+       "value": 80
+      },
+      "C9": {
+       "value": "Feb"
+      }
+     }
+    },
+    {
+     "name": "Pivot",
+     "cells": {
+      "A3": {
+       "value": "Row Labels"
+      },
+      "B3": {
+       "value": "Sum of Amount"
+      },
+      "A4": {
+       "value": "North"
+      },
+      "B4": {
+       "value": 60
+      },
+      "A5": {
+       "value": "South"
+      },
+      "B5": {
+       "value": 80
+      },
+      "A6": {
+       "value": "East"
+      },
+      "B6": {
+       "value": 100
+      },
+      "A7": {
+       "value": "West"
+      },
+      "B7": {
+       "value": 120
+      },
+      "A8": {
+       "value": "Grand Total"
+      },
+      "B8": {
+       "value": 360
+      },
+      "D3": {
+       "value": "Row Labels"
+      },
+      "E3": {
+       "value": "Sum of Amount"
+      },
+      "D4": {
+       "value": "North"
+      },
+      "E4": {
+       "value": 60
+      },
+      "D5": {
+       "value": "South"
+      },
+      "E5": {
+       "value": 80
+      },
+      "D6": {
+       "value": "East"
+      },
+      "E6": {
+       "value": 100
+      },
+      "D7": {
+       "value": "West"
+      },
+      "E7": {
+       "value": 120
+      },
+      "D8": {
+       "value": "Grand Total"
+      },
+      "E8": {
+       "value": 360
+      }
+     },
+     "pivotTables": [
+      {
+       "name": "PivotTable1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      },
+      {
+       "name": "Second",
+       "cache": 1,
+       "location": {
+        "range": "D3:E8",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {
+         "items": [
+          {
+           "item": 0
+          },
+          {
+           "item": 1
+          },
+          {
+           "item": 2
+          },
+          {
+           "item": 3
+          }
+         ]
+        },
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 1,
+         "name": "Sum of Amount"
+        }
+       ],
+       "rowLines": [
+        {
+         "items": [
+          0
+         ]
+        },
+        {
+         "items": [
+          1
+         ]
+        },
+        {
+         "items": [
+          2
+         ]
+        },
+        {
+         "items": [
+          3
+         ]
+        },
+        {
+         "type": "grand",
+         "items": [
+          0
+         ]
+        }
+       ],
+       "columnLines": [
+        {
+         "items": []
+        }
+       ]
+      }
+     ],
+     "slicers": []
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "Data",
+       "range": "A1:C9"
+      },
+      "fields": [
+       {
+        "name": "Region",
+        "items": [
+         "North",
+         "South",
+         "East",
+         "West"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       },
+       {
+        "name": "Amount",
+        "facts": {
+         "types": [
+          "number"
+         ],
+         "integer": true,
+         "min": 10,
+         "max": 80
+        }
+       },
+       {
+        "name": "Month",
+        "items": [
+         "Jan",
+         "Feb"
+        ],
+        "facts": {
+         "types": [
+          "string"
+         ]
+        }
+       }
+      ],
+      "records": [
+       [
+        0,
+        10,
+        0
+       ],
+       [
+        1,
+        20,
+        0
+       ],
+       [
+        2,
+        30,
+        0
+       ],
+       [
+        3,
+        40,
+        0
+       ],
+       [
+        0,
+        50,
+        1
+       ],
+       [
+        1,
+        60,
+        1
+       ],
+       [
+        2,
+        70,
+        1
+       ],
+       [
+        3,
+        80,
+        1
+       ]
+      ]
+     }
+    ],
+    "slicerCaches": []
+   }
+  },
+  {
+   "id": "w-countif-array",
+   "about": "COUNTIF over an array constant",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-countif-unique",
+   "about": "COUNTIF over UNIQUE",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-abs-2",
+   "about": "ABS of two",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-literal-300",
+   "about": "a literal of 300",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-long-file-text",
+   "about": "a formula that grows past 8,192 with its prefixes",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-cf-array",
+   "about": "a rule over an array constant",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-dv-union",
+   "about": "validation over a union",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-dv-list-300",
+   "about": "a list of 300",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-names",
+   "about": "names without their sheets",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-formats-300",
+   "about": "300 number formats",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-formats-dxf",
+   "about": "206 number formats and another in a conditional style",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-cell-formats-70000",
+   "about": "70,000 cell formats",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-font-long",
+   "about": "a cell’s font of 40",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-font-empty",
+   "about": "a cell’s font with an empty name",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-book-font-long",
+   "about": "the workbook’s font of 40",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-link-location",
+   "about": "a location of 3,000",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-link-url",
+   "about": "an address of 3,000",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-dv-66000",
+   "about": "66,000 validation rules",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-number",
+   "about": "a number in the totals row, no function",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-text",
+   "about": "a text in the totals row, no label",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-label",
+   "about": "a label other than the cell’s text",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-sum-other",
+   "about": "sum over another formula",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-sum-own",
+   "about": "sum over its own formula",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-totals-sum-empty",
+   "about": "sum over an empty cell",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 5
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 5
+   },
+   "written": true
+  },
+  {
+   "id": "w-slicer",
+   "about": "a slicer of no items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-slicer-space",
+   "about": "a slicer cache whose name is no name",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-spill",
+   "about": "#SPILL! among a cache’s items",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-field-twice",
+   "about": "two fields of a name",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-field-empty",
+   "about": "a field of no name",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-name-300",
+   "about": "a PivotTable’s name of 300",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-names-cut-alike",
+   "about": "two names of 300 alike in their first 255",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-names-case",
+   "about": "a name of 300 cut into another’s in another case",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-caption-300",
+   "about": "a grand total’s caption of 300",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "w-pivot-source-long",
+   "about": "a source sheet of 40 the book does not have",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "B2"
+    }
+   ],
+   "predicted": {
+    "Data!B2": 10
+   },
+   "written": true
+  }
+ ],
+ "sent": {
+  "numfmt-206-dxf-new": "dc705feead8ad0168e31a122f6c00e7f36baa20f1b4bfe0d8a5cf583db995276",
+  "numfmt-206-dxf-same": "298216efaca4bb6b10d8dfe19a7080b06f52d3b827faf2026f7148b45e0454dc",
+  "fn-mode-mult": "306af2c7c394f927b873604d0820dd0dc413f570dbfd401e7d49b95e6a132ff1",
+  "fn-munit": "2202ea54186fdb1c6bf0c3bf4a31bd3d503a56175020d88ba16e64ecf971ce0a",
+  "pivot-error-calc": "00f8ced88aa7bc69378271b569a863f85466606f938a074a466dbfca64ead8d3",
+  "pivot-error-busy": "84ca6fe0c28eca011710e08dd2ae28abe0147bfebbdc7b22f41e2172528f2c86",
+  "pivot-error-cycle": "0c1fd9cfc41d75413c9eeedd737dcce505ad10b4fed4a58bf5a9fddb12f4893d",
+  "pivot-error-connect": "7b462743a8482522553f367a129f2c8d1b1214fb27cbc071b85b389bb2e6208f",
+  "pivot-error-blocked": "8a9e8c3c38c6e235926469ba463f47039f6887272f663ca94e67a22c876ab1af",
+  "pivot-error-error": "f3b4c3fa4c57ae7aa40d20570c7dd7519997c475cf74fa9091358d5805abcdca",
+  "pivot-error-getting": "8468d9e0d5158e8ad1fa8979c89abbfc7e4c598e99f08106a67e383ee355b8ec",
+  "pivot-twin-sheet": "8d8b6be77dbf3ce76bb7f9929988f7c572165e1e34aa2f81d664f2248c3bf159",
+  "pivot-twin-case": "e38ab91762956a89eefbe1ed47b1e60364d5bc90087ff284e202b10dccca7820",
+  "pivot-twin-sheets": "15f0e6f41159ea41eda52395d1228ee5bf51b709fef23835f4f4c989b043aefe",
+  "pivot-two-control": "03e14b2b975c274f92937aaf6657d2b96e1f0b12e04e1abd27b25128b2bbcf52",
+  "w-countif-array": "3894fe72b02fd09ffa5485eb1402ca75d83da39c712c7fb1c7d639bb479044c5",
+  "w-countif-unique": "3894fe72b02fd09ffa5485eb1402ca75d83da39c712c7fb1c7d639bb479044c5",
+  "w-abs-2": "3894fe72b02fd09ffa5485eb1402ca75d83da39c712c7fb1c7d639bb479044c5",
+  "w-literal-300": "3894fe72b02fd09ffa5485eb1402ca75d83da39c712c7fb1c7d639bb479044c5",
+  "w-long-file-text": "3894fe72b02fd09ffa5485eb1402ca75d83da39c712c7fb1c7d639bb479044c5",
+  "w-cf-array": "7cf41ee91160838b65403c5a5596927373ab31bcf31dd66cb65fddb1e5a6ebe9",
+  "w-dv-union": "7cf41ee91160838b65403c5a5596927373ab31bcf31dd66cb65fddb1e5a6ebe9",
+  "w-dv-list-300": "7cf41ee91160838b65403c5a5596927373ab31bcf31dd66cb65fddb1e5a6ebe9",
+  "w-names": "83d24897628e420f8908f9a1084549b8adf544bd8d60cfa0104fd700457d0700",
+  "w-formats-300": "584d822d29810b2acb6221fed965441e360c85e299cc71c6d98e98e0f9a555fb",
+  "w-formats-dxf": "b142f3eb186b243e8b358c99fbe224aa632e24ee22b57e3bf47c20af03235e40",
+  "w-cell-formats-70000": "bfd2f6c7c608239a876b414d7e7fd91a3fbf3ecb418b7c3dfb33d145c300044d",
+  "w-font-long": "6bd5faad496c4cc196dac78dccbc1909243c1c2b4336a080abed6eb39a1797f5",
+  "w-font-empty": "7cf41ee91160838b65403c5a5596927373ab31bcf31dd66cb65fddb1e5a6ebe9",
+  "w-book-font-long": "1abcc5248d2d7254cd48c437bbb5a1edcf05a7a1327fcf1ea9ba097cbe62a924",
+  "w-link-location": "7cf41ee91160838b65403c5a5596927373ab31bcf31dd66cb65fddb1e5a6ebe9",
+  "w-link-url": "dfa1298e091637d00351502b6e14f501b0c9c6459ae78d03279d6c8e5831db2a",
+  "w-dv-66000": "b4a73f0f7d629a18384cf9bb7b4ff4cc7e8d9ca51278d26bd8fef251cf72ce23",
+  "w-totals-number": "7060a784073db3012c9a1cd87326bf1531f14125725228888b80ee519c6b9824",
+  "w-totals-text": "faf925971189f4b4d2b300d47b9220892482897e6f94f9f3d7bb7f3ce02422ac",
+  "w-totals-label": "faf925971189f4b4d2b300d47b9220892482897e6f94f9f3d7bb7f3ce02422ac",
+  "w-totals-sum-other": "022deaf588b1e9891292a9968f2ddd7ad1637ba9cd671a3675dca0a8f5690fcf",
+  "w-totals-sum-own": "90f92cc5d7e58e1bca2ceb488b2d697ed1eef82cc9a3e492270be79ce152a67a",
+  "w-totals-sum-empty": "028bf88f0e921a91702129f694bc8ca3b91663b867476fa8193acfef4f66be21",
+  "w-slicer": "14f45d10e498d027ff0d15721826aa3fd1578b3b9776366bf7b5f592e728f8e6",
+  "w-slicer-space": "8e121ae0e382ec75703547cc53f637fade6532c164e9a9df34ee3c7680220c91",
+  "w-pivot-spill": "d7d7633a0fbac49721df5ef2009af00526f524118e61593be582b69b5d04d1b5",
+  "w-pivot-field-twice": "505137d58a99866d13164a5b4ad4a75f3254ca9698d18e69ef1eb1077bcae1ef",
+  "w-pivot-field-empty": "505137d58a99866d13164a5b4ad4a75f3254ca9698d18e69ef1eb1077bcae1ef",
+  "w-pivot-name-300": "cb75ec48403b5494690ec4a5aca1c70f7347277fa55978ed3a4a77bc0da1f499",
+  "w-pivot-names-cut-alike": "97db54de5bfd1d8ea701fa0b9cbd27dd59ef695dd7bc42cc3c85ff4eec6782d1",
+  "w-pivot-names-case": "6b127d617727bab4c1f72be1de529257fa49089b9b3f996bf803ec9b5b358f2e",
+  "w-pivot-caption-300": "09617354b245ad961561864b72c8c6ce108d9a19d73735251b9d13ae4fb1ccf4",
+  "w-pivot-source-long": "11c866bb500ae05bc1b6f87ee4690adf1bd994bd5e6ae0933ef787822d4309bd"
+ },
+ "answers": {
+  "numfmt-206-dxf-same": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": ""
+     }
+    },
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": ""
+     }
+    }
+   ]
+  },
+  "pivot-error-busy": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "pivot-error-getting": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "pivot-twin-sheet": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "pivot-twin-case": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "pivot-twin-sheets": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "w-formats-dxf": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5.000"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5.000"
+     }
+    }
+   ]
+  },
+  "w-font-long": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    }
+   ]
+  },
+  "w-totals-number": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    }
+   ]
+  },
+  "w-totals-label": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A1": "5"
+     }
+    }
+   ]
+  },
+  "w-slicer": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "w-pivot-spill": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "w-pivot-field-twice": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  },
+  "w-pivot-names-cut-alike": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-60606",
+   "reads": [
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!B2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!B2": "10"
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "numfmt-206-dxf-new": "Excel did not accept the book (repair window declined)",
+  "fn-mode-mult": "Excel did not accept the book (repair window declined)",
+  "fn-munit": "Excel did not accept the book (repair window declined)",
+  "pivot-error-calc": "Excel did not accept the book (repair window declined)",
+  "pivot-error-cycle": "Excel did not accept the book (repair window declined)",
+  "pivot-error-connect": "Excel did not accept the book (repair window declined)",
+  "pivot-error-blocked": "Excel did not accept the book (repair window declined)",
+  "pivot-error-error": "Excel did not accept the book (repair window declined)"
+ }
+}
