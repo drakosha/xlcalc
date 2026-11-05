@@ -30,10 +30,11 @@ let depth = 0
 
 /**
  * A LAMBDA of `count` parameters whose calculation `run` computes: a call gives each of them, one left out between commas
- * (`f(1,)`) too, as Excel takes no fewer; each call counts as a unit of the computation's work.
+ * (`f(1,)`) too, as Excel takes no fewer, but those past `required`, the optional ones; each call counts as a unit of the
+ * computation's work.
  */
-export function lambdaOf(count: number, height: number, run: (args: readonly (Arg | undefined)[]) => Arg): Lambda {
-  return new Lambda(count, count, (args) => {
+export function lambdaOf(count: number, height: number, run: (args: readonly (Arg | undefined)[]) => Arg, required = count): Lambda {
+  return new Lambda(required, count, (args) => {
     if (depth + height > CALL_BUDGET) return E.NUM
     spend(1)
     depth += height

@@ -170,7 +170,7 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
         return inside(e, body, p)
       }
     },
-    lambda: (count, build) => {
+    lambda: (count, required, build) => {
       const scope = {}
       const { body, height } = build(
         (i) => () => find(scope)[i](),
@@ -179,7 +179,7 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       return (p) => {
         const up = env
         // the call's parameters among the values around the LAMBDA where it was made
-        return lambdaOf(count, height, (args) => inside({ scope, vals: given(args, count), up }, body, p))
+        return lambdaOf(count, height, (args) => inside({ scope, vals: given(args, count), up }, body, p), required)
       }
     },
     invoke: (fn, args) => (p) => callValue(fn(p), args.map((a) => a(p))),

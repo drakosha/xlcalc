@@ -115,6 +115,7 @@ Formulas are converted to the engine's spelling.
 | `_xlfn.XLOOKUP(…)`, `_xlfn._xlws.FILTER(…)` | `XLOOKUP(…)`, `FILTER(…)` |
 | `_xlfn.LET(_xlpm.x,1,_xlpm.x+1)` | `LET(x,1,x+1)` |
 | `_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)(3)`, `_xlfn.BYROW(A1:C3,_xleta.SUM)` | `LAMBDA(x,x*2)(3)`, `BYROW(A1:C3,SUM)` |
+| `_xlfn.LAMBDA(_xlpm.x,_xlop.y,_xlpm.x)(1)` | `LAMBDA(x,[y],x)(1)` |
 | `_xlfn.ANCHORARRAY(E2)` | `E2#` |
 | `_xlfn.SINGLE(A1:A3)` | `@A1:A3` |
 | `Jan:Mar!A1`, `'Jan 1:Mar 2'!A1` | the same reference across sheets |
@@ -394,7 +395,7 @@ Everywhere else a formula is written as a dynamic array formula, with cell metad
 
 The spilled cells are written with their values. `#SPILL!` and `#CALC!` are written as Excel 365 writes them, so Excel reads them back as those errors.
 
-Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names and LAMBDA parameters become `_xlpm.x`, a function as a value `_xleta.SUM`, a call of a defined name is written with the name as the workbook spells it (`MyFn(1,2)`), `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted. A reference to a deleted sheet, which the workbook holds as Excel shows it (`#REF!A5`, `#REF!E2#`), is written `#REF!` (`_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: Excel does not open a file with the other form. Read back, the formula has `#REF!` (`#REF!#`).
+Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names and LAMBDA parameters become `_xlpm.x`, an optional parameter `_xlop.y`, a function as a value `_xleta.SUM`, a call of a defined name is written with the name as the workbook spells it (`MyFn(1,2)`), `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted. A reference to a deleted sheet, which the workbook holds as Excel shows it (`#REF!A5`, `#REF!E2#`), is written `#REF!` (`_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: Excel does not open a file with the other form. Read back, the formula has `#REF!` (`#REF!#`).
 
 A cell with `array` is written as a legacy array formula over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel accepts there. A name's formula is written as the workbook has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 

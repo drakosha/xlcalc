@@ -54,7 +54,7 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
     case 'local':
       return `_xlpm.${n.name}`
     case 'lambda':
-      return `_xlfn.${usual({ ...n, params: n.params.map((x) => ({ ...x, name: `_xlpm.${x.name}` })) })}`
+      return `_xlfn.${usual({ ...n, params: n.params.map((x) => ({ slot: x.slot, name: `${x.optional ? '_xlop' : '_xlpm'}.${x.name}` })) })}`
     case 'eta':
       return `_xleta.${n.name}`
     case 'xref':

@@ -6,6 +6,9 @@
  */
 import { readFileSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
+import type { StoredLinks } from '../bench/coverage/links.js'
+import { linkFile } from '../bench/coverage/links/cases.js'
+import { buildLinksCases } from '../bench/coverage/links/longtext-file.js'
 import { compute, createInlineCalc, createSession, functionSignature, toInvariant, toLocal, validateFormula, validateLocalFormula, type BookInput, type CellValue } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
@@ -165,5 +168,44 @@ describe('LAMBDA: files, locales, explain and tips', () => {
     expect(functionSignature('LAMBDA')!.args.map((a) => a.name)).toEqual(['parameter_or_calculation1', 'parameter_or_calculation2'])
     expect(functionSignature('GROUPBY')).toMatchObject({ category: 'lookup' })
     expect(functionSignature('ГРУПППО', { ...ruRU, ...ruRUFunctionText })).toMatchObject({ fn: 'GROUPBY' })
+  })
+})
+
+describe('optional parameters of LAMBDA', () => {
+  const OPTIONAL = 'LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))'
+  const values = (execution: 'closures' | 'eval', formulas: string[]) => {
+    const r = compute({ sheets: [{ name: 'S', cells: Object.fromEntries(formulas.map((formula, i) => [`A${i + 1}`, { formula }])) }] }, { execution })
+    return formulas.map((_, i) => r.sheets[0].cells[`A${i + 1}`]?.value)
+  }
+
+  it.each(['closures', 'eval'] as const)('a call leaves them out, gives them, or passes the count: %s', (execution) => {
+    expect(values(execution, [`${OPTIONAL}(1)`, `${OPTIONAL}(1,2)`, `${OPTIONAL}(1,)`, `${OPTIONAL}()`, `${OPTIONAL}(1,2,3)`, 'LAMBDA([y],y+1)()', 'LAMBDA([a],[b],IF(ISOMITTED(a),1,0)+IF(ISOMITTED(b),10,0))()', `LET(f,${OPTIONAL},f(5))`])).toEqual([1, 3, 1, { error: 'VALUE' }, { error: 'VALUE' }, 1, 11, 5])
+  })
+
+  it('keeps its brackets in the canonical text and takes no required parameter after one', () => {
+    expect(validateFormula(`${OPTIONAL}(1)`)).toMatchObject({ ok: true, canonical: `${OPTIONAL}(1)` })
+    expect(validateFormula('LAMBDA([x],y,x)(1,2)')).toMatchObject({ ok: false, code: 'syntax' })
+    expect(validateFormula('LAMBDA(x,[x],x)(1)')).toMatchObject({ ok: false, code: 'syntax' })
+    expect(validateFormula('LAMBDA(x,[y z],x)(1)')).toMatchObject({ ok: false, code: 'syntax' })
+  })
+
+  it('goes through a file as Excel saves it, and through a locale', async () => {
+    const formula = `${OPTIONAL}(1)`
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { formula } } }] } })
+    const r = await readXlsx(data)
+    expect(r.book.sheets[0].cells.A1).toMatchObject({ formula })
+    expect(r.issues).toEqual([])
+    expect(toLocal(formula, ruRU)).toEqual({ ok: true, formula: 'LAMBDA(x;[y];ЕСЛИ(ПРОПУЩЕНО(y);x;x+y))(1)' })
+  })
+
+  it.each([
+    ['Excel for Mac', ''],
+    ['Excel for Windows', 'win/'],
+  ])('a file of `_xlop.` as %s calculates it (`bench/coverage/links/longtext-file.ts`)', async (_, dir) => {
+    const set = JSON.parse(readFileSync(new URL(`./excel/${dir}links/longtext-file.json`, import.meta.url), 'utf8')) as StoredLinks
+    for (const c of buildLinksCases().cases.filter((x) => x.id.startsWith('xlop-') && !set.rejected?.[x.id])) {
+      const got = set.answers[c.id].reads[1].values['S!A1']
+      expect(compute((await readXlsx(await linkFile(c))).book).sheets[0].cells.A1?.value, c.id).toEqual(got.t === 'e' ? { error: got.v } : got.v)
+    }
   })
 })

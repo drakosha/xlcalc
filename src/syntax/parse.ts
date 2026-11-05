@@ -7,6 +7,7 @@ import { wordKey } from '../collate.js'
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
 import type { Found } from '../locale/messages.js'
 import { bad, type Ast, type BinOp, type Bind, type Lit, type Param } from './ast.js'
+import { IDENT_RULE } from './scan.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
 
 const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-'], ['*', '/'], ['^']]
@@ -22,6 +23,8 @@ const MAX_OPERATORS = 1024
 const MAX_LET_ARGS = 254
 /** LAMBDA takes 253 parameters at most, as Microsoft's documentation says. */
 const MAX_PARAMS = 253
+/** What an optional parameter's brackets hold: a name. */
+const WORD = new RegExp(`^${IDENT_RULE}$`, 'u')
 
 /**
  * A word LET does not take as a name: a boolean, or a cell that reads as R1C1's row or column too (`R2`, `C5`, `RC5`).
@@ -268,13 +271,21 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
       else scope.delete(up)
     }
   }
+  // a LAMBDA's next parameter and whether it is optional (`[y]`, which a call may leave out)
+  const parameter = (): [string | undefined, boolean] => {
+    const t = peek()
+    const name = t.t === 'table' && t.table === null && !t.spec.areas.length && t.spec.cols?.length === 1 ? t.spec.cols[0] : undefined
+    return name !== undefined && WORD.test(name) && toks[p + 1].t === ',' ? [name, true] : [declared(), false]
+  }
   // LAMBDA(parameter, …, calculation): the parameters are seen in the calculation
   const lambda_ = (at: number): Ast => {
     const params: Param[] = []
-    for (let name = declared(); name !== undefined; name = declared()) {
+    for (let [name, optional] = parameter(); name !== undefined; [name, optional] = parameter()) {
       if (name.includes('.')) bad(peek().at, { key: 'lambdaDot', name })
       if (twice(params, name)) bad(peek().at, { key: 'lambdaTwice', name })
-      params.push({ name, slot: slots++ })
+      // as Excel, which takes no required parameter after an optional one
+      if (!optional && params.at(-1)?.optional) bad(peek().at, { key: 'lambdaName', position: params.length + 1 })
+      params.push(optional ? { name, slot: slots++, optional } : { name, slot: slots++ })
       p += 2
     }
     if (params.length > MAX_PARAMS) bad(at, { key: 'lambdaTooMany', max: MAX_PARAMS })
