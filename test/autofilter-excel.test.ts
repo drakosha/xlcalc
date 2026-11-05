@@ -60,13 +60,14 @@ describe('the predictions committed before Excel for Mac ran each set', () => {
 })
 
 /** The filter-acts sets, each listed in every comparison below. */
-const ACT_SETS = ['totals', 'removal', 'moved', 'kept', 'totals-held']
+const ACT_SETS = ['totals', 'removal', 'moved', 'kept', 'totals-held', 'removal-held', 'totals-own']
 
 /**
  * The cases each prediction missed, in each Excel: `totals` took a SUBTOTAL row in as any other, had criteria and a sort
  * save the range they read, and a table's filter leave its totals row and the filter mode out; `removal` had a row of
  * height 0 shown; `moved` had `Range.AutoFilter` move or remove the AutoFilter; `totals-held` left two rows of SUBTOTAL out, and
- * `Range.AutoFilter` on a cell over such a row save the range above it, as it does on the Mac alone.
+ * `Range.AutoFilter` on a cell over such a row save the range above it, as it does on the Mac alone; `removal-held` had a
+ * hidden row under the range of a file's filter shown.
  */
 const ACT_MISSED: Record<string, string[]> = {
   'Mac totals': ['sum-sort-model', 'sum-sort-button', 'sub109-criteria-model', 'sub109-criteria-button', 'sub109-sort-model', 'sub109-sort-button', 'sub9-criteria-model', 'sub9-criteria-button', 'sub9-sort-model', 'sub9-sort-button', 'label-sort-model', 'label-sort-button', 'table-criteria-model', 'table-criteria-button', 'table-sort-model', 'table-sort-button', 'pick-sum-range-button', 'pick-sub109-cell-model', 'pick-sub109-range-button'],
@@ -77,6 +78,8 @@ const ACT_MISSED: Record<string, string[]> = {
   'Windows moved': ['a-field', 'a-off-button', 'b-field', 'c-field', 'd-field'],
   'Mac totals-held': ['sub-then-sub-criteria', 'sub-then-sub-sort'],
   'Windows totals-held': ['sub-then-sub-criteria', 'sub-then-sub-sort', 'order-2-model', 'order-4-model', 'order-5-model', 'order-7-model', 'one-book-button-model'],
+  'Mac removal-held': ['file-sum-model', 'file-sum-button'],
+  'Windows removal-held': ['file-sum-model', 'file-sum-button'],
 }
 
 /** The range `getAutoFilterRange` reads over a case's cells for an AutoFilter on `own`, empty without one. */
