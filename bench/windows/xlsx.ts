@@ -12,6 +12,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
+import { colorBook } from '../coverage/xlsx/colors.js'
+import { colorHeldCases, THEME_HELD } from '../coverage/xlsx/colors-held.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
 import { FORM_CASES, FORMS_BOOK } from '../coverage/xlsx/forms.js'
@@ -87,4 +89,19 @@ export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
   const by = (k: 2 | 3) => Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i][k]]))
   writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, formats: by(2), local: by(3) })
   console.log(`xlsx formats ${tag}: ${shown.length} read`)
+}
+
+/** The fill colours Excel for Windows shows for the book of `xlsx/colors-held.ts`, in the Mac step's shape, into `xlsx/colors-held.json`. */
+export async function stepXlsxColorsHeld(tag: Tag, e: WinEnv): Promise<void> {
+  const cases = colorHeldCases()
+  const book = join(OUT, 'xlsx-colors-held.xlsx')
+  mkdirSync(OUT, { recursive: true })
+  writeFileSync(book, await colorBook(cases, THEME_HELD))
+  const t0 = Date.now()
+  const [a] = await runJob('xlsx-colors-held', [{ file: book, steps: [{ do: 'fills', sheet: 'Colors', cells: cases.map((c) => c.cell) }] }])
+  if (!a || !('answers' in a)) throw new Error(`xlsx colors-held: Excel did not read the book: ${a ? a.rejected : 'the job ran past its time'}`)
+  const hex = (bgr: number) => `#${[bgr & 255, (bgr >> 8) & 255, (bgr >> 16) & 255].map((c) => c.toString(16).padStart(2, '0')).join('').toUpperCase()}`
+  const shown = a.answers[0] as [number, number][]
+  writeAnswers(winFile('xlsx/colors-held.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, colors: Object.fromEntries(cases.map((c, i) => [c.color, hex(shown[i][0])])) })
+  console.log(`xlsx colors-held ${tag}: ${shown.length} read`)
 }

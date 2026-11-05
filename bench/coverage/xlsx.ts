@@ -6,7 +6,7 @@
  * as the harness writes them for Excel, go through Excel the same way into `test/excel/xlsx/saved/`. The test
  * `test/xlsx-excel.test.ts` reads the saved files with the reader and compares them without Excel. `xlsx colors`:
  * the fill colours Excel shows for theme colours with tints and for the legacy palette (`xlsx/colors.ts`) into
- * `test/excel/xlsx/colors.json`. `xlsx formats`: the codes Excel en-US shows for the built-in number formats
+ * `test/excel/xlsx/colors.json`; `xlsx colors-held` the same of `xlsx/colors-held.ts`. `xlsx formats`: the codes Excel en-US shows for the built-in number formats
  * (`xlsx/formats.ts`) into `test/excel/xlsx/formats.json`. `xlsx intersect`: formulas of the old kind computed and saved by Excel
  * (`xlsx/intersect.ts`) into `test/excel/xlsx/intersect/`. `xlsx filters`: files with filters in each form a file holds
  * them (`xlsx/filters.ts`) computed and saved by Excel into `test/excel/xlsx/filters/`. `xlsx forms`: formulas of each
@@ -24,7 +24,8 @@ import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
-import { colorBook, colorCases } from './xlsx/colors.js'
+import { colorBook, colorCases, type ColorCase } from './xlsx/colors.js'
+import { colorHeldCases, THEME_HELD } from './xlsx/colors-held.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
 import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
 import { FILTER_FILES, filterFile } from './xlsx/filters.js'
@@ -145,13 +146,12 @@ async function saved() {
   await send('saved', books, async (_, file) => `${(await readXlsx(file)).issues.length} issues`)
 }
 
-async function colors() {
-  const cases = colorCases()
+async function colors(name: string, cases: ColorCase[], theme?: string) {
   await ensureExcel('en-US')
-  const shown = await fillColors(await colorBook(cases), cases.map((c) => c.cell))
+  const shown = await fillColors(await colorBook(cases, theme), cases.map((c) => c.cell))
   const meta = { version: excelVersion(), locale: localeMeta('en-US'), date: new Date().toISOString().slice(0, 10) }
-  writeAnswers(join(DATA, 'colors.json'), { meta, colors: Object.fromEntries(cases.map((c, i) => [c.color, shown[i]])) })
-  console.log(`colors: ${cases.length} fills read`)
+  writeAnswers(join(DATA, `${name}.json`), { meta, colors: Object.fromEntries(cases.map((c, i) => [c.color, shown[i]])) })
+  console.log(`${name}: ${cases.length} fills read`)
 }
 
 async function formats() {
@@ -213,8 +213,9 @@ export async function stepXlsx(what: string | undefined): Promise<void> {
   else if (what === 'filters') await filters()
   else if (what === 'forms') await forms()
   else if (what === 'saved') await saved()
-  else if (what === 'colors') await colors()
+  else if (what === 'colors') await colors('colors', colorCases())
+  else if (what === 'colors-held') await colors('colors-held', colorHeldCases(), THEME_HELD)
   else if (what === 'intersect') await intersect()
   else if (what === 'formats') await formats()
-  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | formats | intersect')
+  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | colors-held | formats | intersect')
 }

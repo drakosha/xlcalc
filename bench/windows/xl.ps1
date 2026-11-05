@@ -323,6 +323,11 @@ function Step($xl, $wb, $s) {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
+    # cells' fills: each [Interior.Color, Interior.Pattern]
+    'fills' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.cells | ForEach-Object { $i = $ws.Range($_).Interior; List @((Cell ([double]$i.Color)), (Cell ([double]$i.Pattern))) })
+    }
     'settings' { List @((Cell $xl.Iteration), (Cell ([double]$xl.MaxIterations)), (Cell $xl.MaxChange)) }
     # cells typed into: what each shows, its format codes and its prefix character (with `edit` its Formula and
     # FormulaLocal too, the text the formula bar opens it with); and Excel's automatic percent entry
