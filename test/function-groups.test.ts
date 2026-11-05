@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { externalNames, SYNTAX } from '../src/arity.js'
 import { FUNCTION_NAMES } from '../src/declared-arity.js'
-import { FUNCTION_WORDS } from '../src/function-words.js'
+import { FUNCTION_COUNTS } from '../src/function-words.js'
 import { FUNCTIONS } from '../src/functions.js'
 import { allFunctions } from '../src/groups/index.js'
 import { GROUP_ARITY } from '../src/groups/manifest.js'
@@ -34,7 +34,7 @@ const KNOWN = {
 
 describe('the groups of functions', () => {
   it("the whitelist is 0.68.0's whatever is loaded: the functions the engine calculates and LAMBDA, LET", () => {
-    expect(FUNCTION_NAMES).toEqual([...FUNCTION_WORDS, ...SYNTAX].sort())
+    expect(FUNCTION_NAMES).toEqual([...FUNCTION_COUNTS.keys(), ...SYNTAX].sort())
     expect(FUNCTION_NAMES).toEqual([...Object.keys(FUNCTIONS), ...SYNTAX].sort())
     expect(FUNCTION_NAMES.length).toBe(522)
     expect(externalNames(['besselj', 'MyFn', 'GETPIVOTDATA', 'SUM'])).toEqual(KNOWN.external)

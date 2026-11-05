@@ -15,6 +15,7 @@ import { metadata } from '../../../src/xlsx/write/book.js'
 import { escapeAttr, escapeText } from '../../../src/xlsx/xml/text.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
 import { zip } from '../../../src/xlsx/zip/write.js'
+import { editParts } from '../xlsx/sent.js'
 import { cellsOf, MIRRORS, mirrorFormulas, mirrorRanges, type RectsAnswer } from '../case-book.js'
 
 /** A value Excel stores of another book's cell: a number, a text, a boolean or an error. */
@@ -57,6 +58,16 @@ export interface LinksCase {
    */
   predicted?: Record<string, CachedValue | null>
   alternatives?: Record<string, (CachedValue | null)[]>
+  /** Predicted before Excel ran the case: Excel does not load the file. Without it, predicted to load. */
+  refused?: true
+  /** Text a part of the file Excel saved holds if Excel kept what the case is about (a rule, a name, a font), read by `links/file-refusals-kept.ts`. */
+  holds?: string
+  /** A `written` case's book where it is too big for the stored cases: stored answers do not keep it. */
+  make?: () => Partial<BookInput>
+  /** What else the book holds that `sheets` and `names` do not say (PivotTable caches, slicer caches): the writer takes it with them. */
+  book?: Omit<BookInput, 'sheets'>
+  /** A change by hand to the finished file, for what the writer may come to refuse: a part's new text, undefined for a part it leaves. Stored answers do not keep it. */
+  edit?: (part: string, text: string) => string | undefined
 }
 
 export type LinkedFormula = string | { formula: string; array: string }
@@ -164,7 +175,7 @@ function caseSheets(c: LinksCase): SheetInput[] {
 export async function linkFile(c: LinksCase): Promise<Uint8Array> {
   if (c.written) return (await writeXlsx({ book: writtenBook(c) })).data
   const sheets = caseSheets(c)
-  const { data } = await writeXlsx({ book: { sheets } })
+  const { data } = await writeXlsx({ book: { ...c.book, sheets } })
   const archive = openArchive(data)
   const files: { name: string; data: Uint8Array }[] = []
   const enc = new TextEncoder()
@@ -185,7 +196,8 @@ export async function linkFile(c: LinksCase): Promise<Uint8Array> {
     files.push({ name: `xl/externalLinks/externalLink${i + 1}.xml`, data: enc.encode(externalLinkXml(b)) })
     files.push({ name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, data: enc.encode(linkRels(b)) })
   })
-  return zip(files)
+  const whole = await zip(files)
+  return c.edit ? editParts(whole, c.edit) : whole
 }
 
 /** workbook.xml with the external references after the sheets and the case's names among the defined names. */
@@ -212,6 +224,6 @@ export function linksBook(c: LinksCase): BookInput {
 
 /** The book `writeXlsx` writes of a case marked `written`: the case's book with its links (`linksBook`) and the mirror sheets. */
 export function writtenBook(c: LinksCase): BookInput {
-  const book = linksBook(c)
+  const book = { ...linksBook(c), ...c.book, ...c.make?.() }
   return { ...book, sheets: [...book.sheets, ...caseSheets(c).slice(c.sheets.length)] }
 }

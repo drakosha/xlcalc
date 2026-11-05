@@ -8,8 +8,9 @@ import { InputError } from '../../input-error.js'
 import { formatRefused } from '../../numfmt/refused.js'
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
+import type { Issues } from '../issues.js'
 import { escapeAttr } from '../xml/text.js'
-import { counted, HEAD, MAIN, rgb } from './xml.js'
+import { clip, counted, HEAD, MAIN, rgb } from './xml.js'
 
 /** The book's default font, as the model assumes it. */
 export const DEFAULT_FONT = { name: 'Calibri', size: 11 }
@@ -80,7 +81,9 @@ export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => numb
     ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${underlineXml(f.underline)}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
     : ''
   const code = typeof s.numberFormat === 'number' ? (s.numberFormat === 0 ? 'General' : BUILTIN[s.numberFormat]) : s.numberFormat
-  const numFmtXml = s.numberFormat === undefined ? '' : `<numFmt numFmtId="${numFmt(s.numberFormat)}" formatCode="${escapeAttr(code!)}"/>`
+  const id = s.numberFormat === undefined ? undefined : numFmt(s.numberFormat)
+  // no id for a custom format over the limit (`StyleWriter.numFmt`): its code in the file would count too
+  const numFmtXml = id === undefined || (id === 0 && code !== 'General') ? '' : `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code!)}"/>`
   // a dxf's solid fill is its background colour
   const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
   const border = s.border ? borderXml(s.border) : ''
@@ -126,6 +129,14 @@ export interface CellFormats {
   numFmt(code: NumberFormat | undefined): number
 }
 
+/**
+ * What Excel for Windows and for Mac load (`bench/coverage/links/file-refusals*.ts`): different codes of custom number formats,
+ * those of `numFmts` and of conditional styles counted together, cell formats, a font's name; over any, it refuses the file.
+ */
+const MAX_FORMAT_CODES = 206
+const MAX_CELL_FORMATS = 65_430
+const MAX_FONT_NAME = 31
+
 export class StyleWriter implements CellFormats {
   private readonly fonts: Table
   private readonly fills = new Table('<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>')
@@ -138,9 +149,26 @@ export class StyleWriter implements CellFormats {
   /** `base`: the book's default font, the first of the fonts, which a style's font is relative to. */
   constructor(
     private readonly styles: CellStyle[] = [],
-    private readonly base: BaseFont = DEFAULT_FONT,
+    base: BaseFont = DEFAULT_FONT,
+    private readonly issues?: Issues,
   ) {
-    this.fonts = new Table(fontXml({}, base))
+    this.base = { ...base, name: this.fontName(base.name) }
+    this.fonts = new Table(fontXml({}, this.base))
+  }
+
+  private readonly base: BaseFont
+
+  private fontName(name: string): string {
+    return this.issues ? clip(name, MAX_FONT_NAME, this.issues, { key: 'fontNameCut' }, {}) : name
+  }
+
+  /** A style's font as the file holds it: a name cut, an empty one the workbook's. */
+  private font(f: FontStyle): FontStyle {
+    if (f.name === undefined) return f
+    if (f.name !== '') return { ...f, name: this.fontName(f.name) }
+    this.issues?.add('style', { key: 'fontNameEmpty' })
+    const { name: _, ...rest } = f
+    return rest
   }
 
   numFmt(code: NumberFormat | undefined): number {
@@ -148,6 +176,10 @@ export class StyleWriter implements CellFormats {
       let id = this.formats.get(c)
       if (id === undefined) {
         checkWritten(c)
+        if (this.formats.size >= MAX_FORMAT_CODES) {
+          this.issues?.add('numberFormat', { key: 'formatCodesOver' })
+          return 0
+        }
         this.formats.set(c, (id = 164 + this.formats.size))
       }
       return id
@@ -162,8 +194,13 @@ export class StyleWriter implements CellFormats {
     const key = `${style ?? ''}\n${numFmt}${button ? '\nb' : ''}`
     let i = this.byKey.get(key)
     if (i !== undefined) return i
+    if (this.xfs.items.length >= MAX_CELL_FORMATS) {
+      this.issues?.add('style', { key: 'cellFormatsOver' })
+      this.byKey.set(key, 0)
+      return 0
+    }
     const s = style === undefined ? {} : this.styles[style]
-    const font = s.font ? this.fonts.of(fontXml(s.font, this.base)) : 0
+    const font = s.font ? this.fonts.of(fontXml(this.font(s.font), this.base)) : 0
     const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
     i = this.xfs.of(xfXml(numFmt, font, fill, border, s, button))

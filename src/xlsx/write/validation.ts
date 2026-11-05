@@ -8,10 +8,9 @@ import type { DataValidation } from '../../contract.js'
 import { FILE_TYPES } from '../../validation/check.js'
 import { areasOf } from '../../validation/rules.js'
 import { rectText } from '../../structure/area.js'
-import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileSpelling, fileTree, type FileNames } from './formula.js'
 import { clip, countedIf } from './xml.js'
 
 /** Excel's limits on a rule's texts: it does not load a file with longer ones. */
@@ -25,20 +24,26 @@ export interface ValidationContext extends FileNames {
   issues: Issues
 }
 
+/** The rules of a sheet Excel loads: over them it refuses the file (the set `links/file-refusals`). */
+const MAX_RULES = 65_534
+
 /** The rules of a sheet as `<dataValidations>`; nothing without rules. */
 export function validationsXml(rules: DataValidation[] | undefined, ctx: ValidationContext): string {
-  const items = (rules ?? []).flatMap((v) => {
+  const given = rules ?? []
+  if (given.length > MAX_RULES) ctx.issues.add('dataValidation', { key: 'rulesOver' }, { sheet: ctx.sheet })
+  const items = given.slice(0, MAX_RULES).flatMap((v) => {
     const where = { sheet: ctx.sheet, cell: v.range }
     const formulas: string[] = []
     for (const k of ['formula1', 'formula2'] as const) {
       const text = v[k]
       if (text === undefined) continue
-      const tree = fileTree(text, ctx)
-      if (!tree) {
+      const tree = fileTree(text, ctx, undefined, { rule: true })
+      const spelled = tree && fileSpelling(tree)
+      if (!spelled) {
         ctx.issues.add('dataValidation', { key: 'ruleFormulaOut' }, where)
         return []
       }
-      formulas.push(`<${k}>${escapeText(toFile(tree))}</${k}>`)
+      formulas.push(`<${k}>${escapeText(spelled)}</${k}>`)
     }
     let attrs = v.type === 'any' ? '' : ` type="${FILE_TYPES[v.type]}"`
     if (v.errorStyle && v.errorStyle !== 'stop') attrs += ` errorStyle="${v.errorStyle}"`

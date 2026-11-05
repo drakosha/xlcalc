@@ -3,17 +3,18 @@
  * data validation writers share before a formula is printed in a file's spelling (`formulas/to-file.ts`). The formulas
  * of a book's cells of one shape (`syntax/shape.ts`), a formula copied down a column, are checked and printed once.
  */
-import type { ExternalBook } from '../../contract.js'
+import { MAX_FORMULA_LENGTH, type ExternalBook } from '../../contract.js'
 import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parseTokens } from '../../syntax/parse.js'
 import { mapAst, sheetKey, walk } from '../../syntax/print.js'
 import { bindable, bindCalls, bindTables } from '../../syntax/check.js'
 import { caseKey } from '../../collate.js'
-import { FUNCTION_WORDS } from '../../function-words.js'
+import { FUNCTION_COUNTS } from '../../function-words.js'
 import { bindLinks } from '../../syntax/links.js'
 import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
 import { FILE_PRINT, toFile } from '../formulas/to-file.js'
+import { excelLoads, excelLoadsRule, namesSheets } from './excel-loads.js'
 import type { ShapeSeen } from './kind.js'
 
 /** What a formula of the book may name in its file. */
@@ -31,11 +32,12 @@ export interface FileNames {
 /**
  * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
  * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
- * and its references to other workbooks the book's links and their sheets. A defined name's ref (`opts.anySheet`) keeps
- * a reference to a sheet the book does not have, and binds its links without the walk that looks for them. `opts.toks`
- * are the formula's tokens where they were read already.
+ * its references to other workbooks the book's links and their sheets, and Excel does not refuse the file over it
+ * (`excel-loads.ts`). A defined name's ref (`opts.anySheet`) keeps a reference to a sheet the book does not have, and binds
+ * its links without the walk that looks for them; `opts.rule` is a formula of a conditional format or a validation.
+ * `opts.toks` are the formula's tokens where they were read already.
  */
-export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean; toks?: Tok[] } = {}): Ast | null {
+export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean; rule?: boolean; toks?: Tok[] } = {}): Ast | null {
   let ast: Ast
   try {
     ast = parseTokens(formula, opts.toks ?? null, opts)
@@ -46,7 +48,7 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
   const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
   // the functions by their names alone: the writer runs without the engine (`xlcalc/xlsx`)
-  const isFn = (name: string) => FUNCTION_WORDS.has(name)
+  const isFn = (name: string) => FUNCTION_COUNTS.has(name)
   ast = bindable(bound.ast, isFn) ? spellCalls(bindCalls(bound.ast, (name) => !!names.defined?.has(caseKey(name)), undefined, true, isFn), names) : bound.ast
   let ok = true
   // a defined name's ref may name a sheet the book does not have; its links are bound without the walk
@@ -58,10 +60,19 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
       if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
       else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
     })
-  if (!ok || !linked) return ok ? ast : null
+  if (!ok || !excelLoads(ast) || (opts.rule && !excelLoadsRule(ast)) || (opts.anySheet && !namesSheets(ast))) return null
+  if (!linked) return ast
   const links = bindLinks(ast, names.externalBooks, [...names.sheets])
   return links.ok ? links.ast : null
 }
+
+/** A tree in a file's spelling, null over the 8,192 characters Excel loads (the file's own, longer than the book's where a function takes its prefix). */
+export function fileSpelling(tree: Ast): string | null {
+  const text = toFile(tree)
+  return fitted(text)
+}
+
+const fitted = (text: string): string | null => (text.length > MAX_FORMULA_LENGTH ? null : text)
 
 /** A call of a defined name with the name as the book spells it, as a file holds it (`MyFn(1,2)`, not `MYFN(1,2)`). */
 function spellCalls(ast: Ast, names: FileNames): Ast {
@@ -83,7 +94,7 @@ const fileHole = (h: Hole) => (typeof h === 'number' ? String(h).toUpperCase() :
 export function fileText(formula: string, names: FileNames, enclosing: string | undefined, shapes?: FileShapes, seen?: { shape?: ShapeSeen }): string | null {
   const own = (toks?: Tok[]) => {
     const tree = fileTree(formula, names, enclosing, toks ? { toks } : {})
-    return tree && toFile(tree)
+    return tree && fileSpelling(tree)
   }
   if (!shapes) return own()
   const read = shaped(formula)
@@ -95,7 +106,7 @@ export function fileText(formula: string, names: FileNames, enclosing: string | 
   const key = tableShapeKey(enclosing, shape.key)
   if (seen) seen.shape = { key, holes: shape.holes }
   const t = shapes.get(key)
-  if (t && (t.at || ready(t, FILE_PRINT, fileHole))) return instanceText(t, shape.holes)
+  if (t && (t.at || ready(t, FILE_PRINT, fileHole))) return fitted(instanceText(t, shape.holes))
   if (t !== undefined) {
     // a shape the file cannot hold, or a template whose tree or text cannot take holes in
     shapes.set(key, null)
@@ -103,5 +114,5 @@ export function fileText(formula: string, names: FileNames, enclosing: string | 
   }
   const tree = fileTree(formula, names, enclosing, { toks })
   if (shapes.size < SHAPES) shapes.set(key, tree ? { ast: tree, holes: shape.holes } : null)
-  return tree && toFile(tree)
+  return tree && fileSpelling(tree)
 }

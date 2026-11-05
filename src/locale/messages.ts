@@ -187,6 +187,15 @@ export interface XlsxMessageParams {
   noteCut: object
   tooltipCut: object
   ruleTextCut: { field: RuleText; max: number }
+  formatCodesOver: object
+  cellFormatsOver: object
+  fontNameCut: object
+  fontNameEmpty: object
+  linkLocationOut: object
+  rulesOver: object
+  pivotErrorValue: object
+  pivotTextCut: object
+  pivotFieldsOut: object
   ruleFormulaOut: object
   condFormulaOut: object
   filterModeOut: object
@@ -444,7 +453,7 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, frozenScrolled: 0, noteCell: 0,
   noteThread: 0, noteFormatted: 0, linkAddress: 0, linkCells: 0, nameNotTaken: 0, nameNoSheet: 0, nameTwice: 0, nameBadRef: 0,
   noResult: 0, formulaNoValue: 0, formulaEmpty: 0, formulaAsValue: 0, formulaLeftOut: 0, tableFormulaOut: 0, cycleZero: 0, errorNull: 0, cellMeta: 0, textCut: 0, noteCut: 0,
-  tooltipCut: 0, ruleTextCut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0, keptCells: 0, keptFormats: 0,
+  tooltipCut: 0, ruleTextCut: 0, formatCodesOver: 0, cellFormatsOver: 0, fontNameCut: 0, fontNameEmpty: 0, linkLocationOut: 0, rulesOver: 0, pivotErrorValue: 0, pivotTextCut: 0, pivotFieldsOut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0, keptCells: 0, keptFormats: 0,
 }
 
 /** The keys of the messages of `writeKept`'s refusals, which a locale's `messages` holds too; their English text is the `./xlsx/keep` subpath's. */

@@ -9,11 +9,10 @@
 import type { ConditionalFormat, ConditionalValue, SheetInput } from '../../contract.js'
 import { ruleFormula } from '../../cond/rules.js'
 import { sheetKey, walk } from '../../syntax/print.js'
-import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree, type FileNames } from './formula.js'
+import { fileSpelling, fileTree, type FileNames } from './formula.js'
 import type { CellFormats } from './styles.js'
 import { rgb, X14 } from './xml.js'
 
@@ -44,13 +43,14 @@ const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '
 
 /** A formula as a file holds it, and whether it names another sheet; null when the file cannot hold it. */
 function fileFormula(text: string, own: string, ctx: ConditionalContext): { text: string; other: boolean } | null {
-  const ast = fileTree(text, ctx)
-  if (!ast) return null
+  const ast = fileTree(text, ctx, undefined, { rule: true })
+  const spelled = ast && fileSpelling(ast)
+  if (!ast || spelled === null) return null
   let other = false
   walk(ast, (n) => {
     if ((n.k === 'ref' || n.k === 'name') && n.sheet && sheetKey(n.sheet) !== sheetKey(own)) other = true
   })
-  return { text: toFile(ast), other }
+  return { text: spelled, other }
 }
 
 const VALUE_2007: Record<string, string> = { autoMin: 'min', autoMax: 'max' }

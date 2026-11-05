@@ -23,7 +23,7 @@ export async function editParts(data: Uint8Array, edit: (name: string, text: str
   const enc = new TextEncoder()
   const files: { name: string; data: Uint8Array }[] = []
   for (const name of archive.names) {
-    const changed = name.endsWith('.xml') ? edit(name, (await archive.text(name))!) : undefined
+    const changed = name.endsWith('.xml') || name.endsWith('.rels') ? edit(name, (await archive.text(name))!) : undefined
     files.push({ name, data: changed === undefined ? (await archive.bytes(name))! : enc.encode(changed) })
   }
   return zip(files)

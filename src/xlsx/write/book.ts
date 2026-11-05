@@ -16,7 +16,6 @@ import { nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
 import { caseKey } from '../../collate.js'
-import { toFile } from '../formulas/to-file.js'
 import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
@@ -25,7 +24,8 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { externalLinkXml, linkTarget } from './links.js'
 import { nextBlock } from './parts.js'
-import { fileTree, type FileNames, type FileShapes } from './formula.js'
+import { fitPivots } from './pivot-fit.js'
+import { fileSpelling, fileTree, type FileNames, type FileShapes } from './formula.js'
 import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
@@ -86,7 +86,7 @@ export function nameElements(book: BookInput, issues: Issues, names: FileNames, 
     const key = `${scope ?? ''}\n${caseKey(n.name)}`
     // a name's ref parses with union ranges and may name a sheet the book does not have (anySheet)
     const tree = fileTree(n.ref, names, undefined, { union: true, anySheet: true })
-    const text = tree === null ? undefined : toFile(tree)
+    const text = tree === null ? undefined : (fileSpelling(tree) ?? undefined)
     const why: XlsxMessage | undefined =
       nameProblem(n.name, booleans) !== null
         ? { key: 'nameNotTaken' }
@@ -179,9 +179,10 @@ function pivotButtons(book: BookInput, i: number): ReadonlySet<number> | undefin
  * or only its values (`opts.mode: 'values'`).
  */
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
-  const { book, keys, cells, resultKeys, mode, unasked, locale } = writeArgs(snapshot, opts)
+  const { book: given, keys, cells, resultKeys, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
-  const styles = new StyleWriter(book.styles, book.font)
+  const book = fitPivots(given, issues)
+  const styles = new StyleWriter(book.styles, book.font, issues)
   const strings = new Map<string, number>()
   let refs = 0
   const string = (s: string) => {

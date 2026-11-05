@@ -15,7 +15,7 @@ import { XLFN, XLWS } from '../../../src/xlsx/formulas/prefixes.js'
 import type { CachedValue, LinksCase, LinksCases } from './cases.js'
 
 /** A call of each function, without its prefix and without another newer function, over literals and the cells of `CELLS`. */
-const CALLS: Record<string, string> = {
+export const CALLS: Record<string, string> = {
   ACOT: 'ACOT(2)',
   ACOTH: 'ACOTH(6)',
   AGGREGATE: 'AGGREGATE(9,6,B1:B4)',
