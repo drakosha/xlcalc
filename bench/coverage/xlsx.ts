@@ -24,6 +24,7 @@ import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
+import { BAR_CASES, barFile } from './xlsx/bars-held.js'
 import { colorBook, colorCases, type ColorCase } from './xlsx/colors.js'
 import { colorHeldCases, THEME_HELD } from './xlsx/colors-held.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
@@ -154,6 +155,14 @@ async function colors(name: string, cases: ColorCase[], theme?: string) {
   console.log(`${name}: ${cases.length} fills read`)
 }
 
+async function barsHeld() {
+  await send(
+    'bars-held',
+    await Promise.all(BAR_CASES.map(async (c) => ({ id: c.id, locale: 'en-US', bytes: () => barFile(c), hash: sha(await barFile(c)) }))),
+    async (_, file) => JSON.stringify((await readXlsx(file)).book.sheets[0].conditionalFormats?.[0]),
+  )
+}
+
 async function formats() {
   await ensureExcel('en-US')
   const shown = await numberFormats(await formatBook(), FORMAT_IDS.map((id) => `A${id}`))
@@ -215,7 +224,8 @@ export async function stepXlsx(what: string | undefined): Promise<void> {
   else if (what === 'saved') await saved()
   else if (what === 'colors') await colors('colors', colorCases())
   else if (what === 'colors-held') await colors('colors-held', colorHeldCases(), THEME_HELD)
+  else if (what === 'bars-held') await barsHeld()
   else if (what === 'intersect') await intersect()
   else if (what === 'formats') await formats()
-  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | colors-held | formats | intersect')
+  else throw new Error('xlsx: roundtrip | saved | filters | forms | colors | colors-held | bars-held | formats | intersect')
 }

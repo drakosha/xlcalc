@@ -12,6 +12,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
+import { BAR_CASES, barBook, barFile } from '../coverage/xlsx/bars-held.js'
 import { colorBook } from '../coverage/xlsx/colors.js'
 import { colorHeldCases, THEME_HELD } from '../coverage/xlsx/colors-held.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
@@ -89,6 +90,12 @@ export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
   const by = (k: 2 | 3) => Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i][k]]))
   writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, formats: by(2), local: by(3) })
   console.log(`xlsx formats ${tag}: ${shown.length} read`)
+}
+
+/** The files of `xlsx/bars-held.ts` as Excel saves them, and a bar Excel makes itself over the same cells. */
+export async function stepXlsxBarsHeld(tag: Tag, e: WinEnv): Promise<void> {
+  await savedFiles('bars-held', BAR_CASES, barFile, tag, e)
+  await savedFiles('bars-held-made', [{ id: 'made' }], barBook, tag, e, [{ do: 'barMade', sheet: 'S', range: 'A1:A4', min: 5, max: 95 }])
 }
 
 /** The fill colours Excel for Windows shows for the book of `xlsx/colors-held.ts`, in the Mac step's shape, into `xlsx/colors-held.json`. */
