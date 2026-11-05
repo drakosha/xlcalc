@@ -55,6 +55,12 @@ export async function fillColors(data: Uint8Array, cells: string[]): Promise<str
   return (JSON.parse(r.out as string) as number[][]).map(fromRgb)
 }
 
+/** The fill (colour, pattern as Excel names it) and the font's colour Excel shows for cells of the file's first sheet. */
+export async function cellFills(data: Uint8Array, cells: string[]): Promise<{ fill: string; pattern: string; font: string }[]> {
+  const r = await watched('excel-fills.applescript', data, 'fills', () => [cells.join(',')], (_, out) => out)
+  if ('rejected' in r) throw new Error(`fills: Excel refused the book: ${r.rejected}`)
+  return (JSON.parse(r.out as string) as [number[], string, number[]][]).map(([fill, pattern, font]) => ({ fill: fromRgb(fill), pattern, font: fromRgb(font) }))
+}
 
 /** The number format codes Excel shows for cells of the file's first sheet. */
 export async function numberFormats(data: Uint8Array, cells: string[]): Promise<string[]> {

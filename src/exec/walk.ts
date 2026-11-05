@@ -112,9 +112,10 @@ export interface Backend<T> {
   let(count: number, build: (local: (i: number) => T) => { values: T[]; body: T }): T
   /**
    * A LAMBDA of `count` parameters: `build` gets the code of a use of its i-th parameter and of ISOMITTED of it, and gives
-   * the code of its calculation, computed at each call, and how deep that code nests (`lambdaOf`).
+   * the code of its calculation, computed at each call, and how deep that code nests (`lambdaOf`); a call may leave out
+   * the parameters past `required`.
    */
-  lambda(count: number, build: (param: (i: number) => T, omitted: (i: number) => T) => { body: T; height: number }): T
+  lambda(count: number, required: number, build: (param: (i: number) => T, omitted: (i: number) => T) => { body: T; height: number }): T
   /** A call of a value as a function (`callValue`); an argument left out is `absent`. */
   invoke(fn: T, args: T[]): T
   /** A definition that calls itself (a defined name's LAMBDA): `build` gets the code that stands for it inside and gives its code. */
@@ -620,7 +621,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return value(uses[n.slot], n, rangeOk)
         case 'lambda':
           // the calculation keeps a reference it answers: its call reads it where one value goes
-          return b.lambda(n.params.length, (param, omitted) => {
+          return b.lambda(n.params.length, n.params.filter((x) => !x.optional).length, (param, omitted) => {
             n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
             const [from, outer] = [level, deepest]
             deepest = level

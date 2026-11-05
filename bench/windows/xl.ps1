@@ -323,6 +323,18 @@ function Step($xl, $wb, $s) {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
+    # cells' fills: each [Interior.Color, Interior.Pattern, Font.Color]
+    'fills' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Cell ([double]$c.Interior.Color)), (Cell ([double]$c.Interior.Pattern)), (Cell ([double]$c.Font.Color))) })
+    }
+    # a data bar Excel makes over a range, with its shortest and longest lengths
+    'barMade' {
+      $bar = $wb.Worksheets.Item($s.sheet).Range($s.range).FormatConditions.AddDatabar()
+      $bar.PercentMin = [int]$s.min
+      $bar.PercentMax = [int]$s.max
+      'null'
+    }
     'settings' { List @((Cell $xl.Iteration), (Cell ([double]$xl.MaxIterations)), (Cell $xl.MaxChange)) }
     # cells typed into: what each shows, its format codes and its prefix character (with `edit` its Formula and
     # FormulaLocal too, the text the formula bar opens it with); and Excel's automatic percent entry

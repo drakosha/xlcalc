@@ -75,6 +75,8 @@ function readSection(section: string): Read | null {
 
 /** Whether Excel reads the codes of a section, by its place among the code's sections. */
 function sectionReads(found: string, last: boolean): boolean {
+  // lower-case, this is a year
+  if (/^E+$/.test(found)) return false
   const exp = /E[+-]/.exec(found)
   if (exp && !(/[0#?]/.test(found.slice(0, exp.index)) && /[0#?]/.test(found.slice(exp.index + 2)))) return false
   const general = /General/i.test(found)

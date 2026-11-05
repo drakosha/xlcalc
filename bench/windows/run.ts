@@ -16,6 +16,9 @@
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
  *   npx tsx bench/windows/run.ts xlsx forms          formulas of each kind typed in and saved by Excel into xlsx/forms/
  *   npx tsx bench/windows/run.ts xlsx stored         books over functions the engine computes no value for, saved by Excel into xlsx/stored/
+ *   npx tsx bench/windows/run.ts xlsx colors-held    the fill colours of bench/coverage/xlsx/colors-held.ts into xlsx/colors-held.json
+ *   npx tsx bench/windows/run.ts xlsx bars-held      the data bars of bench/coverage/xlsx/bars-held.ts as Excel saves them into xlsx/bars-held/ and xlsx/bars-held-made/
+ *   npx tsx bench/windows/run.ts xlsx fills-read     the fill and font of the cells of bench/coverage/xlsx/fills-read.ts into xlsx/fills-read.json
  *   npx tsx bench/windows/run.ts xlsx formats [L]    the codes of the built-in number formats into xlsx/[<tag>/]formats.json
  *   npx tsx bench/windows/run.ts entry <name> [L]      text typed into cells into entry/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts fit <name> [L]        columns fitted and texts typed into them, into fit/[<tag>/]<name>.json
@@ -51,7 +54,7 @@ import { fileURLToPath } from 'node:url'
 import { stepDisplay, stepSpill, stepStruct, stepTables, stepWorkbook } from './books.js'
 import { localeDir, parseTag } from '../coverage/locales.js'
 import { stepFunctions } from './functions.js'
-import { stepXlsxFilters, stepXlsxForms, stepXlsxFormats, stepXlsxStored } from './xlsx.js'
+import { stepXlsxFilters, stepXlsxForms, stepXlsxBarsHeld, stepXlsxColorsHeld, stepXlsxFillsRead, stepXlsxFormats, stepXlsxStored } from './xlsx.js'
 import { stepParts } from './parts.js'
 import { stepHidden } from './hidden.js'
 import { stepLinks } from './links.js'
@@ -130,6 +133,9 @@ else if (step in BOOK_STEPS && a) await withWindowsExcel('en-US', (e) => BOOK_ST
 else if (step === 'xlsx' && a === 'filters') await withWindowsExcel('en-US', (e) => stepXlsxFilters('en-US', e))
 else if (step === 'xlsx' && a === 'forms') await withWindowsExcel('en-US', (e) => stepXlsxForms('en-US', e))
 else if (step === 'xlsx' && a === 'stored') await withWindowsExcel('en-US', (e) => stepXlsxStored('en-US', e))
+else if (step === 'xlsx' && a === 'colors-held') await withWindowsExcel('en-US', (e) => stepXlsxColorsHeld('en-US', e))
+else if (step === 'xlsx' && a === 'bars-held') await withWindowsExcel('en-US', (e) => stepXlsxBarsHeld('en-US', e))
+else if (step === 'xlsx' && a === 'fills-read') await withWindowsExcel('en-US', (e) => stepXlsxFillsRead('en-US', e))
 else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(parseTag(b), (e) => stepXlsxFormats(parseTag(b), e))
 else if (step === 'entry' && a) await withWindowsExcel(parseTag(b), (e) => stepEntry(a, parseTag(b), e))
 else if (step === 'fit' && a) await withWindowsExcel(parseTag(b), (e) => stepFit(a, parseTag(b), e))
@@ -158,7 +164,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|keep <name> | paste <name> [locale] | xlsx filters | xlsx forms | xlsx stored | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | samples <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | select <name> | fields <name> | pivot <name> [locale] | pivot-fields <name> | snapshot <locale> | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort|keep <name> | paste <name> [locale] | xlsx filters | xlsx forms | xlsx stored | xlsx colors-held | xlsx bars-held | xlsx fills-read | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | samples <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | select <name> | fields <name> | pivot <name> [locale] | pivot-fields <name> | snapshot <locale> | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

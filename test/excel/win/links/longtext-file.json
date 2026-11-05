@@ -1,0 +1,1425 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 22
+ },
+ "cases": [
+  {
+   "id": "xlop-one",
+   "about": "the optional parameter left out",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlpm.x,_xlop.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))(1)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 1
+   }
+  },
+  {
+   "id": "xlop-two",
+   "about": "the optional parameter given",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlpm.x,_xlop.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))(1,2)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 3
+   }
+  },
+  {
+   "id": "xlop-three",
+   "about": "one argument too many",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlpm.x,_xlop.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))(1,2,3)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "xlop-few",
+   "about": "a required parameter left out",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlpm.x,_xlop.y,IF(_xlfn.ISOMITTED(_xlpm.y),_xlpm.x,_xlpm.x+_xlpm.y))()"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "xlop-blank",
+   "about": "an optional parameter left out reads as a blank",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlop.y,_xlpm.y+1)()"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 1
+   }
+  },
+  {
+   "id": "xlop-both",
+   "about": "every parameter optional, none given",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlop.a,_xlop.b,IF(_xlfn.ISOMITTED(_xlpm.a),1,0)+IF(_xlfn.ISOMITTED(_xlpm.b),10,0))()"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 11
+   }
+  },
+  {
+   "id": "xlop-after",
+   "about": "a required parameter after an optional one",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlop.x,_xlpm.y,_xlpm.y)(1,2)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "xlop-let",
+   "about": "on a LET name, which the grammar does not take",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LET(_xlop.a,1,_xlpm.a)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "xlop-in-body",
+   "about": "the prefix on a use of the parameter",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LAMBDA(_xlpm.x,_xlop.y,_xlpm.x+_xlop.y)(1,2)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "lt-two",
+   "about": "two constants",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LONGTEXT(\"aaa\",\"bbb\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "aaabbb"
+   }
+  },
+  {
+   "id": "lt-len",
+   "about": "inside LEN",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(_xlfn.LONGTEXT(\"aaa\",\"bbb\"))"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 6
+   }
+  },
+  {
+   "id": "lt-empty",
+   "about": "empty constants",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(_xlfn.LONGTEXT(\"\",\"\"))"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 0
+   }
+  },
+  {
+   "id": "lt-quote",
+   "about": "a doubled quote in a constant",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LONGTEXT(\"a\"\"\",\"b\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "a\"b"
+   }
+  },
+  {
+   "id": "lt-one",
+   "about": "one constant, under the grammar",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LONGTEXT(\"aaa\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "lt-seventeen",
+   "about": "17 constants of 255: the most the grammar takes, past its 4,095 of SHOULD NOT",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 4335
+   }
+  },
+  {
+   "id": "lt-eighteen",
+   "about": "18 constants, over the grammar",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(_xlfn.LONGTEXT(\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"))"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "lt-long",
+   "about": "two constants of 255",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 510
+   }
+  },
+  {
+   "id": "lt-cell",
+   "about": "a reference for a constant",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LONGTEXT(B1,\"a\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "lt-number",
+   "about": "numbers for constants",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "_xlfn.LONGTEXT(1,2)"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "lt-bare",
+   "about": "without its prefix",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LONGTEXT(\"a\",\"b\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "NAME"
+    }
+   }
+  },
+  {
+   "id": "literal-255",
+   "about": "a literal of 255 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": 255
+   }
+  },
+  {
+   "id": "literal-300",
+   "about": "a literal of 300 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "xlop-one": "83090985abb58813a725c02f7fb97689851a4b9058e5eba3921f2480bd30d8f6",
+  "xlop-two": "92d509179ce73348c8f31fc10435dda02ded29c2cc51f8e2b483695ebdf3c95f",
+  "xlop-three": "ac4d5f6f1c72a1a3dc74b8dc5f68b51bff4eb2a5daca49b3724c1b99879d14d8",
+  "xlop-few": "da5f3f289ff0e70fb1d93844cbd9b8145dd77bd0225a9cac76fbebfccc5d6498",
+  "xlop-blank": "ae20bb64421cd3ff10039c3408e9528227a2dfb0326c7a775b3ebc537beba396",
+  "xlop-both": "e2a1bb10430052be92471962d655dd4ba865a6b393063a057060446e1692ee7d",
+  "xlop-after": "608c963e374ebe0eda3463183ed39c620e0e7db121bacd61e6622811b0843e21",
+  "xlop-let": "296e79473760e006043ceb5d3a7a39cee19ffa50abc44fe23cc7f1ffe6e48f42",
+  "xlop-in-body": "d7ca1d224452c9488cab658bba471ea8eaa93db7cccad75cf1606b9cd5eb57ec",
+  "lt-two": "a55271d927406806c4a1bca0ab7dce108ac033702cf2caafbf614fe9f83ea41e",
+  "lt-len": "6a707fd618edc27ef65551f1831d4317edc2aa3504b8db8f70d7b9be8e47f081",
+  "lt-empty": "33004440c736b893b0bc6cb05c5dbcf930e26df6cb4f2d519277359747615282",
+  "lt-quote": "f38194e9dd1b5bcef8f451beb007f37caeec6983117bc745ece7e03f0b7d1a43",
+  "lt-one": "a00229ff27c76610b1c49cac9f03dd12e5ebe02d35d790121d350e68afa583b9",
+  "lt-seventeen": "10838038e046a32c03668bfe80d022ab0509afc0c1a0651daa8a9f9eb47b0d6e",
+  "lt-eighteen": "92cb1629a945745dee9c8f40f9f053bf7f2c19edfe0892c0a3ca87da0f691555",
+  "lt-long": "8d8c7741449412529f7e81e761e48066503f55db31495b5c5aad8c82d41b790f",
+  "lt-cell": "d4bbd9e840a924a4d0223cffbb718b70f5d8c735ad1ece1203fca7f2e25ff810",
+  "lt-number": "a19647b1cd19fc2ef1a50aa444ee48e940637fa4359a35f8016e0e49e2e0ba8a",
+  "lt-bare": "5fd442f616461827dc428a6578ac91c7f55b65fae25502e1d48207a0c420a9fe",
+  "literal-255": "56de3f41a03307ae7228d0c0092a04bffa2cefee334f8ca2d7f504bb54b9865e",
+  "literal-300": "221c8313f39ac705b52004a320174df7fc7116418fdaac0aab980f3cf947d8e4"
+ },
+ "answers": {
+  "xlop-one": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    }
+   ]
+  },
+  "xlop-two": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "shown": {
+      "S!A1": "3"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "shown": {
+      "S!A1": "3"
+     }
+    }
+   ]
+  },
+  "xlop-three": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "xlop-few": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))()"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))()"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "xlop-blank": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA([y],y+1)()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA([y],y+1)()"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA([y],y+1)()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA([y],y+1)()"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    }
+   ]
+  },
+  "xlop-both": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 11
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA([a],[b],IF(ISOMITTED(a),1,0)+IF(ISOMITTED(b),10,0))()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA([a],[b],IF(ISOMITTED(a),1,0)+IF(ISOMITTED(b),10,0))()"
+     },
+     "shown": {
+      "S!A1": "11"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 11
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA([a],[b],IF(ISOMITTED(a),1,0)+IF(ISOMITTED(b),10,0))()"
+     },
+     "local": {
+      "S!A1": "=LAMBDA([a],[b],IF(ISOMITTED(a),1,0)+IF(ISOMITTED(b),10,0))()"
+     },
+     "shown": {
+      "S!A1": "11"
+     }
+    }
+   ]
+  },
+  "xlop-in-body": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],x+_xlop.y)(1,2)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],x+_xlop.y)(1,2)"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LAMBDA(x,[y],x+_xlop.y)(1,2)"
+     },
+     "local": {
+      "S!A1": "=LAMBDA(x,[y],x+_xlop.y)(1,2)"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-two": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\",\"bbb\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\",\"bbb\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\",\"bbb\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\",\"bbb\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-len": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaa\",\"bbb\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaa\",\"bbb\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaa\",\"bbb\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaa\",\"bbb\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-empty": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"\",\"\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"\",\"\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"\",\"\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"\",\"\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-quote": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"a\"\"\",\"b\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"a\"\"\",\"b\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"a\"\"\",\"b\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"a\"\"\",\"b\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-one": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(\"aaa\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-seventeen": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-eighteen": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\",\"a\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-long": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "local": {
+      "S!A1": "=LEN(_xlfn.LONGTEXT(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"))"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-cell": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(B1,\"a\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(B1,\"a\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(B1,\"a\")"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(B1,\"a\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-number": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(1,2)"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(1,2)"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=_xlfn.LONGTEXT(1,2)"
+     },
+     "local": {
+      "S!A1": "=_xlfn.LONGTEXT(1,2)"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "lt-bare": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LONGTEXT(\"a\",\"b\")"
+     },
+     "local": {
+      "S!A1": "=LONGTEXT(\"a\",\"b\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NAME"
+      }
+     },
+     "formulas": {
+      "S!A1": "=LONGTEXT(\"a\",\"b\")"
+     },
+     "local": {
+      "S!A1": "=LONGTEXT(\"a\",\"b\")"
+     },
+     "shown": {
+      "S!A1": "#NAME?"
+     }
+    }
+   ]
+  },
+  "literal-255": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-file-25584-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 255
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "local": {
+      "S!A1": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "shown": {
+      "S!A1": "255"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 255
+      }
+     },
+     "formulas": {
+      "S!A1": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "local": {
+      "S!A1": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "shown": {
+      "S!A1": "255"
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "xlop-after": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "xlop-let": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "literal-300": "-2146827284 Unable to get the Open property of the Workbooks class"
+ }
+}

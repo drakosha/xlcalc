@@ -1,0 +1,151 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 3
+ },
+ "cases": [
+  {
+   "id": "e1",
+   "cell": {
+    "value": 46096.5,
+    "format": "e"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026"
+   }
+  },
+  {
+   "id": "e2",
+   "cell": {
+    "value": 46096.5,
+    "format": "ee"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026"
+   }
+  },
+  {
+   "id": "e3",
+   "cell": {
+    "value": 46096.5,
+    "format": "eee"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026"
+   }
+  },
+  {
+   "id": "e4",
+   "cell": {
+    "value": 46096.5,
+    "format": "eeee"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026"
+   }
+  },
+  {
+   "id": "e7",
+   "cell": {
+    "value": 46096.5,
+    "format": "e/m/d"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026/3/15"
+   }
+  },
+  {
+   "id": "e8",
+   "cell": {
+    "value": 46096.5,
+    "format": "ee-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026-03-15"
+   }
+  },
+  {
+   "id": "e9",
+   "cell": {
+    "value": 46096.5,
+    "format": "dd.mm.e"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "15.03.2026"
+   }
+  },
+  {
+   "id": "e10",
+   "cell": {
+    "value": 46096.5,
+    "format": "e \"г.\""
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026 г."
+   }
+  },
+  {
+   "id": "e11",
+   "cell": {
+    "value": 46096.5,
+    "format": "e h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2026 12:00"
+   }
+  },
+  {
+   "id": "e12",
+   "cell": {
+    "value": 1,
+    "format": "e"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "1900"
+   }
+  }
+ ],
+ "answers": {
+  "e1": {
+   "text": "2026"
+  },
+  "e2": {
+   "text": "2026"
+  },
+  "e3": {
+   "text": "2026"
+  },
+  "e4": {
+   "text": "2026"
+  },
+  "e7": {
+   "text": "2026/3/15"
+  },
+  "e8": {
+   "text": "2026-03-15"
+  },
+  "e9": {
+   "text": "15.03.2026"
+  },
+  "e10": {
+   "text": "2026 г."
+  },
+  "e11": {
+   "text": "2026 12:00"
+  },
+  "e12": {
+   "text": "1900"
+  }
+ }
+}

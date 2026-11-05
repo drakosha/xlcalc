@@ -1,0 +1,36 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "seconds": 5.2,
+  "date": "2026-11-05"
+ },
+ "books": {
+  "x14-only": {
+   "sent": "5cdf4f89703fbaa03889360bd0c33669998524206a0f83952d0a2431c1a4dbbc"
+  },
+  "both": {
+   "sent": "2ca4a43d2ad9bfc6cc2c214a0146b7a973afe677c9ef7107ebf138233938167e"
+  },
+  "both-20-80": {
+   "sent": "a560dd372ce19527ae76d6e12abdcbbb3dee03b9ef7c4f300445891c09a6179f"
+  },
+  "min-only": {
+   "sent": "d0b91bdbf2aa9951ca1457bd76ca58b5c67d91d9a28764bc1de644146208eb44"
+  },
+  "max-only": {
+   "sent": "dc39637de33dcbe1e6ccd66b528a79c8d0cf994a4b69a7bc59660b0fb282083c"
+  },
+  "default-0-100": {
+   "sent": "d6a005bb5c1f7296651442d23e75bfb3d19ed9d20a5303e5098bdd67fd17d058"
+  },
+  "both-10-90": {
+   "sent": "6efb16d548fd0ab0f41083727b367b654fee3aea880260ced4e63e178ae7156c"
+  },
+  "written-10-95": {
+   "sent": "1603f337fcd3866fa2f8472f1db461de1e7e30757f3287438f1bf367c3fd83db"
+  },
+  "written-5-90": {
+   "sent": "0a7b51584a9fdfe1912c2239f53748af836864711d13a6a2b0277487ec7bbf21"
+  }
+ }
+}

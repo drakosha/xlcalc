@@ -75,6 +75,8 @@ export type Ast =
 export interface Param {
   name: string
   slot: number
+  /** A LAMBDA's parameter a call may leave out, `[y]`. */
+  optional?: boolean
 }
 
 export interface Bind extends Param {

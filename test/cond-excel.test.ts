@@ -9,15 +9,7 @@ import { checkCondSets, condSets, type Known } from './cond-excel.js'
 import { pinnedCases } from './stored-cases.js'
 import './locales.js'
 
-/** Excel drops the lengths of an Excel 2010 bar of 5 and 95 percent, which then read as the format's defaults, 10 and 90. */
-const LENGTHS = 'Excel saves the Excel 2010 bar of lengths 5 and 95 without them: they read as 10 and 90'
-
 export const COND_KNOWN: Known = {
-  'files:kinds': LENGTHS,
-  'files:kinds-insert-row': LENGTHS,
-  'files:kinds-delete-col': LENGTHS,
-  'files:kinds-move': LENGTHS,
-  'files:kinds-rename': LENGTHS,
   // a colour between a percentile point and another at an exact third: Excel's channel is one more (its percentile's last bit)
   'files:kinds:S!G8': 'a colour one channel apart at an exact fraction past a percentile point',
   'files:kinds:saved:S!G8': 'the same on the saved book',
