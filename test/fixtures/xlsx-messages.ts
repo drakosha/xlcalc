@@ -36,7 +36,6 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   autoFilterRange: [{ range: 'A:C' }],
   advancedFilter: [{}],
   tableFilter: [{}],
-  sheetProtection: [{}],
   sheetPassword: [{}],
   protectedRanges: [{}],
   drawings: [{}],

@@ -433,7 +433,7 @@ Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU
 - English function names and TRUE in a formula typed in ru-RU: Excel ru-RU treats them as unknown names (`=SUM(A1;1,5)` and `=TODAY()` evaluate to `#ИМЯ?` and set no number format, and `=TRUE` is a name); `parseEntry` parses them as `toInvariant` does, as the function and the boolean.
 - Excel for Mac's own short date in en-US, `m/d/yy`, is narrower than Windows's `m/d/yyyy`, which the engine follows: a date entered into a selection widens the column here but not in Excel for Mac (`fill-held`).
 - A formula typed or pasted over several lines (`=1+`, Control+Option+Return, `2`): Excel keeps the line break in its text, while the engine stores the canonical text without it; the value is the same (`rows/keys`, `rows/held`, `rows/quotes`).
-- `#GETTING_DATA` (`#ОЖИДАНИЕ_ДАННЫХ` in ru-RU), when typed, is an error in Excel; the engine has no such error and keeps it as text.
+- `#GETTING_DATA` (`#ОЖИДАНИЕ_ДАННЫХ` in ru-RU), when typed, is an error in Excel; `parseEntry` keeps it as text.
 - An unknown name typed in a different case than earlier in the workbook: Excel writes it in its first case (`=Foo*2` after `=foo` becomes `=foo*2`); `parseEntry` has no workbook and keeps the case as typed.
 - A cell address used as a LET name and again after the LET in the same formula: Excel parses the later one as a defined name (`=LET(IW1,5,IW1)+IW1` stores `_xlnm.IW1` and evaluates to `#NAME?`); `parseEntry` parses it as the cell.
 - Typed on the keyboard, `+5%+1` gets the percentage format of its first number, and Excel drops a `+` before a number later in a formula that starts with `+` (`+-+5` becomes `+-5`); `parseEntry` gives `+5%+1` no number format and drops only the first `+`.

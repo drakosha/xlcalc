@@ -12,7 +12,7 @@ import { readFill, underlineOf } from '../src/xlsx/styles/read.js'
 import { element } from '../src/xlsx/xml/scan.js'
 import type { StyleLoss } from '../src/locale/messages.js'
 import { expandBook } from './looks-book.js'
-import { codes, read } from './xlsx-fixtures.js'
+import { codes, read, sheet } from './xlsx-fixtures.js'
 
 const THEME =
   '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme></a:themeElements></a:theme>'
@@ -179,5 +179,12 @@ describe('xlsx styles: writing and reading back', () => {
     const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, numberFormat: 2 }, A5: { value: 5, numberFormat: 9 } }
     expect(expandBook(withoutView(r.book))).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
     expect(r.issues).toEqual([])
+  })
+
+  it('a diagonal line without a direction draws nothing, so nothing is reported', async () => {
+    const styles = (attrs: string) => `<borders count="2"><border/><border${attrs}><diagonal style="thin"/></border></borders><cellXfs count="2"><xf/><xf borderId="1"/></cellXfs>`
+    const row = '<row r="1"><c r="A1" s="1"><v>1</v></c></row>'
+    expect((await sheet(row, { styles: styles('') })).issues.filter((i) => i.code === 'style')).toEqual([])
+    for (const attrs of [' diagonalUp="1"', ' diagonalDown="1"']) expect((await sheet(row, { styles: styles(attrs) })).issues.map((i) => i.code)).toContain('style')
   })
 })

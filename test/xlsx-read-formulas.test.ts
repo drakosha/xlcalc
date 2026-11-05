@@ -148,3 +148,31 @@ describe('xlsx reader: formulas of the file', () => {
     expect(r.issues.filter((x) => x.code !== 'userFunction').every((x) => x.fn === undefined)).toBe(true)
   })
 })
+
+describe('#BUSY! as a rich value', () => {
+  const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+  const META =
+    '<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xlrd="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata"><metadataTypes count="1"><metadataType name="XLRICHVALUE"/></metadataTypes><futureMetadata name="XLRICHVALUE" count="1"><bk><extLst><ext uri="{3e2802c4-a4d2-4d8b-9148-e3be6c30e623}"><xlrd:rvb i="0"/></ext></extLst></bk></futureMetadata><valueMetadata count="1"><bk><rc t="1" v="0"/></bk></valueMetadata></metadata>'
+  const rich = (type: number, more = '') => ({
+    'xl/metadata.xml': META,
+    'xl/richData/rdrichvalue.xml': `<rvData xmlns="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" count="1"><rv s="0"><v>${type}</v>${more ? '<v>0</v>' : ''}</rv></rvData>`,
+    'xl/richData/rdrichvaluestructure.xml': `<rvStructures xmlns="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" count="1"><s t="_error"><k n="errorType" t="i"/>${more}</s></rvStructures>`,
+    'xl/_rels/workbook.xml.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rIdM" Type="${REL}/sheetMetadata" Target="metadata.xml"/><Relationship Id="rIdV" Type="http://schemas.microsoft.com/office/2017/06/relationships/rdRichValue" Target="richData/rdrichvalue.xml"/><Relationship Id="rIdT" Type="http://schemas.microsoft.com/office/2017/06/relationships/rdRichValueStructure" Target="richData/rdrichvaluestructure.xml"/></Relationships>`,
+  })
+  const ROW = '<row r="1"><c r="A1" t="e" vm="1"><f>B1</f><v>#VALUE!</v></c></row>'
+
+  it.each([
+    ['errorType 14', 14, ''],
+    ['errorType 17, with the value it waits for', 17, '<k n="targetValue" t="r"/>'],
+  ])('%s is read as itself, with no issue', async (_, type, more) => {
+    const r = await sheet(ROW, { parts: rich(type as number, more as string) })
+    expect(storedValues(r)).toEqual({ A1: { error: 'BUSY' } })
+    expect(r.issues).toEqual([])
+  })
+
+  it('an errorType the model has no code for (#PYTHON! 18, #TIMEOUT! 19) stays reported', async () => {
+    const r = await sheet(ROW, { parts: rich(18) })
+    expect(storedValues(r)).toEqual({ A1: { error: 'ERROR' } })
+    expect(codes(r.issues)).toEqual(['errorValue A1'])
+  })
+})

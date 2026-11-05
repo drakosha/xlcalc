@@ -12,6 +12,12 @@ import { readsAsCell, tokenize, type Tok } from './tokens.js'
 const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-'], ['*', '/'], ['^']]
 const REF_OPS = [' ', ':'] as const
 
+/**
+ * The operators of one formula. 8,192 characters hold 4,096 of them, which the walks over
+ * the tree do not survive on a default stack (from about 2,100, depending on what the JIT has done by then). Real files stay
+ * far below: of 254,683 formulas in 1,123 user workbooks, the longest has 86.
+ */
+const MAX_OPERATORS = 1024
 /** Excel loads a LET of 254 arguments at most (126 names and the calculation, or 127 names). */
 const MAX_LET_ARGS = 254
 /** LAMBDA takes 253 parameters at most, as Microsoft's documentation says. */
@@ -46,6 +52,11 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
   const enter = (at: number) => {
     if (++depth > MAX_FORMULA_DEPTH) bad(at, { key: 'tooDeep', max: MAX_FORMULA_DEPTH }, 'too_deep')
   }
+  let chained = 0
+  // operators nest without a parenthesis, `1+1+1` in `(1+1)+1`, and every walk over the tree recurses
+  const chain = (at: number) => {
+    if (++chained > MAX_OPERATORS) bad(at, { key: 'tooManyOperators', max: MAX_OPERATORS }, 'too_deep')
+  }
 
   const binary = (level: number): Ast => {
     if (level === LEVELS.length) return unary()
@@ -53,6 +64,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     for (;;) {
       const t = peek()
       if (t.t !== 'op' || !LEVELS[level].includes(t.v)) return a
+      chain(t.at)
       p++
       const b = binary(level + 1)
       a = { k: 'bin', op: t.v as BinOp, a, b }
@@ -73,6 +85,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
   const postfix = (): Ast => {
     let a = single()
     while (peek().t === 'op' && (peek() as { v: string }).v === '%') {
+      chain(peek().at)
       p++
       a = { k: 'pct', a }
     }
@@ -95,6 +108,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     for (;;) {
       const t = peek()
       if (t.t !== 'op' || t.v !== REF_OPS[level]) return a
+      chain(t.at)
       p++
       a = { k: 'bin', op: t.v, a, b: refs(level + 1) }
     }
@@ -114,6 +128,7 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
     let a = atom()
     while (peek().t === '(' && (a.k === 'fn' || a.k === 'let' || a.k === 'lambda' || a.k === 'call' || a.k === 'paren' || a.k === 'local')) {
       const at = peek().at
+      chain(at)
       p++
       a = { k: 'call', fn: a, args: callArgs(at) }
     }

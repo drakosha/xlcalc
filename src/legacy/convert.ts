@@ -127,8 +127,12 @@ function size(n: Ast): [number, number] | null {
 export const legacyKey = (holes: readonly (RangeRef | number)[]) =>
   holes.map((h) => (typeof h === 'number' ? (h === 1 ? '1' : counting({ k: 'num', v: h }) ? 'p' : 'n') : `${h.kind}${h.r2 - h.r1},${h.c2 - h.c1}${h.spill ? '#' : ''}`)).join(';')
 
+/** The arguments `answer` reads of a call by place. A call with fewer (Excel refuses such a file, other writers make them) is one value. */
+const READ_BY_PLACE: Readonly<Record<string, number>> = { INDEX: 1, OFFSET: 1, VLOOKUP: 3, HLOOKUP: 3, XLOOKUP: 3 }
+
 /** A call's answer after its arguments are converted. */
 function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
+  if (args.length < (READ_BY_PLACE[fn] ?? 0)) return 'one'
   switch (fn) {
     case 'ROW':
     case 'COLUMN':
