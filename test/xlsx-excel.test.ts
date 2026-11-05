@@ -11,7 +11,8 @@
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { colorBook, colorCases } from '../bench/coverage/xlsx/colors.js'
+import { colorCases } from '../bench/coverage/xlsx/colors.js'
+import { colorHeldCases, THEME_HELD } from '../bench/coverage/xlsx/colors-held.js'
 import { buildRoundTrips, XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareBooks, compareCached, entries, type Difference } from '../bench/coverage/xlsx/compare.js'
 import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
@@ -25,8 +26,8 @@ import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
-import { cellsOf } from './looks-book.js'
 import './locales.js'
+import { filledAs, heldOff } from './xlsx-colors.js'
 import { filterRun } from './xlsx-filters.js'
 import { REGEX_HEAVY_SETS } from '../bench/coverage/sets/regex-heavy.js'
 
@@ -105,23 +106,15 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
 })
 
 describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as Excel shows them', () => {
-  const stored = json<{ colors: Record<string, string> }>('colors.json').colors
-  const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  it('palette colours and theme colours with their tints', async () => {
+    const stored = json<{ colors: Record<string, string> }>('colors.json').colors
+    expect(await filledAs(colorCases(), stored)).toEqual([])
+  })
 
-  it('palette colours and untinted theme colours exactly, tinted ones within 3 of 255 per channel', async () => {
-    const cases = colorCases()
-    const r = await readXlsx(await colorBook(cases))
-    const off: string[] = []
-    let exact = 0
-    for (const c of cases) {
-      const cell = cellsOf(r.book.sheets[0])[c.cell]
-      const got = cell?.style === undefined ? 'none' : r.book.styles![cell.style].fill!.color
-      const want = stored[c.color]
-      if (got === want) exact++
-      else if (!c.color.includes('tint') || channels(got).some((x, i) => Math.abs(x - channels(want)[i]) > 3)) off.push(`${c.color}: Excel ${want}, reader ${got}`)
-    }
-    expect(off).toEqual([])
-    expect(exact).toBeGreaterThanOrEqual(212)
+  it('the held set of tints: the prediction committed before Excel ran, then the reader', async () => {
+    const stored = json<{ colors: Record<string, string> }>('colors-held.json').colors
+    expect(heldOff(stored)).toEqual([])
+    expect(await filledAs(colorHeldCases(), stored, THEME_HELD)).toEqual([])
   })
 })
 

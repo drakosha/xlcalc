@@ -37,6 +37,10 @@ describe('formatRefused', () => {
     expect(formatRefused(code)).toBe(false),
   )
 
+  // the set `date-e-held`, of which Excel for Windows refused the two upper-case ones
+  it.each(['e', 'ee', 'eee', 'eeee', 'e/m/d', 'ee-mm-dd', 'dd.mm.e', 'e h:mm'])('%s opens', (code) => expect(formatRefused(code)).toBe(false))
+  it.each(['E', 'EE'])('%s does not', (code) => expect(formatRefused(code)).toBe(true))
+
   it.each(['0 m', '0 kg', '0 USD', '0 шт/ч', '0 л/мин', '#,##0 руб/м', 'Итог: 0', '0 samples', 'General 0', '@ General', '0 @', '@;@', '0;0;0;0', '[<1]0;[<2]0;[<3]0;0', '[<1][<2]0', '[Red][Blue]0', '[Foo]0', '0 "шт', '0\\', '0;0;0;0;0', 'ss.0000', '0'.repeat(256), `0 "${'x'.repeat(122)}"`, `"${'x'.repeat(120)}";"${'x'.repeat(120)}"`])('%s is not', (code) =>
     expect(formatRefused(code)).toBe(true),
   )

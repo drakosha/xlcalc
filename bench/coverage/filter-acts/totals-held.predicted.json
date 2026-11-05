@@ -1,0 +1,2964 @@
+{
+ "cases": {
+  "no-label-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "no-label-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "first-column-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "first-column-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "first-and-last-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "first-and-last-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "several-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "several-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "with-counta-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "with-counta-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "with-sum-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "with-sum-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "beside-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "beside-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "other-range-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "other-range-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "part-range-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "part-range-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "in-round-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "in-round-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "in-sum-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "in-sum-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "in-if-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "in-if-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "over-offset-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "over-offset-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "over-indirect-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "over-indirect-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "aggregate-5-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "aggregate-5-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "aggregate-7-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "aggregate-7-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "sum-then-sub-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "sum-then-sub-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "sub-then-sum-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C23",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22,
+     23
+    ]
+   }
+  },
+  "sub-then-sum-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C23"
+   }
+  },
+  "sub-then-sub-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "sub-then-sub-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C21"
+   }
+  },
+  "sub-then-label-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C23",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22,
+     23
+    ]
+   }
+  },
+  "sub-then-label-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C23"
+   }
+  },
+  "refers-under-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C23",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22,
+     23
+    ]
+   }
+  },
+  "refers-under-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C23"
+   },
+   "after": [
+    {
+     "range": "A1:C23",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C23"
+   }
+  },
+  "refers-beside-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "refers-beside-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "refers-away-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "refers-away-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "as-text-criteria": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22
+    ]
+   }
+  },
+  "as-text-sort": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": []
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "sortRef": "A2:C22"
+   }
+  },
+  "code-1": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-101": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-2": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-102": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-3": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-103": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-4": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-104": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-5": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-105": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-6": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-106": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-7": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-107": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-8": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-108": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-9": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-109": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-10": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-110": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-11": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "code-111": {
+   "opens": true,
+   "opened": {
+    "range": "A1:C22"
+   },
+   "after": [
+    {
+     "range": "A1:C22",
+     "hidden": [
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21
+     ],
+     "filterMode": true
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21",
+    "criteria": {
+     "0": "Север"
+    },
+    "hidden": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     11,
+     12,
+     13,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21
+    ]
+   }
+  },
+  "order-1-button": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22"
+   }
+  },
+  "order-2-model": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21"
+   }
+  },
+  "order-3-button": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22"
+   }
+  },
+  "order-4-model": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21"
+   }
+  },
+  "order-5-model": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21"
+   }
+  },
+  "order-6-button": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22"
+   }
+  },
+  "order-7-model": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21"
+   }
+  },
+  "order-8-button": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22"
+   }
+  },
+  "one-book-model-button": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    },
+    {
+     "range": ""
+    },
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C22"
+   }
+  },
+  "one-book-button-model": {
+   "opens": true,
+   "opened": {
+    "range": ""
+   },
+   "after": [
+    {
+     "range": "A1:C22"
+    },
+    {
+     "range": ""
+    },
+    {
+     "range": "A1:C22"
+    }
+   ],
+   "saved": {
+    "ref": "A1:C21"
+   }
+  }
+ }
+}

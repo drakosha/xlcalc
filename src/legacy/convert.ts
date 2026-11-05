@@ -169,12 +169,15 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
 /** A name's formula as a sheet sees it: its local name there, else the global one. */
 type Names = (name: string, sheet: string | undefined) => { ast: Ast } | undefined
 
+/** An operator's node over its converted operands. */
+const joined = (n: Extract<Ast, { k: 'bin' }>, a: Out, b: Out): Out => ({ ast: { ...n, a: a.ast, b: b.ast }, kind: a.kind === 'one' && b.kind === 'one' ? 'one' : 'array' })
+
 function converter(names: Names) {
   // the kind of each LET name, by slot; the number of `@` put in
   const locals: Kind[] = []
   let added = 0
-  const go = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
-    const o = node(n, where, slot, scope)
+  const go = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => marked(node(n, where, slot, scope), where, slot)
+  const marked = (o: Out, where: Where, slot: Slot): Out => {
     if (!intersects(o.kind, slot, where)) return o
     added++
     return { ast: { k: 'at', a: o.ast }, kind: 'one' }
@@ -211,9 +214,12 @@ function converter(names: Names) {
           // an intersection with one cell is one cell at most
           return { ast: { ...n, a: a.ast, b: b.ast }, kind: n.op === ' ' && (a.kind === 'one' || b.kind === 'one') ? 'one' : 'range' }
         }
-        const a = go(n.a, where, 'v', scope)
-        const b = go(n.b, where, 'v', scope)
-        return { ast: { ...n, a: a.ast, b: b.ast }, kind: a.kind === 'one' && b.kind === 'one' ? 'one' : 'array' }
+        // `1+1+1` nests to the left by a node per operator: in a loop, for a chain of thousands
+        const chain = [n]
+        for (let l = n.a; l.k === 'bin' && !isRefOp(l.op); l = l.a) chain.push(l)
+        let a = go(chain[chain.length - 1].a, where, 'v', scope)
+        for (let i = chain.length - 1; i > 0; i--) a = marked(joined(chain[i], a, go(chain[i].b, where, 'v', scope)), where, 'v')
+        return joined(n, a, go(n.b, where, 'v', scope))
       }
       // `(@A1:A3)`: the operand in its place gets `@`
       case 'paren': {

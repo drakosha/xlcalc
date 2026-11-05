@@ -197,7 +197,15 @@ function parseSection(text: string, codes: Codes): Section | null {
       i = j
       continue
     }
-    if (ch === 'E' || ch === 'e') return null
+    // Excel's year in a code of lower-case `e`s, as `yyyy` ([MS-OI29500] 2.1.713, the set `display/date-e-held`); upper-case it refuses
+    if (ch === 'e') {
+      let j = i
+      while (text[j] === 'e') j++
+      toks.push({ t: 'date', s: 'yyyy' })
+      i = j
+      continue
+    }
+    if (ch === 'E') return null
     if (ch === '0' || ch === '#' || ch === '?') toks.push({ t: 'ph', c: ch })
     // a second decimal separator is a literal (`0.0.`), marked: in a date it may start the second's decimals (`yy.00.00`)
     else if (ch === codes.decimal) toks.push(point ? { t: 'lit', s: ch, point: true } : { t: 'dot', s: ch })

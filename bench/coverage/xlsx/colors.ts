@@ -29,7 +29,7 @@ export function colorCases(): ColorCase[] {
 }
 
 /** The book: one cell per case, filled with its colour, the theme as a part of its own. */
-export function colorBook(cases: ColorCase[]): Promise<Uint8Array> {
+export function colorBook(cases: ColorCase[], theme = THEME): Promise<Uint8Array> {
   const fills = cases.map((c) => `<fill><patternFill patternType="solid"><fgColor ${c.color}/><bgColor indexed="64"/></patternFill></fill>`)
   const xfs = cases.map((_, i) => `<xf numFmtId="0" fontId="0" fillId="${i + 2}" borderId="0" xfId="0" applyFill="1"/>`)
   const styles = `<fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="${fills.length + 2}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${fills.join('')}</fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length + 1}"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>${xfs.join('')}</cellXfs>`
@@ -39,5 +39,5 @@ export function colorBook(cases: ColorCase[]): Promise<Uint8Array> {
     byRow.set(row, [...(byRow.get(row) ?? []), `<c r="${c.cell}" s="${i + 1}"/>`])
   })
   const rows = [...byRow].sort((a, b) => a[0] - b[0]).map(([r, cs]) => `<row r="${r}">${cs.join('')}</row>`)
-  return handBook({ sheet: 'Colors', body: `<sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData>`, styles, theme: THEME })
+  return handBook({ sheet: 'Colors', body: `<sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData>`, styles, theme })
 }

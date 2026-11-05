@@ -1,0 +1,17 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "books": {
+  "made": {
+   "sent": "eb921f948f78ed4cb3cc0ea96bb0c3869e8863bd437e83829bc04537302f1beb"
+  }
+ }
+}

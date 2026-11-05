@@ -1,0 +1,129 @@
+{
+ "meta": {
+  "version": "16.114.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-11-05"
+ },
+ "cells": {
+  "fill-theme-rgb": {
+   "fill": "#4472C4",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-auto-rgb": {
+   "fill": "#FF0000",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-indexed-rgb": {
+   "fill": "#00FF00",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-indexed-theme": {
+   "fill": "#4472C4",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-auto-theme": {
+   "fill": "#4472C4",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-auto-indexed": {
+   "fill": "#FF0000",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-all-three": {
+   "fill": "#4472C4",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "fill-theme-tint-rgb": {
+   "fill": "#8EA9DB",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "font-theme-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#4472C4"
+  },
+  "font-auto-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#FF0000"
+  },
+  "font-indexed-rgb": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#00FF00"
+  },
+  "font-indexed-theme": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#4472C4"
+  },
+  "font-auto-theme": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#4472C4"
+  },
+  "font-auto-indexed": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#FF0000"
+  },
+  "font-all-three": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#4472C4"
+  },
+  "control-0": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#000000"
+  },
+  "control-1": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern gray 16",
+   "font": "#000000"
+  },
+  "control-2": {
+   "fill": "#0000FF",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "red-green-0": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#000000"
+  },
+  "red-green-1": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern gray 16",
+   "font": "#000000"
+  },
+  "red-green-2": {
+   "fill": "#0000FF",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  },
+  "swapped-0": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern none",
+   "font": "#000000"
+  },
+  "swapped-1": {
+   "fill": "#FFFFFF",
+   "pattern": "pattern gray 16",
+   "font": "#000000"
+  },
+  "swapped-2": {
+   "fill": "#0000FF",
+   "pattern": "pattern solid",
+   "font": "#000000"
+  }
+ }
+}

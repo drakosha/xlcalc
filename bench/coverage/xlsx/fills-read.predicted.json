@@ -1,0 +1,95 @@
+{
+ "rule": "[MS-OI29500]: a colour takes its kind of highest priority, auto < indexed < rgb < theme; fills 0 and 1 are none and gray125 whatever the file says",
+ "cells": {
+  "fill-theme-rgb": {
+   "pattern": "solid",
+   "fill": "#4472C4"
+  },
+  "fill-auto-rgb": {
+   "pattern": "solid",
+   "fill": "#FF0000"
+  },
+  "fill-indexed-rgb": {
+   "pattern": "solid",
+   "fill": "#00FF00"
+  },
+  "fill-indexed-theme": {
+   "pattern": "solid",
+   "fill": "#4472C4"
+  },
+  "fill-auto-theme": {
+   "pattern": "solid",
+   "fill": "#4472C4"
+  },
+  "fill-auto-indexed": {
+   "pattern": "solid",
+   "fill": "#FF0000"
+  },
+  "fill-all-three": {
+   "pattern": "solid",
+   "fill": "#4472C4"
+  },
+  "fill-theme-tint-rgb": {
+   "pattern": "solid",
+   "fill": "#8EA9DB"
+  },
+  "font-theme-rgb": {
+   "pattern": "none",
+   "font": "#4472C4"
+  },
+  "font-auto-rgb": {
+   "pattern": "none",
+   "font": "#FF0000"
+  },
+  "font-indexed-rgb": {
+   "pattern": "none",
+   "font": "#00FF00"
+  },
+  "font-indexed-theme": {
+   "pattern": "none",
+   "font": "#4472C4"
+  },
+  "font-auto-theme": {
+   "pattern": "none",
+   "font": "#4472C4"
+  },
+  "font-auto-indexed": {
+   "pattern": "none",
+   "font": "#FF0000"
+  },
+  "font-all-three": {
+   "pattern": "none",
+   "font": "#4472C4"
+  },
+  "control-0": {
+   "pattern": "none"
+  },
+  "control-1": {
+   "pattern": "gray125"
+  },
+  "control-2": {
+   "pattern": "solid",
+   "fill": "#0000FF"
+  },
+  "red-green-0": {
+   "pattern": "none"
+  },
+  "red-green-1": {
+   "pattern": "gray125"
+  },
+  "red-green-2": {
+   "pattern": "solid",
+   "fill": "#0000FF"
+  },
+  "swapped-0": {
+   "pattern": "none"
+  },
+  "swapped-1": {
+   "pattern": "gray125"
+  },
+  "swapped-2": {
+   "pattern": "solid",
+   "fill": "#0000FF"
+  }
+ }
+}

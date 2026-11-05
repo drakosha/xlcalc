@@ -1,0 +1,73 @@
+{
+ "cases": {
+  "custom": {
+   "opens": true,
+   "opened": {
+    "range": "",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "values": {
+   "opens": true,
+   "opened": {
+    "range": "",
+    "filterMode": false,
+    "hidden": [],
+    "heights": {},
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": []
+   }
+  },
+  "total-hidden": {
+   "opens": true,
+   "opened": {
+    "range": "",
+    "filterMode": false,
+    "hidden": [
+     22
+    ],
+    "heights": {
+     "22": 0
+    },
+    "total": {
+     "row": 22,
+     "text": "46030"
+    }
+   },
+   "after": [],
+   "saved": {
+    "ref": null,
+    "tableRef": null,
+    "criteria": {},
+    "filterMode": false,
+    "hidden": [
+     22
+    ]
+   }
+  }
+ }
+}

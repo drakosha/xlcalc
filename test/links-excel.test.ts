@@ -128,12 +128,13 @@ const versioned = (root: string, key: string) => (VERSIONED_ON[key] ?? ['']).inc
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
   // open-held puts a linked book beside the opened one, which the Windows harness alone does
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'file-refusals', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'first', 'forms', 'functions-held', ...(root ? ['names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'tables-held', 'written']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'date-e-text', 'edits-held', 'file-refusals', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'first', 'forms', 'functions-held', 'longtext-file', ...(root ? ['longtext-typed', 'names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'tables-held', 'written']))
   // forms holds each formula in two forms of a file, which `linksBook` does not tell apart (`test/links-forms-excel.test.ts`);
+  // date-e-text and longtext- hold no link and are scored in `test/xlsx-read-small.test.ts`;
   // names types formulas over a file the book has no link to, for the target Excel writes (`test/scan-external.test.ts`);
   // no-prefix holds spellings of a file the engine calculates and Excel does not (`test/xlsx-no-prefix.test.ts`);
   // file-refusals holds what Excel refuses a file over (`test/xlsx-file-refusals.test.ts`)
-  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix' && !x.name.startsWith('file-refusals'))) {
+  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix' && !x.name.startsWith('longtext-') && x.name !== 'date-e-text' && !x.name.startsWith('file-refusals'))) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()
       const at = (c: LinksCase, key: string) => `${set.name}/${c.id}/${key}`

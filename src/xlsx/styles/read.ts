@@ -198,7 +198,8 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   }
   const fonts = within(xml, 'fonts', 'font').map((e) => font(e, p))
   const base = fonts[0]?.style ?? {}
-  const fills = within(xml, 'fills', 'fill').map((e) => readFill(e, p))
+  // Excel takes the first two fills as none and gray125 whatever the file says ([MS-OI29500] 2.1.705; the set `xlsx/fills-read`)
+  const fills = within(xml, 'fills', 'fill').map((e, i): ReturnType<typeof readFill> => (i === 0 ? { lost: [] } : i === 1 ? { lost: ['patternFill'] } : readFill(e, p)))
   const borders = within(xml, 'borders', 'border').map((e) => border(e, p))
   const styles: CellStyle[] = []
   const byKey = new Map<string, number>()

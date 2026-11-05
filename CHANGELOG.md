@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.86.0 (2026-11-05)
+
+Changed:
+
+- A formula of more than 2,000 operators, which threw `RangeError` out of `compute`, `readXlsx` and `writeXlsx` from about 2,100, now costs that cell alone: `compute` returns `#ERROR!` with the check `too_deep`, `setCellText` refuses it, and `writeXlsx` writes it as its value with the issue `formula`. A file holding one reads, with its stored value kept.
+- `readXlsx` and `openKept` refuse an `.xlsb` with an `InputError` that names it, where it read as a workbook with no sheets and no issue. An `.xls` and a password-protected workbook get an `InputError` too, in place of the error about a zip archive.
+
+Fixed:
+
+- A call with too few arguments, such as `VLOOKUP(1,A2:B3)`, `INDEX()`, `OFFSET()` or `XLOOKUP(1)`, in a file or a workbook made `readXlsx`, `writeXlsx` and `fromLegacy` throw `TypeError`. The file now reads and writes, and the other cells are whole.
+- `#BUSY!` stored as a rich value (`errorType` 14 and 17) is read as itself, not as `#ERROR!`.
+- A diagonal border line with neither direction set draws nothing and is no longer reported as lost.
+- The docs say what `readXlsx` leaves out without an issue, in place of "nothing is dropped"; stale lines on filters, split panes, array formulas and `[DBNum1]` are corrected.
+
 ## 0.85.0 (2026-11-05)
 
 Added:

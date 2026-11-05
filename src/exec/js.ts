@@ -59,10 +59,10 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
       const { values, body } = build((i) => `${v(i)}()`)
       return `(()=>{const ${values.map((x, i) => `${v(i)}=M(()=>${x})`).join(',')};return ${body}})()`
     },
-    lambda: (count, build) => {
+    lambda: (count, required, build) => {
       const v = variables(count)
       const { body, height } = build((i) => `${v(i)}()`, (i) => `(${v(i)}===OM)`)
-      return `LAM(${count},${height},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body})`
+      return `LAM(${count},${height},(${Array.from({ length: count }, (_, i) => v(i)).join(',')})=>${body}${required < count ? `,${required}` : ''})`
     },
     invoke: (fn, args) => `CALL(${fn},[${args.join(',')}])`,
     recursive: (build) => {
@@ -92,6 +92,6 @@ export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T
     throw e
   }
   // a LAMBDA's calculation gets its parameters as the uses of LET's names read them
-  const LAM = (count: number, height: number, f: (...vals: (() => Arg)[]) => Arg) => lambdaOf(count, height, (args) => f(...given(args, count)))
+  const LAM = (count: number, height: number, f: (...vals: (() => Arg)[]) => Arg, required?: number) => lambdaOf(count, height, (args) => f(...given(args, count)), required)
   return make({ ...rt, R, A, X, M: once, LAM, CALL: callValue, OM: OMITTED }) as T[]
 }

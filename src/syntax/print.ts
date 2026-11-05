@@ -173,7 +173,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'local':
         return n.name
       case 'lambda':
-        return `LAMBDA(${[...n.params.map((x) => x.name), go(n.body)].join(',')})`
+        return `LAMBDA(${[...n.params.map((x) => (x.optional ? `[${x.name}]` : x.name)), go(n.body)].join(',')})`
       case 'call':
         return `${go(n.fn)}(${n.args.map(go).join(',')})`
       case 'eta':

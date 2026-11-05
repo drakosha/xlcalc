@@ -1,0 +1,575 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 18.1
+ },
+ "cases": [
+  {
+   "id": "optional-one",
+   "about": "the optional parameter left out",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+    }
+   ],
+   "predicted": {
+    "S!A2": 1
+   }
+  },
+  {
+   "id": "optional-two",
+   "about": "the optional parameter given",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+    }
+   ],
+   "predicted": {
+    "S!A2": 3
+   }
+  },
+  {
+   "id": "optional-three",
+   "about": "one argument too many",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+    }
+   ],
+   "predicted": {
+    "S!A2": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "optional-empty",
+   "about": "the optional parameter given empty",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,)"
+    }
+   ],
+   "predicted": {
+    "S!A2": 1
+   }
+  },
+  {
+   "id": "required-after",
+   "about": "a required parameter after an optional one: Excel refuses the typing, the cell stays empty",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LAMBDA([x],y,IF(ISOMITTED(x),y,x))(1,2)"
+    }
+   ]
+  },
+  {
+   "id": "literal-255",
+   "about": "a literal of 255 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   ],
+   "predicted": {
+    "S!A2": 255
+   }
+  },
+  {
+   "id": "literal-256",
+   "about": "a literal of 256 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   ],
+   "predicted": {
+    "S!A2": 256
+   }
+  },
+  {
+   "id": "literal-4095",
+   "about": "a literal of 4,095 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   ],
+   "predicted": {
+    "S!A2": 4095
+   }
+  },
+  {
+   "id": "literal-4096",
+   "about": "a literal of 4,096 characters",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    }
+   ],
+   "ops": [
+    {
+     "op": "enter",
+     "sheet": "S",
+     "cell": "A2",
+     "formula": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "optional-one": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "optional-two": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "optional-three": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "optional-empty": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "required-after": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "literal-255": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "literal-256": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "literal-4095": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b",
+  "literal-4096": "9cf044a6e395437258e6d049820bdb50ece592c24d69e15befd127c4f6280b5b"
+ },
+ "answers": {
+  "optional-one": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "local": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1)"
+     },
+     "shown": {
+      "S!A2": "1"
+     }
+    }
+   ]
+  },
+  "optional-two": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "local": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2)"
+     },
+     "shown": {
+      "S!A2": "3"
+     }
+    }
+   ]
+  },
+  "optional-three": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "local": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,2,3)"
+     },
+     "shown": {
+      "S!A2": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "optional-empty": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,)"
+     },
+     "local": {
+      "S!A2": "=LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))(1,)"
+     },
+     "shown": {
+      "S!A2": "1"
+     }
+    }
+   ]
+  },
+  "required-after": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "errors": {
+    "0": "-2146827284 Exception from HRESULT: 0x800A03EC"
+   },
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    }
+   ]
+  },
+  "literal-255": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 255
+      }
+     },
+     "formulas": {
+      "S!A2": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "local": {
+      "S!A2": "=LEN(\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\")"
+     },
+     "shown": {
+      "S!A2": "255"
+     }
+    }
+   ]
+  },
+  "literal-256": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "errors": {
+    "0": "-2146827284 Exception from HRESULT: 0x800A03EC"
+   },
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    }
+   ]
+  },
+  "literal-4095": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "errors": {
+    "0": "-2146827284 Exception from HRESULT: 0x800A03EC"
+   },
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    }
+   ]
+  },
+  "literal-4096": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-longtext-typed-18435-1",
+   "errors": {
+    "0": "-2146827284 Exception from HRESULT: 0x800A03EC"
+   },
+   "reads": [
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    },
+    {
+     "values": {},
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "S!A2": ""
+     }
+    }
+   ]
+  }
+ }
+}

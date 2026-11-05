@@ -120,7 +120,7 @@ Tested in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU
 
 ## Known differences
 
-- Excel keeps an Excel 2010 data bar's lengths only when they are 0 and 100: a bar of 5 and 95 comes back without them, and is read as 10 and 90.
+- Excel drops a data bar's lengths other than 0 and 100 from a file that holds them on its Excel 2010 part alone, as earlier versions of `writeXlsx` did; the reader gives such a file's lengths, Excel 10 and 90. `writeXlsx` writes them on both parts now, and Excel keeps them.
 - A rule over two ranges that loses rows of the first of them, its formulas changed by the deletion, keeps its place in Excel; the engine moves it after the others, as it moves a rule over one range.
 - A color exactly a third or two fifths of the way from a percentile point can differ by one in a channel: Excel's percentile differs in its last bit.
 - Excel for Mac sorts Cyrillic before Latin in ru-RU; the engine follows Excel for Windows, Latin first, in rules as in formulas.

@@ -115,6 +115,7 @@ Formulas are converted to the engine's spelling.
 | `_xlfn.XLOOKUP(…)`, `_xlfn._xlws.FILTER(…)` | `XLOOKUP(…)`, `FILTER(…)` |
 | `_xlfn.LET(_xlpm.x,1,_xlpm.x+1)` | `LET(x,1,x+1)` |
 | `_xlfn.LAMBDA(_xlpm.x,_xlpm.x*2)(3)`, `_xlfn.BYROW(A1:C3,_xleta.SUM)` | `LAMBDA(x,x*2)(3)`, `BYROW(A1:C3,SUM)` |
+| `_xlfn.LAMBDA(_xlpm.x,_xlop.y,_xlpm.x)(1)` | `LAMBDA(x,[y],x)(1)` |
 | `_xlfn.ANCHORARRAY(E2)` | `E2#` |
 | `_xlfn.SINGLE(A1:A3)` | `@A1:A3` |
 | `Jan:Mar!A1`, `'Jan 1:Mar 2'!A1` | the same reference across sheets |
@@ -156,9 +157,9 @@ Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that name
 
 Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders, alignment and protection ([Protection](#protection)). Its alignment holds the text's orientation too, `rotation`: degrees from -90 to 90, up for positive ones, or `vertical`, the letters one above the other (xlsx `textRotation`, 91 to 180 for the degrees down, 255 for the letters); Excel 16.0.20430 for Windows read each kind from files `writeXlsx` and `writeKept` wrote as the style holds it and saved it so (`bench/windows/run.ts fields rotation`). AutoFit fits rows and columns to turned text as Excel for Mac does ([Turned text](formats.md#turned-text)). Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
 
-Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors.
+Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors. A color that names several kinds takes the highest, `auto` < `indexed` < `rgb` < `theme`, as Excel displays it.
 
-A fill is read as Excel displays it. A solid fill displays its `fgColor`; without one, or with one that names no color (`auto`, a system color), it is white, Excel's automatic color. A fill without a pattern type is no fill; when a fill has both a gradient and a pattern, the pattern counts. Gradients and patterns other than solid are not in the model: the cell is read without a fill, and that is reported.
+A fill is read as Excel displays it. The file's first two fills are no fill and `gray125` whatever it holds there, as Excel takes them. A solid fill displays its `fgColor`; without one, or with one that names no color (`auto`, a system color), it is white, Excel's automatic color. A fill without a pattern type is no fill; when a fill has both a gradient and a pattern, the pattern counts. Gradients and patterns other than solid are not in the model: the cell is read without a fill, and that is reported.
 
 A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader returns that number, 1 to 49, which the workbook displays according to its locale, as Excel does: format 14 displays 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, are not in the model: they are read as the code Excel for Mac en-US displays, `m/d/yy`, and reported. That code is the Mac's short date, format 14; Excel for Windows displays them as its own format 14 too, `m/d/yyyy` in en-US and `ДД.ММ.ГГГГ` in ru-RU, so where the engine displays 2025-01-31 as `1/31/25` (`1.31.25` in ru-RU), Excel for Windows displays `1/31/2025` (`31.01.2025`), as the engine displays format 14 (`test/xlsx-win.test.ts`).
 
@@ -394,7 +395,7 @@ Everywhere else a formula is written as a dynamic array formula, with cell metad
 
 The spilled cells are written with their values. `#SPILL!` and `#CALC!` are written as Excel 365 writes them, so Excel reads them back as those errors.
 
-Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names and LAMBDA parameters become `_xlpm.x`, a function as a value `_xleta.SUM`, a call of a defined name is written with the name as the workbook spells it (`MyFn(1,2)`), `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted. A reference to a deleted sheet, which the workbook holds as Excel shows it (`#REF!A5`, `#REF!E2#`), is written `#REF!` (`_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: Excel does not open a file with the other form. Read back, the formula has `#REF!` (`#REF!#`).
+Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names and LAMBDA parameters become `_xlpm.x`, an optional parameter `_xlop.y`, a function as a value `_xleta.SUM`, a call of a defined name is written with the name as the workbook spells it (`MyFn(1,2)`), `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted. A reference to a deleted sheet, which the workbook holds as Excel shows it (`#REF!A5`, `#REF!E2#`), is written `#REF!` (`_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: Excel does not open a file with the other form. Read back, the formula has `#REF!` (`#REF!#`).
 
 A cell with `array` is written as a legacy array formula over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel accepts there. A name's formula is written as the workbook has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
@@ -677,7 +678,6 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel saves a global name qualified by a sheet that has no name of its own, `'S'!x`, as the workbook-level name `[0]!x`. It comes back as `x`, the same name.
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine accepts, so such a formula does not parse after Excel saved it.
 - Excel for Mac saves the built-in currency and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21, so a workbook read from a file saved by Excel has these codes and numbers.
-- Some theme colors with a tint differ from Excel's by up to 3 of 255 in a channel.
 - The East Asian date formats 50 to 58 are read as the code `m/d/yy`, which Excel for Mac en-US displays for them; Excel for Windows displays them as its short date, format 14, in en-US and ru-RU.
 - In a few places Excel calculates a legacy formula differently from the dynamic formula it displays for it. The engine returns the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - An AutoFilter's criteria and sort are not kept. A filtered sheet comes back with the writer's criteria, which every row satisfies, and Excel's Reapply then shows every row.
@@ -688,7 +688,8 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel saves a space in a hyperlink's address as `%20` and displays it as a space. The reader returns the address as the file stores it.
 - Excel for Windows saves a relative hyperlink address (`other.xlsx`) relative to the folder it saves the file to.
 - A comment thread is read as a note, without its dates, mentions and state, and written as a note.
-- Excel keeps an Excel 2010 data bar's lengths only when they are 0 and 100: a bar of 5 and 95 comes back and is read as 10 and 90.
+- A file with a data bar's lengths other than 0 and 100 on its Excel 2010 part alone, as earlier versions of `writeXlsx` wrote them: Excel takes 10 and 90, the reader the file's lengths.
+- `_xlfn.LONGTEXT`, which the grammar of [MS-XLSX] lists, is `#NAME?` in Excel for Mac 16.114, Excel for Windows 16.0.20430 and the engine, whatever its arguments.
 - A dxf number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
 - A gradient fill is read as no fill; Excel displays the gradient. A conditional format fill with `patternType="none"`, which removes a cell's own fill in Excel, and a solid fill without a color, which Excel displays as white on a cell without a fill, are read as no fill. Each is reported.
 - A data validation list whose item contains a comma (typed in ru-RU) is read as split at the comma. Excel saves a list's reference to a deleted sheet as `#REF!` alone, which the engine keeps as `#REF!$A$1:$A$4`.
