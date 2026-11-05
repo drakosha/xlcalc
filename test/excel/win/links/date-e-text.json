@@ -1,0 +1,582 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 18.8
+ },
+ "cases": [
+  {
+   "id": "e",
+   "about": "TEXT with e",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"e\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2026"
+   }
+  },
+  {
+   "id": "ee",
+   "about": "TEXT with ee",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"ee\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2026"
+   }
+  },
+  {
+   "id": "eee",
+   "about": "TEXT with eee",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"eee\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2026"
+   }
+  },
+  {
+   "id": "upper",
+   "about": "TEXT with E",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"E\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2026"
+   }
+  },
+  {
+   "id": "ymd",
+   "about": "TEXT with e/m/d",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"e/m/d\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2026/3/15"
+   }
+  },
+  {
+   "id": "exponent",
+   "about": "TEXT with 0E+00",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0E+00\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "5E+04"
+   }
+  },
+  {
+   "id": "lower-exponent",
+   "about": "TEXT with 0e+00",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0e+00\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "digit-e",
+   "about": "TEXT with 0e",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0e\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  }
+ ],
+ "sent": {
+  "e": "8d340083e61c65f7639703195a076bcee27d68b6e1a238cf70db6e8657825127",
+  "ee": "840469193c3572de13e2baef986bbcfd4a7ce2d1d27290b2c5fe81a43dca2e5b",
+  "eee": "a2203cc4428f38fa7dab3bb3a463203de9d535d36396243934656fc8fb896862",
+  "upper": "256da0325f6a0e68753ba66b86ee1d12b66a6dcc6885ccf6052457ac1e572948",
+  "ymd": "5344d5575ae9f617a72c65af816bb60c0a17135596cadbfc4a2c82e3e44b93f6",
+  "exponent": "5cd67bc4b9a3f775e5ad9bd131a59e962f05792c56832696ffbba467600d9fef",
+  "lower-exponent": "5f031713a53932252f31705c60f8d0ed7674f5dc4d094f203d2e3a07e0c26523",
+  "digit-e": "5b573896818cdb41b3d77453f8ec39dc5fef7de1661da7d9b58064450f7e24bf"
+ },
+ "answers": {
+  "e": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    }
+   ]
+  },
+  "ee": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"ee\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"ee\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"ee\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"ee\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    }
+   ]
+  },
+  "eee": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"eee\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"eee\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"eee\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"eee\")"
+     },
+     "shown": {
+      "S!A1": "2026"
+     }
+    }
+   ]
+  },
+  "upper": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"E\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"E\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"E\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"E\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "ymd": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026/3/15"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e/m/d\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e/m/d\")"
+     },
+     "shown": {
+      "S!A1": "2026/3/15"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2026/3/15"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e/m/d\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e/m/d\")"
+     },
+     "shown": {
+      "S!A1": "2026/3/15"
+     }
+    }
+   ]
+  },
+  "exponent": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "5E+04"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0E+00\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0E+00\")"
+     },
+     "shown": {
+      "S!A1": "5E+04"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "5E+04"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0E+00\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0E+00\")"
+     },
+     "shown": {
+      "S!A1": "5E+04"
+     }
+    }
+   ]
+  },
+  "lower-exponent": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0e+00\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0e+00\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0e+00\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0e+00\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "digit-e": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-date-e-text-1049-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0e\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0e\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0e\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0e\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  }
+ }
+}

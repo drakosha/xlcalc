@@ -552,6 +552,7 @@ From [Number formats and displayed text](formats.md).
 | `builtin` | 300 per locale | the built-in formats 0 to 49 by number on six values, with the codes Excel reports for them |
 | `builtin-held` | 350 per locale | built-in formats on other values and widths, predicted by the engine before Excel calculated them, all matched |
 | `seconds-held` | 35 (en-US) | moments at the edge of a second in `d h:mm:ss`, predicted by the engine before Excel calculated them; 15 missed (the rounding to the second, and the 15 digits a cell's text is produced from, a known difference), and Windows the same |
+| `date-e-held`, `date-e-mac` | 12 (en-US) on Excel for Windows, the 10 it opened on Excel for Mac | the date codes `e` and `ee` and their runs; predicted as `yyyy`, which held on both; `E` and `EE`, predicted the same, make Excel for Windows refuse the file (`TEXT` with `E`: `#VALUE!`, set `links/date-e-text`) |
 | `sysdate-held` | 57 per locale | `[$-x-sysdate]` and `[$-x-systime]` before five and four codes on three moments, the same codes after `[$-F800]` and `[$-F400]` next to them, and currency tags with a culture (`[$€-x-euro2]`); predicted before Excel calculated them, all matched |
 | `calendar-held` | 36 per locale | `B1` and `B2` before numeric date codes and a date with month names, on four dates; predicted before Excel calculated them, 4 of 72 missed |
 | `calendar-names-held` | 32 per locale | month and day names under `B1` and `B2`; predicted, and `B2`'s 32 missed |

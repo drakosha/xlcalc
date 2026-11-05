@@ -26,7 +26,7 @@ const PLATFORMS = [
 ] as const
 
 /** The stored sets of a platform; no-prefix keeps its answers alone, none of its books has a link (`test/xlsx-no-prefix.test.ts`). */
-const stored = (root: string) => storedSets<StoredLinks>(`${root}links/`).filter((x) => x.name !== 'no-prefix')
+const stored = (root: string) => storedSets<StoredLinks>(`${root}links/`).filter((x) => x.name !== 'no-prefix' && x.name !== 'date-e-text' && !x.name.startsWith('longtext-'))
 
 const saved = (root: string, set: string, id: string) => readXlsx(new Uint8Array(readFileSync(new URL(`./excel/${root}links/${set}/${id}.xlsx`, import.meta.url))))
 

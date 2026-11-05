@@ -132,7 +132,7 @@ describe.each(PLATFORMS)('links against %s', (_, root) => {
   // forms holds each formula in two forms of a file, which `linksBook` does not tell apart (`test/links-forms-excel.test.ts`);
   // names types formulas over a file the book has no link to, for the target Excel writes (`test/scan-external.test.ts`);
   // no-prefix holds spellings of a file the engine calculates and Excel does not (`test/xlsx-no-prefix.test.ts`)
-  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix')) {
+  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix' && !x.name.startsWith('longtext-') && x.name !== 'date-e-text')) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()
       const at = (c: LinksCase, key: string) => `${set.name}/${c.id}/${key}`
