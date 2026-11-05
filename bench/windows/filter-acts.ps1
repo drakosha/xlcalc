@@ -7,19 +7,29 @@
 param([Parameter(Mandatory = $true)][string]$job, [Parameter(Mandatory = $true)][string]$out)
 Add-Type -AssemblyName System.Windows.Forms
 . (Join-Path $PSScriptRoot 'front.ps1')
-function Keys($k) {
+# Data > Filter: Ctrl+Shift+L by the keyboard's own calls, as SendKeys loses the modifiers of this one and types an l
+function FilterKey {
   Front $xl.Hwnd
-  [System.Windows.Forms.SendKeys]::SendWait($k)
+  foreach ($k in 0x11, 0x10, 0x4C) { [XlScreen.Win]::keybd_event([byte]$k, 0, 0, [UIntPtr]::Zero) }
+  foreach ($k in 0x4C, 0x10, 0x11) { [XlScreen.Win]::keybd_event([byte]$k, 0, 2, [UIntPtr]::Zero) }
   Start-Sleep -Milliseconds 1500
   # a window Excel brought waits for an answer, and no call goes through meanwhile
   for ($i = 0; $i -lt 3; $i++) {
     $ready = $false
     try { $ready = [bool]$xl.Ready } catch {}
     if ($ready) { return }
-    $script:dialog += "a window after $k; "
+    $script:dialog += 'a window after Data > Filter; '
     [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
     Start-Sleep 1
   }
+}
+# until Excel takes calls again: a sort or a filter on the screen may still be working
+function WaitReady {
+  for ($i = 0; $i -lt 40; $i++) {
+    try { if ([bool]$xl.Ready) { return } } catch {}
+    Start-Sleep -Milliseconds 500
+  }
+  throw 'Excel did not become ready'
 }
 function FilterOf($ws, $b) { if ($b.table) { $ws.ListObjects.Item(1).AutoFilter } else { $ws.AutoFilter } }
 function HeaderCell($ws, $b, $col) { $ws.Range($col + [string](FilterOf $ws $b).Range.Row) }
@@ -32,8 +42,12 @@ function Step($ws, $b, $s) {
   } elseif ($names -contains 'sort') {
     if ($s.via -eq 'button') {
       [void](HeaderCell $ws $b $s.sort).Select()
-      Keys '%{DOWN}'
-      Keys 'o'
+      # the button's list is open between the two: Excel takes no call meanwhile, Front among them
+      Front $xl.Hwnd
+      [System.Windows.Forms.SendKeys]::SendWait('%{DOWN}')
+      Start-Sleep -Milliseconds 1500
+      [System.Windows.Forms.SendKeys]::SendWait('o')
+      Start-Sleep -Milliseconds 2000
     } else {
       $f = FilterOf $ws $b
       $key = $ws.Range($s.sort + [string]$f.Range.Row + ':' + $s.sort + [string]($f.Range.Row + $f.Range.Rows.Count - 1))
@@ -45,13 +59,13 @@ function Step($ws, $b, $s) {
   } elseif ($names -contains 'off') {
     if ($s.off -eq 'button') {
       [void]$ws.Range('A1').Select()
-      Keys '^+l'
+      FilterKey
     } else { $ws.AutoFilterMode = $false }
   } elseif ($names -contains 'over') {
     $rg = $ws.Range($s.over)
     if ($s.via -eq 'button') {
       [void]$rg.Select()
-      Keys '^+l'
+      FilterKey
     } elseif ($s.via -eq 'field') { [void]$rg.AutoFilter(1) } else { [void]$rg.AutoFilter() }
   } elseif ($names -contains 'set') {
     $ws.Range($s.at).Formula = [string]$s.set
@@ -103,7 +117,7 @@ try {
       $opened = State $ws $b
       foreach ($s in @($b.steps)) {
         Step $ws $b $s
-        Start-Sleep -Milliseconds 300
+        WaitReady
         [void]$after.Add((State $ws $b))
       }
       $wb.SaveAs((Join-Path $dir $b.out), 51)
