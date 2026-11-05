@@ -3,12 +3,13 @@
  * read back, each has the filter mode Excel for Mac took, and the engine computes the values Excel for Windows stored,
  * as `xlsx-excel.test.ts` checks the Mac's. The built-in number formats 1 to 58 as Excel for Windows shows them in
  * each locale (`xlsx/formats.json` in en-US, `xlsx/<tag>/formats.json` in another): 1 to 49 as the display set `builtin`
- * read them, 50 to 58 pinned.
+ * read them, 50 to 58 pinned. The held set of theme tints (`xlsx/colors-held.json`).
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
+import { colorHeldCases, THEME_HELD } from '../bench/coverage/xlsx/colors-held.js'
 import { compareCached } from '../bench/coverage/xlsx/compare.js'
 import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
@@ -16,6 +17,7 @@ import { compute } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import './locales.js'
+import { filledAs, heldOff } from './xlsx-colors.js'
 import { filterRun } from './xlsx-filters.js'
 
 const dir = new URL('./excel/win/xlsx/', import.meta.url)
@@ -39,6 +41,14 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
  * reads them as that Mac code, a format of its own, where it reads 14 by number and shows it by the book's locale.
  */
 const EAST_ASIAN_READ = 'm/d/yy'
+
+describe.skipIf(!existsSync(new URL('colors-held.json', dir)))('xlsx fill colours as Excel for Windows shows them', () => {
+  it('the held set of tints: the prediction committed before Excel ran, then the reader', async () => {
+    const stored = (JSON.parse(readFileSync(new URL('colors-held.json', dir), 'utf8')) as { colors: Record<string, string> }).colors
+    expect(heldOff(stored)).toEqual([])
+    expect(await filledAs(colorHeldCases(), stored, THEME_HELD)).toEqual([])
+  })
+})
 
 describe.each(TAGS.map((tag) => [tag, localeDir(tag)]))('xlsx built-in number formats as Excel for Windows %s shows them', (tag, sub) => {
   const file = new URL(`${sub}formats.json`, dir)

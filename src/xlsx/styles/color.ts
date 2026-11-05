@@ -1,7 +1,7 @@
 /**
  * Colours of styles.xml as `#RRGGBB`: `rgb` (ARGB, the alpha ignored as Excel ignores it), `indexed` (the legacy
  * palette, or the book's own `<indexedColors>`), `theme` with `tint` (the theme's colour lightened or darkened by
- * its luminance, as ECMA-376 defines `tint` and Excel rounds it). `auto` and the system colours are no colour.
+ * its luminance, by ECMA-376's `tint` on Excel's scale of 240 where the standard says 255). `auto` and the system colours are no colour.
  */
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 
@@ -46,12 +46,11 @@ function toHls(r: number, g: number, b: number): [h: number, l: number, s: numbe
   const min = Math.min(r, g, b)
   const l = div((max + min) * HLS + 255, 510)
   if (max === min) return [0, l, 0]
-  const s = l <= HLS / 2 ? div((max - min) * HLS + div(max + min, 2), max + min) : div((max - min) * HLS + div(510 - max - min, 2), 510 - max - min)
+  const sum = l <= HLS / 2 ? max + min : 510 - max - min
+  const s = div((max - min) * HLS + div(sum, 2), sum)
   const d = (c: number) => div((max - c) * (HLS / 6) + div(max - min, 2), max - min)
-  let h = r === max ? d(b) - d(g) : g === max ? HLS / 3 + d(r) - d(b) : (2 * HLS) / 3 + d(g) - d(r)
-  if (h < 0) h += HLS
-  if (h > HLS) h -= HLS
-  return [h, l, s]
+  const h = r === max ? d(b) - d(g) : g === max ? HLS / 3 + d(r) - d(b) : (2 * HLS) / 3 + d(g) - d(r)
+  return [h < 0 ? h + HLS : h, l, s]
 }
 
 /** HLS in whole steps back to RGB (0 to 255), rounded. */
@@ -61,23 +60,21 @@ function toRgb(h: number, l: number, s: number): number[] {
   const m1 = 2 * l - m2
   const hue = (t: number) => {
     t = t < 0 ? t + HLS : t > HLS ? t - HLS : t
-    if (t < HLS / 6) return m1 + div((m2 - m1) * t + HLS / 12, HLS / 6)
-    if (t < HLS / 2) return m2
-    if (t < (2 * HLS) / 3) return m1 + div((m2 - m1) * ((2 * HLS) / 3 - t) + HLS / 12, HLS / 6)
-    return m1
+    return m1 + div((m2 - m1) * (t < HLS / 6 ? t : t < HLS / 2 ? HLS / 6 : t < (2 * HLS) / 3 ? (2 * HLS) / 3 - t : 0) + HLS / 12, HLS / 6)
   }
   return [h + HLS / 3, h, h - HLS / 3].map((t) => Math.max(0, Math.min(255, div(hue(t) * 255 + HLS / 2, HLS))))
 }
 
 /**
- * A colour lightened (tint > 0) or darkened (tint < 0) by its luminance in Windows' HLS steps. Measured against
- * Excel for Mac, this gives its colour exactly for most theme colours and tints, and within 3 of 255 per channel
- * for the rest.
+ * A colour lightened (tint > 0) or darkened (tint < 0) by its luminance in Windows' HLS steps. Excel shows these colours
+ * for every tint measured: a lightened one truncates each term of ECMA-376's sum on its own, as its worked example does
+ * (18.8.19), and the small addend takes out the float noise of a product that is whole (240 * 0.1).
  */
 export function tinted(hex: string, tint: number): string {
   if (!tint) return hex
   const [h, l, s] = toHls(...([0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number]))
-  const lum = Math.floor(tint < 0 ? l * (1 + tint) : l * (1 - tint) + HLS * tint)
+  const part = (x: number) => Math.trunc(x * (1 - tint) + 1e-9)
+  const lum = tint < 0 ? Math.floor(l * (1 + tint)) : part(l) + HLS - part(HLS)
   return toRgb(h, lum, s)
     .map((c) => c.toString(16).padStart(2, '0'))
     .join('')

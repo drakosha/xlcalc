@@ -677,7 +677,6 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel saves a global name qualified by a sheet that has no name of its own, `'S'!x`, as the workbook-level name `[0]!x`. It comes back as `x`, the same name.
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine accepts, so such a formula does not parse after Excel saved it.
 - Excel for Mac saves the built-in currency and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21, so a workbook read from a file saved by Excel has these codes and numbers.
-- Some theme colors with a tint differ from Excel's by up to 3 of 255 in a channel.
 - The East Asian date formats 50 to 58 are read as the code `m/d/yy`, which Excel for Mac en-US displays for them; Excel for Windows displays them as its short date, format 14, in en-US and ru-RU.
 - In a few places Excel calculates a legacy formula differently from the dynamic formula it displays for it. The engine returns the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - An AutoFilter's criteria and sort are not kept. A filtered sheet comes back with the writer's criteria, which every row satisfies, and Excel's Reapply then shows every row.
