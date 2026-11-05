@@ -1,0 +1,100 @@
+{
+ "cases": {
+  "file-sum-model": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": []
+   },
+   "after": [
+    {
+     "range": "",
+     "hidden": []
+    }
+   ]
+  },
+  "file-sub-model": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": [
+     22
+    ]
+   },
+   "after": [
+    {
+     "range": "",
+     "hidden": [
+      22
+     ]
+    }
+   ]
+  },
+  "criteria-sub-model": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": [
+     22
+    ]
+   },
+   "after": [
+    {},
+    {
+     "range": "",
+     "hidden": [
+      22
+     ]
+    }
+   ]
+  },
+  "file-sum-button": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": []
+   },
+   "after": [
+    {
+     "range": "",
+     "hidden": []
+    }
+   ]
+  },
+  "file-sub-button": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": [
+     22
+    ]
+   },
+   "after": [
+    {
+     "range": "",
+     "hidden": [
+      22
+     ]
+    }
+   ]
+  },
+  "criteria-sub-button": {
+   "opens": true,
+   "saved": {
+    "ref": null,
+    "hidden": [
+     22
+    ]
+   },
+   "after": [
+    {},
+    {
+     "range": "",
+     "hidden": [
+      22
+     ]
+    }
+   ]
+  }
+ }
+}

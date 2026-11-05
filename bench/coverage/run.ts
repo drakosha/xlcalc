@@ -38,6 +38,7 @@
  *   npx tsx bench/coverage/run.ts sort X     the Sort command over the columns of sort/X.ts into test/excel/sort/X.json (test: test/sort-command-excel.test.ts)
  *   npx tsx bench/coverage/run.ts ui X [ru|T]    the formula bar, a paste and Control+Return in Excel's window (Excel in front), ui/X.ts, into test/excel/ui/[ru-RU/ or T/]X.json (test: test/ui-excel.test.ts)
  *   npx tsx bench/coverage/run.ts filter X   the AutoFilter under typing, pasting, filling, clearing and undo in Excel's window, filter/X.ts, into test/excel/filter/X.json (test: test/autofilter-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts filter-acts X   what an AutoFilter does to the rows of its sheet, its buttons and the object model, filter-acts/X.ts, into test/excel/filter-acts/X.json (test: test/autofilter-excel.test.ts)
  *
  * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
  * in a directory of its tag.
@@ -83,6 +84,7 @@ import { stepLines } from './lines.js'
 import { stepProtect } from './protect.js'
 import { stepUi } from './ui.js'
 import { stepFilter } from './filter.js'
+import { stepFilterActs } from './filter-acts.js'
 import { stepRows } from './rows.js'
 import { HERE, ROOT } from './paths.js'
 
@@ -339,6 +341,7 @@ else if (step === 'fit') await withExcelLock(() => stepFit(process.argv[3], loca
 else if (step === 'ui') await withExcelLock(() => stepUi(process.argv[3], locale))
 else if (step === 'rows') await withExcelLock(() => stepRows(process.argv[3], locale))
 else if (step === 'filter') await withExcelLock(() => stepFilter(process.argv[3]))
+else if (step === 'filter-acts') await withExcelLock(() => stepFilterActs(process.argv[3]))
 else if (step === 'pivot') await withExcelLock(() => stepPivotMac(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
@@ -350,7 +353,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | pivot set | xlsx roundtrip|saved|forms|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | filter-acts set | pivot set | xlsx roundtrip|saved|forms|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
