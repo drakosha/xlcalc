@@ -6,7 +6,8 @@ import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parseTokens } from '../../syntax/parse.js'
 import { shaped, SHAPES } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
-import { fromFile, type Found } from '../formulas/from-file.js'
+import { fromFile, noPrefixCalls, type Found } from '../formulas/from-file.js'
+import { XLWS } from '../formulas/prefixes.js'
 import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 
@@ -15,10 +16,14 @@ const FOUND: Record<Found, [XlsxIssueCode, XlsxMessage]> = {
   table: ['table', { key: 'tableRefWithoutTable' }],
   externalLink: ['externalLink', { key: 'formulaExternal' }],
   letName: ['formula', { key: 'letPrefix' }],
+  noPrefix: ['noPrefix', { key: 'noPrefix' }],
 }
 
 /** Found kinds that already say why the engine does not parse the formula. */
 const EXPLAINED = new Set<Found>(['table', 'externalLink', 'letName'])
+
+/** The message of a call Excel refuses the file over. */
+const REFUSED: XlsxMessage = { key: 'noPrefixRefused' }
 
 export interface ReadFormula {
   formula: string
@@ -29,6 +34,8 @@ export interface ReadFormula {
   found: Found[]
   /** The user-defined functions it calls, as `fromFile` finds them. */
   userFunctions?: string[]
+  /** The functions it calls without their prefix (`noPrefixCalls`). */
+  noPrefix?: string[]
 }
 
 /** How a formula of the file is read. */
@@ -48,6 +55,7 @@ export interface FormulaOptions {
 export function reportFormula(f: ReadFormula, issues: Issues, where: Where): void {
   for (const x of f.found) {
     if (x === 'userFunction') for (const fn of f.userFunctions ?? [undefined]) issues.add(...FOUND[x], { ...where, fn })
+    else if (x === 'noPrefix') for (const fn of f.noPrefix ?? []) issues.add('noPrefix', XLWS.has(fn) ? REFUSED : FOUND[x][1], { ...where, fn })
     else issues.add(...FOUND[x], where)
   }
   if (!f.ok && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', { key: 'formulaUnparsed' }, where)
@@ -91,6 +99,8 @@ function parsed(text: string, opts: FormulaOptions | undefined, tree: boolean): 
  */
 export function parseFormula(text: string, opts?: FormulaOptions, tree = true): ReadFormula {
   const { links, ...c } = fromFile(text)
+  const noPrefix = noPrefixCalls(text)
+  if (noPrefix) Object.assign(c, { found: [...c.found, 'noPrefix'], noPrefix })
   if (opts?.rename) c.formula = opts.rename(c.formula)
   const r = parsed(c.formula, opts, tree)
   if (!r.ok) return { ...c, ok: false }

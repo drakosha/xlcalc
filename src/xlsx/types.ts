@@ -16,6 +16,9 @@ import type { Locale } from '../locale/types.js'
  *   the engine cannot parse.
  * - `userFunction`: calls to a function the file marks as user-defined (`_xludf.`), a macro or add-in function, named
  *   by `fn`.
+ * - `noPrefix`: calls to a function a file stores with a prefix (`_xlfn.`, `_xlfn._xlws.`) written without it, as a generator
+ *   does that takes a formula verbatim, named by `fn`: the engine calculates the call, where Excel shows #NAME?, and for
+ *   FILTER and SORT does not open the file. `IFERROR` around such a call hides the error in Excel.
  * - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
  *   writer could not write (its value is written instead, or an empty cell when it has none).
  * - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
@@ -60,6 +63,7 @@ export type XlsxIssueCode =
   | 'table'
   | 'externalLink'
   | 'userFunction'
+  | 'noPrefix'
   | 'formula'
   | 'errorConstant'
   | 'errorValue'
@@ -100,7 +104,7 @@ export interface XlsxIssue {
   sheet?: string
   cells?: string[]
   name?: string
-  /** The function, upper-case, of a `userFunction` issue: one issue per function, sheet or name, its cells the calls. */
+  /** The function, upper-case, of a `userFunction` or `noPrefix` issue: one issue per function, sheet or name, its cells the calls. */
   fn?: string
 }
 

@@ -122,6 +122,18 @@ Formulas are converted to the engine's spelling.
 
 A prefix counts only at the start of a word: a name or a table name continues through `?` as through letters, so `a?_xlfn.b` is the name `a?_xlfn.b` and `T?[Qty]` refers to the table `T?`, as Excel loads them.
 
+#### Functions without their prefix
+
+A function newer than Excel 2007 is stored with a prefix: `_xlfn.XLOOKUP(…)`, `_xlfn._xlws.FILTER(…)`. Excel and `writeXlsx` write it so. A generator that takes a formula verbatim, such as openpyxl, may store `XLOOKUP(…)`. The reader takes both and the engine calculates both, and reports the second as `noPrefix`, because Excel does not read it as the function:
+
+| in the file | in Excel for Windows and for Mac | in the engine |
+|---|---|---|
+| `XLOOKUP(2,{1,2},{3,4})`, and every other function of the prefix list but those below | `#NAME?`, after a full calculation too; `IFERROR` around it gives its fallback, with no error shown | the value, and `noPrefix` |
+| `FILTER(…)`, `SORT(…)` | the file does not open | the value, and `noPrefix` |
+| `NETWORKDAYS.INTL(…)`, `WORKDAY.INTL(…)`, `ECMA.CEILING(…)`, `ISO.CEILING(…)`, `DBCS(…)` | the value | the value |
+
+The first four of the last row are functions of ISO/IEC 29500-1, 18.17.7, the list [MS-XLSX] 2.2.3 extends with the functions that take a prefix. `FILTER` and `SORT` are also names of commands in [MS-XLSX]'s grammar (`command-list`). `test/xlsx-no-prefix.test.ts` compares the report with Excel's answers for each function (`bench/coverage/links/no-prefix.ts`).
+
 A shared formula is written once in a file and used by a block of cells. Each of these cells gets its own formula, adjusted as copy and paste would adjust it: `A1*2` in B1 becomes `A2*2` in B2. A master cell below or to the right of its copies works too, and a reference pushed past the edge of the sheet becomes `#REF!`.
 
 An array formula spills from its top-left cell. The other cells of its range hold only stored values in the file, so they go to `cached`, and they keep their own style in the workbook. Excel 365 marks its dynamic array formulas with cell metadata. An array formula without that mark is a legacy array formula, entered with Ctrl+Shift+Enter. Its cell gets the formula and `array`, the range it covers, and the formula is calculated over that range as Excel calculates it ([docs/legacy.md](legacy.md)).
@@ -290,6 +302,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `userFunction` | a user-defined function (`_xludf.`): one issue per function on a sheet or a name, the function in `fn` (upper-case) and its calls in `cells`, so a host can count them without reading `message` |
 | `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a custom table style, a structured reference without a table name |
 | `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a workbook without sheets; a formula over a link the file does not contain, or over such a link |
+| `noPrefix` | a function a file stores with a prefix, written without it, as a generator does that takes a formula verbatim: one issue per function on a sheet or a name, the function in `fn` and its calls in `cells`. The engine calculates the call; Excel shows `#NAME?` ([Functions without their prefix](#functions-without-their-prefix)) |
 | `formula` | a formula the engine cannot parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula consisting of it |
 | `errorValue` | an error the model has no code for, such as `#GETTING_DATA` |

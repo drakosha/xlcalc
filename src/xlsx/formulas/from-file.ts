@@ -10,8 +10,9 @@ import { FormulaError } from '../../syntax/ast.js'
 import { letNameClash, parse } from '../../syntax/parse.js'
 import { bracketEnd, closingQuote, FILE_WORD_CHAR, IDENT_RULE, TRIM_END, TRIM_FUNCTIONS } from '../../syntax/scan.js'
 import { TRIM_OPS } from '../../structure/area.js'
+import { XLFN, XLWS } from './prefixes.js'
 
-export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
+export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName' | 'noPrefix'
 
 export interface Converted {
   formula: string
@@ -150,4 +151,42 @@ export function fromFile(src: string): Converted {
     i += name.length
   }
   return { formula: out, found: [...found], ...(links.length ? { links } : {}), ...(udfs.size ? { userFunctions: [...udfs] } : {}) }
+}
+
+/**
+ * Names of the prefix list that Excel calculates without the prefix too (`test/excel/links/no-prefix.json`): functions of the
+ * standard's own list (ISO/IEC 29500-1, 18.17.7), which [MS-XLSX] 2.2.3 does not count among the future functions, and DBCS.
+ */
+const STANDARD = new Set(['DBCS', 'ECMA.CEILING', 'ISO.CEILING', 'NETWORKDAYS.INTL', 'WORKDAY.INTL'])
+
+/** A word before `(`: a function's name when no word character stands before it. */
+const CALL = /([A-Za-z][A-Za-z0-9.]*)\(/g
+
+/** Whether `at` lies in text in quotes, a quoted sheet name or brackets. */
+function isInside(src: string, at: number): boolean {
+  for (let i = 0; i < src.length && i <= at; i++) {
+    const c = src[i]
+    const end = c === '"' || c === "'" ? quoted(src, i) : c === '[' ? bracketEnd(src, i) : -1
+    if (end > at) return true
+    if (end > 0) i = end - 1
+  }
+  return false
+}
+
+/**
+ * The functions a formula of a file calls without the prefix the file should store them with, upper-case, in the order of
+ * their first call: as a generator writes them that takes a formula verbatim. The engine calculates such a call; Excel
+ * does not (`noPrefix`).
+ */
+export function noPrefixCalls(src: string): string[] | undefined {
+  let out: string[] | undefined
+  CALL.lastIndex = 0
+  for (let m = CALL.exec(src); m; m = CALL.exec(src)) {
+    const name = m[1].toUpperCase()
+    if (STANDARD.has(name) || !(XLFN.has(name) || XLWS.has(name)) || out?.includes(name)) continue
+    const before = src[m.index - 1]
+    if (before === '!' || (before !== undefined && FILE_WORD_CHAR.test(before)) || isInside(src, m.index)) continue
+    ;(out ??= []).push(name)
+  }
+  return out
 }
