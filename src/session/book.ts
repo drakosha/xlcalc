@@ -109,6 +109,28 @@ export function checkOutsideTables(book: BookInput, edits: LayoutEdit[], sheetIn
 /** A layout edit that sets what it gives, AutoFit turned into the sizes it sets (`fitEdits`). */
 export type SetLayoutEdit = Exclude<LayoutEdit, ColumnsFit | RowsFit>
 
+/**
+ * Layout edits with `showRows` as the edits they come to, each reading the sheet the edits before it left: on a filtered sheet, the
+ * filter mode off and the rows of the AutoFilter's own range below its header shown (`bench/coverage/filter-acts/`: removal, moved).
+ */
+export function shownEdits(book: BookInput, edits: SetLayoutEdit[], sheetIndex: (name: string) => number): SetLayoutEdit[] {
+  if (!edits.some((e) => 'showRows' in e)) return edits
+  const scratch: BookInput = { ...book, sheets: book.sheets.slice() }
+  const out: SetLayoutEdit[] = []
+  for (const e of edits) {
+    const set = [e]
+    if ('showRows' in e) {
+      const sheet = scratch.sheets[sheetIndex(e.sheet)]
+      const x = sheet.filtered && sheet.autoFilter && parseRange(sheet.autoFilter.range)!
+      set[0] = { sheet: e.sheet, autoFilter: e.autoFilter }
+      if (x) set.unshift({ sheet: e.sheet, filtered: false }, { sheet: e.sheet, rows: `${x.r1 + 2}:${Math.max(x.r1, x.r2) + 1}`, set: { hidden: null } })
+    }
+    applyLayout(scratch, set, sheetIndex)
+    out.push(...set)
+  }
+  return out
+}
+
 /** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells; the changed sheets by index. */
 export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex: (name: string) => number): Map<number, SheetInput> {
   const changed = new Map<number, SheetInput>()

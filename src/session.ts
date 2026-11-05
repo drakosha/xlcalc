@@ -32,7 +32,7 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { autoFilterRange } from './session/autofilter.js'
-import { applyLayout, bookLayout, checkOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
+import { applyLayout, bookLayout, checkOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit, shownEdits } from './session/book.js'
 import { pastedHeights, patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
@@ -959,10 +959,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // AutoFit becomes the widths it sets
       const taken = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
       checkOutsideTables(s.input, taken, (name) => sheetIndex(s)(name)!)
-      const checked = fitEdits(s, taken)
+      const index = (name: string) => sheetIndex(s)(name)!
+      const checked = shownEdits(s.input, fitEdits(s, taken), index)
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
       // the new sheets, put into the book by `relayout`
-      const next = applyLayout({ ...s.input, sheets: s.input.sheets.slice() }, checked, (name) => sheetIndex(s)(name)!)
+      const next = applyLayout({ ...s.input, sheets: s.input.sheets.slice() }, checked, index)
       const [out, before] = yield* relayout(s, next, shown)
       if (edits.length) keep(() => layoutStep('setLayout', before, next))
       return answer(s, out)

@@ -220,8 +220,12 @@ export type LayoutEdit =
   | { sheet: string; merges: string[] }
   /** The sheet's filter mode (`SheetInput.filtered`). */
   | { sheet: string; filtered: boolean }
-  /** The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. */
-  | { sheet: string; autoFilter: AutoFilter | null }
+  /**
+   * The sheet's AutoFilter (`SheetInput.autoFilter`); null removes it. With `showRows`, as Excel's Filter button removes or moves
+   * it: on a filtered sheet the rows of its own range below the header are shown and the sheet is no longer filtered. Other rows
+   * stay hidden and a row of height 0 keeps its height. Without `showRows`, the rows and `filtered` stay as they are.
+   */
+  | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
