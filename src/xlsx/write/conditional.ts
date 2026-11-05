@@ -138,7 +138,10 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
     }
     if (rule.type === 'dataBar') {
       const old = rule.excel2007 === true
-      const lengths = old ? `${rule.minLength !== undefined && rule.minLength !== 10 ? ` minLength="${rule.minLength}"` : ''}${rule.maxLength !== undefined && rule.maxLength !== 90 ? ` maxLength="${rule.maxLength}"` : ''}` : ''
+      // a 2010 bar's lengths, but 0 and 100, go on both parts: Excel drops them from the 2010 part alone ([MS-XLSX] 2.6.30, the set `xlsx/bars-held`)
+      const both = old || (rule.minLength ?? 0) !== 0 || (rule.maxLength ?? 100) !== 100
+      const [min, max] = old ? [rule.minLength, rule.maxLength] : [rule.minLength ?? 0, rule.maxLength ?? 100]
+      const lengths = both ? `${min !== undefined && min !== 10 ? ` minLength="${min}"` : ''}${max !== undefined && max !== 90 ? ` maxLength="${max}"` : ''}` : ''
       const link = old ? '' : `<extLst><ext uri="${BAR_ID}" xmlns:x14="${X14}"><x14:id>${id}</x14:id></ext></extLst>`
       const bar = `<dataBar${lengths}${rule.showValue === false ? ' showValue="0"' : ''}>${values!(rule.min, false)}${values!(rule.max, false)}<color rgb="${rgb(rule.color)}"/></dataBar>`
       const own = block(rule.ranges, `<cfRule type="dataBar"${priority}${stop}>${bar}${link}</cfRule>`, pv)

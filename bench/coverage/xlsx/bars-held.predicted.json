@@ -8,6 +8,8 @@
   "max-only": { "old": { "minLength": "0", "maxLength": "95" }, "x14": { "minLength": "0", "maxLength": "95" }, "read": { "minLength": 0, "maxLength": 95 } },
   "default-0-100": { "old": {}, "x14": { "minLength": "0", "maxLength": "100" }, "read": { "minLength": 0, "maxLength": 100 } },
   "both-10-90": { "old": {}, "x14": {}, "read": { "minLength": 10, "maxLength": 90 } },
+  "written-10-95": { "old": { "maxLength": "95" }, "x14": { "maxLength": "95" }, "read": { "minLength": 10, "maxLength": 95 } },
+  "written-5-90": { "old": { "minLength": "5" }, "x14": { "minLength": "5" }, "read": { "minLength": 5, "maxLength": 90 } },
   "made": { "old": { "minLength": "5", "maxLength": "95" }, "x14": { "minLength": "5", "maxLength": "95" }, "read": { "minLength": 5, "maxLength": 95 } }
  }
 }

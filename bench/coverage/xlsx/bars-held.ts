@@ -1,7 +1,7 @@
 /**
  * The lengths of an Excel 2010 data bar, which a file holds twice: on the 2007 `<dataBar>` and on `<x14:dataBar>`. [MS-XLSX] 2.6.30
  * says that with lengths other than 0 and 100 the two MUST be equal, and with 0 and 100 the 2007 part MUST be 10 and 90. Each case
- * is a file `writeXlsx` writes with the 2007 part changed by hand (`old`), opened and saved by Excel: `npx tsx bench/coverage/run.ts
+ * is a file `writeXlsx` writes, opened and saved by Excel, `x14-only` with the 2007 part's lengths taken away by hand: `npx tsx bench/coverage/run.ts
  * xlsx bars-held` and `npx tsx bench/windows/run.ts xlsx bars-held` keep the saved files in `xlsx/bars-held/` of each Excel's answers.
  * `made` (Windows alone: Excel for Mac's AppleScript crashes making a rule) is a bar Excel makes itself, `PercentMin` 5 and
  * `PercentMax` 95, saved into `xlsx/bars-held-made/`. `bars-held.predicted.json` was committed before Excel ran the set: the lengths
@@ -15,18 +15,21 @@ export interface BarCase {
   id: string
   minLength: number
   maxLength: number
-  /** The attributes the 2007 part is given by hand; without it the part stays as the writer leaves it. */
-  old?: string
+  /** The lengths on the 2010 part alone, as the writer wrote them before this set: the 2007 part's taken away by hand. */
+  only2010?: true
 }
 
 export const BAR_CASES: BarCase[] = [
-  { id: 'x14-only', minLength: 5, maxLength: 95 },
-  { id: 'both', minLength: 5, maxLength: 95, old: ' minLength="5" maxLength="95"' },
-  { id: 'both-20-80', minLength: 20, maxLength: 80, old: ' minLength="20" maxLength="80"' },
-  { id: 'min-only', minLength: 5, maxLength: 100, old: ' minLength="5" maxLength="100"' },
-  { id: 'max-only', minLength: 0, maxLength: 95, old: ' minLength="0" maxLength="95"' },
+  { id: 'x14-only', minLength: 5, maxLength: 95, only2010: true },
+  { id: 'both', minLength: 5, maxLength: 95 },
+  { id: 'both-20-80', minLength: 20, maxLength: 80 },
+  { id: 'min-only', minLength: 5, maxLength: 100 },
+  { id: 'max-only', minLength: 0, maxLength: 95 },
   { id: 'default-0-100', minLength: 0, maxLength: 100 },
   { id: 'both-10-90', minLength: 10, maxLength: 90 },
+  // after the writer took the rule: one length at the 2007 part's default, which the writer leaves out there
+  { id: 'written-10-95', minLength: 10, maxLength: 95 },
+  { id: 'written-5-90', minLength: 5, maxLength: 90 },
 ]
 
 export const barRule = (c: { minLength: number; maxLength: number }): ConditionalFormat => ({ type: 'dataBar', ranges: ['A1:A4'], min: { type: 'min' }, max: { type: 'max' }, color: '#638EC6', minLength: c.minLength, maxLength: c.maxLength })
@@ -35,7 +38,7 @@ const cells = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, A4: { valu
 
 export async function barFile(c: BarCase): Promise<Uint8Array> {
   const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells, conditionalFormats: [barRule(c)] }] } })
-  return c.old ? rawFile(data, [{ part: 'xl/worksheets/sheet1.xml', from: '<dataBar>', to: `<dataBar${c.old}>` }]) : data
+  return c.only2010 ? rawFile(data, [{ part: 'xl/worksheets/sheet1.xml', from: `<dataBar minLength="${c.minLength}" maxLength="${c.maxLength}">`, to: '<dataBar>' }]) : data
 }
 
 /** The book of `made`: the same cells, the bar Excel's to make. */
