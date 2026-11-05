@@ -190,11 +190,11 @@ export async function linkFile(c: LinksCase): Promise<Uint8Array> {
 
 /** workbook.xml with the external references after the sheets and the case's names among the defined names. */
 function workbookXml(xml: string, c: LinksCase, sheets: SheetInput[]): string {
-  const refs = `<externalReferences>${c.links.map((_, i) => `<externalReference r:id="rIdL${i + 1}"/>`).join('')}</externalReferences>`
+  const refs = c.links.length ? `<externalReferences>${c.links.map((_, i) => `<externalReference r:id="rIdL${i + 1}"/>`).join('')}</externalReferences>` : ''
   let out = xml.replace('</sheets>', `</sheets>${refs}`)
   if (!c.names?.length) return out
   const defs = c.names.map((n) => `<definedName name="${escapeAttr(n.name)}"${n.sheet === undefined ? '' : ` localSheetId="${sheets.findIndex((s) => s.name === n.sheet)}"`}>${escapeText(n.ref)}</definedName>`).join('')
-  out = out.includes('</definedNames>') ? out.replace('</definedNames>', `${defs}</definedNames>`) : out.replace(refs, `${refs}<definedNames>${defs}</definedNames>`)
+  out = out.includes('</definedNames>') ? out.replace('</definedNames>', `${defs}</definedNames>`) : out.replace(`</sheets>${refs}`, `</sheets>${refs}<definedNames>${defs}</definedNames>`)
   return out
 }
 

@@ -7,7 +7,9 @@
  *
  * `predicted` was committed before Excel ran the set. The guess, from 25 names tried on 05.11.2026: every name gives #NAME?,
  * after a full calculation too, but NETWORKDAYS.INTL and WORKDAY.INTL, which have no `predicted` and calculate; FILTER and SORT, the
- * names Excel saves as `_xlfn._xlws.`, are refused with the file. `IFERROR` around such a call hides it.
+ * names Excel saves as `_xlfn._xlws.`, are refused with the file. `IFERROR` around such a call hides it. On Excel for Windows 167
+ * of 170 held: DBCS, ECMA.CEILING and ISO.CEILING calculate, and MAKEARRAY was refused over `LAMBDA(r,c,r)`, since `r` and `c` are
+ * no names in Excel; its call here is the second one.
  */
 import { XLFN, XLWS } from '../../../src/xlsx/formulas/prefixes.js'
 import type { CachedValue, LinksCase, LinksCases } from './cases.js'
@@ -104,7 +106,7 @@ const CALLS: Record<string, string> = {
   LET: 'LET(x,1,x+1)',
   'LOGNORM.DIST': 'LOGNORM.DIST(4,3.5,1.2,TRUE)',
   'LOGNORM.INV': 'LOGNORM.INV(0.039084,3.5,1.2)',
-  MAKEARRAY: 'MAKEARRAY(1,1,LAMBDA(r,c,r))',
+  MAKEARRAY: 'MAKEARRAY(1,1,LAMBDA(a,b,a))',
   MAP: 'MAP({1,2},LAMBDA(x,x))',
   MAXIFS: 'MAXIFS(B1:B4,B1:B4,">1")',
   MINIFS: 'MINIFS(B1:B4,B1:B4,">1")',
