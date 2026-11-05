@@ -9,7 +9,7 @@ import type { CellInput, CellValue, ColumnInput, ErrorCode, NumberFormat, RowInp
 import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
 import { colToIndex, dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
-import { CELL_ERRORS, ERROR_CODE, FORMULA_ERRORS } from '../../syntax/errors.js'
+import { CELL_ERRORS, ERROR_CODE, ERROR_TEXT, FORMULA_ERRORS } from '../../syntax/errors.js'
 import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell } from '../types.js'
 import type { Xf } from '../styles/read.js'
@@ -69,7 +69,7 @@ export interface SheetCells {
 }
 
 /** The model's codes of the errors a cell may hold. */
-export const ERRORS: Record<string, ErrorCode> = Object.fromEntries(CELL_ERRORS.map((text) => [text, ERROR_CODE[text]]))
+export const ERRORS: Record<string, ErrorCode> = Object.fromEntries([...CELL_ERRORS, ERROR_TEXT.BUSY].map((text) => [text, ERROR_CODE[text]]))
 
 /** Errors the engine reads in a formula: what an error stored as a cell's value is read as. */
 const LITERAL = new Set(FORMULA_ERRORS)

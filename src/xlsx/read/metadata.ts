@@ -6,8 +6,8 @@
 import { ERROR_TEXT, TYPED_ERRORS } from '../../syntax/errors.js'
 import { attributes, attrsAt, element, elements, flag, within } from '../xml/scan.js'
 
-/** The errors of rich values by their `errorType`, in ERROR.TYPE's order: the typed ones first. */
-export const RICH_ERRORS = [...TYPED_ERRORS, '#GETTING_DATA', ERROR_TEXT.SPILL, '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', ERROR_TEXT.CALC]
+/** The errors of rich values by their `errorType`, in ERROR.TYPE's order: the typed ones first. #BUSY! is 14, or 17 when it says the value it waits for ([MS-XLSX] 2.3.6.1.3.2). */
+export const RICH_ERRORS = [...TYPED_ERRORS, '#GETTING_DATA', ERROR_TEXT.SPILL, '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', ERROR_TEXT.CALC, ERROR_TEXT.BUSY, '#UNKNOWN!', '#UNKNOWN!', ERROR_TEXT.BUSY]
 
 /** The rich value `errorType` of the errors Excel keeps as rich values; those of connections after the first two. */
 export const RICH_TYPE = {
