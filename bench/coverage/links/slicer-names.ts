@@ -7,7 +7,9 @@
  *
  * `refused` and `SAVED` were committed before Excel ran this set. The model: Excel asks the cache's name of the workbook's names, in any
  * case and with any value there, a sheet's own not counting, for a frame alone; so all of the writer's files open, each saved with
- * what it holds, and the file without the name is refused for a slicer and for a timeline alike.
+ * what it holds, and the file without the name is refused for a slicer and for a timeline alike. Excel for Windows refused
+ * `book-name-other`, a name of another value (kept by hand now, as the writer leaves such a cache out), which the case
+ * `left-out-*` was added for, with its prediction, before the next run.
  */
 import { readFileSync } from 'node:fs'
 import type { BookInput, SheetInput, StructureOp } from '../../../src/contract.js'
@@ -119,6 +121,8 @@ export const SAVED: Record<string, { slicers: number; timelines: number; names: 
   'book-name-case': { slicers: 1, timelines: 0, names: ['SLICER_REGION'] },
   'book-name-other': { slicers: 1, timelines: 0, names: ['Slicer_Region'] },
   'book-name-sheet': { slicers: 1, timelines: 0, names: ['Slicer_Region', 'Slicer_Region'] },
+  'left-out-slicer': { slicers: 0, timelines: 0, names: ['Slicer_Region'] },
+  'left-out-timeline': { slicers: 0, timelines: 0, names: ['NativeTimeline_Date'] },
   'excel-slicer': { slicers: 1, timelines: 0, names: ['Slicer_Region'] },
   'excel-timeline': { slicers: 0, timelines: 1, names: ['Timeline_Date'] },
 }
@@ -155,9 +159,22 @@ export function buildLinksCases(): LinksCases {
         slicerOf(b, 'Region', 'Region', 'Slicer_Region', HERE)
         b.names = [{ name: 'SLICER_REGION', ref: '#N/A' }]
       }),
-      book('book-name-other', 'a slicer with a place, the book holding the name for a cell', (b) => {
+      book(
+        'book-name-other',
+        'a slicer with a place, the workbook holding the name for a cell',
+        (b) => {
+          slicerOf(b, 'Region', 'Region', 'Slicer_Region', HERE)
+          b.names = [{ name: 'Slicer_Region', ref: '#N/A' }]
+        },
+        { edit: subs([WORKBOOK, '<definedName name="Slicer_Region">#N/A</definedName>', `<definedName name="Slicer_Region">'D'!$A$1</definedName>`]) },
+      ),
+      book('left-out-slicer', 'as `book-name-other`, through the writer: the slicer and its cache left out', (b) => {
         slicerOf(b, 'Region', 'Region', 'Slicer_Region', HERE)
         b.names = [{ name: 'Slicer_Region', ref: 'D!$A$1' }]
+      }),
+      book('left-out-timeline', 'a timeline likewise', (b) => {
+        timelineOf(b, HERE)
+        b.names = [{ name: 'NativeTimeline_Date', ref: 'D!$A$1' }]
       }),
       book('book-name-sheet', 'a slicer with a place, a sheet holding the name as its own', (b) => {
         slicerOf(b, 'Region', 'Region', 'Slicer_Region', HERE)
