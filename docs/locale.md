@@ -294,7 +294,7 @@ Some locales need code as well as data:
 
 - Scripts written right to left (Arabic, Hebrew): neither the translation of typed formulas nor what cells display has been checked with them.
 - Native digits of a script (Arabic-Indic, Devanagari): number and date text is parsed with the digits 0 to 9 only, and TEXT's `[DBNum1]` and similar codes are not supported.
-- Calendars other than the Gregorian and the Hijri of `B2` (Japanese eras, Thai Buddhist years): dates are Gregorian.
+- Calendars other than the Gregorian and the Hijri of `B2` (Japanese eras, Thai Buddhist years): dates are Gregorian. The code `b` writes the Buddhist year of a Gregorian date, and `g` an era's name, empty here.
 - Digit groups other than three (`1,00,000` in hi-IN): FIXED and DOLLAR group by three, and number text accepts groups of three or more digits.
 - Double-byte code pages (East Asian locales): CHAR and CODE handle one byte.
 - Date text with the month name before the day (`Jan 31, 2025`): parsed only by en-US's code.

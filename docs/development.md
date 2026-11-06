@@ -564,6 +564,7 @@ From [Number formats and displayed text](formats.md).
 | `builtin-held` | 350 per locale | built-in formats on other values and widths, predicted by the engine before Excel calculated them, all matched |
 | `seconds-held` | 35 (en-US) | moments at the edge of a second in `d h:mm:ss`, predicted by the engine before Excel calculated them; 15 missed (the rounding to the second, and the 15 digits a cell's text is produced from, a known difference), and Windows the same |
 | `date-e-held`, `date-e-mac` | 12 (en-US) on Excel for Windows, the 10 it opened on Excel for Mac | the date codes `e` and `ee` and their runs; predicted as `yyyy`, which held on both; `E` and `EE`, predicted the same, make Excel for Windows refuse the file (`TEXT` with `E`: `#VALUE!`, set `links/date-e-text`) |
+| `letters-open`, `letters-open-2` | 81 and 44 (en-US) on Excel for Windows | which codes of letters, padding and conditions a file opens with ([Codes Excel does not open](#reading-and-writing-xlsx-codes-excel-does-not-open)) |
 | `sysdate-held` | 57 per locale | `[$-x-sysdate]` and `[$-x-systime]` before five and four codes on three moments, the same codes after `[$-F800]` and `[$-F400]` next to them, and currency tags with a culture (`[$€-x-euro2]`); predicted before Excel calculated them, all matched |
 | `calendar-held` | 36 per locale | `B1` and `B2` before numeric date codes and a date with month names, on four dates; predicted before Excel calculated them, 4 of 72 missed |
 | `calendar-names-held` | 32 per locale | month and day names under `B1` and `B2`; predicted, and `B2`'s 32 missed |
@@ -948,6 +949,20 @@ The set `tables-held` (four books) takes the structured references to a table of
 From [Number formats, Codes Excel does not open](formats.md#codes-excel-does-not-open).
 
 The sets `digits-date-letters`, `bare-literals`, `bare-held`, `refused-held` and `written-held` of `bench/coverage/display/` run on Excel for Windows alone, whose step halves a book down to the codes Excel refuses (the Mac's stops at the repair window). The rule of `numfmt/refused.ts` was written after the first two; `bare-held` and `refused-held`, each predicted by the rule before Excel ran it, missed 8 and 25 codes and refused 2 and 4 wrongly, and showed that the size is a whole code's. So the rule is strict where it does not know. `written-held`, 114 codes a person or an agent writes, predicted as well, missed `0;0;0;0` and refused `[DBNum1]0`, `0:` and `0 :шт` wrongly; the first and the second were corrected. An independent matrix of 333 codes, opened one by one in Excel for Windows in en-US and ru-RU and, 56 files of them, in Excel for Mac, gave one answer on all three for each code they share; `test/format-refused.test.ts` checks the sets without Excel. No code of the 401 opened in the display sets or of the 46 in the files Excel saved in `test/excel` is refused.
+
+The letters came from a table of 263 codes taken from Excel for Mac 16.114.4 in en-US, each letter alone, after `yy` and after `0`, runs of one to six, and the literals beside them. `test/format-letters.test.ts` checks these sets without Excel, each with what its prediction missed:
+
+| set | cases | what | prediction |
+|---|---|---|---|
+| `links/letters-text` | 263, Excel for Windows | that table in TEXT, each code a file of its own | the Mac's answers, all 263 held: the two Excels part on no code |
+| `links/letters-held` | 186, Excel for Windows | runs of mixed case, by the value, codes that fail whole, the fourth and fifth section, conditions, what `_`, `*` and `\` take, exponents, `n`, calendars | by the table's rule, 23 missed: `B` before other text reads as `b`, `a` runs are of one case, `A/P` comes first, `m` after `h` across other codes, a condition in a third section refuses, a digit beside a date refuses |
+| `links/letters-more` | 64, Excel for Windows | what those misses left open | 9 missed: `B` refuses at the end of a code, not of a section; `aaaAAA` is the long name; `h dd mm` is minutes; `mm aaa ss` is the month; `0;[>1]0;0` takes the second section's condition |
+| `links/letters-mac` | 34, Excel for Mac | a sample of those two sets where a rule came from Windows alone | Windows's answers, all 34 held |
+| `display/letters-open` | 81, Excel for Windows | files with the codes `_` and `*` split falsely, a fourth section with conditions, the letters that read, and the codes TEXT refuses | by TEXT's answers on the Mac, 2 missed: `0;[>1]0;[>2]0` and `0;0;[>1]0`, which were TEXT's misses too |
+| `display/letters-open-2` | 44, Excel for Windows | files with the codes the TEXT sets answered otherwise than their rule, and with codes that fail whole | by TEXT's answers, all 44 held |
+| `sets/text-letters-ru` | 63, Excel for Windows in ru-RU | the letters beside the locale's own | Latin `n` and `B` refuse, `b`, `g`, `e`, `aaa` read as in en-US, Cyrillic that is no code stays a literal: all 63 held |
+
+So `numfmt/refused.ts` takes what the parser does not read for a code a file does not open with. Why `n` fails was not measured (`n1`, `n2`, `N1` and `N2` fail too), and other alphabets were not tried. No file with one of these bad codes was opened on the Mac, whose display step dies on a refused book: the open sets are Windows's.
 
 ### Reading and writing xlsx: Notes, hyperlinks and frozen panes
 
