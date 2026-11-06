@@ -6,8 +6,9 @@
  */
 import { holds, type Positions } from '../../arity.js'
 import { FUNCTION_COUNTS } from '../../function-words.js'
-import { isRefOp, type Ast } from '../../syntax/ast.js'
+import { isRefOp, type Ast, type RangeRef } from '../../syntax/ast.js'
 import { walk } from '../../syntax/print.js'
+import { XLFN, XLWS } from '../formulas/prefixes.js'
 
 /** The UTF-16 units of a text literal, once its quotes are undoubled. */
 const MAX_LITERAL = 255
@@ -82,6 +83,114 @@ export function excelLoads(ast: Ast): boolean {
   })
   return ok
 }
+
+/**
+ * The bytes of tokens a formula holds at most, [MS-XLSB] 2.5.98 `cce`: its data, as of an array constant's values, does not count.
+ * The set `links/formula-bytes-held` measured it on Excel for Windows.
+ */
+const MAX_TOKEN_BYTES = 16_384
+
+/** No token takes 8 bytes for a character of a formula's text, so a text this long or shorter fits without counting. */
+export const SHORT_FORMULA = 2048
+
+/** The functions [MS-XLSB] has Excel jump over with their arguments: one control token of 4 bytes, and one after each argument. */
+const JUMPS: ReadonlySet<string> = /* @__PURE__ */ new Set('IF IFERROR IFNA IFS SWITCH'.split(' '))
+/** The volatile functions, which mark the formula with a token of 4 bytes, here counted for each call. */
+const VOLATILE: ReadonlySet<string> = /* @__PURE__ */ new Set('CELL INDIRECT INFO NOW OFFSET RAND RANDARRAY RANDBETWEEN TODAY'.split(' '))
+
+/** A function's name as a file spells it takes a defined name's token where it has a prefix or is not Excel's. */
+const FAR_CALL = 9
+const CALL = 4
+
+/** A reference, with a sheet (`S!A1`) or a sheet's index, and a spill reference (`A1#`), a call around it. */
+const refBytes = (r: RangeRef, sheet: boolean) => (r.kind === 'cell' ? (sheet ? 9 : 7) : sheet ? 15 : 13) + (r.spill ? FAR_CALL : 0)
+
+function callBytes(n: Extract<Ast, { k: 'fn' }>): number {
+  const count = n.args.length
+  const near = FUNCTION_COUNTS.has(n.name) && !XLFN.has(n.name) && !XLWS.has(n.name)
+  const own = near ? CALL : FAR_CALL
+  // CHOOSE: its table of 2 bytes for each argument on top of what a jump takes
+  if (n.name === 'CHOOSE') return own + 4 + 2 * count + 4 * count
+  return own + (JUMPS.has(n.name) ? 4 * count : 0) + (VOLATILE.has(n.name) ? 4 : 0)
+}
+
+/**
+ * The bytes of a formula's tokens by the sizes of [MS-XLSB], the most it can take: every function of Excel's table as one of variable
+ * count, one byte over a fixed count's; every jump as if each argument had it; the operators on references with the most they can bring.
+ */
+function tokenBytes(ast: Ast): number {
+  let bytes = 0
+  walk(ast, (n) => {
+    switch (n.k) {
+      case 'num':
+        bytes += Number.isInteger(n.v) && n.v >= 0 && n.v <= 65_535 ? 3 : 9
+        break
+      case 'str':
+        bytes += 3 + 2 * n.v.length
+        break
+      case 'bool':
+        bytes += 2
+        break
+      case 'err':
+        bytes += n.sheet === undefined && n.ref === undefined && n.book === undefined ? 2 : 15
+        break
+      case 'ref':
+        bytes += refBytes(n.ref, n.sheet !== null)
+        break
+      case 'ref3d':
+      case 'xref':
+        bytes += refBytes(n.ref, true)
+        break
+      case 'table':
+        bytes += 14
+        break
+      case 'name':
+        bytes += n.sheet === undefined ? 5 : 7
+        break
+      case 'xname':
+        bytes += 7
+        break
+      case 'local':
+      case 'eta':
+        bytes += 5
+        break
+      case 'at':
+        bytes += FAR_CALL
+        break
+      case 'union':
+        bytes += n.items.length + 8
+        break
+      case 'fn':
+        bytes += callBytes(n)
+        break
+      case 'un':
+      case 'pct':
+      case 'paren':
+      case 'missing':
+        bytes += 1
+        break
+      case 'bin':
+        bytes += isRefOp(n.op) ? 8 : 1
+        break
+      case 'arr':
+        bytes += 15
+        break
+      case 'let':
+        bytes += FAR_CALL + 5 * n.binds.length
+        break
+      case 'lambda':
+        bytes += FAR_CALL + 5 * n.params.length
+        break
+      case 'call':
+        bytes += CALL
+        break
+    }
+  })
+  return bytes
+}
+
+/** Whether a formula's tokens fit what Excel loads, by what is known of their sizes; wrong only towards leaving a formula out. */
+export const fitsTokens = (ast: Ast): boolean => tokenBytes(ast) <= MAX_TOKEN_BYTES
 
 /** Whether Excel loads a formula as a conditional format's or a validation's: neither takes these, in a block of Excel 2007 or of 2010. */
 export function excelLoadsRule(ast: Ast): boolean {

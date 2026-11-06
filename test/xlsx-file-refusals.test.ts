@@ -61,8 +61,6 @@ describe('the answers', () => {
 })
 
 describe('a formula of a cell against Excel', () => {
-  /** Files refused the writer writes: formulas of few operators and over 16,384 bytes of tokens, whose count the writer does not know. */
-  const TOKENS = new Set(['sum-cells-over'])
   /** Their text is another as the writer prints it: spaces and a number's zeros go. */
   const PRINTED = new Set(['spaces-8195', 'spaces-mid-255', 'spaces-mid-256', 'xlfn-8193', 'xlfn-8200', 'xlfn-8500', 'xlfn-9000', 'xlfn-9500', 'xlfn-10000', 'zeros-300', 'plain-8192', 'plain-8193'])
   const cases = SETS.flatMap((set) => WIN[set].cases.filter((c) => !c.written && !c.names?.length && !c.links.length && Object.keys(c.linked.S ?? {}).join() === 'A1' && !PRINTED.has(c.id)).map((c) => [set, c] as const))
@@ -77,8 +75,7 @@ describe('a formula of a cell against Excel', () => {
     }
     const r = await written({ sheets: [{ ...c.sheets[0], cells: { ...c.sheets[0].cells, A1: { formula, value: 7 } as CellInput } }] })
     const has = /<c r="A1"[^>]*><f/.test(r.sheet)
-    if (TOKENS.has(id)) expect(has).toBe(true)
-    else if (refused(set, id)) expect(has).toBe(false)
+    if (refused(set, id)) expect(has).toBe(false)
     else if (reads) expect(has).toBe(true)
     if (!has) expect(r.codes('formula').length).toBe(1)
   })
