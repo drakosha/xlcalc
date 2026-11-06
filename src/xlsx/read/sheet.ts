@@ -157,7 +157,7 @@ function arrays(read: SheetCells, added?: Set<string>): [looked: string[], dropp
       if (addr === a.anchor || !cell || (cell.formula !== undefined && !spilled)) continue
       const stored = cell.value !== undefined ? { value: cell.value as CellValue } : read.cached[addr]
       if (stored) read.cached[addr] = { value: stored.value, spillOf: a.anchor }
-      const { value: _, formula: __, ...rest } = cell
+      const { value: _, formula: __, richText: ___, ...rest } = cell
       if (Object.keys(rest).length) {
         read.cells[addr] = rest
         looked.push(addr)
@@ -373,7 +373,12 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const data = open < 0 ? '' : xml.slice(open, unclosed ? xml.length : dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
-  const read = readCells(data, ctx, lines(cols, 'c'))
+  const columnFont=(c:number)=>{
+    let font
+    for(const e of elements(head,'col')){const a=attributes(e.attrs);if(a.style!==undefined&&c>=Number(a.min)-1&&c<=Number(a.max)-1)font=ctx.xfs[Number(a.style)]?.font}
+    return font
+  }
+  const read = readCells(data, {...ctx,columnFont}, lines(cols, 'c'))
   // the looks, and with them the cells the reader adds to the file's, which take their place among the file's under a look
   const layer = read.looks.build()
   const added = layer.empty ? undefined : new Set<string>()

@@ -3004,6 +3004,8 @@ interface DynamicFilter {
 
 ### `DynamicFilterKind`
 
+A dynamic filter: an average comparison, a relative date period, or a calendar month or quarter.
+
 ```ts
 type DynamicFilterKind =
   | 'null' | 'aboveAverage' | 'belowAverage'
@@ -3503,6 +3505,8 @@ interface FilterCriteria {
 ```
 
 ### `FilterOperator`
+
+A custom filter comparison, as stored in an xlsx customFilter element.
 
 ```ts
 type FilterOperator = 'equal' | 'notEqual' | 'lessThan' | 'lessThanOrEqual' | 'greaterThan' | 'greaterThanOrEqual'

@@ -191,6 +191,15 @@ function lookOver(table: StyleTable, input: CellInput | undefined, r: number, c:
   if (look.content) for (const k of CONTENT) delete out[k]
   const st = look.style
   if (st) {
+    if ('reset' in st || 'remove' in st) delete out.richText
+    else if ('merge' in st && st.merge.font !== undefined && input?.richText) {
+      const font = st.merge.font
+      if (font === null) delete out.richText
+      else {
+        const base = table.at(input.style ?? before.row(r)?.style ?? before.column(c)?.style).font
+        out.richText = input.richText.map(run => ({ start: run.start, font: over(run.font ?? base, font) ?? {} }))
+      }
+    }
     const shown = after.row(r)?.style ?? after.column(c)?.style
     const want = 'set' in st ? st.set : 'merge' in st ? table.indexOf(patchStyle(table.at(input?.style ?? before.row(r)?.style ?? before.column(c)?.style), st.merge)) : 'reset' in st && !table.isPlain(shown) ? table.indexOf({}) : undefined
     if (want === undefined) delete out.style

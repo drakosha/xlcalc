@@ -79,7 +79,7 @@ const PARTS: Record<PasteKind, Parts> = {
 export const ofValues = (kind: PasteKind) => PARTS[kind].values
 
 /** A cell's fields that hold what it contains: Paste Special takes them or leaves them together. */
-const CONTENT = ['value', 'formula', 'array', 'held', 'meta'] as const
+const CONTENT = ['value', 'formula', 'array', 'held', 'meta', 'richText'] as const
 
 /** Whether the paste writes the cells' contents (and so is refused onto merged areas and renames header cells). */
 export const writesContent = (kind: PasteKind) => PARTS[kind].content
@@ -244,7 +244,7 @@ function laid(target: SheetInput, copy: SheetInput, a: string | undefined, b: st
   if (both) Object.assign(out, both, t?.meta !== undefined ? { meta: t.meta } : {})
   else {
     const has = parts.content && !lay.operation ? x : t
-    for (const k of CONTENT) if (has?.[k] !== undefined) out[k] = has[k]
+    for (const k of CONTENT) if (has?.[k] !== undefined && !(k === 'richText' && parts.values)) out[k] = has[k]
   }
   const note = parts.notes && !(lay.skipBlanks && x?.note === undefined) ? x?.note : t?.note
   if (note !== undefined) out.note = note

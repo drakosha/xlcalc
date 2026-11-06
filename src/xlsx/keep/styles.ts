@@ -7,11 +7,11 @@
  * `<cellXfs>`, with its font, fill, border and number format after the file's, its font relative to the file's default
  * one. A conditional format's differential format goes at the end of `<dxfs>`. Only what a written part uses is added.
  */
-import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
+import type { FontStyle, CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
 import { attributes, attrsAt, elements } from '../xml/scan.js'
-import { borderXml, checkWritten, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
+import { borderXml, checkWritten, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, writtenFont, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
@@ -114,6 +114,7 @@ export class KeptStyles {
   /** The cell formats of a book's style table, the file's where they look the same. */
   of(styles: CellStyle[] | undefined): CellFormats {
     return {
+      fontOf: (style, override, issues) => ({ name: this.base.name, size: this.base.size, ...writtenFont(override ?? styles?.[style ?? -1]?.font ?? {}, issues) }),
       xf: (style, format, button = false) => {
         const s = style === undefined ? undefined : styles?.[style]
         const key = lookKey(s, format) + (button ? '\nb' : '')

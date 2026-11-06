@@ -48,6 +48,15 @@ export function borderXml(b: NonNullable<CellStyle['border']>): string {
   return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/></border>`
 }
 
+/** A written font's name: an empty one falls back to the workbook's, a long one is clipped to Excel's limit. */
+export function writtenFont(f: FontStyle, issues?: Issues): FontStyle {
+  if (f.name === undefined) return f
+  if (f.name !== '') return { ...f, name: issues ? clip(f.name, MAX_FONT_NAME, issues, { key: 'fontNameCut' }, {}) : f.name }
+  issues?.add('style', { key: 'fontNameEmpty' })
+  const { name: _, ...rest } = f
+  return rest
+}
+
 /** A cell's solid fill. */
 export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
 
@@ -122,6 +131,8 @@ class Table {
 export interface CellFormats {
   /** The cell format of a style (by index) and a number format, with a PivotTable's filter button; 0 is the default. */
   xf(style: number | undefined, format: NumberFormat | undefined, button?: boolean): number
+  /** A whole run font, or its cell's font, with a written name. */
+  fontOf(style?: number, override?: FontStyle, issues?: Issues): FontStyle
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
   dxf(s: ConditionalStyle, filter?: boolean): number
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
@@ -163,14 +174,6 @@ export class StyleWriter implements CellFormats {
     return this.issues ? clip(name, MAX_FONT_NAME, this.issues, { key: 'fontNameCut' }, {}) : name
   }
 
-  /** A style's font as the file holds it: a name cut, an empty one the workbook's. */
-  private font(f: FontStyle): FontStyle {
-    if (f.name === undefined) return f
-    if (f.name !== '') return { ...f, name: this.fontName(f.name) }
-    this.issues?.add('style', { key: 'fontNameEmpty' })
-    const { name: _, ...rest } = f
-    return rest
-  }
 
   numFmt(code: NumberFormat | undefined): number {
     return numFmtId(code, (c) => {
@@ -201,12 +204,17 @@ export class StyleWriter implements CellFormats {
       return 0
     }
     const s = style === undefined ? {} : this.styles[style]
-    const font = s.font ? this.fonts.of(fontXml(this.font(s.font), this.base)) : 0
+    const font = s.font ? this.fonts.of(fontXml(writtenFont(s.font, this.issues), this.base)) : 0
     const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
     i = this.xfs.of(xfXml(numFmt, font, fill, border, s, button))
     this.byKey.set(key, i)
     return i
+  }
+
+  /** A run's whole font, or its cell's font when no override was given. */
+  fontOf(style?: number, override?: FontStyle, issues: Issues | undefined = this.issues): FontStyle {
+    return { name: this.base.name, size: this.base.size, ...writtenFont(override ?? this.styles[style ?? -1]?.font ?? {}, issues) }
   }
 
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */

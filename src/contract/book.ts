@@ -298,6 +298,7 @@ export interface DateGroup {
   second?: number
 }
 
+/** A custom filter comparison, as stored in an xlsx customFilter element. */
 export type FilterOperator = 'equal' | 'notEqual' | 'lessThan' | 'lessThanOrEqual' | 'greaterThan' | 'greaterThanOrEqual'
 
 /** One or two conditions (Excel's Custom Filter). */
@@ -320,6 +321,7 @@ export interface TopFilter {
   filterValue?: number
 }
 
+/** A dynamic filter: an average comparison, a relative date period, or a calendar month or quarter. */
 export type DynamicFilterKind =
   | 'null' | 'aboveAverage' | 'belowAverage'
   | 'tomorrow' | 'today' | 'yesterday'

@@ -16,7 +16,7 @@ console.log(read.book.sheets[0].cells, read.cached.sheets[0].cells.A3.value, rea
 
 ## In short
 
-`readXlsx(data)` from `xlcalc/xlsx` reads a file's bytes (a `Uint8Array`, a Node `Buffer` or an `ArrayBuffer`: `await readFile(path)`, `await file.arrayBuffer()`) into a workbook. Alongside the workbook it returns `cached`, the values Excel stored for formulas and spilled cells in the shape of a result, and `issues`, everything the workbook cannot represent, such as rich text, with the sheet and cells. `compute(read.book, { cached: read.cached })`, and `createSession` with the same option, open a workbook with a circular reference as Excel opens the file ([Circular references](cycles.md)); nothing else is taken from `cached`. `writeXlsx({ book, result })` writes a workbook with the values of its formulas: `result` comes from `compute`, from a session (`session.getSnapshot()` returns the workbook and its result in one call), or is the `cached` of a file that was read. Each formula is written in the oldest form that loses nothing, a plain formula that Excel 2019 and older read as it is, or a dynamic array formula with its spill, and `mode: 'values'` writes values only.
+`readXlsx(data)` from `xlcalc/xlsx` reads a file's bytes (a `Uint8Array`, a Node `Buffer` or an `ArrayBuffer`: `await readFile(path)`, `await file.arrayBuffer()`) into a workbook. Alongside the workbook it returns `cached`, the values Excel stored for formulas and spilled cells in the shape of a result, and `issues`, everything the workbook cannot represent, such as unsupported text-run properties, with the sheet and cells. `compute(read.book, { cached: read.cached })`, and `createSession` with the same option, open a workbook with a circular reference as Excel opens the file ([Circular references](cycles.md)); nothing else is taken from `cached`. `writeXlsx({ book, result })` writes a workbook with the values of its formulas: `result` comes from `compute`, from a session (`session.getSnapshot()` returns the workbook and its result in one call), or is the `cached` of a file that was read. Each formula is written in the oldest form that loses nothing, a plain formula that Excel 2019 and older read as it is, or a dynamic array formula with its spill, and `mode: 'values'` writes values only.
 
 ```js
 import { compute, createSession } from 'xlcalc'
@@ -100,7 +100,7 @@ A zip archive can contain a part that inflates to a thousand times its compresse
 
 Text, numbers and booleans become values. Dates stay numbers, as Excel stores them, and their number format makes them display as dates. The ISO dates of Strict files (`t="d"`) become serial numbers too.
 
-Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. A CDATA section, which some other writers use for text with `<` or `&`, gives its content as written. Rich text is read as its plain text and reported. Phonetic readings of East Asian text are not part of the text.
+Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. A CDATA section, which some other writers use for text with `<` or `&`, gives its content as written. Rich text is read into `CellInput.richText`, with the text itself in `value`. Each run has a UTF-16 `start` offset and a whole `FontStyle`; supported font properties are preserved through shared strings, inline strings and both writers. Unsupported properties, such as shadow and superscript, are reported as `richText`. Phonetic readings of East Asian text are not part of the text.
 
 The model has no error values, so an error stored as a cell's value is read as a formula consisting of that error: a cell containing `#N/A` gets the formula `#N/A`.
 
@@ -299,7 +299,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 
 | code | what the workbook cannot represent |
 |---|---|
-| `richText` | formatted runs of text |
+| `richText` | unsupported font properties of formatted text runs |
 | `userFunction` | a user-defined function (`_xludf.`): one issue per function on a sheet or a name, the function in `fn` (upper-case) and its calls in `cells`, so a host can count them without reading `message` |
 | `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a custom table style, a structured reference without a table name |
 | `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a workbook without sheets; a formula over a link the file does not contain, or over such a link |
@@ -340,7 +340,7 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 
 | code | en-US | ru-RU |
 |---|---|---|
-| `richText` | formatted runs of text are read as plain text | Форматированный текст прочитан как простой |
+| `richText` | unsupported properties of formatted text runs are left out | Неподдерживаемые свойства участков форматированного текста пропущены |
 | `style` | a style's shrink to fit is not in the model | Автоподбор ширины в стиле не поддерживается |
 | `calculation` | the maximum number of iterations "0" is not between 1 and 32,767: the default, 100, is used | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
 | `noCachedValues` | no result was passed: the file stores no formula values, and Excel calculates them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |

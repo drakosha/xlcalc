@@ -98,7 +98,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
         const addr = formatAddress(x.r1, x.c1 + i)
         const cell = cells[addr]
         if (cell?.formula === undefined && cell?.value === c.name) return
-        const { formula: _, value: __, array: ___, ...look } = cell ?? {}
+        const { formula: _, value: __, array: ___, richText: ____, ...look } = cell ?? {}
         fixed.set(addr, { ...look, value: c.name })
       })
     try {

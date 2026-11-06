@@ -190,7 +190,8 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const styles = new StyleWriter(book.styles, book.font, issues)
   const strings = new Map<string, number>()
   let refs = 0
-  const string = (s: string) => {
+  const string = (s: string, rich?: string) => {
+    s = rich ?? textElement(s)
     refs++
     let i = strings.get(s)
     if (i === undefined) strings.set(s, (i = strings.size))
@@ -274,7 +275,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
   if (strings.size) {
-    const items = [...strings.keys()].map((s) => `<si>${textElement(s)}</si>`)
+    const items = [...strings.keys()].map((s) => `<si>${s}</si>`)
     files.push({ name: 'xl/sharedStrings.xml', text: `${HEAD}<sst xmlns="${MAIN}" count="${refs}" uniqueCount="${strings.size}">${items.join('')}</sst>` })
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])

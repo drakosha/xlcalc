@@ -8,6 +8,7 @@ import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CELL_FIELDS, checkCell, checkEditList } from '../input.js'
 import { InputError } from '../input-error.js'
 import { object, onlyKeys } from '../input/basic.js'
+import { checkRichText } from '../input/rich-text.js'
 import { CONTENT } from '../array-areas.js'
 import { inputAt } from './book.js'
 
@@ -23,7 +24,7 @@ export function someField<T>(out: Record<string, unknown>): T | null {
  * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content
  * and the hyperlink, as Excel's Delete key and ClearContents do (the set `lines/clear`).
  */
-function withFields(input: CellInput | undefined, fields: CellFields | null): CellInput | null {
+function withFields(input: CellInput | undefined, fields: CellFields | null, path: string): CellInput | null {
   // a new value or formula, or none, replaces the content whole; a formula removed takes its area along
   const whole = fields === null || fields.value !== undefined || typeof fields.formula === 'string'
   const out: Record<string, unknown> = {}
@@ -38,6 +39,7 @@ function withFields(input: CellInput | undefined, fields: CellFields | null): Ce
       const v = fields[k as keyof CellFields]
       if (v !== null && v !== undefined) out[k] = v
     }
+  checkRichText(out, path)
   return someField<CellInput>(out)
 }
 
@@ -53,7 +55,7 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
         given = Object.fromEntries(Object.entries(f).filter(([x, v]) => v !== null || x === 'value'))
         break
       }
-    checkCell(given, p, styles)
+    checkCell(given, p, styles, true)
     if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.array`, 'an array area needs its formula')
   })
 }
@@ -62,14 +64,14 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
 export function resolveEdits(s: EngineState, edits: CellEdit[]): CellReplace[] {
   if (edits.length === 1) {
     const [e] = edits
-    return [{ sheet: e.sheet, cell: e.cell, input: withFields(inputAt(s, sheetIndexOf(s, e.sheet)!, e.cell), e.input) }]
+    return [{ sheet: e.sheet, cell: e.cell, input: withFields(inputAt(s, sheetIndexOf(s, e.sheet)!, e.cell), e.input, 'edits[0].input') }]
   }
   const now = new Map<string, CellInput | null>()
-  return edits.map((e) => {
+  return edits.map((e, at) => {
     const i = sheetIndexOf(s, e.sheet)!
     const k = `${i}!${e.cell}`
     const was = now.has(k) ? now.get(k) : inputAt(s, i, e.cell)
-    const input = withFields(was ?? undefined, e.input)
+    const input = withFields(was ?? undefined, e.input, `edits[${at}].input`)
     now.set(k, input)
     return { sheet: e.sheet, cell: e.cell, input }
   })

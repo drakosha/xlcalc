@@ -226,7 +226,7 @@ const rowFormat = (tag: string) => {
 }
 
 /** A cell input as it counts for whether the model changed it: its value, formula and look, not its note, link or meta. */
-const inputKey = (c: CellInput | undefined) => (c ? keyOf({ value: c.value, formula: c.formula, array: c.array, style: c.style, numberFormat: c.numberFormat }) : '')
+const inputKey = (c: CellInput | undefined) => (c ? keyOf({ value: c.value, formula: c.formula, array: c.array, richText: c.richText, style: c.style, numberFormat: c.numberFormat }) : '')
 
 interface DataOut {
   text: string

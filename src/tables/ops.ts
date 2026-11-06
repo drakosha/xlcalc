@@ -96,8 +96,8 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
       // a column without a name is left to checkTables, which refuses it
       if (!c || typeof c.name !== 'string') return
       const addr = formatAddress(x.r1, x.c1 + i)
-      const { formula: _, ...rest } = cells[addr] ?? {}
-      cells[addr] = { ...rest, value: c.name }
+      const { formula: _, richText, ...rest } = cells[addr] ?? {}
+      cells[addr] = { ...rest, ...(rest.value === c.name && richText ? { richText } : {}), value: c.name }
     })
   // a malformed table (its fields, range, columns) is an input error, as in a book
   checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...own, cells, tables: [table] }] }, 'op')

@@ -99,7 +99,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   dateInvalid: () => 'a date of a Strict file (a cell of type d) that is not a valid ISO date is left out',
   cellOpen: () => 'an element of a cell left open (without its closing tag): what it holds, and the cells it runs into, are not read',
   valueMetadata: () => "a cell's value metadata (a data type, a picture in the cell) is not in the model",
-  richText: () => 'formatted runs of text are read as plain text',
+  richText: () => 'unsupported properties of formatted text runs are left out',
   errorUnknown: () => 'a stored error the model has no code for is read as #ERROR!',
   errorUnspelled: () => 'an error stored as a value that a formula cannot write (#CALC!, #GETTING_DATA and the like) is left out',
   dataTable: () => 'a what-if data table (TABLE) is read as its stored values',

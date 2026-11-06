@@ -133,9 +133,10 @@ function stableJson(v: unknown): string {
  */
 function hashed<T extends object>(o: T): T {
   const format = (o as { numberFormat?: unknown }).numberFormat
-  if (format === undefined) return o
-  const { numberFormat: _, ...rest } = o as { numberFormat?: unknown }
-  return { ...rest, format } as T
+  const rich = (o as { richText?: unknown }).richText
+  if (format === undefined && rich === undefined) return o
+  const { numberFormat: _, richText: __, ...rest } = o as { numberFormat?: unknown; richText?: unknown }
+  return (format === undefined ? rest : { ...rest, format }) as T
 }
 
 /** Lines of a sheet's columns or rows in order (`C 2 {...}`, `R 5 {...}`); none without them. */

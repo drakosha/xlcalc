@@ -15,6 +15,8 @@ import { BUILTIN } from './numfmt.js'
 
 /** A cell format as the model sees it. */
 export interface Xf {
+  /** Effective font for the first unformatted run of a rich string. */
+  font?: FontStyle
   /** The book style, by index; none for a format that looks as the default. */
   style?: number
   /** The number format, a code or a built-in format's number; none for General. */
@@ -28,6 +30,8 @@ export interface Xf {
 }
 
 export interface StyleTable {
+  /** Font table entry zero, used for rich-string defaults. */
+  baseFont?: FontStyle
   styles: CellStyle[]
   xfs: Xf[]
   /** The file's own number formats by id. */
@@ -218,7 +222,7 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     if (al.alignment) style.alignment = al.alignment
     const pr = protection(e.body ? element(e.body, 'protection') : undefined)
     if (pr) style.protection = pr
-    const xf: Xf = { lost }
+    const xf: Xf = { lost, ...(f ? { font: f.style } : {}) }
     if (Object.keys(style).length) {
       const key = JSON.stringify(style)
       let i = byKey.get(key)
@@ -234,5 +238,5 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     }
     return xf
   })
-  return { styles, xfs, formats, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }
+  return { styles, xfs, formats, baseFont: base, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }
 }

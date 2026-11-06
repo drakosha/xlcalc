@@ -197,7 +197,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     if (name !== d.name) issues.add('part', { key: 'sheetNameRepaired', name: d.name, sheet: name }, { sheet: name, name: d.name })
     d.name = name
   })
-  const strings = readStrings(stringsXml, issues)
+  const strings = readStrings(stringsXml, issues, colors, table.baseFont)
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
   const pivots = await readPivotCaches(archive, wb, rels, table, cond.dxfs, dateSystem, issues)
@@ -236,7 +236,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules, drawing: drawn },
-      { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
+      { sheet: d.name, strings, xfs: table.xfs, palette: colors, baseFont: table.baseFont, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {
       const a = attrsAt(t ?? '', 'table')

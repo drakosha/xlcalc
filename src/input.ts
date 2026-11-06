@@ -26,14 +26,16 @@ import { checkSheetProtection } from './input/protection.js'
 import { checkPivots } from './input/pivot.js'
 import { placedPivots } from './pivot/area.js'
 import { checkConditionalFormats } from './cond/check.js'
+import { checkRichText } from './input/rich-text.js'
 import { checkFilterCriteria, checkFilterSort } from './filter/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
 
 /** A cell of a book with `styles` styles. */
-export function checkCell(v: unknown, path: string, styles: number): CellInput {
+export function checkCell(v: unknown, path: string, styles: number, partial = false): CellInput {
   const c = object(v, path, 'a cell object such as { value: 1 } or { formula: "A1*2" }')
   onlyKeys(c, path, CELL_FIELDS)
+  checkRichText(c, path, partial)
   const value = c.value
   // NaN and infinities have no place in a workbook, as for held and cached values
   if (typeof value === 'number' && !Number.isFinite(value)) throw new InputError(`${path}.value`, `expected a finite number, got ${what(value)}`)
@@ -105,7 +107,7 @@ function checkMeta(v: unknown, path: string, open: object[] = []) {
 }
 
 /** The fields of a cell (`CellInput`). */
-export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held']
+export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held', 'richText']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {

@@ -1,3 +1,4 @@
+import { copyRuns } from '../rich-text.js'
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
 import type { CellReadField, CellValue, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
 import { sheetIndexOf, toCellValue, valueAt, type EngineState, type Formula } from '../engine.js'
@@ -22,7 +23,7 @@ import { earlierOf, firstIn, nextIn, readOrder, spillsIn } from './read-order.js
 import { textsOf } from './search.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
-const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue']
+const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'richText', 'issue']
 /** A query's ranges checked: rectangles of the book's sheets. */
 export const refsOf = (s: EngineState, refs: RangeRef[]) =>
   array(refs, 'ranges', 'an array of sheet/range references').map((v, i): Ref => {
@@ -105,6 +106,7 @@ function projected(s: EngineState, i: number, r: number, c: number, addr: string
     if (f === 'issue') out.issue = issueDetail(s, i, r, c)
     else if (f === 'editText') out.editText = edit!(i, r, c, input)
     else if (f === 'style' && input?.style !== undefined) out.style = input.style
+    else if (f === 'richText' && input?.richText) out.richText = copyRuns(input.richText)
     else if (f === 'note' && input?.note) out.note = { ...input.note }
     else if (f === 'link' && input?.link) out.link = { ...input.link }
     else if (view !== null) {

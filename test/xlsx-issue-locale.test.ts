@@ -16,7 +16,7 @@ import type { Locale } from '../src/index.js'
 /** An issue without its message: what is the same in every language. */
 const place = ({ message: _, ...rest }: XlsxIssue) => rest
 
-/** The files Excel saved that `readXlsx` reports issues of. */
+/** Native Excel files, including those whose formerly reported features are now held. */
 async function excelFiles(): Promise<[string, Uint8Array][]> {
   const root = new URL('./excel/xlsx/', import.meta.url)
   const out: [string, Uint8Array][] = []
@@ -24,12 +24,12 @@ async function excelFiles(): Promise<[string, Uint8Array][]> {
     if (dir.isDirectory())
       for (const f of readdirSync(new URL(`${dir.name}/`, root)).filter((x) => x.endsWith('.xlsx'))) {
         const data = readFileSync(new URL(`${dir.name}/${f}`, root))
-        if ((await readXlsx(data)).issues.length) out.push([`${dir.name}/${f}`, data])
+        out.push([`${dir.name}/${f}`, data])
       }
   return out
 }
 
-const RICH = '<r><t>a</t></r><r><rPr><b/></rPr><t>b</t></r>'
+const RICH = '<r><t>a</t></r><r><rPr><b/><shadow/></rPr><t>b</t></r>'
 
 /** A file with losses of many kinds, and each issue's code and message. */
 const LOSSES = pack(
@@ -122,7 +122,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     await expect(writeXlsx({ book: WRITTEN }, { locale: 'ru-RU' })).rejects.toThrow('opts.locale: the locale ru-RU is not loaded')
     // importing the module loads ru-RU; a copy of it, under a tag not loaded, needs no loading
     ruRU = (await import('../src/locales/ru-RU.js')).ruRU
-    expect((await readXlsx(data, { locale: { ...ruRU, tag: 'xx-YY' } })).issues.find((i) => i.code === 'richText')?.message).toBe('Форматированный текст прочитан как простой')
+    expect((await readXlsx(data, { locale: { ...ruRU, tag: 'xx-YY' } })).issues.find((i) => i.code === 'richText')?.message).toBe('Неподдерживаемые свойства участков форматированного текста пропущены')
     registerLocale(ruRU)
   })
 
