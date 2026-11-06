@@ -45,7 +45,7 @@ function chosen(xml: string,ctx: FilterRead): string {
   const blocks=placed(xml,'AlternateContent')
   return replaced(xml,blocks,i=>{
     const body=blocks[i].body??''
-    const choice=elements(body,'Choice').find(c=>(attributes(c.attrs).Requires??'').split(/\s+/).filter(Boolean).every(p=>supported.has(p)))
+    const choice=elements(body,'Choice').find(c=>{const required=(attributes(c.attrs).Requires??'').split(/\s+/).filter(Boolean);return required.length>0&&required.every(p=>supported.has(p))})
     return chosen((choice??element(body,'Fallback'))?.body??'',{...ctx,prefixes:supported})
   })
 }
@@ -101,6 +101,10 @@ function customOf(e: Element, ctx: FilterRead): ColumnFilter | undefined {
     const a = attributes(x.attrs)
     return { operator: a.operator as FilterOperator | undefined, value: readText(a.val ?? '') }
   })
+  if (conditions.length > 2 && !flag(attributes(e.attrs).and) && conditions.every(c => (c.operator === undefined || c.operator === 'equal') && !/[?*]/.test(c.value))) {
+    const values = conditions.map(c => c.value).filter(v => v !== '')
+    return { type: 'values', ...(values.length ? { values } : {}), ...(conditions.some(c => c.value === '') ? { blank: true } : {}) }
+  }
   if (conditions.length < 1 || conditions.length > 2 || conditions.some((c) => c.operator !== undefined && !FILTER_OPERATORS.includes(c.operator))) return void ctx.lost('customFilters')
   return {
     type: 'custom',
@@ -184,17 +188,19 @@ function columnsOf(body: string, width: number, ctx: FilterRead): FilterColumn[]
   // an extension holds a `filterColumn` of its own: each list is set aside first, a mark for it in its place
   const lists = placed(body, 'extLst')
   const exts = lists.map((e) => e.body ?? '')
-  return elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`),ctx), 'filterColumn').flatMap((e) => {
+  const columns = elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`),ctx), 'filterColumn').flatMap((e) => {
     const a = attributes(e.attrs)
     const column = Number(a.colId)
-    if (!Number.isInteger(column) || column < 0 || column >= width || seen.has(column)) {
+    if (!Number.isInteger(column) || column < 0 || column >= width) {
       ctx.lost('filterColumn')
       return []
     }
+    if (seen.has(column)) ctx.lost('duplicate filterColumn')
     seen.add(column)
     const filter = filterOf(e.body ?? '', exts, ctx)
     return [{ column, ...(flag(a.hiddenButton) ? { hiddenButton: true } : {}), ...(flag(a.showButton, true) ? {} : { showButton: false }), ...(filter ? { filter } : {}) }]
   })
+  return [...new Map(columns.map(c => [c.column,c])).values()].filter(c => c.filter !== undefined || c.hiddenButton || c.showButton === false)
 }
 
 /** A cell or range as the model holds it; undefined for anything else, a list of areas among them. */

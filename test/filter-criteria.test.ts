@@ -105,3 +105,14 @@ it('resolves a supported Choice by its namespace rather than a fixed prefix',asy
   const result=await readXlsx(await pack(f))
   expect(result.book.sheets[0].autoFilter?.criteria?.columns?.[0].filter).toEqual({type:'values',values:['chosen']})
 })
+
+
+it('writes the table sort after its autoFilter, where Excel retains it',async()=>{
+  const b=book();delete b.sheets[0].autoFilter
+  b.sheets[0].tables=[{name:'T',range:'A1:F3',columns:Array.from({length:6},(_,i)=>({name:'Column'+i})),filter:structuredClone(criteria)}]
+  for(let i=0;i<6;i++)b.sheets[0].cells[String.fromCharCode(65+i)+'1']={value:'Column'+i}
+  const {data}=await writeXlsx({book:b},{values:'omit'})
+  const xml=await partText(data,'xl/tables/table1.xml')
+  expect(xml.indexOf('<sortState')).toBeGreaterThan(xml.indexOf('</autoFilter>'))
+  expect((await readXlsx(data)).book.sheets[0].tables?.[0].filter).toEqual(criteria)
+})
