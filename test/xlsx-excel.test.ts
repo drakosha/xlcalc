@@ -29,6 +29,7 @@ import { CLOCK, matches, show, toVal } from './excel-cases.js'
 import './locales.js'
 import { filledAs, heldOff } from './xlsx-colors.js'
 import { filterRun } from './xlsx-filters.js'
+import { ALL_ROWS } from './filter-cases.js'
 import { REGEX_HEAVY_SETS } from '../bench/coverage/sets/regex-heavy.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
@@ -57,9 +58,6 @@ const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
 const ISSUES: Record<string, string[]> = {
   'formulas-values': ['errorConstant Data C2 C12 C23'],
   'spills-values': ['errorValue Spill A6', 'errorConstant Spill I1 N1'],
-  filtered: ['autoFilter S'],
-  'filtered-table': ['autoFilter S'],
-  'autofilter-filtered': ['autoFilter S'],
 }
 
 const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/xlsx/predicted.json', import.meta.url), 'utf8')) as Predicted
@@ -75,14 +73,16 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       expect(sent.sent, 'the writer changed since Excel saw the file: run the xlsx roundtrip step').toBe(await partsHash(data))
       expect(sent.rejected).toBeUndefined()
       const read = await readXlsx(readFileSync(new URL(`roundtrip/${c.id}.xlsx`, dir)))
-      const differences: Difference[] = compareBooks(entries(c.book, c.mode === 'values' ? result : undefined), entries(read.book))
+      // The old writer's compatibility criteria are now represented rather than reported as lost.
+      const expectedBook = c.id === 'filtered-table' ? { ...c.book, sheets: c.book.sheets.map(s => ({ ...s, ...(s.tables ? { tables: s.tables.map(t => ({ ...t, filter: ALL_ROWS })) } : {}) })) } : c.book
+      const differences: Difference[] = compareBooks(entries(expectedBook, c.mode === 'values' ? result : undefined), entries(read.book))
       expect(differences.map((d) => d.place)).toEqual(KNOWN_BOOK[c.id]?.places ?? [])
       // a volatile book's random numbers are Excel's own: they are compared as numbers
       const random = (d: Difference) => c.volatile && !Number.isNaN(Number(d.written)) && !Number.isNaN(Number(d.read))
       if (c.mode !== 'values') expect(compareCached(result, read.cached).filter((d) => !random(d))).toEqual([])
       expect(read.issues.map((i) => [i.code, i.sheet ?? i.name, ...(i.cells ?? [])].join(' '))).toEqual(ISSUES[c.id] ?? [])
       // a book's AutoFilters are where Excel saved them
-      if (c.book.sheets.some((s) => s.autoFilter)) expect(read.book.sheets.map((s) => s.autoFilter)).toEqual(c.book.sheets.map((s) => s.autoFilter))
+      if (c.book.sheets.some((s) => s.autoFilter)) expect(read.book.sheets.map((s) => s.autoFilter)).toEqual(c.book.sheets.map((s) => s.autoFilter && s.filtered && s.autoFilter.criteria === undefined ? { ...s.autoFilter, criteria: ALL_ROWS } : s.autoFilter))
       // a book predicted before Excel ran: Excel stored the values predicted; the book came back as predicted, but where Excel saves otherwise
       const p = predicted.roundtrip[c.id]
       if (p) {

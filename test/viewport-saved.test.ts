@@ -138,7 +138,7 @@ describe('a window over a saved book and its result', () => {
     // a book or a result in an earlier version's form: the number format by its old name, the reasons by theirs
     const old = book()
     old.sheets[0].cells.D5 = { value: 4, format: '0%' } as never
-    expect(call({ book: old, result })).toThrow('saved.book.sheets[0].cells["D5"]: unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link, held) (format is the old name of numberFormat)')
+    expect(call({ book: old, result })).toThrow('saved.book.sheets[0].cells["D5"]: unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link, held, richText) (format is the old name of numberFormat)')
     const { diagnostics, ...rest } = result
     expect(call({ book: book(), result: { ...rest, issues: diagnostics } })).toThrow(/^saved\.result\.diagnostics: expected an array of reasons/)
     expect(call({ book: book(), result }, 'Нет')).toThrow('sheet: unknown sheet "Нет"')
