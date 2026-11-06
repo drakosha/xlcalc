@@ -55,16 +55,30 @@ function pivotTables(tab: TabId, c: { pivots: { sheet: string; name: string }[] 
   return tabs.length ? `<pivotTables>${tabs.join('')}</pivotTables>` : '<pivotTables/>'
 }
 
+/** A slicer cache's opening tag. */
+const cacheHead = (c: SlicerCache) => `${HEAD}<slicerCacheDefinition xmlns="${X14}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">`
+
+/** The attributes of a cache's order and display of its items, of those `spec` names. */
+function displayOf(c: SlicerCache, spec: string): string {
+  const nd = c.noData ?? {}
+  return `${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, spec)}${nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''}`
+}
+
+/** The extension of a cache that hides its items with no data. */
+const hideExt = (c: SlicerCache) => (c.noData?.hide ? `<x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext>` : '')
+
 export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tabOf(book), cacheId = c.cache!): string {
   // Excel opens no file whose slicer has no items (the set `links/file-refusals`): those of its field, each chosen
   const field = book.pivotCaches?.find((x) => x.id === cacheId)?.fields.find((f) => caseKey(f.name) === caseKey(c.field))
   const given = c.items?.length ? c.items : (field?.items ?? []).map((_, item) => ({ item }))
   const items = given.map((x: NonNullable<SlicerCache['items']>[number]) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
-  const nd = c.noData ?? {}
-  const cross = nd.mark === false ? ' crossFilter="none"' : nd.last === false ? ' crossFilter="showItemsWithNoData"' : ''
-  const a = `pivotCacheId="${cacheId}"${c.sort === 'descending' ? ' sortOrder="descending"' : ''}${give(c, 'customListSort:t showMissing:t')}${cross}`
-  const hide = nd.hide ? `<extLst><x:ext uri="{470722E0-AACD-4C17-9CDC-17EF765DBC7E}" xmlns:x15="${X15}"><x15:slicerCacheHideItemsWithNoData/></x:ext></extLst>` : ''
-  return `${HEAD}<slicerCacheDefinition xmlns="${X14}"${IGNORABLE} name="${escapeAttr(c.name)}" sourceName="${escapeAttr(c.field)}">${pivotTables(tab, c)}<data><tabular ${a}>${counted('items', items)}</tabular></data>${hide}</slicerCacheDefinition>`
+  const hide = hideExt(c)
+  return `${cacheHead(c)}${pivotTables(tab, c)}<data><tabular pivotCacheId="${cacheId}"${displayOf(c, 'customListSort:t showMissing:t')}>${counted('items', items)}</tabular></data>${hide && `<extLst>${hide}</extLst>`}</slicerCacheDefinition>`
+}
+
+/** A table's slicer's cache, as Excel writes it: the ids of its table and its column in the file, which a rename leaves. */
+export function tableSlicerCacheXml(c: SlicerCache, ids: { tableId: string | number; column: string | number }): string {
+  return `${cacheHead(c)}<extLst><x:ext uri="{2F2917AC-EB37-4324-AD4E-5DD8C200BD13}" xmlns:x15="${X15}"><x15:tableSlicerCache tableId="${ids.tableId}" column="${ids.column}"${displayOf(c, 'customListSort:t')}/></x:ext>${hideExt(c)}</extLst></slicerCacheDefinition>`
 }
 
 /** A date of a timeline, ISO 8601 as the file writes it: with its time. */
@@ -116,13 +130,19 @@ const DRAWING = `${MS}/drawing`
 const SLICER = `${DRAWING}/2010/slicer`
 const TIMESLICER = `${DRAWING}/2012/timeslicer`
 
+/** What a frame shows: a table's slicer asks a later reader of Excel 2013's drawings than a PivotTable's does. */
+export type FrameKind = 'slicer' | 'tableSlicer' | 'timeline'
+
 /** A slicer's or timeline's frame in a drawing, at its place, its locks as Excel writes them, with the shape older readers show. */
-export function frameXml(x: (Slicer | Timeline) & { place: DrawingPlace }, id: number, timeline: boolean): string {
+export function frameXml(x: (Slicer | Timeline) & { place: DrawingPlace }, id: number, kind: FrameKind): string {
   const { name, place } = x
-  const [requires, ns, uri, el] = timeline
-    ? ['tsle', TIMESLICER, TIMESLICER, 'tsle:timeslicer']
-    : ['a14', `${DRAWING}/2010/main`, SLICER, 'sle:slicer']
-  const sle = timeline ? '' : ` xmlns:sle="${SLICER}"`
+  const [requires, ns, uri, el] =
+    kind === 'timeline'
+      ? ['tsle', TIMESLICER, TIMESLICER, 'tsle:timeslicer']
+      : kind === 'tableSlicer'
+        ? ['sle15', `${DRAWING}/2012/slicer`, SLICER, 'sle:slicer']
+        : ['a14', `${DRAWING}/2010/main`, SLICER, 'sle:slicer']
+  const sle = kind === 'timeline' ? '' : ` xmlns:sle="${SLICER}"`
   const frame = `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="${escapeAttr(name)}"/>${'positionLocked' in x && x.positionLocked ? '<xdr:cNvGraphicFramePr><a:graphicFrameLocks noMove="1" noResize="1"/></xdr:cNvGraphicFramePr>' : '<xdr:cNvGraphicFramePr/>'}</xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${uri}"><${el}${sle} name="${escapeAttr(name)}"/></a:graphicData></a:graphic></xdr:graphicFrame>`
   const fallback = `<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="0" name=""/><xdr:cNvSpPr><a:spLocks noTextEdit="1"/></xdr:cNvSpPr></xdr:nvSpPr><xdr:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:sp>`
   return `<xdr:twoCellAnchor editAs="oneCell">${marker('from', place.from, place.fromOffset)}${marker('to', place.to, place.toOffset)}<mc:AlternateContent xmlns:mc="${MC}"><mc:Choice xmlns:${requires}="${ns}" Requires="${requires}">${frame}</mc:Choice><mc:Fallback>${fallback}</mc:Fallback></mc:AlternateContent><xdr:clientData${x.locked === false ? ' fLocksWithSheet="0"' : ''}/></xdr:twoCellAnchor>`
@@ -183,7 +203,7 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     if (!slicers.length && !timelines.length) return
     const sheet = out.sheets[i]
     let id = 1
-    const frames = [...timelines.map((t) => frameXml(t, ++id, true)), ...slicers.map((x) => frameXml(x, ++id, false))].join('')
+    const frames = [...timelines.map((t) => frameXml(t, ++id, 'timeline')), ...slicers.map((x) => frameXml(x, ++id, 'slicer'))].join('')
     sheet.drawing = add('drawings/drawing', ++drawings, `${HEAD}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">${frames}</xdr:wsDr>`, DRAWING_TYPE)
     if (slicers.length) sheet.slicers = add('slicers/slicer', ++slicerParts, slicersPartXml(slicers), TYPES.slicer)
     if (timelines.length) sheet.timelines = add('timelines/timeline', ++timelineParts, timelinesPartXml(timelines), TYPES.timeline)

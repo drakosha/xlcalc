@@ -28,13 +28,13 @@ async function bundle(minify = false) {
 }
 
 describe('xlsx/keep outside Node', () => {
-  it('takes no Node built-ins and no part of the engine that computes, in under 421 KB minified', async () => {
+  it('takes no Node built-ins and no part of the engine that computes, in under 423 KB minified', async () => {
     const { code, used, bytes } = await bundle(true)
     expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\s*[.(]|\b(typeof|instanceof)\s+Buffer\b|["']node:/)
     const engine = used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f) && !/\/exec\/budget\.(ts|js)$/.test(f))
     expect(engine).toEqual([])
-    // 421 KB from 0.87.0 (Mikhail, 05.11): 430,971 bytes of dist with the locales a module loads on being imported
-    expect(bytes).toBeLessThan(421 * 1024)
+    // 423 KB from 0.87.1 (a table's slicer's cache and frame): 432,365 bytes of dist, 430,971 before, with the locales a module loads on being imported
+    expect(bytes).toBeLessThan(423 * 1024)
   }, 60_000)
 
   it('runs in an empty context given the web codecs: a file opened, a value changed, written over it', async () => {

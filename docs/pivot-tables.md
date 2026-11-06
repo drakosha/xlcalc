@@ -469,7 +469,7 @@ On a protected sheet Excel lets a slicer or a timeline be chosen with Use PivotT
 | refreshing a PivotTable (`refreshPivots`) | never | Refresh does nothing; Refresh All without `pivotTables`: Cannot edit PivotTable on protected sheet. (`Нельзя изменять "сводной таблицы" на защищенном листе.`); with it: That command cannot be performed while a protected sheet contains another PivotTable report based on the same source data. |
 - Each choice is one step of undo. Without `xlcalc/pivot` the choice is written all the same, and the PivotTables keep their cells with their cache marked `stale`.
 
-A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, and its look, place and order change; its choice is the AutoFilter's, which the workbook does not hold ([Limitations](limitations.md)), so `editSlicer` throws an `InputError` for its items or PivotTables.
+A table's slicer (`SlicerCache.table`) filters its table by the table's AutoFilter. It is read and kept as the file has it, its table and column by their names, and its look, place and order change; it follows its table renamed (`renameTable`) and its column renamed by a header typed over, as Excel does. Its choice is the AutoFilter's, which the workbook does not hold ([Limitations](limitations.md)), so `editSlicer` throws an `InputError` for its items or PivotTables.
 
 ## Writing PivotTables
 

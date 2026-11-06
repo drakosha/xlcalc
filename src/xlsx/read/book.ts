@@ -29,6 +29,7 @@ import { cellMetadata } from './metadata.js'
 import { partText, relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
 import { checkedPivots, pivotTableParts, readPivotCaches, readSheetPivots, readSlicerCaches } from './pivots.js'
+import type { FileTables } from './slicers.js'
 import { pivotRuleScopes } from './pivot-table.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
@@ -200,8 +201,8 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
   const pivots = await readPivotCaches(archive, wb, rels, table, cond.dxfs, dateSystem, issues)
-  // tables by their ids in the file, which a table's slicer names
-  const tableIds = new Map<string, string>()
+  // tables and their columns by their ids in the file, which a table's slicer names
+  const tableIds: FileTables = new Map()
   const all = worksheets.map((d) => d.name)
   const formulas: FormulaOptions = { links: links.known, ...(repaired.renamed.size ? { rename: renamedIn(repaired.renamed) } : {}) }
   // a sheet whose part is missing is left out below, and so is a name scoped to it
@@ -239,7 +240,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     )
     for (const t of tableParts) {
       const a = attrsAt(t ?? '', 'table')
-      if (a.id !== undefined) tableIds.set(a.id, readText(a.displayName ?? a.name ?? ''))
+      if (a.id !== undefined) tableIds.set(a.id, { name: readText(a.displayName ?? a.name ?? ''), columns: new Map(within(t ?? '', 'tableColumns', 'tableColumn').map((e) => attributes(e.attrs)).map((c) => [c.id, readText(c.name ?? '')])) })
     }
     await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, drawn, pivots, issues)
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)

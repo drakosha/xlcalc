@@ -6000,7 +6000,7 @@ interface SlicerCache {
   pivots: PivotRef[]
   /** The pivot cache's `id`; absent for a table's slicer. */
   cache?: number
-  /** A table's slicer: the table and its column, in place of a pivot cache. */
+  /** A table's slicer: the table and its column, by their names, in place of a pivot cache. */
   table?: { name: string; column: string }
   /** The field's items with whether each is chosen (chosen by default) and has data. */
   items?: { item: number; selected?: boolean; noData?: boolean }[]

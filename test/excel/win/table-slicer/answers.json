@@ -1,0 +1,253 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96
+ },
+ "cases": [
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "plain",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "chosen",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "sort-desc",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "Value does not fall within the expected range.",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "sort-source",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "no-custom",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "cross-none",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "cross-last",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "Catastrophic failure (Exception from HRESULT: 0x8000FFFF (E_UNEXPECTED))",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "hide-nodata",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Goods",
+     "slicers": 1
+    }
+   ],
+   "id": "column-renamed",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [],
+   "id": "column-deleted",
+   "names": []
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "other-column-deleted",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "table-renamed",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [],
+   "id": "table-deleted",
+   "names": []
+  },
+  {
+   "refused": "",
+   "caches": [],
+   "id": "table-unlisted",
+   "names": []
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 2
+    }
+   ],
+   "id": "two-slicers",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    },
+    {
+     "name": "Slicer_Region",
+     "source": "Region",
+     "slicers": 1
+    }
+   ],
+   "id": "second-column",
+   "names": [
+    "Slicer_Product",
+    "Slicer_Region"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "no-headers",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [
+    {
+     "name": "Slicer_Product",
+     "source": "Product",
+     "slicers": 1
+    }
+   ],
+   "id": "no-autofilter",
+   "names": [
+    "Slicer_Product"
+   ]
+  },
+  {
+   "refused": "",
+   "caches": [],
+   "id": "slicer-deleted",
+   "names": []
+  }
+ ]
+}

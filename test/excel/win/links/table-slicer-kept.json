@@ -1,0 +1,595 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 20.7
+ },
+ "cases": [
+  {
+   "id": "same",
+   "about": "nothing changed but the mirror sheets",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "order",
+   "about": "its order and display changed",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "cross-last",
+   "about": "its items with no data not last",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "look",
+   "about": "its style changed",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "table-renamed",
+   "about": "the table renamed",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "column-renamed",
+   "about": "its column renamed by its header",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "column-added",
+   "about": "a column added to the table before its own",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "Data!D2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "slicer-renamed",
+   "about": "the slicer renamed: its frame written again",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "chosen-same",
+   "about": "a file with a choice: the filter and the hidden rows stay",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "chosen-order",
+   "about": "a file with a choice, its order changed",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true
+  },
+  {
+   "id": "tabular-no-id",
+   "about": "the cache as 0.87.0 wrote it after such a change",
+   "sheets": [
+    {
+     "name": "Data",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "Data",
+     "range": "C2"
+    }
+   ],
+   "predicted": {
+    "Data!C2": 10
+   },
+   "written": true,
+   "refused": true
+  }
+ ],
+ "sent": {
+  "same": "4a153c9ea85c4e38ecdcbdc275003478099ee0a27f5b693846b585601d37aff3",
+  "order": "26f4f440aad0e1d256829ab25cc8fe758833beeeaaab0f4bc080fd25f3702811",
+  "cross-last": "e1421aae25d5c1724ffd6e79114a3087f231807a8dd4ba27845bb4bc732af915",
+  "look": "4161bbe953b753efacd6a4381afa4724927ec31d4cde702677dea26702389781",
+  "table-renamed": "5b031940d1de47797bd7b47ecaa801e7ff64558409540297aedcc9655cf9515f",
+  "column-renamed": "e3b3863f1983e4782744168312d4bb4fb74a448ab5bb78ef3979083803421dda",
+  "column-added": "afc8e7b0ff24858b646fdd589577bb0d7e4dda497dc9223a7d492e1e8075ddf5",
+  "slicer-renamed": "78ba58b9280a51be4f6b023437c694d5c501e136fe0dc2cca5d2430fac123e18",
+  "chosen-same": "34e0ab9b45eae39539836ffb81276990fa22f19f37478baf362869ad2a27786b",
+  "chosen-order": "b828633da31eaa46c054a9edbb0b73b6eb4da185f6a90889ad13c7dafe452967",
+  "tabular-no-id": "09cee1f78bdf626e0bd9a1de7112a158b8fd4e6fbcdf2c43e12cb5fd148c2740"
+ },
+ "answers": {
+  "same": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "order": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "cross-last": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "look": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "table-renamed": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "column-renamed": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "column-added": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!D2": "10"
+     }
+    }
+   ]
+  },
+  "slicer-renamed": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "chosen-same": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  },
+  "chosen-order": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-table-slicer-kept-72381-1",
+   "reads": [
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    },
+    {
+     "values": {
+      "Data!C2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "Data!C2": "10"
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "tabular-no-id": "-2146827284 Unable to get the Open property of the Workbooks class"
+ }
+}

@@ -28,8 +28,8 @@ const SUBTOTALS: Record<Exclude<TotalsFunction, 'custom'>, number> = { average: 
 /** The formula of a totals function as a file holds it. */
 const subtotal = (fn: Exclude<TotalsFunction, 'custom'>, table: string, column: string) => escapeText(`SUBTOTAL(${SUBTOTALS[fn]},${table}[${column.replace(/['#@[\]]/g, "'$&")}])`)
 
-/** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
-export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false): string {
+/** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode; `columnIds`: its columns' ids where the file has them, by place from 1 otherwise. */
+export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false, columnIds?: number[]): string {
   const x = parseRange(t.range)!
   const headers = t.headers !== false
   const totals = t.totals === true
@@ -57,7 +57,7 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: Fi
     else if (typeof foot?.value === 'string') attrs += label === foot.value ? ` totalsRowLabel="${escapeAttr(label)}"` : ''
     else if (foot?.value !== undefined && foot.value !== null) attrs += ' totalsRowFunction="custom"'
     else if (label !== undefined) attrs += ` totalsRowLabel="${escapeAttr(label)}"`
-    return `<tableColumn id="${i + 1}" name="${escapeAttr(c.name)}"${attrs}${inner ? `>${inner}</tableColumn>` : '/>'}`
+    return `<tableColumn id="${columnIds?.[i] ?? i + 1}" name="${escapeAttr(c.name)}"${attrs}${inner ? `>${inner}</tableColumn>` : '/>'}`
   })
   const filterRef = `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2 - (totals ? 1 : 0), x.c2)}`
   const filter = headers ? (filtered ? `<autoFilter ref="${filterRef}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filterRef}"/>`) : ''
