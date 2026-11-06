@@ -158,6 +158,10 @@ A pivot set (`bench/coverage/pivot/<set>.ts`) describes its cases as data (`benc
 
 A set runs in 20 s to 2 min, most of it Excel opening and saving books; the answers' `meta` has the last run's time.
 
+## Slicers of tables
+
+`table-slicer.ps1` has Excel make a table's slicer, change it and the table in 19 ways, one book a case, and save: `XLWIN_CODEPAGE=any npx tsx bench/windows/table-slicer.ts` stores the books and what Excel held after each in `test/excel/win/table-slicer/`. `test/xlsx-table-slicer.test.ts` and the set `links/table-slicer-kept` read them.
+
 ## What is not run here
 
 - The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`: they work through COM (`SaveAs`, `Interior.Color`) but are not ported; only the filters and the built-in formats are. The ru-RU formula text snapshot is (`snapshot ru`, `snapshot.ts`): the probe books of `bench/locale/probes.ts`, column A read through `Formula` and `FormulaLocal` into `locale/<tag>.json`, nothing calculated.

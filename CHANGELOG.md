@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.87.1 (2026-11-06)
+
+Internal release; not published to npm.
+
+Fixed, a table's slicer, against books Excel for Windows made and saved, which the tests had none of:
+
+- `writeKept` of a table's slicer whose order or display was changed (`editSlicer`) wrote its cache in the form of a PivotTable's, with `pivotCacheId="undefined"`, and Excel refused the whole file. It now writes the form Excel writes, with the file's ids.
+- `writeKept` of a table it writes again numbered its columns anew, so a slicer or a query table that names a column by its id could point at another. A column keeps its id; a new one takes a new id.
+- `writeKept` of a renamed table slicer wrote its frame as a PivotTable slicer's. It now writes the frame Excel gives a table's slicer.
+- `readXlsx` gave `SlicerCache.table.column` as the column's id in the file (`"3"`), not its name, and left out the order and display the table's cache holds (`sort`, `customListSort`, `noData`).
+- `renameTable` and a header typed over left a table's slicer naming the old table or column. It now follows, its `field` with its column, as Excel does.
+
+`writeKept` refuses (`slicers`) a change to the cache of an OLAP slicer, whose part the workbook does not hold; it wrote the same broken form before.
+
 ## 0.87.0 (2026-11-06)
 
 Added:
