@@ -1445,6 +1445,8 @@ A sheet's AutoFilter ([`SheetInput.autoFilter`](#sheetinput)).
 interface AutoFilter {
   /** The filtered cells with the header row first: a range from its top-left cell to its bottom-right one (`A1:D20`), or a cell (`A1`). */
   range: string
+  /** Its criteria and sort, none without them. */
+  criteria?: FilterCriteria
 }
 ```
 
@@ -2415,6 +2417,20 @@ A color, `#RRGGBB`.
 type Color = string
 ```
 
+### `ColorFilter`
+
+A fill or font color (Excel's Filter by Color).
+
+```ts
+interface ColorFilter {
+  type: 'color'
+  /** The color, in `fill` or in `font`. */
+  style: ConditionalStyle
+  /** By the font's color (false by default: by the fill's). */
+  font?: boolean
+}
+```
+
 ### `ColorScaleFormat`
 
 Each number gets a color between those of the points on either side of it; other cells get none.
@@ -2425,6 +2441,14 @@ interface ColorScaleFormat extends ConditionalBase {
   /** Two or three points, from the lowest. */
   points: { value: ConditionalValue; color: Color }[]
 }
+```
+
+### `ColumnFilter`
+
+What a column of a filter keeps (xlsx `filters`, `customFilters`, `top10`, `dynamicFilter`, `colorFilter`, `iconFilter`).
+
+```ts
+type ColumnFilter = ValuesFilter | CustomFilter | TopFilter | DynamicFilter | ColorFilter | IconFilter
 ```
 
 ### `ColumnInput`
@@ -2756,6 +2780,19 @@ interface CsvWritten {
 }
 ```
 
+### `CustomFilter`
+
+One or two conditions (Excel's Custom Filter).
+
+```ts
+interface CustomFilter {
+  type: 'custom'
+  /** Both must hold (false by default: either). */
+  and?: boolean
+  conditions: { operator?: FilterOperator; value: string }[]
+}
+```
+
 ### `DataBarFormat`
 
 Each number gets a bar across its cell, its length proportional to where the number lies between `min` and `max`.
@@ -2829,6 +2866,25 @@ interface DataValidation {
   error?: string
   /** Whether the alert is displayed; true by default, as when Excel creates a rule. Without it, Excel accepts any typed value. */
   showError?: boolean
+}
+```
+
+### `DateGroup`
+
+A date or time chosen with what is under it (xlsx `dateGroupItem`).
+
+```ts
+interface DateGroup {
+  /** The level it chooses: its fields down to this one count. */
+  level: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second'
+  year: number
+  /** 1 by default, as Excel reads a file without it; `day` too. */
+  month?: number
+  day?: number
+  /** 0 by default; `minute` and `second` too. */
+  hour?: number
+  minute?: number
+  second?: number
 }
 ```
 
@@ -2924,6 +2980,36 @@ interface DuplicatesFormat extends ConditionalBase {
   type: 'duplicateValues' | 'uniqueValues'
   style?: ConditionalStyle
 }
+```
+
+### `DynamicFilter`
+
+A filter over the data or the date (Excel's Above Average, This Month…), with the bounds the file stored when it was applied.
+
+```ts
+interface DynamicFilter {
+  type: 'dynamic'
+  kind: DynamicFilterKind
+  value?: number
+  maxValue?: number
+  /** The same bounds as dates and times, ISO 8601 as the file writes them. */
+  valueIso?: string
+  maxValueIso?: string
+}
+```
+
+### `DynamicFilterKind`
+
+```ts
+type DynamicFilterKind =
+  | 'null' | 'aboveAverage' | 'belowAverage'
+  | 'tomorrow' | 'today' | 'yesterday'
+  | 'nextWeek' | 'thisWeek' | 'lastWeek'
+  | 'nextMonth' | 'thisMonth' | 'lastMonth'
+  | 'nextQuarter' | 'thisQuarter' | 'lastQuarter'
+  | 'nextYear' | 'thisYear' | 'lastYear' | 'yearToDate'
+  | 'Q1' | 'Q2' | 'Q3' | 'Q4'
+  | 'M1' | 'M2' | 'M3' | 'M4' | 'M5' | 'M6' | 'M7' | 'M8' | 'M9' | 'M10' | 'M11' | 'M12'
 ```
 
 ### `EditOptions`
@@ -3383,6 +3469,59 @@ dragging with Ctrl over a number) always continues a single number by 1. `copy` 
 type FillType = 'default' | 'series' | 'copy'
 ```
 
+### `FilterColumn`
+
+A column of a filter (xlsx `filterColumn`).
+
+```ts
+interface FilterColumn {
+  /** Its place in the filter's range, from 0 at its left. */
+  column: number
+  /** Its button hidden (false by default). */
+  hiddenButton?: boolean
+  /** Its button drawn (true by default): Excel sets it off on a merged header's further cells. */
+  showButton?: boolean
+  /** What it filters by; none where only its button differs. */
+  filter?: ColumnFilter
+}
+```
+
+### `FilterCriteria`
+
+A filter's criteria and sort, a sheet's ([`AutoFilter.criteria`](#autofilter)) or a table's ([`TableInput.filter`](#tableinput)), as a file holds them: the workbook holds them and does not apply them.
+
+```ts
+interface FilterCriteria {
+  /** The columns with a filter or a button of their own, at most one for each. */
+  columns?: FilterColumn[]
+  sort?: FilterSort
+}
+```
+
+### `FilterOperator`
+
+```ts
+type FilterOperator = 'equal' | 'notEqual' | 'lessThan' | 'lessThanOrEqual' | 'greaterThan' | 'greaterThanOrEqual'
+```
+
+### `FilterSort`
+
+A sort as a file keeps it (xlsx `sortState`).
+
+```ts
+interface FilterSort {
+  /** All the cells sorted, not only the column sorted by. */
+  range: string
+  caseSensitive?: boolean
+  /** Left to right, outside an AutoFilter. */
+  byColumns?: boolean
+  /** Of the East Asian interfaces; the file's `none` is no method. */
+  method?: 'stroke' | 'pinYin'
+  /** In their order, the first applied first. */
+  conditions?: SortCondition[]
+}
+```
+
 ### `FindCellsOptions`
 
 Options of `findCells`: what to search and how, in addition to those of `readCells`.
@@ -3633,6 +3772,19 @@ An icon from a set: the set and the icon's index in it, from 0, in Excel's order
 interface Icon {
   set: IconSetName
   index: number
+}
+```
+
+### `IconFilter`
+
+An icon of a conditional format (Excel's Filter by Icon).
+
+```ts
+interface IconFilter {
+  type: 'icon'
+  set: IconSetName
+  /** Its place in the set, from 0; none for a cell without an icon. */
+  icon?: number
 }
 ```
 
@@ -5819,10 +5971,13 @@ interface SheetInput {
   filtered?: boolean
   /**
    * The sheet's AutoFilter (Excel's Filter over cells outside a table, xlsx `<autoFilter>`): the filter buttons on the
-   * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Its criteria and
-   * sort are not in the model: whether a filter hid rows is `filtered`. Not part of calculation or inputHash.
+   * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Whether a filter hid
+   * rows is `filtered`, and which rows it hid are the rows' `hidden`: the criteria are held, not applied. Not part of
+   * calculation or inputHash.
    */
   autoFilter?: AutoFilter
+  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, not applied. Not part of calculation or inputHash. */
+  sort?: FilterSort
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
   /**
@@ -6047,6 +6202,26 @@ The fields of a slicer an edit sets (`editSlicer`), as in [`PivotTablePatch`](#p
 
 ```ts
 type SlicerPatch = { [K in Exclude<keyof Slicer, 'name' | 'cache'>]?: Slicer[K] | null } & { name?: string }
+```
+
+### `SortCondition`
+
+A column or row a sort goes by (xlsx `sortCondition`).
+
+```ts
+interface SortCondition {
+  range: string
+  descending?: boolean
+  /** By the value by default. */
+  by?: 'value' | 'cellColor' | 'fontColor' | 'icon'
+  /** A custom list's items, as the file holds it. */
+  customList?: string
+  /** The color sorted first, for `cellColor` and `fontColor`. */
+  style?: ConditionalStyle
+  /** The icon sorted first, for `icon`; none for a cell without one. */
+  iconSet?: IconSetName
+  icon?: number
+}
 ```
 
 ### `SpecialCells`
@@ -6444,6 +6619,12 @@ interface TableInput {
    * The engine does not draw it: it stays with the table through operations and is written to the file.
    */
   style?: TableStyle
+  /**
+   * Its filter's criteria and sort; `false` for a table without filter buttons (Table Design, Filter Button off, xlsx: no
+   * `<autoFilter>`), which a table without a header row is anyway. Held, not applied, as `AutoFilter.criteria`. Not part of
+   * calculation or inputHash.
+   */
+  filter?: FilterCriteria | false
 }
 ```
 
@@ -6576,6 +6757,23 @@ interface TimePeriodFormat extends ConditionalBase {
   period: 'today' | 'yesterday' | 'tomorrow' | 'last7Days' | 'thisWeek' | 'lastWeek' | 'nextWeek' | 'thisMonth' | 'lastMonth' | 'nextMonth'
   formula?: string
   style?: ConditionalStyle
+}
+```
+
+### `TopFilter`
+
+The top or bottom items (Excel's Top 10).
+
+```ts
+interface TopFilter {
+  type: 'top'
+  /** From the bottom (false by default). */
+  bottom?: boolean
+  /** `value` is a percent of the items, not their number. */
+  percent?: boolean
+  value: number
+  /** The cell value the file compares by (`filterVal`). */
+  filterValue?: number
 }
 ```
 
@@ -6761,6 +6959,23 @@ way, an item of a list, or a value for which a formula (`custom`) returns TRUE.
 
 ```ts
 type ValidationType = 'any' | 'whole' | 'decimal' | 'date' | 'time' | 'textLength' | 'list' | 'custom'
+```
+
+### `ValuesFilter`
+
+The values chosen (Excel's checkboxes), or the dates: a file holds one or the other.
+
+```ts
+interface ValuesFilter {
+  type: 'values'
+  /** As the file holds them: Excel writes a cell's displayed text. */
+  values?: string[]
+  /** Blanks chosen too. */
+  blank?: boolean
+  dates?: DateGroup[]
+  /** The calendar of the dates, as the file names it (`gregorian`, `hijri`…). */
+  calendar?: string
+}
 ```
 
 ### `ValuesOptions`
