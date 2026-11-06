@@ -13,6 +13,7 @@ import { cornersText, hi, LIMIT, LINES, lo, parseRange, rectOf, rectText, withBo
 import { gridOf } from './grid.js'
 import { sheetKey } from '../syntax.js'
 import type { Transform } from './rewrite.js'
+import { criteriaAfter } from '../filter/transform.js'
 
 /** Index `i` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0); `gone` for a deleted one. */
 function moved(i: number, at: number, n: number, gone: number): number {
@@ -130,7 +131,10 @@ export function filterAfter(f: AutoFilter | undefined, sheet: string, t: Transfo
   const area: Area = { kind: 'range', r: { lo: bound(x.r1), hi: bound(x.r2) }, c: { lo: bound(x.c1), hi: bound(x.c2) } }
   const out = t.ref({ sheet, area })
   if (out === undefined) return f
-  return typeof out === 'object' && sheetKey(out.sheet) === sheetKey(sheet) ? { range: rectText(rectOf(out.area)) } : undefined
+  if (typeof out !== 'object' || sheetKey(out.sheet) !== sheetKey(sheet)) return undefined
+  const after = rectOf(out.area)
+  const criteria = criteriaAfter(f.criteria, x, after, sheet, t)
+  return { range: rectText(after), ...(criteria ? { criteria } : {}) }
 }
 
 /**

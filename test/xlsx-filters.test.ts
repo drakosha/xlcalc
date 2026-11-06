@@ -1,3 +1,4 @@
+import { ALL_ROWS } from './filter-cases.js'
 import { withoutView } from './xlsx-fixtures.js'
 /**
  * Hidden rows and columns and filters through xlsx: hidden lines read and written with their sizes, a line of size 0
@@ -39,7 +40,7 @@ describe('xlsx filters: reading the filter mode', () => {
     expect(await filtered({ before: mark, after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).toEqual({
       filtered: true,
       values: SKIPPED,
-      issues: ["an AutoFilter's criteria and sort are not in the model: the sheet is read as filtered, and the rows they hid as hidden"],
+      issues: [],
     })
     expect((await filtered({ after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).values).toEqual(SKIPPED)
   })
@@ -50,7 +51,7 @@ describe('xlsx filters: reading the filter mode', () => {
       values: COUNTED,
       issues: [],
     })
-    expect((await filtered({ after: '<autoFilter ref="A1:B6"><sortState ref="A2:B6"><sortCondition ref="A2:A6"/></sortState></autoFilter>' })).issues).toEqual(["an AutoFilter's sort is not in the model"])
+    expect((await filtered({ after: '<autoFilter ref="A1:B6"><sortState ref="A2:B6"><sortCondition ref="A2:A6"/></sortState></autoFilter>' })).issues).toEqual([])
     expect((await filtered({ after: '<autoFilter ref="A1:B6"><filterColumn colId="0" hiddenButton="1"/><filterColumn colId="1" showButton="0"></filterColumn></autoFilter>' })).filtered).toBe(false)
   })
 
@@ -65,7 +66,7 @@ describe('xlsx filters: reading the filter mode', () => {
     expect(await filtered({ table: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).toEqual({
       filtered: true,
       values: SKIPPED,
-      issues: ["a table's filter criteria are not in the model: the sheet is read as filtered, and the rows they hid as hidden"],
+      issues: ["the filter's criteria on a table without headers is not supported and is left out"],
     })
     expect(await filtered({ before: '<sheetPr filterMode="1"/>', table: `<autoFilter ref="A1:B6">${KEEP_ALL}</autoFilter>` })).toMatchObject({ filtered: true, values: SKIPPED })
     expect(await filtered({ table: '<autoFilter ref="A1:B6"/>' })).toEqual({ filtered: false, values: COUNTED, issues: [] })
@@ -116,8 +117,8 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(xml).toContain(`</sheetData><autoFilter ref="B1:D12">${KEEP_ALL}</autoFilter></worksheet>`)
     const r = await readXlsx(data)
     // the autofilter over its cells reads back as the sheet's AutoFilter
-    expect(withoutView(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], autoFilter: { range: 'B1:D12' } }] })
-    expect(codes(r.issues)).toEqual(['autoFilter'])
+    expect(withoutView(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], autoFilter: { range: 'B1:D12', criteria: ALL_ROWS } }] })
+    expect(codes(r.issues)).toEqual([])
     const values = compute(r.book).sheets[0].cells
     expect([values.D1.value, values.D2.value, values.D3.value]).toEqual([61, 61, 61])
   })
@@ -134,7 +135,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
     expect(await text(data, 'xl/tables/table2.xml')).toContain(`<autoFilter ref="B1:B7">${KEEP_ALL}</autoFilter>`)
     const r = await readXlsx(data)
-    expect(withoutView(r.book)).toEqual(book)
+    expect(withoutView(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], tables: [tables[0], { ...tables[1], filter: ALL_ROWS }] }] })
     expect(compute(r.book).sheets[0].cells.D1.value).toBe(61)
   })
 

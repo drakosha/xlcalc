@@ -512,6 +512,7 @@ const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; n
   merges: { check: checkMerges },
   filtered: { check: checkBoolean },
   autoFilter: { check: checkAutoFilter, nullable: true },
+  sort: { check: checkFilterSort, nullable: true },
   protection: { check: checkSheetProtection, nullable: true },
   frozen: { check: checkFrozen, nullable: true },
   tabColor: { check: checkColor, nullable: true },

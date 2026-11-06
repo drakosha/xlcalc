@@ -17,6 +17,7 @@ const EXT_DATES = '{1AD28BCE-077C-4C59-8B6E-1921CE8616D4}'
 
 export interface FilterRead {
   dxfs: Dxf[]
+  prefixes?: ReadonlySet<string>
   /** A part of the filter left out, by its name in the file. */
   lost(part: string): void
 }
@@ -35,13 +36,17 @@ function replaced(xml: string, parts: { start: number; end: number }[], to: (i: 
 }
 
 /** Each `AlternateContent` as what a reader of Excel 2010 takes of it: its Choice of `x14`, else its Fallback. */
-function chosen(xml: string): string {
+/** Prefixes bound to the supported extension namespace, which may be declared on the part or the Choice. */
+export const filterPrefixes = (xml: string): Set<string> => new Set([...xml.matchAll(/xmlns:([\w.-]+)=["']http:\/\/schemas\.microsoft\.com\/office\/spreadsheetml\/2009\/9\/main["']/g)].map(m=>m[1]))
+
+function chosen(xml: string,ctx: FilterRead): string {
   if (!xml.includes('AlternateContent>')) return xml
-  const blocks = placed(xml, 'AlternateContent')
-  return replaced(xml, blocks, (i) => {
-    const body = blocks[i].body ?? ''
-    const choice = element(body, 'Choice')
-    return (choice && /\bx14\b/.test(attributes(choice.attrs).Requires ?? '') ? choice : element(body, 'Fallback'))?.body ?? ''
+  const supported=new Set([...ctx.prefixes??[],...filterPrefixes(xml)])
+  const blocks=placed(xml,'AlternateContent')
+  return replaced(xml,blocks,i=>{
+    const body=blocks[i].body??''
+    const choice=elements(body,'Choice').find(c=>(attributes(c.attrs).Requires??'').split(/\s+/).filter(Boolean).every(p=>supported.has(p)))
+    return chosen((choice??element(body,'Fallback'))?.body??'',{...ctx,prefixes:supported})
   })
 }
 
@@ -52,7 +57,8 @@ function colorOfDxf(d: Dxf): Color | undefined {
 
 /** The style holding a filter's or sort's color by its differential format `id`, in `font` for a font's; undefined where the file has none. */
 function styleOf(id: string | undefined, font: boolean, ctx: FilterRead): ConditionalStyle | undefined {
-  const d = id === undefined ? undefined : ctx.dxfs[Number(id)]
+  if (id === undefined) return {}
+  const d = ctx.dxfs[Number(id)]
   if (!d) return undefined
   const color = colorOfDxf(d)
   return !color ? {} : font ? { font: { color } } : { fill: { color } }
@@ -178,7 +184,7 @@ function columnsOf(body: string, width: number, ctx: FilterRead): FilterColumn[]
   // an extension holds a `filterColumn` of its own: each list is set aside first, a mark for it in its place
   const lists = placed(body, 'extLst')
   const exts = lists.map((e) => e.body ?? '')
-  return elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`)), 'filterColumn').flatMap((e) => {
+  return elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`),ctx), 'filterColumn').flatMap((e) => {
     const a = attributes(e.attrs)
     const column = Number(a.colId)
     if (!Number.isInteger(column) || column < 0 || column >= width || seen.has(column)) {
@@ -202,7 +208,7 @@ function conditionOf(e: Element, ctx: FilterRead): SortCondition | undefined {
   const range = rangeOf(a.ref)
   const by = SORT_BY.find((x) => x === a.sortBy)
   if (!range || (a.sortBy !== undefined && !by)) return void ctx.lost('sortCondition')
-  const style = styleOf(a.dxfId, by === 'fontColor', ctx)
+  const style = by === 'cellColor' || by === 'fontColor' ? styleOf(a.dxfId, by === 'fontColor', ctx) : undefined
   const icon = number(a.iconId)
   return {
     range,
@@ -222,7 +228,7 @@ export function readSort(e: Element, ctx: FilterRead): FilterSort | undefined {
   if (!range) return void ctx.lost('sortState')
   const body = e.body ?? ''
   for (const ext of elements(element(body, 'extLst')?.body ?? '', 'ext')) ctx.lost(`sortState extension ${attributes(ext.attrs).uri ?? ''}`)
-  const conditions = elements(chosen(body), 'sortCondition').flatMap((c) => conditionOf(c, ctx) ?? [])
+  const conditions = elements(chosen(body,ctx), 'sortCondition').flatMap((c) => conditionOf(c, ctx) ?? [])
   const method = SORT_METHODS.find((x) => x === a.sortMethod)
   return {
     range,

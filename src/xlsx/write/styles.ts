@@ -74,7 +74,8 @@ export function xfXml(numFmt: number, font: number, fill: number, border: number
 }
 
 /** A conditional format's differential format, its number format by `numFmt`'s id. */
-export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => number): string {
+export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => number, filter = false): string {
+  if (filter) return `<dxf>${s.fill ? `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(s.fill.color)}"/><bgColor rgb="FFFFFFFF"/></patternFill></fill>` : ''}</dxf>`
   const f = s.font
   const flag = (tag: string, v: boolean | undefined) => (v === undefined ? '' : v ? `<${tag}/>` : `<${tag} val="0"/>`)
   const font = f
@@ -122,7 +123,7 @@ export interface CellFormats {
   /** The cell format of a style (by index) and a number format, with a PivotTable's filter button; 0 is the default. */
   xf(style: number | undefined, format: NumberFormat | undefined, button?: boolean): number
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
-  dxf(s: ConditionalStyle): number
+  dxf(s: ConditionalStyle, filter?: boolean): number
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
   dxfBody(i: number): string
   /** The id of a number format, a custom one added (a pivot cache's field, a value field). */
@@ -209,8 +210,8 @@ export class StyleWriter implements CellFormats {
   }
 
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
-  dxf(s: ConditionalStyle): number {
-    return this.dxfs.of(dxfXml(s, (c) => this.numFmt(c)))
+  dxf(s: ConditionalStyle, filter = false): number {
+    return this.dxfs.of(dxfXml(s, (c) => this.numFmt(c), filter))
   }
 
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */

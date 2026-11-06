@@ -226,6 +226,8 @@ export type LayoutEdit =
    * stay hidden and a row of height 0 keeps its height. Without `showRows`, the rows and `filtered` stay as they are.
    */
   | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
+  /** The stored sort of a range outside an AutoFilter; null removes it without moving any cells. */
+  | { sheet: string; sort: import('./book.js').FilterSort | null }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */

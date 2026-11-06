@@ -156,7 +156,7 @@ export function bookWriting(book: BookInput): BookWriting {
       return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
     },
     // a filtered sheet's criteria go on its AutoFilter, else on its first table with a header row, which has a filter of its own
-    filterTables: book.sheets.map((s) => (s.filtered && !s.autoFilter ? s.tables?.find((t) => t.headers !== false)?.name : undefined)),
+    filterTables: book.sheets.map((s) => (s.filtered && !s.autoFilter ? s.tables?.find((t) => t.headers !== false && t.filter !== false)?.name : undefined)),
     // Excel shows the active sheet, which is never a hidden one
     active: activeSheetIndex(book),
     epoch: epochOf(book.dateSystem),
@@ -254,7 +254,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i], undefined, styles) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     if (s.notes) {

@@ -127,7 +127,7 @@ export class KeptStyles {
         this.byLook.set(key, i)
         return i
       },
-      dxf: (s: ConditionalStyle) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c))),
+      dxf: (s: ConditionalStyle, filter = false) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c), filter)),
       dxfBody: (i) => this.added.dxfs[i - this.counts.dxfs].slice(5, -6),
       numFmt: (code) => {
         const id = this.numFmt(code)
@@ -152,6 +152,11 @@ export class KeptStyles {
   use(kind: 'cellXfs' | 'dxfs', i: number): void {
     const k = i - this.counts[kind] + 1
     if (k > this.used[kind]) this.used[kind] = k
+  }
+
+  /** Differential formats referenced by a rewritten part must be present in styles.xml. */
+  useDxfs(xml: string): void {
+    for (const m of xml.matchAll(/ dxfId="(\d+)"/g)) this.use('dxfs', Number(m[1]))
   }
 
   /** styles.xml with what written parts use added; undefined when they use nothing new. */

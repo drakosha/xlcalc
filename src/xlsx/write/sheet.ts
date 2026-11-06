@@ -15,6 +15,7 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
+import { filterXml, sortXml } from './filter.js'
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
 import { frozenScroll, sheetViewXml, splitXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
@@ -125,6 +126,7 @@ export interface SheetPieces {
   rows: RowWritten[]
   protection: string
   autoFilter: string
+  sort: string
   merges: string
   conditional: string
   validations: string
@@ -141,7 +143,7 @@ export function sheetXml(p: SheetPieces): string {
   return (
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="${REL}">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
-    p.protection + p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
+    p.protection + p.autoFilter + p.sort + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
     '</worksheet>'
   )
@@ -365,7 +367,8 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),
-    autoFilter: filter ? (sheet.filtered ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filter}"/>`) : '',
+    autoFilter: filter ? filterXml(filter, sheet.autoFilter?.criteria, ctx.styles, sheet.filtered ? KEEP_ALL : '') : '',
+    sort: sortXml(sheet.sort, ctx.styles),
     merges: countedIf('mergeCells', merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`)),
     conditional: cond.main,
     validations: validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }),

@@ -24,6 +24,7 @@ import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } fro
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
+import { readCriteria, readSort, filterPrefixes, type FilterRead } from './filter.js'
 import { readConditional } from './conditional.js'
 import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
@@ -260,19 +261,19 @@ function filterMode(head: string, tail: string, src: SheetSource, issues: Issues
   const mark = flag(attrsAt(head, 'sheetPr').filterMode)
   const tables = src.tables.some((x) => hasCriteria(element(x, 'autoFilter')))
   const criteria = hasCriteria(own)
-  if (criteria) issues.add('autoFilter', { key: 'autoFilterCriteria' }, where)
-  else if (own?.body && element(own.body, 'sortState')) issues.add('autoFilter', { key: 'autoFilterPlain' }, where)
-  else if (mark && !own && !tables) issues.add('autoFilter', { key: 'advancedFilter' }, where)
-  if (tables) issues.add('autoFilter', { key: 'tableFilter' }, where)
+  if (mark && !own && !tables) issues.add('autoFilter', { key: 'advancedFilter' }, where)
   return criteria || tables || (mark && !own)
 }
 
 /** The sheet's AutoFilter (`<autoFilter ref>`) as the model holds it: a range of cells over no table of the sheet's, else reported. */
-function autoFilter(tail: string, sheet: SheetInput, issues: Issues): AutoFilter | undefined {
+function autoFilter(tail: string, sheet: SheetInput, issues: Issues, ctx: FilterRead): AutoFilter | undefined {
   const ref = attrsAt(tail, 'autoFilter').ref
   if (ref === undefined) return undefined
   const x = parseRange(ref)
-  if (x && !(sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, x))) return { range: rectText(x) }
+  if (x && !(sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, x))) {
+    const criteria = readCriteria(element(tail, 'autoFilter')!, x.c2 - x.c1 + 1, undefined, ctx)
+    return { range: rectText(x), ...(criteria ? { criteria } : {}) }
+  }
   issues.add('autoFilter', { key: 'autoFilterRange', range: ref }, { sheet: sheet.name })
   return undefined
 }
@@ -411,9 +412,12 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (rows) sheet.rows = rows
   const m = merges(tail, name, ctx.issues)
   if (m) sheet.merges = m
-  const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, added)
+  const filters: FilterRead = { dxfs: src.cond.dxfs, prefixes: filterPrefixes(src.xml), lost: (part) => ctx.issues.add('autoFilter', { key: 'filterPart', part }, { sheet: name }) }
+  const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, added, filters)
   if (tables.length) sheet.tables = tables
-  const filter = autoFilter(tail, sheet, ctx.issues)
+  const filter = autoFilter(tail, sheet, ctx.issues, filters)
+  const sort = element(tail, 'sortState')
+  if (sort) sheet.sort = readSort(sort, filters)
   if (filter) sheet.autoFilter = filter
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x), rename: src.formulas.rename }, read.cells, ctx.issues, added)
   // a cell of the file's an array left nothing in stays the file's when a note, a link or a header is put on it

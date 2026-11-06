@@ -1,0 +1,6741 @@
+{
+ "range-sort-beside-filter": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21"
+   },
+   "sort": {
+    "range": "H2:H3",
+    "conditions": [
+     {
+      "range": "H2:H3"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-case": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "caseSensitive": true,
+    "conditions": [
+     {
+      "range": "B2:B21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-column-before": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:G21",
+    "conditions": [
+     {
+      "range": "D2:D21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-column-deleted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-columns": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "byColumns": true,
+    "conditions": [
+     {
+      "range": "A3:F3"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-fill": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "by": "cellColor",
+      "style": {
+       "fill": {
+        "color": "#FF0000"
+       }
+      }
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-filter-set": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21"
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-moved-other": [
+  {
+   "name": "Other",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  },
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-moved-part": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-moved": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "H4:M23",
+    "conditions": [
+     {
+      "range": "J4:J23",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-other-deleted": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:E21",
+    "conditions": [
+     {
+      "range": "B2:B21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-row-deleted": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F20",
+    "conditions": [
+     {
+      "range": "C2:C20",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-row-inside": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F22",
+    "conditions": [
+     {
+      "range": "C2:C22",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-sheet-copied": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  },
+  {
+   "name": "Data (2)",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "range-sort-table-over": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Table1",
+     "range": "A1:F21"
+    }
+   ]
+  }
+ ],
+ "range-sort": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-above-average": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "dynamic",
+        "kind": "aboveAverage",
+        "value": 52.5
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-auto-font": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "color",
+        "style": {
+         "font": {
+          "color": "#FFFFFF"
+         }
+        },
+        "font": true
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    4,
+    8,
+    12,
+    16,
+    20
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-below-average": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "dynamic",
+        "kind": "belowAverage",
+        "value": 52.5
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-blanks": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "filter": {
+        "type": "values",
+        "blank": true
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-bottom-percent": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "top",
+        "bottom": true,
+        "percent": true,
+        "value": 10,
+        "filterValue": 10
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-bottom": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "top",
+        "bottom": true,
+        "value": 3,
+        "filterValue": 15
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-column-before": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:G21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 3,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-column-between": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:G21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 3,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-column-deleted": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:E21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-column-other-deleted": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:E21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 1,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-cond-and": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "and": true,
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         },
+         {
+          "operator": "lessThanOrEqual",
+          "value": "70"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-cond-not": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "notEqual",
+          "value": "Apple"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    7,
+    8,
+    12,
+    13,
+    17,
+    18
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-cond-one": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThanOrEqual",
+          "value": "50"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-cond-or": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "lessThan",
+          "value": "10"
+         },
+         {
+          "operator": "greaterThanOrEqual",
+          "value": "90"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-cond-text": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "value": "*an*"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-dates-two": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "month",
+          "year": 2024,
+          "month": 4
+         },
+         {
+          "level": "year",
+          "year": 2023
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-day": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "day",
+          "year": 2024,
+          "month": 3,
+          "day": 15
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-fill": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "color",
+        "style": {
+         "fill": {
+          "color": "#FF0000"
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-font": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "color",
+        "style": {
+         "font": {
+          "color": "#0000FF"
+         }
+        },
+        "font": true
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    17,
+    18,
+    19,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-header-deleted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-hidden-button-filter": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "hiddenButton": true,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-hidden-button": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "hiddenButton": true
+      }
+     ]
+    }
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-hour": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "hour",
+          "year": 2024,
+          "month": 3,
+          "day": 15,
+          "hour": 6
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-icon-stars": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 4,
+       "filter": {
+        "type": "icon",
+        "set": "3Stars",
+        "icon": 0
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-icon-third": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 4,
+       "filter": {
+        "type": "icon",
+        "set": "3Arrows",
+        "icon": 2
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-icon": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 4,
+       "filter": {
+        "type": "icon",
+        "set": "3Arrows",
+        "icon": 0
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-last-year": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "lastYear",
+        "value": 45658,
+        "maxValue": 46023
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-cond": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-not": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "notEqual",
+          "value": "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    6,
+    15
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-two": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+         "note 1"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-value": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5
+      }
+     ]
+    }
+   },
+   "filtered": false,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-values": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5,
+       "filter": {
+        "type": "values",
+        "values": [
+         "note 1"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-long-wild": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 5,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "value": "*Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-m3": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "M3"
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-merged-filter": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "showButton": false,
+       "filter": {
+        "type": "values",
+        "values": [
+         "North"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-merged-header": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "showButton": false
+      }
+     ]
+    }
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-minute": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "minute",
+          "year": 2024,
+          "month": 3,
+          "day": 15,
+          "hour": 6,
+          "minute": 14
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-month": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "month",
+          "year": 2023,
+          "month": 4
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-moved-button": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "H3:M23",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "hiddenButton": true
+      }
+     ]
+    }
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-moved-other": [
+  {
+   "name": "Other",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  },
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-moved-part": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-moved-rows": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A30:F50"
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-moved": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "H3:M23",
+    "criteria": {
+     "sort": {
+      "range": "H11:M22",
+      "conditions": [
+       {
+        "range": "J4:J23",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "H11:M22",
+    "conditions": [
+     {
+      "range": "J4:J23",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-no-fill": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "color",
+        "style": {}
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    7,
+    11,
+    15,
+    19
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-no-icon": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 4,
+       "filter": {
+        "type": "icon",
+        "set": "3Arrows"
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-non-blanks": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "notEqual",
+          "value": " "
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    5,
+    12,
+    19
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-numbers": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "values",
+        "values": [
+         "10",
+         "20",
+         "35"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-one-value": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-plain": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21"
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-q1": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "Q1"
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-row-above": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A2:F22",
+    "criteria": {
+     "sort": {
+      "range": "A3:F22",
+      "conditions": [
+       {
+        "range": "C3:C22",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A3:F22",
+    "conditions": [
+     {
+      "range": "C3:C22",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-row-deleted": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F20",
+    "criteria": {
+     "sort": {
+      "range": "A2:F20",
+      "conditions": [
+       {
+        "range": "C2:C20",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F20",
+    "conditions": [
+     {
+      "range": "C2:C20",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-row-inside": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F22",
+    "criteria": {
+     "sort": {
+      "range": "A2:F22",
+      "conditions": [
+       {
+        "range": "C2:C22",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F22",
+    "conditions": [
+     {
+      "range": "C2:C22",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-second": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "second",
+          "year": 2024,
+          "month": 3,
+          "day": 15,
+          "hour": 6,
+          "minute": 14,
+          "second": 24
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-sheet-copied": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ],
+     "sort": {
+      "range": "A9:F20",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A9:F20",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  },
+  {
+   "name": "Data (2)",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ],
+     "sort": {
+      "range": "A9:F20",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A9:F20",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-sheet-renamed": [
+  {
+   "name": "Goods",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      },
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "20"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-sort-case": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "caseSensitive": true,
+      "conditions": [
+       {
+        "range": "B2:B21"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "caseSensitive": true,
+    "conditions": [
+     {
+      "range": "B2:B21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-column-before": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:G21",
+    "criteria": {
+     "sort": {
+      "range": "A2:G21",
+      "conditions": [
+       {
+        "range": "D2:D21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:G21",
+    "conditions": [
+     {
+      "range": "D2:D21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-column-deleted": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:E21"
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-desc": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-fill": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "by": "cellColor",
+        "style": {
+         "fill": {
+          "color": "#FF0000"
+         }
+        }
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "by": "cellColor",
+      "style": {
+       "fill": {
+        "color": "#FF0000"
+       }
+      }
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-filter": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      }
+     ],
+     "sort": {
+      "range": "A4:F20",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A4:F20",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-sort-font": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "C2:C21",
+        "by": "fontColor",
+        "style": {
+         "font": {
+          "color": "#0000FF"
+         }
+        }
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "by": "fontColor",
+      "style": {
+       "font": {
+        "color": "#0000FF"
+       }
+      }
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-icon": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "E2:E21",
+        "by": "icon",
+        "iconSet": "3Arrows",
+        "icon": 0
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "E2:E21",
+      "by": "icon",
+      "iconSet": "3Arrows",
+      "icon": 0
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-list": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "A2:A21",
+        "customList": "West,East,South,North"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "A2:A21",
+      "customList": "West,East,South,North"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-one-of-two-deleted": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:E21",
+    "criteria": {
+     "sort": {
+      "range": "A2:E21",
+      "conditions": [
+       {
+        "range": "A2:A21"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:E21",
+    "conditions": [
+     {
+      "range": "A2:A21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-pinyin": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "B2:B21"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "B2:B21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-stars": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "E2:E21",
+        "by": "icon",
+        "iconSet": "3Stars",
+        "icon": 0
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "E2:E21",
+      "by": "icon",
+      "iconSet": "3Stars",
+      "icon": 0
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-stroke": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "method": "stroke",
+      "conditions": [
+       {
+        "range": "B2:B21"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "method": "stroke",
+    "conditions": [
+     {
+      "range": "B2:B21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-two": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "A2:A21"
+       },
+       {
+        "range": "C2:C21",
+        "descending": true
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "A2:A21"
+     },
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-sort-value": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "sort": {
+      "range": "A2:F21",
+      "conditions": [
+       {
+        "range": "C2:C21"
+       }
+      ]
+     }
+    }
+   },
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21"
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "sheet-table-over-more": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Table1",
+     "range": "A1:F21"
+    }
+   ]
+  }
+ ],
+ "sheet-table-over-shown": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Table1",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "hiddenButton": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "sheet-table-over": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Table1",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       }
+      ],
+      "sort": {
+       "range": "A4:F20",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "sheet-this-month": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "thisMonth",
+        "value": 46327,
+        "maxValue": 46357
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-today": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "today",
+        "value": 46332,
+        "maxValue": 46333
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-top-percent": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "top",
+        "percent": true,
+        "value": 25,
+        "filterValue": 80
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-top": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 2,
+       "filter": {
+        "type": "top",
+        "value": 5,
+        "filterValue": 80
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-two-columns": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "filter": {
+        "type": "values",
+        "values": [
+         "North",
+         "South"
+        ]
+       }
+      },
+      {
+       "column": 2,
+       "filter": {
+        "type": "custom",
+        "conditions": [
+         {
+          "operator": "greaterThan",
+          "value": "40"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12,
+    13,
+    16,
+    17,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-values-blank": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 0,
+       "filter": {
+        "type": "values",
+        "values": [
+         "North"
+        ],
+        "blank": true
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    7,
+    8,
+    9,
+    11,
+    13,
+    15,
+    16,
+    17,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-values": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 1,
+       "filter": {
+        "type": "values",
+        "values": [
+         "Banana",
+         "Cherry"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-year-to-date": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "dynamic",
+        "kind": "yearToDate",
+        "value": 46023,
+        "maxValue": 46333
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "sheet-year": [
+  {
+   "name": "Data",
+   "autoFilter": {
+    "range": "A1:F21",
+    "criteria": {
+     "columns": [
+      {
+       "column": 3,
+       "filter": {
+        "type": "values",
+        "dates": [
+         {
+          "level": "year",
+          "year": 2024
+         }
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    19,
+    20,
+    21
+   ],
+   "tables": []
+  }
+ ],
+ "table-above-average": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "dynamic",
+         "kind": "aboveAverage",
+         "value": 52.5
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-auto-font": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    4,
+    8,
+    12,
+    16,
+    20
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "color",
+         "style": {
+          "font": {
+           "color": "#FFFFFF"
+          }
+         },
+         "font": true
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-below-average": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "dynamic",
+         "kind": "belowAverage",
+         "value": 52.5
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-blanks": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "filter": {
+         "type": "values",
+         "blank": true
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-bottom-percent": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "top",
+         "bottom": true,
+         "percent": true,
+         "value": 10,
+         "filterValue": 10
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-bottom": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "top",
+         "bottom": true,
+         "value": 3,
+         "filterValue": 15
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-column-added": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:G21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-column-before": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:G21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 3,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-column-between": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:G21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 3,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-column-deleted": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:E21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-column-other-deleted": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:E21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 1,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-cond-and": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "and": true,
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          },
+          {
+           "operator": "lessThanOrEqual",
+           "value": "70"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-cond-not": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    7,
+    8,
+    12,
+    13,
+    17,
+    18
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "notEqual",
+           "value": "Apple"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-cond-one": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThanOrEqual",
+           "value": "50"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-cond-or": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "lessThan",
+           "value": "10"
+          },
+          {
+           "operator": "greaterThanOrEqual",
+           "value": "90"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-cond-text": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "value": "*an*"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-dates-two": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "month",
+           "year": 2024,
+           "month": 4
+          },
+          {
+           "level": "year",
+           "year": 2023
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-day": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "day",
+           "year": 2024,
+           "month": 3,
+           "day": 15
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-deleted-column-of-two": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:E21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-fill": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "color",
+         "style": {
+          "fill": {
+           "color": "#FF0000"
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-filter-no-dropdown": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "hiddenButton": true
+       },
+       {
+        "column": 1,
+        "hiddenButton": true,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana"
+         ]
+        }
+       },
+       {
+        "column": 2,
+        "hiddenButton": true
+       },
+       {
+        "column": 3,
+        "hiddenButton": true
+       },
+       {
+        "column": 4,
+        "hiddenButton": true
+       },
+       {
+        "column": 5,
+        "hiddenButton": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-filter-then-off": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": false
+    }
+   ]
+  }
+ ],
+ "table-font": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    17,
+    18,
+    19,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "color",
+         "style": {
+          "font": {
+           "color": "#0000FF"
+          }
+         },
+         "font": true
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-hidden-button-filter": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "hiddenButton": true,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-hidden-button": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "hiddenButton": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-hour": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "hour",
+           "year": 2024,
+           "month": 3,
+           "day": 15,
+           "hour": 6
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-icon-stars": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 4,
+        "filter": {
+         "type": "icon",
+         "set": "3Stars",
+         "icon": 0
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-icon-third": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 4,
+        "filter": {
+         "type": "icon",
+         "set": "3Arrows",
+         "icon": 2
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-icon": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 4,
+        "filter": {
+         "type": "icon",
+         "set": "3Arrows",
+         "icon": 0
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-last-year": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "lastYear",
+         "value": 45658,
+         "maxValue": 46023
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-cond": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-not": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    6,
+    15
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "notEqual",
+           "value": "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-two": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "note 1"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-value": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-values": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5,
+        "filter": {
+         "type": "values",
+         "values": [
+          "note 1"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-long-wild": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 5,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "value": "*Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-m3": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "M3"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-minute": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "minute",
+           "year": 2024,
+           "month": 3,
+           "day": 15,
+           "hour": 6,
+           "minute": 14
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-month": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "month",
+           "year": 2023,
+           "month": 4
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-moved-button": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "H3:M23",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "hiddenButton": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-moved": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "H3:M23",
+     "filter": {
+      "sort": {
+       "range": "H11:M22",
+       "conditions": [
+        {
+         "range": "J4:J23",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-no-autofilter": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": false
+    }
+   ]
+  }
+ ],
+ "table-no-dropdown": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "hiddenButton": true
+       },
+       {
+        "column": 1,
+        "hiddenButton": true
+       },
+       {
+        "column": 2,
+        "hiddenButton": true
+       },
+       {
+        "column": 3,
+        "hiddenButton": true
+       },
+       {
+        "column": 4,
+        "hiddenButton": true
+       },
+       {
+        "column": 5,
+        "hiddenButton": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-no-fill": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    3,
+    7,
+    11,
+    15,
+    19
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "color",
+         "style": {}
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-no-headers-filter": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A2:F21"
+    }
+   ]
+  }
+ ],
+ "table-no-headers": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A2:F21"
+    }
+   ]
+  }
+ ],
+ "table-no-icon": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 4,
+        "filter": {
+         "type": "icon",
+         "set": "3Arrows"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-non-blanks": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    5,
+    12,
+    19
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "notEqual",
+           "value": " "
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-numbers": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    4,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "values",
+         "values": [
+          "10",
+          "20",
+          "35"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-one-value": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-pasted": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana"
+         ]
+        }
+       }
+      ],
+      "sort": {
+       "range": "A4:F19",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-plain": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21"
+    }
+   ]
+  }
+ ],
+ "table-q1": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "Q1"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-row-above": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A2:F22",
+     "filter": {
+      "sort": {
+       "range": "A3:F22",
+       "conditions": [
+        {
+         "range": "C3:C22",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-row-deleted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F20",
+     "filter": {
+      "sort": {
+       "range": "A2:F20",
+       "conditions": [
+        {
+         "range": "C2:C20",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-row-inside": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F22",
+     "filter": {
+      "sort": {
+       "range": "A2:F22",
+       "conditions": [
+        {
+         "range": "C2:C22",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-second": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "second",
+           "year": 2024,
+           "month": 3,
+           "day": 15,
+           "hour": 6,
+           "minute": 14,
+           "second": 24
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-sheet-copied": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ],
+      "sort": {
+       "range": "A9:F20",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "Data (2)",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales3",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ],
+      "sort": {
+       "range": "A2:F13",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sheet-renamed": [
+  {
+   "name": "Goods",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       },
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "20"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-case": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "caseSensitive": true,
+       "conditions": [
+        {
+         "range": "B2:B21"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-column-before": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:G21",
+     "filter": {
+      "sort": {
+       "range": "A2:G21",
+       "conditions": [
+        {
+         "range": "D2:D21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-column-deleted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:E21"
+    }
+   ]
+  }
+ ],
+ "table-sort-desc": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-fill": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "by": "cellColor",
+         "style": {
+          "fill": {
+           "color": "#FF0000"
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-filter": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       }
+      ],
+      "sort": {
+       "range": "A4:F20",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-font": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "C2:C21",
+         "by": "fontColor",
+         "style": {
+          "font": {
+           "color": "#0000FF"
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-icon": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "E2:E21",
+         "by": "icon",
+         "iconSet": "3Arrows",
+         "icon": 0
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-list": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "A2:A21",
+         "customList": "West,East,South,North"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-one-of-two-deleted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:E21",
+     "filter": {
+      "sort": {
+       "range": "A2:E21",
+       "conditions": [
+        {
+         "range": "A2:A21"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-pinyin": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "B2:B21"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-range": [
+  {
+   "name": "Data",
+   "sort": {
+    "range": "A2:F21",
+    "conditions": [
+     {
+      "range": "C2:C21",
+      "descending": true
+     }
+    ]
+   },
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21"
+    }
+   ]
+  }
+ ],
+ "table-sort-stars": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "E2:E21",
+         "by": "icon",
+         "iconSet": "3Stars",
+         "icon": 0
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-stroke": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "method": "stroke",
+       "conditions": [
+        {
+         "range": "B2:B21"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-two": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "A2:A21"
+        },
+        {
+         "range": "C2:C21",
+         "descending": true
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-sort-value": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "sort": {
+       "range": "A2:F21",
+       "conditions": [
+        {
+         "range": "C2:C21"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "table-this-month": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "thisMonth",
+         "value": 46327,
+         "maxValue": 46357
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-today": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "today",
+         "value": 46332,
+         "maxValue": 46333
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-top-percent": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "top",
+         "percent": true,
+         "value": 25,
+         "filterValue": 80
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-top": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 2,
+        "filter": {
+         "type": "top",
+         "value": 5,
+         "filterValue": 80
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-totals-filter": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F22",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-two-columns": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12,
+    13,
+    16,
+    17,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "filter": {
+         "type": "values",
+         "values": [
+          "North",
+          "South"
+         ]
+        }
+       },
+       {
+        "column": 2,
+        "filter": {
+         "type": "custom",
+         "conditions": [
+          {
+           "operator": "greaterThan",
+           "value": "40"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-unlisted": [
+  {
+   "name": "Data",
+   "filtered": false,
+   "hidden": [],
+   "tables": []
+  }
+ ],
+ "table-values-blank": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    3,
+    4,
+    7,
+    8,
+    9,
+    11,
+    13,
+    15,
+    16,
+    17,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 0,
+        "filter": {
+         "type": "values",
+         "values": [
+          "North"
+         ],
+         "blank": true
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-values": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 1,
+        "filter": {
+         "type": "values",
+         "values": [
+          "Banana",
+          "Cherry"
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-year-to-date": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "dynamic",
+         "kind": "yearToDate",
+         "value": 46023,
+         "maxValue": 46333
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "table-year": [
+  {
+   "name": "Data",
+   "filtered": true,
+   "hidden": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    19,
+    20,
+    21
+   ],
+   "tables": [
+    {
+     "name": "Sales",
+     "range": "A1:F21",
+     "filter": {
+      "columns": [
+       {
+        "column": 3,
+        "filter": {
+         "type": "values",
+         "dates": [
+          {
+           "level": "year",
+           "year": 2024
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}
