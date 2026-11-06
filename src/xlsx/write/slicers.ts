@@ -3,7 +3,8 @@
  * cache (x14 `slicerCacheDefinition`) and timeline's cache (x15 `timelineCacheDefinition`), named by the workbook's
  * extensions; each sheet's slicers and timelines in a part of each kind, named by the sheet's extensions, and their
  * frames in the sheet's drawing, at their places; each cache's name for the workbook's defined names. A slicer of a table is
- * not written (reported), nor is one without a place, nor a cache with nothing left to show it.
+ * not written (reported), nor is one without a place or whose cache's name the workbook holds for anything else, nor a cache with
+ * nothing left to show it.
  */
 import type { BookInput, DrawingPlace, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { caseKey } from '../../collate.js'
@@ -39,6 +40,9 @@ export interface SlicerPackage {
   /** The caches written, by name: Excel refuses a file whose framed slicer's cache no defined name holds (the set `links/slicer-names`). */
   cacheNames: string[]
 }
+
+/** The value of the name of a cache Excel writes: a name of the workbook of any other costs the file. */
+const NO_VALUE = /^=?\s*#N\/A\s*$/i
 
 /** A sheet's `sheetId` by its name: as `writeXlsx` numbers them, by place, or the file's. */
 export type TabId = (sheet: string) => number
@@ -152,17 +156,17 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
       out.pivotCacheIds.add(c.cache!)
       out.cacheNames.push(c.name)
     })
-  const pivotCaches = (book.slicerCaches ?? []).filter((c) => {
-    // Excel opens no file whose slicer cache's name is no name (the set `links/file-refusals`)
-    if (c.cache !== undefined && nameProblem(c.name, localeBooleans(book.locale)) === null) return true
-    issues.add('pivotTable', { key: 'pivotNotWritten' })
-    return false
-  })
-  const taken = new Set(pivotCaches.map((c) => caseKey(c.name)))
-  const shown = book.sheets.map((s) => ({
-    slicers: framed((s.slicers ?? []).filter((x) => taken.has(caseKey(x.cache))), s.name, issues),
-    timelines: framed(s.timelines ?? [], s.name, issues),
-  }))
+  // Excel opens no file whose slicer cache's name is no name (the set `links/file-refusals`), or a name the workbook holds for anything else (`links/slicer-names`)
+  const nameFree = (name: string) => !book.names?.some((n) => n.scope === undefined && caseKey(n.name) === caseKey(name) && !NO_VALUE.test(n.ref))
+  const fit = <C extends { name: string }>(c: C, ok: boolean) => {
+    if (!ok || !nameFree(c.name)) issues.add('pivotTable', { key: 'pivotNotWritten' }, { name: c.name })
+    return ok && nameFree(c.name)
+  }
+  const pivotCaches = (book.slicerCaches ?? []).filter((c) => fit(c, c.cache !== undefined && nameProblem(c.name, localeBooleans(book.locale)) === null))
+  const timelineCaches = (book.timelineCaches ?? []).filter((c) => fit(c, true))
+  const taken = new Set([...pivotCaches, ...timelineCaches].map((c) => caseKey(c.name)))
+  const own = <X extends Slicer | Timeline>(list: X[] | undefined, sheet: string) => framed((list ?? []).filter((x) => taken.has(caseKey(x.cache))), sheet, issues)
+  const shown = book.sheets.map((s) => ({ slicers: own(s.slicers, s.name), timelines: own(s.timelines, s.name) }))
   const seen = new Set(shown.flatMap((s) => [...s.slicers, ...s.timelines]).map((x) => caseKey(x.cache)))
   const asked = new Set(book.sheets.flatMap((s) => [...(s.slicers ?? []), ...(s.timelines ?? [])]).map((x) => caseKey(x.cache)))
   // a cache goes with what showed it, reported above; one that showed nothing is reported here
@@ -171,7 +175,7 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     return seen.has(caseKey(c.name))
   }
   caches('slicerCache', pivotCaches.filter(needed), slicerCacheXml)
-  caches('timelineCache', (book.timelineCaches ?? []).filter(needed), timelineCacheXml)
+  caches('timelineCache', timelineCaches.filter(needed), timelineCacheXml)
   let drawings = 0
   let [slicerParts, timelineParts] = [0, 0]
   book.sheets.forEach((s, i) => {

@@ -119,9 +119,8 @@ export const filterDatabase = (sheet: string, range: string, place: number) =>
  */
 function definedNames(book: BookInput, issues: Issues, names: FileNames, caches: string[]): string {
   const own = book.names?.some((n) => n.hidden && n.name.startsWith(CARRIER_PREFIX)) ? { ...book, names: book.names.filter((n) => !(n.hidden && n.name.startsWith(CARRIER_PREFIX))) } : book
-  const elements = nameElements(own, issues, names)
-  const out = elements.filter((x) => x !== undefined)
-  const held = new Set(own.names?.filter((n, i) => n.scope === undefined && elements[i] !== undefined).map((n) => caseKey(n.name)))
+  const out = nameElements(own, issues, names).filter((x) => x !== undefined)
+  const held = new Set(own.names?.filter((n) => n.scope === undefined).map((n) => caseKey(n.name)))
   for (const name of caches) if (!held.has(caseKey(name))) out.push(`<definedName name="${escapeAttr(name)}">#N/A</definedName>`)
   book.sheets.forEach((s, i) => s.autoFilter && out.push(filterDatabase(s.name, s.autoFilter.range, i)))
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
