@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.88.0 (2026-11-07)
+
+Internal release; not published to npm.
+
+Added:
+
+- Stored AutoFilter criteria and sorts in `AutoFilter.criteria`, `TableInput.filter` and `SheetInput.sort`: selected values, blanks, grouped dates, custom comparisons, top/bottom, dynamic filters, colors and icons. `readXlsx`, `writeXlsx` and `writeKept` preserve them, and structure operations transform their columns and ranges. The library does not yet apply criteria or reorder cells; supplied hidden rows and cell order are preserved.
+- `CellInput.richText` stores the font of each run of a text constant, using UTF-16 offsets. Both xlsx writers preserve the runs. Session reads and changes expose them, copies carry them, replacing the text clears them, and undo restores them. Font patches apply to each run without losing its other properties. Run formatting does not change calculation or `inputHash`.
+
+Changed:
+
+- A table with `filter: false` is written without an AutoFilter. Filters without supplied criteria retain the earlier compatibility behavior for `filtered` sheets.
+- The `richText` read issue now reports unsupported font properties of runs, rather than all formatted text. Supported run fonts are retained.
+
+Checked against 370 corrected Windows Excel filter round trips and the character fonts of 26 cells through both writers. The earlier 25 prediction misses remain recorded in their original set.
+
 ## 0.87.1 (2026-11-06)
 
 Internal release; not published to npm.
