@@ -1,0 +1,4554 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 47
+ },
+ "cases": [
+  {
+   "id": "m1",
+   "about": "TEXT(46096.5) with bBB",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"bBB\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2569"
+   }
+  },
+  {
+   "id": "m2",
+   "about": "TEXT(46096.5) with BBb",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"BBb\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2569"
+   }
+  },
+  {
+   "id": "m3",
+   "about": "TEXT(46096.5) with bBbB",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"bBbB\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m4",
+   "about": "TEXT(46096.5) with yyBb",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yyBb\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2669"
+   }
+  },
+  {
+   "id": "m5",
+   "about": "TEXT(46096.5) with bByy",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"bByy\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "6926"
+   }
+  },
+  {
+   "id": "m6",
+   "about": "TEXT(46096.5) with B\"x\"",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B\"\"x\"\"\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69x"
+   }
+  },
+  {
+   "id": "m7",
+   "about": "TEXT(46096.5) with \"x\"B",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"\"\"x\"\"B\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m8",
+   "about": "TEXT(46096.5) with B yy",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B yy\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69 26"
+   }
+  },
+  {
+   "id": "m9",
+   "about": "TEXT(46096.5) with yyB yy",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yyB yy\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2669 26"
+   }
+  },
+  {
+   "id": "m10",
+   "about": "TEXT(46096.5) with B ",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B \")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69 "
+   }
+  },
+  {
+   "id": "m11",
+   "about": "TEXT(46096.5) with  B",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\" B\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m12",
+   "about": "TEXT(-1) with B;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"B;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m13",
+   "about": "TEXT(46096.5) with B.",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B.\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69."
+   }
+  },
+  {
+   "id": "m14",
+   "about": "TEXT(46096.5) with B/",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B/\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69/"
+   }
+  },
+  {
+   "id": "m15",
+   "about": "TEXT(46096.5) with B\\n",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B\\n\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69n"
+   }
+  },
+  {
+   "id": "m16",
+   "about": "TEXT(46096.5) with B_x",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B_x\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69 "
+   }
+  },
+  {
+   "id": "m17",
+   "about": "TEXT(46096.5) with B*x",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B*x\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69"
+   }
+  },
+  {
+   "id": "m18",
+   "about": "TEXT(46096.5) with [Red]B",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"[Red]B\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m19",
+   "about": "TEXT(46096.5) with yy3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yy3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m20",
+   "about": "TEXT(46096.5) with d3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"d3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m21",
+   "about": "TEXT(46096.5) with 3yy",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"3yy\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m22",
+   "about": "TEXT(46096.5) with dd1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"dd1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m23",
+   "about": "TEXT(46096.5) with h1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m24",
+   "about": "TEXT(46096.5) with aaa3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaa3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m25",
+   "about": "TEXT(46096.5) with g3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"g3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m26",
+   "about": "TEXT(46096.5) with e3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"e3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m27",
+   "about": "TEXT(46096.5) with yy 3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yy 3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m28",
+   "about": "TEXT(46096.5) with b 3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"b 3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m29",
+   "about": "TEXT(46096.5) with 1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "1"
+   }
+  },
+  {
+   "id": "m30",
+   "about": "TEXT(46096.5) with 5",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"5\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "5"
+   }
+  },
+  {
+   "id": "m31",
+   "about": "TEXT(46096.5) with 0 1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0 1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097 1"
+   }
+  },
+  {
+   "id": "m32",
+   "about": "TEXT(46096.5) with 1 0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"1 0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "1 46097"
+   }
+  },
+  {
+   "id": "m33",
+   "about": "TEXT(46096.5) with aaaA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "SunA"
+   }
+  },
+  {
+   "id": "m34",
+   "about": "TEXT(46096.5) with Aaaa",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"Aaaa\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "ASun"
+   }
+  },
+  {
+   "id": "m35",
+   "about": "TEXT(46096.5) with aaaAAA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaAAA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "SunSun"
+   }
+  },
+  {
+   "id": "m36",
+   "about": "TEXT(46096.5) with aaaAA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaAA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "SunAA"
+   }
+  },
+  {
+   "id": "m37",
+   "about": "TEXT(46096.5) with aAAA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aAAA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "aSun"
+   }
+  },
+  {
+   "id": "m38",
+   "about": "TEXT(46096.5) with h dd mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h dd mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 15 03"
+   }
+  },
+  {
+   "id": "m39",
+   "about": "TEXT(46096.5) with h yy mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h yy mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 26 03"
+   }
+  },
+  {
+   "id": "m40",
+   "about": "TEXT(46096.5) with h e mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h e mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 2026 03"
+   }
+  },
+  {
+   "id": "m41",
+   "about": "TEXT(46096.5) with h g mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h g mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12  00"
+   }
+  },
+  {
+   "id": "m42",
+   "about": "TEXT(46096.5) with h ddd mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h ddd mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 Sun 03"
+   }
+  },
+  {
+   "id": "m43",
+   "about": "TEXT(46096.5) with mm aaa ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm aaa ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "00 Sun 00"
+   }
+  },
+  {
+   "id": "m44",
+   "about": "TEXT(46096.5) with mm bb ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm bb ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "00 69 00"
+   }
+  },
+  {
+   "id": "m45",
+   "about": "TEXT(46096.5) with mm g ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm g ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "00  00"
+   }
+  },
+  {
+   "id": "m46",
+   "about": "TEXT(46096.5) with mm dd ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm dd ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "03 15 00"
+   }
+  },
+  {
+   "id": "m47",
+   "about": "TEXT(-1) with 0;[>1]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"0;[>1]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m48",
+   "about": "TEXT(46096.5) with 0;[>1]0;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;[>1]0;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m49",
+   "about": "TEXT(46096.5) with [>1]0;0;[>2]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"[>1]0;0;[>2]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m50",
+   "about": "TEXT(46096.5) with [>1]0;[>2]0;@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"[>1]0;[>2]0;@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "m51",
+   "about": "TEXT(46096.5) with 0;0;[>1]0;@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;[>1]0;@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m52",
+   "about": "TEXT(46096.5) with [>1]0;0;0;[>2]@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"[>1]0;0;0;[>2]@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m53",
+   "about": "TEXT(46096.5) with 0;0;0;[>1]@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;[>1]@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m54",
+   "about": "TEXT(-1) with [Red]0;[>1]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"[Red]0;[>1]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m55",
+   "about": "TEXT(46096.5) with 0;0;0;[h]",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;[h]\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m56",
+   "about": "TEXT(46096.5) with 0;0;0;[Red]",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;[Red]\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "m57",
+   "about": "TEXT(46096.5) with 0;0;0;%",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;%\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m58",
+   "about": "TEXT(46096.5) with 0;0;0;#",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;#\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m59",
+   "about": "TEXT(46096.5) with 0;0;0;?",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;?\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m60",
+   "about": "TEXT(46096.5) with 0;0;0;s",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;s\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m61",
+   "about": "TEXT(46096.5) with 0;0;0;B",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;B\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "m62",
+   "about": "TEXT(46096.5) with 0;0;0;aa@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;aa@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "m63",
+   "about": "TEXT(46096.5) with .0E+0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\".0E+0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": ".5E+5"
+   }
+  },
+  {
+   "id": "m64",
+   "about": "TEXT(46096.5) with 0.0E+0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0.0E+0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "4.6E+4"
+   }
+  }
+ ],
+ "sent": {
+  "m1": "54a2ca3d626dd90b7800c1e0e25f68fa507cf2e2a960eb27af7f88e44a3b8e46",
+  "m2": "686d9a9af9ffba9358917b26c69a586e5e2e8272288b0c0f38b56e1ae43c7a08",
+  "m3": "c4fe66126bfe8e3808ea972aeb51a1c9dc98048e646c74dd1cb911dee548a523",
+  "m4": "a828f4b041921738a41c60ee68f6fc299412b1b3b9f08d8feb46fabfa59bb408",
+  "m5": "35ff4ca89e5d371a5a0edd4305778e1d496f96d8b26dd413daeebdf2313021a6",
+  "m6": "dea68f3a45fba4d1785878084fdede517e08c0dae63edfad55722447d979e7e2",
+  "m7": "4742844a0baefc9c1bda471d39e145f1602d11440335aed7d274e4b671bce960",
+  "m8": "2169a70382e671d74bb66f2f6e7a8c9c8e7b9a61aba6ea88da1c1164c09827de",
+  "m9": "af68b0bfe02d78897297e5fffb80bd5baf89f08a5c658442bc22bdde6ca5a5e2",
+  "m10": "9f0766e3f93fba7ed0e802cf890a530d687bd7790f084a9850f832955102d148",
+  "m11": "4018fde09be26a5dfd8a04f352d032a246635bf1035d44a6384fd53394ec9aed",
+  "m12": "6494e2642870cbd8af70e8498dc66590e9d8ba251b97a393a02bdab42ead0cdb",
+  "m13": "c6a84baa7f7bc064a11b406454093dd189057da77e3c7e2bc33548bfb0ffb845",
+  "m14": "760656aab4855441249dcb994e4a8d5f2c97de3c86c89cef5a0bf1bbdbdb2962",
+  "m15": "1cc2fd04f438b76fc58de2bfb455d03cd35686a6ba1897db07c4603de40ac36b",
+  "m16": "3754a79859d0e66538571ef1e0b99d31ed116b99cdfda223e4e731e858eee3cc",
+  "m17": "8da9532017bab118079f04298d0bde61ad5a0e97a05f9e03758dbf4bc746c9a4",
+  "m18": "095f413d166b0772f911ce9c3d10a90fb412bb7952f90612c228f7345adea153",
+  "m19": "0ca6e9f801bdf36c30b981eac308d3f9d23a66d29c747f62c9f17372677f7ce8",
+  "m20": "908dfffcf199be7f6af6894d4ebe2f1b0a87322c638c8e57deeae6dda4ae134e",
+  "m21": "e13d22ed854a019a37cee9e8e79252fe799e54769b827bd2749d906391b8c2ff",
+  "m22": "90f50fe7eb1697799dcf839721fd380ba9eb885d6928b1fd8bd84f6f56493c4a",
+  "m23": "fccf054a5335e5a893f307c725a2e017320246b2b55f46987ba55b52469facaa",
+  "m24": "d4c1f5aa1bd29d94e2aa4e799a961a66ea6719eae7916046faffd910b46bd835",
+  "m25": "0494d185a677fa3c748ae9cfd9bee333241b404a93dabe5ae47a7b2be0e179f4",
+  "m26": "9280f458eb1b61c6173703c9fff5e87215c3c6f95098fc107942ae56ea7f9070",
+  "m27": "7ad831f0aebc21857df0c38a647321f21104b1b9b7633d074de2362f7322e86a",
+  "m28": "0d4e7b6d79b38d84dd575274bc60b3a81cc1aabe409e2ba3588250f9d9ae688e",
+  "m29": "4a09162f70840feb9ead51750bb7fa6cfdaa3a48f29a0f53e927a2a8c142f644",
+  "m30": "00a7bb9dcfe609f9fa62bc481de9b821a9fe82bac081fe1e3a2cc7b412eefe40",
+  "m31": "3e8cbb5d61e9ed683c4d6bbc5fd668a4a6f805d8ec34c00845133670f2428a76",
+  "m32": "fdcfcc751357e64ed9d39f33bd65a9b043ac74232eeda16336a13efa525191d3",
+  "m33": "c64978a9ea144935c83f402c59eab24287a31c0c879203a5565cf07f23fb2f85",
+  "m34": "c1403169378d7a05624106d3c40a34426f1a63eb6d807014f455cb9247d9c102",
+  "m35": "e56819218e4600d606bc33de4e78d24f84c216417df70544149c20642c37a60c",
+  "m36": "4f834efec4652a779f9080a68fcdc5dfdf927083b8936b7868d140f706713ab7",
+  "m37": "02c0ba94367ee53a04d9e864628618e6933b53ee76d7739fcdbc92f171dfdc89",
+  "m38": "aab8e7474690200f7ef8586e9975f1e6363e6bbe01db794c5f50a6e7e7153ed0",
+  "m39": "2d290053c4aad272cf29b13a1c1ea8b6261ff3c7d2e513ae195af64ec5fc1752",
+  "m40": "aa4e42bb7edf26f19a8827bfc6c33ec1924cf6b9433a7888ce0f4624df91bc0e",
+  "m41": "a5f8af8c058270d3b3e0b7a21defa31dc766c255589b9555b208b669bae0af5b",
+  "m42": "2b90516ac05ea78f851ae08b119906e06607f3197432c3b7db97e79cb4a035c4",
+  "m43": "741e9fd19daa0f636d12a2d5ed7a77cba07e2332c4fbb96beb9a13f04b322fa2",
+  "m44": "446f3a289d4c2f43caa1f2e131f27401085bff9cce4e94fa497f9271011c6df4",
+  "m45": "709e5244d575a7135125ff219414509bd21922682579b1a3e64db1ae20c4c1cb",
+  "m46": "75ab48034074127cec0dbbccc68aae36a151618ad479fc714d2a3c67485626bf",
+  "m47": "1e9bcf1cd316566e8a350101d4d693bd4ec5abfcb19cbe9fd1381ad0b5c12144",
+  "m48": "a3d84ce2d3d98bf9b720927fe124b0c142a60315243b143c9a76e5ff1309ebd8",
+  "m49": "0e56dd7b64e9becca2b17a8edac2f201584a218023a7277b300ffdd5b2c1eff3",
+  "m50": "68d90b5010e1e8eb579318a0c9b75453d8b7c7218536c571811a41a459784d39",
+  "m51": "8bffac5d30f4cf7cb33f2931ba2c1e4fbec44dc3e7d1daa874b322191a15d51e",
+  "m52": "f0c654c6b4b26368ecb6658c7cbd0fc13605af3d3c021c669e8cb332ff015d91",
+  "m53": "17aeb6026063b62ddf66708b3371dfea2d973ca25068f3504d7a79486b43c741",
+  "m54": "d0c88ebe1654c8c225d2bec0118fc664faf9341b276cdf8b2ae2ce311205d4c8",
+  "m55": "9bfd1eeb9dc487a27ae2f031f195b221d2da6755c069ea8d62ab57167e3602e7",
+  "m56": "84f724b0835e8fe27f844fef7cc3cc8b4da01183f3ee37d28f2c88c1db9f1d0c",
+  "m57": "ad11ccce59e8fe9039b5f898affea1284a07c7c86fd935e0207e46e719b16e1a",
+  "m58": "9213f8ace9e1267b782b70fd8f6e5abe19877e608a141490c964251710bf6b17",
+  "m59": "3f21e377542253a723349b12d9cc6842a4bb7279af54c7efc74afd93d5b77540",
+  "m60": "0fa45d223cb468893925683c41849a3a14280fca939cebbef5cc2aa03ad5c038",
+  "m61": "c16e28f0b0e53c95484ed44c31a6b4540d42ff02556d1d3e26b5af0714c5ca32",
+  "m62": "9e9db4209adc1ec447a738670546a3fac63a8bf9549790c5d2ea4a2419d1694d",
+  "m63": "8b9a9f2793871a18f6946d2a746b299951ffcc77e222e935420f90bd3ece1d5a",
+  "m64": "35e1a4f48c87c5ca0892cdb36722f13c58689e79a57aecb45a5c8fc60762bad3"
+ },
+ "answers": {
+  "m1": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBB\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBB\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    }
+   ]
+  },
+  "m2": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"BBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"BBb\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"BBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"BBb\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    }
+   ]
+  },
+  "m3": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBbB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBbB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBbB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBbB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m4": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2669"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyBb\")"
+     },
+     "shown": {
+      "S!A1": "2669"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2669"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyBb\")"
+     },
+     "shown": {
+      "S!A1": "2669"
+     }
+    }
+   ]
+  },
+  "m5": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "6926"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bByy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bByy\")"
+     },
+     "shown": {
+      "S!A1": "6926"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "6926"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bByy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bByy\")"
+     },
+     "shown": {
+      "S!A1": "6926"
+     }
+    }
+   ]
+  },
+  "m6": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69x"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B\"\"x\"\"\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B\"\"x\"\"\")"
+     },
+     "shown": {
+      "S!A1": "69x"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69x"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B\"\"x\"\"\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B\"\"x\"\"\")"
+     },
+     "shown": {
+      "S!A1": "69x"
+     }
+    }
+   ]
+  },
+  "m7": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"\"\"x\"\"B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"\"\"x\"\"B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"\"\"x\"\"B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"\"\"x\"\"B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m8": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 26"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B yy\")"
+     },
+     "shown": {
+      "S!A1": "69 26"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 26"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B yy\")"
+     },
+     "shown": {
+      "S!A1": "69 26"
+     }
+    }
+   ]
+  },
+  "m9": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2669 26"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyB yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyB yy\")"
+     },
+     "shown": {
+      "S!A1": "2669 26"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2669 26"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyB yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyB yy\")"
+     },
+     "shown": {
+      "S!A1": "2669 26"
+     }
+    }
+   ]
+  },
+  "m10": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 "
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B \")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B \")"
+     },
+     "shown": {
+      "S!A1": "69 "
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 "
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B \")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B \")"
+     },
+     "shown": {
+      "S!A1": "69 "
+     }
+    }
+   ]
+  },
+  "m11": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\" B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\" B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\" B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\" B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m12": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    }
+   ]
+  },
+  "m13": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69."
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B.\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B.\")"
+     },
+     "shown": {
+      "S!A1": "69."
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69."
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B.\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B.\")"
+     },
+     "shown": {
+      "S!A1": "69."
+     }
+    }
+   ]
+  },
+  "m14": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69/"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B/\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B/\")"
+     },
+     "shown": {
+      "S!A1": "69/"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69/"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B/\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B/\")"
+     },
+     "shown": {
+      "S!A1": "69/"
+     }
+    }
+   ]
+  },
+  "m15": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69n"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B\\n\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B\\n\")"
+     },
+     "shown": {
+      "S!A1": "69n"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69n"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B\\n\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B\\n\")"
+     },
+     "shown": {
+      "S!A1": "69n"
+     }
+    }
+   ]
+  },
+  "m16": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 "
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B_x\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B_x\")"
+     },
+     "shown": {
+      "S!A1": "69 "
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69 "
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B_x\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B_x\")"
+     },
+     "shown": {
+      "S!A1": "69 "
+     }
+    }
+   ]
+  },
+  "m17": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B*x\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B*x\")"
+     },
+     "shown": {
+      "S!A1": "69"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B*x\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B*x\")"
+     },
+     "shown": {
+      "S!A1": "69"
+     }
+    }
+   ]
+  },
+  "m18": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[Red]B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[Red]B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[Red]B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[Red]B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m19": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m20": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"d3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"d3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"d3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"d3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m21": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"3yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"3yy\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"3yy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"3yy\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m22": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m23": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m24": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaa3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaa3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaa3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaa3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m25": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"g3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"g3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"g3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"g3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m26": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"e3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"e3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m27": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy 3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy 3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy 3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy 3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m28": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"b 3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"b 3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"b 3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"b 3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m29": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"1\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"1\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    }
+   ]
+  },
+  "m30": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "5"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"5\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"5\")"
+     },
+     "shown": {
+      "S!A1": "5"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "5"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"5\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"5\")"
+     },
+     "shown": {
+      "S!A1": "5"
+     }
+    }
+   ]
+  },
+  "m31": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097 1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0 1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0 1\")"
+     },
+     "shown": {
+      "S!A1": "46097 1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097 1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0 1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0 1\")"
+     },
+     "shown": {
+      "S!A1": "46097 1"
+     }
+    }
+   ]
+  },
+  "m32": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1 46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"1 0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"1 0\")"
+     },
+     "shown": {
+      "S!A1": "1 46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1 46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"1 0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"1 0\")"
+     },
+     "shown": {
+      "S!A1": "1 46097"
+     }
+    }
+   ]
+  },
+  "m33": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "shown": {
+      "S!A1": "SunA"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "shown": {
+      "S!A1": "SunA"
+     }
+    }
+   ]
+  },
+  "m34": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "ASun"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Aaaa\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Aaaa\")"
+     },
+     "shown": {
+      "S!A1": "ASun"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "ASun"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Aaaa\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Aaaa\")"
+     },
+     "shown": {
+      "S!A1": "ASun"
+     }
+    }
+   ]
+  },
+  "m35": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunday"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "shown": {
+      "S!A1": "Sunday"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunday"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "shown": {
+      "S!A1": "Sunday"
+     }
+    }
+   ]
+  },
+  "m36": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunAA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAA\")"
+     },
+     "shown": {
+      "S!A1": "SunAA"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunAA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAA\")"
+     },
+     "shown": {
+      "S!A1": "SunAA"
+     }
+    }
+   ]
+  },
+  "m37": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aSun"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aAAA\")"
+     },
+     "shown": {
+      "S!A1": "aSun"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aSun"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aAAA\")"
+     },
+     "shown": {
+      "S!A1": "aSun"
+     }
+    }
+   ]
+  },
+  "m38": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 15 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 15 00"
+     }
+    }
+   ]
+  },
+  "m39": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 26 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h yy mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h yy mm\")"
+     },
+     "shown": {
+      "S!A1": "12 26 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 26 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h yy mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h yy mm\")"
+     },
+     "shown": {
+      "S!A1": "12 26 00"
+     }
+    }
+   ]
+  },
+  "m40": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-1",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 2026 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h e mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h e mm\")"
+     },
+     "shown": {
+      "S!A1": "12 2026 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 2026 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h e mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h e mm\")"
+     },
+     "shown": {
+      "S!A1": "12 2026 00"
+     }
+    }
+   ]
+  },
+  "m41": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h g mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h g mm\")"
+     },
+     "shown": {
+      "S!A1": "12  00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h g mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h g mm\")"
+     },
+     "shown": {
+      "S!A1": "12  00"
+     }
+    }
+   ]
+  },
+  "m42": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h ddd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h ddd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 Sun 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h ddd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h ddd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 Sun 00"
+     }
+    }
+   ]
+  },
+  "m43": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "shown": {
+      "S!A1": "03 Sun 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "shown": {
+      "S!A1": "03 Sun 00"
+     }
+    }
+   ]
+  },
+  "m44": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 69 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm bb ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm bb ss\")"
+     },
+     "shown": {
+      "S!A1": "03 69 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 69 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm bb ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm bb ss\")"
+     },
+     "shown": {
+      "S!A1": "03 69 00"
+     }
+    }
+   ]
+  },
+  "m45": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "00  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "shown": {
+      "S!A1": "00  00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "00  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "shown": {
+      "S!A1": "00  00"
+     }
+    }
+   ]
+  },
+  "m46": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm dd ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm dd ss\")"
+     },
+     "shown": {
+      "S!A1": "03 15 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm dd ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm dd ss\")"
+     },
+     "shown": {
+      "S!A1": "03 15 00"
+     }
+    }
+   ]
+  },
+  "m47": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m48": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "m49": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;[>2]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;[>2]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;[>2]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;[>2]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m50": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "m51": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0;@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0;@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m52": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;0;[>2]@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;0;[>2]@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;0;[>2]@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;0;0;[>2]@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m53": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[>1]@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[>1]@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[>1]@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[>1]@\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m54": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"[Red]0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"[Red]0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"[Red]0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"[Red]0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m55": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[h]\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[h]\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[h]\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[h]\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m56": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[Red]\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[Red]\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[Red]\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;[Red]\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "m57": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;%\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;%\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;%\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;%\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m58": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;#\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;#\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;#\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;#\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m59": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;?\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;?\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;?\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;?\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m60": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;s\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;s\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;s\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;s\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m61": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;B\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;B\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "m62": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;aa@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;aa@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;aa@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;aa@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "m63": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ".5E+5"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\".0E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\".0E+0\")"
+     },
+     "shown": {
+      "S!A1": ".5E+5"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ".5E+5"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\".0E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\".0E+0\")"
+     },
+     "shown": {
+      "S!A1": ".5E+5"
+     }
+    }
+   ]
+  },
+  "m64": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-letters-more-68888-2",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "4.6E+4"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0.0E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0.0E+0\")"
+     },
+     "shown": {
+      "S!A1": "4.6E+4"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "4.6E+4"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0.0E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0.0E+0\")"
+     },
+     "shown": {
+      "S!A1": "4.6E+4"
+     }
+    }
+   ]
+  }
+ }
+}
