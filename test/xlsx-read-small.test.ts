@@ -8,7 +8,9 @@ import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
 import { linkFile } from '../bench/coverage/links/cases.js'
+import { buildLinksCases as letterCases } from '../bench/coverage/links/date-e-letters.js'
 import { buildLinksCases as dateCases } from '../bench/coverage/links/date-e-text.js'
+import { buildLinksCases as wordCases } from '../bench/coverage/links/date-e-words.js'
 import { REFUSED, buildLinksCases as longCases } from '../bench/coverage/links/longtext-file.js'
 import { BAR_CASES, barFile, barRule } from '../bench/coverage/xlsx/bars-held.js'
 import { FILL_FILES, fillBook } from '../bench/coverage/xlsx/fills-read.js'
@@ -107,6 +109,18 @@ describe.each(PLATFORMS)('%s', (_, dir) => {
       const got = set.answers[id].reads[1].values['S!A1']
       expect(got).toEqual(MISSED.includes(id) ? { t: 'e', v: 'VALUE' } : wanted(c.predicted!['S!A1']))
       expect(compute((await readXlsx(await linkFile(c))).book).sheets[0].cells.A1?.value).toEqual(value(got))
+    })
+
+    // `e` beside `b`, a Buddhist year in two digits, or `g`, an era's name and empty here: a known difference (docs/formats.md)
+    const OTHERS = ['e-b', 'b-e', 'e-g', 'g-e']
+    describe.each([
+      ['date-e-words', wordCases],
+      ['date-e-letters', letterCases],
+    ] as const)('%s', (name, cases) => {
+      const held = json<StoredLinks>(excel(dir, `links/${name}.json`))
+      it.each(cases().cases.filter((c) => !OTHERS.includes(c.id)).map((c) => [c.id, c] as const))('TEXT with %s', async (id, c) => {
+        expect(compute((await readXlsx(await linkFile(c))).book).sheets[0].cells.A1?.value).toEqual(value(held.answers[id].reads[1].values['S!A1']))
+      })
     })
   })
 })

@@ -134,6 +134,9 @@ function bracket(inner: string, sec: Section, out: Tok[], codes: Codes): boolean
   return true
 }
 
+/** What a section holds beside its bare letters: quoted text, an escaped, padded or repeated character, brackets. */
+const BESIDE_CODES = /"[^"]*"|[\\_*].|\[[^\]]*\]/g
+
 /** A section's tokens and bracketed parts; null for a code the dialect does not read. */
 function parseSection(text: string, codes: Codes): Section | null {
   if (codes.refuses?.(text)) return null
@@ -197,8 +200,10 @@ function parseSection(text: string, codes: Codes): Section | null {
       i = j
       continue
     }
-    // Excel's year in a code of lower-case `e`s, as `yyyy` ([MS-OI29500] 2.1.713, the set `display/date-e-held`); upper-case it refuses
+    // Excel's year in a code of lower-case `e`s, as `yyyy` ([MS-OI29500] 2.1.713, the set `display/date-e-held`); upper-case it refuses,
+    // and it is no format beside an `n`, `General` in ru-RU among them (the sets `links/date-e-words`, `links/date-e-letters`)
     if (ch === 'e') {
+      if (text.replace(BESIDE_CODES, '').toLowerCase().includes('n')) return null
       let j = i
       while (text[j] === 'e') j++
       toks.push({ t: 'date', s: 'yyyy' })
