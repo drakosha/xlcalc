@@ -17,11 +17,25 @@ function pivotsOf(xml: string, sheetOf: (id: string | undefined) => string | und
   })
 }
 
+/** The file's tables by `id`, each with its name and its columns' names by their `id`s, which are not their places: a column deleted leaves a gap. */
+export type FileTables = Map<string, { name: string; columns: Map<string, string> }>
+
 /** What the reader of the caches needs of the workbook: sheets by id, a pivot cache by its Excel 2010 id, a table by its id. */
 export interface SlicerContext {
   sheetOf: (id: string | undefined) => string | undefined
   cacheOf: (id: string | undefined) => number | undefined
-  tableOf: (id: string | undefined) => string | undefined
+  tableOf: (id: string | undefined) => { name: string; columns: Map<string, string> } | undefined
+}
+
+/** A cache's order and display of its items, which a PivotTable's cache and a table's hold alike. */
+function takeDisplay(c: SlicerCache, a: Record<string, string>) {
+  if (a.sortOrder === 'descending') c.sort = 'descending'
+  take(c, a, 'customListSort:t showMissing:t')
+  const cross = a.crossFilter ?? 'showItemsWithDataAtTop'
+  const noData: NonNullable<SlicerCache['noData']> = {}
+  if (cross === 'none') noData.mark = false
+  if (cross === 'showItemsWithNoData') noData.last = false
+  if (Object.keys(noData).length) c.noData = noData
 }
 
 export function readSlicerCache(xml: string, ctx: SlicerContext): SlicerCache {
@@ -36,20 +50,17 @@ export function readSlicerCache(xml: string, ctx: SlicerContext): SlicerCache {
       const ia = attributes(e.attrs)
       return { item: Number(ia.x ?? 0), ...(flag(ia.s) ? {} : { selected: false }), ...(flag(ia.nd) ? { noData: true } : {}) }
     })
-    if (ta.sortOrder === 'descending') c.sort = 'descending'
-    take(c, ta, 'customListSort:t showMissing:t')
-    const cross = ta.crossFilter ?? 'showItemsWithDataAtTop'
-    const noData: NonNullable<SlicerCache['noData']> = {}
-    if (element(xml, 'slicerCacheHideItemsWithNoData')) noData.hide = true
-    if (cross === 'none') noData.mark = false
-    if (cross === 'showItemsWithNoData') noData.last = false
-    if (Object.keys(noData).length) c.noData = noData
+    takeDisplay(c, ta)
   }
   const table = element(xml, 'tableSlicerCache')
   if (table) {
     const t = attributes(table.attrs)
-    c.table = { name: ctx.tableOf(t.tableId) ?? '', column: attrText(t.column) }
+    const of = ctx.tableOf(t.tableId)
+    const column = of?.columns.get(t.column)
+    if (of && column !== undefined) c.table = { name: of.name, column }
+    takeDisplay(c, t)
   }
+  if (element(xml, 'slicerCacheHideItemsWithNoData')) c.noData = { ...c.noData, hide: true }
   return c
 }
 

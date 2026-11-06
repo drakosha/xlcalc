@@ -19,7 +19,7 @@ import { nextBlock } from '../write/parts.js'
 import { sheetPieces, sheetXml, tablePartsXml, type SheetContext, type SheetPieces } from '../write/sheet.js'
 import { writeArgs, type ResultCell } from '../write/snapshot.js'
 import { tableXml } from '../write/tables.js'
-import { attr, attributes, attrsAt } from '../xml/scan.js'
+import { attr, attributes, attrsAt, within } from '../xml/scan.js'
 import { escapeAttr, readText } from '../xml/text.js'
 import { parseRange } from '../../structure/area.js'
 import { areasOf } from './refs.js'
@@ -212,6 +212,17 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
 }
 
 /** The writing of one book over one file. */
+/**
+ * The ids of a table's columns after a change: of its name in the file, or of its place where the columns are as many (one
+ * renamed); a new column a new id.
+ */
+function keptColumnIds(ids: number[], t0: TableInput, t1: TableInput): number[] {
+  const named = new Map(t0.columns.map((c, i) => [caseKey(c.name), ids[i]]))
+  const same = t0.columns.length === t1.columns.length
+  let next = Math.max(0, ...ids)
+  return t1.columns.map((c, i) => named.get(caseKey(c.name)) ?? (same ? ids[i] : ++next))
+}
+
 class Kept {
   readonly issues = new Issues()
   readonly parts: Parts
@@ -538,8 +549,10 @@ class Kept {
       } else {
         list.push(r.id)
         const id = Number(a.id)
-        const after = tableXml(t1, s1, id, this.w1.names, this.issues, t1.name === this.w1.filterTables[j])
-        if (tableXml(t0, s0, id, this.w0.names, new Issues(), t0.name === this.w0.filterTables[k]) === after) continue
+        // its columns keep their ids, which a table's slicer and a query table name
+        const ids = within(xml!, 'tableColumns', 'tableColumn').map((e) => Number(attributes(e.attrs).id))
+        const after = tableXml(t1, s1, id, this.w1.names, this.issues, t1.name === this.w1.filterTables[j], keptColumnIds(ids, t0, t1))
+        if (tableXml(t0, s0, id, this.w0.names, new Issues(), t0.name === this.w0.filterTables[k], ids) === after) continue
         this.changed = true
         this.parts.set(r.target, after)
       }

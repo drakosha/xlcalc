@@ -16,7 +16,7 @@ import { parseMerge } from '../layout/merges.js'
 import { withField } from '../looks/sheet.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
-import { tableKey, tablesOf } from './model.js'
+import { tableKey, tablesOf, withTableSlicers } from './model.js'
 
 type TableOp = Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>
 
@@ -56,7 +56,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
     // Excel keeps the name when only its case changes (the set `tables/ops`, rename-case)
     if (tableKey(op.name) === key) return { ok: true, book, geometry: [] }
     const renamed = rewriteBookTables(book, (x) => (tableKey(x.name) === key ? { table: op.name } : undefined))
-    return { ok: true, book: withTable(renamed, key, { ...t.input, name: op.name }), geometry: [] }
+    return { ok: true, book: withTable(withTableSlicers(renamed, (c) => (tableKey(c.table.name) === key ? { ...c, table: { ...c.table, name: op.name } } : c)), key, { ...t.input, name: op.name }), geometry: [] }
   }
   if (op.op === 'deleteTable') {
     // the table goes with its cells

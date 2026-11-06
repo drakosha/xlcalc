@@ -18,7 +18,7 @@ import type { Archive } from '../zip/read.js'
 import { relsOf, type Rel } from './package.js'
 import { readPivotCache } from './pivot-cache.js'
 import { readPivotTable } from './pivot-table.js'
-import { drawnFrames, readSlicerCache, readSlicers, readTimelineCache, readTimelines } from './slicers.js'
+import { drawnFrames, readSlicerCache, readSlicers, readTimelineCache, readTimelines, type FileTables } from './slicers.js'
 
 /** The parts of the workbook's PivotTables, read once for its sheets: the caches by id, number formats, differential formats. */
 export interface PivotBook {
@@ -100,7 +100,7 @@ export async function readSheetPivots(archive: Archive, sheet: SheetInput, sheet
 }
 
 /** The workbook's caches of slicers and timelines, by its relationships; their PivotTables by the sheets' ids. */
-export async function readSlicerCaches(archive: Archive, wb: string, rels: Rel[], pivots: PivotBook, book: BookInput, tables: Map<string, string>, issues: Issues) {
+export async function readSlicerCaches(archive: Archive, wb: string, rels: Rel[], pivots: PivotBook, book: BookInput, tables: FileTables, issues: Issues) {
   const ids = new Map(within(wb, 'sheets', 'sheet').map((e) => [attributes(e.attrs).sheetId, attributes(e.attrs).name]))
   const named = new Map(book.sheets.map((s) => [caseKey(s.name), s.name]))
   const ctx = {

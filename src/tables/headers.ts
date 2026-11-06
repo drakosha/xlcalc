@@ -12,7 +12,7 @@ import { rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { freeColumnName } from './shift.js'
 import { lookIn, withoutLooksAt } from '../looks/sheet.js'
-import { numbered, tableKey, tablesOf } from './model.js'
+import { numbered, tableKey, tablesOf, withTableSlicers } from './model.js'
 
 /**
  * The book with `edits` applied when some of them type over header cells: the columns renamed, the references to them
@@ -85,5 +85,11 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
     })
     return { ...sheet, cells, ...(list ? { tables: list } : {}) }
   })
-  return { ...out, sheets }
+  // a table's slicer follows its column: its field and its column, as Excel's source name, its cache keeping its name
+  const followed = withTableSlicers(out, (c) => {
+    const names = renamed.get(tableKey(c.table.name))
+    const at = tables.find((t) => tableKey(t.name) === tableKey(c.table.name))?.index.get(tableKey(c.table.column))
+    return names && at !== undefined ? { ...c, field: names[at], table: { ...c.table, column: names[at] } } : c
+  })
+  return { ...followed, sheets }
 }

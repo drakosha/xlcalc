@@ -2,13 +2,19 @@
  * A book's tables as the engine uses them: each on its sheet's rectangle, its rows split into the header row, the data
  * and the totals row, its columns by name; and the rectangle a structured reference takes (`docs/tables.md`).
  */
-import type { BookInput, TableInput } from '../contract.js'
+import type { BookInput, SlicerCache, TableInput } from '../contract.js'
 import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import type { TableArea, TableSpec } from '../syntax/table.js'
 import { sheetKey } from '../syntax/print.js'
 
 /** Table names, like sheet names, compare without case. */
 export const tableKey = sheetKey
+
+/** The book with `change` done to the caches of its tables' slicers. */
+export function withTableSlicers(book: BookInput, change: (c: SlicerCache & { table: NonNullable<SlicerCache['table']> }) => SlicerCache): BookInput {
+  if (!book.slicerCaches?.some((c) => c.table)) return book
+  return { ...book, slicerCaches: book.slicerCaches.map((c) => (c.table ? change(c as SlicerCache & { table: NonNullable<SlicerCache['table']> }) : c)) }
+}
 
 /** The first name `${base}${n}` (n counted from `from`) that no name of `taken` has, case-insensitively. */
 export function numbered(base: string, taken: string[], from: number): string {
