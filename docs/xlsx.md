@@ -260,7 +260,11 @@ A sheet whose rows a filter hid gets `filtered: true`. Then `SUBTOTAL` with code
 
 Every hidden row of a filtered sheet counts as hidden by the filter, whatever hid it.
 
-The sheet's AutoFilter, the filter buttons on a header row outside a table, comes into `autoFilter` with its range: `<autoFilter ref="A1:D20">` gives `autoFilter: { range: 'A1:D20' }`, with or without criteria. A host reads from it where a sheet's data under the buttons ends. Its criteria and sort, a table's criteria and an advanced filter are not in the workbook and are reported; so is an AutoFilter over a table or over no range of cells, which is left out. The hidden name Excel keeps for an AutoFilter, `_xlnm._FilterDatabase`, is not reported: the AutoFilter holds its range.
+A sheet's AutoFilter is read into `autoFilter`, with its stored `range` and `criteria`. `criteria.columns` lists zero-based columns relative to the range's left edge, each with its button settings and optional filter: selected values and blanks, grouped dates, custom comparisons, top/bottom, dynamic dates and averages, colors, or icons. The stored last sort is `criteria.sort`; a standalone sheet sort is `SheetInput.sort`. A table stores the same criteria in `TableInput.filter`; `false` means no filter buttons. Color criteria contain their differential style rather than a file-local dxfId.
+
+For example, a filter on the first column is `autoFilter: { range: 'A1:D20', criteria: { columns: [{ column: 0, filter: { type: 'values', values: ['North'] } }] } }`. The complete types are in the [API reference](api.md#filtercriteria).
+
+Reading, editing these fields and writing a file preserve the stored criteria and sort without evaluating them, hiding rows or reordering cells. A host maintains the rows' `hidden` flags and `filtered` state separately. Excel's Reapply uses the criteria when the written file is opened. Advanced filters, unsupported criterion properties and an AutoFilter over a table or over no range of cells are reported. The hidden `_xlnm._FilterDatabase` name is represented by the AutoFilter's range.
 
 ### The date system and calculation
 
@@ -315,7 +319,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
-| `autoFilter` | an AutoFilter's criteria and sort, a table's criteria, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
+| `autoFilter` | unsupported filter properties, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture, or among a link's stored values |
 | `comment` | a comment thread, read as a note; a note with differently formatted runs, read as plain text |
@@ -421,7 +425,9 @@ A hidden sheet is written with its state, `hidden` or `veryHidden`. The workbook
 
 A sheet's `autoFilter` is written as `<autoFilter ref>` over its range, with the hidden name `_xlnm._FilterDatabase` over the same cells, as Excel writes both when it makes an AutoFilter. Excel opens the file with the filter buttons on the range's first row.
 
-A filtered sheet is written so that Excel treats it as filtered, with Excel's `filterMode` marker: its AutoFilter gets filter criteria that every row satisfies (a cell equal to nothing, or not equal to it). A sheet without an AutoFilter puts them on its first table with a header row, as Excel keeps a table's filter, and without such a table gets an AutoFilter over its cells and hidden rows to hold them. Excel leaves the rows as the file has them, and its Reapply shows every row. A sheet without an AutoFilter whose tables have no header row and overlap its cells cannot have one there: its filter mode is left out and reported.
+The writer writes a filter's supplied `criteria`, a table's `filter` and each stored sort, including colors and extended icons, and leaves the rows and cell order as supplied. A table's sort is written beside its AutoFilter. Date groups, long text criteria and Excel 2010 extensions are preserved. Explicit `TableInput.filter: false` omits that table's filter.
+
+For a sheet with `filtered: true` but no supplied criteria, the writer keeps the earlier compatibility behavior: it writes criteria that every row satisfies, with Excel's `filterMode` marker. Without a sheet AutoFilter it uses the first eligible table, otherwise an AutoFilter over the cells and hidden rows. Reapply then shows every row for these fallback criteria. A sheet with no eligible filter range reports the omitted filter mode.
 
 ### The date system and calculation
 
@@ -698,7 +704,7 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - Excel for Mac saves the built-in currency and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21, so a workbook read from a file saved by Excel has these codes and numbers.
 - The East Asian date formats 50 to 58 are read as the code `m/d/yy`, which Excel for Mac en-US displays for them; Excel for Windows displays them as its short date, format 14, in en-US and ru-RU.
 - In a few places Excel calculates a legacy formula differently from the dynamic formula it displays for it. The engine returns the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
-- An AutoFilter's criteria and sort are not kept. A filtered sheet comes back with the writer's criteria, which every row satisfies, and Excel's Reapply then shows every row.
+- Filter criteria and stored sorts are preserved but not applied by the library. Without supplied criteria, a filtered sheet still uses the compatibility criteria described above, which every row satisfies.
 - A filtered sheet without an AutoFilter or a table with a header row is written with an AutoFilter over its cells, and reads back with it.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default column width of its own: the reader reports a file with another one, and the writer always writes 8 digits. The default font is kept (`font`), but the engine measures as for Calibri 11, so a column's `####`, `entryWidth` and AutoFit can differ from Excel's in a workbook of another default font.
@@ -711,3 +717,10 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - A dxf number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
 - A gradient fill is read as no fill; Excel displays the gradient. A conditional format fill with `patternType="none"`, which removes a cell's own fill in Excel, and a solid fill without a color, which Excel displays as white on a cell without a fill, are read as no fill. Each is reported.
 - A data validation list whose item contains a comma (typed in ru-RU) is read as split at the comma. Excel saves a list's reference to a deleted sheet as `#REF!` alone, which the engine keeps as `#REF!$A$1:$A$4`.
+
+
+### Stored filters and formatted text
+
+On Excel for Windows 16.0.20430.20146, 185 synthetic workbooks were written anew and over their originals. All 370 files opened. The first set exposed 21 table sorts written under the wrong parent and four empty filter-column entries Excel removed. The corrected writer was checked with a separate recorded set of 370 round trips, all retaining the predicted criteria, sort and hidden rows. `test/xlsx-filter-criteria.test.ts` preserves both sets and their predictions.
+
+`test/rich-text-excel.test.ts` compares each character's font in 26 cells written through both writers with Excel's recorded fonts, then checks the files Excel saved after font and fill edits. These cases have not been run on Excel for Mac.

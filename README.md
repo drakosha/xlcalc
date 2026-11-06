@@ -49,7 +49,7 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
 - **Other languages.** Formulas use Excel syntax with English function names; [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
 - **PivotTables.** Read from xlsx with their slicers and timelines, `GETPIVOTDATA` over them, created and changed in a session, and with `xlcalc/pivot` refreshed and laid out as Excel does: filters, sorting, Show Values As, grouping, calculated fields and items; written back as Excel opens them ([PivotTables](docs/pivot-tables.md)).
-- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)).
+- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)). Stored filter criteria and sorts survive round trips ([Filters](docs/xlsx.md#filters)); text keeps its font runs ([Rich text](docs/edits.md#rich-text)).
 - **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
 - **Node 20.19 or newer and browsers**, no Node APIs.
 

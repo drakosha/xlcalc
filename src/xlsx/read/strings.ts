@@ -14,8 +14,6 @@ export interface Strings {
   text: string[]
   runs?: Map<number, TextRun[]>
   lost?: Set<number>
-  /** Indexes of the strings with formatted runs. */
-  rich: Set<number>
 }
 
 const PHONETIC_PR = /<(?:[\w.-]+:)?phoneticPr\b[^<>]*>/g
@@ -47,13 +45,12 @@ export function stringItem(body: string, colors:Palette=palette(undefined,undefi
 
 /** The shared strings; items left open (no `</si>`), which are none or run into the next one, are reported. */
 export function readStrings(xml: string | undefined, issues: Issues, colors?:Palette, base?:FontStyle): Strings {
-  const out: Strings = { text: [], rich: new Set() }
+  const out: Strings = { text: [] }
   if (!xml) return out
   for (const si of elements(xml, 'si')) {
     const s = stringItem(si.body ?? '',colors,base)
     if(s.runs)(out.runs??=new Map()).set(out.text.length,s.runs)
     if(s.lost)(out.lost??=new Set()).add(out.text.length)
-    if (s.rich) out.rich.add(out.text.length)
     out.text.push(s.text)
   }
   let opened = 0
