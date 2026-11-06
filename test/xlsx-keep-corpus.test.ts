@@ -24,12 +24,13 @@ registerLocale(ruRU)
 const root = fileURLToPath(new URL('..', import.meta.url))
 /** The file whose rules an edit changes and which the workbook reads in part: in the sample whatever sets the folder holds. */
 const FILLS = 'test/excel/win/cond/fills-held/fills.xlsx'
-const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).sort().filter((f, i) => i % 3 === 0 || f === FILLS)
+const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).filter((f) => !f.includes('/formula-bytes-')).sort().filter((f, i) => i % 3 === 0 || f === FILLS)
 
 /**
  * Where the file written over the original reads back otherwise than `writeXlsx`'s, as the original has it: a view's
  * selection the writer fills in, collapsed marks the writer writes as Excel keeps them, a formula the writer cannot write,
- * an advanced filter's mark the writer writes as an AutoFilter over the sheet's cells.
+ * an advanced filter's mark the writer writes as an AutoFilter over the sheet's cells. The files of `formula-bytes-*` sit on the writer's
+ * margin (`test/xlsx-formula-bytes.test.ts`) and are not asked of here.
  */
 const KNOWN: Record<string, string> = {
   'advanced.xlsx': '.autoFilter',
@@ -39,6 +40,8 @@ const KNOWN: Record<string, string> = {
   'let-held-1.xlsx': '.formula',
   // Excel's own text of SHEETS(R:'Two Words'!A1), `'R':'Two Words'!A1`, which the engine does not parse
   'indirect-1.xlsx': '.formula',
+  // a LAMBDA's optional parameter in its body, which the writer spells otherwise than the file
+  'xlop-in-body.xlsx': '.formula',
 }
 
 /** A formula canonical, so that `L!A1` (as Excel writes it) and `'L'!A1` (as the writer does) agree. */

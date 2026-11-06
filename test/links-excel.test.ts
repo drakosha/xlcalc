@@ -128,7 +128,7 @@ const versioned = (root: string, key: string) => (VERSIONED_ON[key] ?? ['']).inc
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
   // open-held puts a linked book beside the opened one, which the Windows harness alone does
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'date-e-letters', 'date-e-text', 'date-e-words', 'edits-held', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'file-refusals', 'first', 'formula-bytes-args', ...(root ? ['formula-bytes-held'] : []), 'forms', 'functions-held', 'longtext-file', ...(root ? ['longtext-saved', 'longtext-typed', 'names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'slicer-names', 'tables-held', 'written']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'date-e-letters', 'date-e-text', 'date-e-words', 'edits-held', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'file-refusals', 'first', 'forms', 'formula-bytes-args', ...(root ? ['formula-bytes-held'] : []), 'functions-held', 'longtext-file', ...(root ? ['longtext-saved', 'longtext-typed', 'names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'slicer-names', 'tables-held', 'written']))
   // forms holds each formula in two forms of a file, which `linksBook` does not tell apart (`test/links-forms-excel.test.ts`);
   // date-e- and longtext- hold no link and are scored in `test/xlsx-read-small.test.ts`;
   // names types formulas over a file the book has no link to, for the target Excel writes (`test/scan-external.test.ts`);
