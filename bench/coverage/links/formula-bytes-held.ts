@@ -21,25 +21,25 @@ const MAX_TEXT = 8192
 const SUM = 4
 const PLUS = 1
 
-interface Unit {
+export interface Unit {
   text: string
   bytes: number
 }
-const U = (text: string, bytes: number): Unit => ({ text, bytes })
+export const U = (text: string, bytes: number): Unit => ({ text, bytes })
 
-/** A formula of `count` of `unit` and as many of `fill` and of the int `1` as make `target` bytes, `extra` of them outside the `SUM`s. */
-function exact(unit: Unit, count: number, target: number, fill: Unit, extra: number): string {
+/** A formula of `count` of `unit` and as many of `fill` and of the int `1` as make `target` bytes, `extra` of them outside the `SUM`s, `each` on top for each thing in a `SUM`. */
+export function exact(unit: Unit, count: number, target: number, fill: Unit, extra: number, each = 0): string {
   const size = (items: number, bytes: number) => {
     const groups = Math.ceil(items / GROUP)
     return bytes + SUM * groups + PLUS * (groups - 1) + extra
   }
   const known = count * unit.bytes
   const times = (n: number, text: string) => Array.from({ length: n }, () => text)
-  for (const parens of [0, 1, 2])
+  for (const parens of [0, 1, 2, 3])
     for (let n = Math.floor((target - known) / fill.bytes); n >= 0; n--)
       for (let ints = 0; ints < 40; ints++) {
         const items = count + n + ints + parens
-        if (size(items, known + n * fill.bytes + ints * 3 + parens * 4) !== target) continue
+        if (size(items, known + n * fill.bytes + ints * 3 + parens * 4) + each * items !== target) continue
         const texts = [...times(count, unit.text), ...times(n, fill.text), ...times(ints, '1'), ...times(parens, '(1)')]
         const groups: string[] = []
         for (let i = 0; i < texts.length; i += GROUP) groups.push(`SUM(${texts.slice(i, i + GROUP).join(',')})`)
