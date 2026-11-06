@@ -283,11 +283,14 @@ describe('PivotTables and slicers', () => {
   }
   const CACHE = 'xl/pivotCache/pivotCacheDefinition1.xml'
 
-  it('a slicer of no items takes its field’s, which opens; Excel drops the slicer on saving, as it has no frame', async () => {
+  it('a slicer of no items takes its field’s, which opens', async () => {
     expect(refused('file-refusals', 'pivot-slicer')).toBe(true)
     expect(opened('file-refusals-2', 'slicer-items')).toBe(true)
+    // the frame it needs to stay on saving: test/xlsx-slicer-names.test.ts
     for (const dir of ['', 'win/']) expect(kept(dir, 'file-refusals-2')['slicer-items']).toBe(false)
-    const r = await written(pivotBook())
+    const b = pivotBook()
+    b.sheets[1].slicers![0].place = { from: 'H2', to: 'K12' }
+    const r = await written(b)
     expect(r.parts.get('xl/slicerCaches/slicerCache1.xml')).toContain('<items count="4"><i x="0" s="1"/>')
   })
 
