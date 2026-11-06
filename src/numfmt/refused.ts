@@ -124,7 +124,7 @@ export function formatRefused(format: NumberFormat): boolean {
   if (read.some((r) => r === null)) return true
   const reads = read as Read[]
   const conditions = reads.reduce((n, r) => n + r.conditions, 0)
-  if (conditions > MAX_CONDITIONS || (conditions && reads.length > 3) || reads.some((r) => r.twice)) return true
+  if (conditions > MAX_CONDITIONS || reads.some((r) => r.twice)) return true
   if (reads.reduce((n, r) => n + sectionCost(r), 0) > MAX_COST) return true
   // a fourth section is for text alone (`0;-0;0;@`)
   if (reads.length === 4 && /[0#?]/.test(reads[3].bare)) return true

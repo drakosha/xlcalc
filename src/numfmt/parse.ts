@@ -79,7 +79,7 @@ export const EN_CODES: Codes = {
   same: (a, b) => a.toLowerCase() === b.toLowerCase(),
 }
 
-/** A code split at `;` outside quotes and escapes. */
+/** A code split at `;` outside quotes; an escape, a padding and a fill take the next character, a `;` or a quote too. */
 export function splitSections(fmt: string): string[] {
   const out: string[] = []
   let cur = ''
@@ -87,7 +87,7 @@ export function splitSections(fmt: string): string[] {
   for (let i = 0; i < fmt.length; i++) {
     const ch = fmt[i]
     if (ch === '"') quoted = !quoted
-    if (ch === '\\' && !quoted && i + 1 < fmt.length) {
+    if ((ch === '\\' || ch === '_' || ch === '*') && !quoted && i + 1 < fmt.length) {
       cur += ch + fmt[++i]
       continue
     }
