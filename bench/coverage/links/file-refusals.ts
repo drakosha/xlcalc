@@ -242,7 +242,7 @@ const counts = (): LinksCase[] => [
   cell('plus-4097', '4,097 terms, 8,193 characters, 16,387 bytes of tokens', plus(4097), REFUSED),
   cell('plus-4200', '4,200 terms', plus(4200), REFUSED),
   cell('plus-4600', '4,600 terms, 9,199 characters', plus(4600), REFUSED),
-  cell('spaces-8195', '8,195 characters of which 8,192 spaces, few tokens', `1${rep(' ', 8192)}+1`, { value: 2 }),
+  cell('spaces-8195', '8,195 characters of which 8,192 spaces, few tokens: over the 8,192 of a text', `1${rep(' ', 8192)}+1`, { value: 2 }),
   cell('grow-xlfn', 'N13: 350 XLOOKUP, 8,049 characters as typed, 10,149 with the prefix', list(350, () => '_xlfn.XLOOKUP(1,B1:B2,C1:C2)', '+')),
   one('grow-table', 'N13: 1,100 [@Qty], 7,699 characters as typed, about 27,500 as a file holds them', { F2: list(1100, () => 'Sales[[#This Row],[Qty]]', '+') }, {
     cells: { E1: { value: 'Qty' }, F1: { value: 'F' }, E2: { value: 1 } },
