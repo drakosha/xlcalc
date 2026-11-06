@@ -64,6 +64,13 @@ describe('the predictions, committed before Excel ran each set', () => {
   })
 })
 
+describe('on Excel for Mac', () => {
+  it('formula-bytes-args: the same answers', () => {
+    const mac = JSON.parse(readFileSync(new URL('./excel/links/formula-bytes-args.json', import.meta.url), 'utf8')) as StoredLinks
+    expect(Object.keys(mac.rejected ?? {}).sort()).toEqual(Object.keys(stored('formula-bytes-args').rejected ?? {}).sort())
+  })
+})
+
 describe('a long formula', () => {
   const S = (cells: Record<string, CellInput>): BookInput => ({ sheets: [{ name: 'S', cells: { B1: { value: 1 }, ...cells } }] })
   const of = (n: number, unit: string) => {

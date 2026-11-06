@@ -125,6 +125,13 @@ describe.each(PLATFORMS)('%s', (_, dir) => {
   })
 })
 
+it('the file Excel for Mac saved with `_LONGTEXT`: Excel for Windows opens it, shows the 300 stored, and calculates #NAME?, which the prediction of 300 missed', () => {
+  const set = json<StoredLinks>(excel('win/', 'links/longtext-saved.json'))
+  const reads = set.answers['mac-300'].reads
+  expect(reads.map((r) => r.values['S!A1'])).toEqual([{ t: 'n', v: 300 }, { t: 'e', v: 'NAME' }])
+  expect(reads[1].formulas['S!A1'].startsWith('=LEN(_xlfn._LONGTEXT("')).toBe(true)
+})
+
 describe.skipIf(!existsSync(excel('win/', 'links/longtext-typed.json')))('typed into Excel for Windows', () => {
   const set = json<StoredLinks>(excel('win/', 'links/longtext-typed.json'))
   const text = async (id: string) => new TextDecoder().decode((await openArchive(readFileSync(excel('win/', `links/longtext-typed/${id}.xlsx`))).bytes('xl/worksheets/sheet1.xml'))!)

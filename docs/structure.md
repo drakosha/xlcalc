@@ -490,6 +490,9 @@ Whether a filter hides a totals row, and what sorting does to it, depends on its
 | `SUBTOTAL(109,C2:C21)` in row 22 | shown | stays | the rows shown |
 | `SUM(C2:C21)` in row 22 | hidden | moves to row 2, and its formula becomes `SUM(C1:C1)` | all the rows, 0 once sorted |
 | a label alone in row 22 | hidden | stays, as an empty cell sorts last | |
+| `AVERAGE(C2:C21)` in row 22 | hidden | moves by its value among the amounts, to row 12, and its formula becomes `AVERAGE(C1:C11)` | all the rows, the ten above it once sorted |
+| `COUNT(C2:C21)` in row 22 | hidden | stays, as 20 is under every amount | all the rows |
+| `AVERAGE` or `COUNT` in row 23, row 22 empty | shown | stays | all the rows |
 | `SUBTOTAL` in row 23, row 22 empty | shown | stays | the rows shown |
 | `SUM` in row 23, row 22 empty | shown | stays | all the rows |
 | a table's totals row | shown | stays | the rows shown |
