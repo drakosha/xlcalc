@@ -1804,6 +1804,7 @@ A cell that a call changed ([`EditResult.changes`](#editresult)): its address, i
 
 ```ts
 interface CellChange extends CellRef, Partial<CellDisplay> {
+  richText?: TextRun[] | null
   value: CellValue
   spill?: string
   spillFill?: CellValue
@@ -1878,11 +1879,13 @@ interface CellImpact extends CellRef {
 
 ### `CellInput`
 
-An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number; a
-number must be finite (NaN and infinities throw [`InputError`](#xlcalc-inputerror)).
+An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number;
+a number must be finite (NaN and infinities throw InputError).
 
 ```ts
 interface CellInput {
+  /** Formatting of a text constant, starting at 0; not part of calculation or inputHash. */
+  richText?: TextRun[]
   value?: Scalar | { date: string }
   /**
    * Formula text without `=`; a single leading `=` is removed on input (`=SUM(A1:A2)` becomes `SUM(A1:A2)`, with the
@@ -2058,7 +2061,7 @@ interface CellProtection {
 A cell field that `readCells` and `findCells` return: `editText` is the text the cell opens with in edit mode, as in a viewport ([`ViewportCell.editText`](#viewportcell)).
 
 ```ts
-type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
+type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'richText' | 'issue'
 ```
 
 ### `CellRect`
@@ -2301,6 +2304,7 @@ number format, `text` and `color` display the value in that format).
 
 ```ts
 interface CellView extends CellResult {
+  richText?: TextRun[]
   style?: number
   note?: CellNote
   link?: CellLink
@@ -3938,6 +3942,8 @@ type LayoutEdit =
    * stay hidden and a row of height 0 keeps its height. Without `showRows`, the rows and `filtered` stay as they are.
    */
   | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
+  /** The stored sort of a range outside an AutoFilter; null removes it without moving any cells. */
+  | { sheet: string; sort: import('./book.js').FilterSort | null }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
@@ -5240,7 +5246,7 @@ interface RangeSummary {
 A cell as `readCells` and `findCells` return it: its address and the requested fields ([`CellReadField`](#cellreadfield)), no others.
 
 ```ts
-interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>> {
+interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link' | 'richText'>> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with in edit mode, as in `ViewportCell.editText`; this is what `findCells` searches with `edit`, except for the apostrophe before text that would otherwise be parsed as something else, which the search leaves out. */
   editText?: string
@@ -6676,6 +6682,18 @@ interface TextFormat extends ConditionalBase {
 }
 ```
 
+### `TextRun`
+
+A font applied from a UTF-16 offset until the next run; omit font to use the cell's whole font.
+
+```ts
+interface TextRun {
+  start: number
+  /** A whole font, with omitted properties at their defaults, rather than a patch of the cell's font. */
+  font?: FontStyle
+}
+```
+
 ### `Timeline`
 
 A timeline on a sheet ([`SheetInput.timelines`](#sheetinput)).
@@ -7031,6 +7049,7 @@ conditional formats, its note and its hyperlink.
 
 ```ts
 interface ViewportCell extends Partial<CellDisplay> {
+  richText?: TextRun[]
   value: CellValue
   /** The canonical formula text, as in `CellResult.formula`. */
   formula?: string

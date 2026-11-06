@@ -1,14 +1,23 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
-import type { CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName } from './looks.js'
+import type { CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName, FontStyle } from './looks.js'
 import type { PivotCache, PivotTable, Slicer, SlicerCache, Timeline, TimelineCache } from './pivot.js'
 
+/** A font applied from a UTF-16 offset until the next run; omit font to use the cell's whole font. */
+export interface TextRun {
+  start: number
+  /** A whole font, with omitted properties at their defaults, rather than a patch of the cell's font. */
+  font?: FontStyle
+}
+
 /**
- * An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number; a
- * number must be finite (NaN and infinities throw `InputError`).
+ * An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number;
+ * a number must be finite (NaN and infinities throw InputError).
  */
 export interface CellInput {
+  /** Formatting of a text constant, starting at 0; not part of calculation or inputHash. */
+  richText?: TextRun[]
   value?: Scalar | { date: string }
   /**
    * Formula text without `=`; a single leading `=` is removed on input (`=SUM(A1:A2)` becomes `SUM(A1:A2)`, with the
