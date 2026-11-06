@@ -128,14 +128,14 @@ const versioned = (root: string, key: string) => (VERSIONED_ON[key] ?? ['']).inc
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
   // open-held puts a linked book beside the opened one, which the Windows harness alone does
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'date-e-letters', 'date-e-text', 'date-e-words', 'edits-held', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'file-refusals', 'first', 'forms', 'formula-bytes-args', ...(root ? ['formula-bytes-held'] : []), 'functions-held', ...(root ? ['letters-held', 'letters-more', 'letters-text'] : ['letters-mac']), 'longtext-file', ...(root ? ['longtext-saved', 'longtext-typed', 'names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'slicer-names', 'tables-held', 'written']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'date-e-letters', 'date-e-text', 'date-e-words', 'edits-held', 'file-refusals-2', 'file-refusals-3', 'file-refusals-4', 'file-refusals-5', 'file-refusals', 'first', 'forms', 'formula-bytes-args', ...(root ? ['formula-bytes-held'] : []), 'functions-held', ...(root ? ['letters-held', 'letters-more', 'letters-text'] : ['letters-mac']), 'longtext-file', ...(root ? ['longtext-saved', 'longtext-typed', 'names'] : []), 'no-prefix', ...(root ? ['open-held'] : []), 'refresh-held', 'slicer-names', ...(root ? ['table-slicer-kept'] : []), 'tables-held', 'written']))
   // forms holds each formula in two forms of a file, which `linksBook` does not tell apart (`test/links-forms-excel.test.ts`);
   // date-e- and longtext- hold no link and are scored in `test/xlsx-read-small.test.ts`, letters- in `test/format-letters.test.ts`;
   // names types formulas over a file the book has no link to, for the target Excel writes (`test/scan-external.test.ts`);
   // no-prefix holds spellings of a file the engine calculates and Excel does not (`test/xlsx-no-prefix.test.ts`);
   // file-refusals holds what Excel refuses a file over (`test/xlsx-file-refusals.test.ts`)
-  // formula-bytes- and slicer-names too (`test/xlsx-formula-bytes.test.ts`, `test/xlsx-slicer-names.test.ts`)
-  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix' && !x.name.startsWith('longtext-') && !x.name.startsWith('date-e-') && !x.name.startsWith('letters-') && !x.name.startsWith('file-refusals') && !x.name.startsWith('formula-bytes-') && x.name !== 'slicer-names')) {
+  // formula-bytes-, slicer-names and table-slicer-kept too (`test/xlsx-formula-bytes.test.ts`, `test/xlsx-slicer-names.test.ts`, `test/xlsx-table-slicer.test.ts`)
+  for (const set of stored(root).filter((x) => x.name !== 'forms' && x.name !== 'names' && x.name !== 'no-prefix' && !x.name.startsWith('longtext-') && !x.name.startsWith('date-e-') && !x.name.startsWith('letters-') && !x.name.startsWith('file-refusals') && !x.name.startsWith('formula-bytes-') && x.name !== 'slicer-names' && x.name !== 'table-slicer-kept')) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()
       const at = (c: LinksCase, key: string) => `${set.name}/${c.id}/${key}`
