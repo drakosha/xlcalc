@@ -170,7 +170,7 @@ export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>)
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
-    for (const t of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
+    for (const { filter: _, ...t } of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
     if (s.frozen) h.update(`P ${stableJson(s.frozen)}\n`)
     if (s.conditionalFormats?.length) h.update(`K ${stableJson(s.conditionalFormats.map((f) => ('style' in f && f.style?.numberFormat !== undefined ? { ...f, style: hashed(f.style) } : f)))}\n`)
     // rules of data validation in any order: no two meet

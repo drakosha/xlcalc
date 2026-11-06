@@ -71,7 +71,7 @@ export const STYLED: ReadonlySet<string> = new Set(Object.entries(FIELDS).flatMa
 const isGiven: Given = (o, k) => o[k] !== undefined
 
 /** A rule's style: a cell's style's font, fill and border, without a font's name and size (a dxf has none) and with a number format. */
-function checkStyle(v: unknown, p: string) {
+export function checkRuleStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat'])
   if (isGiven(s, 'font')) checkFont(s.font, `${p}.font`, isGiven, false)
@@ -112,7 +112,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
     checkString(s.pivot, `${p}.pivot.pivot`)
     array(s.areas, `${p}.pivot.areas`, 'an array of areas')
   }
-  if (o.style !== undefined) checkStyle(o.style, `${p}.style`)
+  if (o.style !== undefined) checkRuleStyle(o.style, `${p}.style`)
   if (o.formula !== undefined) checkString(o.formula, `${p}.formula`)
   switch (type) {
     case 'cellIs': {

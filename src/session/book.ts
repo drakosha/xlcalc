@@ -148,7 +148,7 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
     if ('merges' in e) sheet.merges = [...e.merges]
     else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('frozen' in e) sheet.frozen = e.frozen ? { ...e.frozen } : undefined
-    else if ('autoFilter' in e) sheet.autoFilter = e.autoFilter ? { range: e.autoFilter.range } : undefined
+    else if ('autoFilter' in e) sheet.autoFilter = e.autoFilter ? { ...e.autoFilter } : undefined
     else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
