@@ -107,12 +107,33 @@ describe('a slicer and a timeline of a book', () => {
   })
 
   it.each([
-    ['the book’s own', 'Slicer_Region', '#N/A'],
-    ['in another case', 'SLICER_REGION', '#N/A'],
-    ['of another value', 'Slicer_Region', 'Data!$A$1'],
-  ])('a name the book holds, %s, is not added twice', async (_, name, ref) => {
-    const { h } = await written({ ...placed(pivotBook()), names: [{ name, ref }] })
+    ['the book’s own', 'Slicer_Region'],
+    ['in another case', 'SLICER_REGION'],
+  ])('a name the book holds, %s, is not added twice', async (_, name) => {
+    const { h, issues } = await written({ ...placed(pivotBook()), names: [{ name, ref: '#N/A' }] })
     expect(h.names.map(([n]) => n)).toEqual([name])
+    expect(issues).toEqual([])
+  })
+
+  it.each([
+    ['a cell', 'Data!$A$1'],
+    ['what the writer leaves out', '1+'],
+  ])('a cache whose name the workbook holds for %s is not written, as Excel refuses that file', async (_, ref) => {
+    const { h, issues } = await written({ ...placed(pivotBook()), names: [{ name: 'Slicer_Region', ref }] })
+    expect([h.slicers, h.slicerCaches, h.drawings]).toEqual([0, 0, 0])
+    expect(issues.map((i) => i.name)).toEqual(['Slicer_Region'])
+  })
+
+  it('a timeline’s cache of such a name goes too', async () => {
+    const b = pivotBook()
+    b.slicerCaches = []
+    b.sheets[1].slicers = []
+    b.timelineCaches = [{ name: 'NativeTimeline_Month', field: 'Month', pivots: [{ sheet: 'Pivot', name: 'PivotTable1' }], cache: 1 }]
+    b.sheets[1].timelines = [{ name: 'Month', cache: 'NativeTimeline_Month', place: { from: 'H2', to: 'K12' } }]
+    b.names = [{ name: 'NativeTimeline_Month', ref: 'Data!$A$1' }]
+    const { h, issues } = await written(b)
+    expect([h.timelines, h.timelineCaches]).toEqual([0, 0])
+    expect(issues.map((i) => i.name)).toEqual(['NativeTimeline_Month'])
   })
 
   it('a sheet’s own name of the cache does not stand for the workbook’s', async () => {
@@ -120,9 +141,19 @@ describe('a slicer and a timeline of a book', () => {
     expect(h.names).toEqual([['Slicer_Region', "'Data'!$A$1"], ['Slicer_Region', '#N/A']])
   })
 
-  it('a name the writer leaves out does not stand for the cache’s', async () => {
-    const { h } = await written({ ...placed(pivotBook()), names: [{ name: 'Slicer_Region', ref: '1+' }] })
-    expect(h.names).toEqual([['Slicer_Region', '#N/A']])
+})
+
+describe('Excel holds what the writer wrote', () => {
+  it('a slicer and a timeline stay on saving, on both Excels, of a session', async () => {
+    for (const dir of ['win/', '']) {
+      const a = JSON.parse(readFileSync(new URL(`./excel/${dir}links/slicer-names.json`, import.meta.url), 'utf8')) as StoredLinks
+      expect(Object.keys(a.rejected ?? {}).filter((id) => id.startsWith('session') || id.startsWith('no-place'))).toEqual([])
+      for (const [id, want] of [['session-slicer', [1, 1, 0, 0]], ['session-timeline', [0, 0, 1, 1]], ['no-place-slicer', [0, 0, 0, 0]], ['no-place-timeline', [0, 0, 0, 0]]] as const) {
+        const h = await held(new Uint8Array(readFileSync(new URL(`./excel/${dir}links/slicer-names/${id}.xlsx`, import.meta.url))))
+        expect([h.slicers, h.slicerCaches, h.timelines, h.timelineCaches], `${dir}${id}`).toEqual(want)
+      }
+      expect(Object.keys(a.rejected ?? {})).toEqual(expect.arrayContaining(['no-name-slicer', 'no-name-timeline']))
+    }
   })
 })
 
@@ -166,4 +197,8 @@ describe.each([
 })
 
 /** The cases the committed prediction missed, by Excel: its folder of answers. */
-const MISSED: Record<string, string[]> = { 'win/': [], '': [] }
+const MISSED: Record<string, string[]> = {
+  // a name of another value costs the file; Excel holds a sheet's slicers in one part, not one each, and takes the cache's spelling of the name
+  'win/': ['session-two', 'book-name-case', 'book-name-other', 'placed-apart'],
+  '': [],
+}
