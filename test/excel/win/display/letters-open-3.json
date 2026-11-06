@@ -1,0 +1,60 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 42.4
+ },
+ "cases": [
+  {
+   "id": "o1",
+   "cell": {
+    "value": 46096.5,
+    "format": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[Red]0.0%"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "4609650.0%"
+   }
+  },
+  {
+   "id": "r1",
+   "cell": {
+    "value": 46096.5,
+    "format": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.5][Magenta]0.0%;[Red]0.0%"
+   },
+   "width": 40
+  },
+  {
+   "id": "r2",
+   "cell": {
+    "value": 46096.5,
+    "format": "[>=1]0.0%;[>=0.8]0.0%;[>=0.5]0.0%;0.0%"
+   },
+   "width": 40
+  },
+  {
+   "id": "r3",
+   "cell": {
+    "value": 46096.5,
+    "format": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.5][Magenta]0.0%"
+   },
+   "width": 40
+  }
+ ],
+ "answers": {
+  "o1": {
+   "text": "4609650.0%",
+   "color": "#00FF00"
+  }
+ },
+ "rejected": [
+  "r1",
+  "r2",
+  "r3"
+ ]
+}

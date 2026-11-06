@@ -1,0 +1,2421 @@
+{
+ "meta": {
+  "version": "16.114.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 52.8
+ },
+ "cases": [
+  {
+   "id": "s1",
+   "about": "TEXT(46096.5) with bB",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"bB\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s2",
+   "about": "TEXT(46096.5) with Bb",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"Bb\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69"
+   }
+  },
+  {
+   "id": "s3",
+   "about": "TEXT(46096.5) with BbB",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"BbB\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s4",
+   "about": "TEXT(46096.5) with bBb",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"bBb\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "2569"
+   }
+  },
+  {
+   "id": "s5",
+   "about": "TEXT(46096.5) with Byy",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"Byy\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "6926"
+   }
+  },
+  {
+   "id": "s6",
+   "about": "TEXT(46096.5) with Blue",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"Blue\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "69lu2026"
+   }
+  },
+  {
+   "id": "s7",
+   "about": "TEXT(46096.5) with b3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"b3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s8",
+   "about": "TEXT(46096.5) with yyb1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yyb1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s9",
+   "about": "TEXT(46096.5) with B1B2",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B1B2\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s10",
+   "about": "TEXT(46096.5) with B10",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"B10\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s11",
+   "about": "TEXT(46096.5) with aAa",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aAa\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "aAa"
+   }
+  },
+  {
+   "id": "s12",
+   "about": "TEXT(46096.5) with aaaA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "SunA"
+   }
+  },
+  {
+   "id": "s13",
+   "about": "TEXT(46096.5) with aaaAAA",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaAAA\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "Sunday"
+   }
+  },
+  {
+   "id": "s14",
+   "about": "TEXT(46096.5) with a/p",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"a/p\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "p"
+   }
+  },
+  {
+   "id": "s15",
+   "about": "TEXT(46096.5) with aaa/p",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaa/p\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "aap"
+   }
+  },
+  {
+   "id": "s16",
+   "about": "TEXT(46096.5) with aaaa/p",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"aaaa/p\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "Sunp"
+   }
+  },
+  {
+   "id": "s17",
+   "about": "TEXT(46096.5) with h bb mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h bb mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 69 00"
+   }
+  },
+  {
+   "id": "s18",
+   "about": "TEXT(46096.5) with h dd mm",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"h dd mm\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "12 15 00"
+   }
+  },
+  {
+   "id": "s19",
+   "about": "TEXT(46096.5) with mm aaa ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm aaa ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "03 Sun 00"
+   }
+  },
+  {
+   "id": "s20",
+   "about": "TEXT(46096.5) with mm g ss",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"mm g ss\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "00  00"
+   }
+  },
+  {
+   "id": "s21",
+   "about": "TEXT(46096.5) with 0;0;0;General",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;General\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "s22",
+   "about": "TEXT(46096.5) with 0;0;0;AM/PM",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;AM/PM\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "s23",
+   "about": "TEXT(46096.5) with 0;0;0;d",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;0;d\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s24",
+   "about": "TEXT(46096.5) with 0;[>1]0;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;[>1]0;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "s25",
+   "about": "TEXT(46096.5) with 0;[>1]0;[>2]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;[>1]0;[>2]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s26",
+   "about": "TEXT(46096.5) with 0;0;[>1]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"0;0;[>1]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s27",
+   "about": "TEXT(46096.5) with [>1]0;[>2]0;0;@",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"[>1]0;[>2]0;0;@\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "46097"
+   }
+  },
+  {
+   "id": "s28",
+   "about": "TEXT(46096.5) with .E+0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\".E+0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": ".E+1"
+   }
+  },
+  {
+   "id": "s29",
+   "about": "TEXT(46096.5) with yy3",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"yy3\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s30",
+   "about": "TEXT(46096.5) with dd1",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(46096.5,\"dd1\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s31",
+   "about": "TEXT(-1) with B;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"B;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": "1"
+   }
+  },
+  {
+   "id": "s32",
+   "about": "TEXT(-1) with 0b;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"0b;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s33",
+   "about": "TEXT(-1) with mm###;0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"mm###;0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "s34",
+   "about": "TEXT(-1) with 0;[>1]0",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "TEXT(-1,\"0;[>1]0\")"
+    }
+   },
+   "links": [],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "error": "VALUE"
+    }
+   }
+  }
+ ],
+ "sent": {
+  "s1": "de32628db162ab05c12d82284452c0dda90f227a04f9724b2a6a559d8235878a",
+  "s2": "56a71ac45792fa2baab0deb8b1b07409f6e82d1c2ce2f59af991dc7e2086def9",
+  "s3": "e2425d58c598fb21b42ec5eb68869647464480d204bca24f38df59d75c7bf38b",
+  "s4": "ff6675971b5a6a32b85ae5d82c60ad8b4faed95b0aa3c6a60bda292cc8033de3",
+  "s5": "f499fe6fa607dc644827f65de6397e8cc36b03d94e00aea4cf0272d2e483ddf0",
+  "s6": "68f9dfa03b358070cefe68ffb8b0fb9a1db44bbd61bdc5305fd5e1ad9b4ef39f",
+  "s7": "a0be56df7b622d1685d96281ceef54aa26a0f790aca4ba6f2e3843c66b62b21b",
+  "s8": "34a5a0112999cfa1228abccf8d8826453059e3b537e9ef341044cfaa60cdd529",
+  "s9": "481b1710f23d1bb4bda543ebf3e7df0967220cc60f7d039924141ac8ebff15ee",
+  "s10": "fdb6f60c1f7f9a6d2d4510854cf0110f20783c088f5a9c94d014f1d02fd1daa7",
+  "s11": "729b65adaaa5f0c119f0ba3043425bdced681a966c854982030d12c76ac9ada3",
+  "s12": "c64978a9ea144935c83f402c59eab24287a31c0c879203a5565cf07f23fb2f85",
+  "s13": "e56819218e4600d606bc33de4e78d24f84c216417df70544149c20642c37a60c",
+  "s14": "9adc0d28ee86889ae965473a4d3528a5eea05172d74d73214800f0f2c6c0d9ac",
+  "s15": "2f531929fab130ce3cc9c50c7f9be7fce6d4a780307ff35aa28948b5bc6d21a4",
+  "s16": "2d3bb3e71221ed841bfbd7b93bcae6a90e848d404a29beaeaa4ed6e950cacb64",
+  "s17": "8efea40998e61ad25b82d987b87eae5a1c504218a47a74f27274db60c88c712b",
+  "s18": "aab8e7474690200f7ef8586e9975f1e6363e6bbe01db794c5f50a6e7e7153ed0",
+  "s19": "741e9fd19daa0f636d12a2d5ed7a77cba07e2332c4fbb96beb9a13f04b322fa2",
+  "s20": "709e5244d575a7135125ff219414509bd21922682579b1a3e64db1ae20c4c1cb",
+  "s21": "5d0748f7d5946b77d767f7ec6f50120ec2fe46ecd00e960ae9f81ddeb5ab7038",
+  "s22": "c0f906afbf7aa66e37c109b43718a9247868b6bb3d23a8469cb9681366ce3d76",
+  "s23": "3187097b613c120523945beb8a80cef298db32482e76eb1521630273da4b58f4",
+  "s24": "a3d84ce2d3d98bf9b720927fe124b0c142a60315243b143c9a76e5ff1309ebd8",
+  "s25": "ef313ee22095e1267e27e0757863d6b3565dffb543cdd6df5a59fede40f20b3d",
+  "s26": "0940cbcfe2e68030c0b00573fde25139cacb56b5baa4bbd0889b93c6920c2515",
+  "s27": "0d4bfca4f50e72c4cf20c4ed284f01cf3a9424a87f699c476900fe4157791f6d",
+  "s28": "4ca5b040eb36d94ab358b1c23f3a98ef1887c5386c8db40831d8eaad32aba2f7",
+  "s29": "0ca6e9f801bdf36c30b981eac308d3f9d23a66d29c747f62c9f17372677f7ce8",
+  "s30": "90f50fe7eb1697799dcf839721fd380ba9eb885d6928b1fd8bd84f6f56493c4a",
+  "s31": "6494e2642870cbd8af70e8498dc66590e9d8ba251b97a393a02bdab42ead0cdb",
+  "s32": "379ef39ceb327fc68732c53da76411708e9f6b4036d6cff232f1cd97ea158bb8",
+  "s33": "87b025ab94dcbdcb9cfe2be755837cda2e084170af2d3b8c2ad0030b8635e60c",
+  "s34": "1e9bcf1cd316566e8a350101d4d693bd4ec5abfcb19cbe9fd1381ad0b5c12144"
+ },
+ "answers": {
+  "s1": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s2": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Bb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Bb\")"
+     },
+     "shown": {
+      "S!A1": "69"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Bb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Bb\")"
+     },
+     "shown": {
+      "S!A1": "69"
+     }
+    }
+   ]
+  },
+  "s3": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"BbB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"BbB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"BbB\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"BbB\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s4": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBb\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "2569"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"bBb\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"bBb\")"
+     },
+     "shown": {
+      "S!A1": "2569"
+     }
+    }
+   ]
+  },
+  "s5": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "6926"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Byy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Byy\")"
+     },
+     "shown": {
+      "S!A1": "6926"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "6926"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Byy\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Byy\")"
+     },
+     "shown": {
+      "S!A1": "6926"
+     }
+    }
+   ]
+  },
+  "s6": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69lu2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Blue\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Blue\")"
+     },
+     "shown": {
+      "S!A1": "69lu2026"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "69lu2026"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"Blue\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"Blue\")"
+     },
+     "shown": {
+      "S!A1": "69lu2026"
+     }
+    }
+   ]
+  },
+  "s7": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"b3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"b3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"b3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"b3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s8": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyb1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyb1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yyb1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yyb1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s9": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B1B2\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B1B2\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B1B2\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B1B2\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s10": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B10\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B10\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"B10\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"B10\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s11": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aAa"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aAa\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aAa\")"
+     },
+     "shown": {
+      "S!A1": "aAa"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aAa"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aAa\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aAa\")"
+     },
+     "shown": {
+      "S!A1": "aAa"
+     }
+    }
+   ]
+  },
+  "s12": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "shown": {
+      "S!A1": "SunA"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "SunA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaA\")"
+     },
+     "shown": {
+      "S!A1": "SunA"
+     }
+    }
+   ]
+  },
+  "s13": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunday"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "shown": {
+      "S!A1": "Sunday"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunday"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaAAA\")"
+     },
+     "shown": {
+      "S!A1": "Sunday"
+     }
+    }
+   ]
+  },
+  "s14": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "p"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"a/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"a/p\")"
+     },
+     "shown": {
+      "S!A1": "p"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "p"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"a/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"a/p\")"
+     },
+     "shown": {
+      "S!A1": "p"
+     }
+    }
+   ]
+  },
+  "s15": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aap"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaa/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaa/p\")"
+     },
+     "shown": {
+      "S!A1": "aap"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "aap"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaa/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaa/p\")"
+     },
+     "shown": {
+      "S!A1": "aap"
+     }
+    }
+   ]
+  },
+  "s16": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunp"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaa/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaa/p\")"
+     },
+     "shown": {
+      "S!A1": "Sunp"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "Sunp"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"aaaa/p\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"aaaa/p\")"
+     },
+     "shown": {
+      "S!A1": "Sunp"
+     }
+    }
+   ]
+  },
+  "s17": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 69 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h bb mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h bb mm\")"
+     },
+     "shown": {
+      "S!A1": "12 69 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 69 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h bb mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h bb mm\")"
+     },
+     "shown": {
+      "S!A1": "12 69 00"
+     }
+    }
+   ]
+  },
+  "s18": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 15 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "12 15 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"h dd mm\")"
+     },
+     "shown": {
+      "S!A1": "12 15 00"
+     }
+    }
+   ]
+  },
+  "s19": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "shown": {
+      "S!A1": "03 Sun 00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "03 Sun 00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm aaa ss\")"
+     },
+     "shown": {
+      "S!A1": "03 Sun 00"
+     }
+    }
+   ]
+  },
+  "s20": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "00  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "shown": {
+      "S!A1": "00  00"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "00  00"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"mm g ss\")"
+     },
+     "shown": {
+      "S!A1": "00  00"
+     }
+    }
+   ]
+  },
+  "s21": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;General\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;General\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;General\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;General\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "s22": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;AM/PM\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;AM/PM\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;AM/PM\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;AM/PM\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "s23": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;d\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;d\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;d\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;0;d\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s24": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;0\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "s25": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;[>2]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;[>2]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;[>2]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;[>1]0;[>2]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s26": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"0;0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s27": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;0;@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "46097"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;0;@\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"[>1]0;[>2]0;0;@\")"
+     },
+     "shown": {
+      "S!A1": "46097"
+     }
+    }
+   ]
+  },
+  "s28": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ".E+1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\".E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\".E+0\")"
+     },
+     "shown": {
+      "S!A1": ".E+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": ".E+1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\".E+0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\".E+0\")"
+     },
+     "shown": {
+      "S!A1": ".E+1"
+     }
+    }
+   ]
+  },
+  "s29": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"yy3\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s30": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(46096.5,\"dd1\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s31": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "1"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"B;0\")"
+     },
+     "shown": {
+      "S!A1": "1"
+     }
+    }
+   ]
+  },
+  "s32": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0b;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0b;0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0b;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0b;0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s33": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"mm###;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"mm###;0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"mm###;0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"mm###;0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  },
+  "s34": {
+   "sources": "",
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-74444",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "VALUE"
+      }
+     },
+     "formulas": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "local": {
+      "S!A1": "=TEXT(-1,\"0;[>1]0\")"
+     },
+     "shown": {
+      "S!A1": "#VALUE!"
+     }
+    }
+   ]
+  }
+ }
+}

@@ -14,7 +14,7 @@ import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { enCode, EN_CODES, generalText } from '../numfmt.js'
 import { dayOrTime } from '../numfmt/date.js'
-import { parseFormat, type Tok } from '../numfmt/parse.js'
+import { dated, parseFormat, type Tok } from '../numfmt/parse.js'
 import { choose, kind } from '../numfmt/select.js'
 import { readEntry } from './index.js'
 
@@ -47,7 +47,7 @@ function hasDigits(toks: Tok[]): boolean {
   for (const t of toks) {
     if (t.t === 'ph' && !fraction) return true
     if (t.t !== 'ph') fraction = date && t.t === 'dot'
-    date ||= t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm'
+    date ||= dated(t) || t.t === 'ampm'
   }
   return false
 }

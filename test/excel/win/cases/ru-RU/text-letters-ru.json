@@ -1,0 +1,584 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 15.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "letters#1",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"n\")"
+  },
+  {
+   "id": "letters#2",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"N\")"
+  },
+  {
+   "id": "letters#3",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"nn\")"
+  },
+  {
+   "id": "letters#4",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0n\")"
+  },
+  {
+   "id": "letters#5",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ДДn\")"
+  },
+  {
+   "id": "letters#6",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"\"\"n\"\"\")"
+  },
+  {
+   "id": "letters#7",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"\\n\")"
+  },
+  {
+   "id": "letters#8",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"General\")"
+  },
+  {
+   "id": "letters#9",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"Genera\")"
+  },
+  {
+   "id": "letters#10",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"Основной\")"
+  },
+  {
+   "id": "letters#11",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"Основной\"\"n\"\"\")"
+  },
+  {
+   "id": "letters#12",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"b\")"
+  },
+  {
+   "id": "letters#13",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"bb\")"
+  },
+  {
+   "id": "letters#14",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"BB\")"
+  },
+  {
+   "id": "letters#15",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"bbb\")"
+  },
+  {
+   "id": "letters#16",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"B\")"
+  },
+  {
+   "id": "letters#17",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ДДb\")"
+  },
+  {
+   "id": "letters#18",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0b\")"
+  },
+  {
+   "id": "letters#19",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"g\")"
+  },
+  {
+   "id": "letters#20",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"gg\")"
+  },
+  {
+   "id": "letters#21",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ggg\")"
+  },
+  {
+   "id": "letters#22",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"G\")"
+  },
+  {
+   "id": "letters#23",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0g\")"
+  },
+  {
+   "id": "letters#24",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"e\")"
+  },
+  {
+   "id": "letters#25",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ee\")"
+  },
+  {
+   "id": "letters#26",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"E\")"
+  },
+  {
+   "id": "letters#27",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0e\")"
+  },
+  {
+   "id": "letters#28",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"a\")"
+  },
+  {
+   "id": "letters#29",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"aa\")"
+  },
+  {
+   "id": "letters#30",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"aaa\")"
+  },
+  {
+   "id": "letters#31",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"aaaa\")"
+  },
+  {
+   "id": "letters#32",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"AAA\")"
+  },
+  {
+   "id": "letters#33",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0aaa\")"
+  },
+  {
+   "id": "letters#34",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ДДa\")"
+  },
+  {
+   "id": "letters#35",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"B1\")"
+  },
+  {
+   "id": "letters#36",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"B2\")"
+  },
+  {
+   "id": "letters#37",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"b1\")"
+  },
+  {
+   "id": "letters#38",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"B1ГГ\")"
+  },
+  {
+   "id": "letters#39",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"B2ГГ\")"
+  },
+  {
+   "id": "letters#40",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"E+0\")"
+  },
+  {
+   "id": "letters#41",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0E+0\")"
+  },
+  {
+   "id": "letters#42",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ааа\")"
+  },
+  {
+   "id": "letters#43",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"аааа\")"
+  },
+  {
+   "id": "letters#44",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"б\")"
+  },
+  {
+   "id": "letters#45",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ббб\")"
+  },
+  {
+   "id": "letters#46",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"н\")"
+  },
+  {
+   "id": "letters#47",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"Н\")"
+  },
+  {
+   "id": "letters#48",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"е\")"
+  },
+  {
+   "id": "letters#49",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"э\")"
+  },
+  {
+   "id": "letters#50",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"г\")"
+  },
+  {
+   "id": "letters#51",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"Г\")"
+  },
+  {
+   "id": "letters#52",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ггг\")"
+  },
+  {
+   "id": "letters#53",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ДДД\")"
+  },
+  {
+   "id": "letters#54",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "letters#55",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"ч:мм\")"
+  },
+  {
+   "id": "letters#56",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0;0;0;ДД\")"
+  },
+  {
+   "id": "letters#57",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0;0;0;aaa\")"
+  },
+  {
+   "id": "letters#58",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0_;;0\")"
+  },
+  {
+   "id": "letters#59",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0*;;0\")"
+  },
+  {
+   "id": "letters#60",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0;0;0;@;\")"
+  },
+  {
+   "id": "letters#61",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"0_ ;0_;;\")"
+  },
+  {
+   "id": "letters#62",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"[>=1][Зеленый]0,0%;[>=0,8][Синий]0,0%;0,0%;@\")"
+  },
+  {
+   "id": "letters#63",
+   "group": "letters",
+   "formula": "TEXT(46096.5,\"[>=1]0;[>=2]0;[>=3]0\")"
+  }
+ ],
+ "values": {
+  "letters#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#6": {
+   "t": "s",
+   "v": "n"
+  },
+  "letters#7": {
+   "t": "s",
+   "v": "n"
+  },
+  "letters#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#10": {
+   "t": "s",
+   "v": "46096,5"
+  },
+  "letters#11": {
+   "t": "s",
+   "v": "46096,5n"
+  },
+  "letters#12": {
+   "t": "s",
+   "v": "69"
+  },
+  "letters#13": {
+   "t": "s",
+   "v": "69"
+  },
+  "letters#14": {
+   "t": "s",
+   "v": "69"
+  },
+  "letters#15": {
+   "t": "s",
+   "v": "2569"
+  },
+  "letters#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#17": {
+   "t": "s",
+   "v": "1569"
+  },
+  "letters#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#19": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#20": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#21": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#22": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#23": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#24": {
+   "t": "s",
+   "v": "2026"
+  },
+  "letters#25": {
+   "t": "s",
+   "v": "2026"
+  },
+  "letters#26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#28": {
+   "t": "s",
+   "v": "a"
+  },
+  "letters#29": {
+   "t": "s",
+   "v": "aa"
+  },
+  "letters#30": {
+   "t": "s",
+   "v": "Вс"
+  },
+  "letters#31": {
+   "t": "s",
+   "v": "воскресенье"
+  },
+  "letters#32": {
+   "t": "s",
+   "v": "Вс"
+  },
+  "letters#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#34": {
+   "t": "s",
+   "v": "15a"
+  },
+  "letters#35": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#36": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#37": {
+   "t": "s",
+   "v": ""
+  },
+  "letters#38": {
+   "t": "s",
+   "v": "26"
+  },
+  "letters#39": {
+   "t": "s",
+   "v": "47"
+  },
+  "letters#40": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#41": {
+   "t": "s",
+   "v": "5E+4"
+  },
+  "letters#42": {
+   "t": "s",
+   "v": "ааа"
+  },
+  "letters#43": {
+   "t": "s",
+   "v": "аааа"
+  },
+  "letters#44": {
+   "t": "s",
+   "v": "б"
+  },
+  "letters#45": {
+   "t": "s",
+   "v": "ббб"
+  },
+  "letters#46": {
+   "t": "s",
+   "v": "н"
+  },
+  "letters#47": {
+   "t": "s",
+   "v": "Н"
+  },
+  "letters#48": {
+   "t": "s",
+   "v": "е"
+  },
+  "letters#49": {
+   "t": "s",
+   "v": "э"
+  },
+  "letters#50": {
+   "t": "s",
+   "v": "26"
+  },
+  "letters#51": {
+   "t": "s",
+   "v": "26"
+  },
+  "letters#52": {
+   "t": "s",
+   "v": "2026"
+  },
+  "letters#53": {
+   "t": "s",
+   "v": "Вс"
+  },
+  "letters#54": {
+   "t": "s",
+   "v": "15.03.2026"
+  },
+  "letters#55": {
+   "t": "s",
+   "v": "12:00"
+  },
+  "letters#56": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#57": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#58": {
+   "t": "s",
+   "v": "46097 "
+  },
+  "letters#59": {
+   "t": "s",
+   "v": "46097"
+  },
+  "letters#60": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "letters#61": {
+   "t": "s",
+   "v": "46097 "
+  },
+  "letters#62": {
+   "t": "s",
+   "v": "4609650,0%"
+  },
+  "letters#63": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

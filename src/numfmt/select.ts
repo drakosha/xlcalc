@@ -6,7 +6,7 @@
  * section and nothing otherwise (TEXT answers #VALUE!, a cell shows `#`). A section writes its own minus when every
  * value it can receive is negative.
  */
-import type { Cond, Section, Tok } from './parse.js'
+import { dated, type Cond, type Section, type Tok } from './parse.js'
 
 /** The section of a number, or null for General; `signed` when the formatted number takes a minus. Null when no section takes it. */
 interface Choice {
@@ -66,7 +66,7 @@ export function kind(toks: Tok[]): 'general' | 'date' | 'text' | 'number' | 'lit
   let k: 'general' | 'date' | 'text' | 'number' | 'literal' = 'literal'
   for (const t of toks) {
     if (t.t === 'general') return 'general'
-    if (t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm') k = 'date'
+    if (dated(t) || t.t === 'ampm') k = 'date'
     else if (t.t === 'text' && k !== 'date') k = 'text'
     else if ((t.t === 'ph' || t.t === 'exp') && k === 'literal') k = 'number'
   }
