@@ -17,6 +17,7 @@ import { relocated, shiftRefusal } from './arrays.js'
 import { openedGroup, shiftFilter, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
+import { sortAfter } from '../filter/transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
 import { madeFrom } from '../looks/sheet.js'
@@ -102,8 +103,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     // the new lines take the format of the line before them with the sheet's looks (`linesMoved`)
     madeFrom([s.cells], cells)
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
-    const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, autoFilter: shiftFilter(s.autoFilter, s.name, axis, at, n, t), frozen: shiftFrozen(s.frozen, axis, at, n), validations }
-    for (const k of ['columns', 'rows', 'merges', 'autoFilter', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
+    const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, autoFilter: shiftFilter(s.autoFilter, s.name, axis, at, n, t), sort: sortAfter(s.sort, s.name, t), frozen: shiftFrozen(s.frozen, axis, at, n), validations }
+    for (const k of ['columns', 'rows', 'merges', 'autoFilter', 'sort', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
     // lines and merged areas all pushed off or deleted leave no field, as a paste leaves none
     for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] && !Object.keys(layout[k]).length) delete layout[k]
     return layout
@@ -111,7 +112,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }
   const nm = rewriteNames(book.names, offsetsStay(t, axis), names)
   if (nm) out.names = nm
-  return { ok: true, book: tables.after(out), geometry }
+  return { ok: true, book: tables.after(out, t), geometry }
 }
 
 /** The cells of sheet `ti` where the geometry takes them, their formulas rewritten by `t`. */

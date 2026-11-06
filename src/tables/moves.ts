@@ -20,6 +20,7 @@ import { tiles } from '../structure/copy.js'
 import { copyTransform } from '../structure/transform.js'
 import type { Applied } from '../structure/geometry.js'
 import { cellsIn, gridOf } from '../structure/grid.js'
+import { offsetCriteria } from '../filter/transform.js'
 import { withField } from '../looks/sheet.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteFormulas, rewriteTableRefs } from './rewrite.js'
@@ -103,7 +104,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
       })
       // each moved table as the move left it (its calculated columns rewritten with its cells), at its new place
       const own = (t: Table) => b.sheets[fs].tables!.find((ti) => tableKey(ti.name) === tableKey(t.name))!
-      const moved: TableInput[] = land.map(({ t, x }) => ({ ...own(t), range: cornersText(x) }))
+      const moved: TableInput[] = land.map(({ t, x }) => ({ ...own(t), range: cornersText(x), ...(own(t).filter === undefined ? {} : { filter: offsetCriteria(own(t).filter, x.r1 - t.r1, x.c1 - t.c1) }) }))
       sheets[ts] = { ...sheets[ts], tables: [...(sheets[ts].tables ?? []), ...moved] }
       return { ...b, sheets }
     },
@@ -170,7 +171,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (copies.length)
         sheets[ts] = {
           ...sheets[ts],
-          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: cornersText(x), columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: template(c.formula, t, x, name) })) }))],
+          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: cornersText(x), ...(t.input.filter === undefined ? {} : { filter: offsetCriteria(t.input.filter, x.r1 - t.r1, x.c1 - t.c1) }), columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: template(c.formula, t, x, name) })) }))],
         }
       return renamed({ ...r, book: { ...r.book, sheets } })
     },

@@ -27,6 +27,9 @@ import { utf8 } from '../zip/platform.js'
 import { crc32 } from '../zip/read.js'
 import { zip, type EntryRecord } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
+import { readDxfs } from '../styles/dxf.js'
+import { palette } from '../styles/color.js'
+import { filterPrefixes, type FilterRead } from '../read/filter.js'
 import { keyOf } from '../../style-table.js'
 import { externalLinkXml, linkTarget } from '../write/links.js'
 import { records } from './zip.js'
@@ -93,6 +96,7 @@ function relative(from: string, to: string): string {
 
 /** What the file gives every sheet: its styles, the marks of its cell metadata, the first free block of VML shape ids, the text and largest id of its tables. */
 interface Setup {
+  filters: FilterRead
   /** The parts each part points at, by its name in lower case: the file's relationships, internal ones (less those `writeKept` removes). */
   rels: Map<string, string[]>
   /** The parts the moved references are written back to, by name (the sheets and the workbook apart): their text and relationships. */
@@ -113,6 +117,7 @@ const META = ['sheetMetadata', 'rdRichValue', 'rdRichValueStructure'] as const
 async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Setup> {
   const part = (kind: string) => partText(src.archive, src.wbRels, kind)
   const [metaXml, richValues, richStructures] = await Promise.all(META.map(part))
+  const [stylesXml, themeXml] = await Promise.all(['styles', 'theme'].map(part))
   let block = 1
   // the notes' VML shape ids go in blocks past those the file's drawings take
   for (const name of src.archive.names)
@@ -137,6 +142,7 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
   for (const part of new Set(edits.map((e) => e.part)))
     if (!own.has(part.toLowerCase())) texts.set(part, { text: (await src.archive.text(part))!, rels: await relsOf(src.archive, part), relsXml: await src.archive.text(relsPath(part)) })
   return {
+    filters: { dxfs: readDxfs(stylesXml, palette(themeXml, stylesXml)), lost: () => {} },
     pivots: await pivotFiles(src),
     rels,
     texts,
@@ -358,7 +364,7 @@ class Kept {
       }
       const moved = this.id.cells.get(k)
       const formats = this.id.formats.get(k)
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, filters: { ...this.setup.filters, prefixes: filterPrefixes(xml) }, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
       this.changed ||= out.changed || xml !== ss.xml || (this.writeValues && out.xml !== undefined)
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
@@ -551,16 +557,19 @@ class Kept {
         const id = Number(a.id)
         // its columns keep their ids, which a table's slicer and a query table name
         const ids = within(xml!, 'tableColumns', 'tableColumn').map((e) => Number(attributes(e.attrs).id))
-        const after = tableXml(t1, s1, id, this.w1.names, this.issues, t1.name === this.w1.filterTables[j], keptColumnIds(ids, t0, t1))
-        if (tableXml(t0, s0, id, this.w0.names, new Issues(), t0.name === this.w0.filterTables[k], ids) === after) continue
+        const after = tableXml(t1, s1, id, this.w1.names, this.issues, t1.name === this.w1.filterTables[j], keptColumnIds(ids, t0, t1), this.styles.of(this.book.styles))
+        if (tableXml(t0, s0, id, this.w0.names, new Issues(), t0.name === this.w0.filterTables[k], ids, this.styles.of(this.book0.styles)) === after) continue
         this.changed = true
+        this.styles.useDxfs(after)
         this.parts.set(r.target, after)
       }
     }
     for (const t of left) {
       this.changed = listChanged = true
       const part = this.parts.fresh('xl/tables/table', '.xml')
-      this.parts.set(part, tableXml(t, s1, ++this.tableId, this.w1.names, this.issues, t.name === this.w1.filterTables[j]))
+      const text = tableXml(t, s1, ++this.tableId, this.w1.names, this.issues, t.name === this.w1.filterTables[j], undefined, this.styles.of(this.book.styles))
+      this.styles.useDxfs(text)
+      this.parts.set(part, text)
       this.types.override(part, `${TYPE}.table+xml`)
       list.push(rels.add(relType('table'), relative(ss.part, part)))
     }
@@ -576,14 +585,16 @@ class Kept {
     const tableParts: string[] = []
     for (const t of s.tables ?? []) {
       const tp = this.parts.fresh('xl/tables/table', '.xml')
-      this.parts.set(tp, tableXml(t, s, ++this.tableId, this.w1.names, issues, t.name === this.w1.filterTables[j]))
+      const text = tableXml(t, s, ++this.tableId, this.w1.names, issues, t.name === this.w1.filterTables[j], undefined, this.styles.of(this.book.styles))
+      this.styles.useDxfs(text)
+      this.parts.set(tp, text)
       this.types.override(tp, `${TYPE}.table+xml`)
       tableParts.push(rels.add(relType('table'), relative(part, tp)))
     }
     const p = sheetPieces(s, j, { ...this.context(this.book, this.w1, j, this.cells?.[j], issues), tableParts })
     for (const r of p.rows) for (const m of `${r.attrs}${r.cells}`.matchAll(/ s="(\d+)"/g)) this.styles.use('cellXfs', Number(m[1]))
     for (const m of p.cols.matchAll(/ style="(\d+)"/g)) this.styles.use('cellXfs', Number(m[1]))
-    for (const m of p.conditional.matchAll(/ dxfId="(\d+)"/g)) this.styles.use('dxfs', Number(m[1]))
+    this.styles.useDxfs(p.conditional)
     // the sheet's relationships after its tables', in the order its elements number them
     for (const r of p.rels) {
       if (r.type === 'hyperlink') rels.add(relType('hyperlink'), r.target, true)

@@ -4,7 +4,7 @@
  * fill (`readFill`: a dxf keeps its colour in `bgColor`), borders and a number format. What it cannot hold is named for the reader
  * to report on the rules that use it.
  */
-import type { CellStyle, ConditionalStyle } from '../../contract.js'
+import type { CellStyle, Color, ConditionalStyle } from '../../contract.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, flag, within, type Element } from '../xml/scan.js'
@@ -16,6 +16,8 @@ import { alignment, border, protection, readFill, underlineOf } from './read.js'
 export interface Dxf {
   style: ConditionalStyle
   lost: StyleLoss[]
+  /** The color of a solid cell pattern's foreground, which a filter's or sort's format holds where a rule's holds its background. */
+  pattern?: Color
   /** What a cell's style holds beyond a conditional one: the font's name and size, the alignment and protection (a PivotTable's formats take them). */
   cell?: Pick<CellStyle, 'alignment' | 'protection'> & { name?: string; size?: number }
 }
@@ -42,6 +44,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
   const b = e.body ?? ''
   const style: ConditionalStyle = {}
   const lost: StyleLoss[] = []
+  let pattern: Color | undefined
   const f = element(b, 'font')
   if (f?.body) {
     const fb = f.body
@@ -62,6 +65,8 @@ export function readDxf(e: Element, p: Palette): Dxf {
     const x = readFill(fill, p, true)
     if (x.fill) style.fill = x.fill
     lost.push(...x.lost)
+    const pf = element(fill.body ?? '', 'patternFill')
+    if (pf && attributes(pf.attrs).patternType === 'solid') pattern = colorOf(element(pf.body ?? '', 'fgColor'), p)
   }
   const bo = element(b, 'border')
   if (bo) {
@@ -92,7 +97,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
   if (pr) cell.protection = pr
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')
-  return Object.keys(cell).length ? { style, lost, cell } : { style, lost }
+  return { style, lost, ...(pattern ? { pattern } : {}), ...(Object.keys(cell).length ? { cell } : {}) }
 }
 
 /** The dxfs of styles.xml in order. */

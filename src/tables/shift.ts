@@ -13,6 +13,8 @@ import type { EngineMessage } from '../locale/messages.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
 import { cornersText, hi, LINES, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
+import { criteriaAfter } from '../filter/transform.js'
+import type { Transform } from '../structure/rewrite.js'
 import { copyTransform } from '../structure/transform.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
@@ -33,7 +35,7 @@ export interface TableShift {
   /** References to deleted tables and columns made #REF!, before the cells move. */
   before(book: BookInput): BookInput
   /** The tables' new ranges and columns, the cells of inserted rows and columns, after the cells moved. */
-  after(book: BookInput): BookInput
+  after(book: BookInput, transform?: Transform): BookInput
   /**
    * A reference into a table's data that rows inserted at its edge grow, as Excel inserts rows into a table: from its
    * first data row it stays there, ending on its last data row it takes in rows inserted at the totals row.
@@ -125,7 +127,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
           return dead.has(tableKey(a)) || dead.has(tableKey(z)) ? 'lost' : undefined
         })
       : b
-  const after = (b: BookInput): BookInput => {
+  const after = (b: BookInput, transform?: Transform): BookInput => {
     const sh = b.sheets[s]
     const names = sheetNames(b)
     const cells = { ...sh.cells }
@@ -163,7 +165,8 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
             const addr = formatAddress(row, r.c1 + i)
             cells[addr] = { ...cells[addr], formula: rewriteFormula(c.formula, sh.name, sh.name, copyTransform(row - first, 0), names) }
           })
-      const next: TableInput = { ...ti, range: cornersText(r), columns }
+      const filter = ti.filter && transform ? criteriaAfter(ti.filter, t, r, sh.name, transform) : ti.filter
+      const next: TableInput = { ...ti, range: cornersText(r), columns, ...(filter === undefined ? {} : { filter }) }
       if (p.totals) next.totals = true
       else delete next.totals
       list.push(next)

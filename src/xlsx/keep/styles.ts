@@ -7,11 +7,11 @@
  * `<cellXfs>`, with its font, fill, border and number format after the file's, its font relative to the file's default
  * one. A conditional format's differential format goes at the end of `<dxfs>`. Only what a written part uses is added.
  */
-import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
+import type { FontStyle, CellStyle, ConditionalStyle, NumberFormat } from '../../contract.js'
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
 import { attributes, attrsAt, elements } from '../xml/scan.js'
-import { borderXml, checkWritten, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
+import { borderXml, checkWritten, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, writtenFont, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
@@ -114,6 +114,7 @@ export class KeptStyles {
   /** The cell formats of a book's style table, the file's where they look the same. */
   of(styles: CellStyle[] | undefined): CellFormats {
     return {
+      fontOf: (style, override, issues) => ({ name: this.base.name, size: this.base.size, ...writtenFont(override ?? styles?.[style ?? -1]?.font ?? {}, issues) }),
       xf: (style, format, button = false) => {
         const s = style === undefined ? undefined : styles?.[style]
         const key = lookKey(s, format) + (button ? '\nb' : '')
@@ -127,7 +128,7 @@ export class KeptStyles {
         this.byLook.set(key, i)
         return i
       },
-      dxf: (s: ConditionalStyle) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c))),
+      dxf: (s: ConditionalStyle, filter = false) => this.add('dxfs', dxfXml(s, (c) => this.numFmt(c), filter)),
       dxfBody: (i) => this.added.dxfs[i - this.counts.dxfs].slice(5, -6),
       numFmt: (code) => {
         const id = this.numFmt(code)
@@ -152,6 +153,11 @@ export class KeptStyles {
   use(kind: 'cellXfs' | 'dxfs', i: number): void {
     const k = i - this.counts[kind] + 1
     if (k > this.used[kind]) this.used[kind] = k
+  }
+
+  /** Differential formats referenced by a rewritten part must be present in styles.xml. */
+  useDxfs(xml: string): void {
+    for (const m of xml.matchAll(/ dxfId="(\d+)"/g)) this.use('dxfs', Number(m[1]))
   }
 
   /** styles.xml with what written parts use added; undefined when they use nothing new. */

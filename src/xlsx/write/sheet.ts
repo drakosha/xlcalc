@@ -15,6 +15,8 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
+import { stringXml } from './strings.js'
+import { filterXml, sortXml } from './filter.js'
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
 import { frozenScroll, sheetViewXml, splitXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
@@ -56,7 +58,7 @@ export const tablePartsXml = (ids: string[]) => countedIf('tableParts', ids.map(
 export interface SheetContext extends FileNames {
   styles: CellFormats
   /** The index of a string in the shared strings table. */
-  string(s: string): number
+  string(s: string, xml?: string): number
   /** Text values as inline strings (`t="inlineStr"`), not through the shared strings: a file written over another keeps its table as it is. */
   inline?: boolean
   /** The cell metadata index (`cm`) that marks a dynamic array formula: 1, the writer's metadata, or the original file's. */
@@ -125,6 +127,7 @@ export interface SheetPieces {
   rows: RowWritten[]
   protection: string
   autoFilter: string
+  sort: string
   merges: string
   conditional: string
   validations: string
@@ -141,7 +144,7 @@ export function sheetXml(p: SheetPieces): string {
   return (
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="${REL}">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
-    p.protection + p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
+    p.protection + p.autoFilter + p.sort + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
     '</worksheet>'
   )
@@ -155,14 +158,15 @@ const INLINE = ' t="inlineStr"'
  * for older readers) and the content of `<v>`, or an inline string's `<is>`; `shared` writes text through the shared
  * strings, or inline (`ctx.inline`).
  */
-function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, shared: boolean): { t: string; v: string } {
+function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, shared: boolean, rich?: { runs: import('../../contract.js').TextRun[]; style?:number }): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, { sheet, cell })
-    if (shared && ctx.inline) return { t: INLINE, v: `<is>${textElement(s)}</is>` }
-    return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
+    const text=rich?stringXml(s,rich.runs,ctx.styles,rich.style,ctx.issues):undefined
+    if (shared && ctx.inline) return { t: INLINE, v: `<is>${text ?? textElement(s)}</is>` }
+    return shared ? { t: ' t="s"', v: String(ctx.string(s, text)) } : { t: ' t="str"', v: escapeText(s) }
   }
   return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, { sheet, cell }), ctx.richError)
 }
@@ -228,7 +232,9 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const cellXml = (addr: string, row: number, col: number, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ` cm="${ctx.dynamicMark ?? 1}"` : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(row, col, c)}${cm}${f ? `>${f}</c>` : '/>'}`
-    const x = valueXml(v, ctx, sheet.name, addr, !f)
+    const resolved = c?.richText && typeof v === 'string' ? sheetLook.look(row, col, c) : undefined
+    const rich = c?.richText && typeof v === 'string' ? {runs:c.richText,style:resolved?.style} : undefined
+    const x = valueXml(v, ctx, sheet.name, addr, !f, rich)
     return `<c r="${addr}"${sAttr(row, col, c)}${x.t}${cm}>${f}${x.t === INLINE ? x.v : `<v>${x.v}</v>`}</c>`
   }
   const notes = new Map<string, CellNote>()
@@ -365,7 +371,8 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),
-    autoFilter: filter ? (sheet.filtered ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filter}"/>`) : '',
+    autoFilter: filter ? filterXml(filter, sheet.autoFilter?.criteria, ctx.styles, sheet.filtered ? KEEP_ALL : '') : '',
+    sort: sortXml(sheet.sort, ctx.styles),
     merges: countedIf('mergeCells', merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`)),
     conditional: cond.main,
     validations: validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }),

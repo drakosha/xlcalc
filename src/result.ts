@@ -1,3 +1,4 @@
+import { copyRuns } from './rich-text.js'
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
@@ -162,6 +163,7 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
   const input = state.input.sheets[s].cells[addr] ?? (layer && layer.lookAt(r, c))
   if (input?.style !== undefined) view.style = input.style
   // copies, as a pool's are: a host that edits them does not change the workbook
+  if (input?.richText !== undefined) view.richText = copyRuns(input.richText)
   if (input?.note !== undefined) view.note = { ...input.note }
   if (input?.link !== undefined) view.link = { ...input.link }
   if (input?.array !== undefined) view.array = input.array

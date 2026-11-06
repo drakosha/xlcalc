@@ -15,6 +15,8 @@ import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileSpelling, fileTree, type FileNames } from './formula.js'
 import { KEEP_ALL } from './sheet.js'
+import { filterXml, sortXml } from './filter.js'
+import type { CellFormats } from './styles.js'
 import { counted, HEAD, MAIN } from './xml.js'
 
 /** A table's `tableStyleInfo`: Excel's default style for a table without `style`, every option written. */
@@ -29,7 +31,7 @@ const SUBTOTALS: Record<Exclude<TotalsFunction, 'custom'>, number> = { average: 
 const subtotal = (fn: Exclude<TotalsFunction, 'custom'>, table: string, column: string) => escapeText(`SUBTOTAL(${SUBTOTALS[fn]},${table}[${column.replace(/['#@[\]]/g, "'$&")}])`)
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode; `columnIds`: its columns' ids where the file has them, by place from 1 otherwise. */
-export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false, columnIds?: number[]): string {
+export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false, columnIds?: number[], styles?: CellFormats): string {
   const x = parseRange(t.range)!
   const headers = t.headers !== false
   const totals = t.totals === true
@@ -60,13 +62,15 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: Fi
     return `<tableColumn id="${columnIds?.[i] ?? i + 1}" name="${escapeAttr(c.name)}"${attrs}${inner ? `>${inner}</tableColumn>` : '/>'}`
   })
   const filterRef = `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2 - (totals ? 1 : 0), x.c2)}`
-  const filter = headers ? (filtered ? `<autoFilter ref="${filterRef}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filterRef}"/>`) : ''
+  const { sort, ...criteria } = t.filter || {}
+  const filter = headers && t.filter !== false ? (styles ? filterXml(filterRef, t.filter === undefined ? undefined : criteria, styles, filtered ? KEEP_ALL : '') : `<autoFilter ref="${filterRef}"/>`) : ''
+  const sorted = styles ? sortXml(sort, styles) : ''
   const counts = (headers ? '' : ' headerRowCount="0"') + (totals ? ' totalsRowCount="1"' : '')
   const name = escapeAttr(t.name)
   const ref = cornersText(x)
   return (
     `${HEAD}<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
-    `${filter}${counted('tableColumns', cols)}` +
+    `${filter}${sorted}${counted('tableColumns', cols)}` +
     `${styleInfo(t.style)}</table>`
   )
 }

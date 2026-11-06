@@ -16,6 +16,7 @@ import { setCell } from './cells.js'
 import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import { attributes, element, flag, within } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
+import { readCriteria, filterPrefixes, type FilterRead } from './filter.js'
 
 /** Whether two styles are the same: the same name and options, an option false when it is absent. */
 const sameStyle = (a: TableStyle, b: TableStyle) => a.name === b.name && STYLE_OPTIONS.every(([k]) => !a[k] === !b[k])
@@ -68,7 +69,7 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
 }
 
 /** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack, a cell made going to `added`; `opts` read their formulas. */
-export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, added?: Set<string>): TableInput[] {
+export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, added?: Set<string>, filters?: FilterRead): TableInput[] {
   const out: TableInput[] = []
   if (!parts.length) return out
   // each table checked against those kept before it, its header cells as it would make them
@@ -82,13 +83,22 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
     const { t, formulas, custom } = read
     // the header cells the table needs: tried beside the cells, kept with the table
     const x = parseRange(t.range)
+    const filter = element(xml, 'autoFilter')
+    if (t.headers !== false && !filter) t.filter = false
+    else if (filter && x && filters) {
+      const criteria = readCriteria(filter, x.c2 - x.c1 + 1, element(xml, 'sortState'), {...filters,prefixes:filterPrefixes(xml)})
+      if (criteria) {
+        if (t.headers === false) filters.lost('criteria on a table without headers')
+        else t.filter = criteria
+      }
+    }
     const fixed = new Map<string, CellInput>()
     if (x && t.headers !== false)
       t.columns.forEach((c, i) => {
         const addr = formatAddress(x.r1, x.c1 + i)
         const cell = cells[addr]
         if (cell?.formula === undefined && cell?.value === c.name) return
-        const { formula: _, value: __, array: ___, ...look } = cell ?? {}
+        const { formula: _, value: __, array: ___, richText: ____, ...look } = cell ?? {}
         fixed.set(addr, { ...look, value: c.name })
       })
     try {

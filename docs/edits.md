@@ -6,6 +6,23 @@ The formatting and clearing rules below were verified in Excel 16.113 for Mac an
 
 An edit's `changes` include `note` and `link` when their fields change, and null when they are removed, including on an otherwise empty cell. `setCells`, `replaceCells`, `patchCells`, `clearCells`, `undo` and `redo` follow the same rule. Equal notes or hyperlinks do not produce these fields. `meta` remains host data: it is saved in the workbook and restored by the history, but its changes are not listed in `CellChange`.
 
+## Rich text
+
+A text constant can carry `richText`: an array of `{ start, font? }` runs. Offsets count JavaScript UTF-16 code units, start at 0, increase strictly, stay inside the text and do not split a surrogate pair. An empty array has no run formatting. Runs are not allowed on formulas or non-text values.
+
+Each `font` is a whole `FontStyle`, with omitted properties at their defaults. For example, `{ color: '#FF0000' }` selects red, plain text in the default font; it does not retain a cell's bold or underline. A run without `font` uses its cell's font, including an inherited row or column style. The xlsx reader resolves each run to its effective font.
+
+```js
+const input = {
+  value: 'Red word',
+  richText: [{ start: 0, font: { color: '#FF0000' } }, { start: 3 }],
+}
+```
+
+`setCells` can update only `richText` against the existing text. Replacing the value or formula clears the previous runs. Copying a cell copies its runs; pasting values and Clear Formats remove them. A font patch through `patchCells` changes that property on every run and preserves its other properties. A fill patch leaves runs intact, and a style index changes the cell's base style. Cell views, viewports and `readCells` return detached runs; `CellChange.richText` reports a run edit, or `null` when runs are removed. Undo and redo restore them.
+
+Run formatting does not participate in calculation or `inputHash`. A formatting-only edit still creates an undo step and reports its changes.
+
 ## In short
 
 | to | call |

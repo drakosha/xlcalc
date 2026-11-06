@@ -1,3 +1,4 @@
+import type { TextRun } from './book.js'
 /** The edits of a session's book: cells set, replaced and patched, the layout changed, operations in a batch and their preview, what a call that changes the book answers and its subscribers get, undo and redo. */
 import type { CellRef, CellValue, Clock, JsonValue, RangeRef } from './values.js'
 import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection } from './book.js'
@@ -26,6 +27,7 @@ export interface CellReplace extends CellRef {
 
 /** A cell that a call changed (`EditResult.changes`): its address, its new value and, when they changed, its text, formula, formatting, note or hyperlink. */
 export interface CellChange extends CellRef, Partial<CellDisplay> {
+  richText?: TextRun[] | null
   value: CellValue
   spill?: string
   spillFill?: CellValue
@@ -226,6 +228,8 @@ export type LayoutEdit =
    * stay hidden and a row of height 0 keeps its height. Without `showRows`, the rows and `filtered` stay as they are.
    */
   | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
+  /** The stored sort of a range outside an AutoFilter; null removes it without moving any cells. */
+  | { sheet: string; sort: import('./book.js').FilterSort | null }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */

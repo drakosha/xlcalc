@@ -26,13 +26,16 @@ import { checkSheetProtection } from './input/protection.js'
 import { checkPivots } from './input/pivot.js'
 import { placedPivots } from './pivot/area.js'
 import { checkConditionalFormats } from './cond/check.js'
+import { checkRichText } from './input/rich-text.js'
+import { checkFilterCriteria, checkFilterSort } from './filter/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
 
 /** A cell of a book with `styles` styles. */
-export function checkCell(v: unknown, path: string, styles: number): CellInput {
+export function checkCell(v: unknown, path: string, styles: number, partial = false): CellInput {
   const c = object(v, path, 'a cell object such as { value: 1 } or { formula: "A1*2" }')
   onlyKeys(c, path, CELL_FIELDS)
+  checkRichText(c, path, partial)
   const value = c.value
   // NaN and infinities have no place in a workbook, as for held and cached values
   if (typeof value === 'number' && !Number.isFinite(value)) throw new InputError(`${path}.value`, `expected a finite number, got ${what(value)}`)
@@ -104,7 +107,7 @@ function checkMeta(v: unknown, path: string, open: object[] = []) {
 }
 
 /** The fields of a cell (`CellInput`). */
-export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held']
+export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held', 'richText']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
@@ -185,13 +188,14 @@ function checkFrozen(v: unknown, path: string) {
   if (f.columns !== undefined) checkNumber(f.columns, `${path}.columns`, 1, MAX_COLS - 1, true)
 }
 
-/** A sheet's AutoFilter: `{ range }`, a cell or a range from its top-left cell to its bottom-right one. */
+/** A sheet's AutoFilter: `{ range }`, a cell or a range from its top-left cell to its bottom-right one, with its criteria. */
 function checkAutoFilter(v: unknown, path: string) {
   const f = object(v, path, 'an AutoFilter such as { range: "A1:D20" }')
-  onlyKeys(f, path, ['range'])
+  onlyKeys(f, path, ['range', 'criteria'])
   const x = typeof f.range === 'string' ? parseRange(f.range) : null
   if (!x || (f.range !== rectText(x) && f.range !== cornersText(x)))
     throw new InputError(`${path}.range`, `expected a cell or a range from its top-left cell to its bottom-right one such as "A1:D20", got ${what(f.range)}`)
+  if (f.criteria !== undefined) checkFilterCriteria(f.criteria, `${path}.criteria`, x.c2 - x.c1 + 1)
 }
 
 /** Iterative calculation's bounds (`BookInput.iteration`): 1 to 32,767 rounds, as Excel takes them, a change from 0. */
@@ -239,7 +243,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'sort', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -268,6 +272,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
       merges: checkMerges,
       filtered: checkBoolean,
       autoFilter: checkAutoFilter,
+      sort: checkFilterSort,
       view: checkSheetView,
       tabColor: checkColor,
       frozen: checkFrozen,
@@ -509,6 +514,7 @@ const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; n
   merges: { check: checkMerges },
   filtered: { check: checkBoolean },
   autoFilter: { check: checkAutoFilter, nullable: true },
+  sort: { check: checkFilterSort, nullable: true },
   protection: { check: checkSheetProtection, nullable: true },
   frozen: { check: checkFrozen, nullable: true },
   tabColor: { check: checkColor, nullable: true },

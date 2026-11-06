@@ -64,12 +64,14 @@ describe('xlsx reader: cells', () => {
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: '_x0041_ is literal' }, B1: { value: 'vertical\u000btab' }, C1: { value: 'cr\r\nlf' }, D1: { value: '<&>"AB' }, E1: { value: '  two  ' } })
   })
 
-  it('rich text is read as its plain text and reported; phonetic runs are not part of the text', async () => {
+  it('rich text retains its fonts; phonetic runs are not part of the text', async () => {
     const rich = '<r><rPr><b/></rPr><t>bold</t></r><r><t xml:space="preserve"> plain</t></r>'
     const phonetic = '<r><t>東京</t></r><rPh sb="0" eb="2"><t>トウキョウ</t></rPh><phoneticPr fontId="1"/>'
     const r = await sheet('<row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c><c r="C1" t="inlineStr"><is><t>no runs</t><rPh><t>x</t></rPh></is></c><c r="D1" t="inlineStr"><is><r><t>inline</t></r></is></c></row>', { strings: [rich, phonetic] })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'bold plain' }, B1: { value: '東京' }, C1: { value: 'no runs' }, D1: { value: 'inline' } })
-    expect(codes(r.issues)).toEqual(['richText A1 B1 D1'])
+    expect(Object.fromEntries(Object.entries(r.book.sheets[0].cells).map(([k,v])=>[k,{value:v.value}]))).toEqual({ A1: { value: 'bold plain' }, B1: { value: '東京' }, C1: { value: 'no runs' }, D1: { value: 'inline' } })
+    expect(r.book.sheets[0].cells.A1.richText?.[0].font?.bold).toBe(true)
+    expect(r.book.sheets[0].cells.A1.richText?.[1].start).toBe(4)
+    expect(codes(r.issues)).toEqual([])
   })
 
   it('an error typed into a cell is read as a formula of that error; one no formula writes is reported, a formula value that is a connection error is read', async () => {

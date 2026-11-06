@@ -1,3 +1,5 @@
+import { copyRuns } from '../rich-text.js'
+import { keyOf } from '../style-table.js'
 /**
  * What a session's edit answers (`EditResult`): what the call changed, gathered while it runs (`Outcome`), and the
  * session's revision after it. Beside the cells whose value or shown text changed, a cell is listed when its formula,
@@ -14,7 +16,7 @@ import { parseAddress, placeOf } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
 /** What changed of a cell beside its value and shown text. */
-export type FieldChange = Pick<CellChange, 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>
+export type FieldChange = Pick<CellChange, 'formula' | 'style' | 'numberFormat' | 'note' | 'link' | 'richText'>
 
 /** What a call changed so far: the cells to list (their places, `placeOf`, in order) and the rest a host reads again. */
 export interface Outcome {
@@ -82,6 +84,7 @@ export function fieldsBetween(was: CellInput | undefined, wasText: string | unde
   if (wasText !== nowText) out.formula = nowText ?? null
   if (was?.style !== now?.style) out.style = now?.style ?? null
   if (was?.numberFormat !== now?.numberFormat) out.numberFormat = now?.numberFormat ?? null
+  if (was?.richText !== now?.richText && keyOf(was?.richText ?? null) !== keyOf(now?.richText ?? null)) out.richText = now?.richText ? copyRuns(now.richText) : null
   if (was?.note?.text !== now?.note?.text || was?.note?.author !== now?.note?.author) out.note = now?.note ? { ...now.note } : null
   if (was?.link?.url !== now?.link?.url || was?.link?.location !== now?.link?.location || was?.link?.tooltip !== now?.link?.tooltip) out.link = now?.link ? { ...now.link } : null
   return Object.keys(out).length ? out : null
@@ -89,7 +92,7 @@ export function fieldsBetween(was: CellInput | undefined, wasText: string | unde
 
 /** Whether an input has a field `fieldsBetween` compares beside its value: an input of a value alone differs from none in nothing else. */
 export const hasFields = (x: CellInput): boolean =>
-  x.formula !== undefined || x.style !== undefined || x.numberFormat !== undefined || x.note !== undefined || x.link !== undefined
+  x.richText !== undefined || x.formula !== undefined || x.style !== undefined || x.numberFormat !== undefined || x.note !== undefined || x.link !== undefined
 
 /** The fields that changed of edited cells, from their inputs before the edits (`was`) to the book's now. */
 export function editFields(s: EngineState, was: { sheet: string; cell: string; input: CellInput | null }[]): Map<number, FieldChange> {

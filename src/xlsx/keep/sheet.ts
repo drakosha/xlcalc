@@ -15,7 +15,8 @@ import { colToIndex, formatAddress, parseAddress } from '../../model.js'
 import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
-import { attributes } from '../xml/scan.js'
+import { attributes, element } from '../xml/scan.js'
+import { readCriteria, readSort } from '../read/filter.js'
 import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
 import { VIEW_FLAGS } from '../view.js'
@@ -40,6 +41,7 @@ export const EXT_DV = '{CCE6A557-97BC-4B89-ADB6-D9C93CAAB3DF}'
 const ROW_KEPT = ['x14ac:dyDescent', 'thickTop', 'thickBot', 'ph']
 
 export interface SpliceInput {
+  filters?: import('../read/filter.js').FilterRead
   xml: string
   p0: SheetPieces
   p1: SheetPieces
@@ -224,7 +226,7 @@ const rowFormat = (tag: string) => {
 }
 
 /** A cell input as it counts for whether the model changed it: its value, formula and look, not its note, link or meta. */
-const inputKey = (c: CellInput | undefined) => (c ? keyOf({ value: c.value, formula: c.formula, array: c.array, style: c.style, numberFormat: c.numberFormat }) : '')
+const inputKey = (c: CellInput | undefined) => (c ? keyOf({ value: c.value, formula: c.formula, array: c.array, richText: c.richText, style: c.style, numberFormat: c.numberFormat }) : '')
 
 interface DataOut {
   text: string
@@ -544,9 +546,20 @@ export function spliceSheet(x: SpliceInput): Spliced {
   }
   // the file's AutoFilter, its criteria and sort, as its carrier moved it where the workbook has it there; written from the
   // workbook where the filter mode changed or a host put the AutoFilter elsewhere or removed it
-  if (!!x.s0.filtered !== !!x.s1.filtered || ((x.s0.autoFilter || x.s1.autoFilter) && !sameRange(attrOf(own('autoFilter')?.text, 'ref'), x.s1.autoFilter?.range))) {
+  const originalFilter = element(own('autoFilter')?.text ?? '', 'autoFilter')
+  const filterRange = x.s1.autoFilter && parseRange(x.s1.autoFilter.range)
+  const heldCriteria = x.filters ? originalFilter && filterRange ? readCriteria(originalFilter, filterRange.c2 - filterRange.c1 + 1, undefined, x.filters) : undefined : x.s0.autoFilter?.criteria
+  if (!!x.s0.filtered !== !!x.s1.filtered || keyOf(heldCriteria ?? null) !== keyOf(x.s1.autoFilter?.criteria ?? null) || ((x.s0.autoFilter || x.s1.autoFilter) && !sameRange(attrOf(own('autoFilter')?.text, 'ref'), x.s1.autoFilter?.range))) {
     changed = true
+    x.styles.useDxfs(p1.autoFilter)
     put('autoFilter', p1.autoFilter)
+  }
+  const originalSort = element(own('sortState')?.text ?? '', 'sortState')
+  const heldSort = x.filters && originalSort ? readSort(originalSort, x.filters) : x.s0.sort
+  if (keyOf(heldSort ?? null) !== keyOf(x.s1.sort ?? null)) {
+    changed = true
+    x.styles.useDxfs(p1.sort)
+    put('sortState', p1.sort)
   }
   if (p0.merges !== p1.merges) {
     changed = true
@@ -556,7 +569,7 @@ export function spliceSheet(x: SpliceInput): Spliced {
   const cf = x.conditional ?? (p0.conditional + p0.ext !== p1.conditional + p1.ext ? { main: p1.conditional, ext: p1.ext } : undefined)
   if (cf) {
     changed = true
-    for (const m of cf.main.matchAll(/ dxfId="(\d+)"/g)) x.styles.use('dxfs', Number(m[1]))
+    x.styles.useDxfs(cf.main)
     put('conditionalFormatting', cf.main)
     ext.cf = cf.ext
   }

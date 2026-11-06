@@ -133,9 +133,10 @@ function stableJson(v: unknown): string {
  */
 function hashed<T extends object>(o: T): T {
   const format = (o as { numberFormat?: unknown }).numberFormat
-  if (format === undefined) return o
-  const { numberFormat: _, ...rest } = o as { numberFormat?: unknown }
-  return { ...rest, format } as T
+  const rich = (o as { richText?: unknown }).richText
+  if (format === undefined && rich === undefined) return o
+  const { numberFormat: _, richText: __, ...rest } = o as { numberFormat?: unknown; richText?: unknown }
+  return (format === undefined ? rest : { ...rest, format }) as T
 }
 
 /** Lines of a sheet's columns or rows in order (`C 2 {...}`, `R 5 {...}`); none without them. */
@@ -170,7 +171,7 @@ export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>)
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
-    for (const t of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
+    for (const { filter: _, ...t } of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
     if (s.frozen) h.update(`P ${stableJson(s.frozen)}\n`)
     if (s.conditionalFormats?.length) h.update(`K ${stableJson(s.conditionalFormats.map((f) => ('style' in f && f.style?.numberFormat !== undefined ? { ...f, style: hashed(f.style) } : f)))}\n`)
     // rules of data validation in any order: no two meet

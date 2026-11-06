@@ -5,6 +5,7 @@
  */
 import type { BookInput, CellInput, SheetInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../contract.js'
 import { AreaIndex } from '../area-index.js'
+import { checkFilterCriteria } from '../filter/check.js'
 import type { Area } from '../spill/state.js'
 import { InputError } from '../input-error.js'
 import { isObject, onlyKeys } from '../input/basic.js'
@@ -57,7 +58,7 @@ function column(v: unknown, path: string): TableColumn {
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
 function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | undefined, booleans: readonly string[]): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
-  onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns', 'style'])
+  onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns', 'style', 'filter'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
   const problem = nameProblem(v.name, booleans)
   if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)
@@ -71,6 +72,10 @@ function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | u
   if (!Array.isArray(v.columns)) throw new InputError(`${path}.columns`, 'expected an array of columns')
   const width = x.c2 - x.c1 + 1
   if (v.columns.length !== width) throw new InputError(`${path}.columns`, `${t.range} has ${width} columns, but the table lists ${v.columns.length}`)
+  if (v.filter !== undefined && v.filter !== false) {
+    if (!headers) throw new InputError(`${path}.filter`, 'a table without a header row has no filter buttons: expected false or no field')
+    checkFilterCriteria(v.filter, `${path}.filter`, width)
+  }
   const seen = new Map<string, number>()
   v.columns.forEach((c, i) => {
     const col = column(c, `${path}.columns[${i}]`)

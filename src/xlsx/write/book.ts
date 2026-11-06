@@ -156,7 +156,7 @@ export function bookWriting(book: BookInput): BookWriting {
       return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
     },
     // a filtered sheet's criteria go on its AutoFilter, else on its first table with a header row, which has a filter of its own
-    filterTables: book.sheets.map((s) => (s.filtered && !s.autoFilter ? s.tables?.find((t) => t.headers !== false)?.name : undefined)),
+    filterTables: book.sheets.map((s) => (s.filtered && !s.autoFilter ? s.tables?.find((t) => t.headers !== false && t.filter !== false)?.name : undefined)),
     // Excel shows the active sheet, which is never a hidden one
     active: activeSheetIndex(book),
     epoch: epochOf(book.dateSystem),
@@ -190,7 +190,8 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const styles = new StyleWriter(book.styles, book.font, issues)
   const strings = new Map<string, number>()
   let refs = 0
-  const string = (s: string) => {
+  const string = (s: string, rich?: string) => {
+    s = rich ?? textElement(s)
     refs++
     let i = strings.get(s)
     if (i === undefined) strings.set(s, (i = strings.size))
@@ -254,7 +255,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i], undefined, styles) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     if (s.notes) {
@@ -274,7 +275,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
   if (strings.size) {
-    const items = [...strings.keys()].map((s) => `<si>${textElement(s)}</si>`)
+    const items = [...strings.keys()].map((s) => `<si>${s}</si>`)
     files.push({ name: 'xl/sharedStrings.xml', text: `${HEAD}<sst xmlns="${MAIN}" count="${refs}" uniqueCount="${strings.size}">${items.join('')}</sst>` })
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])

@@ -461,6 +461,8 @@ A sheet's AutoFilter (`autoFilter: { range: 'A1:C21' }`) is the filter buttons o
 - A copy, a renamed sheet and a moved sheet leave it; a deleted sheet takes it along.
 - `addTable` over all of it, its range or more, makes the table and removes the AutoFilter, which the table's own filter replaces. A table over part of it is rejected with `table`, as Excel rejects it, and an AutoFilter set over a table is an input error.
 
+Stored criteria follow their columns during structure operations; deleting a filtered column removes its criterion, and stored sort ranges follow their cells. Copying or moving a table translates its stored sort. These transformations preserve metadata without applying a filter or reordering cells.
+
 The filter mode (`filtered`) and the rows stay as they are when the AutoFilter goes. To remove it as Excel's Filter button does, in one undo step, pass `showRows`:
 
 ```js

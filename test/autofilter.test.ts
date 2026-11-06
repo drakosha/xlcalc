@@ -4,6 +4,7 @@
  * operations as a range reference of its sheet; read and written by readXlsx and writeXlsx; written by writeKept over
  * the file, which keeps the file's criteria where the range is the workbook's.
  */
+import { ALL_ROWS } from './filter-cases.js'
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createSession, editStructure, InputError, type BookInput, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
 import { inputHash } from '../src/canon.js'
@@ -199,7 +200,7 @@ describe('the AutoFilter in xlsx files', () => {
     expect(fx).toContain(`<autoFilter ref="A1:C5">${KEEP_ALL}</autoFilter>`)
     expect(await partText(data, 'xl/tables/table1.xml')).toContain('<autoFilter ref="G1:G3"/>')
     const r = await readXlsx(data)
-    expect([r.book.sheets[0].autoFilter, r.book.sheets[0].filtered]).toEqual([{ range: 'A1:C5' }, true])
+    expect([r.book.sheets[0].autoFilter, r.book.sheets[0].filtered]).toEqual([{ range: 'A1:C5', criteria: ALL_ROWS }, true])
   })
 
   it('readXlsx leaves out one over a table, and reports it', async () => {
@@ -231,9 +232,9 @@ async function keptAfter(edit: (s: ReturnType<typeof createSession>) => void): P
 describe('the AutoFilter written over the file', () => {
   const NAME = (ref: string) => `<definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">${ref}</definedName></definedNames>`
 
-  it('read into the workbook with its criteria reported; where the workbook keeps its range, the file keeps its criteria', async () => {
+  it('read into the workbook with its criteria held; where the workbook keeps its range, the file keeps its criteria', async () => {
     const read = await openKept(await criteriaFile())
-    expect([read.book.sheets[0].autoFilter, read.book.sheets[0].filtered]).toEqual([{ range: 'A1:C5' }, true])
+    expect([read.book.sheets[0].autoFilter, read.book.sheets[0].filtered]).toEqual([{ range: 'A1:C5', criteria: { columns: [{ column: 1, filter: { type: 'values', values: ['2'] } }] } }, true])
     expect(await keptAfter((s) => s.setCells([{ sheet: 'Data', cell: 'D9', input: { value: 1 } }]))).toEqual({
       filter: '<autoFilter ref="A1:C5"><filterColumn colId="1"><filters><filter val="2"/></filters></filterColumn></autoFilter>',
       names: NAME('Data!$A$1:$C$5'),

@@ -1,3 +1,5 @@
+import type { FontStyle, TextRun } from '../../contract.js'
+import type { Palette } from '../styles/color.js'
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
  * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles, hidden rows and outline levels. A cell
@@ -23,6 +25,9 @@ import { stringItem, type Strings } from './strings.js'
 export interface CellsContext {
   sheet: string
   strings: Strings
+  palette?: Palette
+  baseFont?: FontStyle
+  columnFont?: (col:number)=>FontStyle|undefined
   xfs: Xf[]
   meta: CellMetadata
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): an ISO date's serial counts from it. */
@@ -113,6 +118,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   let [lastRow, lastCol] = [-1, -1]
   // the current row, and when it has a cell format of its own its cells with their own looks, until it ends
   let line: RowInput | undefined
+  let rowFont:FontStyle|undefined
   let lineRow = -1
   let formatted: { addr: string; col: number; own: Look; cell: CellInput }[] | undefined
   const endRow = () => {
@@ -145,6 +151,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (a.r && !numbered) issues.add('part', { key: 'rowNumberBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
       col = -1
       line = {}
+      rowFont=undefined
       lineRow = row
       // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
       if (a.ht !== undefined) {
@@ -156,7 +163,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {
         const where = { sheet, cell: `${row + 1}:${row + 1}` }
-        Object.assign(line, look(xfAt(a.s, ctx, where), issues, where))
+        const rowXf=xfAt(a.s,ctx,where)
+        rowFont=rowXf?.font
+        Object.assign(line, look(rowXf, issues, where))
         formatted = []
       }
       Object.assign(line, outlineOf(a))
@@ -210,20 +219,29 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     if (!v && body.includes('v') && OPEN_V.test(body)) open = true
     const raw = v ? (v[1] ?? '') : undefined
     let value: Scalar | undefined
+    const takeRuns=(runs:TextRun[]|undefined)=>{
+      if(!runs)return
+      const first=xf?.font??rowFont??ctx.columnFont?.(col)??ctx.baseFont??{}
+      cell.richText=runs.map(run=>({start:run.start,font:{name:ctx.baseFont?.name??'Calibri',size:ctx.baseFont?.size??11,...(run.font===undefined?first:run.font)}}))
+    }
     if (t === 's') {
       if (raw !== undefined) {
         const k = INDEX.test(raw) ? Number(raw) : -1
         value = ctx.strings.text[k]
         if (value === undefined) issues.add('part', { key: 'stringIndexBad' }, { sheet, cell: addr })
-        else if (ctx.strings.rich.has(k)) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
+        else {
+          takeRuns(ctx.strings.runs?.get(k))
+          if(ctx.strings.lost?.has(k))issues.add('richText',{key:'richText'},{sheet,cell:addr})
+        }
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
       if (!is && OPEN_IS.test(body)) open = true
       if (is) {
-        const s = stringItem(is[1])
+        const s = stringItem(is[1],ctx.palette,ctx.baseFont)
         value = s.text
-        if (s.rich) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
+        takeRuns(s.runs)
+        if (s.lost) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
       }
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
@@ -275,6 +293,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         } else issues.add('errorValue', { key: 'errorUnspelled' }, { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
+    if (cell.formula !== undefined) delete cell.richText
     // a cell of a look alone goes to the sheet's looks, unless a formula is spread to it (a shared one's copy, `<f>` without text)
     if (formatted || cell.value !== undefined || cell.formula !== undefined || (f && fa.t === 'shared')) out.cells[addr] = cell
     else looks.add(row, col, looks.looks.of(cell))

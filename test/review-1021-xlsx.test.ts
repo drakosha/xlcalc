@@ -172,8 +172,8 @@ describe('xlsx: a damaged cell (x-xlsx-4, x-xlsx-8)', () => {
 
   it('rich text, empty values and self-closing cells are no elements left open', async () => {
     const r = await sheet('<row r="1"><c r="A1" t="inlineStr"><is><r><rPr><color rgb="FFFF0000"/><charset val="1"/></rPr><t>a</t></r></is></c><c r="B1" t="str"><f>""</f><v/></c><c r="C1" s="0"/><c r="D1"><v>4</v></c></row>')
-    expect(cellsOf(r)).toEqual({ A1: { value: 'a' }, B1: { formula: '""' }, D1: { value: 4 } })
-    expect(r.issues.map((i) => i.code)).toEqual(['richText'])
+    expect(cellsOf(r)).toMatchObject({ A1: { value: 'a', richText:[{start:0,font:{color:'#FF0000'}}] }, B1: { formula: '""' }, D1: { value: 4 } })
+    expect(r.issues.map((i) => i.code)).toEqual([])
   })
 
   // a row of number format 10, cells of 14 and of the default; a stored cell of the row without one shows General

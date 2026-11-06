@@ -1,3 +1,4 @@
+import { copyRuns } from '../rich-text.js'
 /**
  * A window over a sheet for a grid (`Session.getViewport`, `viewportOf`): the cells of a rectangle, or of the rows and
  * columns asked of it, as a result gives them, each with its look resolved as it shows it (`layout/lines.ts`), styles by
@@ -230,6 +231,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       }
       src.appearance(out, r, c, own)
       // copies, as a pool's are: a host that edits them does not change the workbook
+      if (own?.richText !== undefined) out.richText = copyRuns(own.richText)
       if (own?.note !== undefined) out.note = { ...own.note }
       if (own?.link !== undefined) out.link = { ...own.link }
       // a cell with an error, or a formula a circular reference stops, whatever value it holds

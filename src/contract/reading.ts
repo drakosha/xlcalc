@@ -1,3 +1,4 @@
+import type { TextRun } from './book.js'
 /** Reading a session's book: a cell as a session shows it, queries in pages, Find and Replace, the dependents of ranges, a selection's summary, plain-text copies and values, a cell's rule of data validation, where a sheet's cells end, and windows of a sheet. */
 import type { CellRef, CellValue, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
 import type { CellInput, CellLink, CellNote } from './book.js'
@@ -18,6 +19,7 @@ import type { CellTextRefusal } from './typing.js'
  * number format, `text` and `color` display the value in that format).
  */
 export interface CellView extends CellResult {
+  richText?: TextRun[]
   style?: number
   note?: CellNote
   link?: CellLink
@@ -29,9 +31,9 @@ export interface CellView extends CellResult {
 }
 
 /** A cell field that `readCells` and `findCells` return: `editText` is the text the cell opens with in edit mode, as in a viewport (`ViewportCell.editText`). */
-export type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
+export type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'richText' | 'issue'
 /** A cell as `readCells` and `findCells` return it: its address and the requested fields (`CellReadField`), no others. */
-export interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>> {
+export interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link' | 'richText'>> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with in edit mode, as in `ViewportCell.editText`; this is what `findCells` searches with `edit`, except for the apostrophe before text that would otherwise be parsed as something else, which the search leaves out. */
   editText?: string
@@ -208,6 +210,7 @@ export interface ViewportOptions {
  * conditional formats, its note and its hyperlink.
  */
 export interface ViewportCell extends Partial<CellDisplay> {
+  richText?: TextRun[]
   value: CellValue
   /** The canonical formula text, as in `CellResult.formula`. */
   formula?: string
