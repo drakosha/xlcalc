@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.87.0 (2026-11-06)
+
+Added:
+
+- `setLayout` takes `showRows: true` beside `autoFilter`: `{ sheet, autoFilter: null, showRows: true }` removes an AutoFilter as Excel's Filter button does, and `{ sheet, autoFilter: { range }, showRows: true }` moves it the same way. The rows of the filter's own range below the header come back and the sheet is no longer filtered, in one undo step. Without `showRows` nothing changes.
+- A LAMBDA's optional parameter, `LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y))`, `_xlop.y` in a file. A call may leave it out and it reads as a blank; a required parameter after an optional one is refused. Such a formula lost its calculation before.
+- Number format codes `aaa` and `aaaa` (a day's name), `b`, `bb` and `bbbb` (the Buddhist year), `g` (an era, which shows nothing in en-US and ru-RU), and `e` (the year), in `TEXT` and in a cell. `isDateFormat` is true for them.
+
+Changed:
+
+- `writeXlsx` no longer writes what makes Excel refuse a whole file, each with an issue, by measurements on Excel for Windows and for Mac ([What Excel refuses a file over](docs/xlsx.md#what-excel-refuses-a-file-over)):
+  - a formula goes as its value (`formula`) with a text literal over 255, over 8,192 characters as the file holds it, a wrong number of arguments, a value where only a reference fills an argument (`COUNTIF(1,1)`), or a size over a margin: 15,000 by the sizes of [MS-XLSB] with a byte for each argument, for a text over 1,500 characters. The margin is no limit of Excel's, and Excel opens some formulas it leaves out;
+  - a conditional format's or a validation's formula with an array constant, a table's reference, a union, an intersection, a range operator or a LAMBDA is left out, and so is a name whose reference has no sheet, and rules over 65,534;
+  - over 206 different number format codes, conditional styles counted, the rest go General (`numberFormat`); over 65,430 cell formats, the rest take format 0 (`style`); a font's name is cut at 31, and a link's location over 2,084 leaves the link out;
+  - a totals cell that does not match its column's function is written so that Excel opens it;
+  - in a PivotTable, an error outside what a cache holds is written `#VALUE!`, a name or a caption is cut at 255, a cache with a field name twice or empty is left out, and a slicer without items takes its field's.
+- A slicer or a timeline without a `place` is left out with its cache where nothing else shows it, under `pivotTable`, where the file held it and Excel dropped it on saving. So is one whose cache's name the workbook holds for anything other than `#N/A`, and a cache that no slicer shows, as Excel refuses a frame beside such a name.
+- `formatRefused`, `writeXlsx` and `writeKept` refuse whatever `TEXT` answers `#VALUE!` for whatever the value, as a file with it does not open on all 129 codes measured: `n` and `N` anywhere outside quotes, `E+0` with no digit placeholder or point before it, `B` at the end of a code after no other `B`, a digit from 1 to 9 beside a date's code (`yy3`), `0_`, `0*`, `0\`, a condition in a third section, a date's code, digit or percent in a fourth. `TEXT` answers `#VALUE!` for them.
+- A color of several kinds in a file is read by the highest, auto < indexed < rgb < theme, and fills 0 and 1 are no fill and gray125 whatever the file holds, as Excel displays them. Only other writers' files read differently.
+
+Fixed:
+
+- `writeXlsx` writes a defined name `#N/A` for each cache of a slicer and a timeline, where the book has none. Without it Excel refused the file, one made by a session's `addSlicer` or `addTimeline` too.
+- `0_;;0`, `0*;;0` and other codes where `_` or `*` takes a `;` are read as Excel reads them, and `[>=1][Green]0.0%;[>=0.8][Blue]0.0%;0.0%;@`, two conditions with a fourth section, is no longer refused, in `formatRefused` and on writing a workbook read from a file with one.
+- `m` after `h` across other date codes (`h dd mm`) is minutes, as Excel reads it.
+- A positive tint rounds as Excel does, in 468 of 468 measured colors, where it differed by up to 3 of 255.
+- A 2010 data bar's lengths go on both parts of the file: Excel dropped lengths other than 0 and 100 that the 2010 part alone held.
+
 ## 0.86.0 (2026-11-05)
 
 Changed:
