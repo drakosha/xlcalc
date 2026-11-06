@@ -85,13 +85,15 @@ export function excelLoads(ast: Ast): boolean {
 }
 
 /**
- * The bytes of tokens a formula holds at most, [MS-XLSB] 2.5.98 `cce`: its data, as of an array constant's values, does not count.
- * The set `links/formula-bytes-held` measured it on Excel for Windows.
+ * What the writer takes of a formula's tokens and arguments together (`fitsTokens`). Not Excel's limit: Microsoft gives 16,384 bytes,
+ * and [MS-XLSB]'s sizes do not add up to what Excel refuses. A chain of operators opens at 16,383 and is refused at 16,384; a function's
+ * arguments cost something the files do not show, about a byte each and not exactly (`links/formula-bytes-held`, `-args`, on Excel for
+ * Windows). So a margin under what the sets opened, large as no book holds a formula near it: the longest of a corpus of 1,123 is 683 characters.
  */
-const MAX_TOKEN_BYTES = 16_384
+const MAX_WEIGHT = 15_000
 
-/** No token takes 8 bytes for a character of a formula's text, so a text this long or shorter fits without counting. */
-export const SHORT_FORMULA = 2048
+/** No token and its argument takes 10 bytes for a character of a formula's text, so a text this long or shorter fits without counting. */
+export const SHORT_FORMULA = 1500
 
 /** The functions [MS-XLSB] has Excel jump over with their arguments: one control token of 4 bytes, and one after each argument. */
 const JUMPS: ReadonlySet<string> = /* @__PURE__ */ new Set('IF IFERROR IFNA IFS SWITCH'.split(' '))
@@ -115,10 +117,11 @@ function callBytes(n: Extract<Ast, { k: 'fn' }>): number {
 }
 
 /**
- * The bytes of a formula's tokens by the sizes of [MS-XLSB], the most it can take: every function of Excel's table as one of variable
- * count, one byte over a fixed count's; every jump as if each argument had it; the operators on references with the most they can bring.
+ * A formula's weight: its tokens by the sizes of [MS-XLSB], the most they can take (every function of Excel's table as one of variable
+ * count, one byte over a fixed count's; every jump as if each argument had it; the operators on references with the most they can
+ * bring), and a byte for each argument. Exported for the tests, which hold it against what Excel refused.
  */
-function tokenBytes(ast: Ast): number {
+export function formulaWeight(ast: Ast): number {
   let bytes = 0
   walk(ast, (n) => {
     switch (n.k) {
@@ -161,7 +164,7 @@ function tokenBytes(ast: Ast): number {
         bytes += n.items.length + 8
         break
       case 'fn':
-        bytes += callBytes(n)
+        bytes += callBytes(n) + n.args.length
         break
       case 'un':
       case 'pct':
@@ -182,15 +185,15 @@ function tokenBytes(ast: Ast): number {
         bytes += FAR_CALL + 5 * n.params.length
         break
       case 'call':
-        bytes += CALL
+        bytes += CALL + n.args.length
         break
     }
   })
   return bytes
 }
 
-/** Whether a formula's tokens fit what Excel loads, by what is known of their sizes; wrong only towards leaving a formula out. */
-export const fitsTokens = (ast: Ast): boolean => tokenBytes(ast) <= MAX_TOKEN_BYTES
+/** Whether a formula is under the margin (`MAX_WEIGHT`): where it is not, it goes as its value, though Excel may well have opened it. */
+export const fitsTokens = (ast: Ast): boolean => formulaWeight(ast) <= MAX_WEIGHT
 
 /** Whether Excel loads a formula as a conditional format's or a validation's: neither takes these, in a block of Excel 2007 or of 2010. */
 export function excelLoadsRule(ast: Ast): boolean {

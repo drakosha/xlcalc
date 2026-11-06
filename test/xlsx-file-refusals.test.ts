@@ -75,7 +75,7 @@ describe('a formula of a cell against Excel', () => {
     }
     const r = await written({ sheets: [{ ...c.sheets[0], cells: { ...c.sheets[0].cells, A1: { formula, value: 7 } as CellInput } }] })
     const has = /<c r="A1"[^>]*><f/.test(r.sheet)
-    if (refused(set, id)) expect(has).toBe(false)
+    if (refused(set, id) || id === 'sum-cells') expect(has).toBe(false) // `sum-cells` opens, under the margin on tokens: test/xlsx-formula-bytes.test.ts
     else if (reads) expect(has).toBe(true)
     if (!has) expect(r.codes('formula').length).toBe(1)
   })
