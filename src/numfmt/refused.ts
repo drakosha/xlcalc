@@ -104,7 +104,7 @@ export function formatRefused(format: NumberFormat): boolean {
   if (typeof format === 'number') return false
   const code = format
   if (code.length > MAX_CODE) return true
-  // what TEXT answers #VALUE! for whatever the value, a file does not open with (`display/letters-open`, `letters-open-2`: all 125 codes)
+  // what TEXT answers #VALUE! for whatever the value, a file does not open with (`display/letters-open`, `letters-open-2`, `letters-open-3`: all 129 codes)
   if (parseFormat(code.replace(DBNUM_ANY, ''), EN_CODES) === null) return true
   const read = splitSections(code).map(readSection)
   if (read.some((r) => r === null)) return true
