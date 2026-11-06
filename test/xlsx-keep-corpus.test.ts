@@ -40,7 +40,7 @@ const KNOWN: Record<string, string> = {
   'let-held-1.xlsx': '.formula',
   // Excel's own text of SHEETS(R:'Two Words'!A1), `'R':'Two Words'!A1`, which the engine does not parse
   'indirect-1.xlsx': '.formula',
-  // a LAMBDA's optional parameter in its body, which the writer spells otherwise than the file
+  // `_xlop.y` on a use of a LAMBDA's parameter, which Excel opens and answers #NAME?, and which the writer does not write
   'xlop-in-body.xlsx': '.formula',
 }
 
