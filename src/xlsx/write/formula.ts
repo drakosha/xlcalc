@@ -14,7 +14,7 @@ import { bindLinks } from '../../syntax/links.js'
 import { filled, instanceText, ready, shaped, SHAPES, tableShapeKey, type Hole, type Template } from '../../syntax/shape.js'
 import type { Tok } from '../../syntax/tokens.js'
 import { FILE_PRINT, toFile } from '../formulas/to-file.js'
-import { excelLoads, excelLoadsRule, namesSheets } from './excel-loads.js'
+import { excelLoads, excelLoadsRule, fitsTokens, namesSheets, SHORT_FORMULA } from './excel-loads.js'
 import type { ShapeSeen } from './kind.js'
 
 /** What a formula of the book may name in its file. */
@@ -60,7 +60,7 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string, 
       if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
       else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
     })
-  if (!ok || !excelLoads(ast) || (opts.rule && !excelLoadsRule(ast)) || (opts.anySheet && !namesSheets(ast))) return null
+  if (!ok || !excelLoads(ast) || (formula.length > SHORT_FORMULA && !fitsTokens(ast)) || (opts.rule && !excelLoadsRule(ast)) || (opts.anySheet && !namesSheets(ast))) return null
   if (!linked) return ast
   const links = bindLinks(ast, names.externalBooks, [...names.sheets])
   return links.ok ? links.ast : null
@@ -96,7 +96,8 @@ export function fileText(formula: string, names: FileNames, enclosing: string | 
     const tree = fileTree(formula, names, enclosing, toks ? { toks } : {})
     return tree && fileSpelling(tree)
   }
-  if (!shapes) return own()
+  // what a hole puts in changes the bytes of tokens (`fitsTokens`), so a long formula takes no shape's check
+  if (!shapes || formula.length > SHORT_FORMULA) return own()
   const read = shaped(formula)
   if (read === null) return own()
   if (read === 'unread') return null

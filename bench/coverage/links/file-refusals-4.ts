@@ -40,9 +40,9 @@ const tokens = (): LinksCase[] => [
   cell('cells-2048', '2,048 cells joined, 16,383 bytes of tokens', terms('B1', 2048), { value: 2048 }),
   cell('cells-2049', '2,049 cells joined, 16,391 bytes of tokens', terms('B1', 2049), REFUSED),
   cell('cells-2100', '2,100 cells joined', terms('B1', 2100), REFUSED),
-  cell('ranges-1170', '1,170 ranges in SUM by pairs, about 16,380 bytes of tokens', terms('SUM(B1:B2)', 800)),
-  cell('sum-cells', 'eight SUM of 255 cells, 14,360 bytes of tokens', terms(`SUM(${list(255, () => 'B1', ',')})`, 8), { value: 2040 }),
-  cell('sum-cells-over', 'ten SUM of 255 cells, 17,950 bytes of tokens', terms(`SUM(${list(255, () => 'B1', ',')})`, 10), REFUSED),
+  cell('ranges-1170', '800 SUM of a range, 8,799 characters: over the 8,192 of a text, whatever its tokens', terms('SUM(B1:B2)', 800)),
+  cell('sum-cells', 'eight SUM of 255 cells, 14,319 bytes of tokens as modelled', terms(`SUM(${list(255, () => 'B1', ',')})`, 8), { value: 2040 }),
+  cell('sum-cells-over', 'ten SUM of 255 cells, 17,899 bytes of tokens as modelled', terms(`SUM(${list(255, () => 'B1', ',')})`, 10), REFUSED),
 ]
 
 export function buildLinksCases(): LinksCases {

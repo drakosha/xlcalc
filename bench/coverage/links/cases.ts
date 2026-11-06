@@ -68,6 +68,8 @@ export interface LinksCase {
   book?: Omit<BookInput, 'sheets'>
   /** A change by hand to the finished file, for what the writer may come to refuse: a part's new text, undefined for a part it leaves. Stored answers do not keep it. */
   edit?: (part: string, text: string) => string | undefined
+  /** A `written` case's file by another path than `writeXlsx` of its book (a session's snapshot), from its book with the mirror sheets. Stored answers do not keep it. */
+  file?: (book: BookInput) => Promise<Uint8Array>
 }
 
 export type LinkedFormula = string | { formula: string; array: string }
@@ -173,7 +175,10 @@ function caseSheets(c: LinksCase): SheetInput[] {
 
 /** The file of a case: the writer's book, then the formulas with links, the link parts and the names put in by hand. */
 export async function linkFile(c: LinksCase): Promise<Uint8Array> {
-  if (c.written) return (await writeXlsx({ book: writtenBook(c) })).data
+  if (c.written) {
+    const data = c.file ? await c.file(writtenBook(c)) : (await writeXlsx({ book: writtenBook(c) })).data
+    return c.edit ? editParts(data, c.edit) : data
+  }
   const sheets = caseSheets(c)
   const { data } = await writeXlsx({ book: { ...c.book, sheets } })
   const archive = openArchive(data)

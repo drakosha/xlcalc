@@ -231,9 +231,9 @@ export function runExcel(book: string, n: number): Val[] {
 /** The window "We found a problem with some content": Excel does not read the whole book, usually over a formula it does not load. */
 const REPAIR = /problem with some content|проблем\S* с содержим|ошибка в части содержимого/i
 
-/** Closes the book repair window with No; other windows are left alone. */
-export function declineRepair(): boolean {
-  if (!excelDialogs().some((d) => REPAIR.test(d.text))) return false
+/** Closes the book repair window with No, of the book `file` where given, as the window names it; other windows are left alone. */
+export function declineRepair(file?: string): boolean {
+  if (!excelDialogs().some((d) => REPAIR.test(d.text) && (file === undefined || d.text.includes(file)))) return false
   osa(`tell application "System Events" to tell process "Microsoft Excel"
   repeat with w in windows
     set tx to ""
@@ -258,11 +258,11 @@ end tell`)
 }
 
 /** The repair window declined where System Events does not list it, on another Space: Excel activated first, which brings it forward. */
-export async function declineElsewhere(): Promise<boolean> {
-  if (declineRepair()) return true
+export async function declineElsewhere(file?: string): Promise<boolean> {
+  if (declineRepair(file)) return true
   osa('tell application "Microsoft Excel" to activate')
   await sleep(2000)
-  return declineRepair()
+  return declineRepair(file)
 }
 
 /** After the repair window was declined and its script stopped: a second one declined, a book Excel left open closed. */
@@ -401,7 +401,7 @@ export async function runWatched<T>(w: Watch<T>): Promise<T> {
         return await w.done(out, dir)
       }
       const open = dialogText()
-      if (open && declineRepair()) {
+      if (open && declineRepair(w.file ?? 'book.xlsx')) {
         const r = await w.repair(stop, open)
         if (r !== undefined) return r
       } else if (open && w.fatal) {
@@ -474,9 +474,11 @@ export async function runSavingScript(id: string, script: string, data: Uint8Arr
       declineRepair()
       return { rejected: 'Excel did not accept the book (repair window declined)' }
     },
-    // the book did not open (`wb` undefined): the repair window on another Space, which the watch does not see
+    // the book did not open: the repair window on another Space, which the watch does not see, is the refusal; without it Open failed (`xlcalc-open`, `wb` undefined) and the run stops, as after any error once the book is open
     failed: async (err, stop) => {
-      if (!/\bwb\b/.test(err) || !(await declineElsewhere())) return undefined
+      const opening = /xlcalc-open|\bwb\b/.test(err)
+      if (!opening) throw new Error(`${id}: after the book opened: ${err.trim().split('\n')[0]}`)
+      if (!(await declineElsewhere('book.xlsx'))) throw new Error(`${id}: Open gave no book and Excel shows no repair window: ${err.trim().split('\n')[0]}`)
       await stop()
       await settleRejected()
       return { rejected: 'Excel did not accept the book (repair window declined)' }

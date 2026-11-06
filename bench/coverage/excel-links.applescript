@@ -8,6 +8,8 @@
 -- rectangles as lines "sheet<TAB>range<TAB>mirror range<TAB>its cells, separated by commas", the operations as lines
 -- "op<TAB>sheet<TAB>range<TAB>to" (fillDown of `to`, copyRange of `range` to `to` on the same sheet, insertRows over
 -- `range`, renameSheet to `to`).
+-- A failure of Open is told apart from one after it: `xlcalc-open error` (Open failed, with its number), `none` (no book came back),
+-- `other` (a book of another name did); any other error comes once the book is open.
 -- Output: JSON {"sources": [name], "folder": path, "errors": [text], "reads": [[[types, numbers, texts, formulas, local formulas, shown], ...], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -25,7 +27,20 @@ on run argv
 	set reads to {}
 	tell application "Microsoft Excel"
 		with timeout of 90 seconds
-			set wb to open workbook workbook file name hfs update links do not update links
+			try
+				set wb to open workbook workbook file name hfs update links do not update links
+			on error msg number k
+				error "xlcalc-open error " & (k as text) & ": " & msg
+			end try
+			try
+				set backName to name of wb
+			on error
+				error "xlcalc-open none: Open returned no book"
+			end try
+			set AppleScript's text item delimiters to "/"
+			set bookName to last text item of p
+			set AppleScript's text item delimiters to ""
+			if backName is not bookName then error "xlcalc-open other: Open returned " & backName
 			set srcs to link sources wb type link type Excel links
 			if srcs is missing value then set srcs to {}
 			set folderName to path of wb

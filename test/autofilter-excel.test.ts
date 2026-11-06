@@ -60,7 +60,7 @@ describe('the predictions committed before Excel for Mac ran each set', () => {
 })
 
 /** The filter-acts sets, each listed in every comparison below. */
-const ACT_SETS = ['totals', 'removal', 'moved', 'kept', 'totals-held', 'removal-held', 'totals-own']
+const ACT_SETS = ['totals', 'removal', 'moved', 'kept', 'totals-held', 'removal-held', 'totals-own', 'totals-functions']
 
 /**
  * The cases each prediction missed, in each Excel: `totals` took a SUBTOTAL row in as any other, had criteria and a sort

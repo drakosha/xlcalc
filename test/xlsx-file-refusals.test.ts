@@ -61,8 +61,6 @@ describe('the answers', () => {
 })
 
 describe('a formula of a cell against Excel', () => {
-  /** Files refused the writer writes: formulas of few operators and over 16,384 bytes of tokens, whose count the writer does not know. */
-  const TOKENS = new Set(['sum-cells-over'])
   /** Their text is another as the writer prints it: spaces and a number's zeros go. */
   const PRINTED = new Set(['spaces-8195', 'spaces-mid-255', 'spaces-mid-256', 'xlfn-8193', 'xlfn-8200', 'xlfn-8500', 'xlfn-9000', 'xlfn-9500', 'xlfn-10000', 'zeros-300', 'plain-8192', 'plain-8193'])
   const cases = SETS.flatMap((set) => WIN[set].cases.filter((c) => !c.written && !c.names?.length && !c.links.length && Object.keys(c.linked.S ?? {}).join() === 'A1' && !PRINTED.has(c.id)).map((c) => [set, c] as const))
@@ -77,8 +75,7 @@ describe('a formula of a cell against Excel', () => {
     }
     const r = await written({ sheets: [{ ...c.sheets[0], cells: { ...c.sheets[0].cells, A1: { formula, value: 7 } as CellInput } }] })
     const has = /<c r="A1"[^>]*><f/.test(r.sheet)
-    if (TOKENS.has(id)) expect(has).toBe(true)
-    else if (refused(set, id)) expect(has).toBe(false)
+    if (refused(set, id) || id === 'sum-cells') expect(has).toBe(false) // `sum-cells` opens, under the margin on tokens: test/xlsx-formula-bytes.test.ts
     else if (reads) expect(has).toBe(true)
     if (!has) expect(r.codes('formula').length).toBe(1)
   })
@@ -283,11 +280,14 @@ describe('PivotTables and slicers', () => {
   }
   const CACHE = 'xl/pivotCache/pivotCacheDefinition1.xml'
 
-  it('a slicer of no items takes its field’s, which opens; Excel drops the slicer on saving, as it has no frame', async () => {
+  it('a slicer of no items takes its field’s, which opens', async () => {
     expect(refused('file-refusals', 'pivot-slicer')).toBe(true)
     expect(opened('file-refusals-2', 'slicer-items')).toBe(true)
+    // the frame it needs to stay on saving: test/xlsx-slicer-names.test.ts
     for (const dir of ['', 'win/']) expect(kept(dir, 'file-refusals-2')['slicer-items']).toBe(false)
-    const r = await written(pivotBook())
+    const b = pivotBook()
+    b.sheets[1].slicers![0].place = { from: 'H2', to: 'K12' }
+    const r = await written(b)
     expect(r.parts.get('xl/slicerCaches/slicerCache1.xml')).toContain('<items count="4"><i x="0" s="1"/>')
   })
 

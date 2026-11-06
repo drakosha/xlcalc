@@ -53,7 +53,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   pivotOlap: () => "the OLAP part of a pivot cache (its hierarchies, measures and dimensions) is not in the model: its PivotTables' cells are read as stored",
   pivotChartFormats: () => "a PivotTable's chart formats are not in the model, nor are its PivotCharts",
   pivotUnread: (p) => `the file's PivotTables, slicers and timelines are left out, as the model cannot hold them (${p.detail}): their cells are read as stored`,
-  pivotNotWritten: () => "a table's slicer is not written: the file holds the table without it",
+  pivotNotWritten: () => "a slicer or timeline the file cannot hold (of a table, without a place, or its cache's name taken) is not written: the file holds the table without it",
   pivotSourceLinked: (p) => `the source of a pivot cache is on the sheet '${p.sheet}', which the workbook no longer has: written as Excel writes it, a link to a file by its path (book.xlsx), which a refresh cannot read`,
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',

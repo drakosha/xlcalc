@@ -5970,6 +5970,7 @@ interface Slicer {
   caption?: string
   /** Its header shown (true by default). */
   showCaption?: boolean
+  /** Where it is drawn; `writeXlsx` writes no slicer without one (reported), as Excel loses it on saving. */
   place?: DrawingPlace
   /** `SlicerStyleLight1` and the others. */
   style?: string
@@ -6504,6 +6505,7 @@ interface Timeline {
   /** The name of its `TimelineCache`. */
   cache: string
   caption?: string
+  /** Where it is drawn; `writeXlsx` writes no timeline without one (reported), as Excel loses it on saving. */
   place?: DrawingPlace
   /** The level shown, months by default, and the level the selection was made at. */
   level?: TimelineLevel

@@ -1,0 +1,3630 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.3
+ },
+ "cases": [
+  {
+   "id": "session-slicer",
+   "about": "addSlicer through a session and its snapshot",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "session-timeline",
+   "about": "addTimeline through a session and its snapshot",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "session-both",
+   "about": "a slicer and a timeline through a session",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "session-two",
+   "about": "two slicers of two fields through a session",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "session-taken",
+   "about": "a slicer through a session in a book with the name it would take",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   },
+   "names": [
+    {
+     "name": "Slicer_Region",
+     "ref": "D!$A$1"
+    }
+   ]
+  },
+  {
+   "id": "session-again",
+   "about": "the session’s file read and written anew: one name of each",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "no-place-slicer",
+   "about": "a slicer without a place, in a book",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "no-place-timeline",
+   "about": "a timeline without a place, in a book",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "no-place-cache-beside",
+   "about": "a slicer with a place and another without, of two caches",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "no-place-same-cache",
+   "about": "a slicer with a place and another without, of one cache",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "book-name",
+   "about": "a slicer with a place, the book holding the name",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "book-name-case",
+   "about": "a slicer with a place, the book holding the name in another case",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "book-name-other",
+   "about": "a slicer with a place, the workbook holding the name for a cell",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "left-out-slicer",
+   "about": "as `book-name-other`, through the writer: the slicer and its cache left out",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "left-out-timeline",
+   "about": "a timeline likewise",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "book-name-sheet",
+   "about": "a slicer with a place, a sheet holding the name as its own",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "excel-slicer",
+   "about": "a file of Excel’s with a slicer read and written anew",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "written": true
+  },
+  {
+   "id": "excel-timeline",
+   "about": "a file of Excel’s with a timeline read and written anew",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {}
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "written": true
+  },
+  {
+   "id": "no-name-slicer",
+   "about": "the session’s slicer, the name taken out of its file",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   },
+   "refused": true
+  },
+  {
+   "id": "no-name-timeline",
+   "about": "the session’s timeline, the name taken out of its file",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   },
+   "refused": true
+  },
+  {
+   "id": "placed-apart",
+   "about": "two slicers with places, of two caches, in a book",
+   "sheets": [
+    {
+     "name": "D",
+     "cells": {
+      "A1": {
+       "value": "Region"
+      },
+      "B1": {
+       "value": "Date"
+      },
+      "C1": {
+       "value": "Product"
+      },
+      "D1": {
+       "value": "Amount"
+      },
+      "A2": {
+       "value": "North"
+      },
+      "B2": {
+       "value": 45296,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C2": {
+       "value": "Apple"
+      },
+      "D2": {
+       "value": 10
+      },
+      "A3": {
+       "value": "South"
+      },
+      "B3": {
+       "value": 45444,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C3": {
+       "value": "Banana"
+      },
+      "D3": {
+       "value": 20
+      },
+      "A4": {
+       "value": "East"
+      },
+      "B4": {
+       "value": 45689,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C4": {
+       "value": "Apple"
+      },
+      "D4": {
+       "value": 5
+      },
+      "A5": {
+       "value": "North"
+      },
+      "B5": {
+       "value": 45725,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C5": {
+       "value": "Cherry"
+      },
+      "D5": {
+       "value": 7
+      },
+      "A6": {
+       "value": "West"
+      },
+      "B6": {
+       "value": 45991,
+       "numberFormat": "yyyy-mm-dd"
+      },
+      "C6": {
+       "value": "Banana"
+      },
+      "D6": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "P",
+     "cells": {},
+     "pivotTables": [
+      {
+       "name": "PT1",
+       "cache": 1,
+       "location": {
+        "range": "A3:B4",
+        "firstHeaderRow": 1,
+        "firstDataRow": 1,
+        "firstDataColumn": 1
+       },
+       "fields": [
+        {},
+        {},
+        {},
+        {}
+       ],
+       "rows": [
+        0
+       ],
+       "values": [
+        {
+         "field": 3
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linked": {},
+   "links": [],
+   "read": [
+    {
+     "sheet": "D",
+     "range": "D2"
+    }
+   ],
+   "predicted": {
+    "D!D2": 10
+   },
+   "written": true,
+   "book": {
+    "pivotCaches": [
+     {
+      "id": 1,
+      "source": {
+       "type": "range",
+       "sheet": "D",
+       "range": "A1:D6"
+      },
+      "fields": [
+       {
+        "name": "Region"
+       },
+       {
+        "name": "Date"
+       },
+       {
+        "name": "Product"
+       },
+       {
+        "name": "Amount"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "sent": {
+  "session-slicer": "589bf04f79a34b850afd3f6ae800ea42e88c976f83cbff679981e47e543c9868",
+  "session-timeline": "06bcbd842d9e7885919aa4393ec9d2b201da7f9c19f22a1b514a5b9ff9d73995",
+  "session-both": "6c8399b2f44d985d000075089990c5d258eea3640de16444a3db60a9a7bdfb1b",
+  "session-two": "c89652d0f7f4c33e5a4889caf193ddc9f5e56830b01e31a397a332405e73e4da",
+  "session-taken": "401cc226529513f3170d425dddfbb3eefb25a0c389d730fc414d1df2dba35650",
+  "session-again": "97e335fcc806a40cd8ccc29f65ab7ca7ee34cefc4642a4ea716c8a024f26e2d9",
+  "no-place-slicer": "952063ce1bf0b46ad64d804baf461e768377aedea4b0593a6ad6753aefce5556",
+  "no-place-timeline": "952063ce1bf0b46ad64d804baf461e768377aedea4b0593a6ad6753aefce5556",
+  "no-place-cache-beside": "721fc6e05a056b11498d87dc3f39d4b9e8e67bbcc6a93ee920b0691f21c861bc",
+  "no-place-same-cache": "721fc6e05a056b11498d87dc3f39d4b9e8e67bbcc6a93ee920b0691f21c861bc",
+  "book-name": "721fc6e05a056b11498d87dc3f39d4b9e8e67bbcc6a93ee920b0691f21c861bc",
+  "book-name-case": "e7cbab818486ddadaf2ff27949e04ff6058b9524934137f61e3f49ce4de2e631",
+  "book-name-other": "280ce89eba2c00a4da747f85754f24f5be9183224cd91fc8b33cc336cb39626a",
+  "left-out-slicer": "ac5e395f9aa4f524afcdd7ae71b4f073d451cf7bb3bd23ccf3e8d3acd8334507",
+  "left-out-timeline": "b3252a8ce9da7bfe7c1968bbfd2456c6c45d2480a5fcb41db2bc9a6e1f9b49e3",
+  "book-name-sheet": "6a9ece2d0c7d0c180413bcc93d84cb5011887e68c1ce6c0eaf07a52ad810b051",
+  "excel-slicer": "441b8cfe0e0cc152ec375be1b44ac22a33a04334f84894230b1fafd0414a9280",
+  "excel-timeline": "5d264d34f2a813a1bf24fa01829d76387709cfb8afa2322fc9c96676a283d01b",
+  "no-name-slicer": "f1ffe61cc28640bf52fd32ae0a693a6db433fd4d3abe608d3d2472108d353245",
+  "no-name-timeline": "0436691638d7b00905ad0d363384e54cf5776be6c769c9c469c9f75db041e9b1",
+  "placed-apart": "3c585d7c92752e95b13e9405c2d2c6321d93bef05c27cf299a3f115d6a67ae3e"
+ },
+ "answers": {
+  "session-slicer": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "session-timeline": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "session-both": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "session-two": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "session-taken": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "session-again": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "no-place-slicer": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "no-place-timeline": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "no-place-cache-beside": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "no-place-same-cache": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "book-name": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "book-name-case": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "left-out-slicer": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-71658-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "left-out-timeline": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-71658-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "book-name-sheet": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  },
+  "excel-slicer": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 787.09
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "787.09"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 787.09
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "787.09"
+     }
+    }
+   ]
+  },
+  "excel-timeline": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 787.09
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "787.09"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 787.09
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "787.09"
+     }
+    }
+   ]
+  },
+  "placed-apart": {
+   "sources": [],
+   "folder": "C:\\xlcalc\\work\\links-slicer-names-58249-1",
+   "reads": [
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    },
+    {
+     "values": {
+      "D!D2": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {},
+     "local": {},
+     "shown": {
+      "D!D2": "10"
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "book-name-other": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "no-name-slicer": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "no-name-timeline": "-2146827284 Unable to get the Open property of the Workbooks class"
+ }
+}
