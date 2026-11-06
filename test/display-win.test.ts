@@ -19,7 +19,7 @@ import { currentCases } from './stored-cases.js'
 const used = new Set<string>()
 
 // sets of which codes Excel refuses a file for, which the engine need not show (`test/format-refused.test.ts`; `date-e-held`: `test/xlsx-read-small.test.ts`)
-const REFUSALS = new Set(['bare-held', 'bare-literals', 'date-e-held', 'digits-date-letters', 'letters-open', 'letters-open-2', 'refused-held', 'written-held'])
+const REFUSALS = new Set(['bare-held', 'bare-literals', 'date-e-held', 'digits-date-letters', 'letters-open', 'letters-open-2', 'letters-open-3', 'refused-held', 'written-held'])
 const SETS = TAGS.flatMap((locale) => storedSets<StoredDisplay>(`win/display/${localeDir(locale)}`).filter((s) => !REFUSALS.has(s.name)).map((s) => ({ ...s, locale })))
 
 /** A case's cell as Excel for Windows showed it and as the engine shows it. */

@@ -1,7 +1,7 @@
 /**
  * Letters in number format codes against Excel: TEXT by the table of Excel for Mac (`links/letters-text`) and in Excel for Windows, the codes
  * that table has not (`links/letters-held`, `links/letters-more`, a sample on the Mac in `links/letters-mac`), ru-RU's (`sets/text-letters-ru`),
- * and which codes a file opens with (`display/letters-open`, `letters-open-2`). Each set's prediction was committed before Excel ran it, and
+ * and which codes a file opens with (`display/letters-open`, `letters-open-2`, `letters-open-3`). Each set's prediction was committed before Excel ran it, and
  * what it missed is named here; the engine answers as Excel but for `ENGINE_KNOWN`.
  */
 import { readFileSync } from 'node:fs'
@@ -10,6 +10,7 @@ import type { StoredLinks } from '../bench/coverage/links.js'
 import type { DisplayCase } from '../bench/coverage/display/cases.js'
 import { REFUSED_PREDICTED as OPEN_REFUSED } from '../bench/coverage/display/letters-open.js'
 import { REFUSED_PREDICTED as OPEN_2_REFUSED } from '../bench/coverage/display/letters-open-2.js'
+import { REFUSED_PREDICTED as OPEN_3_REFUSED } from '../bench/coverage/display/letters-open-3.js'
 import { buildLinksCases as heldCases } from '../bench/coverage/links/letters-held.js'
 import { buildLinksCases as macCases } from '../bench/coverage/links/letters-mac.js'
 import { buildLinksCases as moreCases } from '../bench/coverage/links/letters-more.js'
@@ -88,12 +89,17 @@ describe("Excel for Mac's table", () => {
 describe.each([
   ['letters-open', OPEN_REFUSED, ['0;[>1]0;[>2]0', '0;0;[>1]0']],
   ['letters-open-2', OPEN_2_REFUSED, []],
+  ['letters-open-3', OPEN_3_REFUSED, []],
 ] as const)('files with the codes of %s', (name, predicted, missed) => {
   const set = json<{ cases: (DisplayCase & { predicted?: { text: string } })[]; rejected: string[]; answers: Record<string, { text: string }> }>(`win/display/${name}.json`)
   const refused = set.cases.filter((c) => set.rejected.includes(c.id))
 
   it('Excel for Windows refused what was predicted, and the codes named', () => {
     expect(refused.map((c) => c.cell.format).sort()).toEqual([...predicted, ...missed].sort())
+  })
+
+  it('formatRefused says the same of each code', () => {
+    for (const c of set.cases) expect(formatRefused(c.cell.format as string), c.cell.format as string).toBe(refused.includes(c))
   })
 
   it('what it opened shows as predicted, and as the engine shows it but a fill, which Windows lays out in pixels', () => {
