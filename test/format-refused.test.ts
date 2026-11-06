@@ -1,6 +1,6 @@
 /**
  * The number format codes `writeXlsx` and `writeKept` refuse, as Excel does not open a file with them (`numfmt/refused.ts`),
- * against the answers of Excel for Windows: `bare-held`, `refused-held` and `written-held` were predicted before Excel ran them.
+ * against the answers of Excel for Windows: `bare-held`, `refused-held`, `written-held`, `letters-open` and `letters-open-2` were predicted before Excel ran them.
  * The rule is strict where it does not know: it may refuse a code Excel opens, which quotes mend, and missed none of these.
  */
 import { readFileSync } from 'node:fs'
@@ -12,7 +12,7 @@ import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { zip } from '../src/xlsx/zip/write.js'
 import { partsOf } from './keep-files.js'
 
-const SETS = ['digits-date-letters', 'bare-literals', 'bare-held', 'refused-held', 'written-held']
+const SETS = ['digits-date-letters', 'bare-literals', 'bare-held', 'refused-held', 'written-held', 'letters-open', 'letters-open-2']
 /** Short codes Excel opens that the rule refuses: nothing that quotes do not mend. */
 const STRICT = ['0 шт/0', '0:', '0 :шт']
 /** Past this a code's size is an estimate with a margin: a literal this long is refused where Excel may still open it. */

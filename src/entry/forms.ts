@@ -71,5 +71,5 @@ export function shows(format: NumberFormat | undefined, what: 'text' | 'pct' | '
   if (format === undefined) return false
   const code = enCode(format)
   const toks: Tok[] = parseFormat(code, EN_CODES)?.[0]?.toks ?? []
-  return toks.some((t) => (what === 'day' ? t.t === 'date' && /^(d|y|m{3})/i.test(t.s) : t.t === what))
+  return toks.some((t) => (what === 'day' ? t.t === 'date' && /^(d|a|y|b|m{3})/i.test(t.s) : t.t === what))
 }

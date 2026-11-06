@@ -111,14 +111,12 @@ describe.each(PLATFORMS)('%s', (_, dir) => {
       expect(compute((await readXlsx(await linkFile(c))).book).sheets[0].cells.A1?.value).toEqual(value(got))
     })
 
-    // `e` beside `b`, a Buddhist year in two digits, or `g`, an era's name and empty here: a known difference (docs/formats.md)
-    const OTHERS = ['e-b', 'b-e', 'e-g', 'g-e']
     describe.each([
       ['date-e-words', wordCases],
       ['date-e-letters', letterCases],
     ] as const)('%s', (name, cases) => {
       const held = json<StoredLinks>(excel(dir, `links/${name}.json`))
-      it.each(cases().cases.filter((c) => !OTHERS.includes(c.id)).map((c) => [c.id, c] as const))('TEXT with %s', async (id, c) => {
+      it.each(cases().cases.map((c) => [c.id, c] as const))('TEXT with %s', async (id, c) => {
         expect(compute((await readXlsx(await linkFile(c))).book).sheets[0].cells.A1?.value).toEqual(value(held.answers[id].reads[1].values['S!A1']))
       })
     })

@@ -14,8 +14,7 @@ const MAX_CODE = 255
 const DATE_LETTERS = /[bdeghmnsy]/i
 /** Excel's numerals of East Asian scripts, which the parser does not read. */
 const DBNUM = /^\[DBNum[1-4]\]$/i
-/** Conditions a code may have (`[<1]0;[<2]0;0`). */
-const MAX_CONDITIONS = 2
+const DBNUM_ANY = /\[DBNum[1-4]\]/gi
 /**
  * What a whole code compiles to at most, in Excel's units, with a margin: Excel opens up to 252 of a lone run of text, and the
  * cost of other tokens is an estimate. A code within the margin is refused though Excel may open it: a code that long is rare, a
@@ -32,9 +31,6 @@ const CODE_COST = 2
 interface Read {
   /** What Excel reads as codes: quoted and escaped text, paddings and fills out; an elapsed time's bracket left as its letter, the others gone. */
   bare: string
-  conditions: number
-  /** Colors and conditions: Excel takes one of each to a section. */
-  twice: boolean
   /** What quoted and escaped text and brackets cost of the section's size. */
   cost: number
   /** Whether it ends in quoted text. */
@@ -43,9 +39,7 @@ interface Read {
 
 /** A section as Excel reads it; null when something does not close or means nothing. */
 function readSection(section: string): Read | null {
-  const out: Read = { bare: '', conditions: 0, twice: false, cost: 0, quotedLast: false }
-  let colors = 0
-  let conditions = 0
+  const out: Read = { bare: '', cost: 0, quotedLast: false }
   for (let i = 0; i < section.length; i++) {
     const ch = section[i]
     if (ch === '"') {
@@ -62,23 +56,15 @@ function readSection(section: string): Read | null {
       const bracket = section.slice(i, j + 1)
       if (j < 0 || (parseFormat(bracket, EN_CODES) === null && !DBNUM.test(bracket))) return null
       if (/^\[[hms]+\]$/i.test(bracket)) out.bare += 'h'
-      if (/^\[[<>=]/.test(bracket)) conditions++
-      else if (/^\[[a-z]/i.test(bracket) && !/^\[[hms]+\]$/i.test(bracket)) colors++
       out.cost += BRACKET_COST
       i = j
     } else out.bare += ch
   }
-  out.conditions = conditions
-  out.twice = colors > 1 || conditions > 1
   return out
 }
 
 /** Whether Excel reads the codes of a section, by its place among the code's sections. */
 function sectionReads(found: string, last: boolean): boolean {
-  // lower-case, this is a year
-  if (/^E+$/.test(found)) return false
-  const exp = /E[+-]/.exec(found)
-  if (exp && !(/[0#?]/.test(found.slice(0, exp.index)) && /[0#?]/.test(found.slice(exp.index + 2)))) return false
   const general = /General/i.test(found)
   const ampm = /AM\/PM|A\/P/i.exec(found)
   if (ampm && /[0#?]/.test(found.slice(ampm.index + ampm[0].length))) return false
@@ -118,15 +104,11 @@ export function formatRefused(format: NumberFormat): boolean {
   if (typeof format === 'number') return false
   const code = format
   if (code.length > MAX_CODE) return true
-  const sections = splitSections(code)
-  if (sections.length > 4) return true
-  const read = sections.map(readSection)
+  // what TEXT answers #VALUE! for whatever the value, a file does not open with (`display/letters-open`, `letters-open-2`: all 125 codes)
+  if (parseFormat(code.replace(DBNUM_ANY, ''), EN_CODES) === null) return true
+  const read = splitSections(code).map(readSection)
   if (read.some((r) => r === null)) return true
   const reads = read as Read[]
-  const conditions = reads.reduce((n, r) => n + r.conditions, 0)
-  if (conditions > MAX_CONDITIONS || reads.some((r) => r.twice)) return true
   if (reads.reduce((n, r) => n + sectionCost(r), 0) > MAX_COST) return true
-  // a fourth section is for text alone (`0;-0;0;@`)
-  if (reads.length === 4 && /[0#?]/.test(reads[3].bare)) return true
   return !reads.every((r, i) => sectionReads(r.bare, i === reads.length - 1))
 }

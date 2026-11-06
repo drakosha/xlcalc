@@ -8,7 +8,7 @@
 import { momentOf, ymd } from '../dates.js'
 import { positional } from './general.js'
 import { hijri } from './hijri.js'
-import type { Ph, Section, Tok } from './parse.js'
+import { dated, misplaced, subseconds, type Section, type Tok } from './parse.js'
 import { plain, type Names, type Style } from './style.js'
 
 /** The first serial past 9999-12-31. */
@@ -17,35 +17,15 @@ const END = 2_958_466
 const two = (n: number) => String(n).padStart(2, '0')
 
 /**
- * The second's decimals of a date's code as [MS-XLS] 2.4.126 gives them (`NFPartSubSecond`, the grammar of ECMA-376
- * 18.8.31's codes): a point and one to three zeros anywhere after the first date or time code (`ss.00`, `dd .000`,
- * `yy.00.00`, `h AM/PM.0`), by the point's position and its zeros.
- */
-function subseconds(toks: Tok[]): Map<number, number> {
-  const out = new Map<number, number>()
-  let dated = false
-  for (let i = 0; i < toks.length; i++) {
-    const t = toks[i]
-    if (t.t === 'date' || t.t === 'elapsed') dated = true
-    else if ((t.t === 'dot' || (t.t === 'lit' && t.point)) && dated && toks[i + 1]?.t === 'ph' && (toks[i + 1] as Ph).c === '0') {
-      let k = 0
-      while (toks[i + 1 + k]?.t === 'ph' && (toks[i + 1 + k] as Ph).c === '0') k++
-      out.set(i, k)
-      i += k
-    }
-  }
-  return out
-}
-
-/**
- * Whether the `m` at `i` means minutes: after hours or before seconds, across other tokens, as Microsoft's guide
- * to number formats says, and before a second's decimals (`mm.00`, which the guide leaves to months).
+ * Whether the `m` at `i` means minutes: after hours, whatever date's codes stand between (`h dd mm`, the set `links/letters-more`), or before
+ * seconds, across tokens other than a date's code but an era's (`mm g ss`), as Microsoft's guide to number formats says, and before a
+ * second's decimals (`mm.00`, which the guide leaves to months).
  */
 export function minutes(toks: Tok[], i: number): boolean {
-  const unit = (t: Tok | undefined) => (t?.t === 'date' || t?.t === 'elapsed' ? t.s[0] : undefined)
-  const prev = unit(toks.slice(0, i).findLast((t) => t.t === 'date' || t.t === 'elapsed'))
+  const unit = (t: Tok | undefined) => (dated(t) ? t.s[0] : undefined)
+  const prev = unit(toks.slice(0, i).findLast((t) => 'hmns'.includes(unit(t) ?? '-')))
   const subs = subseconds(toks)
-  const j = toks.findIndex((t, k) => k > i && (t.t === 'date' || t.t === 'elapsed' || subs.has(k)))
+  const j = toks.findIndex((t, k) => k > i && ((unit(t) ?? 'g') !== 'g' || subs.has(k)))
   return prev === 'h' || (j > 0 && (subs.has(j) || unit(toks[j]) === 's'))
 }
 
@@ -55,7 +35,7 @@ export function minutes(toks: Tok[], i: number): boolean {
  */
 export function dayOrTime(toks: Tok[]): 'date' | 'time' | undefined {
   const day = (t: Tok, i: number) => t.t === 'date' && !(t.s[0] === 'h' || t.s[0] === 's' || (t.s[0] === 'm' && minutes(toks, i)))
-  return toks.some(day) ? 'date' : toks.some((t) => t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm') ? 'time' : undefined
+  return toks.some(day) ? 'date' : toks.some((t) => dated(t) || t.t === 'ampm') ? 'time' : undefined
 }
 
 /** What a date section's tokens give whatever the value: read once per section, as a column of dates shows one section. */
@@ -64,7 +44,7 @@ interface Plan {
   elapsedOnly: boolean
   /** The second's decimals (`subseconds`). */
   subs: Map<number, number>
-  /** A digit placeholder, a percent or an exponent where a date's code has no place for one. */
+  /** A digit placeholder, a percent or an exponent where a date's code has no place for one, which comes to a section of `AM/PM` alone here. */
   invalid: boolean
   /** The most decimals of a second shown. */
   k: number
@@ -80,13 +60,10 @@ function planOf(toks: Tok[]): Plan {
   let p = PLANS.get(toks)
   if (p) return p
   const subs = subseconds(toks)
-  // a digit placeholder other than the second's decimals, a percent or an exponent has no place in a date's code
-  // (`NFDateTime`), which is then invalid: TEXT(1,"mm###") is #VALUE!, and so is a fourth zero of decimals
-  const decimal = (i: number) => [...subs].some(([at, n]) => i > at && i <= at + Math.min(3, n))
   p = {
     elapsedOnly: !toks.some((t) => t.t === 'date' || t.t === 'ampm'),
     subs,
-    invalid: toks.some((t, i) => (t.t === 'ph' && !decimal(i)) || t.t === 'pct' || t.t === 'exp'),
+    invalid: misplaced(toks, subs),
     // the precision of the time: whole seconds, or the most decimals of a second the code shows
     k: Math.max(0, ...[...subs.values()].map((n) => Math.min(3, n))),
     ampm: toks.some((t) => t.t === 'ampm'),
@@ -127,8 +104,11 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
     } else if (t.t === 'date') {
       const c = t.s[0]
       const n = t.s.length
-      if (c === 'y') out += n <= 2 ? two(Y % 100) : String(Y)
-      else if (c === 'd') out += n === 1 ? String(D) : n === 2 ? two(D) : n === 3 ? names.daysShort[W] : names.days[W]
+      if (c === 'g') continue
+      if (c === 'y' || c === 'b') {
+        const year = c === 'b' ? Y + 543 : Y
+        out += n <= 2 ? two(year % 100) : String(year)
+      } else if (c === 'd' || c === 'a') out += n === 1 ? String(D) : n === 2 ? two(D) : n === 3 ? names.daysShort[W] : names.days[W]
       else if (c === 'h') {
         const hh = ampm ? h % 12 || 12 : h
         out += n === 1 ? String(hh) : two(hh)
