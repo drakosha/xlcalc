@@ -28,8 +28,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
-      - run: npm test
-      - run: npm run test:dist
+      # Tests also create worker pools; leave CPU capacity for those on the hosted VM.
+      - run: npm test -- --maxWorkers=2
+      - run: npm run test:dist -- --maxWorkers=2
 
   package:
     runs-on: ubuntu-latest
