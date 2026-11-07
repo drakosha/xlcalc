@@ -28,6 +28,8 @@ const TIMED = [
   'test/worker-browser.test.ts',
   'test/worker-pack.test.ts',
   'test/xlsx-budget.test.ts',
+  'test/xlsx-keep-corpus.test.ts',
+  'test/xlsx-keep-inspect.test.ts',
 ]
 
 export default defineConfig({
