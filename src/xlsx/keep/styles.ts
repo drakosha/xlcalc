@@ -122,6 +122,13 @@ export class KeptStyles {
         if (i !== undefined) return i
         const numFmt = format === '' ? 0 : this.numFmt(format)
         const font = s?.font ? this.add('fonts', fontXml(s.font, this.base)) : 0
+        if (s?.fill) {
+          // Excel reserves indices 0 and 1 even when the file omits them (MS-OI29500 2.1.705).
+          // Append missing defaults before a solid fill; never renumber the file's existing entries.
+          for (let n = this.counts.fills + this.added.fills.length; n < 2; n++) {
+            this.add('fills', `<fill><patternFill patternType="${n === 0 ? 'none' : 'gray125'}"/></fill>`)
+          }
+        }
         const fill = s?.fill ? this.add('fills', fillXml(s.fill)) : 0
         const border = s?.border ? this.add('borders', borderXml(s.border)) : 0
         i = this.add('cellXfs', xfXml(numFmt, font, fill, border, s, button))

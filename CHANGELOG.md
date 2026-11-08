@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.88.1 (2026-11-08)
+
+Internal release; not published to npm.
+
+- `writeKept` adds Excel's reserved fills before a new solid fill when the original styles part has fewer than two fill entries. The requested color survives reopening; existing fill indices stay unchanged, and opening a file without edits keeps its bytes. The writer previously placed colors at reserved indices 0 or 1, which Excel ignores and the reader has treated as reserved since 0.87.0.
+
 ## 0.88.0 (2026-11-07)
 
 Internal release; not published to npm.
