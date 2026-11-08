@@ -2,13 +2,9 @@
 
 ## 0.88.1 (2026-11-08)
 
-Internal release; not published to npm.
-
 - `writeKept` adds Excel's reserved fills before a new solid fill when the original styles part has fewer than two fill entries. The requested color survives reopening; existing fill indices stay unchanged, and opening a file without edits keeps its bytes. The writer previously placed colors at reserved indices 0 or 1, which Excel ignores and the reader has treated as reserved since 0.87.0.
 
 ## 0.88.0 (2026-11-07)
-
-Internal release; not published to npm.
 
 Added:
 
@@ -23,8 +19,6 @@ Changed:
 Checked against 370 corrected Windows Excel filter round trips and the character fonts of 26 cells through both writers. The earlier 25 prediction misses remain recorded in their original set.
 
 ## 0.87.1 (2026-11-06)
-
-Internal release; not published to npm.
 
 Fixed, a table's slicer, against books Excel for Windows made and saved, which the tests had none of:
 
@@ -710,7 +704,7 @@ Documentation:
 
 ## 0.54.2 (2026-10-20)
 
-The first public release. The versions below it were internal builds used by our own applications and were not published to npm; their entries are kept as written, and the README describes the package as it is now.
+The first public release. The versions below it were internal builds used by our own applications and were not published to npm; their entries are kept below, and the README describes the package as it is now.
 
 What it includes:
 
@@ -732,7 +726,7 @@ The internal build of the first public release, without the README's line on its
 
 ## 0.53.1 (2026-10-20)
 
-Internal release; not published to npm. A sparse sheet's memory, and a comparison with other libraries in the README. The synthetic book's values and hashes are as in 0.53.0.
+A sparse sheet's memory, and a comparison with other libraries in the README. The synthetic book's values and hashes are as in 0.53.0.
 
 Fixed:
 
@@ -744,7 +738,7 @@ Documentation:
 
 ## 0.53.0 (2026-10-20)
 
-Internal release; not published to npm. The engine's English messages in plain English. The synthetic book's values and hashes are as in 0.52.1.
+The engine's English messages in plain English. The synthetic book's values and hashes are as in 0.52.1.
 
 Changed:
 
@@ -752,7 +746,7 @@ Changed:
 
 ## 0.52.1 (2026-10-19)
 
-Internal release; not published to npm. Workbooks open faster. The synthetic book's values and hashes are as in 0.52.0.
+Workbooks open faster. The synthetic book's values and hashes are as in 0.52.0.
 
 Changed:
 
@@ -760,7 +754,7 @@ Changed:
 
 ## 0.52.0 (2026-10-19)
 
-Internal release; not published to npm. `liveWorkbook` is `liveBook`, and the API reference in idiomatic English. The synthetic book's values and hashes are as in 0.51.1.
+`liveWorkbook` is `liveBook`, and the API reference in idiomatic English. The synthetic book's values and hashes are as in 0.51.1.
 
 Breaking changes:
 
@@ -772,7 +766,7 @@ Documentation:
 
 ## 0.51.1 (2026-10-19)
 
-Internal release; not published to npm. The code in modules by what they do, and the guides in idiomatic English. The synthetic book's values and hashes are as in 0.51.0, and so are the answers, the refusals of wrong input and the public types.
+The code in modules by what they do, and the guides in idiomatic English. The synthetic book's values and hashes are as in 0.51.0, and so are the answers, the refusals of wrong input and the public types.
 
 Changed:
 
@@ -781,7 +775,7 @@ Changed:
 
 ## 0.51.0 (2026-10-19)
 
-Internal release; not published to npm. `readXlsx` within bounds of memory, the system's date and time tags and the calendar prefixes of number formats as Excel shows them, the fill handle over hidden rows, measured in Excel for Mac and Windows. The synthetic book's values and hashes are as in 0.50.5.
+`readXlsx` within bounds of memory, the system's date and time tags and the calendar prefixes of number formats as Excel shows them, the fill handle over hidden rows, measured in Excel for Mac and Windows. The synthetic book's values and hashes are as in 0.50.5.
 
 Added:
 
@@ -797,7 +791,7 @@ Fixed:
 
 ## 0.50.5 (2026-10-19)
 
-Internal release; not published to npm. The database functions faster on edits, and a quick start. The synthetic book's values and hashes are as in 0.50.4.
+The database functions faster on edits, and a quick start. The synthetic book's values and hashes are as in 0.50.4.
 
 Changed:
 
@@ -810,7 +804,7 @@ Documentation:
 
 ## 0.50.4 (2026-10-18)
 
-Internal release; not published to npm. A sheet's values in groups of rows. The synthetic book's values and hashes are as in 0.50.3.
+A sheet's values in groups of rows. The synthetic book's values and hashes are as in 0.50.3.
 
 Changed:
 
@@ -818,7 +812,7 @@ Changed:
 
 ## 0.50.3 (2026-10-18)
 
-Internal release; not published to npm. Conditional formats' code within memory, and SUMIFS and its family faster on edits. The synthetic book's values and hashes are as in 0.50.2.
+Conditional formats' code within memory, and SUMIFS and its family faster on edits. The synthetic book's values and hashes are as in 0.50.2.
 
 Changed:
 
@@ -828,7 +822,7 @@ Changed:
 
 ## 0.50.2 (2026-10-18)
 
-Internal release; not published to npm. Structure operations and their undo with less work. The synthetic book's values and hashes are as in 0.50.1.
+Structure operations and their undo with less work. The synthetic book's values and hashes are as in 0.50.1.
 
 Changed:
 
@@ -837,7 +831,7 @@ Changed:
 
 ## 0.50.1 (2026-10-18)
 
-Internal release; not published to npm. A closed session's memory. The synthetic book's values and hashes are as in 0.50.0.
+A closed session's memory. The synthetic book's values and hashes are as in 0.50.0.
 
 Fixed:
 
@@ -847,7 +841,7 @@ A session closed at once after it opened can look held for a few milliseconds: t
 
 ## 0.50.0 (2026-10-18)
 
-Internal release; not published to npm. Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md) as it was then, in the history of that file). The synthetic book's values and hashes are as in 0.49.1.
+Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md) as it was then, in the history of that file). The synthetic book's values and hashes are as in 0.49.1.
 
 Added:
 
@@ -863,7 +857,7 @@ Changed:
 
 ## 0.49.1 (2026-10-17)
 
-Internal release; not published to npm. The Sort command's order of errors, measured in Excel. The synthetic book's values and hashes are as in 0.49.0.
+The Sort command's order of errors, measured in Excel. The synthetic book's values and hashes are as in 0.49.0.
 
 Fixed:
 
@@ -871,7 +865,7 @@ Fixed:
 
 ## 0.49.0 (2026-10-17)
 
-Internal release; not published to npm. Excel's answers in the cells of IronCalc's xlsx tests where the library answered otherwise: 459 of 461 cells now answer as Excel for Mac, each rule checked by a set of cases in Excel for Mac and Windows (25 sets, 570 cases). The synthetic book's values and hashes are as in 0.48.0.
+Excel's answers in the cells of IronCalc's xlsx tests where the library answered otherwise: 459 of 461 cells now answer as Excel for Mac, each rule checked by a set of cases in Excel for Mac and Windows (25 sets, 570 cases). The synthetic book's values and hashes are as in 0.48.0.
 
 Added:
 
@@ -899,7 +893,7 @@ Fixed, as Excel answers:
 
 ## 0.48.0 (2026-10-17)
 
-Internal release; not published to npm. Faster reading and batches of edits, measured against other libraries. The synthetic book's values and hashes are as in 0.47.0.
+Faster reading and batches of edits, measured against other libraries. The synthetic book's values and hashes are as in 0.47.0.
 
 Changed:
 
@@ -913,7 +907,7 @@ Fixed:
 
 ## 0.47.0 (2026-10-16)
 
-Internal release; not published to npm. `readCells` in order and faster, and the docs' examples run. The synthetic book's values and hashes are as in 0.46.0.
+`readCells` in order and faster, and the docs' examples run. The synthetic book's values and hashes are as in 0.46.0.
 
 Changed:
 
@@ -923,7 +917,7 @@ Changed:
 
 ## 0.46.0 (2026-10-16)
 
-Internal release; not published to npm. A grid's outline commands and sorting without the engine. The synthetic book's values and hashes are as in 0.45.1.
+A grid's outline commands and sorting without the engine. The synthetic book's values and hashes are as in 0.45.1.
 
 Added:
 
@@ -936,7 +930,7 @@ Changed:
 
 ## 0.45.1 (2026-10-16)
 
-Internal release; not published to npm. The functions' arguments once in each bundle. The synthetic book's values and hashes are as in 0.45.0.
+The functions' arguments once in each bundle. The synthetic book's values and hashes are as in 0.45.0.
 
 Fixed:
 
@@ -944,7 +938,7 @@ Fixed:
 
 ## 0.45.0 (2026-10-16)
 
-Internal release; not published to npm. What a grid needs without the engine. The synthetic book's values and hashes are as in 0.44.2.
+What a grid needs without the engine. The synthetic book's values and hashes are as in 0.44.2.
 
 Added:
 
@@ -959,7 +953,7 @@ Changed:
 
 ## 0.44.2 (2026-10-16)
 
-Internal release; not published to npm. A session lets go of the state it built before. The synthetic book's values and hashes are as in 0.44.1.
+A session lets go of the state it built before. The synthetic book's values and hashes are as in 0.44.1.
 
 Fixed:
 
@@ -967,7 +961,7 @@ Fixed:
 
 ## 0.44.1 (2026-10-16)
 
-Internal release; not published to npm. Point mode by the rule of a formula closed on Return. The synthetic book's values and hashes are as in 0.44.0.
+Point mode by the rule of a formula closed on Return. The synthetic book's values and hashes are as in 0.44.0.
 
 Fixed:
 
@@ -979,7 +973,7 @@ Changed:
 
 ## 0.44.0 (2026-10-16)
 
-Internal release; not published to npm. A formula left open closed as Excel closes it on Return. The synthetic book's values and hashes are as in 0.43.0.
+A formula left open closed as Excel closes it on Return. The synthetic book's values and hashes are as in 0.43.0.
 
 Added:
 
@@ -994,7 +988,7 @@ Measured: on the Mac's keyboard in Excel 16.113 and 16.114 for Mac, en-US and ru
 
 ## 0.43.0 (2026-10-15)
 
-Internal release; not published to npm. The texts of the tips apart from the engine. The synthetic book's values and hashes are as in 0.42.0.
+The texts of the tips apart from the engine. The synthetic book's values and hashes are as in 0.42.0.
 
 Added:
 
@@ -1008,7 +1002,7 @@ Changed:
 
 ## 0.42.0 (2026-10-15)
 
-Internal release; not published to npm. Live objects of a session's sheets and cells; a function's category and what it does. The synthetic book's values and hashes are as in 0.41.0.
+Live objects of a session's sheets and cells; a function's category and what it does. The synthetic book's values and hashes are as in 0.41.0.
 
 Added:
 
@@ -1022,7 +1016,7 @@ Changed:
 
 ## 0.41.0 (2026-10-15)
 
-Internal release; not published to npm. The call a caret stands in. The synthetic book's values and hashes are as in 0.40.0.
+The call a caret stands in. The synthetic book's values and hashes are as in 0.40.0.
 
 Added:
 
@@ -1030,7 +1024,7 @@ Added:
 
 ## 0.40.0 (2026-10-15)
 
-Internal release; not published to npm. The tip of a function's arguments. The synthetic book's values and hashes are as in 0.39.0.
+The tip of a function's arguments. The synthetic book's values and hashes are as in 0.39.0.
 
 Added:
 
@@ -1038,7 +1032,7 @@ Added:
 
 ## 0.39.0 (2026-10-14)
 
-Internal release; not published to npm. The fill handle. The synthetic book's values and hashes are as in 0.38.0.
+The fill handle. The synthetic book's values and hashes are as in 0.38.0.
 
 Added:
 
@@ -1048,7 +1042,7 @@ Measured: in Excel for Windows, three sets each predicted before Excel ran it (`
 
 ## 0.38.0 (2026-10-14)
 
-Internal release; not published to npm. Point mode with the caret anywhere. The synthetic book's values and hashes are as in 0.37.0.
+Point mode with the caret anywhere. The synthetic book's values and hashes are as in 0.37.0.
 
 Changed:
 
@@ -1062,7 +1056,7 @@ Measured: on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU, three sets
 
 ## 0.37.0 (2026-10-14)
 
-Internal release; not published to npm. Merging cells as Excel's commands do. The synthetic book's values and hashes are as in 0.36.0.
+Merging cells as Excel's commands do. The synthetic book's values and hashes are as in 0.36.0.
 
 Added:
 
@@ -1076,7 +1070,7 @@ Measured: in Excel for Windows through the object model (`Range.Merge`, `UnMerge
 
 ## 0.36.0 (2026-10-14)
 
-Internal release; not published to npm. What an arrow does in formula text. The synthetic book's values and hashes are as in 0.35.0.
+What an arrow does in formula text. The synthetic book's values and hashes are as in 0.35.0.
 
 Added:
 
@@ -1086,7 +1080,7 @@ Measured: on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU, three sets
 
 ## 0.35.0 (2026-10-14)
 
-Internal release; not published to npm. Each change of the book told to subscribers. The synthetic book's values and hashes are as in 0.34.0.
+Each change of the book told to subscribers. The synthetic book's values and hashes are as in 0.34.0.
 
 Added:
 
@@ -1096,7 +1090,7 @@ Measured: a paste of text with quotes in ru-RU in Excel for Windows (12 cases), 
 
 ## 0.34.0 (2026-10-13)
 
-Internal release; not published to npm. A selection's clipboard text from the session; a width or height set by hand leaves AutoFit. The synthetic book's values and hashes are as in 0.33.0.
+A selection's clipboard text from the session; a width or height set by hand leaves AutoFit. The synthetic book's values and hashes are as in 0.33.0.
 
 Added:
 
@@ -1109,7 +1103,7 @@ Fixed:
 
 ## 0.33.0 (2026-10-13)
 
-Internal release; not published to npm. Row heights as Excel fits them, wrapped text on entry, the clipboard's plain text, the saved active sheet and view. The synthetic book's values and hashes are as in 0.32.1.
+Row heights as Excel fits them, wrapped text on entry, the clipboard's plain text, the saved active sheet and view. The synthetic book's values and hashes are as in 0.32.1.
 
 Added:
 
@@ -1129,7 +1123,7 @@ Measured: row heights in Excel 16.113 for Mac and Excel for Windows (the step `r
 
 ## 0.32.1 (2026-10-13)
 
-Internal release; not published to npm. The synthetic book's values and hashes are as in 0.32.0.
+The synthetic book's values and hashes are as in 0.32.0.
 
 Fixed:
 
@@ -1137,7 +1131,7 @@ Fixed:
 
 ## 0.32.0 (2026-10-13)
 
-Internal release; not published to npm. A bound on the cells one edit writes. The synthetic book's values and hashes are as in 0.31.0.
+A bound on the cells one edit writes. The synthetic book's values and hashes are as in 0.31.0.
 
 Added:
 
@@ -1151,7 +1145,7 @@ Measured: every bounded edit refused one under its count and taken at it, in eve
 
 ## 0.31.0 (2026-10-13)
 
-Internal release; not published to npm. Where Ctrl+arrow lands. The synthetic book's values and hashes are as in 0.30.0.
+Where Ctrl+arrow lands. The synthetic book's values and hashes are as in 0.30.0.
 
 Added:
 
@@ -1161,7 +1155,7 @@ Measured: Excel for Windows through COM by a new step of the harness (`end`), th
 
 ## 0.30.0 (2026-10-13)
 
-Internal release; not published to npm. Searches that cost only their matching, and Excel's Replace. The synthetic book's values and hashes are as in 0.29.0.
+Searches that cost only their matching, and Excel's Replace. The synthetic book's values and hashes are as in 0.29.0.
 
 Added:
 
@@ -1178,7 +1172,7 @@ Measured: Excel for Windows through COM: Find after a cell by two sets (53 cases
 
 ## 0.29.0 (2026-10-13)
 
-Internal release; not published to npm. What Excel writes for an item picked from a dropdown list. The synthetic book's values and hashes are as in 0.28.0.
+What Excel writes for an item picked from a dropdown list. The synthetic book's values and hashes are as in 0.28.0.
 
 Added:
 
@@ -1188,7 +1182,7 @@ Measured: Excel for Mac 16.113 on the keyboard, the new action `pick` of the har
 
 ## 0.28.0 (2026-10-13)
 
-Internal release; not published to npm. Edits over a large look layer as fast as over a few cells, and Excel's own text for a rule's alert. The synthetic book's values and hashes are as in 0.27.0.
+Edits over a large look layer as fast as over a few cells, and Excel's own text for a rule's alert. The synthetic book's values and hashes are as in 0.27.0.
 
 Changed:
 
@@ -1200,7 +1194,7 @@ Measured: each edit of a book with looks, its undo and redo against the same boo
 
 ## 0.27.0 (2026-10-13)
 
-Internal release; not published to npm. A circular reference without iteration holds its values as Excel does. The synthetic book's values and hashes are as in 0.26.0; a book with a circular reference computes otherwise, and its `inputHash` changes once its cells hold values.
+A circular reference without iteration holds its values as Excel does. The synthetic book's values and hashes are as in 0.26.0; a book with a circular reference computes otherwise, and its `inputHash` changes once its cells hold values.
 
 Added:
 
@@ -1219,7 +1213,7 @@ Measured: Excel 16 for Windows through COM, the workbook sets `cycles` (21 books
 
 ## 0.26.0 (2026-10-12)
 
-Internal release; not published to npm. Cells formatted across a sheet without an object per cell, and Excel's grouping commands. The synthetic book's values and hashes are as in 0.25.0; a book read from xlsx whose cells hold a look alone has a new `inputHash`.
+Cells formatted across a sheet without an object per cell, and Excel's grouping commands. The synthetic book's values and hashes are as in 0.25.0; a book read from xlsx whose cells hold a look alone has a new `inputHash`.
 
 Added:
 
@@ -1238,7 +1232,7 @@ Measured: the layer by equivalence, a book with looks and the same book with an 
 
 ## 0.25.0 (2026-10-12)
 
-Internal release; not published to npm. Excel's Find in a session, and two numeric rules of Excel that models depend on. The synthetic book's values and hashes are as in 0.24.0.
+Excel's Find in a session, and two numeric rules of Excel that models depend on. The synthetic book's values and hashes are as in 0.24.0.
 
 Added:
 
@@ -1257,7 +1251,7 @@ Measured: Find by a new step of the Windows harness (`Range.Find` and `FindNext`
 
 ## 0.24.0 (2026-10-12)
 
-Internal release; not published to npm. A cell edited in place, as Excel reads it. The synthetic book's values and hashes are as in 0.23.0.
+A cell edited in place, as Excel reads it. The synthetic book's values and hashes are as in 0.23.0.
 
 Added:
 
@@ -1271,7 +1265,7 @@ Measured: Excel for Mac 16.113 in en-US and ru-RU, on the keyboard. The new step
 
 ## 0.23.0 (2026-10-12)
 
-Internal release; not published to npm. Calls for a grid or an agent working on a live session, cheaper incremental edits, and formula text over many linked sheets. The synthetic book's values and hashes are as in 0.22.2.
+Calls for a grid or an agent working on a live session, cheaper incremental edits, and formula text over many linked sheets. The synthetic book's values and hashes are as in 0.22.2.
 
 Added, in every kind of session (synchronous, `createInlineCalc`, the pool) and both execution modes ([docs/live-books.md](docs/live-books.md)):
 
@@ -1293,7 +1287,7 @@ Measured: the new calls by their tests in every kind of session, and a random se
 
 ## 0.22.2 (2026-10-12)
 
-Internal release; not published to npm. A window's formula text over links to other workbooks as fast as without them. The synthetic book's values and hashes are as in 0.22.1.
+A window's formula text over links to other workbooks as fast as without them. The synthetic book's values and hashes are as in 0.22.1.
 
 Fixed:
 
@@ -1301,7 +1295,7 @@ Fixed:
 
 ## 0.22.1 (2026-10-12)
 
-Internal release; not published to npm. The ribbon's Number Format box in ru-RU as Excel for Windows shows it. The synthetic book's values and hashes are as in 0.22.0.
+The ribbon's Number Format box in ru-RU as Excel for Windows shows it. The synthetic book's values and hashes are as in 0.22.0.
 
 Changed:
 
@@ -1311,7 +1305,7 @@ Measured: a new Windows step, `ribbon`, reads the box by UI Automation in a sess
 
 ## 0.22.0 (2026-10-12)
 
-Internal release; not published to npm. Links to other workbooks: a book that reads other workbooks computes from the values Excel stores of them in the file, as Excel computes a file it opens without updating its links, and the ribbon's Number Format box without the engine. The synthetic book's values and hashes are as in 0.21.2.
+Links to other workbooks: a book that reads other workbooks computes from the values Excel stores of them in the file, as Excel computes a file it opens without updating its links, and the ribbon's Number Format box without the engine. The synthetic book's values and hashes are as in 0.21.2.
 
 Added:
 
@@ -1330,7 +1324,7 @@ Measured: the step `links` of the harnesses (Excel for Mac with `update links do
 
 ## 0.21.2 (2026-10-12)
 
-Internal release; not published to npm. Faster incremental edits and less retained engine storage, with the same public API, values and synthetic hashes. The reproducible HyperFormula 3.5.0 comparison and memory controls are in `bench/hyperformula/README.md`.
+Faster incremental edits and less retained engine storage, with the same public API, values and synthetic hashes. The reproducible HyperFormula 3.5.0 comparison and memory controls are in `bench/hyperformula/README.md`.
 
 Changed:
 
@@ -1343,15 +1337,13 @@ Measured in Node 26.7.0, medians of five fresh-process pairs: eval retains 90.99
 
 ## 0.21.1 (2026-10-12)
 
-Internal release; not published to npm.
-
 Fixed:
 
 - `setCellTexts` and `previewCellTexts` with `refuseInvalid` refuse a batch by the strictest rule its values break (stop, then warning, then information; the first cell of that style), not by its first cell. A batch with a warning before a stop was refused by the warning, and a host that showed it and kept the value called again without the option, writing the value the stop does not take.
 
 ## 0.21.0 (2026-10-12)
 
-Internal release; not published to npm. What the sheet component asked for as it moves to the final API: a typed value a rule of data validation does not take refused before it is written, a formula shown with a sheet in quotes only where Excel puts them, an empty cell of a formatted row or column in a window, the issues of xlsx in the book's language, and no string `xlcalc` in the subpaths without the engine. Values and hashes are as in 0.20.0.
+What the sheet component asked for as it moves to the final API: a typed value a rule of data validation does not take refused before it is written, a formula shown with a sheet in quotes only where Excel puts them, an empty cell of a formatted row or column in a window, the issues of xlsx in the book's language, and no string `xlcalc` in the subpaths without the engine. Values and hashes are as in 0.20.0.
 
 Added:
 
@@ -1370,7 +1362,7 @@ Known differences: a reference across sheets where one end needs quotes (`'S1:S3
 
 ## 0.20.0 (2026-10-11)
 
-Internal release; not published to npm. A snapshot is a copy in every kind of session, and an edit's changes say when a note or a hyperlink changed. Where two copies of one piece of logic answered differently, Excel for Mac and for Windows were asked and the copies made one; undoing the deletion of a large sheet is faster. The synthetic book's values and hashes are as in 0.19.0; values change only where a copy disagreed with Excel.
+A snapshot is a copy in every kind of session, and an edit's changes say when a note or a hyperlink changed. Where two copies of one piece of logic answered differently, Excel for Mac and for Windows were asked and the copies made one; undoing the deletion of a large sheet is faster. The synthetic book's values and hashes are as in 0.19.0; values change only where a copy disagreed with Excel.
 
 Added:
 
@@ -1398,7 +1390,7 @@ Excel harnesses: the steps `cond`, `valid` and `parts` send a case's file change
 
 ## 0.19.0 (2026-10-11)
 
-Internal release; not published to npm. The old names of the API are gone, so that what our applications forget to move fails at once; a paste and an entry into a selection as Excel takes them; a saved version's conditional formats; structure operations faster. Values and hashes are as in 0.18.0.
+The old names of the API are gone, so that what our applications forget to move fails at once; a paste and an entry into a selection as Excel takes them; a saved version's conditional formats; structure operations faster. Values and hashes are as in 0.18.0.
 
 Breaking changes (each a line of `docs/migration.md`, which now says what an old name gives):
 
@@ -1427,7 +1419,7 @@ Excel harnesses: a step `ui` reads the formula bar and pastes and enters text on
 
 ## 0.18.0 (2026-10-11)
 
-Internal release; not published to npm. What our applications still wrote themselves over 0.17, added: a window over a saved version without a session, typing into many cells at once, helpers for styles, lines and formula text without a session, and `xlcalc/text` for a browser without the engine. Repeated logic of the engine and the Excel harnesses is in shared helpers. Values, hashes and the files written are as in 0.17.0; nothing that worked is called otherwise.
+What our applications still wrote themselves over 0.17, added: a window over a saved version without a session, typing into many cells at once, helpers for styles, lines and formula text without a session, and `xlcalc/text` for a browser without the engine. Repeated logic of the engine and the Excel harnesses is in shared helpers. Values, hashes and the files written are as in 0.17.0; nothing that worked is called otherwise.
 
 Added:
 
@@ -1451,7 +1443,7 @@ Internal: the duplicates a scan found are in shared helpers: numbers with the fi
 
 ## 0.17.0 (2026-10-11)
 
-Internal release; not published to npm. The API made simpler before publication, in one go so that its users change once: a session for a grid (typing text into a cell, a window with its styles resolved, editing that keeps a cell's look, a style by its fields), one shape of the answer of every edit, xlsx with a snapshot, helpers without the engine, locales as modules, the new names with the old ones as deprecated synonyms. `docs/migration.md` lists every rename and every call that answers otherwise, a line each. Values and hashes are as in 0.16.3; `inputHash` too, whichever name a book gives the number format.
+The API made simpler before publication, in one go so that its users change once: a session for a grid (typing text into a cell, a window with its styles resolved, editing that keeps a cell's look, a style by its fields), one shape of the answer of every edit, xlsx with a snapshot, helpers without the engine, locales as modules, the new names with the old ones as deprecated synonyms. `docs/migration.md` lists every rename and every call that answers otherwise, a line each. Values and hashes are as in 0.16.3; `inputHash` too, whichever name a book gives the number format.
 
 Breaking changes (each a line of `docs/migration.md`):
 
@@ -1499,7 +1491,7 @@ Known differences (README): a formula pasted into part of a calculated column, w
 
 ## 0.16.3 (2026-10-11)
 
-Internal release; not published to npm. A fill no longer walks the whole sheet for each copy it pastes.
+A fill no longer walks the whole sheet for each copy it pastes.
 
 Fixed:
 
@@ -1507,7 +1499,7 @@ Fixed:
 
 ## 0.16.2 (2026-10-11)
 
-Internal release; not published to npm. `LINEST` and its relatives far from 0, `SORTBY` with a by-array of one value.
+`LINEST` and its relatives far from 0, `SORTBY` with a by-array of one value.
 
 Fixed:
 
@@ -1518,7 +1510,7 @@ Known differences (README): `linestMean`, Excel's intercept and regression sum o
 
 ## 0.16.1 (2026-10-10)
 
-Internal release; not published to npm. The cells of formatted rows and columns in xlsx as Excel shows them.
+The cells of formatted rows and columns in xlsx as Excel shows them.
 
 Fixed:
 
@@ -1529,7 +1521,7 @@ Known difference: when Excel formats a line across a line with a style, it gives
 
 ## 0.16.0 (2026-10-10)
 
-Internal release; not published to npm. Undo and redo in sessions.
+Undo and redo in sessions.
 
 Added:
 
@@ -1546,7 +1538,7 @@ Known: after an undo of a structure operation the session's book holds the same 
 
 ## 0.15.0 (2026-10-10)
 
-Internal release; not published to npm. Columns as wide as Excel makes them.
+Columns as wide as Excel makes them.
 
 Added:
 
@@ -1560,7 +1552,7 @@ Known differences: Excel for Windows lays text out in pixels, so its widths diff
 
 ## 0.14.0 (2026-10-10)
 
-Internal release; not published to npm. Hidden sheets, and percent text read to the last bit.
+Hidden sheets, and percent text read to the last bit.
 
 Added:
 
@@ -1580,7 +1572,7 @@ Fixed:
 
 ## 0.13.0 (2026-10-10)
 
-Internal release; not published to npm. Messages for people in the language of the book.
+Messages for people in the language of the book.
 
 Changed:
 
@@ -1594,7 +1586,7 @@ Still in English: `validateFormula`, which has no locale, the reasons of cell er
 
 ## 0.12.0 (2026-10-10)
 
-Internal release; not published to npm. What a window over a sheet needs, without the whole book.
+What a window over a sheet needs, without the whole book.
 
 Added:
 
@@ -1606,7 +1598,7 @@ Added:
 
 ## 0.11.0 (2026-10-10)
 
-Internal release; not published to npm. Conditional formats, kept and computed.
+Conditional formats, kept and computed.
 
 Added:
 
@@ -1622,7 +1614,7 @@ Known differences: a data bar's shortest and longest length of 5 and 95 percent 
 
 ## 0.10.0 (2026-10-10)
 
-Internal release; not published to npm. Data validation and outlines of rows and columns.
+Data validation and outlines of rows and columns.
 
 Added:
 
@@ -1635,7 +1627,7 @@ Known differences: a list item holding a comma (Excel 365's `x12ac:list`) is rea
 
 ## 0.9.0 (2026-10-10)
 
-Internal release; not published to npm. Notes, hyperlinks and frozen panes in the model, and text typed into a cell read as Excel reads it.
+Notes, hyperlinks and frozen panes in the model, and text typed into a cell read as Excel reads it.
 
 Added:
 
@@ -1650,7 +1642,7 @@ Changed:
 
 ## 0.8.1 (2026-10-10)
 
-Internal release; not published to npm. Running aggregates without rereading, a smaller graph of range dependencies, and tests that pass on every supported Node under Linux.
+Running aggregates without rereading, a smaller graph of range dependencies, and tests that pass on every supported Node under Linux.
 
 Changed:
 
@@ -1664,7 +1656,7 @@ Fixed:
 
 ## 0.8.0 (2026-10-10)
 
-Internal release; not published to npm. A locale is one file, and lookups and statistics measured at their edges in Excel.
+A locale is one file, and lookups and statistics measured at their edges in Excel.
 
 Added:
 
@@ -1687,7 +1679,7 @@ Known differences:
 
 ## 0.7.0 (2026-10-10)
 
-Internal release; not published to npm. Names checked in a book's locale and without the book, a budget for the range caches, and what Excel had not measured.
+Names checked in a book's locale and without the book, a budget for the range caches, and what Excel had not measured.
 
 Added:
 
@@ -1710,7 +1702,7 @@ Known differences: Excel for Windows shows the built-in formats 50 to 58 (East A
 
 ## 0.6.5 (2026-10-09)
 
-Internal release; not published to npm. Sums of one range in a thread pool, and how to add a locale.
+Sums of one range in a thread pool, and how to add a locale.
 
 Fixed:
 
@@ -1726,7 +1718,7 @@ Added:
 
 ## 0.6.4 (2026-10-09)
 
-Internal release; not published to npm. The rules of names measured in Excel.
+The rules of names measured in Excel.
 
 Changed:
 
@@ -1743,7 +1735,7 @@ Added:
 
 ## 0.6.3 (2026-10-09)
 
-Internal release; not published to npm. Three known differences from Excel in lookups closed, measured in Excel for Mac and Windows.
+Three known differences from Excel in lookups closed, measured in Excel for Mac and Windows.
 
 Changed:
 
@@ -1758,7 +1750,7 @@ Added:
 
 ## 0.6.2 (2026-10-09)
 
-Internal release; not published to npm. Caches of ranges, aggregates and exact lookups, stable statistical moments, and a fix of cached ranges after a sheet grew.
+Caches of ranges, aggregates and exact lookups, stable statistical moments, and a fix of cached ranges after a sheet grew.
 
 Fixed:
 
@@ -1771,7 +1763,7 @@ Changed:
 
 ## 0.6.1 (2026-10-09)
 
-Internal release; not published to npm. Defined names in any script.
+Defined names in any script.
 
 Fixed:
 
@@ -1788,7 +1780,7 @@ Added:
 
 ## 0.6.0 (2026-10-09)
 
-Internal release; not published to npm. A spill has a limit of its own, so a thread pool bounds spills by its heap strictly and arrays loosely; a call's limits are taken field by field.
+A spill has a limit of its own, so a thread pool bounds spills by its heap strictly and arrays loosely; a call's limits are taken field by field.
 
 Added:
 
@@ -1801,7 +1793,7 @@ Changed:
 
 ## 0.5.0 (2026-10-09)
 
-Internal release; not published to npm. A thread pool's default limit on one array measured, and in the same thread a result that gives way to the event loop and a structure operation that stops at its deadline.
+A thread pool's default limit on one array measured, and in the same thread a result that gives way to the event loop and a structure operation that stops at its deadline.
 
 Changed:
 
@@ -1816,7 +1808,7 @@ Added:
 
 ## 0.4.4 (2026-10-09)
 
-Internal release; not published to npm. Fixes from a second review (calculated columns under copies, moves and sheet operations, long lists of dependents, the thread pool's fallback to objects), text with a line break read as a number, and a faster `Session.hash()`.
+Fixes from a second review (calculated columns under copies, moves and sheet operations, long lists of dependents, the thread pool's fallback to objects), text with a line break read as a number, and a faster `Session.hash()`.
 
 Fixed:
 
@@ -1831,7 +1823,7 @@ Changed:
 
 ## 0.4.3 (2026-10-09)
 
-Internal release; not published to npm. Excel for Windows answers in en-US and ru-RU, and Excel for Windows as the reference where the locale shows or orders text differently from Excel for Mac.
+Excel for Windows answers in en-US and ru-RU, and Excel for Windows as the reference where the locale shows or orders text differently from Excel for Mac.
 
 Changed:
 
@@ -1849,7 +1841,7 @@ Added:
 
 ## 0.4.2 (2026-10-09)
 
-Internal release; not published to npm. Fixes from a review, books sent to pool threads as text in chunks, `Session.hash()`.
+Fixes from a review, books sent to pool threads as text in chunks, `Session.hash()`.
 
 Changed:
 
@@ -1871,7 +1863,7 @@ Added:
 
 ## 0.4.1 (2026-10-08)
 
-Internal release; not published to npm. The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.
+The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.
 
 Changed:
 
@@ -1892,7 +1884,7 @@ Added:
 
 ## 0.4.0 (2026-10-08)
 
-Internal release; not published to npm. Adds asynchronous and threaded computation (`createInlineCalc`, `xlcalc/worker`), Excel tables with structured references, `Session.cells` and `copyFormula`.
+Adds asynchronous and threaded computation (`createInlineCalc`, `xlcalc/worker`), Excel tables with structured references, `Session.cells` and `copyFormula`.
 
 A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
 
@@ -1929,8 +1921,6 @@ Added:
 - Locales: structured references translate (`Locale.tableItems`, ru-RU's `#Все`, `#Данные`, `#Заголовки`, `#Итоги`, `#Эта строка`, the list separator between items), and `toLocal` shows them as Excel does (`Sales[@Qty]`, `Sales`), with `opts.table` as inside that table (`[@Qty]`).
 
 ## 0.3.1 (2026-10-07)
-
-Internal release; not published to npm.
 
 - `xlcalc/unstable/internal` imported before the root entry threw `ReferenceError: Cannot access 'collator' before initialization` (a module cycle between the values and the criteria). Every subpath now loads on its own, and a test imports each one first in a fresh process.
 
