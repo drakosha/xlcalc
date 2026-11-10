@@ -246,7 +246,8 @@ describe('slicers and timelines with xlcalc/pivot', () => {
     book.sheets[0] = { ...book.sheets[0], tables: [{ name: 'Sales', range: 'A1:D6', columns: ['Region', 'Date', 'Product', 'Amount'].map((name) => ({ name })) }], slicers: [{ name: 'Region 2', cache: 'Slicer_Region1' }] }
     const r = editStructure(book, { op: 'addSlicer', sheet: 'D', slicer: { name: 'Again' }, cache: 'Slicer_Region1' })
     if (!r.ok) throw new Error(r.message)
-    expect(r.book.sheets[0].slicers).toEqual([{ name: 'Region 2', cache: 'Slicer_Region1' }, { caption: 'Region', name: 'Again', cache: 'Slicer_Region1' }])
+    // placed beside its table, two columns right of it
+    expect(r.book.sheets[0].slicers).toEqual([{ name: 'Region 2', cache: 'Slicer_Region1' }, { caption: 'Region', name: 'Again', cache: 'Slicer_Region1', place: { from: 'F1', to: 'I14', toOffset: [0, 47_625] } }])
     const e = editStructure(r.book, { op: 'editSlicer', slicer: 'Again', set: { style: 'SlicerStyleDark2' }, cache: { sort: 'descending' } })
     expect(e.ok && [e.book.sheets[0].slicers![1].style, e.book.slicerCaches![0].sort]).toEqual(['SlicerStyleDark2', 'descending'])
     expect(() => editStructure(r.book, { op: 'editSlicer', slicer: 'Again', cache: { items: [{ item: 0 }] } })).toThrow("a table's slicer chooses by the table's AutoFilter")
