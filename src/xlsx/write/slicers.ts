@@ -182,8 +182,10 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     if (!ok || !nameFree(c.name)) issues.add('pivotTable', { key: 'pivotNotWritten' }, { name: c.name })
     return ok && nameFree(c.name)
   }
-  const pivotCaches = (book.slicerCaches ?? []).filter((c) => fit(c, c.cache !== undefined && nameProblem(c.name, localeBooleans(book.locale)) === null))
-  const timelineCaches = (book.timelineCaches ?? []).filter((c) => fit(c, true))
+  // each cache's name becomes a defined name of the workbook, so it must be one
+  const named = (name: string) => nameProblem(name, localeBooleans(book.locale)) === null
+  const pivotCaches = (book.slicerCaches ?? []).filter((c) => fit(c, c.cache !== undefined && named(c.name)))
+  const timelineCaches = (book.timelineCaches ?? []).filter((c) => fit(c, named(c.name)))
   const taken = new Set([...pivotCaches, ...timelineCaches].map((c) => caseKey(c.name)))
   const own = <X extends Slicer | Timeline>(list: X[] | undefined, sheet: string) => framed((list ?? []).filter((x) => taken.has(caseKey(x.cache))), sheet, issues)
   const shown = book.sheets.map((s) => ({ slicers: own(s.slicers, s.name), timelines: own(s.timelines, s.name) }))

@@ -1,5 +1,5 @@
-import { copyRuns } from '../rich-text.js'
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
+import { copyRuns } from '../rich-text.js'
 import type { CellReadField, CellValue, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
 import { sheetIndexOf, toCellValue, valueAt, type EngineState, type Formula } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'

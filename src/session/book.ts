@@ -123,7 +123,11 @@ export function shownEdits(book: BookInput, edits: SetLayoutEdit[], sheetIndex: 
       const sheet = scratch.sheets[sheetIndex(e.sheet)]
       const x = sheet.filtered && sheet.autoFilter && parseRange(sheet.autoFilter.range)!
       set[0] = { sheet: e.sheet, autoFilter: e.autoFilter }
-      if (x) set.unshift({ sheet: e.sheet, filtered: false }, { sheet: e.sheet, rows: `${x.r1 + 2}:${Math.max(x.r1, x.r2) + 1}`, set: { hidden: null } })
+      if (x) {
+        set.unshift({ sheet: e.sheet, filtered: false })
+        // a range of its header alone shows no row; a key of one row is that row alone (`parseSpan` takes no `2:2`)
+        if (x.r2 > x.r1) set.splice(1, 0, { sheet: e.sheet, rows: x.r2 === x.r1 + 1 ? `${x.r2 + 1}` : `${x.r1 + 2}:${x.r2 + 1}`, set: { hidden: null } })
+      }
     }
     applyLayout(scratch, set, sheetIndex)
     out.push(...set)

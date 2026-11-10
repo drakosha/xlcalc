@@ -217,18 +217,25 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
   return { data: await k.zip(), issues: k.issues.list(locale) }
 }
 
-/** The writing of one book over one file. */
 /**
  * The ids of a table's columns after a change: of its name in the file, or of its place where the columns are as many (one
- * renamed); a new column a new id.
+ * renamed) and no column of that name took it; a new column a new id. No two columns share one, as Excel refuses that.
  */
 function keptColumnIds(ids: number[], t0: TableInput, t1: TableInput): number[] {
   const named = new Map(t0.columns.map((c, i) => [caseKey(c.name), ids[i]]))
   const same = t0.columns.length === t1.columns.length
+  const taken = new Set(t1.columns.flatMap((c) => named.get(caseKey(c.name)) ?? []))
   let next = Math.max(0, ...ids)
-  return t1.columns.map((c, i) => named.get(caseKey(c.name)) ?? (same ? ids[i] : ++next))
+  return t1.columns.map((c, i) => {
+    const own = named.get(caseKey(c.name))
+    if (own !== undefined) return own
+    const id = same && ids[i] !== undefined && !taken.has(ids[i]) ? ids[i] : ++next
+    taken.add(id)
+    return id
+  })
 }
 
+/** The writing of one book over one file. */
 class Kept {
   readonly issues = new Issues()
   readonly parts: Parts
@@ -557,8 +564,12 @@ class Kept {
         const id = Number(a.id)
         // its columns keep their ids, which a table's slicer and a query table name
         const ids = within(xml!, 'tableColumns', 'tableColumn').map((e) => Number(attributes(e.attrs).id))
-        const after = tableXml(t1, s1, id, this.w1.names, this.issues, t1.name === this.w1.filterTables[j], keptColumnIds(ids, t0, t1), this.styles.of(this.book.styles))
-        if (tableXml(t0, s0, id, this.w0.names, new Issues(), t0.name === this.w0.filterTables[k], ids, this.styles.of(this.book0.styles)) === after) continue
+        const ids1 = keptColumnIds(ids, t0, t1)
+        const [filtered0, filtered1] = [t0.name === this.w0.filterTables[k], t1.name === this.w1.filterTables[j]]
+        // compared without the criteria, written with them: their colors would add formats to styles.xml for the comparison alone
+        const plain = tableXml(t1, s1, id, this.w1.names, this.issues, filtered1, ids1)
+        if (filtered0 === filtered1 && keyOf(t0.filter ?? null) === keyOf(t1.filter ?? null) && tableXml(t0, s0, id, this.w0.names, new Issues(), filtered0, ids) === plain) continue
+        const after = tableXml(t1, s1, id, this.w1.names, new Issues(), filtered1, ids1, this.styles.of(this.book.styles))
         this.changed = true
         this.styles.useDxfs(after)
         this.parts.set(r.target, after)

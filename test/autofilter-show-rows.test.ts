@@ -110,6 +110,20 @@ describe('showRows', () => {
     s.close()
   })
 
+  it.each([
+    ['A1', [2]],
+    ['A1:B1', [2]],
+    ['A1:A2', []],
+  ])('over %s, a header alone or one row of data, shows its rows and no other', (range, hidden) => {
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 'h' }, A2: { value: 1 } }, rows: { '2': { hidden: true } }, autoFilter: { range }, filtered: true }] }, { clock })
+    s.setLayout([{ sheet: 'S', autoFilter: null, showRows: true }])
+    const sheet = s.getBook().sheets[0]
+    expect(notShown(sheet.rows)).toEqual(hidden)
+    expect(sheet.filtered).toBeUndefined()
+    expect(sheet.autoFilter).toBeUndefined()
+    s.close()
+  })
+
   it('takes true alone, and only with an AutoFilter', () => {
     const s = createSession(book(), { clock })
     expect(() => s.setLayout([{ sheet: 'S', autoFilter: null, showRows: false } as never])).toThrow(/showRows/)

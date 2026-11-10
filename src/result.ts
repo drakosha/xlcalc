@@ -1,5 +1,5 @@
-import { copyRuns } from './rich-text.js'
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
+import { copyRuns } from './rich-text.js'
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellRef, CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic, NumberFormat } from './contract.js'

@@ -16,7 +16,7 @@ import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
 import { attributes, element } from '../xml/scan.js'
-import { readCriteria, readSort } from '../read/filter.js'
+import { readCriteria, readSort, type FilterRead } from '../read/filter.js'
 import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
 import { VIEW_FLAGS } from '../view.js'
@@ -41,7 +41,8 @@ export const EXT_DV = '{CCE6A557-97BC-4B89-ADB6-D9C93CAAB3DF}'
 const ROW_KEPT = ['x14ac:dyDescent', 'thickTop', 'thickBot', 'ph']
 
 export interface SpliceInput {
-  filters?: import('../read/filter.js').FilterRead
+  /** What the file's criteria and sort are read with, to tell whether the workbook changed them; without it, the first book's. */
+  filters?: FilterRead
   xml: string
   p0: SheetPieces
   p1: SheetPieces

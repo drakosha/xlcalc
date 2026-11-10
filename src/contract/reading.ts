@@ -1,7 +1,6 @@
-import type { TextRun } from './book.js'
 /** Reading a session's book: a cell as a session shows it, queries in pages, Find and Replace, the dependents of ranges, a selection's summary, plain-text copies and values, a cell's rule of data validation, where a sheet's cells end, and windows of a sheet. */
 import type { CellRef, CellValue, Clock, ErrorCode, JsonValue, RangeRef, Refusal } from './values.js'
-import type { CellInput, CellLink, CellNote } from './book.js'
+import type { CellInput, CellLink, CellNote, TextRun } from './book.js'
 import type { CellStyle, ConditionalAppearance, DataValidation } from './looks.js'
 import type { CellDisplay, CellIssueDetail, CellResult } from './results.js'
 import type { EditOptions, EditResult } from './edits.js'

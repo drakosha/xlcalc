@@ -1,4 +1,3 @@
-import { copyRuns } from '../rich-text.js'
 /**
  * A window over a sheet for a grid (`Session.getViewport`, `viewportOf`): the cells of a rectangle, or of the rows and
  * columns asked of it, as a result gives them, each with its look resolved as it shows it (`layout/lines.ts`), styles by
@@ -7,6 +6,7 @@ import { copyRuns } from '../rich-text.js'
  * tables that meet its cells, the sheet's frozen panes and where its cells end. A session's window reads its state
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
+import { copyRuns } from '../rich-text.js'
 import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'

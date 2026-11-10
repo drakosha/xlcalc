@@ -187,6 +187,10 @@ describe('optional parameters of LAMBDA', () => {
     expect(validateFormula('LAMBDA([x],y,x)(1,2)')).toMatchObject({ ok: false, code: 'syntax' })
     expect(validateFormula('LAMBDA(x,[x],x)(1)')).toMatchObject({ ok: false, code: 'syntax' })
     expect(validateFormula('LAMBDA(x,[y z],x)(1)')).toMatchObject({ ok: false, code: 'syntax' })
+    // a boolean is no name, in brackets or not
+    expect(validateFormula('LAMBDA(TRUE,1)(1)')).toMatchObject({ ok: false, code: 'syntax' })
+    expect(validateFormula('LAMBDA([TRUE],1)(1)')).toMatchObject({ ok: false, code: 'syntax' })
+    expect(validateFormula('LAMBDA(x,[false],x)(1)')).toMatchObject({ ok: false, code: 'syntax' })
   })
 
   it('goes through a file as Excel saves it, and through a locale', async () => {

@@ -104,6 +104,22 @@ describe("writeKept and a table's slicer", () => {
     expect(tableIds(await text(data, 'xl/tables/table1.xml'))[1]).toEqual([3, 'Goods'])
   })
 
+  it('two columns renamed, one to the name the other had: no id is taken twice', async () => {
+    const data = await kept('plain', (s) => void s.setCells([{ sheet: 'Data', cell: 'A1', input: { value: 'Area' } }, { sheet: 'Data', cell: 'B1', input: { value: 'Region' } }]))
+    const ids = tableIds(await text(data, 'xl/tables/table1.xml'))
+    expect(ids).toEqual([[5, 'Area'], [2, 'Region'], [4, 'Amount']])
+    expect(new Set(ids.map((x) => x[0])).size).toBe(ids.length)
+  })
+
+  it('a column deleted and another added inside: no id is taken twice', async () => {
+    const data = await kept('plain', (s) => {
+      s.editStructure({ op: 'deleteColumns', sheet: 'Data', column: 'A', count: 1 })
+      s.editStructure({ op: 'insertColumns', sheet: 'Data', column: 'B', count: 1 })
+    })
+    const ids = tableIds(await text(data, 'xl/tables/table1.xml')).map((x) => x[0])
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
   it('the slicer renamed: its frame in the form Excel gives a table slicer', async () => {
     const xml = await text(await kept('plain', (s) => s.editStructure({ op: 'editSlicer', slicer: 'Product', set: { name: 'Goods' } })), 'xl/drawings/drawing1.xml')
     expect(xml).toContain('Requires="sle15"')

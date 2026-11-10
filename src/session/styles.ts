@@ -197,7 +197,7 @@ function lookOver(table: StyleTable, input: CellInput | undefined, r: number, c:
       if (font === null) delete out.richText
       else {
         const base = table.at(input.style ?? before.row(r)?.style ?? before.column(c)?.style).font
-        out.richText = input.richText.map(run => ({ start: run.start, font: over(run.font ?? base, font) ?? {} }))
+        out.richText = input.richText.map((run) => ({ start: run.start, font: over(run.font ?? base, font) ?? {} }))
       }
     }
     const shown = after.row(r)?.style ?? after.column(c)?.style

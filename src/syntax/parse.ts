@@ -270,11 +270,11 @@ export function parseTokens(src: string, given: Tok[] | null, opts: { union?: bo
       else scope.delete(up)
     }
   }
-  // a LAMBDA's next parameter and whether it is optional (`[y]`, which a call may leave out)
+  // a LAMBDA's next parameter and whether it is optional (`[y]`, which a call may leave out): a name as a required one takes, no boolean
   const parameter = (): [string | undefined, boolean] => {
     const t = peek()
     const name = t.t === 'table' && t.table === null && !t.spec.areas.length && t.spec.cols?.length === 1 ? t.spec.cols[0] : undefined
-    return name !== undefined && WORD.test(name) && toks[p + 1].t === ',' ? [name, true] : [declared(), false]
+    return name !== undefined && WORD.test(name) && boolWord(name) === undefined && toks[p + 1].t === ',' ? [name, true] : [declared(), false]
   }
   // LAMBDA(parameter, …, calculation): the parameters are seen in the calculation
   const lambda_ = (at: number): Ast => {

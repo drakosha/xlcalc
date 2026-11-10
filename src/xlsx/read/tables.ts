@@ -86,7 +86,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
     const filter = element(xml, 'autoFilter')
     if (t.headers !== false && !filter) t.filter = false
     else if (filter && x && filters) {
-      const criteria = readCriteria(filter, x.c2 - x.c1 + 1, element(xml, 'sortState'), {...filters,prefixes:filterPrefixes(xml)})
+      const criteria = readCriteria(filter, x.c2 - x.c1 + 1, element(xml, 'sortState'), { ...filters, prefixes: filterPrefixes(xml) })
       if (criteria) {
         if (t.headers === false) filters.lost('criteria on a table without headers')
         else t.filter = criteria

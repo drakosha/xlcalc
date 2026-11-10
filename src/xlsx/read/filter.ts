@@ -35,18 +35,22 @@ function replaced(xml: string, parts: { start: number; end: number }[], to: (i: 
   return out + xml.slice(at)
 }
 
-/** Each `AlternateContent` as what a reader of Excel 2010 takes of it: its Choice of `x14`, else its Fallback. */
-/** Prefixes bound to the supported extension namespace, which may be declared on the part or the Choice. */
-export const filterPrefixes = (xml: string): Set<string> => new Set([...xml.matchAll(/xmlns:([\w.-]+)=["']http:\/\/schemas\.microsoft\.com\/office\/spreadsheetml\/2009\/9\/main["']/g)].map(m=>m[1]))
+/** The prefixes bound to Excel 2010's namespace, which the part or a Choice may declare. */
+export const filterPrefixes = (xml: string): Set<string> =>
+  new Set([...xml.matchAll(/xmlns:([\w.-]+)=["']http:\/\/schemas\.microsoft\.com\/office\/spreadsheetml\/2009\/9\/main["']/g)].map((m) => m[1]))
 
-function chosen(xml: string,ctx: FilterRead): string {
+/** Each `AlternateContent` as what a reader of Excel 2010 takes of it: its Choice whose prefixes are all of `x14`'s, else its Fallback. */
+function chosen(xml: string, ctx: FilterRead): string {
   if (!xml.includes('AlternateContent>')) return xml
-  const supported=new Set([...ctx.prefixes??[],...filterPrefixes(xml)])
-  const blocks=placed(xml,'AlternateContent')
-  return replaced(xml,blocks,i=>{
-    const body=blocks[i].body??''
-    const choice=elements(body,'Choice').find(c=>{const required=(attributes(c.attrs).Requires??'').split(/\s+/).filter(Boolean);return required.length>0&&required.every(p=>supported.has(p))})
-    return chosen((choice??element(body,'Fallback'))?.body??'',{...ctx,prefixes:supported})
+  const supported = new Set([...(ctx.prefixes ?? []), ...filterPrefixes(xml)])
+  const blocks = placed(xml, 'AlternateContent')
+  return replaced(xml, blocks, (i) => {
+    const body = blocks[i].body ?? ''
+    const choice = elements(body, 'Choice').find((c) => {
+      const required = (attributes(c.attrs).Requires ?? '').split(/\s+/).filter(Boolean)
+      return required.length > 0 && required.every((p) => supported.has(p))
+    })
+    return chosen((choice ?? element(body, 'Fallback'))?.body ?? '', { ...ctx, prefixes: supported })
   })
 }
 
@@ -101,9 +105,10 @@ function customOf(e: Element, ctx: FilterRead): ColumnFilter | undefined {
     const a = attributes(x.attrs)
     return { operator: a.operator as FilterOperator | undefined, value: readText(a.val ?? '') }
   })
-  if (conditions.length > 2 && !flag(attributes(e.attrs).and) && conditions.every(c => (c.operator === undefined || c.operator === 'equal') && !/[?*]/.test(c.value))) {
-    const values = conditions.map(c => c.value).filter(v => v !== '')
-    return { type: 'values', ...(values.length ? { values } : {}), ...(conditions.some(c => c.value === '') ? { blank: true } : {}) }
+  // more than two values each equal, without a wildcard, either of them: the values chosen, as another writer spells them
+  if (conditions.length > 2 && !flag(attributes(e.attrs).and) && conditions.every((c) => (c.operator === undefined || c.operator === 'equal') && !/[?*]/.test(c.value))) {
+    const values = conditions.map((c) => c.value).filter((v) => v !== '')
+    return { type: 'values', ...(values.length ? { values } : {}), ...(conditions.some((c) => c.value === '') ? { blank: true } : {}) }
   }
   if (conditions.length < 1 || conditions.length > 2 || conditions.some((c) => c.operator !== undefined && !FILTER_OPERATORS.includes(c.operator))) return void ctx.lost('customFilters')
   return {
@@ -188,7 +193,7 @@ function columnsOf(body: string, width: number, ctx: FilterRead): FilterColumn[]
   // an extension holds a `filterColumn` of its own: each list is set aside first, a mark for it in its place
   const lists = placed(body, 'extLst')
   const exts = lists.map((e) => e.body ?? '')
-  const columns = elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`),ctx), 'filterColumn').flatMap((e) => {
+  const columns = elements(chosen(replaced(body, lists, (i) => `<extLst n="${i}"/>`), ctx), 'filterColumn').flatMap((e) => {
     const a = attributes(e.attrs)
     const column = Number(a.colId)
     if (!Number.isInteger(column) || column < 0 || column >= width) {
@@ -200,7 +205,8 @@ function columnsOf(body: string, width: number, ctx: FilterRead): FilterColumn[]
     const filter = filterOf(e.body ?? '', exts, ctx)
     return [{ column, ...(flag(a.hiddenButton) ? { hiddenButton: true } : {}), ...(flag(a.showButton, true) ? {} : { showButton: false }), ...(filter ? { filter } : {}) }]
   })
-  return [...new Map(columns.map(c => [c.column,c])).values()].filter(c => c.filter !== undefined || c.hiddenButton || c.showButton === false)
+  // a column listed twice as its last entry; one that differs in nothing has no entry
+  return [...new Map(columns.map((c) => [c.column, c])).values()].filter((c) => c.filter !== undefined || c.hiddenButton || c.showButton === false)
 }
 
 /** A cell or range as the model holds it; undefined for anything else, a list of areas among them. */
@@ -234,7 +240,7 @@ export function readSort(e: Element, ctx: FilterRead): FilterSort | undefined {
   if (!range) return void ctx.lost('sortState')
   const body = e.body ?? ''
   for (const ext of elements(element(body, 'extLst')?.body ?? '', 'ext')) ctx.lost(`sortState extension ${attributes(ext.attrs).uri ?? ''}`)
-  const conditions = elements(chosen(body,ctx), 'sortCondition').flatMap((c) => conditionOf(c, ctx) ?? [])
+  const conditions = elements(chosen(body, ctx), 'sortCondition').flatMap((c) => conditionOf(c, ctx) ?? [])
   const method = SORT_METHODS.find((x) => x === a.sortMethod)
   return {
     range,

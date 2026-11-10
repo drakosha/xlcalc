@@ -1,11 +1,11 @@
-import { copyRuns } from '../rich-text.js'
-import { keyOf } from '../style-table.js'
 /**
  * What a session's edit answers (`EditResult`): what the call changed, gathered while it runs (`Outcome`), and the
  * session's revision after it. Beside the cells whose value or shown text changed, a cell is listed when its formula,
  * its own style, number format, note or hyperlink changed: those of the edited cells, and after the book was built again (a
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
+import { copyRuns } from '../rich-text.js'
+import { keyOf } from '../style-table.js'
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, FittedRows, RangeRef, SheetInput } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'

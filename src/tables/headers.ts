@@ -78,8 +78,9 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
       const t = tables.find((x) => x.s === s && tableKey(x.name) === tableKey(ti.name))!
       names.forEach((n, i) => {
         const addr = formatAddress(t.r1, t.c1 + i)
-        const { value: _, formula: __, ...look } = cells[addr] ?? lookIn(sheet, t.r1, t.c1 + i) ?? {}
-        cells[addr] = { ...look, value: n }
+        const { value, formula: __, richText, ...look } = cells[addr] ?? lookIn(sheet, t.r1, t.c1 + i) ?? {}
+        // the runs of its text stay where the text does
+        cells[addr] = { ...look, ...(value === n && richText ? { richText } : {}), value: n }
       })
       return { ...ti, columns: ti.columns.map((c, i) => ({ ...c, name: names[i] })) }
     })

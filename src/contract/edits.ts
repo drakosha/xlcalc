@@ -1,7 +1,6 @@
-import type { TextRun } from './book.js'
 /** The edits of a session's book: cells set, replaced and patched, the layout changed, operations in a batch and their preview, what a call that changes the book answers and its subscribers get, undo and redo. */
 import type { CellRef, CellValue, Clock, JsonValue, RangeRef } from './values.js'
-import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection } from './book.js'
+import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FilterSort, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection, TextRun } from './book.js'
 import type { CellStyle, Color, ConditionalFormat, DataValidation, StylePatch } from './looks.js'
 import type { CellDisplay, CellIssueDetail } from './results.js'
 import type { ValidationRefusal } from './typing.js'
@@ -229,7 +228,7 @@ export type LayoutEdit =
    */
   | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
   /** The stored sort of a range outside an AutoFilter; null removes it without moving any cells. */
-  | { sheet: string; sort: import('./book.js').FilterSort | null }
+  | { sheet: string; sort: FilterSort | null }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */

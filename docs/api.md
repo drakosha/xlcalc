@@ -3947,7 +3947,7 @@ type LayoutEdit =
    */
   | { sheet: string; autoFilter: AutoFilter | null; showRows?: true }
   /** The stored sort of a range outside an AutoFilter; null removes it without moving any cells. */
-  | { sheet: string; sort: import('./book.js').FilterSort | null }
+  | { sheet: string; sort: FilterSort | null }
   /** The sheet's protection (`SheetInput.protection`); null unprotects it. */
   | { sheet: string; protection: SheetProtection | null }
   /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */

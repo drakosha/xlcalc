@@ -15,9 +15,9 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
-import { stringXml } from './strings.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput, TextRun } from '../../contract.js'
 import { filterXml, sortXml } from './filter.js'
-import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
+import { stringXml } from './strings.js'
 import { frozenScroll, sheetViewXml, splitXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
@@ -57,7 +57,7 @@ export const tablePartsXml = (ids: string[]) => countedIf('tableParts', ids.map(
 
 export interface SheetContext extends FileNames {
   styles: CellFormats
-  /** The index of a string in the shared strings table. */
+  /** The index of a string in the shared strings table; `xml`, its item's body where it has runs. */
   string(s: string, xml?: string): number
   /** Text values as inline strings (`t="inlineStr"`), not through the shared strings: a file written over another keeps its table as it is. */
   inline?: boolean
@@ -158,13 +158,13 @@ const INLINE = ' t="inlineStr"'
  * for older readers) and the content of `<v>`, or an inline string's `<is>`; `shared` writes text through the shared
  * strings, or inline (`ctx.inline`).
  */
-function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, shared: boolean, rich?: { runs: import('../../contract.js').TextRun[]; style?:number }): { t: string; v: string } {
+function valueXml(v: CellValue, ctx: SheetContext, sheet: string, cell: string, shared: boolean, rich?: { runs: TextRun[]; style?: number }): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, { sheet, cell })
-    const text=rich?stringXml(s,rich.runs,ctx.styles,rich.style,ctx.issues):undefined
+    const text = rich ? stringXml(s, rich.runs, ctx.styles, rich.style, ctx.issues) : undefined
     if (shared && ctx.inline) return { t: INLINE, v: `<is>${text ?? textElement(s)}</is>` }
     return shared ? { t: ' t="s"', v: String(ctx.string(s, text)) } : { t: ' t="str"', v: escapeText(s) }
   }
@@ -232,8 +232,8 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const cellXml = (addr: string, row: number, col: number, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ` cm="${ctx.dynamicMark ?? 1}"` : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(row, col, c)}${cm}${f ? `>${f}</c>` : '/>'}`
-    const resolved = c?.richText && typeof v === 'string' ? sheetLook.look(row, col, c) : undefined
-    const rich = c?.richText && typeof v === 'string' ? {runs:c.richText,style:resolved?.style} : undefined
+    // a run without a font of its own takes the style the cell shows, its row's or column's where it has none
+    const rich = c?.richText && typeof v === 'string' ? { runs: c.richText, style: sheetLook.look(row, col, c)?.style } : undefined
     const x = valueXml(v, ctx, sheet.name, addr, !f, rich)
     return `<c r="${addr}"${sAttr(row, col, c)}${x.t}${cm}>${f}${x.t === INLINE ? x.v : `<v>${x.v}</v>`}</c>`
   }

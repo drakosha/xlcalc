@@ -136,6 +136,25 @@ describe('a slicer and a timeline of a book', () => {
     expect(issues.map((i) => i.name)).toEqual(['NativeTimeline_Month'])
   })
 
+  it.each([
+    ['a slicer', 'Slicer Region'],
+    ['a timeline', 'Native Timeline'],
+  ])('the cache of %s whose name is no defined name is not written, as its name would not stand in the file', async (kind, name) => {
+    const b = placed(pivotBook())
+    if (kind === 'a slicer') {
+      b.slicerCaches![0].name = name
+      b.sheets[1].slicers![0].cache = name
+    } else {
+      b.slicerCaches = []
+      b.sheets[1].slicers = []
+      b.timelineCaches = [{ name, field: 'Month', pivots: [{ sheet: 'Pivot', name: 'PivotTable1' }], cache: 1 }]
+      b.sheets[1].timelines = [{ name: 'Month', cache: name, place: { from: 'H2', to: 'K12' } }]
+    }
+    const { h, issues } = await written(b)
+    expect(h).toMatchObject({ names: [], slicerCaches: 0, timelineCaches: 0, drawings: 0 })
+    expect(issues.map((i) => i.name)).toContain(name)
+  })
+
   it('a sheet’s own name of the cache does not stand for the workbook’s', async () => {
     const { h } = await written({ ...placed(pivotBook()), names: [{ name: 'Slicer_Region', ref: 'Data!$A$1', scope: 'Pivot' }] })
     expect(h.names).toEqual([['Slicer_Region', "'Data'!$A$1"], ['Slicer_Region', '#N/A']])

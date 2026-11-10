@@ -83,7 +83,7 @@ function checkFilter(v: unknown, p: string) {
   KINDS[o.type as ColumnFilter['type']](o, p)
 }
 
-function checkCondition2(v: unknown, p: string) {
+function checkSortCondition(v: unknown, p: string) {
   const o = object(v, p, 'a sort condition such as { range: "C2:C21", descending: true }')
   onlyKeys(o, p, ['range', 'descending', 'by', 'customList', 'style', 'iconSet', 'icon'])
   checkRange(o.range, `${p}.range`, false)
@@ -99,7 +99,7 @@ export function checkFilterSort(v: unknown, p: string) {
   checkRange(o.range, `${p}.range`, false)
   given(o, p, { caseSensitive: checkBoolean, byColumns: checkBoolean })
   if (o.method !== undefined) checkOneOf(o.method, `${p}.method`, SORT_METHODS)
-  if (o.conditions !== undefined) array(o.conditions, `${p}.conditions`, 'an array of sort conditions').forEach((x, i) => checkCondition2(x, `${p}.conditions[${i}]`))
+  if (o.conditions !== undefined) array(o.conditions, `${p}.conditions`, 'an array of sort conditions').forEach((x, i) => checkSortCondition(x, `${p}.conditions[${i}]`))
 }
 
 /** The criteria of a filter whose range is `width` columns wide. */

@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- `setLayout` with `{ autoFilter, showRows: true }` threw a `TypeError` on a filtered sheet whose AutoFilter covers its header alone (`A1`, `A1:D1`) or one row of data (`A1:D2`). It now shows that row, or none (since 0.87.0).
+- `writeKept` gave two columns of a table one id where a column took a name another had (`A`→`C` and `B`→`A`), or one was deleted and another inserted in a single change. Excel refuses a table with two columns of one id. A column now takes the id of its place only where no column of that name kept it (since 0.87.1).
+- `writeKept` added a differential format to styles.xml for a table with a color filter that it compared and did not write, when another part used a format after it.
+- `writeXlsx` and `writeKept` wrote a sort by font color (`by: 'fontColor'`) with its color as a cell pattern. They now write it in a font, as Excel does; a filter by either color and a sort by a cell's stay a pattern, also as Excel writes them (since 0.88.0).
+- `writeXlsx` wrote a timeline's cache whose name is not a valid defined name (`Native Timeline`) under that name, which the file cannot hold. It is now left out and reported, as a slicer's cache already was (since 0.87.0).
+- A LAMBDA's optional parameter took a boolean as its name (`LAMBDA([TRUE],1)`), which a required one does not take. It is now a syntax error.
+- A header renamed because a name typed beside it took its own (`Y` becomes `Y2`) kept the text runs of its old text. Its runs now go, as with any other change of its text.
+- `readXlsx` read a sheet's column formats again for each cell with rich text; they are now read once per sheet.
+
 ## 0.88.1 (2026-11-08)
 
 - `writeKept` adds Excel's reserved fills before a new solid fill when the original styles part has fewer than two fill entries. The requested color survives reopening; existing fill indices stay unchanged, and opening a file without edits keeps its bytes. The writer previously placed colors at reserved indices 0 or 1, which Excel ignores and the reader has treated as reserved since 0.87.0.

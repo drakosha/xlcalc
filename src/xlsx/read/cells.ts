@@ -1,5 +1,3 @@
-import type { FontStyle, TextRun } from '../../contract.js'
-import type { Palette } from '../styles/color.js'
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
  * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles, hidden rows and outline levels. A cell
@@ -7,13 +5,14 @@ import type { Palette } from '../styles/color.js'
  * previous one when it has none (rows likewise). Shared formulas and array ranges
  * are collected for the sheet reader to resolve once every cell is known.
  */
-import type { CellInput, CellValue, ColumnInput, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
+import type { CellInput, CellValue, ColumnInput, ErrorCode, FontStyle, NumberFormat, RowInput, Scalar, TextRun } from '../../contract.js'
 import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
 import { colToIndex, dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import { CELL_ERRORS, ERROR_CODE, ERROR_TEXT, FORMULA_ERRORS } from '../../syntax/errors.js'
 import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell } from '../types.js'
+import type { Palette } from '../styles/color.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag, ownEntry } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -25,9 +24,11 @@ import { stringItem, type Strings } from './strings.js'
 export interface CellsContext {
   sheet: string
   strings: Strings
+  /** The book's colors and its font (the first of styles.xml), which the runs of rich text are read by. */
   palette?: Palette
   baseFont?: FontStyle
-  columnFont?: (col:number)=>FontStyle|undefined
+  /** The font of a column's format, where it has one: the first run of a rich string in it may take it. */
+  columnFont?: (col: number) => FontStyle | undefined
   xfs: Xf[]
   meta: CellMetadata
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): an ISO date's serial counts from it. */
@@ -118,7 +119,8 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   let [lastRow, lastCol] = [-1, -1]
   // the current row, and when it has a cell format of its own its cells with their own looks, until it ends
   let line: RowInput | undefined
-  let rowFont:FontStyle|undefined
+  // the font of the current row's format, which the first run of a rich string in it may take
+  let rowFont: FontStyle | undefined
   let lineRow = -1
   let formatted: { addr: string; col: number; own: Look; cell: CellInput }[] | undefined
   const endRow = () => {
@@ -151,7 +153,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (a.r && !numbered) issues.add('part', { key: 'rowNumberBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
       col = -1
       line = {}
-      rowFont=undefined
+      rowFont = undefined
       lineRow = row
       // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
       if (a.ht !== undefined) {
@@ -163,8 +165,8 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {
         const where = { sheet, cell: `${row + 1}:${row + 1}` }
-        const rowXf=xfAt(a.s,ctx,where)
-        rowFont=rowXf?.font
+        const rowXf = xfAt(a.s, ctx, where)
+        rowFont = rowXf?.font
         Object.assign(line, look(rowXf, issues, where))
         formatted = []
       }
@@ -219,10 +221,12 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     if (!v && body.includes('v') && OPEN_V.test(body)) open = true
     const raw = v ? (v[1] ?? '') : undefined
     let value: Scalar | undefined
-    const takeRuns=(runs:TextRun[]|undefined)=>{
-      if(!runs)return
-      const first=xf?.font??rowFont??ctx.columnFont?.(col)??ctx.baseFont??{}
-      cell.richText=runs.map(run=>({start:run.start,font:{name:ctx.baseFont?.name??'Calibri',size:ctx.baseFont?.size??11,...(run.font===undefined?first:run.font)}}))
+    // each run with its whole font: one without its own takes the cell's, its row's, its column's or the workbook's
+    const takeRuns = (runs: TextRun[] | undefined) => {
+      if (!runs) return
+      const first = xf?.font ?? rowFont ?? ctx.columnFont?.(col) ?? ctx.baseFont ?? {}
+      const whole = { name: ctx.baseFont?.name ?? 'Calibri', size: ctx.baseFont?.size ?? 11 }
+      cell.richText = runs.map((run) => ({ start: run.start, font: { ...whole, ...(run.font ?? first) } }))
     }
     if (t === 's') {
       if (raw !== undefined) {
@@ -231,14 +235,14 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         if (value === undefined) issues.add('part', { key: 'stringIndexBad' }, { sheet, cell: addr })
         else {
           takeRuns(ctx.strings.runs?.get(k))
-          if(ctx.strings.lost?.has(k))issues.add('richText',{key:'richText'},{sheet,cell:addr})
+          if (ctx.strings.lost?.has(k)) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
         }
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
       if (!is && OPEN_IS.test(body)) open = true
       if (is) {
-        const s = stringItem(is[1],ctx.palette,ctx.baseFont)
+        const s = stringItem(is[1], ctx.palette, ctx.baseFont)
         value = s.text
         takeRuns(s.runs)
         if (s.lost) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })

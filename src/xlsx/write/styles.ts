@@ -157,8 +157,10 @@ export class StyleWriter implements CellFormats {
   private readonly xfs = new Table('<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>')
   private readonly byKey = new Map<string, number>([['\n0', 0]])
   private readonly dxfs = new Table()
+  /** The book's default font, its name within Excel's limit. */
+  private readonly base: BaseFont
 
-  /** `base`: the book's default font, the first of the fonts, which a style's font is relative to. */
+  /** `base`: the book's default font, the first of the fonts, which a style's font is relative to; `issues` takes what Excel's limits change. */
   constructor(
     private readonly styles: CellStyle[] = [],
     base: BaseFont = DEFAULT_FONT,
@@ -168,12 +170,10 @@ export class StyleWriter implements CellFormats {
     this.fonts = new Table(fontXml({}, this.base))
   }
 
-  private readonly base: BaseFont
-
+  /** A font's name cut to Excel's limit, reported. */
   private fontName(name: string): string {
     return this.issues ? clip(name, MAX_FONT_NAME, this.issues, { key: 'fontNameCut' }, {}) : name
   }
-
 
   numFmt(code: NumberFormat | undefined): number {
     return numFmtId(code, (c) => {

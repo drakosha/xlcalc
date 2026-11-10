@@ -373,12 +373,13 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const data = open < 0 ? '' : xml.slice(open, unclosed ? xml.length : dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
-  const columnFont=(c:number)=>{
-    let font
-    for(const e of elements(head,'col')){const a=attributes(e.attrs);if(a.style!==undefined&&c>=Number(a.min)-1&&c<=Number(a.max)-1)font=ctx.xfs[Number(a.style)]?.font}
-    return font
-  }
-  const read = readCells(data, {...ctx,columnFont}, lines(cols, 'c'))
+  // the columns' fonts, read once: the first run of a rich string without its own font takes its column's where the cell and row have none
+  const fonts = elements(head, 'col').flatMap((e) => {
+    const a = attributes(e.attrs)
+    return a.style === undefined ? [] : [{ min: Number(a.min) - 1, max: Number(a.max) - 1, font: ctx.xfs[Number(a.style)]?.font }]
+  })
+  const columnFont = (c: number) => fonts.findLast((x) => c >= x.min && c <= x.max)?.font
+  const read = readCells(data, { ...ctx, columnFont }, lines(cols, 'c'))
   // the looks, and with them the cells the reader adds to the file's, which take their place among the file's under a look
   const layer = read.looks.build()
   const added = layer.empty ? undefined : new Set<string>()
