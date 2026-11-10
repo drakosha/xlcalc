@@ -31,6 +31,7 @@ console.log(same.data === original) // → true
 | `locale` | the language of the issues' messages and of a refusal's, as for `writeXlsx` |
 | `limits` | how large the original file's parts may be once inflated, as for `readXlsx` |
 | `writeValues` | `true` stores the values of the formulas that differ from the file's also when nothing else changed, where the original bytes come back without it: for a file a generator wrote without values, which a program that does not calculate will read |
+| `prefixes` | `'repair'` writes the formulas that call newer functions without their prefix again with it, as Excel stores them ([Repairing prefixes](#repairing-prefixes)); `'keep'`, the default, leaves the file's formulas as they are |
 
 A change the file cannot take without pointing a part at other cells is refused: `writeKept` throws `KeptRefusal`, exported by the subpath, with the reason in its message and its kind in `code`, and writes no file ([Refusals](#refusals)).
 
@@ -64,6 +65,34 @@ A workbook that did not change, the values of its formulas aside, gives the orig
 What the file holds and the workbook does not is reported by `openKept`'s issues as by `readXlsx`'s: the workbook cannot hold it, but the file keeps it.
 
 A workbook that changed only in those values is written with `writeValues`: the rows whose values differ take them beside the file's own `<f>`, the other parts stay as the file has them, and, as for any change, `calcChain.xml` is left out and the workbook asks Excel to calculate on loading. With no value that differs, the original bytes come back all the same, so writing again over the file written gives that file. With `values: 'preserve'` a formula the result has no value for stays without one, so a host can leave out the formulas it does not want to answer for, such as those over a workbook it has not read.
+
+## Repairing prefixes
+
+A generator that takes a formula verbatim, such as openpyxl, stores `XLOOKUP(…)` where Excel stores `_xlfn.XLOOKUP(…)`. The reader reports such calls as `noPrefix` and the engine calculates them; Excel shows `#NAME?` for them, and does not open a file with `FILTER` or `SORT` so stored ([Functions without their prefix](xlsx.md#functions-without-their-prefix)). With `prefixes: 'repair'`, `writeKept` writes each such formula again with the prefixes `writeXlsx` gives it:
+
+```js
+const original = await readFile('noprefix.xlsx')          // openpyxl's: <f>XLOOKUP(2,A1:A2,B1:B2)</f>
+const { book, cached, issues } = await openKept(original)  // issues: noPrefix, XLOOKUP on S!C1
+const session = createSession(book, { cached })
+const written = await writeKept(original, session.getSnapshot(), { prefixes: 'repair' })
+// <f>_xlfn.XLOOKUP(2,A1:A2,B1:B2)</f>; written.issues: noPrefix, XLOOKUP on S!C1, written with its prefix
+```
+
+Only the prefixes go in: `_xlfn.` before a newer function, `_xlfn._xlws.` before `FILTER` and `SORT`, and in a LET or a LAMBDA so repaired `_xlpm.` before its names and parameters and a LAMBDA's optional parameter `[y]` as `_xlop.y`, which Excel reads no name without; a function's name goes upper case. The rest of the formula's text stays as the file wrote it, and so does its element:
+
+- a formula keeps its kind. A `FILTER`, `SORT` or `UNIQUE` the file stores without dynamic array metadata is a formula of the old kind, which the reader reads as Excel reads one, `@FILTER(…)`, its first value in its cell; repaired, it is still one, and Excel shows `=@FILTER(…)` and that value. No formula becomes a spilling one;
+- an array formula of the old kind keeps its range;
+- a shared formula stays shared: its master's text is repaired, and its copies, which take the master's text with their references moved, stay as they are, as Excel saves a formula filled down with its prefixes in the master alone. The issue lists the copies with the master, as the reader does.
+
+The places the reader reports a call without its prefix from are those repaired: cells' formulas, conditional formats and their thresholds, data validation, Excel 2010's of both in the sheet's extensions, a table's calculated column formula and totals row formula, and defined names (but `_xlfn.` names, Excel's placeholders of newer functions). The formulas of a PivotTable's calculated fields and the references of charts are not read for calls, and are left as they are.
+
+The engine reads a repaired formula as it read it before, since the reader drops the prefixes again: values and hashes do not change, and a repair that would read otherwise is not made, so its formula keeps the file's text and `readXlsx` of the file written still reports it. So is a LET or a LAMBDA one of whose names the scan does not read as one name alone.
+
+`writeKept`'s issues list what was repaired with the code `noPrefix`, one issue per function on a sheet or a name, as the reader lists them, the function in `fn` and its cells in `cells`, at the addresses of the file written and on the sheets by the workbook's names. A repair is a change like any other: the calculation chain goes, the workbook asks Excel to calculate on loading, and the formulas take their values from the result. With nothing to repair, `prefixes: 'repair'` writes as `writeKept` without it, the original bytes for a workbook that did not change.
+
+Not yet checked against Excel. The cases are ten files openpyxl wrote (`bench/coverage/keep/prefixes.py`, kept in `test/excel/keep/prefixes-made/`): XLOOKUP plain, under `IFERROR` and in lower case, FILTER, SORT, SORTBY and UNIQUE of the old kind, a shared formula over a column, array formulas of the old kind, defined names, prefixed and unprefixed calls in one formula with LET and LAMBDA, a conditional format and a validation, a table's calculated column, and a workbook with charts and a PivotTable. Each goes to Excel as it is and repaired (`bench/coverage/keep/prefixes.ts`). The predictions were committed before any run (`bench/coverage/keep/prefixes.predicted.json`): Excel for Mac and for Windows open every repaired file without the repair window, each cell shows the engine's value, and the formulas Excel saves stay of the old kind; Excel refuses the originals with FILTER or SORT (Excel for Windows also the one with `LAMBDA(r,c,…)`) and shows `#NAME?` in the others, but under `IFERROR`. The runs are `npx tsx bench/coverage/run.ts keep prefixes` and `bench/windows/run.ts keep prefixes`; `test/xlsx-no-prefix-repair.test.ts` skips the comparison until their answers are stored.
+
+Typing a formula again does not repair it: a session takes the same formula entered over a cell as no change, its canonical text being the same, and `writeKept` keeps a formula that did not change as the file has it (the file's own `<f>`, [What is written and what stays](#what-is-written-and-what-stays)). The option is the way to repair a file. A formula the workbook did change is written from the workbook, with its prefixes, either way.
 
 ## Structure operations
 

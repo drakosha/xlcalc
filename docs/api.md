@@ -5879,7 +5879,9 @@ interface SessionHistory {
 
 ### `SessionOperation`
 
-Serializable operations applied in order, with one final recalculation and one undo step.
+Serializable operations applied in order, with one final recalculation and one undo step. A `setLayout` edit with
+`fit` (AutoFit) is refused with [`InputError`](#xlcalc-inputerror): AutoFit measures the values calculated after the batch, so a host that
+replays a list of operations sends such an edit as [`Session.setLayout`](#session) after `applyChanges`, its own undo step.
 
 ```ts
 type SessionOperation =
@@ -7229,6 +7231,15 @@ interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'values'> {
    * without them). With no value that differs, the original bytes come back all the same.
    */
   writeValues?: boolean
+  /**
+   * `'repair'` writes again, with their prefixes, the formulas of the file that call newer functions without them (those
+   * the reader reports as `noPrefix`, as a generator writes them that takes a formula verbatim): `XLOOKUP(…)` as
+   * `_xlfn.XLOOKUP(…)`, as Excel stores it, which Excel calculates where it showed `#NAME?`, and `FILTER` and `SORT`
+   * as `_xlfn._xlws.`, over which Excel did not open the file. Only the prefixes change, with LET's names and LAMBDA's
+   * parameters in them (`_xlpm.`); a formula keeps its kind, so the engine calculates it as before. The issues name each
+   * call repaired (`noPrefix`). `'keep'`, the default, leaves the file's formulas as they are.
+   */
+  prefixes?: 'keep' | 'repair'
 }
 ```
 
@@ -7314,7 +7325,8 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
   by `fn`.
 - `noPrefix`: calls to a function a file stores with a prefix (`_xlfn.`, `_xlfn._xlws.`) written without it, as a generator
   does that takes a formula verbatim, named by `fn`: the engine calculates the call, where Excel shows #NAME?, and for
-  FILTER and SORT does not open the file. `IFERROR` around such a call hides the error in Excel.
+  FILTER and SORT does not open the file. `IFERROR` around such a call hides the error in Excel. When [`writeKept`](#xlcalcxlsxkeep-writekept)
+  writes over a file with `prefixes: 'repair'`, the calls it wrote again with their prefix.
 - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
   writer could not write (its value is written instead, or an empty cell when it has none).
 - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.

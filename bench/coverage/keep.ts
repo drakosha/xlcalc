@@ -27,6 +27,8 @@
  * `formats` from the Mac's answers (`keep/win.predicted.json`), before `bench/windows/run.ts keep <set>` runs them.
  * `keep looks-predict` and `keep looks`: what Excel saves of a file `writeXlsx` wrote with a look over a whole column or
  * row, a cell for each of its cells (`LOOKS`, `test/excel/keep/looks.json`).
+ * `keep prefixes-predict` and `keep prefixes`: openpyxl's files with formulas whose newer functions lack their prefix,
+ * as they are and as `writeKept` repairs them (`keep/prefixes.ts`, `test/excel/keep/prefixes.json`).
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -42,6 +44,7 @@ import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, set
 import { baseFile, EDITS, MADE, MADE_PROBES, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { RULES_BOOKS, RULES_SETS, rulesFile, rulesOf, rulesWritten } from './keep/rules.js'
 import { FORMATS, formatsOf, MADE_FORMATS } from './keep/formats.js'
+import { PREFIX_BOOKS, prefixFiles, prefixPredictions, readCells, type Shown } from './keep/prefixes.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -440,7 +443,34 @@ async function looks(): Promise<void> {
   }
 }
 
+/** The files of `keep/prefixes.ts` through Excel: opened, computed and saved (`test/excel/keep/prefixes.json`, `prefixes/<case>.xlsx`), with the values and formulas of the cells read in the file it saved. */
+async function prefixes(): Promise<void> {
+  const file = join(DATA, 'prefixes.json')
+  type Case = { sent: string; rejected?: string; values?: Record<string, Shown>; formulas?: Record<string, string | null> }
+  const run = loadStored<{ meta: Record<string, string | number>; cases: Record<string, Case> }>(file) ?? { meta: {}, cases: {} }
+  mkdirSync(join(DATA, 'prefixes'), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  const reads = new Map(PREFIX_BOOKS.map((b) => [b.id, b.read]))
+  for (const f of await prefixFiles()) {
+    if (ONLY && !ONLY.includes(f.id)) continue
+    const sent = await partsHash(f.data)
+    if (run.cases[f.id]?.sent === sent && (run.cases[f.id].rejected || existsSync(join(DATA, 'prefixes', `${f.id}.xlsx`)))) continue
+    const r = await saveThroughExcel(f.data, `prefixes-${f.id}`)
+    if ('rejected' in r) run.cases[f.id] = { sent, rejected: r.rejected }
+    else {
+      writeFileSync(join(DATA, 'prefixes', `${f.id}.xlsx`), r.saved)
+      run.cases[f.id] = { sent, ...(await readCells(r.saved, reads.get(f.id.replace(/-(original|repaired)$/, ''))!)) }
+    }
+    console.log(`${f.id}: ${JSON.stringify(run.cases[f.id])}`)
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
 export async function stepKeep(what: string | undefined): Promise<void> {
+  if (what === 'prefixes-predict') return writePrediction(new URL('./keep/prefixes.ts', import.meta.url).href, 'prefixes', { cases: await prefixPredictions() })
+  if (what === 'prefixes') return prefixes()
   const rules = what?.match(/^(rules(?:-[a-z0-9-]+)?)-predict$/)?.[1]
   if (rules && (rules === 'rules-made' || rules === 'rules-open' || RULES_SETS[rules])) return rulesPredict(rules)
   if (what === 'rules-open') return rulesOpen()
@@ -456,5 +486,5 @@ export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'win-predict') return winPredict()
   if (what === 'looks-predict') return looksPredict()
   if (what === 'looks') return looks()
-  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict | looks-predict | looks | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
+  throw new Error('keep: made | predict | open | prefixes-predict | prefixes | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict | looks-predict | looks | rules-made-predict | rules[-held[-2]]-predict | rules-open-predict | rules-open')
 }

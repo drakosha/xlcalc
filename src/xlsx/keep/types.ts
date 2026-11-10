@@ -14,6 +14,15 @@ export interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'val
    * without them). With no value that differs, the original bytes come back all the same.
    */
   writeValues?: boolean
+  /**
+   * `'repair'` writes again, with their prefixes, the formulas of the file that call newer functions without them (those
+   * the reader reports as `noPrefix`, as a generator writes them that takes a formula verbatim): `XLOOKUP(…)` as
+   * `_xlfn.XLOOKUP(…)`, as Excel stores it, which Excel calculates where it showed `#NAME?`, and `FILTER` and `SORT`
+   * as `_xlfn._xlws.`, over which Excel did not open the file. Only the prefixes change, with LET's names and LAMBDA's
+   * parameters in them (`_xlpm.`); a formula keeps its kind, so the engine calculates it as before. The issues name each
+   * call repaired (`noPrefix`). `'keep'`, the default, leaves the file's formulas as they are.
+   */
+  prefixes?: 'keep' | 'repair'
 }
 
 /** Options of `inspectKept`. */

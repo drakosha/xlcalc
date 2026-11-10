@@ -18,7 +18,7 @@
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru|T]   cells shown by display/X.ts into test/excel/display/[ru-RU/ or T/]X.json (test: test/display-excel.test.ts)
  *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | forms | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
- *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct | struct-open-predict | struct-open | formats-predict | formats | win-predict | prefixes-predict | prefixes) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
  *   npx tsx bench/coverage/run.ts workbook X   book-level features of workbook/X.ts into test/excel/workbook/X.json (test: test/workbook-excel.test.ts)
  *   npx tsx bench/coverage/run.ts tables X [ru|T]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/ or T/]X.json (test: test/tables-excel.test.ts)
  *   npx tsx bench/coverage/run.ts parts X    notes, hyperlinks and frozen panes of parts/X.ts into test/excel/parts/X.json and X/ (test: test/sheet-parts-excel.test.ts)

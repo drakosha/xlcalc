@@ -127,6 +127,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   filterModeOut: [{}],
   keptCells: [{ count: 5001 }, { count: 12000 }],
   keptFormats: [{ count: 1 }, { count: 22 }, { count: 12000 }],
+  noPrefixRepaired: [{}],
 }
 
 const sheet = 'Plan'

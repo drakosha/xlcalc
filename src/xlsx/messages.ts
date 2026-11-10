@@ -171,6 +171,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   condFormulaOut: () => 'a conditional format with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the workbook does not have) is left out of the file',
   filterModeOut: () => "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would overlap them",
   keptCells: (p) => `rows or columns moved on a sheet with ${p.count} cells holding formatted runs of text or rich values that the workbook does not have, more than writeKept follows: those that moved are written from the workbook, without them`,
+  noPrefixRepaired: () => 'a function newer than Excel 2007 stored without its prefix is written with it (_xlfn.XLOOKUP, _xlfn._xlws.FILTER), as Excel stores it: Excel calculates it as the engine did',
   keptFormats: (p) => `rows or columns moved on a sheet whose ${p.count} cells in cell formats the workbook does not tell from others of the same look (a quote prefix, a cell style) lie in more areas than writeKept follows: those that moved may take another cell format of the same look`,
 }
 

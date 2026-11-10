@@ -174,20 +174,33 @@ function isInside(src: string, at: number): boolean {
   return false
 }
 
+/** A call without its prefix: where its name begins, the name as written, and upper-case. */
+export interface BareCall {
+  at: number
+  text: string
+  name: string
+}
+
+/** Every call of a formula of a file without the prefix the file should store it with, in order (`noPrefixCalls`). */
+export function bareCalls(src: string): BareCall[] {
+  const out: BareCall[] = []
+  CALL.lastIndex = 0
+  for (let m = CALL.exec(src); m; m = CALL.exec(src)) {
+    const name = m[1].toUpperCase()
+    if (STANDARD.has(name) || !(XLFN.has(name) || XLWS.has(name))) continue
+    const before = src[m.index - 1]
+    if (before === '!' || (before !== undefined && FILE_WORD_CHAR.test(before)) || isInside(src, m.index)) continue
+    out.push({ at: m.index, text: m[1], name })
+  }
+  return out
+}
+
 /**
  * The functions a formula of a file calls without the prefix the file should store them with, upper-case, in the order of
  * their first call: as a generator writes them that takes a formula verbatim. The engine calculates such a call; Excel
  * does not (`noPrefix`).
  */
 export function noPrefixCalls(src: string): string[] | undefined {
-  let out: string[] | undefined
-  CALL.lastIndex = 0
-  for (let m = CALL.exec(src); m; m = CALL.exec(src)) {
-    const name = m[1].toUpperCase()
-    if (STANDARD.has(name) || !(XLFN.has(name) || XLWS.has(name)) || out?.includes(name)) continue
-    const before = src[m.index - 1]
-    if (before === '!' || (before !== undefined && FILE_WORD_CHAR.test(before)) || isInside(src, m.index)) continue
-    ;(out ??= []).push(name)
-  }
-  return out
+  const names = [...new Set(bareCalls(src).map((c) => c.name))]
+  return names.length ? names : undefined
 }

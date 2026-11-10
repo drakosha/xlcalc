@@ -6,13 +6,15 @@
  * answer is the rules the sheets list (`CondRules`: type, applies to, formula 1, priority, stop if true) and Excel's
  * error where it refused a step; `keep rules-held` and `keep rules-held-2` do the same for the held-out sets. Test: `test/xlsx-keep-rules-excel.test.ts`.
  * The files `writeKept` wrote for the Mac's sets (`KEEP_OPEN`: `open`, the edits over the made files; `struct-open`,
- * the operations of the structure; `formats-open`, the operations over the made file of formats): `keep <set>` has
+ * the operations of the structure; `formats-open`, the operations over the made file of formats; `prefixes`, openpyxl's
+ * files with formulas whose newer functions lack their prefix, as they are and repaired, `keep/prefixes.ts`): `keep <set>` has
  * Excel open each (COM refuses a file it would repair), compute and save it (`keep/<set>.json`, `keep/<set>/`). Test:
  * `test/xlsx-keep-win.test.ts`, against the predictions `bench/coverage/run.ts keep win-predict` wrote from the Mac's
  * answers (`bench/coverage/keep/win.predicted.json`).
  */
 import { readFileSync } from 'node:fs'
 import { formatsFiles, structFiles, written } from '../coverage/keep.js'
+import { prefixFiles } from '../coverage/keep/prefixes.js'
 import { RULES_BOOKS, RULES_SETS, rulesFile, rulesSteps, type RulesCase } from '../coverage/keep/rules.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
 import { caseFiles } from '../coverage/xlsx/sent.js'
@@ -33,6 +35,9 @@ export const KEEP_OPEN: Record<string, () => Promise<{ id: string; data: Uint8Ar
   'formats-open': formatsFiles,
 }
 
+/** Sets of files of which Excel refuses some, as predicted: openpyxl's files with formulas without their prefix, as they are and repaired. */
+const KEEP_FILES: Record<string, () => Promise<{ id: string; data: Uint8Array }[]>> = { prefixes: prefixFiles }
+
 /** What Excel answers to a file it opened: the book's name, Excel's caption and the repair logs it wrote meanwhile. */
 export interface OpenAnswer {
   opened: [name: string, caption: string, logs: string[]]
@@ -40,7 +45,7 @@ export interface OpenAnswer {
 
 /** A set of `KEEP_OPEN` in Excel: each file opened, computed and saved. */
 async function stepKeepOpen(what: string, tag: Tag, e: WinEnv): Promise<void> {
-  const list = await KEEP_OPEN[what]()
+  const list = await (KEEP_OPEN[what] ?? KEEP_FILES[what])()
   const data = new Map(list.map((f) => [f.id, f.data]))
   const cases = list.map((f) => ({ id: f.id }))
   const { files, sent } = await caseFiles(cases, async (c) => data.get(c.id)!)
@@ -51,9 +56,9 @@ async function stepKeepOpen(what: string, tag: Tag, e: WinEnv): Promise<void> {
 }
 
 export async function stepKeepRules(what: string, tag: Tag, e: WinEnv): Promise<void> {
-  if (KEEP_OPEN[what]) return stepKeepOpen(what, tag, e)
+  if (KEEP_OPEN[what] || KEEP_FILES[what]) return stepKeepOpen(what, tag, e)
   const made = what === 'rules-made'
-  if (!made && !RULES_SETS[what]) throw new Error(`keep: rules-made | ${[...Object.keys(RULES_SETS), ...Object.keys(KEEP_OPEN)].join(' | ')}`)
+  if (!made && !RULES_SETS[what]) throw new Error(`keep: rules-made | ${[...Object.keys(RULES_SETS), ...Object.keys(KEEP_OPEN), ...Object.keys(KEEP_FILES)].join(' | ')}`)
   const cases: RulesCase[] = made ? Object.keys(RULES_BOOKS).map((id) => ({ id })) : RULES_SETS[what]
   const mixed = made ? undefined : new Uint8Array(readFileSync(winFile('keep/rules-made/mixed.xlsx')))
   const { files, sent } = await caseFiles(cases, async (c) => mixed ?? rulesFile(c.id))

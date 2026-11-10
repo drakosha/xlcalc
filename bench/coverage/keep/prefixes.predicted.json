@@ -1,0 +1,259 @@
+{
+ "cases": {
+  "lookup-original": {
+   "opens": true,
+   "values": {
+    "C1": {
+     "error": "NAME"
+    },
+    "C2": "fallback",
+    "C3": {
+     "error": "NAME"
+    },
+    "D1": 1
+   }
+  },
+  "lookup-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 20,
+    "C2": 20,
+    "C3": 10,
+    "D1": 1
+   },
+   "formulas": {
+    "C1": "XLOOKUP(2,A1:A2,B1:B2)",
+    "C2": "IFERROR(XLOOKUP(2,A1:A2,B1:B2),\"fallback\")",
+    "C3": "XLOOKUP(1,A1:A2,B1:B2)",
+    "D1": "@SORT(A1:A2)"
+   }
+  },
+  "filter-original": {
+   "opens": false
+  },
+  "filter-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 30,
+    "C2": 70,
+    "C3": 1,
+    "C4": "none"
+   },
+   "formulas": {
+    "C1": "@FILTER(B1:B4,A1:A4>2)",
+    "C2": "SUM(FILTER(B1:B4,A1:A4>2))",
+    "C3": "@UNIQUE(A1:A4)",
+    "C4": "@IFERROR(FILTER(B1:B4,A1:A4>9),\"none\")"
+   }
+  },
+  "sort-original": {
+   "opens": false
+  },
+  "sort-repaired": {
+   "opens": true,
+   "values": {
+    "C2": 1,
+    "C3": 3,
+    "C4": 6
+   },
+   "formulas": {
+    "C2": "@SORT(A1:A3)",
+    "C3": "@SORT(A1:A3,1,-1)",
+    "C4": "SUM(SORTBY(A1:A3,A1:A3))"
+   }
+  },
+  "shared-original": {
+   "opens": true,
+   "values": {
+    "E1": {
+     "error": "NAME"
+    },
+    "E2": {
+     "error": "NAME"
+    },
+    "E3": {
+     "error": "NAME"
+    },
+    "E4": {
+     "error": "NAME"
+    },
+    "F1": "none",
+    "F2": "none",
+    "F3": "none",
+    "F4": "none"
+   }
+  },
+  "shared-repaired": {
+   "opens": true,
+   "values": {
+    "E1": 40,
+    "E2": 30,
+    "E3": 20,
+    "E4": 10,
+    "F1": "none",
+    "F2": 40,
+    "F3": 30,
+    "F4": 20
+   },
+   "formulas": {
+    "E1": "XLOOKUP(D1,$A$1:$A$4,$B$1:$B$4)",
+    "E2": "XLOOKUP(D2,$A$1:$A$4,$B$1:$B$4)",
+    "E3": "XLOOKUP(D3,$A$1:$A$4,$B$1:$B$4)",
+    "E4": "XLOOKUP(D4,$A$1:$A$4,$B$1:$B$4)",
+    "F1": "IFERROR(XLOOKUP(D1+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F2": "IFERROR(XLOOKUP(D2+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F3": "IFERROR(XLOOKUP(D3+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F4": "IFERROR(XLOOKUP(D4+1,$A$1:$A$4,$B$1:$B$4),\"none\")"
+   }
+  },
+  "array-original": {
+   "opens": false
+  },
+  "array-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 1,
+    "C2": 2,
+    "C3": 3,
+    "E1": 10,
+    "E2": 20,
+    "E3": 30,
+    "G1": 3
+   },
+   "formulas": {
+    "C1": "SORT(A1:A3)",
+    "C2": null,
+    "C3": null,
+    "E1": "SEQUENCE(3)*10",
+    "E2": null,
+    "E3": null,
+    "G1": "SUM(XLOOKUP({1;2},A1:A3,A1:A3))"
+   }
+  },
+  "name-original": {
+   "opens": true,
+   "values": {
+    "C1": {
+     "error": "NAME"
+    },
+    "C2": {
+     "error": "NAME"
+    },
+    "C3": {
+     "error": "NAME"
+    }
+   }
+  },
+  "name-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 20,
+    "C2": 40,
+    "C3": 0
+   },
+   "formulas": {
+    "C1": "@Pick",
+    "C2": "@Pick*2",
+    "C3": "@Local"
+   }
+  },
+  "mixed-original": {
+   "opens": true,
+   "opensOnWindows": false,
+   "values": {
+    "C1": {
+     "error": "NAME"
+    },
+    "C2": {
+     "error": "NAME"
+    },
+    "C3": {
+     "error": "NAME"
+    },
+    "C4": {
+     "error": "NAME"
+    },
+    "C5": 5
+   }
+  },
+  "mixed-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 9,
+    "C2": 40,
+    "C3": 12,
+    "C4": 4,
+    "C5": 5
+   },
+   "formulas": {
+    "C1": "IFNA(XLOOKUP(5,A1:A2,B1:B2),DAYS(10,1))",
+    "C2": "LET(x,XLOOKUP(2,A1:A2,B1:B2),x*2)",
+    "C3": "SUM(MAKEARRAY(2,2,LAMBDA(r,c,r+c)))",
+    "C4": "LET(f,LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y)),f(1)+f(1,2))",
+    "C5": "SUM(A1:A2)+DAYS(3,1)"
+   }
+  },
+  "rules-original": {
+   "opens": true,
+   "values": {
+    "C1": 1
+   }
+  },
+  "rules-repaired": {
+   "opens": true,
+   "values": {
+    "C1": 1
+   },
+   "formulas": {
+    "C1": "A1"
+   }
+  },
+  "table-original": {
+   "opens": true,
+   "values": {
+    "B2": {
+     "error": "NAME"
+    },
+    "B3": {
+     "error": "NAME"
+    }
+   }
+  },
+  "table-repaired": {
+   "opens": true,
+   "values": {
+    "B2": 10,
+    "B3": 20
+   },
+   "formulas": {
+    "B2": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)",
+    "B3": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)"
+   }
+  },
+  "pivot-original": {
+   "opens": true,
+   "values": {
+    "E2": 1610,
+    "G1": {
+     "error": "NAME"
+    },
+    "G2": {
+     "error": "NAME"
+    }
+   }
+  },
+  "pivot-repaired": {
+   "opens": true,
+   "values": {
+    "E2": 1610,
+    "G1": "none",
+    "G2": 14
+   },
+   "formulas": {
+    "E2": "SUM(B2:B21)",
+    "G1": "XLOOKUP(\"x\",A2:A21,B2:B21,\"none\")",
+    "G2": "XLOOKUP(A2,A2:A21,B2:B21)"
+   }
+  }
+ }
+}

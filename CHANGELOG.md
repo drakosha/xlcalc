@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+Added:
+
+- `writeKept` takes `prefixes: 'repair'` (`'keep'` by default): the formulas the reader reports as `noPrefix`, such as openpyxl's `XLOOKUP(…)` for `_xlfn.XLOOKUP(…)`, are written again with the prefixes `writeXlsx` gives them, LET's names and LAMBDA's parameters in them with `_xlpm.`. Only the prefixes change: a formula keeps its kind (a `FILTER` of the old kind stays one, `@FILTER(…)`, and does not spill), an array formula its range, and a shared formula stays shared, its master repaired. Cells, conditional formats, data validation, table column formulas and defined names are repaired; the engine's values and hashes stay the same. `writeKept`'s issues list the calls repaired as `noPrefix`, by function, sheet or name and cells, as the reader lists them. Typing the same formula again is still no change; the option is the way to repair a file ([Repairing prefixes](docs/xlsx-keep.md#repairing-prefixes)). Not yet run in Excel: the predictions for ten files openpyxl wrote, each as it is and repaired, are committed for Excel for Mac and for Windows to check.
+
 Fixed:
+
+- `writeKept` took the values an array formula of the old kind gives the cells of its range as a change where the file stores none (openpyxl's `ArrayFormula`), and wrote the file again for a workbook that did not change. They are now values of formulas, written with `writeValues` or another change, and the original bytes come back without them.
 
 - `setLayout` with `{ autoFilter, showRows: true }` threw a `TypeError` on a filtered sheet whose AutoFilter covers its header alone (`A1`, `A1:D1`) or one row of data (`A1:D2`). It now shows that row, or none (since 0.87.0).
 - `writeKept` gave two columns of a table one id where a column took a name another had (`A`→`C` and `B`→`A`), or one was deleted and another inserted in a single change. Excel refuses a table with two columns of one id. A column now takes the id of its place only where no column of that name kept it (since 0.87.1).

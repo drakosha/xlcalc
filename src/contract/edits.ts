@@ -147,7 +147,11 @@ export interface EditOptions {
   baseRevision?: number
 }
 
-/** Serializable operations applied in order, with one final recalculation and one undo step. */
+/**
+ * Serializable operations applied in order, with one final recalculation and one undo step. A `setLayout` edit with
+ * `fit` (AutoFit) is refused with `InputError`: AutoFit measures the values calculated after the batch, so a host that
+ * replays a list of operations sends such an edit as `Session.setLayout` after `applyChanges`, its own undo step.
+ */
 export type SessionOperation =
   | { op: 'setCells'; edits: CellEdit[] }
   | { op: 'replaceCells'; edits: CellReplace[] }

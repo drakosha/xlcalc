@@ -8,7 +8,7 @@
 import type { BookInput, SheetInput, TableInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
 import { SHEET_STATES } from '../../input.js'
-import { checkBoolean, object, onlyOptions } from '../../input/basic.js'
+import { checkBoolean, checkOneOf, object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
 import { checkLimits, fileBytes, readStyled } from '../read/book.js'
@@ -41,6 +41,7 @@ import { FileCells, spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
+import { repairNames, repairSheet, repairTable } from './prefixes.js'
 import { KeptStyles } from './styles.js'
 import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
 import { fileText } from '../write/formula.js'
@@ -173,8 +174,9 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
 async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
   const bytes = fileBytes(original)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
-  onlyOptions(o, 'opts', ['values', 'locale', 'limits', 'writeValues'])
+  onlyOptions(o, 'opts', ['values', 'locale', 'limits', 'writeValues', 'prefixes'])
   if (o.writeValues !== undefined) checkBoolean(o.writeValues, 'opts.writeValues')
+  if (o.prefixes !== undefined) checkOneOf(o.prefixes, 'opts.prefixes', ['keep', 'repair'])
   const limits = o.limits === undefined ? undefined : checkLimits(o.limits)
   const { book: given, cells, locale, unasked } = writeArgs(snapshot, { ...(o.values !== undefined ? { values: o.values } : {}), ...(o.locale !== undefined ? { locale: o.locale } : {}) })
   const src = await openSource(bytes, limits)
@@ -190,6 +192,7 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
   const lost = { conditional: unread('conditionalFormat'), validation: unread('dataValidation') }
   const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits, styles), lost, carriers.rules)
   k.writeValues = o.writeValues === true
+  k.repair = o.prefixes === 'repair'
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
@@ -247,6 +250,8 @@ class Kept {
   formulas = false
   /** Whether a sheet whose values of formulas differ from the file's counts as changed (`WriteKeptOptions.writeValues`). */
   writeValues = false
+  /** Whether the formulas that call newer functions without their prefix are written with it (`WriteKeptOptions.prefixes`). */
+  repair = false
   private readonly w0: BookWriting
   private readonly w1: BookWriting
   /** The workbook's relationship id of each sheet of the book written. */
@@ -373,7 +378,18 @@ class Kept {
       const formats = this.id.formats.get(k)
       const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, filters: { ...this.setup.filters, prefixes: filterPrefixes(xml) }, bound, lines: this.id.lines[k], ...(moved ? { moved, from: (i: number) => this.fileCells(i) } : {}), ...(formats ? { formats: new Formats(formats, this.styles) } : {}), ...(conditional ? { conditional } : {}) })
       this.changed ||= out.changed || xml !== ss.xml || (this.writeValues && out.xml !== undefined)
-      if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
+      let next = out.xml ?? (xml !== ss.xml ? xml : undefined)
+      if (this.repair) {
+        const base = next ?? ss.xml
+        const fixed = repairSheet(base, s1.name, this.issues)
+        if (fixed !== base) {
+          next = fixed
+          this.changed = true
+        }
+      }
+      if (next !== undefined) this.parts.set(ss.part, next)
+      // after the sheet's cells, as the reader reports a table's formulas
+      if (this.repair) this.repairTables(ss, s1.name)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
       if (rels.changed) this.parts.set(relsPath(ss.part), rels.xml())
       adopt(issues, this.issues, out.cells, out.written)
@@ -381,6 +397,19 @@ class Kept {
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
+  }
+
+  /** The formulas of a sheet's tables kept in the file, as the file has them or as written, repaired (`repairTable`). */
+  private repairTables(ss: SourceSheet, sheet: string): void {
+    for (const r of ss.rels) {
+      if (r.kind !== 'table' || r.external || !this.parts.has(r.target)) continue
+      const text = this.parts.text.get(r.target.toLowerCase()) ?? this.setup.tables.get(r.target)
+      if (text === undefined) continue
+      const fixed = repairTable(text, sheet, this.issues)
+      if (fixed === text) continue
+      this.changed = true
+      this.parts.set(r.target, fixed)
+    }
   }
 
   /** The model's pieces of the file's sheet `k` as read. */
@@ -647,7 +676,10 @@ class Kept {
     const { src, book0, book } = this
     const { decls } = src
     // the moved references of the names the model does not take written back: after the sheets, which keep their places
-    const wb = this.edited(src.wbPath, src.wb)
+    const wbMoved = this.edited(src.wbPath, src.wb)
+    // the names' formulas repaired where they are, the file's order of the names kept
+    const wb = this.repair ? repairNames(wbMoved, this.issues) : wbMoved
+    if (wb !== wbMoved) this.changed = true
     const root = rootOf(wb)!
     const kids = childrenOf(wb, root)
     const edits: Edit[] = []
@@ -694,7 +726,7 @@ class Kept {
       this.changed = true
       edits.push({ part: src.wbPath, start: list.start, end: list.end, text: sheets })
     }
-    this.names(wb, kids, place, placeOf, edits, insertAt)
+    this.names(wb, wbMoved !== src.wb, kids, place, placeOf, edits, insertAt)
     this.links(wb, kids, edits, insertAt)
     this.pivots.workbook(wb, kids, edits, insertAt)
     // the active sheet, by its place now
@@ -769,7 +801,7 @@ class Kept {
   }
 
   /** The defined names: the book's, each as the file wrote it where it did not change, and the file's the model does not take, by their sheets' places now. */
-  private names(wb: string, kids: ReturnType<typeof childrenOf>, place: Map<string, number>, placeOf: Map<number, number>, edits: Edit[], insertAt: (before: string[]) => number): void {
+  private names(wb: string, carried: boolean, kids: ReturnType<typeof childrenOf>, place: Map<string, number>, placeOf: Map<number, number>, edits: Edit[], insertAt: (before: string[]) => number): void {
     const { src, book0, book } = this
     const { decls } = src
     const scopeOf = (d: number | undefined) => (d === undefined ? undefined : decls[d]?.sheet !== undefined ? book0.sheets[decls[d].sheet!].name : decls[d]?.name)
@@ -824,7 +856,7 @@ class Kept {
       return [was.get(k) === x && fileText.has(k) ? fileText.get(k)! : x]
     })
     // the names the model does not take with their references written back count as changed
-    if (x0.filter(Boolean).join('') === x1.filter(Boolean).join('') && !foreignChanged && wb === src.wb) return
+    if (x0.filter(Boolean).join('') === x1.filter(Boolean).join('') && !foreignChanged && !carried) return
     this.changed = true
     adopt(issues, this.issues)
     const all = [...ours, ...foreign]

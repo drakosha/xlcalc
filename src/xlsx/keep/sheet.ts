@@ -327,9 +327,10 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
         body += patched(own, x1, s1)
         continue
       }
-      changed = true
       if (own?.master) broken.add(own.si!)
       const s1 = xfOf(own, col, x1.s)
+      // a value an array formula gives a cell the file holds nothing for is its formula's value, no change of the cell
+      if (own || x0 || inputs || x1.f || s1) changed = true
       x.styles.use('cellXfs', s1)
       body += s1 === x1.s ? x1.text : x1.text.replace(/^(<c r="\w+")(?: s="\d+")?/, s1 ? `$1 s="${s1}"` : '$1')
     }

@@ -18,7 +18,8 @@ import type { Locale } from '../locale/types.js'
  *   by `fn`.
  * - `noPrefix`: calls to a function a file stores with a prefix (`_xlfn.`, `_xlfn._xlws.`) written without it, as a generator
  *   does that takes a formula verbatim, named by `fn`: the engine calculates the call, where Excel shows #NAME?, and for
- *   FILTER and SORT does not open the file. `IFERROR` around such a call hides the error in Excel.
+ *   FILTER and SORT does not open the file. `IFERROR` around such a call hides the error in Excel. When `writeKept`
+ *   writes over a file with `prefixes: 'repair'`, the calls it wrote again with their prefix.
  * - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
  *   writer could not write (its value is written instead, or an empty cell when it has none).
  * - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
