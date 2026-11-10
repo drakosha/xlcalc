@@ -155,23 +155,47 @@ describe('the kinds of filter', () => {
   })
 })
 
+describe('the criteria as Excel saves them after applying them', () => {
+  const after = (filter: NonNullable<FilterCriteria['columns']>[number]['filter'], column = 0) => {
+    const r = editStructure(book(), { op: 'applyFilter', sheet: 'Data', criteria: { columns: [{ column, filter }] } })
+    if (!r.ok) throw new Error(r.message)
+    return r.book.sheets[0].autoFilter?.criteria?.columns?.[0].filter
+  }
+
+  it('values in order of their text, dates in time order', () => {
+    expect(after({ type: 'values', values: ['West', '#N/A', '25%', 'east'], dates: [{ level: 'day', year: 2026, month: 11, day: 10 }, { level: 'month', year: 2026, month: 10 }] })).toEqual({
+      type: 'values',
+      values: ['#N/A', '25%', 'east', 'West'],
+      dates: [{ level: 'month', year: 2026, month: 10 }, { level: 'day', year: 2026, month: 11, day: 10 }],
+    })
+  })
+
+  it('an operand that reads as a number or a date as that number; equality alone as values', () => {
+    expect(after({ type: 'custom', conditions: [{ operator: 'greaterThan', value: '2026-11-01' }, { operator: 'lessThan', value: '50%' }] }, 1)).toEqual({ type: 'custom', conditions: [{ operator: 'greaterThan', value: '46327' }, { operator: 'lessThan', value: '0.5' }] })
+    expect(after({ type: 'custom', conditions: [{ value: 'West' }, { operator: 'equal', value: '7' }] })).toEqual({ type: 'values', values: ['7', 'West'] })
+    expect(after({ type: 'custom', conditions: [{ value: 'W*' }] })).toEqual({ type: 'custom', conditions: [{ value: 'W*' }] })
+  })
+})
+
 describe('clearFilter', () => {
   const both: FilterCriteria = { columns: [{ column: 0, hiddenButton: true, filter: { type: 'values', values: ['South', 'North'] } }, { column: 1, filter: { type: 'custom', conditions: [{ operator: 'greaterThan', value: '4' }] } }], sort: { range: 'A2:B7', conditions: [{ range: 'B2:B7' }] } }
 
-  it("removes every column's condition, keeps the buttons and the sort, and shows the rows", () => {
+  it("removes every column's condition and the sort, keeps the buttons, and shows the rows", () => {
     const start = applied(book(), { op: 'applyFilter', sheet: 'Data', criteria: both })
     expect(hidden(start)).toEqual([2, 3, 4, 5, 6])
     const s = applied({ sheets: [start] }, { op: 'clearFilter', sheet: 'Data' })
     expect(hidden(s)).toEqual([])
-    expect(s.autoFilter).toEqual({ range: 'A1:B7', criteria: { columns: [{ column: 0, hiddenButton: true }], sort: both.sort } })
+    expect(s.autoFilter).toEqual({ range: 'A1:B7', criteria: { columns: [{ column: 0, hiddenButton: true }] } })
     expect('filtered' in s).toBe(false)
   })
 
-  it("removes one column's condition and applies the others again", () => {
+  it("removes one column's condition and applies the others and the sort again", () => {
     const start = applied(book(), { op: 'applyFilter', sheet: 'Data', criteria: both })
     const s = applied({ sheets: [start] }, { op: 'clearFilter', sheet: 'Data', column: 1 })
     expect(hidden(s)).toEqual([4, 6])
     expect(s.filtered).toBe(true)
+    expect(s.autoFilter?.criteria?.sort).toEqual(both.sort)
+    expect([2, 3, 4, 5, 6, 7].map((r) => s.cells[`A${r}`].value)).toEqual(['North', 'south ', 'East', 'South', 'West', 'North'])
   })
 })
 

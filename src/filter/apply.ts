@@ -17,7 +17,7 @@ import type { ValuesIn } from '../structure/values.js'
 import { rowsOf, tableKey, tablesOf } from '../tables/model.js'
 import { checkFilterCriteria } from './check.js'
 import { areaCells, keepRules } from './cells.js'
-import { KEEPS, type ColumnCells, type KeepRules, type Kept } from './keep.js'
+import { KEEPS, saved, type ColumnCells, type KeepRules, type Kept } from './keep.js'
 import { hiddenLine, sortedBook } from './sort.js'
 import { sheetKey } from '../syntax.js'
 
@@ -125,15 +125,17 @@ export function filterSorts(book: BookInput, o: Record<string, unknown>): [numbe
   return x ? [[s, x]] : []
 }
 
-/** The criteria without the conditions of their columns, or of column `only`: what is left of a column is its buttons. */
+/** The criteria without the conditions of their columns and the sort, or the condition of column `only` alone: what is left of a column is its buttons. */
 function cleared(criteria: FilterCriteria, only?: number): FilterCriteria {
   const columns = (criteria.columns ?? []).flatMap((x): FilterColumn[] => {
     if (only !== undefined && x.column !== only) return [x]
     const { filter: _, ...rest } = x
     return Object.keys(rest).length > 1 ? [rest] : []
   })
-  const { columns: _, ...rest } = criteria
-  return columns.length ? { ...rest, columns } : rest
+  // Clear takes the sort too; Clear Filter From keeps it (`clear-all`)
+  const { columns: _, sort, ...rest } = criteria
+  const kept = only !== undefined && sort ? { ...rest, sort } : rest
+  return columns.length ? { ...kept, columns } : kept
 }
 
 /** The entry of a row hidden or shown, the same object when it does not change. */
@@ -205,7 +207,7 @@ export function filterOp(book: BookInput, o: Record<string, unknown>, values: Va
     const k = (KEEPS[f.type] as (f: ColumnFilter, cells: ColumnCells, rules: KeepRules) => Kept)(f, cells, rules)
     if ('error' in k) return { ok: false, code: 'filter', message: sayPivot(book.locale, { key: 'filterError', sheet: book.sheets[t.s].name, cell: formatAddress(row(k.error), c) }) }
     kept.push(k.keep)
-    columns.push(k.filter ? { ...x, filter: k.filter } : x)
+    columns.push({ ...x, filter: saved(k.filter ?? f, rules) })
   }
   if (criteria.columns) criteria = { ...criteria, columns }
   const sheet = book.sheets[t.s]
@@ -219,7 +221,7 @@ export function filterOp(book: BookInput, o: Record<string, unknown>, values: Va
   sheets[t.s] = next
   const out = { ...book, sheets }
   // Reapply sorts the rows it shows by the filter's sort too (`file-sort-stale`)
-  if (o.op !== 'applyFilter' || !criteria.sort?.conditions?.length) return { ok: true, book: out, geometry: [] }
+  if ((o.op !== 'applyFilter' && o.column === undefined) || !criteria.sort?.conditions?.length) return { ok: true, book: out, geometry: [] }
   const sorted = sortedBook(out, state, t.s, parseRange(criteria.sort.range)!, criteria.sort, hiddenLine(next, criteria.sort.byColumns === true), 'op.criteria.sort')
   return sorted && !sorted.ok ? sorted : { ok: true, book: sorted?.book ?? out, geometry: [] }
 }

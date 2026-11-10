@@ -339,6 +339,32 @@ function iconKeep(f: IconFilter, cells: ColumnCells): Kept {
   }
 }
 
+/**
+ * A filter as Excel saves it after it applies it (the set `apply-held-1110`): the chosen values in order of their text
+ * and the dates in time order; a custom condition's operand that reads as a number or a date as that number; equality
+ * alone, without wildcards or blanks, as a list of values.
+ */
+export function saved(f: ColumnFilter, rules: KeepRules): ColumnFilter {
+  if (f.type === 'values') {
+    const out: ValuesFilter = { ...f }
+    if (f.values) out.values = f.values.slice().sort(rules.compareText)
+    if (f.dates) out.dates = f.dates.slice().sort((a, b) => {
+      const [x, y] = [dateParts(a), dateParts(b)]
+      for (let k = 0; k < Math.min(x.length, y.length); k++) if (x[k] !== y[k]) return x[k] - y[k]
+      return x.length - y.length
+    })
+    return out
+  }
+  if (f.type !== 'custom') return f
+  const plain = f.conditions.every((c) => (c.operator ?? 'equal') === 'equal' && !/[*?~]/.test(c.value) && trimSpaces(c.value) !== '')
+  if (plain && (!f.and || f.conditions.length === 1)) return { type: 'values', values: f.conditions.map((c) => c.value).sort(rules.compareText) }
+  const conditions = f.conditions.map((c) => {
+    const o = operandOf(c.value, rules.epoch)
+    return o.kind === 'number' && String(o.n) !== c.value ? { ...c, value: String(o.n) } : c
+  })
+  return conditions.some((c, i) => c !== f.conditions[i]) ? { ...f, conditions } : f
+}
+
 /** How each kind of filter keeps its cells. */
 export const KEEPS: { [K in ColumnFilter['type']]: (f: Extract<ColumnFilter, { type: K }>, cells: ColumnCells, rules: KeepRules) => Kept } = {
   values: valuesKeep,

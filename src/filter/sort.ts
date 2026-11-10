@@ -30,10 +30,14 @@ type Refused = Exclude<Applied, { ok: true }>
 /** The order of two of a condition's lines, by their place in the range. */
 type Order = (a: number, b: number) => number
 
+/** `ß` as `ss`, which Excel's Sort takes as equal, either case taken into account or not (`sort-1-*`, `sort-2-*`, `sort-case`). */
+const fold = (s: string) => s.replace(/ß/g, 'ss')
+
 /** Text in Excel's case-sensitive order: as the locale orders it, then lower case before upper at the first letter that differs (`sort-2-True`). */
 function caseOrder(compare: (a: string, b: string) => number): (a: string, b: string) => number {
   return (a, b) => {
     const x = compare(a, b)
+    ;[a, b] = [fold(a), fold(b)]
     if (x || a === b) return x
     for (let i = 0; i < Math.min(a.length, b.length); i++) {
       if (a[i] === b[i]) continue
@@ -57,8 +61,7 @@ function conditionOrder(cond: SortCondition, cells: ColumnCells, rules: KeepRule
     const keep = k && 'keep' in k ? k.keep : () => false
     return (a, b) => (Number(keep(b)) - Number(keep(a))) * (desc ? -1 : 1)
   }
-  // `ß` is `ss`, which keep their order either way (`sort-1-*`, `sort-2-*`)
-  const folded = (a: string, b: string) => rules.compareText(a.replace(/ß/g, 'ss'), b.replace(/ß/g, 'ss'))
+  const folded = (a: string, b: string) => rules.compareText(fold(a), fold(b))
   const text = caseSensitive ? caseOrder(folded) : folded
   const same = sameType(text) as (a: CellValue, b: CellValue) => number
   const values = new Map<number, CellValue>()
@@ -165,22 +168,6 @@ export function hiddenLine(sheet: SheetInput, byColumns: boolean): (line: number
   }
 }
 
-/**
- * Where Excel keeps a sort of `area` of sheet `s`: in the criteria of the table whose data holds it, of the AutoFilter
- * whose range below its header holds it, or else as the sheet's sort.
- */
-function keptSort(book: BookInput, s: number, area: Rect, sort: FilterSort): SheetInput {
-  const sheet = book.sheets[s]
-  const t = tablesOf(book).list.find((x) => x.s === s && meets(x, area))
-  if (t) {
-    if (t.input.filter === false) return sheet
-    return { ...sheet, tables: sheet.tables!.map((x) => (x === t.input ? { ...x, filter: { ...(x.filter || {}), sort } } : x)) }
-  }
-  const f = sheet.autoFilter && parseRange(sheet.autoFilter.range)!
-  if (f && contains({ ...f, r1: f.r1 + 1 }, area)) return { ...sheet, autoFilter: { ...sheet.autoFilter!, criteria: { ...sheet.autoFilter!.criteria, sort } } }
-  return { ...sheet, sort }
-}
-
 /** `sortRange` on a book already checked; its fields but `op` are checked here. */
 export function sortOp(book: BookInput, o: Record<string, unknown>, values: ValuesIn): Applied {
   const sheet = checkSheetOf(book, o.sheet, 'op.sheet')
@@ -192,6 +179,7 @@ export function sortOp(book: BookInput, o: Record<string, unknown>, values: Valu
   if (sorted && !sorted.ok) return sorted
   const out = sorted?.book ?? book
   const sheets = out.sheets.slice()
-  sheets[s] = keptSort(out, s, area, sort)
+  // kept as the sheet's, over a filter's data too, as `Worksheet.Sort` keeps it (`sort-in-filter`, `sort-in-table`)
+  sheets[s] = { ...sheets[s], sort }
   return { ok: true, book: { ...out, sheets }, geometry: [] }
 }

@@ -73,13 +73,14 @@ describe('sortRange', () => {
     expect(column(sorted(start, { range: 'A2:C7', conditions: [{ range: 'A2:A7', by: 'cellColor', style: { fill: { color: '#FF0000' } } }] }), 'A')).toEqual(['c', 'b', 'B', 'a', 'A', 'd'])
   })
 
-  it("keeps the sort in the AutoFilter's or the table's criteria when it sorts their data", () => {
-    const af = sorted(book({ autoFilter: { range: 'A1:C7' } }), { range: 'A2:C7', conditions: [{ range: 'A2:A7' }] })
-    expect(af.autoFilter).toEqual({ range: 'A1:C7', criteria: { sort: { range: 'A2:C7', conditions: [{ range: 'A2:A7' }] } } })
-    expect('sort' in af).toBe(false)
+  it("keeps the sort as the sheet's over an AutoFilter's or a table's data too, as Worksheet.Sort does", () => {
+    const sort = { range: 'A2:C7', conditions: [{ range: 'A2:A7' }] }
+    const af = sorted(book({ autoFilter: { range: 'A1:C7' } }), sort)
+    expect([af.autoFilter, af.sort]).toEqual([{ range: 'A1:C7' }, sort])
     const start = book({ tables: [{ name: 'T', range: 'A1:C7', columns: [{ name: 'Name' }, { name: 'Amount' }, { name: 'Column1' }] }] })
     start.sheets[0].cells.C1 = { value: 'Column1' }
-    expect(sorted(start, { range: 'A2:C7', conditions: [{ range: 'A2:A7' }] }).tables?.[0].filter).toEqual({ sort: { range: 'A2:C7', conditions: [{ range: 'A2:A7' }] } })
+    const t = sorted(start, sort)
+    expect([t.tables?.[0].filter, t.sort]).toEqual([undefined, sort])
   })
 
   it('refuses merged areas, part of an array, part of a table; a condition outside is an input error', () => {
