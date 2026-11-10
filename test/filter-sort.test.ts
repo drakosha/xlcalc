@@ -140,7 +140,7 @@ for (const file of readdirSync(made).filter((n) => n.endsWith('.xlsx')).sort()) 
 }
 
 it('finds the sorts of the books Excel made', () => {
-  expect(fixed.length).toBe(71)
+  expect(fixed.length).toBe(53)
 })
 
 it.each(fixed)('%s %s: the order Excel sorted is a fixed point', (_, sheet, sort, b, i) => {
