@@ -43,6 +43,7 @@ import { placedPivots } from '../pivot/area.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
+import { FILTER_FIELDS, filterOp } from '../filter/apply.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -78,6 +79,8 @@ const FIELDS: Record<string, string[]> = {
   setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula', 'values'],
   setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
   ...SLICER_FIELDS,
+  ...FILTER_FIELDS,
+  sortRange: ['sheet', 'sort'],
 }
 
 /** The operations on PivotTables, slicers and timelines, which place them themselves: the carriers of the others do not go through them. */
@@ -125,7 +128,7 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
   const computed = () => (values ??= stateValues(createState(book, clockOptions(currentClock()))))
-  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!() })
+  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!(), state: () => computed().state!() })
 }
 
 /**
@@ -304,11 +307,12 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotNotLoaded' }) }
       break
     }
-    // the contract ahead of the operations: `FIELDS` does not take them yet
     case 'applyFilter':
     case 'clearFilter':
+      r = filterOp(book, o, values)
+      break
     case 'sortRange':
-      throw new InputError('op.op', `${o.op} is not available yet`)
+      throw new InputError('op.op', 'sortRange is not available yet')
   }
   return r
 }

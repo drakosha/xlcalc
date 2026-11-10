@@ -75,6 +75,7 @@ import { applyOp, checkedMapCell } from './structure/index.js'
 import { withoutPivot } from './structure/pivots.js'
 import { mergedPlan } from './session/merged.js'
 import { OUTLINE_FIELDS } from './structure/outline-command.js'
+import { FILTER_FIELDS } from './filter/apply.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { cellValidation, hasRule, withInputs } from './validation/session.js'
@@ -926,8 +927,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       }
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
-      // a sheet hidden or shown, and an outline command, move no cell: the book takes its sheets, nothing is built again
-      if (((op.op === 'hideSheet' || op.op === 'unhideSheet') && r.book.activeSheet === old.input.activeSheet) || op.op in OUTLINE_FIELDS) {
+      // a sheet hidden or shown, an outline command and a filter that sorts nothing move no cell: the book takes its
+      // sheets, nothing is built again
+      const still = op.op in OUTLINE_FIELDS || (op.op in FILTER_FIELDS && !r.geometry.length)
+      if (((op.op === 'hideSheet' || op.op === 'unhideSheet') && r.book.activeSheet === old.input.activeSheet) || still) {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('editStructure', before, next))

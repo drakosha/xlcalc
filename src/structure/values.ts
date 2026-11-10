@@ -9,9 +9,10 @@ import { meets, type Rect } from './area.js'
 /**
  * The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included:
  * [row, column, value]; the areas of the arrays spilled over more than one cell that meet a rectangle (`spills`); and the
- * unrounded values for internal calculations (`raw`); and the day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take.
+ * unrounded values for internal calculations (`raw`); and the day of the calculation as a serial number of the workbook's date system (`today`), which relative date filters take;
+ * and the computed state itself, which a filter reads its cells' values, formats and looks from (`state`).
  */
-export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { raw?: ValuesIn; spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number }
+export type ValuesIn = ((sheet: string, rect: Rect) => [number, number, CellValue][]) & { raw?: ValuesIn; spills?: (sheet: string, rect: Rect) => Rect[]; today?: () => number; state?: () => EngineState }
 
 /** The spilled arrays of a computed state over more than one cell that meet `x` on `sheet`. */
 function spillsOf(state: EngineState, sheet: string, x: Rect): Rect[] {
@@ -46,5 +47,5 @@ export function stateValues(state: EngineState): ValuesIn {
     }
     return out
   }
-  return Object.assign(values, { raw: (sheet: string, x: Rect) => values(sheet, x, true), spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x), today: () => Math.floor(state.ctx.now) })
+  return Object.assign(values, { raw: (sheet: string, x: Rect) => values(sheet, x, true), spills: (sheet: string, x: Rect) => spillsOf(state, sheet, x), today: () => Math.floor(state.ctx.now), state: () => state })
 }

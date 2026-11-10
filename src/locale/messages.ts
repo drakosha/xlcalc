@@ -357,6 +357,7 @@ export interface MessageParams extends XlsxMessageParams, KeptMessageParams, Csv
   pasteOnMerge: { sheet: string; area: string }
   contentOnMerge: { sheet: string; area: string }
   filteredPaste: { sheet: string; area: string }
+  filterError: { sheet: string; cell: string }
   tableLands: { table: string }
   tableInsertTwo: { lines: Lines; tables: string[] }
   tableDeleteTwo: { lines: Lines; tables: string[] }
@@ -419,7 +420,7 @@ export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams | keyof Kept
 /** The keys of the messages only an edit of a book gives (a structure operation, typing into a cell, `explain`), whose English text stays out of `compute`'s bundle. */
 export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
-  | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
+  | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'filterError' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
   | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
   | PivotEditKey
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'

@@ -107,6 +107,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   pasteOnMerge: [{ sheet: 'S', area: 'D1:E1' }],
   contentOnMerge: [{ sheet: 'S', area: 'F1:G1' }],
   filteredPaste: [{ sheet: 'S', area: 'D1:E6' }],
+  filterError: [{ sheet: 'S', cell: 'C4' }],
   tableLands: [{ table: 'Sales' }],
   tableInsertTwo: [{ lines: 'rows', tables: ['Sales', 'Costs'] }],
   tableDeleteTwo: [{ lines: 'columns', tables: ['Sales', 'Costs', 'Taxes'] }],
