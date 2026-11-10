@@ -1,10 +1,11 @@
 /**
- * A workbook's slicers and timelines over PivotTables as parts of a package, as Excel 365 writes them: each slicer's
- * cache (x14 `slicerCacheDefinition`) and timeline's cache (x15 `timelineCacheDefinition`), named by the workbook's
- * extensions; each sheet's slicers and timelines in a part of each kind, named by the sheet's extensions, and their
- * frames in the sheet's drawing, at their places; each cache's name for the workbook's defined names. A slicer of a table is
- * not written (reported), nor is one without a place or whose cache's name the workbook holds for anything else, nor a cache with
- * nothing left to show it.
+ * A workbook's slicers and timelines over PivotTables and tables as parts of a package, as Excel 365 writes them: each
+ * slicer's cache (x14 `slicerCacheDefinition`, a table's with its table's and column's ids) and timeline's cache (x15
+ * `timelineCacheDefinition`), named by the workbook's extensions; each sheet's slicers of PivotTables, of tables and its
+ * timelines in a part of each kind, named by the sheet's extensions, and their frames in the sheet's drawing, at their
+ * places; each cache's name for the workbook's defined names. A slicer without a place is not written (reported), nor one
+ * whose cache's name the workbook holds for anything else, or whose table or column is not in the workbook, nor a cache
+ * with nothing left to show it.
  */
 import type { BookInput, DrawingPlace, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { caseKey } from '../../collate.js'
@@ -24,17 +25,18 @@ const MC = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
 const IGNORABLE = ` xmlns:mc="${MC}" mc:Ignorable="x" xmlns:x="${MAIN}"`
 const DRAWING_TYPE = 'application/vnd.openxmlformats-officedocument.drawing+xml'
 const LEVEL: Record<TimelineLevel, number> = { years: 0, quarters: 1, months: 2, days: 3 }
-/** A slicer's buttons' height as Excel makes one, in EMU. */
+/** A slicer's buttons' height as Excel makes one, in EMU: over a PivotTable, over a table (the set `table-slicer`). */
 const ROW_HEIGHT = 241300
+const TABLE_ROW_HEIGHT = 257175
 
 /** What the slicers and timelines add to a package. */
 export interface SlicerPackage {
   files: { name: string; text: string }[]
   contentTypes: [string, string][]
-  /** The workbook's relationships to the caches, in order: slicer caches, then timeline caches. */
-  caches: { kind: 'slicerCache' | 'timelineCache'; target: string }[]
-  /** Each sheet's parts, by the relationships it adds: its drawing, its slicers' part, its timelines' part. */
-  sheets: { drawing?: string; slicers?: string; timelines?: string }[]
+  /** The workbook's relationships to the caches, in order: slicer caches, then timeline caches; `table`, a table's slicer cache. */
+  caches: { kind: 'slicerCache' | 'timelineCache'; target: string; table?: true }[]
+  /** Each sheet's parts, by the relationships it adds: its drawing, its slicers' part, its tables' slicers' part, its timelines' part. */
+  sheets: { drawing?: string; slicers?: string; tableSlicers?: string; timelines?: string }[]
   /** The pivot caches a slicer or a timeline filters, by id: their `pivotCacheId`. */
   pivotCacheIds: Set<number>
   /** The caches written, by name: Excel refuses a file whose framed slicer's cache no defined name holds (the set `links/slicer-names`). */
@@ -103,8 +105,8 @@ export function timelineCacheXml(book: BookInput, c: TimelineCache, tab: TabId =
 /** A slicer's or a timeline's style where it has one: none for an empty name. */
 const styleOf = (style: string | undefined) => (style ? ` style="${escapeAttr(style)}"` : '')
 
-export function slicerXml(s: Slicer): string {
-  return `<slicer${give({ ...s, caption: s.caption ?? s.name }, 'name cache caption startItem:p columnCount=columns:p showCaption:t')}${styleOf(s.style)}${give(s, 'lockedPosition=positionLocked:f')} rowHeight="${s.rowHeight ?? ROW_HEIGHT}"/>`
+export function slicerXml(s: Slicer, rowHeight = ROW_HEIGHT): string {
+  return `<slicer${give({ ...s, caption: s.caption ?? s.name }, 'name cache caption startItem:p columnCount=columns:p showCaption:t')}${styleOf(s.style)}${give(s, 'lockedPosition=positionLocked:f')} rowHeight="${s.rowHeight ?? rowHeight}"/>`
 }
 
 export function timelineXml(t: Timeline): string {
@@ -117,7 +119,7 @@ export function timelineXml(t: Timeline): string {
 }
 
 /** A sheet's slicers' part, and its timelines'. */
-export const slicersPartXml = (list: Slicer[]) => `${HEAD}<slicers xmlns="${X14}"${IGNORABLE}>${list.map(slicerXml).join('')}</slicers>`
+export const slicersPartXml = (list: Slicer[], rowHeight = ROW_HEIGHT) => `${HEAD}<slicers xmlns="${X14}"${IGNORABLE}>${list.map((x) => slicerXml(x, rowHeight)).join('')}</slicers>`
 export const timelinesPartXml = (list: Timeline[]) => `${HEAD}<timelines xmlns="${X15}"${IGNORABLE}>${list.map(timelineXml).join('')}</timelines>`
 
 /** A cell of an anchor with its offset. */
@@ -160,8 +162,11 @@ function framed<X extends Slicer | Timeline>(list: X[], sheet: string, issues: I
   })
 }
 
-/** The parts of the book's slicers and timelines over PivotTables; `issues` takes what it leaves out: the slicers of tables and what has no place. */
-export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
+/** A table of the file by its name: its id and its columns' ids by name; undefined for none. */
+export type FileTableIds = (table: string) => { id: number; column(name: string): number | undefined } | undefined
+
+/** The parts of the book's slicers and timelines; `issues` takes what it leaves out (`slicerPackage`'s comment). `tables` gives the ids of the file's tables. */
+export function slicerPackage(book: BookInput, issues: Issues, tables: FileTableIds = () => undefined): SlicerPackage {
   const out: SlicerPackage = { files: [], contentTypes: [], caches: [], sheets: book.sheets.map(() => ({})), pivotCacheIds: new Set(), cacheNames: [] }
   // a part `xl/${path}${n}.xml` of its content type; its target from a sheet's part
   const add = (path: string, n: number, text: string, type: string) => {
@@ -170,10 +175,17 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     out.contentTypes.push([`/${name}`, type])
     return `../${path}${n}.xml`
   }
+  // a table's cache by its table's and column's ids in the file
+  const ids = (c: SlicerCache) => {
+    const t = c.table && tables(c.table.name)
+    const column = t && t.column(c.table!.column)
+    return t && column !== undefined ? { tableId: t.id, column } : undefined
+  }
   const caches = <C extends { name: string; cache?: number }>(kind: 'slicerCache' | 'timelineCache', list: C[], xml: (book: BookInput, c: C) => string) =>
     list.forEach((c, k) => {
-      out.caches.push({ kind, target: add(`${kind}s/${kind}`, k + 1, xml(book, c), TYPES[kind]).slice(3) })
-      out.pivotCacheIds.add(c.cache!)
+      const table = kind === 'slicerCache' ? ids(c as unknown as SlicerCache) : undefined
+      out.caches.push({ kind, target: add(`${kind}s/${kind}`, k + 1, table ? tableSlicerCacheXml(c as unknown as SlicerCache, table) : xml(book, c), TYPES[kind]).slice(3), ...(table ? { table: true as const } : {}) })
+      if (c.cache !== undefined) out.pivotCacheIds.add(c.cache)
       out.cacheNames.push(c.name)
     })
   // Excel opens no file whose slicer cache's name is no name (the set `links/file-refusals`), or a name the workbook holds for anything else (`links/slicer-names`)
@@ -184,7 +196,8 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
   }
   // each cache's name becomes a defined name of the workbook, so it must be one
   const named = (name: string) => nameProblem(name, localeBooleans(book.locale)) === null
-  const pivotCaches = (book.slicerCaches ?? []).filter((c) => fit(c, c.cache !== undefined && named(c.name)))
+  const pivotCaches = (book.slicerCaches ?? []).filter((c) => fit(c, (c.cache !== undefined || ids(c) !== undefined) && named(c.name)))
+  const ofTable = new Set(pivotCaches.filter((c) => c.cache === undefined).map((c) => caseKey(c.name)))
   const timelineCaches = (book.timelineCaches ?? []).filter((c) => fit(c, named(c.name)))
   const taken = new Set([...pivotCaches, ...timelineCaches].map((c) => caseKey(c.name)))
   const own = <X extends Slicer | Timeline>(list: X[] | undefined, sheet: string) => framed((list ?? []).filter((x) => taken.has(caseKey(x.cache))), sheet, issues)
@@ -205,25 +218,36 @@ export function slicerPackage(book: BookInput, issues: Issues): SlicerPackage {
     if (!slicers.length && !timelines.length) return
     const sheet = out.sheets[i]
     let id = 1
-    const frames = [...timelines.map((t) => frameXml(t, ++id, 'timeline')), ...slicers.map((x) => frameXml(x, ++id, 'slicer'))].join('')
+    const table = (x: Slicer) => ofTable.has(caseKey(x.cache))
+    const frames = [...timelines.map((t) => frameXml(t, ++id, 'timeline')), ...slicers.map((x) => frameXml(x, ++id, table(x) ? 'tableSlicer' : 'slicer'))].join('')
     sheet.drawing = add('drawings/drawing', ++drawings, `${HEAD}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">${frames}</xdr:wsDr>`, DRAWING_TYPE)
-    if (slicers.length) sheet.slicers = add('slicers/slicer', ++slicerParts, slicersPartXml(slicers), TYPES.slicer)
+    // a table's slicers in a part of their own, which the sheet's extension of Excel 2013 names
+    const [ofPivots, ofTables] = [slicers.filter((x) => !table(x)), slicers.filter(table)]
+    if (ofPivots.length) sheet.slicers = add('slicers/slicer', ++slicerParts, slicersPartXml(ofPivots), TYPES.slicer)
+    if (ofTables.length) sheet.tableSlicers = add('slicers/slicer', ++slicerParts, slicersPartXml(ofTables, TABLE_ROW_HEIGHT), TYPES.slicer)
     if (timelines.length) sheet.timelines = add('timelines/timeline', ++timelineParts, timelinesPartXml(timelines), TYPES.timeline)
   })
   return out
 }
 
-/** The workbook's extensions naming the caches by their relationships' ids, in order: slicer caches, then timeline caches. */
-export function workbookSlicerExt(ids: { kind: 'slicerCache' | 'timelineCache'; id: string }[]): string {
-  const s = ids.filter((x) => x.kind === 'slicerCache').map((x) => `<x14:slicerCache r:id="${x.id}"/>`)
+/**
+ * The workbook's extensions naming the caches by their relationships' ids, in order: slicer caches of PivotTables, of
+ * tables (Excel 2013's extension), then timeline caches.
+ */
+export function workbookSlicerExt(ids: { kind: 'slicerCache' | 'timelineCache'; id: string; table?: true }[]): string {
+  const refs = (table: boolean) => ids.filter((x) => x.kind === 'slicerCache' && !x.table === !table).map((x) => `<x14:slicerCache r:id="${x.id}"/>`)
+  const [s, st] = [refs(false), refs(true)]
   const t = ids.filter((x) => x.kind === 'timelineCache').map((x) => `<x15:timelineCacheRef r:id="${x.id}"/>`)
   return (
     (s.length ? `<ext uri="{BBE1A952-AA13-448e-AADC-164F8A28A991}" xmlns:x14="${X14}"><x14:slicerCaches>${s.join('')}</x14:slicerCaches></ext>` : '') +
+    (st.length ? `<ext uri="{46BE6895-7355-4a93-B00E-2C351335B9C9}" xmlns:x15="${X15}"><x15:slicerCaches xmlns:x14="${X14}">${st.join('')}</x15:slicerCaches></ext>` : '') +
     (t.length ? `<ext uri="{D0CA8CA8-9F24-4464-BF8E-62219DCF47F9}" xmlns:x15="${X15}"><x15:timelineCacheRefs>${t.join('')}</x15:timelineCacheRefs></ext>` : '')
   )
 }
 
-/** A sheet's extensions naming its slicers' and timelines' parts by their relationships' ids. */
-export const sheetSlicerExt = (slicers: string | undefined, timelines: string | undefined) =>
-  (slicers ? `<ext uri="{A8765BA9-456A-4dab-B4F3-ACF838C121DE}" xmlns:x14="${X14}"><x14:slicerList><x14:slicer r:id="${slicers}"/></x14:slicerList></ext>` : '') +
+/** A sheet's extensions naming its slicers' parts, of PivotTables and of tables, and its timelines' by their relationships' ids. */
+const slicerList = (id: string, ns: string) => `<x14:slicerList${ns}><x14:slicer r:id="${id}"/></x14:slicerList></ext>`
+export const sheetSlicerExt = (slicers: string | undefined, timelines: string | undefined, tableSlicers?: string) =>
+  (slicers ? `<ext uri="{A8765BA9-456A-4dab-B4F3-ACF838C121DE}" xmlns:x14="${X14}">${slicerList(slicers, '')}` : '') +
+  (tableSlicers ? `<ext uri="{3A4CF648-6AED-40f4-86FF-DC5316D8AED3}" xmlns:x15="${X15}">${slicerList(tableSlicers, ` xmlns:x14="${X14}"`)}` : '') +
   (timelines ? `<ext uri="{7E03D99C-DC04-49d9-9315-930204A7B6E9}" xmlns:x15="${X15}"><x15:timelineRefs><x15:timelineRef r:id="${timelines}"/></x15:timelineRefs></ext>` : '')
