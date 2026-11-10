@@ -6467,10 +6467,12 @@ type StructureOp =
   | { op: 'setPivotCalculatedItem'; sheet: string; pivot: string; field: number; name: string; formula: string | null }
   /**
    * Excel's Insert Slicer on `sheet`: over a slicer cache of the workbook by its name, or a new one of the source field
-   * `field` that filters the PivotTables `pivots`, all of one pivot cache. Its name is the first free from the field's
-   * (`Region`, `Region 1`…) without `slicer.name`, and a new cache's `Slicer_Region`.
+   * `field` that filters the PivotTables `pivots`, all of one pivot cache, or a new one of a table's column (`table` and
+   * `column` by their names), which chooses by the table's filter (`applyFilter`). Its name is the first free from the
+   * field's (`Region`, `Region 1`…) without `slicer.name`, and a new cache's `Slicer_Region`. A table's slicer and its
+   * cache go with the table or the column (`deleteTable`, `convertTable`, `deleteColumns`, `deleteSheet`), as in Excel.
    */
-  | { op: 'addSlicer'; sheet: string; slicer: Omit<Slicer, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
+  | { op: 'addSlicer'; sheet: string; slicer: Omit<Slicer, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } | { table: string; column: string } }
   /** Changes a slicer (`set`) and its cache (`cache`): the items chosen, the PivotTables it filters (Report Connections), its name, look and place. */
   | { op: 'editSlicer'; slicer: string; set?: SlicerPatch; cache?: SlicerCachePatch }
   /** Deletes the slicer; its cache goes with its last slicer. */
