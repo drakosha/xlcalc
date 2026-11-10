@@ -1,6 +1,6 @@
 /** Structure operations (`editStructure`) and their answers, and a sheet's outline groups and commands over its rows and columns (`outlineGroups`, `outlineEdit`). */
 import type { CellRef, LineSpan, RangeRef, Refusal } from './values.js'
-import type { Book, ColumnInput, RowInput, TableInput } from './book.js'
+import type { Book, ColumnInput, FilterCriteria, FilterSort, RowInput, TableInput } from './book.js'
 import type { PivotGrouping, PivotRefusalReason, PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
 import type { EditResult } from './edits.js'
 
@@ -220,6 +220,36 @@ export type StructureOp =
   | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }
   /** Deletes the timeline; its cache goes with its last timeline. */
   | { op: 'deleteTimeline'; timeline: string }
+  /**
+   * Excel's filter, of the sheet's AutoFilter (`sheet`) or of a table (`table`). With `criteria`, they replace the
+   * filter's (a column's button, `Range.AutoFilter` with a field); without, those it holds are applied again (Data >
+   * Reapply). Each row of its range below the header that every column's condition keeps is shown, one hidden by hand
+   * too, and the others are hidden; then its sort, if it has one, sorts the rows shown as `sortRange` does, the hidden
+   * ones staying in place. The sheet's AutoFilter filters the range it acts on (`Session.getAutoFilterRange`) and takes
+   * it as its own; a table's totals row and a last row of `SUBTOTAL` under an AutoFilter stay out. Top, average and
+   * relative date filters keep the bounds they found (`TopFilter.filterValue`, `DynamicFilter.value` and `maxValue`),
+   * relative dates counted from the day of the calculation. The sheet is `filtered` while a filter of it has a
+   * condition. Refused (`filter`) where a top or average filter's column holds an error, as Excel refuses it. A sheet
+   * without an AutoFilter, or a table without filter buttons (`TableInput.filter` false), is an input error.
+   */
+  | { op: 'applyFilter'; sheet: string; criteria?: FilterCriteria }
+  | { op: 'applyFilter'; table: string; criteria?: FilterCriteria }
+  /**
+   * Excel's Clear (`ShowAllData`): the conditions of the filter's columns removed, their buttons kept, and the rows of
+   * its range below the header shown; with `column` (from 0 at the filter's left), that column's condition alone (Clear
+   * Filter From), the others applied again as `applyFilter` applies them. Its sort stays held, the cells where they are.
+   */
+  | { op: 'clearFilter'; sheet: string; column?: number }
+  | { op: 'clearFilter'; table: string; column?: number }
+  /**
+   * Excel's Sort of a range (Data > Sort, `Range.Sort`): the rows of `sort.range` reordered by its conditions in turn
+   * (its columns, with `byColumns`), each line's cells moving together, formulas as a move moves them, and lines hidden
+   * staying in place. Ties keep their order. The sort is kept where Excel keeps it: by the table whose data it covers,
+   * by the AutoFilter whose range below its header it is, or else as the sheet's `sort`. Refused over merged areas of
+   * different sizes (`merged`), part of a legacy array formula's range (`array`), part of a table (`table`) or a
+   * PivotTable (`pivot`).
+   */
+  | { op: 'sortRange'; sheet: string; sort: FilterSort }
 
 /**
  * What a fill takes from its source (`StructureOp` `fillRange`), like Excel's `XlAutoFillType`. `default` is dragging
@@ -295,6 +325,8 @@ export type StructureRefusal =
    * be made (its source, or `xlcalc/pivot` not loaded).
    */
   | 'pivot'
+  /** A top or average filter over a column that holds an error (`applyFilter`, `clearFilter`). */
+  | 'filter'
 
 /** The result of `editStructure`. */
 export type StructureResult =

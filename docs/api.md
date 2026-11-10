@@ -3494,7 +3494,7 @@ interface FilterColumn {
 
 ### `FilterCriteria`
 
-A filter's criteria and sort, a sheet's ([`AutoFilter.criteria`](#autofilter)) or a table's ([`TableInput.filter`](#tableinput)), as a file holds them: the workbook holds them and does not apply them.
+A filter's criteria and sort, a sheet's ([`AutoFilter.criteria`](#autofilter)) or a table's ([`TableInput.filter`](#tableinput)), as a file holds them: the workbook holds them, and `applyFilter` applies them ([`StructureOp`](#structureop)).
 
 ```ts
 interface FilterCriteria {
@@ -5982,11 +5982,11 @@ interface SheetInput {
   /**
    * The sheet's AutoFilter (Excel's Filter over cells outside a table, xlsx `<autoFilter>`): the filter buttons on the
    * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Whether a filter hid
-   * rows is `filtered`, and which rows it hid are the rows' `hidden`: the criteria are held, not applied. Not part of
-   * calculation or inputHash.
+   * rows is `filtered`, and which rows it hid are the rows' `hidden`: the criteria are held, and applied only by
+   * `applyFilter` and `clearFilter` (`StructureOp`). Not part of calculation or inputHash.
    */
   autoFilter?: AutoFilter
-  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, not applied. Not part of calculation or inputHash. */
+  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, the cells sorted only by `sortRange` (`StructureOp`). Not part of calculation or inputHash. */
   sort?: FilterSort
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
@@ -6481,6 +6481,36 @@ type StructureOp =
   | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }
   /** Deletes the timeline; its cache goes with its last timeline. */
   | { op: 'deleteTimeline'; timeline: string }
+  /**
+   * Excel's filter, of the sheet's AutoFilter (`sheet`) or of a table (`table`). With `criteria`, they replace the
+   * filter's (a column's button, `Range.AutoFilter` with a field); without, those it holds are applied again (Data >
+   * Reapply). Each row of its range below the header that every column's condition keeps is shown, one hidden by hand
+   * too, and the others are hidden; then its sort, if it has one, sorts the rows shown as `sortRange` does, the hidden
+   * ones staying in place. The sheet's AutoFilter filters the range it acts on (`Session.getAutoFilterRange`) and takes
+   * it as its own; a table's totals row and a last row of `SUBTOTAL` under an AutoFilter stay out. Top, average and
+   * relative date filters keep the bounds they found (`TopFilter.filterValue`, `DynamicFilter.value` and `maxValue`),
+   * relative dates counted from the day of the calculation. The sheet is `filtered` while a filter of it has a
+   * condition. Refused (`filter`) where a top or average filter's column holds an error, as Excel refuses it. A sheet
+   * without an AutoFilter, or a table without filter buttons (`TableInput.filter` false), is an input error.
+   */
+  | { op: 'applyFilter'; sheet: string; criteria?: FilterCriteria }
+  | { op: 'applyFilter'; table: string; criteria?: FilterCriteria }
+  /**
+   * Excel's Clear (`ShowAllData`): the conditions of the filter's columns removed, their buttons kept, and the rows of
+   * its range below the header shown; with `column` (from 0 at the filter's left), that column's condition alone (Clear
+   * Filter From), the others applied again as `applyFilter` applies them. Its sort stays held, the cells where they are.
+   */
+  | { op: 'clearFilter'; sheet: string; column?: number }
+  | { op: 'clearFilter'; table: string; column?: number }
+  /**
+   * Excel's Sort of a range (Data > Sort, `Range.Sort`): the rows of `sort.range` reordered by its conditions in turn
+   * (its columns, with `byColumns`), each line's cells moving together, formulas as a move moves them, and lines hidden
+   * staying in place. Ties keep their order. The sort is kept where Excel keeps it: by the table whose data it covers,
+   * by the AutoFilter whose range below its header it is, or else as the sheet's `sort`. Refused over merged areas of
+   * different sizes (`merged`), part of a legacy array formula's range (`array`), part of a table (`table`) or a
+   * PivotTable (`pivot`).
+   */
+  | { op: 'sortRange'; sheet: string; sort: FilterSort }
 ```
 
 ### `StructureRefusal`
@@ -6523,6 +6553,8 @@ type StructureRefusal =
    * be made (its source, or `xlcalc/pivot` not loaded).
    */
   | 'pivot'
+  /** A top or average filter over a column that holds an error (`applyFilter`, `clearFilter`). */
+  | 'filter'
 ```
 
 ### `StructureRefused`
@@ -6631,8 +6663,8 @@ interface TableInput {
   style?: TableStyle
   /**
    * Its filter's criteria and sort; `false` for a table without filter buttons (Table Design, Filter Button off, xlsx: no
-   * `<autoFilter>`), which a table without a header row is anyway. Held, not applied, as `AutoFilter.criteria`. Not part of
-   * calculation or inputHash.
+   * `<autoFilter>`), which a table without a header row is anyway. Held, and applied by `applyFilter`, as
+   * `AutoFilter.criteria`. Not part of calculation or inputHash.
    */
   filter?: FilterCriteria | false
 }

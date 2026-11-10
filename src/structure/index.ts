@@ -304,6 +304,11 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotNotLoaded' }) }
       break
     }
+    // the contract ahead of the operations: `FIELDS` does not take them yet
+    case 'applyFilter':
+    case 'clearFilter':
+    case 'sortRange':
+      throw new InputError('op.op', `${o.op} is not available yet`)
   }
   return r
 }
