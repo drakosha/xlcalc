@@ -179,7 +179,7 @@ export interface SheetInput {
    * `applyFilter` and `clearFilter` (`StructureOp`). Not part of calculation or inputHash.
    */
   autoFilter?: AutoFilter
-  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, the cells sorted only by `sortRange` (`StructureOp`). Not part of calculation or inputHash. */
+  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, set with the cells sorted by `sortRange` (`StructureOp`). Not part of calculation or inputHash. */
   sort?: FilterSort
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]

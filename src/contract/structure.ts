@@ -228,24 +228,27 @@ export type StructureOp =
    * ones staying in place. The sheet's AutoFilter filters the range it acts on (`Session.getAutoFilterRange`) and takes
    * it as its own; a table's totals row and a last row of `SUBTOTAL` under an AutoFilter stay out. Top, average and
    * relative date filters keep the bounds they found (`TopFilter.filterValue`, `DynamicFilter.value` and `maxValue`),
-   * relative dates counted from the day of the calculation. The sheet is `filtered` while a filter of it has a
+   * relative dates counted from the day of the calculation, and the criteria take the form Excel saves after it: the
+   * chosen values in order of their text and the dates in time order, a number or date operand of a custom condition as
+   * its number, equality alone without wildcards as a list of values. The sheet is `filtered` while a filter of it has a
    * condition. Refused (`filter`) where a top or average filter's column holds an error, as Excel refuses it. A sheet
    * without an AutoFilter, or a table without filter buttons (`TableInput.filter` false), is an input error.
    */
   | { op: 'applyFilter'; sheet: string; criteria?: FilterCriteria }
   | { op: 'applyFilter'; table: string; criteria?: FilterCriteria }
   /**
-   * Excel's Clear (`ShowAllData`): the conditions of the filter's columns removed, their buttons kept, and the rows of
-   * its range below the header shown; with `column` (from 0 at the filter's left), that column's condition alone (Clear
-   * Filter From), the others applied again as `applyFilter` applies them. Its sort stays held, the cells where they are.
+   * Excel's Clear (`ShowAllData`): the conditions of the filter's columns and its sort removed, their buttons kept, and
+   * the rows of its range below the header shown, rows hidden by hand too; the cells stay where they are. With `column`
+   * (from 0 at the filter's left), that column's condition alone (Clear Filter From), the others and the sort applied
+   * again as `applyFilter` applies them.
    */
   | { op: 'clearFilter'; sheet: string; column?: number }
   | { op: 'clearFilter'; table: string; column?: number }
   /**
    * Excel's Sort of a range (Data > Sort, `Range.Sort`): the rows of `sort.range` reordered by its conditions in turn
    * (its columns, with `byColumns`), each line's cells moving together, formulas as a move moves them, and lines hidden
-   * staying in place. Ties keep their order. The sort is kept where Excel keeps it: by the table whose data it covers,
-   * by the AutoFilter whose range below its header it is, or else as the sheet's `sort`. Refused over merged areas of
+   * staying in place. Ties keep their order. The sort is kept as the sheet's `sort`, as Excel's `Worksheet.Sort` keeps
+   * it over a filter's data too; a filter's own sort is set by `applyFilter`'s criteria. Refused over merged areas of
    * different sizes (`merged`), part of a legacy array formula's range (`array`), part of a table (`table`) or a
    * PivotTable (`pivot`).
    */
