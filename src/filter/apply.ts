@@ -3,24 +3,23 @@
  * or a table's set or cleared, and applied to the rows of its range, which show or hide by them as Excel's Reapply shows
  * and hides them; no cell moves.
  */
-import type { BookInput, CellValue, ColumnFilter, ConditionalAppearance, FilterColumn, FilterCriteria, RowInput, SheetInput, StructureOp, TableInput } from '../contract.js'
-import { windowLooks } from '../cond/looks.js'
-import { run } from '../exec/budget.js'
-import { sheetLines } from '../layout/lines.js'
+import type { BookInput, ColumnFilter, FilterColumn, FilterCriteria, RowInput, SheetInput, StructureOp, TableInput } from '../contract.js'
 import { sayPivot } from '../locale/pivot-messages.js'
 import { checkSheetOf } from '../input.js'
 import { InputError } from '../input-error.js'
 import { checkString, integer } from '../input/basic.js'
 import { lines, toMap, type Line } from '../layout/spans.js'
-import { formatAddress, MAX_COLS } from '../model.js'
-import { cellValue } from '../result.js'
+import { formatAddress } from '../model.js'
 import { autoFilterRange } from '../session/autofilter.js'
 import { parseRange, rectText, type Rect } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import type { ValuesIn } from '../structure/values.js'
 import { rowsOf, tableKey, tablesOf } from '../tables/model.js'
 import { checkFilterCriteria } from './check.js'
+import { areaCells, keepRules } from './cells.js'
 import { KEEPS, type ColumnCells, type KeepRules, type Kept } from './keep.js'
+import { hiddenLine, sortedBook } from './sort.js'
+import { sheetKey } from '../syntax.js'
 
 export type FilterOp = Extract<StructureOp, { op: 'applyFilter' | 'clearFilter' }>
 
@@ -106,6 +105,26 @@ function targetOf(book: BookInput, o: Record<string, unknown>, values: ValuesIn)
   }
 }
 
+/**
+ * The range `applyFilter` would sort, by the sheet it is on, read before the operation is checked (`structure/looks.ts`
+ * lays its looks as entries): the sort of the criteria given, or else of the filter's own; none for input of another shape.
+ */
+export function filterSorts(book: BookInput, o: Record<string, unknown>): [number, Rect][] {
+  let s = -1
+  let held: FilterCriteria | false | undefined
+  if (typeof o.table === 'string') {
+    const t = tablesOf(book).byName.get(tableKey(o.table))
+    if (t) [s, held] = [t.s, t.input.filter]
+  } else if (typeof o.sheet === 'string') {
+    s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(o.sheet as string))
+    held = book.sheets[s]?.autoFilter?.criteria
+  }
+  const given = o.criteria as FilterCriteria | undefined
+  const range = (given !== undefined ? (typeof given === 'object' && given ? given.sort?.range : undefined) : held ? held.sort?.range : undefined) as unknown
+  const x = s >= 0 && typeof range === 'string' ? parseRange(range) : null
+  return x ? [[s, x]] : []
+}
+
 /** The criteria without the conditions of their columns, or of column `only`: what is left of a column is its buttons. */
 function cleared(criteria: FilterCriteria, only?: number): FilterCriteria {
   const columns = (criteria.columns ?? []).flatMap((x): FilterColumn[] => {
@@ -169,12 +188,9 @@ export function filterOp(book: BookInput, o: Record<string, unknown>, values: Va
   }
   if (o.op === 'clearFilter') criteria = cleared(criteria, o.column === undefined ? undefined : integer(o.column, 'op.column', 0, width - 1))
   const state = values.state!()
-  const ls = sheetLines(state.input.sheets[t.s], state)
-  const rules: KeepRules = { compareText: state.ctx.rules.compareText, epoch: state.ctx.rules.epoch, today: Math.floor(state.ctx.now) }
+  const rules = keepRules(state)
   const n = Math.max(0, t.data.r2 - t.data.r1 + 1)
-  // the appearance conditional formats give the filter's cells, looked at once when a color or an icon asks for it
-  let looks: Map<number, ConditionalAppearance> | undefined
-  const lookAt = (r: number, c: number) => (looks ??= run(windowLooks(state, t.s, t.data))).get(r * MAX_COLS + c)
+  const cellsOf = areaCells(state, t.s, t.data)
   const kept: ((i: number) => boolean)[] = []
   const columns: FilterColumn[] = []
   for (const x of criteria.columns ?? []) {
@@ -185,19 +201,7 @@ export function filterOp(book: BookInput, o: Record<string, unknown>, values: Va
     }
     const c = t.data.c1 + x.column
     const row = (i: number) => t.data.r1 + i
-    const value = (i: number): CellValue => cellValue(state, t.s, row(i), c)
-    const cells: ColumnCells = {
-      n,
-      value,
-      format: (i) => ls.format(row(i), c),
-      text: (i) => state.ctx.rules.display(value(i), ls.format(row(i), c), Infinity).text,
-      style: (i) => {
-        const k = ls.look(row(i), c).style
-        return k === undefined ? undefined : state.input.styles?.[k]
-      },
-      runs: (i) => state.input.sheets[t.s].cells[formatAddress(row(i), c)]?.richText,
-      look: (i) => lookAt(row(i), c),
-    }
+    const cells = cellsOf(n, (i) => [row(i), c])
     const k = (KEEPS[f.type] as (f: ColumnFilter, cells: ColumnCells, rules: KeepRules) => Kept)(f, cells, rules)
     if ('error' in k) return { ok: false, code: 'filter', message: sayPivot(book.locale, { key: 'filterError', sheet: book.sheets[t.s].name, cell: formatAddress(row(k.error), c) }) }
     kept.push(k.keep)
@@ -213,5 +217,9 @@ export function filterOp(book: BookInput, o: Record<string, unknown>, values: Va
   else delete next.filtered
   const sheets = book.sheets.slice()
   sheets[t.s] = next
-  return { ok: true, book: { ...book, sheets }, geometry: [] }
+  const out = { ...book, sheets }
+  // Reapply sorts the rows it shows by the filter's sort too (`file-sort-stale`)
+  if (o.op !== 'applyFilter' || !criteria.sort?.conditions?.length) return { ok: true, book: out, geometry: [] }
+  const sorted = sortedBook(out, state, t.s, parseRange(criteria.sort.range)!, criteria.sort, hiddenLine(next, criteria.sort.byColumns === true), 'op.criteria.sort')
+  return sorted && !sorted.ok ? sorted : { ok: true, book: sorted?.book ?? out, geometry: [] }
 }

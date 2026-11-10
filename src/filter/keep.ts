@@ -40,7 +40,7 @@ export type Kept = { keep: (i: number) => boolean; filter?: ColumnFilter } | { e
 const isError = (v: CellValue): v is { error: ErrorCode } => typeof v === 'object' && v !== null
 
 /** Text Excel's filter takes as the same in any case: `Ё` is `ё` but not `е`, `ß` is `ss` (the filter sets `values-30`, `values-31`). */
-const textKey = (s: string) => s.normalize('NFD').toLowerCase().replace(/ß/g, 'ss')
+export const textKey = (s: string) => s.normalize('NFD').toLowerCase().replace(/ß/g, 'ss')
 
 /** A cell a filter takes as blank: none, an empty text (a formula's `""`) or spaces alone; a no-break space is not. */
 const isBlank = (v: CellValue) => v === null || (typeof v === 'string' && trimSpaces(v) === '')

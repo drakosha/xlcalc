@@ -929,7 +929,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!r.ok) return r
       // a sheet hidden or shown, an outline command and a filter that sorts nothing move no cell: the book takes its
       // sheets, nothing is built again
-      const still = op.op in OUTLINE_FIELDS || (op.op in FILTER_FIELDS && !r.geometry.length)
+      const still = op.op in OUTLINE_FIELDS || (op.op in FILTER_FIELDS && r.book.sheets.every((x, i) => x.cells === old.input.sheets[i].cells))
       if (((op.op === 'hideSheet' || op.op === 'unhideSheet') && r.book.activeSheet === old.input.activeSheet) || still) {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)

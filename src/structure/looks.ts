@@ -16,6 +16,7 @@ import { parseRange, type Axis, type Rect } from './area.js'
 import type { Applied } from './geometry.js'
 import { lookBefore } from './layout.js'
 import { pasteOf } from './writes.js'
+import { filterSorts } from '../filter/apply.js'
 
 /**
  * The rectangles of a sheet whose looks an operation reads, moves or writes as entries, by sheet: its tables. A copy or
@@ -53,6 +54,13 @@ function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
     }
     case 'addTable':
       add(index(o.sheet), range((o.table as Record<string, unknown> | undefined)?.range))
+      break
+    case 'sortRange':
+      // the cells a sort lays elsewhere take their looks with them
+      add(index(o.sheet), range((o.sort as Record<string, unknown> | undefined)?.range))
+      break
+    case 'applyFilter':
+      for (const [s, x] of filterSorts(book, o)) add(s, x)
       break
     case 'deleteTable': {
       const t = tablesOf(book).list.find((x) => typeof o.table === 'string' && tableKey(x.name) === tableKey(o.table))

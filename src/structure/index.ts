@@ -44,6 +44,7 @@ import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
 import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
 import { FILTER_FIELDS, filterOp } from '../filter/apply.js'
+import { sortOp } from '../filter/sort.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -312,7 +313,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       r = filterOp(book, o, values)
       break
     case 'sortRange':
-      throw new InputError('op.op', 'sortRange is not available yet')
+      r = sortOp(book, o, values)
+      break
   }
   return r
 }

@@ -108,6 +108,8 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   contentOnMerge: [{ sheet: 'S', area: 'F1:G1' }],
   filteredPaste: [{ sheet: 'S', area: 'D1:E6' }],
   filterError: [{ sheet: 'S', cell: 'C4' }],
+  sortMerged: [{ sheet: 'S', area: 'A2:B2' }],
+  sortTable: [{ table: 'T' }],
   tableLands: [{ table: 'Sales' }],
   tableInsertTwo: [{ lines: 'rows', tables: ['Sales', 'Costs'] }],
   tableDeleteTwo: [{ lines: 'columns', tables: ['Sales', 'Costs', 'Taxes'] }],
