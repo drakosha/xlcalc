@@ -2,7 +2,19 @@
 
 ## Unreleased
 
+Added:
+
+- Filters applied, as Excel's Reapply applies the criteria a file holds: `applyFilter` sets the criteria of a sheet's AutoFilter or a table's, or applies those they hold, and shows and hides the rows of the filter's range by values, dates, custom conditions, top and average, relative dates, colours and icons; `clearFilter` removes the conditions and the sort, or one column's condition. A session applies a filter that sorts nothing without building the workbook again, in one undo step. A top or average filter over a column with an error is rejected with the new code `filter` ([Applying a filter and sorting](docs/structure.md#applying-a-filter-and-sorting)).
+- `sortRange` sorts the rows shown of a range by its conditions, as Excel's Sort: by value, a custom list, case, a colour or an icon, hidden rows in place, formulas moved as copies, references from elsewhere unchanged; `applyFilter` sorts by the filter's sort. Text sorts by the locale's collation, which orders a no-break space, `*` and `?` and emoji otherwise than Excel for Windows.
+- `addSlicer` makes a table's slicer over its column (`cache: { table, column }`), and `writeXlsx` writes a table's slicers as Excel does. A table's slicer and its cache go with the table or the column, as in Excel.
+
+Changed:
+
+- After `applyFilter` the criteria take the form Excel saves: the bounds it found, the chosen values in order of their text, a number or date operand as its number, equality alone as a list of values.
+
 Fixed:
+
+- `readXlsx` read the sort of an AutoFilter a second time as the sheet's own sort, so a workbook read and written again held two (since 0.88.0).
 
 - `setLayout` with `{ autoFilter, showRows: true }` threw a `TypeError` on a filtered sheet whose AutoFilter covers its header alone (`A1`, `A1:D1`) or one row of data (`A1:D2`). It now shows that row, or none (since 0.87.0).
 - `writeKept` gave two columns of a table one id where a column took a name another had (`A`→`C` and `B`→`A`), or one was deleted and another inserted in a single change. Excel refuses a table with two columns of one id. A column now takes the id of its place only where no column of that name kept it (since 0.87.1).
