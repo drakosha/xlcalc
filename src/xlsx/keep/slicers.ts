@@ -5,6 +5,7 @@
  */
 import type { BookInput, DrawingPlace, Slicer, SlicerCache, Timeline, TimelineCache } from '../../contract.js'
 import { caseKey } from '../../collate.js'
+import { isCacheNameValue } from '../../slicer-cache-name.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { nameProblem } from '../../syntax/check.js'
 import { sheetKey } from '../../syntax/print.js'
@@ -130,7 +131,7 @@ export class KeptSlicers {
         const oldIds = this.files.tableSlicers.get(key(c))
         const sameIds = !ids || (String(ids.tableId) === oldIds?.tableId && String(ids.column) === oldIds?.column)
         const name = book.names?.find((n) => n.scope === undefined && caseKey(n.name) === key(c))
-        if (!old && (nameProblem(c.name, localeBooleans(book.locale)) !== null || (name && !/^=?\s*#N\/A\s*$/i.test(name.ref))))
+        if (!old && (nameProblem(c.name, localeBooleans(book.locale)) !== null || (name && !isCacheNameValue(name.ref))))
           throw new KeptRefusal({ key: 'keptSlicers' }, 'slicers')
         if (!old || cacheKey(c0, tab0) !== cacheKey(c, this.h.tab) || !sameIds) {
           if ((tableCache(c) && !ids) || (!ids && c.cache === undefined)) throw new KeptRefusal({ key: 'keptSlicerSource', name: c.name }, 'slicers')
@@ -305,7 +306,7 @@ export class KeptSlicers {
       const name = caseKey(readText(a.name ?? ''))
       const text = xml.slice(e.start, e.end)
       const ref = xml.slice(e.open, xml.lastIndexOf('</', e.end - 1))
-      if (a.localSheetId === undefined && before.some((c) => key(c) === name) && !after.some((c) => key(c) === name) && /^=?\s*#N\/A\s*$/i.test(ref)) continue
+      if (a.localSheetId === undefined && before.some((c) => key(c) === name) && !after.some((c) => key(c) === name) && isCacheNameValue(ref)) continue
       if (a.localSheetId === undefined) seen.add(name)
       held.push(text)
     }

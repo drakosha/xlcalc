@@ -9,7 +9,7 @@
  * ranges whole inside it, and so on into the calls under it until one stops it. Each argument has its class
  * (`params.ts`); the walk carries where it is:
  * - `V` one value is wanted: a range gets `@`, and so does an array, a call with an array answer or a reference of
- *   several cells;
+ *   several cells; a lookup's key or place is such an argument wherever the lookup is;
  * - `R` inside an argument that takes a reference (SUM's): a range where one value goes gets `@`, an array stays;
  * - `A` inside an argument that takes an array: nothing gets `@`.
  */
@@ -75,6 +75,9 @@ function classAt(fn: string, i: number): string {
   return s[s.length - p.rep + ((i - s.length + p.rep) % p.rep)]
 }
 
+/** Functions whose arguments of class `V` take one value wherever the call is (`bench/coverage/legacy/array-held.ts`). */
+const LOOKUPS = new Set(['INDEX', 'VLOOKUP', 'HLOOKUP', 'XLOOKUP'])
+
 /** The slot and the evaluation of argument `i` of `fn` (the node `n`) called where `where` says. */
 function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
   const own = SLOTS[fn]?.[i]
@@ -86,7 +89,8 @@ function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
     case 'w':
       return ['v', where === 'A' && n.k !== 'ref' ? 'R' : where]
     case 'V':
-      return ['v', where === 'A' ? 'R' : where]
+      // a lookup's key or place is one value even inside SUM: `SUM(XLOOKUP(@{1;2},…))`; IF, CHOOSE, TRANSPOSE keep the array
+      return ['v', LOOKUPS.has(fn) ? 'V' : where === 'A' ? 'R' : where]
     case 'r':
       return ['r', where === 'A' ? 'A' : 'R']
     case 'R':

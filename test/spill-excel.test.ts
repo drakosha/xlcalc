@@ -61,7 +61,7 @@ describe('held-out spill cases: the engine gives the answer predicted before Exc
   }
 })
 
-for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2']) {
+for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2', 'cse-lookup-held-3']) {
   describe(`${name}: the predictions Excel did not confirm are the ones in MISSED`, async () => {
     const { buildSpillCases, MISSED } = (await import(`../bench/coverage/spill/${name}.ts`)) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
     const set = SETS.find((s) => s.name === name)

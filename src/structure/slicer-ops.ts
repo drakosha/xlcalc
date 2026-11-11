@@ -7,6 +7,7 @@
  */
 import type { BookInput, DrawingPlace, PivotRef, Slicer, SlicerCache, Timeline, TimelineCache } from '../contract.js'
 import { caseKey } from '../collate.js'
+import { isCacheNameValue } from '../slicer-cache-name.js'
 import { InputError } from '../input-error.js'
 import { checkSheetOf } from '../input.js'
 import { array, checkBoolean, checkString, integer, object, onlyKeys } from '../input/basic.js'
@@ -59,7 +60,7 @@ function withCaches(book: BookInput, kind: Kind, caches: Cache[]): BookInput {
     const alive = [...(out.slicerCaches ?? []), ...(out.timelineCaches ?? [])]
     const gone = cachesOf(book, kind).filter((c) => !alive.some((next) => caseKey(next.name) === caseKey(c.name)))
     if (gone.length) {
-      const names = book.names.filter((n) => n.scope !== undefined || !/^=?\s*#N\/A\s*$/i.test(n.ref) || !gone.some((c) => caseKey(c.name) === caseKey(n.name)))
+      const names = book.names.filter((n) => n.scope !== undefined || !isCacheNameValue(n.ref) || !gone.some((c) => caseKey(c.name) === caseKey(n.name)))
       return withField(out, 'names', names.length ? names : undefined)
     }
   }

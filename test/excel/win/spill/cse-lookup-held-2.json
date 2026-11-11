@@ -1,0 +1,499 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 13.8
+ },
+ "cases": [
+  {
+   "id": "rows-two",
+   "about": "ROWS(XLOOKUP({1;2},A1:A3,B1:B3)) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROWS(XLOOKUP({1;2},A1:A3,B1:B3))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "mode-two",
+   "about": "MODE(XLOOKUP({1;2},A1:A3,B1:B3),10) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "MODE(XLOOKUP({1;2},A1:A3,B1:B3),10)",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 10
+    }
+   }
+  },
+  {
+   "id": "sumx2py2-two",
+   "about": "SUMX2PY2(XLOOKUP({1;2},A1:A3,B1:B3),{0;0}) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUMX2PY2(XLOOKUP({1;2},A1:A3,B1:B3),{0;0})",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 500
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 500
+    }
+   }
+  },
+  {
+   "id": "indirect-two",
+   "about": "SUM(INDIRECT({\"B2\";\"B3\"})) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDIRECT({\"B2\";\"B3\"}))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "indirect-single",
+   "about": "SUM(INDIRECT({\"B2\";\"B3\"})) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDIRECT({\"B2\";\"B3\"}))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   }
+  },
+  {
+   "id": "offset-height-two",
+   "about": "SUM(OFFSET(B1,0,0,{1;2})) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(OFFSET(B1,0,0,{1;2}))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 40
+    }
+   }
+  }
+ ],
+ "answers": {
+  "rows-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROWS(XLOOKUP({1;2},A1:A3,B1:B3))",
+    "S!G2": "=ROWS(XLOOKUP({1;2},A1:A3,B1:B3))"
+   }
+  },
+  "mode-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!G1": "=MODE(XLOOKUP({1;2},A1:A3,B1:B3),10)",
+    "S!G2": "=MODE(XLOOKUP({1;2},A1:A3,B1:B3),10)"
+   }
+  },
+  "sumx2py2-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 500
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 500
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUMX2PY2(XLOOKUP({1;2},A1:A3,B1:B3),{0;0})",
+    "S!G2": "=SUMX2PY2(XLOOKUP({1;2},A1:A3,B1:B3),{0;0})"
+   }
+  },
+  "indirect-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDIRECT({\"B2\";\"B3\"}))",
+    "S!G2": "=SUM(INDIRECT({\"B2\";\"B3\"}))"
+   }
+  },
+  "indirect-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDIRECT({\"B2\";\"B3\"}))"
+   }
+  },
+  "offset-height-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(OFFSET(B1,0,0,{1;2}))",
+    "S!G2": "=SUM(OFFSET(B1,0,0,{1;2}))"
+   }
+  }
+ }
+}

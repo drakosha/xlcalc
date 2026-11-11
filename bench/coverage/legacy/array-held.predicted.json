@@ -1,0 +1,22 @@
+{
+ "array#1": "SUM(XLOOKUP(@{1;2},'D'!B1:B8,'D'!C1:C8))",
+ "array#2": "SUMPRODUCT(XLOOKUP(@{1;2},'D'!B1:B8,'D'!C1:C8))",
+ "array#3": "AVERAGE(XLOOKUP(@{1;2},'D'!B1:B8,'D'!C1:C8))",
+ "array#4": "SUM(XLOOKUP(@{1;2}+0,'D'!B1:B8,'D'!C1:C8))",
+ "array#5": "SUM(XLOOKUP(ABS(@{-1;-2}),'D'!B1:B8,'D'!C1:C8))",
+ "array#6": "SUM(XLOOKUP(@SEQUENCE(2),'D'!B1:B8,'D'!C1:C8))",
+ "array#7": "SUM(XLOOKUP(1,'D'!B1:B8,'D'!C1:C8,,@{0;1}))",
+ "array#8": "SUM(IFERROR(XLOOKUP(@{1;2},'D'!B1:B8,'D'!C1:C8),0))",
+ "array#9": "SUM(LET(k,{1;2},XLOOKUP(@k,'D'!B1:B8,'D'!C1:C8)))",
+ "array#10": "SUM(VLOOKUP(@{1;2},'D'!B1:C8,2,FALSE))",
+ "array#11": "SUM(HLOOKUP(@{1,2},'D'!B1:C8,2,FALSE))",
+ "array#12": "SUM(INDEX('D'!B1:B8,@{2;3}))",
+ "array#13": "SUM(INDEX('D'!B1:C8,1,@{1,2}))",
+ "array#14": "COUNT(INDEX('D'!B1:B8,@SEQUENCE(2)))",
+ "array#15": "SUM(IF(@{TRUE;FALSE},1,2))",
+ "array#16": "SUM(CHOOSE(@{1;2},'D'!B1,'D'!B2))",
+ "array#17": "SUM(TRANSPOSE(@{1,2}))",
+ "array#18": "SUM(ABS({-1;-2}))",
+ "array#19": "SUM(MOD({5;7},3))",
+ "array#20": "SUM(XMATCH({1;2},'D'!B1:B8))"
+}
